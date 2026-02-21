@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CreateOrderPageClient } from './page-client';
 import { vi, describe, it, expect, beforeEach } from 'vitest';

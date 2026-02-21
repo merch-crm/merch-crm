@@ -1,280 +1,203 @@
 # План исправлений после тестирования
 
 **Дата:** 21.02.2026
-**Упавших тестов:** 124
+**Упавших тестов:** 177
 
 ---
 
-## 1. таблица заказов адаптируется
+## 1. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: .crm-table, .crm-card, text=Заказы >> nth=0
-Expected: visible
-Error: Unexpected token "=" while parsing css selector ".crm-table, .crm-card, text=Заказы". Did you mean to CSS.escape it?
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for .crm-table, .crm-card, text=Заказы >> nth=0[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 2. Loads /admin-panel successfully
+## 2. Loads /admin-panel/departments successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 3. Loads /admin-panel/roles successfully
+## 3. Loads /admin-panel/branding successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 4. визуальный снимок дашборда
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 5. Loads /admin-panel/departments successfully
+## 4. Loads /admin-panel/notifications successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 6. Loads /admin-panel/monitoring successfully
+## 5. Loads /admin-panel/monitoring successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 7. Loads /admin-panel/notifications successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 8. Loads /admin-panel/branding successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 9. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 10. Loads /dashboard successfully
+## 6. Loads /dashboard successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('text=/Добро пожаловать|Главная/i').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: locator.waitFor: Unexpected token "=" while parsing css selector "h1, h2, .page-header, text=/Добро пожаловать|Главная/i". Did you mean to CSS.escape it?
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('text=/Добро пожаловать|Главная/i').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[
+[2m  - waiting for h1, h2, .page-header, text=/Добро пожаловать|Главная/i >> nth=0 to be visible[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 7. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 8. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 9. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 10. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -287,133 +210,94 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected va
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 12. Loads /dashboard/clients/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 13. Loads /dashboard/orders successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 14. Loads /dashboard/orders/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 15. Loads /dashboard/finance successfully
+## 12. Loads /dashboard/finance/transactions successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 13. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 14. Loads /dashboard/finance/sales successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 15. Loads /dashboard/finance/expenses successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -426,826 +310,592 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 17. Loads /dashboard/finance/sales successfully
+## 17. Loads /dashboard/finance/funds successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 18. Loads /dashboard/finance/promocodes successfully
+## 18. Loads /dashboard/finance/pl successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected v
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 19. Loads /dashboard/finance/expenses successfully
+## 19. Loads /dashboard/production successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Производство</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 20. Loads /dashboard/finance/funds successfully
+## 20. Loads /dashboard/design successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 21. Loads /dashboard/finance/pl successfully
+## 21. Loads /dashboard/tasks successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 22. Loads /dashboard/production successfully
+## 22. Loads /dashboard/references successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Производство</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 23. Loads /dashboard/tasks successfully
+## 23. Loads /dashboard/knowledge-base successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 24. Loads /dashboard/design successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 25. Loads /dashboard/knowledge-base successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 26. Loads /dashboard/references successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 27. Loads /dashboard/profile successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 28. Loads /dashboard/warehouse successfully
+## 24. Loads /dashboard/warehouse/items/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
+[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 29. Loads /dashboard/warehouse/categories successfully
+## 25. Loads /dashboard/warehouse successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 30. Loads /dashboard/warehouse/items/new successfully
+## 26. Loads /dashboard/warehouse/characteristics successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 31. Loads /dashboard/warehouse/characteristics successfully
+## 27. Loads /dashboard/warehouse/categories successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 32. Loads /dashboard/warehouse/archive successfully
+## 28. Loads /dashboard/warehouse/storage successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 33. таблица заказов адаптируется
+## 29. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 30. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: .crm-table, .crm-card, text=Заказы >> nth=0
-Expected: visible
-Error: Unexpected token "=" while parsing css selector ".crm-table, .crm-card, text=Заказы". Did you mean to CSS.escape it?
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for .crm-table, .crm-card, text=Заказы >> nth=0[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 34. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 35. Loads /dashboard/warehouse/history successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 36. визуальный снимок дашборда
+## 31. таблица заказов адаптируется
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: locator.waitFor: Unexpected token "=" while parsing css selector ".crm-table, .crm-card, text=Заказы". Did you mean to CSS.escape it?
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for .crm-table, .crm-card, text=Заказы >> nth=0 to be visible[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 37. Loads /admin-panel successfully
+## 32. визуальный снимок дашборда
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 33. Loads /admin-panel successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 38. Loads /admin-panel/roles successfully
+## 34. Loads /admin-panel/departments successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 39. Loads /admin-panel/notifications successfully
+## 35. Loads /admin-panel/roles successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 40. Loads /admin-panel/departments successfully
+## 36. Loads /admin-panel/monitoring successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 41. Loads /admin-panel/monitoring successfully
+## 37. Loads /admin-panel/notifications successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 42. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 43. Loads /dashboard/clients/new successfully
+## 38. Loads /dashboard successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: locator.waitFor: Unexpected token "=" while parsing css selector "h1, h2, .page-header, text=/Добро пожаловать|Главная/i". Did you mean to CSS.escape it?
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for h1, h2, .page-header, text=/Добро пожаловать|Главная/i >> nth=0 to be visible[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 44. Loads /dashboard/clients successfully
+## 39. Loads /admin-panel/storage successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected va
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 45. Loads /dashboard/orders/new successfully
+## 40. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 41. Loads /dashboard/clients successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 42. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 43. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 44. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 45. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -1258,48 +908,34 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected v
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 47. Loads /dashboard/finance/promocodes successfully
+## 47. Loads /dashboard/finance/sales successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected v
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -1312,106 +948,74 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 49. Loads /dashboard/finance/sales successfully
+## 49. Loads /dashboard/finance/salary successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 50. Loads /dashboard/finance/salary successfully
+## 50. Loads /dashboard/finance/funds successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 51. Loads /dashboard/finance/funds successfully
+## 51. Loads /dashboard/finance/pl successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -1424,50 +1028,34 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Производство</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    35 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Производство</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 53. Loads /dashboard/finance/pl successfully
+## 53. Loads /dashboard/design successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -1480,78 +1068,54 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 55. Loads /dashboard/design successfully
+## 55. Loads /dashboard/knowledge-base successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 56. Loads /dashboard/knowledge-base successfully
+## 56. Loads /dashboard/warehouse/history successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
@@ -1564,1870 +1128,2300 @@ Call log:
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    33 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 58. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 59. таблица заказов адаптируется
+## 58. визуальный снимок дашборда
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: .crm-table, .crm-card, text=Заказы >> nth=0
-Expected: visible
-Error: Unexpected token "=" while parsing css selector ".crm-table, .crm-card, text=Заказы". Did you mean to CSS.escape it?
-
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for .crm-table, .crm-card, text=Заказы >> nth=0[22m
+[2m  - waiting for locator('h1, h2, .page-header').first() to be visible[22m
+[2m    32 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 60. визуальный снимок дашборда
+## 59. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 60. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 61. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 62. Loads /dashboard/warehouse successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 63. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, form').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 64. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 65. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mpage[39m[2m).[22mtoHaveScreenshot[2m([22m[32mexpected[39m[2m)[22m failed
-
-  Expected an image 390px by 664px, received 390px by 2633px. 159665 pixels (ratio 0.16 of all image pixels) are different.
-
-  Snapshot: dashboard.png
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toHaveScreenshot(dashboard.png)" with timeout 5000ms[22m
-[2m    - verifying given screenshot expectation[22m
-[2m  - taking page screenshot[22m
-[2m    - disabled all CSS animations[22m
-[2m  - waiting for 
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
+
 ```
 
-**Рекомендация:** Визуальные различия. Обнови скриншот или исправь вёрстку.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 61. Loads /dashboard/warehouse/history successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 62. Loads /dashboard/warehouse/archive successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 63. Loads /dashboard/orders/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: locator('h1, h2, form').first()
-Expected: visible
-Timeout: 5000ms
-Error: element(s) not found
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 64. таблица заказов адаптируется
+## 66. таблица заказов адаптируется
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: .crm-table, .crm-card, text=Заказы >> nth=0
-Expected: visible
-Error: Unexpected token "=" while parsing css selector ".crm-table, .crm-card, text=Заказы". Did you mean to CSS.escape it?
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for .crm-table, .crm-card, text=Заказы >> nth=0[22m
+[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 65. Loads /admin-panel successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 66. визуальный снимок дашборда
+## 67. визуальный снимок дашборда
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 67. навигация на мобильном
+## 68. Loads /admin-panel successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 69. Loads /dashboard/warehouse/categories successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 70. Loads /admin-panel/users successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/users", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 71. Loads /admin-panel/roles successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/roles", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 72. Loads /admin-panel/departments successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/departments", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 73. Loads /admin-panel/monitoring successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/monitoring", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 74. Loads /admin-panel/notifications successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/notifications", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 75. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 76. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/branding", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 77. Loads /dashboard/clients successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/clients", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 78. Loads /dashboard successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 79. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/clients/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 80. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 81. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 82. Loads /dashboard/finance successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 83. Loads /dashboard/finance/transactions successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/transactions", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 84. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/promocodes", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 85. Loads /dashboard/finance/sales successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/sales", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 86. Loads /dashboard/finance/expenses successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/expenses", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 87. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('h1, h2, .page-header, .grid').first() to be visible[22m
+[2m    34 × locator resolved to hidden <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 88. Loads /dashboard/finance/funds successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/funds", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 89. Loads /dashboard/finance/salary successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/salary", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 90. Loads /dashboard/finance/pl successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/pl", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 91. Loads /dashboard/production successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/production", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 92. Loads /dashboard/design successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/design", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 93. Loads /dashboard/knowledge-base successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/knowledge-base", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 94. Loads /dashboard/tasks successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/tasks", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 95. Loads /dashboard/references successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/references", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 96. Loads /dashboard/warehouse successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 97. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/profile", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 98. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/items/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 99. Loads /dashboard/warehouse/categories successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/categories", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 100. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 101. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/characteristics", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 102. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 103. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 104. навигация на мобильном
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: getByRole('button', { name: /меню|toggle menu/i }).first()
-Expected: visible
-Timeout: 5000ms
-Error: element(s) not found
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for getByRole('button', { name: /меню|toggle menu/i }).first()[22m
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 68. Loads /admin-panel/roles successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 69. Loads /admin-panel/departments successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 70. Loads /admin-panel/monitoring successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 71. Loads /admin-panel/notifications successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 72. Loads /admin-panel/branding successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 73. Loads /admin-panel/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 74. Loads /dashboard/clients/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 75. Loads /dashboard/clients successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected va
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 76. Loads /dashboard successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('text=/Добро пожаловать|Главная/i').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('text=/Добро пожаловать|Главная/i').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 77. Loads /dashboard/orders successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 78. Loads /dashboard/finance/promocodes successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected v
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 79. Loads /dashboard/orders/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 80. Loads /dashboard/finance/expenses successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 81. Loads /dashboard/finance/transactions successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected v
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 82. Loads /dashboard/finance/sales successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 83. Loads /dashboard/finance/salary successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 84. Loads /dashboard/production successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Производство</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 85. Loads /dashboard/finance/funds successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 86. Loads /dashboard/finance/pl successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 87. Loads /dashboard/tasks successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 88. Loads /dashboard/design successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 89. Loads /dashboard/knowledge-base successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 90. Loads /dashboard/warehouse/items/new successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 91. Loads /dashboard/warehouse/categories successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 92. Loads /dashboard/warehouse successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 93. Loads /dashboard/profile successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 94. Loads /dashboard/references successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    6 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 95. Loads /dashboard/warehouse/characteristics successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 96. Loads /dashboard/warehouse/archive successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 97. Loads /dashboard/warehouse/history successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 98. таблица заказов адаптируется
+## 105. таблица заказов адаптируется
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator: .crm-table, .crm-card, text=Заказы >> nth=0
-Expected: visible
-Error: Unexpected token "=" while parsing css selector ".crm-table, .crm-card, text=Заказы". Did you mean to CSS.escape it?
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for .crm-table, .crm-card, text=Заказы >> nth=0[22m
+[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 99. Loads /dashboard/warehouse/storage successfully
-
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
-
-**Ошибка:**
-```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
-Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
-
-```
-
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
-
-- [ ] Исправить
-- [ ] Проверить повторно
-
----
-
-## 100. визуальный снимок дашборда
+## 106. визуальный снимок дашборда
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 101. Loads /admin-panel successfully
+## 107. Loads /admin-panel successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/admin-panel", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 102. Loads /admin-panel/departments successfully
+## 108. Loads /admin-panel/users successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/admin-panel/users", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 103. Loads /admin-panel/roles successfully
+## 109. Loads /admin-panel/roles successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/admin-panel/roles", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 104. Loads /admin-panel/notifications successfully
+## 110. Loads /admin-panel/departments successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/admin-panel/departments", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 105. Loads /admin-panel/storage successfully
+## 111. Loads /admin-panel/monitoring successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/admin-panel/monitoring", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 106. Loads /dashboard successfully
+## 112. Loads /admin-panel/notifications successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/notifications", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 113. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 114. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/branding", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 115. Loads /dashboard successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('text=/Добро пожаловать|Главная/i').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: Could not connect to the server.
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('text=/Добро пожаловать|Главная/i').first()[22m
-[2m    7 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Главная</h1>[22m
-[2m      - unexpected value "hidden"[
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 107. Loads /admin-panel/branding successfully
+## 116. Loads /dashboard/clients successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/clients", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 117. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 118. Loads /dashboard/clients/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/clients/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 119. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 120. Loads /dashboard/finance/transactions successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/transactions", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 121. Loads /dashboard/finance successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 122. Loads /dashboard/finance/promocodes successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/promocodes", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 123. Loads /dashboard/finance/expenses successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/expenses", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 124. Loads /dashboard/finance/sales successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/sales", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 125. Loads /dashboard/finance/salary successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/salary", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 126. Loads /dashboard/finance/funds successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/funds", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 127. Loads /dashboard/finance/pl successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/finance/pl", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 128. Loads /dashboard/production successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/production", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 129. Loads /dashboard/design successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/design", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 130. Loads /dashboard/tasks successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/tasks", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 131. Loads /dashboard/knowledge-base successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/knowledge-base", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 132. Loads /dashboard/references successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/references", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 133. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/profile", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 134. Loads /dashboard/warehouse successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 135. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/items/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 136. Loads /dashboard/warehouse/categories successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/categories", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 137. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/characteristics", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 138. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 139. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 140. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: Could not connect to the server.
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 141. навигация на мобильном
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 142. визуальный снимок дашборда
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 143. таблица заказов адаптируется
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/adaptive.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 144. Loads /admin-panel/users successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Админ-панель</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/admin-panel/users", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 108. Loads /dashboard/clients/new successfully
+## 145. Loads /admin-panel/roles successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/roles", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 146. Loads /admin-panel successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 147. Loads /admin-panel/departments successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/departments", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 148. Loads /admin-panel/monitoring successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/monitoring", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 149. Loads /admin-panel/notifications successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/notifications", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 150. Loads /admin-panel/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 151. Loads /admin-panel/branding successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/admin-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/admin-panel/branding", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 152. Loads /dashboard successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    7 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 109. Loads /dashboard/clients successfully
+## 153. Loads /dashboard/clients successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    6 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Клиенты</h1>[22m
-[2m      - unexpected va
+[2m  - navigating to "http://localhost:3000/dashboard/clients", waiting until "load"[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 110. Loads /dashboard/orders successfully
+## 154. Loads /dashboard/clients/new successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, table, .crm-table').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Заказы</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/clients/new", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 111. Loads /dashboard/finance/funds successfully
+## 155. Loads /dashboard/orders successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 156. Loads /dashboard/orders/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/dashboard-core.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/orders/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 157. Loads /dashboard/finance successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 112. Loads /dashboard/finance/salary successfully
+## 158. Loads /dashboard/finance/transactions successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance/transactions", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 113. Loads /dashboard/design successfully
+## 159. Loads /dashboard/finance/promocodes successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    7 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Дизайн</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance/promocodes", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 114. Loads /dashboard/profile successfully
+## 160. Loads /dashboard/finance/sales successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, form').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance/sales", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 115. Loads /dashboard/tasks successfully
+## 161. Loads /dashboard/finance/expenses successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Задачи</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance/expenses", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 116. Loads /dashboard/knowledge-base successfully
+## 162. Loads /dashboard/finance/salary successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">База знаний</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance/salary", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 117. Loads /dashboard/references successfully
+## 163. Loads /dashboard/finance/funds successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">MerchCRM</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/finance/funds", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 118. Loads /dashboard/warehouse successfully
+## 164. Loads /dashboard/finance/pl successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
+[2m  - navigating to "http://localhost:3000/dashboard/finance/pl", waiting until "load"[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 119. Loads /dashboard/warehouse/items/new successfully
+## 165. Loads /dashboard/production successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, form').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, form').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/production", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 120. Loads /dashboard/warehouse/categories successfully
+## 166. Loads /dashboard/design successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/design", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 121. Loads /dashboard/warehouse/characteristics successfully
+## 167. Loads /dashboard/tasks successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, .grid').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, .grid').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/tasks", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 122. Loads /dashboard/warehouse/storage successfully
+## 168. Loads /dashboard/knowledge-base successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header').first()[22m
-[2m    8 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected value "hidden"[22m
+[2m  - navigating to "http://localhost:3000/dashboard/knowledge-base", waiting until "load"[22m
 
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 123. Loads /dashboard/warehouse/archive successfully
+## 169. Loads /dashboard/references successfully
 
-**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
+[2m  - navigating to "http://localhost:3000/dashboard/references", waiting until "load"[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно
 
 ---
 
-## 124. Loads /dashboard/warehouse/history successfully
+## 170. Loads /dashboard/profile successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/finance-other.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/profile", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 171. Loads /dashboard/warehouse successfully
 
 **Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
 
 **Ошибка:**
 ```
-Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
-
-Locator:  locator('h1, h2, .page-header, table, .crm-table').first()
-Expected: visible
-Received: hidden
-Timeout:  5000ms
-
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
 Call log:
-[2m  - Expect "toBeVisible" with timeout 5000ms[22m
-[2m  - waiting for locator('h1, h2, .page-header, table, .crm-table').first()[22m
-[2m    9 × locator resolved to <h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Склад</h1>[22m
-[2m      - unexpected valu
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse", waiting until "load"[22m
+
 ```
 
-**Рекомендация:** Элемент не отображается. Проверь условия рендеринга или роутинг.
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 172. Loads /dashboard/warehouse/items/new successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/items/new", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 173. Loads /dashboard/warehouse/categories successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/categories", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 174. Loads /dashboard/warehouse/characteristics successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/characteristics", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 175. Loads /dashboard/warehouse/storage successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/storage", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 176. Loads /dashboard/warehouse/archive successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/archive", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
+
+- [ ] Исправить
+- [ ] Проверить повторно
+
+---
+
+## 177. Loads /dashboard/warehouse/history successfully
+
+**Файл:** `/Users/leonidmolchanov/Desktop/merch-crm/e2e/ui/warehouse-pages.spec.ts`
+
+**Ошибка:**
+```
+Error: page.goto: NS_ERROR_CONNECTION_REFUSED
+Call log:
+[2m  - navigating to "http://localhost:3000/dashboard/warehouse/history", waiting until "load"[22m
+
+```
+
+**Рекомендация:** Требуется ручной анализ ошибки.
 
 - [ ] Исправить
 - [ ] Проверить повторно

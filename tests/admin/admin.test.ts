@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockTx, mockQuery, mockDb } = vi.hoisted(() => {
+const { mockQuery, mockDb } = vi.hoisted(() => {
     const mockQuery = {
         users: { findFirst: vi.fn().mockResolvedValue(null), findMany: vi.fn().mockResolvedValue([]) },
         roles: { findFirst: vi.fn().mockResolvedValue(null), findMany: vi.fn().mockResolvedValue([]) },
@@ -92,8 +93,10 @@ import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';
 
 import { getCurrentUserAction, getUsers, createUser, updateUser, deleteUser } from '@/app/(main)/admin-panel/actions/users.actions';
-import { createDatabaseBackup, clearAuditLogs } from '@/app/(main)/admin-panel/actions/audit.actions';
+import { getSystemSettings, createDatabaseBackup } from '@/app/(main)/admin-panel/actions/system.actions';
+import { clearAuditLogs } from '@/app/(main)/admin-panel/actions/security.actions';
 import { updateBrandingAction } from '@/app/(main)/admin-panel/actions/branding.actions';
+import { getNotificationSettingsAction } from '@/app/(main)/admin-panel/actions/notifications.actions';
 
 // ─── Setup ────────────────────────────────────────────────────────────────────
 
@@ -104,7 +107,7 @@ function setupMocks() {
     mockQuery.departments.findMany.mockResolvedValue([]);
     mockQuery.auditLogs.findMany.mockResolvedValue([]);
     vi.mocked(getSession).mockResolvedValue(mockSession());
-    vi.mocked(performDatabaseBackup).mockResolvedValue({ success: true });
+    vi.mocked(performDatabaseBackup).mockResolvedValue({ success: true, fileName: 'backup.json' });
 }
 
 describe('Admin Panel Actions', () => {

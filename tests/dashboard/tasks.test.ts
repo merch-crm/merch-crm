@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { db } from '@/lib/db';
 import { mockSession, createMockTask, createFormData } from '../helpers/mocks';
@@ -49,8 +50,6 @@ import { getSession } from '@/lib/auth';
 import {
     getTasks,
     createTask,
-    updateTask,
-    deleteTask,
     addTaskComment,
     addTaskChecklistItem,
     toggleChecklistItem,

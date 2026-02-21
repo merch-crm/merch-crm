@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { mockSession, createMockClient, createMockUser, createFormData } from '../helpers/mocks';
+import { mockSession, createMockClient, createMockUser } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 

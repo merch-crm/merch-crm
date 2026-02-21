@@ -42,7 +42,8 @@ test.describe('База знаний', () => {
 
         // Предположим, у нас есть хотя бы одна статья p1
         // Кликаем по первой попавшейся статье в навигации
-        const firstPage = page.getByRole('button', { name: /статью/i }).first();
+        // firstPage variable removed as unused
+        page.getByRole('button', { name: /статью/i }).first();
         // В нашем моке может не быть кнопок, если база пустая.
         // Поэтому проверяем наличие кнопки "Создать статью"
         const createBtn = page.getByRole('button', { name: 'Создать статью' });

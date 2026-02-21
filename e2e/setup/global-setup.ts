@@ -3,6 +3,7 @@ import { type FullConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function globalSetup(config: FullConfig) {
     console.log('--- Global Setup Starting ---');
 

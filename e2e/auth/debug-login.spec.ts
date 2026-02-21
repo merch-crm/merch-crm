@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@playwright/test'
 
 test('детальная отладка входа', async ({ page }) => {
     // Подписка на ошибки консоли
@@ -19,7 +19,7 @@ test('детальная отладка входа', async ({ page }) => {
     try {
         await page.waitForURL('**/dashboard', { timeout: 5000 });
         console.log('Login successful! URL is now /dashboard');
-    } catch (e) {
+    } catch {
         console.log('Login failed or timed out. URL is:', page.url());
         const errorText = await page.locator('.text-red-600').innerText().catch(() => 'No error text found');
         console.log('Visible error message:', errorText);
