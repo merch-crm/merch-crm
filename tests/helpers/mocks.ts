@@ -3,6 +3,7 @@
  * Import from this file to get consistent mock objects.
  */
 import { vi } from 'vitest';
+import { Task } from '@/app/(main)/dashboard/tasks/types';
 
 // ─── Session ─────────────────────────────────────────────────────────────────
 
@@ -90,10 +91,6 @@ export function createDbMock(queryResults: Record<string, unknown> = {}) {
 
 // ─── Entity Factories ─────────────────────────────────────────────────────────
 
-import { Task } from '@/app/(main)/dashboard/tasks/types';
-
-// ... (other exports)
-
 export function createMockTask(overrides: Partial<Task> = {}): Task {
     return {
         id: '22222222-2222-4222-8222-222222222222',
@@ -109,7 +106,6 @@ export function createMockTask(overrides: Partial<Task> = {}): Task {
         orderId: null,
         dueDate: null,
         createdAt: new Date('2026-01-01'),
-        ...overrides,
     } as Task;
 }
 
@@ -212,8 +208,8 @@ export function createFormData(data: Record<string, string>): FormData {
             return val !== undefined ? [val] : [];
         },
         has: (key: string) => map.has(key),
-        entries: function* () { yield* map.entries(); },
-        [Symbol.iterator]: function* () { yield* map.entries(); },
+        entries: function* () { yield* Array.from(map.entries()); },
+        [Symbol.iterator]: function* () { yield* Array.from(map.entries()); },
         forEach: (cb: Parameters<Map<string, string>['forEach']>[0]) => map.forEach(cb),
     } as unknown as FormData;
 

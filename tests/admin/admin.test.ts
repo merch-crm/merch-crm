@@ -76,7 +76,7 @@ vi.mock('@/lib/password', () => ({
     hashPassword: vi.fn().mockResolvedValue('hashed-password'),
     comparePassword: vi.fn(),
 }));
-vi.mock('@/lib/backup', () => ({ performDatabaseBackup: vi.fn().mockResolvedValue({ success: true }) }));
+vi.mock('@/lib/backup', () => ({ performDatabaseBackup: vi.fn().mockResolvedValue({ success: true, fileName: 'backup.json' }) }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 vi.mock('next/headers', () => ({ cookies: vi.fn().mockReturnValue({ set: vi.fn(), get: vi.fn(), delete: vi.fn() }) }));
 vi.mock('@/lib/admin', () => ({
