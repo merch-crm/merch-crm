@@ -75,7 +75,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
             {loading ? (
                 <div className="py-10 text-center text-slate-400 font-bold">Загрузка...</div>
             ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="space-y-2">
                         <label className="font-bold text-slate-700 text-sm block mb-2">Лимит S3 (GB)</label>
                         <Input
@@ -98,7 +98,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                     </div>
                     <div className="space-y-3">
                         <label className="font-bold text-slate-700 text-sm block mb-2">Порог предупреждения (%)</label>
-                        <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-[18px] shadow-sm border border-slate-200">
+                        <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-[18px] shadow-sm border border-slate-200">
                             <input
                                 type="range"
                                 min="10"

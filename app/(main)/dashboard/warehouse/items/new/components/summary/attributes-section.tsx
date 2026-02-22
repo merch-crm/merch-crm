@@ -26,7 +26,7 @@ export function AttributesSection({
 
     return (
         <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-6 sm:p-8 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
+            <div className="p-6 sm:p-6 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200">
                         <LayoutGrid className="w-5 h-5 text-white" />
@@ -38,8 +38,8 @@ export function AttributesSection({
                 </div>
             </div>
 
-            <div className="p-4 sm:p-8">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-3">
+            <div className="p-4 sm:p-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-3">
                     {[
                         { label: "Бренд", value: getAttrName("brand", formData.brandCode), icon: Tag },
                         { label: "Цвет", value: selectedColorName, icon: () => <div className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
@@ -83,9 +83,9 @@ export function AttributesSection({
 
                 {/* Packaging - Logistics & Features */}
                 {(formData.supplierName || (formData.features && formData.features.length > 0)) && (
-                    <div className="mt-8 pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="mt-8 pt-8 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-3">
                         {formData.supplierName && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <h4 className="text-xs font-black text-slate-400 leading-none">Логистика</h4>
                                 <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100/50 space-y-2">
                                     <div className="flex items-center justify-between">
@@ -116,7 +116,7 @@ export function AttributesSection({
                         )}
 
                         {formData.features && formData.features.length > 0 && (
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <h4 className="text-xs font-black text-slate-400 leading-none">Особенности</h4>
                                 <div className="flex flex-wrap gap-2 text-[11px] font-bold">
                                     {formData.features.includes("glued_valve") && (

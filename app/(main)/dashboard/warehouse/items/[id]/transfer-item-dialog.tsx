@@ -134,10 +134,10 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
-                    <div className="space-y-4">
+                <form onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
+                    <div className="space-y-3">
                         {/* 1. Source & Destination selection */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Откуда (источник)</label>
                                 <LocationSelect

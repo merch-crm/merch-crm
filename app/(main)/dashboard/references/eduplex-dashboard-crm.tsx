@@ -20,7 +20,7 @@ export default function EduplexDashboardCRM() {
     return (
         <div className="w-full glass-panel flex flex-col md:flex-row rounded-[var(--radius-outer)] mt-10 overflow-hidden bg-white/40 shadow-crm-xl relative min-h-[800px]">
             {/* Sidebar - Dark Glass */}
-            <aside className="w-full md:w-[280px] bg-slate-900 text-white p-8 flex flex-col shrink-0 relative z-10 border-r border-white/5">
+            <aside className="w-full md:w-[280px] bg-slate-900 text-white p-6 flex flex-col shrink-0 relative z-10 border-r border-white/5">
                 <div className="flex items-center gap-3 mb-12">
                     <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                         <GraduationCap className="w-6 h-6" />
@@ -39,7 +39,7 @@ export default function EduplexDashboardCRM() {
                         <button type="button"
                             key={item.label}
                             className={cn(
-                                "w-full flex items-center gap-4 px-4 py-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group",
+                                "w-full flex items-center gap-3 px-4 py-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group",
                                 item.active
                                     ? "bg-primary text-white shadow-lg shadow-primary/20"
                                     : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -63,9 +63,9 @@ export default function EduplexDashboardCRM() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8 md:p-12 relative z-0 overflow-auto">
+            <main className="flex-1 p-6 md:p-[--padding-xl] relative z-0 overflow-auto">
                 {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
+                <header className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-12">
                     <div>
                         <h1 className="text-3xl font-bold text-slate-900">Education Dashboard</h1>
                         <p className="text-xs font-bold text-slate-400  mt-2 ml-0.5">Welcome back, Academy Member</p>
@@ -89,15 +89,15 @@ export default function EduplexDashboardCRM() {
                 </header>
 
                 {/* Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
                     {/* Recent Activity */}
-                    <div className="lg:col-span-8 space-y-4">
+                    <div className="lg:col-span-8 space-y-3">
                         <div className="flex items-center justify-between">
                             <h3 className="text-xl font-bold">Recommended for you</h3>
                             <button type="button" className="text-xs font-bold  text-primary flex items-center gap-1">View Library <ChevronRight className="w-3 h-3" /></button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {[
                                 { title: "UI/UX Advanced Masterclass", mentor: "Sarah J.", time: "12h 30m", progress: 65, color: "bg-primary" },
                                 { title: "3D Animation Basics", mentor: "Mike R.", time: "8h 45m", progress: 20, color: "bg-slate-900" },
@@ -129,13 +129,13 @@ export default function EduplexDashboardCRM() {
                         </div>
 
                         {/* Achievement Chart */}
-                        <div className="crm-card p-8">
+                        <div className="crm-card p-6">
                             <div className="flex items-center justify-between mb-8">
                                 <div>
                                     <h3 className="font-bold">Study Activity</h3>
                                     <p className="text-xs font-bold text-slate-400  mt-1">Hours per day</p>
                                 </div>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-2 h-2 rounded-full bg-primary" />
                                         <span className="text-xs font-bold  text-slate-400">Personal</span>
@@ -146,9 +146,9 @@ export default function EduplexDashboardCRM() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-48 flex items-end justify-between gap-4">
+                            <div className="h-48 flex items-end justify-between gap-3">
                                 {[45, 70, 30, 85, 60, 40, 95].map((h, i) => (
-                                    <div key={i} className="flex-1 flex flex-col items-center gap-4 group">
+                                    <div key={i} className="flex-1 flex flex-col items-center gap-3 group">
                                         <div className="w-full relative h-full flex items-end">
                                             <div className="absolute inset-x-0 bottom-0 bg-slate-50 rounded-full h-full" />
                                             <div className="relative w-full bg-primary rounded-full transition-all duration-500 group-hover:bg-primary-hover shadow-lg shadow-primary/10" style={{ height: `${h}%` }} />
@@ -161,23 +161,23 @@ export default function EduplexDashboardCRM() {
                     </div>
 
                     {/* Right Sidebar: Schedule */}
-                    <div className="lg:col-span-4 space-y-4">
-                        <div className="crm-card p-8 bg-primary text-white shadow-2xl shadow-primary/30 relative overflow-hidden">
+                    <div className="lg:col-span-4 space-y-3">
+                        <div className="crm-card p-6 bg-primary text-white shadow-2xl shadow-primary/30 relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2" />
                             <h3 className="text-lg font-bold mb-4 relative z-10">Premium Perks</h3>
                             <p className="text-white/60 text-xs font-medium leading-relaxed mb-6 relative z-10">Access exclusive mentors and advanced workshops.</p>
                             <button type="button" className="px-6 py-2.5 bg-white text-primary rounded-[var(--radius-inner)] text-xs font-bold  hover:scale-105 active:scale-95 transition-all w-fit relative z-10">Upgrade</button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <h3 className="text-lg font-bold px-2">Daily Schedule</h3>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {[
                                     { time: "09:00 AM", subject: "Math Advanced", room: "L-12", color: "bg-primary" },
                                     { time: "11:30 AM", subject: "Design Theory", room: "S-5", color: "bg-slate-900" },
                                     { time: "02:00 PM", subject: "Physics Prep", room: "M-4", color: "bg-slate-400" },
                                 ].map((task, i) => (
-                                    <div key={i} className="crm-card p-6 flex gap-4 hover:translate-x-1 transition-transform">
+                                    <div key={i} className="crm-card p-6 flex gap-3 hover:translate-x-1 transition-transform">
                                         <div className="flex flex-col items-center justify-center shrink-0 border-r border-slate-200 pr-6 gap-1">
                                             <span className="text-xs font-bold text-slate-900">{task.time.split(' ')[0]}</span>
                                             <span className="text-xs font-bold  text-slate-400">{task.time.split(' ')[1]}</span>

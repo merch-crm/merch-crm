@@ -20,7 +20,7 @@ export function ProfileHeader({
     handleNavClick
 }: ProfileHeaderProps) {
     return (
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-10">
             <div className="flex items-center justify-between w-full md:w-auto">
                 <div className="md:hidden">
                     <Button

@@ -80,7 +80,7 @@ export function ArchiveReasonDialog({
                     </div>
                 </div>
 
-                <div className="px-6 pb-20 space-y-4 flex-1 overflow-y-auto custom-scrollbar">
+                <div className="px-6 pb-20 space-y-3 flex-1 overflow-y-auto custom-scrollbar">
                     <div className="space-y-3">
                         <p className="text-xs font-bold text-slate-700 leading-relaxed px-4">
                             {displayDescription}

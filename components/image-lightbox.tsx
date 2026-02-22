@@ -109,7 +109,7 @@ export function ImageLightbox({ src, alt, isOpen, onClose }: ImageLightboxProps)
                 <motion.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="relative w-full h-full flex items-center justify-center p-12 overflow-hidden"
+                    className="relative w-full h-full flex items-center justify-center p-[--padding-xl] overflow-hidden"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <motion.img

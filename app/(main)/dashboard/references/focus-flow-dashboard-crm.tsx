@@ -40,7 +40,7 @@ export default function FocusFlowDashboardCRM() {
                         <button type="button"
                             key={item.label}
                             className={cn(
-                                "w-full flex items-center gap-4 p-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group relative",
+                                "w-full flex items-center gap-3 p-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group relative",
                                 item.active
                                     ? "bg-slate-900 text-white shadow-2xl shadow-slate-900/20"
                                     : "text-slate-400 hover:bg-slate-50 hover:text-slate-900"
@@ -57,7 +57,7 @@ export default function FocusFlowDashboardCRM() {
                     ))}
                 </nav>
 
-                <div className="hidden md:flex flex-col gap-4 mt-auto">
+                <div className="hidden md:flex flex-col gap-3 mt-auto">
                     <div className="bg-slate-50 rounded-[var(--radius-outer)] p-6 border border-slate-200 text-center relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-full blur-xl group-hover:scale-150 transition-transform" />
                         <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-crm-sm text-primary">
@@ -80,7 +80,7 @@ export default function FocusFlowDashboardCRM() {
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 p-8 md:p-10 relative overflow-auto">
+            <main className="flex-1 p-6 md:p-6 relative overflow-auto">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-10">
                     <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ export default function FocusFlowDashboardCRM() {
                             <span className="text-xs font-bold  text-primary">Deep Focus Session</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <button type="button" className="w-10 h-10 rounded-[var(--radius-inner)] bg-white border border-slate-200 flex items-center justify-center text-slate-400 group hover:text-slate-900 transition-colors">
                             <Bell className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                         </button>
@@ -98,11 +98,11 @@ export default function FocusFlowDashboardCRM() {
                 </div>
 
                 {/* Bento Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-12">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 pb-12">
 
                     {/* Main Progress Block */}
-                    <div className="lg:col-span-8 flex flex-col gap-4">
-                        <div className="crm-card p-8 flex flex-col justify-between min-h-[440px] relative overflow-hidden">
+                    <div className="lg:col-span-8 flex flex-col gap-3">
+                        <div className="crm-card p-6 flex flex-col justify-between min-h-[440px] relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50/50 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
 
                             <div className="relative z-10 flex items-start justify-between">
@@ -136,7 +136,7 @@ export default function FocusFlowDashboardCRM() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10">
                                 {[
                                     { label: "Completed", val: "182", unit: "tasks" },
                                     { label: "Hours", val: "1.2k", unit: "logged" },
@@ -155,13 +155,13 @@ export default function FocusFlowDashboardCRM() {
                         </div>
 
                         {/* Courses / Active Flows List */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {[
                                 { title: "Design Audit Phase", meta: "3 collaborators", color: "bg-primary" },
                                 { title: "Client Handover", meta: "Final stage", color: "bg-slate-900" },
                             ].map((flow, i) => (
-                                <div key={i} className="crm-card p-8 flex items-center justify-between group cursor-pointer">
-                                    <div className="flex items-center gap-4">
+                                <div key={i} className="crm-card p-6 flex items-center justify-between group cursor-pointer">
+                                    <div className="flex items-center gap-3">
                                         <div className={cn("w-14 h-14 rounded-[var(--radius-inner)] flex items-center justify-center text-white transition-all group-hover:scale-110", flow.color)}>
                                             <TrendingUp className="w-6 h-6" />
                                         </div>
@@ -177,10 +177,10 @@ export default function FocusFlowDashboardCRM() {
                     </div>
 
                     {/* Right Column Metrics */}
-                    <div className="lg:col-span-4 flex flex-col gap-4">
-                        <div className="crm-card p-10 flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[300px]">
+                    <div className="lg:col-span-4 flex flex-col gap-3">
+                        <div className="crm-card p-6 flex flex-col items-center justify-center text-center relative overflow-hidden min-h-[300px]">
                             <div className="absolute inset-0 bg-primary/5" />
-                            <div className="relative z-10 space-y-4 w-full">
+                            <div className="relative z-10 space-y-3 w-full">
                                 <div className="relative w-40 h-40 mx-auto">
                                     <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                                         <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,0,0,0.03)" strokeWidth="10" />
@@ -198,7 +198,7 @@ export default function FocusFlowDashboardCRM() {
                             </div>
                         </div>
 
-                        <div className="blue-mesh rounded-[var(--radius-outer)] p-8 bg-slate-900 text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden group">
+                        <div className="blue-mesh rounded-[var(--radius-outer)] p-6 bg-slate-900 text-white shadow-2xl shadow-slate-900/40 relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20 rounded-full blur-[60px] translate-x-1/4 -translate-y-1/4" />
                             <div className="relative z-10 h-full flex flex-col justify-between min-h-[160px]">
                                 <div>
@@ -212,9 +212,9 @@ export default function FocusFlowDashboardCRM() {
                             </div>
                         </div>
 
-                        <div className="glass-panel p-6 flex flex-col gap-4 bg-white/50 border-white/80">
+                        <div className="glass-panel p-6 flex flex-col gap-3 bg-white/50 border-white/80">
                             <h4 className="text-xs font-bold text-slate-400  border-b border-slate-200 pb-4">Live Connections</h4>
-                            <div className="flex -space-x-4">
+                            <div className="flex -space-x-3">
                                 {[1, 2, 3, 4, 5].map(i => (
                                     <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-slate-100 overflow-hidden relative group cursor-pointer hover:z-20 transition-all">
                                         <Image src={`https://i.pravatar.cc/100?img=${i + 55}`} width={48} height={48} className="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="avatar" />

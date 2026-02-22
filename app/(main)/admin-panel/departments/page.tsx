@@ -10,9 +10,9 @@ export default function AdminDepartmentsPage() {
     const [refreshKey, setRefreshKey] = useState(0);
 
     return (
-        <div className="space-y-4 pb-20">
-            <div className="flex flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+        <div className="space-y-3 pb-20">
+            <div className="flex flex-row items-center justify-between gap-3">
+                <div className="flex items-center gap-3 sm:gap-3 min-w-0">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/5 rounded-[12px] sm:rounded-[18px] flex items-center justify-center border border-primary/10 shrink-0">
                         <Building2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                     </div>

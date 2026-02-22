@@ -22,13 +22,13 @@ import { cn } from "@/lib/utils";
 
 export default function SmartHomeDashboardCRM() {
     return (
-        <div className="w-full glass-panel p-8 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative">
+        <div className="w-full glass-panel p-6 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative">
             {/* Ambient Orbs */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 relative z-10">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-3 relative z-10">
+                <div className="flex items-center gap-3">
                     <div className="w-16 h-16 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-primary shadow-2xl shadow-slate-900/20 overflow-hidden group">
                         <Image src="https://i.pravatar.cc/100?img=33" alt="user" width={64} height={64} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -56,10 +56,10 @@ export default function SmartHomeDashboardCRM() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 relative z-10">
 
                 {/* Left: Device Grid */}
-                <div className="lg:col-span-8 space-y-4">
+                <div className="lg:col-span-8 space-y-3">
                     <div className="flex items-center justify-between px-2">
                         <h2 className="text-xl font-bold text-slate-900">Your Devices</h2>
                         <button type="button" className="text-xs font-bold text-slate-400 hover:text-primary  transition-colors flex items-center gap-1">
@@ -67,7 +67,7 @@ export default function SmartHomeDashboardCRM() {
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                         {[
                             { name: "Smart TV", room: "Living Room", icon: <Smartphone />, status: "On", color: "bg-primary" },
                             { name: "Air Purifier", room: "Bedroom", icon: <Wind />, status: "Off", color: "bg-slate-200" },
@@ -121,7 +121,7 @@ export default function SmartHomeDashboardCRM() {
                                 <div className="w-2 h-8 bg-primary rounded-full shadow-[0_0_12px_rgba(93,0,255,0.6)]" />
                             </div>
                         </div>
-                        <div className="p-8 flex items-end justify-between gap-4 h-48">
+                        <div className="p-6 flex items-end justify-between gap-3 h-48">
                             {[40, 60, 35, 75, 45, 90, 55, 30, 85, 40, 70].map((h, i) => (
                                 <div key={i} className="flex-1 group relative">
                                     <div className="h-full w-full bg-slate-50 rounded-full overflow-hidden absolute inset-0" />
@@ -139,9 +139,9 @@ export default function SmartHomeDashboardCRM() {
                 </div>
 
                 {/* Right: Controls & Scenes */}
-                <div className="lg:col-span-4 space-y-4">
+                <div className="lg:col-span-4 space-y-3">
                     {/* Temperature Widget */}
-                    <div className="crm-card p-8 bg-slate-900 text-white relative flex flex-col items-center">
+                    <div className="crm-card p-6 bg-slate-900 text-white relative flex flex-col items-center">
                         <div className="absolute top-4 right-4">
                             <button type="button" className="w-10 h-10 rounded-[var(--radius-inner)] bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
                                 <Settings className="w-5 h-5" />
@@ -162,7 +162,7 @@ export default function SmartHomeDashboardCRM() {
                             </div>
                         </div>
 
-                        <div className="flex gap-4 w-full">
+                        <div className="flex gap-3 w-full">
                             <button type="button" className="flex-1 h-12 rounded-[var(--radius-inner)] bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
                                 <Wind className="w-5 h-5 text-sky-400" />
                             </button>
@@ -173,15 +173,15 @@ export default function SmartHomeDashboardCRM() {
                     </div>
 
                     {/* Scenes */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <h2 className="text-xl font-bold text-slate-900 px-2">Ready Scenes</h2>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             {[
                                 { name: "Night Mode", icon: <Moon />, active: true, color: "bg-slate-900" },
                                 { name: "Morning", icon: <Sun />, active: false, color: "bg-white" },
                             ].map((scene, idx) => (
                                 <div key={idx} className={cn(
-                                    "p-6 rounded-[var(--radius-outer)] flex flex-col gap-4 border transition-all cursor-pointer group shadow-crm-md hover:shadow-crm-lg",
+                                    "p-6 rounded-[var(--radius-outer)] flex flex-col gap-3 border transition-all cursor-pointer group shadow-crm-md hover:shadow-crm-lg",
                                     scene.active ? (scene.color === "bg-slate-900" ? "bg-slate-900 text-white border-slate-800" : "bg-white text-slate-900 border-primary/40") : "bg-white text-slate-900 border-slate-200 opacity-60 hover:opacity-100"
                                 )}>
                                     <div className={cn(

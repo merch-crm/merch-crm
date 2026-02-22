@@ -25,7 +25,7 @@ export function LocationItemsList({
     const currentItems = localItems?.slice(startIndex, endIndex) || [];
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="flex md:hidden items-center justify-between pb-1">
                 <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     <Package className="w-4 h-4 text-slate-300" /> Товары <span className="opacity-30">/</span> {localItems?.length || 0}
@@ -64,7 +64,7 @@ export function LocationItemsList({
                         </div>
                     ))
                 ) : (
-                    <div className="flex flex-col items-center justify-center text-center p-8 text-slate-400 bg-slate-50/30 rounded-2xl border border-dashed border-slate-200">
+                    <div className="flex flex-col items-center justify-center text-center p-6 text-slate-400 bg-slate-50/30 rounded-2xl border border-dashed border-slate-200">
                         <Package className="w-8 h-8 text-slate-200 mb-2" />
                         <p className="text-xs font-bold text-slate-400">Склад пуст</p>
                     </div>

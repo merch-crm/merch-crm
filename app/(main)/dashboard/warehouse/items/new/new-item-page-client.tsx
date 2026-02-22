@@ -69,7 +69,7 @@ export function NewItemPageClient({
 
     return (
         <div className="flex flex-col">
-            <div className="flex flex-col xl:flex-row min-h-[calc(100vh-160px)] gap-3 xl:gap-4">
+            <div className="flex flex-col xl:flex-row min-h-[calc(100vh-160px)] gap-3 xl:gap-3">
                 <NewItemSidebar
                     step={step}
                     steps={steps}

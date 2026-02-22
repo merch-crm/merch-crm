@@ -63,12 +63,12 @@ export const BulkMoveDialog = React.memo(({
             title="Массовое перемещение"
             className="sm:max-w-md"
         >
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-3">
                 <div>
                     <p className="text-sm text-slate-500 font-medium">Перемещение {selectedIds.length} {pluralize(selectedIds.length, 'позиции', 'позиций', 'позиций')}</p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="space-y-1.5">
                         <label htmlFor="bulk-move-target" className="text-xs font-semibold text-slate-500 ml-1">Целевой склад</label>
                         <StorageLocationSelect
@@ -152,7 +152,7 @@ export const BulkCategoryDialog = React.memo(({
             description={`${selectedIds.length} поз. выбрано`}
             className="sm:max-w-md"
         >
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-3">
                 <div className="space-y-1.5">
                     <label htmlFor="bulk-category-target" className="text-xs font-semibold text-slate-500 ml-1">Новая категория</label>
                     <CategorySelect

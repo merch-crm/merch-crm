@@ -21,7 +21,7 @@ export function ErrorDetailsDialog({
             description="Техническая информация о сбое"
             className="max-w-2xl"
         >
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="space-y-2 px-6">
                     <label className="text-xs font-bold text-slate-400">
                         Сообщение (перевод)
@@ -40,7 +40,7 @@ export function ErrorDetailsDialog({
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 px-6 pb-6">
+                <div className="grid grid-cols-2 gap-3 px-6 pb-6">
                     <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-400">
                             Путь / Метод

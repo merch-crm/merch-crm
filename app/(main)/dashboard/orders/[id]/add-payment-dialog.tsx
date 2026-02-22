@@ -71,7 +71,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
                 description={`Остаток по заказу: ${remainingAmount} ${currencySymbol}`}
                 className="sm:max-w-md"
             >
-                <form onSubmit={handleSubmit} className="flex flex-col h-full space-y-4 p-4">
+                <form onSubmit={handleSubmit} className="flex flex-col h-full space-y-3 p-4">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-700 ml-1">Сумма ({currencySymbol})</label>
                         <Input

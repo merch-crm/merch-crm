@@ -2,7 +2,7 @@ import { SkeletonStats, SkeletonTable, SkeletonPageHeader } from "@/components/u
 
 export default function OrdersLoading() {
     return (
-        <div className="space-y-4 animate-pulse">
+        <div className="space-y-3 animate-pulse">
             <SkeletonPageHeader buttons={2} />
             <SkeletonStats count={4} />
             <div className="h-[58px] bg-white/50 border border-slate-200/50 rounded-[22px]" />

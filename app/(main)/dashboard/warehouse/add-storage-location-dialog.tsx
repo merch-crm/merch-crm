@@ -118,7 +118,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                             handleSubmit(new FormData(e.currentTarget));
                         }}
                         noValidate
-                        className="px-6 pb-4 pt-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1 overflow-visible"
+                        className="px-6 pb-4 pt-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1 overflow-visible"
                     >
                         <input type="hidden" name="responsibleUserId" value={responsibleUserId} />
                         <input type="hidden" name="type" value={type} />

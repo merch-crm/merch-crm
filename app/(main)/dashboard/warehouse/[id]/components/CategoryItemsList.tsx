@@ -38,7 +38,7 @@ export function CategoryItemsList({
     const router = useRouter();
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <ResponsiveDataView
                 data={items || []}
                 renderTable={() => (

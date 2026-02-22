@@ -21,7 +21,7 @@ export function BrandingModal({ ui, closeModal }: BrandingModalProps) {
             <div className="flex flex-col">
                 {/* Header Icon Section */}
                 <div className={cn(
-                    "px-6 py-8 flex flex-col items-center text-center gap-4",
+                    "px-6 py-8 flex flex-col items-center text-center gap-3",
                     ui.modal.type === "success" ? "bg-emerald-50/50" : "bg-rose-50/50"
                 )}>
                     <div className={cn(

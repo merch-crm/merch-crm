@@ -85,7 +85,7 @@ export function MoveInventoryDialog({
                         </div>
                     </div>
 
-                    <div className="overflow-y-auto px-6 flex-1 pb-6 custom-scrollbar space-y-4 pt-4">
+                    <div className="overflow-y-auto px-6 flex-1 pb-6 custom-scrollbar space-y-3 pt-4">
                         <div className="space-y-1.5 overflow-visible">
                             <label className="text-sm font-bold text-slate-700 ml-1">Объект перемещения</label>
                             <Select
@@ -102,7 +102,7 @@ export function MoveInventoryDialog({
                             {fieldErrors.itemId && <p className="text-xs font-bold text-rose-500 ml-1">{fieldErrors.itemId}</p>}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Откуда</label>
                                 <Select

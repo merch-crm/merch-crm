@@ -29,7 +29,7 @@ export function LabelPrinterSettings({
 }: LabelPrinterSettingsProps) {
 
     return (
-        <div className="md:flex-1 md:min-h-0 md:overflow-y-auto px-6 py-6 space-y-4 md:custom-scrollbar relative">
+        <div className="md:flex-1 md:min-h-0 md:overflow-y-auto px-6 py-6 space-y-3 md:custom-scrollbar relative">
             {/* Paper Size */}
             <div className="space-y-2.5">
                 <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Размер этикетки</label>

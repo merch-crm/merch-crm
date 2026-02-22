@@ -26,7 +26,7 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
     } = usePromocodes(initialData, currencySymbol);
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-700">
             <PromocodesHeader
                 searchQuery={ui.searchQuery}
                 setSearchQuery={(query) => setUi(prev => ({ ...prev, searchQuery: query }))}

@@ -108,7 +108,7 @@ export function LabelPrinterPreview({
                 </div>
             )}
 
-            <div ref={setRefNode} className="absolute inset-0 flex items-center justify-center overflow-hidden p-8">
+            <div ref={setRefNode} className="absolute inset-0 flex items-center justify-center overflow-hidden p-6">
                 <div id="label-preview-content" className="bg-white rounded-[var(--radius-inner)] shadow-2xl relative flex-shrink-0" style={previewStyle}>
                     <div className={cn("flex flex-col min-h-0", (config.layoutStyle === 'minimal' || config.alignment === 'center') ? "items-center text-center" : "items-start text-left")}>
                         {displayOptions.category && item.category?.name && config.layoutStyle !== 'minimal' && (
@@ -138,7 +138,7 @@ export function LabelPrinterPreview({
 
                     {config.layoutStyle !== 'minimal' && (
                         <div className="flex-1 min-h-0 overflow-hidden py-1 flex flex-col justify-center" style={{ alignItems: config.alignment === 'center' ? 'center' : 'flex-start' }}>
-                            <div className={cn("grid gap-x-4 gap-y-0.5", useTwoColumns ? "grid-cols-2" : "grid-cols-1", config.alignment === 'center' ? "justify-items-center" : "justify-items-start")}>
+                            <div className={cn("grid gap-x-3 gap-y-0.5", useTwoColumns ? "grid-cols-2" : "grid-cols-1", config.alignment === 'center' ? "justify-items-center" : "justify-items-start")}>
                                 {visibleParams.map((param) => (
                                     <div key={param.slug} style={{ fontSize: `${9 * scale * attrScale}px` }} className={cn("flex gap-1.5 font-bold text-slate-700 leading-tight", config.alignment === 'center' ? "justify-center text-center" : "justify-start text-left")}>
                                         <span className="text-slate-400 font-medium shrink-0">{param.label}:</span>

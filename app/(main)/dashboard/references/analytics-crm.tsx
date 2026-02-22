@@ -17,10 +17,10 @@ import { cn } from "@/lib/utils";
 
 export default function AnalyticsCRM() {
     return (
-        <div className="space-y-4 mt-10">
+        <div className="space-y-3 mt-10">
 
             {/* --- HEADER --- */}
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <h1 className="text-4xl font-bold text-slate-900">Analytics</h1>
 
                 <div className="flex items-center gap-3">
@@ -40,10 +40,10 @@ export default function AnalyticsCRM() {
 
 
             {/* --- GRID --- */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
 
                 {/* EXPENSES (Dark Card) */}
-                <div className="lg:col-span-4 bg-slate-900 rounded-[var(--radius-outer)] p-8 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 min-h-[400px] flex flex-col">
+                <div className="lg:col-span-4 bg-slate-900 rounded-[var(--radius-outer)] p-6 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 min-h-[400px] flex flex-col">
                     {/* Purple Glow */}
                     <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#5d00ff]/30 rounded-full blur-3xl pointer-events-none" />
 
@@ -78,7 +78,7 @@ export default function AnalyticsCRM() {
 
 
                 {/* REPLENISHMENT */}
-                <div className="lg:col-span-4 glass-panel p-8 min-h-[400px] flex flex-col">
+                <div className="lg:col-span-4 glass-panel p-6 min-h-[400px] flex flex-col">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Replenishment</h3>
                         <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
@@ -108,13 +108,13 @@ export default function AnalyticsCRM() {
 
 
                 {/* TRANSFERS TO PEOPLE */}
-                <div className="lg:col-span-4 glass-panel p-8">
+                <div className="lg:col-span-4 glass-panel p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Transfers to people</h3>
                         <button type="button" className="text-xs font-bold text-slate-400 hover:text-slate-900 ">See all</button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {[
                             { name: "Robert Fox", amount: "$1,300.00", percent: 68 },
                             { name: "Kathryn Murphy", amount: "$800.00", percent: 32 },
@@ -140,7 +140,7 @@ export default function AnalyticsCRM() {
 
 
                 {/* SPENDING CATEGORIES */}
-                <div className="lg:col-span-6 glass-panel p-8">
+                <div className="lg:col-span-6 glass-panel p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Spending categories</h3>
                         <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform">
@@ -180,7 +180,7 @@ export default function AnalyticsCRM() {
 
 
                 {/* YOUR EXPENSES THIS YEAR */}
-                <div className="lg:col-span-6 glass-panel p-8">
+                <div className="lg:col-span-6 glass-panel p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Your expenses this year</h3>
                         <div className="flex items-center gap-2">
@@ -241,7 +241,7 @@ export default function AnalyticsCRM() {
 
 
                 {/* YOUR CURRENCIES */}
-                <div className="lg:col-span-12 glass-panel p-8">
+                <div className="lg:col-span-12 glass-panel p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Your currencies</h3>
                         <button type="button" className="h-10 px-4 rounded-[var(--radius-inner)] bg-primary text-white flex items-center gap-2 text-sm font-bold hover:bg-primary-hover transition-colors shadow-xl shadow-primary/20">
@@ -250,7 +250,7 @@ export default function AnalyticsCRM() {
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
                             { flag: "🇺🇸", code: "USD", name: "US Dollar", amount: "96.00", percent: "+0.8%" },
                             { flag: "🇪🇺", code: "EUR", name: "Euro", amount: "103.00", percent: "+1.2%" },

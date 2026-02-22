@@ -35,7 +35,7 @@ export function InfoRow({
     }
 
     return (
-        <div className={cn("flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm", className)}>
+        <div className={cn("flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-sm", className)}>
             <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-300 shrink-0 shadow-sm">
                 <Icon className={cn("w-5 h-5", iconClassName)} />
             </div>

@@ -6,7 +6,7 @@ import { Check, Zap } from "lucide-react";
 
 export default function ChargingNotificationPanelsCRM() {
     return (
-        <section className="space-y-4 flex flex-col items-center py-12">
+        <section className="space-y-3 flex flex-col items-center py-12">
             <div className="flex items-center gap-3 self-start px-4">
                 <div className="h-8 w-1 bg-[#22c55e] rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Charging Notifications</h2>
@@ -19,7 +19,7 @@ export default function ChargingNotificationPanelsCRM() {
                 className="w-full max-w-2xl bg-[#1c1c1e] text-white rounded-3xl p-6 shadow-xl font-sans"
             >
                 <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 text-gray-200 font-medium">
                             <Zap size={20} className="fill-white text-white" />
                             <span className="text-xl tracking-wide">46.2%</span>
@@ -60,7 +60,7 @@ export default function ChargingNotificationPanelsCRM() {
                 className="w-full max-w-2xl bg-[#1c1c1e] text-white rounded-3xl p-6 shadow-xl font-sans"
             >
                 <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 text-gray-200 font-medium">
                             <Zap size={20} className="fill-current text-gray-400" />
                             <span className="text-xl tracking-wide">82.6%</span>

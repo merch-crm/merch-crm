@@ -17,7 +17,7 @@ export function ErrorView({
 }: ErrorViewProps) {
     return (
         <div className="flex items-center justify-center min-h-[60vh] p-4">
-            <div className="text-center p-8 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full space-y-4 animate-in zoom-in-95 duration-700">
+            <div className="text-center p-6 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full space-y-3 animate-in zoom-in-95 duration-700">
                 <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mx-auto">
                     {icon || <AlertCircle size={32} strokeWidth={2.5} />}
                 </div>

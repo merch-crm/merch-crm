@@ -143,7 +143,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                             </div>
 
                             {/* Header */}
-                            <div className="p-6 md:p-8 md:pb-6 flex items-center justify-between bg-white z-10 relative shrink-0">
+                            <div className="p-6 md:p-6 md:pb-6 flex items-center justify-between bg-white z-10 relative shrink-0">
                                 <div>
                                     <h3 className="text-xl font-black md:font-bold text-slate-900 tracking-tight md:tracking-normal">Уведомления</h3>
                                     <p className="text-slate-400 text-xs font-bold mt-1">
@@ -199,7 +199,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                         !notification.isRead ? "bg-primary/[0.03] hover:bg-primary/[0.06]" : "hover:bg-slate-50 hover:border-slate-100"
                                                     )}
                                                 >
-                                                    <div className="flex gap-4">
+                                                    <div className="flex gap-3">
                                                         {/* Icon */}
                                                         <div className={cn(
                                                             "w-12 h-12 md:w-10 md:h-10 rounded-2xl md:rounded-xl flex items-center justify-center shrink-0 shadow-sm mt-0.5",
@@ -210,7 +210,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
 
                                                         {/* Content */}
                                                         <div className="flex-1 min-w-0">
-                                                            <div className="flex items-start justify-between gap-4 mb-1.5 md:mb-1">
+                                                            <div className="flex items-start justify-between gap-3 mb-1.5 md:mb-1">
                                                                 <h4 className={cn(
                                                                     "text-[15px] md:text-[14px] leading-snug transition-colors",
                                                                     !notification.isRead ? "font-black md:font-extrabold text-slate-900" : "font-bold text-slate-700"

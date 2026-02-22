@@ -28,8 +28,8 @@ export function TimeTracker({
             isWorking ? "border-emerald-500/20 shadow-xl shadow-emerald-500/5 scale-[1.02]" : "border-slate-100 shadow-sm",
             className
         )}>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-8">
+                <div className="flex items-center gap-3">
                     <div className={cn(
                         "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500",
                         isWorking ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200" : "bg-slate-100 text-slate-400"
@@ -60,7 +60,7 @@ export function TimeTracker({
                 </div>
             </div>
 
-            <div className="bg-slate-50/50 rounded-2xl border border-slate-100 p-8 mb-8 flex flex-col items-center">
+            <div className="bg-slate-50/50 rounded-2xl border border-slate-100 p-6 mb-8 flex flex-col items-center">
                 <div className={cn(
                     "text-6xl font-black tabular-nums tracking-tighter mb-4 transition-all duration-500",
                     isWorking ? "text-emerald-600 scale-110" : "text-slate-200"

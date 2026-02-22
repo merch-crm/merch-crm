@@ -194,12 +194,12 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Single Unified Panel */}
             <div className="crm-card !p-0">
                 {/* Header */}
                 <div className="px-6 pt-6 pb-2">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-3">
                         <div>
                             <div className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2 opacity-70 border-b border-slate-100 pb-3">
                                 <Sparkles className="w-4 h-4 text-primary" /> Библиотека иконок
@@ -243,7 +243,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                             </p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             {dataState.iconGroups.map((group: IconGroup, groupIndex: number) => {
                                 const GroupIcon = group.icons.length > 0 ? group.icons[0].icon : group.groupIcon;
 
@@ -374,7 +374,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                             exit={{ opacity: 0, y: 20 }}
                             className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 w-full max-w-lg"
                         >
-                            <div className="crm-card flex items-center gap-4 !shadow-2xl !border-2 !border-primary/20 !bg-white/95 backdrop-blur-xl">
+                            <div className="crm-card flex items-center gap-3 !shadow-2xl !border-2 !border-primary/20 !bg-white/95 backdrop-blur-xl">
                                 <div className="w-12 h-12 rounded-[12px] bg-primary flex items-center justify-center shrink-0">
                                     {iconItem?.icon && createElement(iconItem.icon, {
                                         className: "w-6 h-6 text-white",

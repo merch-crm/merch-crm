@@ -6,6 +6,8 @@ import { Pagination } from "@/components/ui/pagination";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useToast } from "@/components/ui/toast";
 import { formatPlural } from "@/lib/utils";
+import { EmptyState } from "@/components/ui/empty-state";
+import { History } from "lucide-react";
 
 import { HistoryToolbar } from "./components/HistoryToolbar";
 import { HistorySelectionBar } from "./components/HistorySelectionBar";
@@ -55,6 +57,17 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
         return <div className="min-h-[400px]" data-testid="history-container" />;
     }
 
+    if (transactions.length === 0) {
+        return (
+            <EmptyState
+                icon={History}
+                title="История операций пуста"
+                description="Все действия с товарами на складе будут отображаться здесь."
+                className="py-24"
+            />
+        );
+    }
+
     const handleExportSelected = () => {
         toast("Экспорт будет доступен в следующем обновлении", "info");
     };
@@ -93,7 +106,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
                     <div className="text-[13px] font-bold text-slate-400 order-2 sm:order-1">
                         Показано <span className="text-slate-900">{currentItems.length}</span> из <span className="text-slate-900">{transactions.length}</span> записей
                     </div>

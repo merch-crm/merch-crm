@@ -14,7 +14,7 @@ import {
 
 export default function AquaflowLandingCRM() {
     return (
-        <div className="w-full glass-panel p-8 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative min-h-[700px]">
+        <div className="w-full glass-panel p-6 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative min-h-[700px]">
             {/* Ambient Gradient Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-white/40 to-slate-100 opacity-50 pointer-events-none" />
 
@@ -31,7 +31,7 @@ export default function AquaflowLandingCRM() {
                     <span className="font-bold text-xl text-slate-900">AQUAFLOW</span>
                 </div>
 
-                <nav className="hidden md:flex items-center gap-4">
+                <nav className="hidden md:flex items-center gap-3">
                     {["Shop", "Our Story", "Sustainability", "Contact"].map((item) => (
                         <a key={item} href="#" className="text-xs font-bold  text-slate-400 hover:text-primary transition-colors">
                             {item}
@@ -39,7 +39,7 @@ export default function AquaflowLandingCRM() {
                     ))}
                 </nav>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <button type="button" className="w-10 h-10 rounded-full glass-panel flex items-center justify-center hover:scale-110 transition-transform">
                         <Search className="w-4 h-4 text-slate-600" />
                     </button>
@@ -53,9 +53,9 @@ export default function AquaflowLandingCRM() {
             </header>
 
             {/* Hero Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10 p-2">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 relative z-10 p-2">
                 {/* Hero Card */}
-                <div className="lg:col-span-8 bg-slate-900 rounded-[var(--radius-outer)] p-12 text-white relative overflow-hidden shadow-2xl shadow-slate-900/40 min-h-[440px] flex flex-col justify-between group">
+                <div className="lg:col-span-8 bg-slate-900 rounded-[var(--radius-outer)] p-[--padding-xl] text-white relative overflow-hidden shadow-2xl shadow-slate-900/40 min-h-[440px] flex flex-col justify-between group">
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
                     <div className="absolute -right-20 top-0 bottom-0 w-[300px] bg-gradient-to-l from-primary/30 to-transparent blur-3xl group-hover:from-primary/50 transition-all duration-1000" />
 
@@ -78,7 +78,7 @@ export default function AquaflowLandingCRM() {
 
                     {/* 3D Bottle Placeholder Visual */}
                     <div className="absolute right-0 bottom-0 top-0 w-1/3 flex items-center justify-center pointer-events-none overflow-hidden">
-                        <div className="w-[120px] h-[320px] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[40px] shadow-2xl rotate-12 group-hover:rotate-6 transition-all duration-700 flex flex-col items-center justify-end p-8 gap-4">
+                        <div className="w-[120px] h-[320px] bg-white/10 backdrop-blur-xl border border-white/20 rounded-[40px] shadow-2xl rotate-12 group-hover:rotate-6 transition-all duration-700 flex flex-col items-center justify-end p-6 gap-3">
                             <div className="w-12 h-12 rounded-full bg-primary/40 blur-xl" />
                             <div className="w-full h-1/2 bg-gradient-to-t from-primary/20 to-transparent rounded-b-[30px]" />
                         </div>
@@ -86,9 +86,9 @@ export default function AquaflowLandingCRM() {
                 </div>
 
                 {/* Side Grid */}
-                <div className="lg:col-span-4 flex flex-col gap-4">
+                <div className="lg:col-span-4 flex flex-col gap-3">
                     {/* Blog Card */}
-                    <div className="crm-card p-8 flex flex-col justify-between min-h-[250px] relative overflow-hidden hover:border-primary/20 transition-all">
+                    <div className="crm-card p-6 flex flex-col justify-between min-h-[250px] relative overflow-hidden hover:border-primary/20 transition-all">
                         <div className="absolute -right-5 -top-5 w-24 h-24 bg-slate-50 rounded-full" />
                         <div className="relative z-10">
                             <h3 className="text-xl font-bold text-slate-900 mb-4">Inside the<br />Design Process</h3>
@@ -100,7 +100,7 @@ export default function AquaflowLandingCRM() {
                     </div>
 
                     {/* Contact Card */}
-                    <div className="glass-panel p-8 flex-1 flex flex-col justify-between border-2 border-primary/20 bg-primary/5 group cursor-pointer hover:bg-primary/10 transition-all">
+                    <div className="glass-panel p-6 flex-1 flex flex-col justify-between border-2 border-primary/20 bg-primary/5 group cursor-pointer hover:bg-primary/10 transition-all">
                         <div>
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-primary mb-6 shadow-xl shadow-slate-900/10">
                                 <Send className="w-5 h-5" />
@@ -119,13 +119,13 @@ export default function AquaflowLandingCRM() {
             </div>
 
             {/* Partners/Stats Footer */}
-            <div className="mt-12 flex flex-wrap items-center justify-between gap-4 pt-8 border-t border-slate-200 relative z-10 px-4">
+            <div className="mt-12 flex flex-wrap items-center justify-between gap-3 pt-8 border-t border-slate-200 relative z-10 px-4">
                 {[
                     { label: "Used by", val: "10k+", sub: "customers" },
                     { label: "Rated", val: "4.9/5", sub: "stars" },
                     { label: "Carbon", val: "0.0kg", sub: "neutral" },
                 ].map((stat, i) => (
-                    <div key={i} className="flex items-center gap-4">
+                    <div key={i} className="flex items-center gap-3">
                         <div className="text-xs font-bold  text-slate-400">{stat.label}:</div>
                         <div className="flex items-baseline gap-1">
                             <span className="text-xl font-bold text-slate-900">{stat.val}</span>

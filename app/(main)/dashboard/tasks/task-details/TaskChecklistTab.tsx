@@ -22,7 +22,7 @@ export function TaskChecklistTab({
     onDeleteItem
 }: TaskChecklistTabProps) {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="flex gap-3">
                 <input
                     type="text"

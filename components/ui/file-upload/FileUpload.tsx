@@ -225,7 +225,7 @@ export function FileUpload({
                 onDrop={handleDrop}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => !disabled && inputRef.current?.click()}
                 className={cn(
-                    "relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all",
+                    "relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all",
                     isDragging
                         ? "border-primary bg-primary/5"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",

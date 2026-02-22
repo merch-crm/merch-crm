@@ -40,7 +40,7 @@ export function ActiveUsersList({ monitoringData }: ActiveUsersListProps) {
                                 </span>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-4 overflow-x-auto pb-1 no-scrollbar">
+                            <div className="flex items-center gap-3 overflow-x-auto pb-1 no-scrollbar">
                                 {monitoringData.activeUsers.map((user) => (
                                     <div
                                         key={user.id}

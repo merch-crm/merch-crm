@@ -111,7 +111,7 @@ export function TransactionsClient({
     });
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="crm-filter-tray w-full overflow-hidden flex items-center p-1.5">
                 {/* Search Box */}
                 <div className="relative flex-1 min-w-0">
@@ -364,7 +364,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             title="Новый расход"
         >
             <form onSubmit={handleSubmit} className="p-6 pt-2">
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-400 ml-1">Категория</label>
                         <Select

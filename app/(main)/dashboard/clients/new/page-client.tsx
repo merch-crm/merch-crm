@@ -169,7 +169,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     ];
 
     return (
-        <div className="flex-1 flex flex-col md:flex-row min-h-0 gap-4 px-4 sm:px-8 pb-8 pt-4">
+        <div className="flex-1 flex flex-col md:flex-row min-h-0 gap-3 px-4 sm:px-8 pb-8 pt-4">
             {/* Sidebar */}
             <aside className="w-full md:w-[320px] bg-white border border-slate-200 rounded-3xl flex flex-col shrink-0 relative z-20 shadow-lg overflow-hidden h-auto md:h-full">
                 <div className="p-6 shrink-0">
@@ -264,10 +264,10 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                     }}
                     className="bg-white rounded-3xl shadow-lg border border-slate-200/60 overflow-hidden flex flex-col h-full min-h-[400px]"
                 >
-                    <div className="flex-1 overflow-y-auto p-6 md:p-10 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-6 md:p-6 space-y-3">
                         {logicState.step === 0 && (
-                            <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="space-y-4">
+                            <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="space-y-3">
                                     <span className="text-sm font-bold text-slate-700 ml-1">Тип клиента</span>
                                     <SegmentedControl
                                         options={[
@@ -315,7 +315,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                         )}
 
                         {logicState.step === 1 && (
-                            <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <FormInput
                                         label="Телефон"
@@ -358,7 +358,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                         )}
 
                         {logicState.step === 2 && (
-                            <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Менеджер</label>

@@ -32,7 +32,7 @@ export function RenameModal({
             title="Переименование"
             description={`Введите новое имя для ${path?.endsWith("/") ? "папки" : "файла"}`}
         >
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400">Новое имя</label>
                     <Input

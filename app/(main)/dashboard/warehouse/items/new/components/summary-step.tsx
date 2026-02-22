@@ -45,7 +45,7 @@ export function SummaryStep({
     return (
         <div className="flex flex-col h-full min-h-0">
             <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 sm:pb-10 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="max-w-6xl mx-auto space-y-4">
+                <div className="max-w-6xl mx-auto space-y-3">
                     {/* Item Name & Status Header */}
                     <SummaryHeader
                         formData={formData}
@@ -63,9 +63,9 @@ export function SummaryStep({
                     />
 
                     {/* Bento Grid layout */}
-                    <div className="grid grid-cols-12 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-12 gap-3 sm:gap-3">
                         {/* Left Column: Attributes & Gallery */}
-                        <div className="col-span-12 lg:col-span-7 space-y-4 sm:space-y-4">
+                        <div className="col-span-12 lg:col-span-7 space-y-3 sm:space-y-3">
                             <AttributesSection
                                 formData={formData}
                                 dynamicAttributes={dynamicAttributes}
@@ -78,7 +78,7 @@ export function SummaryStep({
                         </div>
 
                         {/* Right Column: Inventory & Financials Section */}
-                        <div className="col-span-12 lg:col-span-5 space-y-4">
+                        <div className="col-span-12 lg:col-span-5 space-y-3">
                             <StorageCard
                                 formData={formData}
                                 storageLocations={storageLocations}

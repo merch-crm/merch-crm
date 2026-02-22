@@ -18,7 +18,7 @@ export function StatusTimeline({ events, className }: StatusTimelineProps) {
                 const isLast = index === events.length - 1;
 
                 return (
-                    <div key={event.id} className="relative flex gap-4 pb-8 last:pb-0">
+                    <div key={event.id} className="relative flex gap-3 pb-8 last:pb-0">
                         {/* Линия */}
                         {!isLast && (
                             <div

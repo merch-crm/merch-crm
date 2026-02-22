@@ -5,7 +5,7 @@
     border-radius: var(--radius-outer);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 12px;
     transition: all 0.15s ease;
     border: 1px solid var(--border);
     box-shadow: var(--crm-shadow-sm), inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
@@ -18,7 +18,7 @@
     border-radius: var(--radius-outer);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 12px;
     transition: all 0.15s ease;
     border: 1px solid var(--border);
     box-shadow: var(--crm-shadow-sm), inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
@@ -45,7 +45,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
     white-space: nowrap;
     cursor: pointer;
     border: none;
@@ -81,7 +81,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 12px;
     white-space: nowrap;
 }
 
@@ -103,7 +103,7 @@
     .crm-filter-tray {
         border-radius: calc(var(--radius-inner) - 4px);
         padding: 8px;
-        gap: 8px;
+        gap: 12px;
     }
 
     .crm-filter-tab,

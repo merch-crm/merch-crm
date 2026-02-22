@@ -131,7 +131,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
     }, [uiState.searchTerm, uiState.selectedUserId, uiState.selectedEntityType, uiState.startDate, uiState.endDate, pathname, replace, searchParams, query]);
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <AuditLogsFilters
                 searchTerm={uiState.searchTerm}
                 onSearchChange={(val) => setUiState(prev => ({ ...prev, searchTerm: val }))}

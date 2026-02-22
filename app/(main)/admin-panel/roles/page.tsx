@@ -82,10 +82,10 @@ export default function AdminRolesPage() {
         };
     };
 
-    if (loading) return <div className="text-slate-400 p-12 text-center">Загрузка ролей системы...</div>;
+    if (loading) return <div className="text-slate-400 p-[--padding-xl] text-center">Загрузка ролей системы...</div>;
 
     return (
-        <div className="space-y-4 pb-20">
+        <div className="space-y-3 pb-20">
             <AdminPageHeader
                 title="Роли и права"
                 subtitle="Настройка доступов и полномочий сотрудников"
@@ -93,7 +93,7 @@ export default function AdminRolesPage() {
                 actions={<AddRoleDialog onSuccess={fetchRoles} />}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {roles.map((role) => {
                     const style = getRoleConfig(role);
                     const Icon = style.icon;
@@ -105,7 +105,7 @@ export default function AdminRolesPage() {
                             className={`group relative rounded-[18px] border border-slate-200 overflow-hidden bg-gradient-to-br ${style.cardGradient} hover:border-primary/40 hover:shadow-lg transition-all cursor-pointer h-[180px] flex flex-col`}
                         >
                             <div className="p-6 flex flex-col h-full">
-                                <div className="flex items-start gap-4 mb-3">
+                                <div className="flex items-start gap-3 mb-3">
                                     <div className={`flex-shrink-0 h-11 w-11 rounded-[18px] bg-gradient-to-br ${style.gradient} flex items-center justify-center shadow-lg shadow-primary/10 group-hover:scale-105 transition-transform duration-300`}>
                                         <Icon className={`w-5 h-5 ${style.color}`} />
                                     </div>

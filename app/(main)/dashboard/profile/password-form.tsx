@@ -60,8 +60,8 @@ export function PasswordForm() {
     }
 
     return (
-        <form id="password-form" onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-4">
+        <form id="password-form" onSubmit={handleSubmit} className="space-y-3">
+            <div className="space-y-3">
                 <PasswordField name="currentPassword" label="Текущий пароль" />
                 <PasswordField name="newPassword" label="Новый пароль" height="h-14" />
                 <PasswordField name="confirmPassword" label="Подтвердите пароль" height="h-14" />
@@ -69,7 +69,7 @@ export function PasswordForm() {
 
             {message.text && (
                 <div className={cn(
-                    "p-5 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300",
+                    "p-5 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300",
                     message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-100" : "bg-rose-50 text-rose-800 border border-rose-100"
                 )}>
                     {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}

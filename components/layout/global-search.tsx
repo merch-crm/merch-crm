@@ -142,7 +142,7 @@ export function GlobalSearch() {
                                 ))}
                             </div>
                         ) : !loading ? (
-                            <div className="p-8 text-center">
+                            <div className="p-6 text-center">
                                 <Search className="w-8 h-8 text-slate-200 mx-auto mb-3" />
                                 <p className="text-sm font-bold text-slate-900">Ничего не найдено</p>
                                 <p className="text-xs text-slate-500 mt-1">Попробуйте изменить запрос</p>

@@ -25,11 +25,11 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
     ];
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* General & Branding Text Settings Combined */}
             <div className="crm-card p-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div className="space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    <div className="space-y-3">
                         <div>
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Название компании
@@ -55,7 +55,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div>
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Текст приветствия
@@ -73,10 +73,10 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
             </div>
 
             {/* Regional Settings Block */}
-            <div className="crm-card p-6 space-y-4">
+            <div className="crm-card p-6 space-y-3">
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="space-y-3">
                         <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                             Валюта системы
                         </label>
@@ -107,7 +107,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                         <p className="text-xs text-slate-400">Символ валюты для финансовых расчетов</p>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                             Формат даты
                         </label>
@@ -132,7 +132,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                         <p className="text-xs text-slate-400">Глобальный формат отображения календаря</p>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                             Часовой пояс
                         </label>

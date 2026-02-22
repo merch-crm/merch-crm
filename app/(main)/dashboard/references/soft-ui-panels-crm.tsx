@@ -12,7 +12,7 @@ export default function SoftUiPanelsCRM() {
                 <h2 className="text-3xl font-bold text-slate-800">Soft UI Controls</h2>
             </div>
 
-            <div className="flex flex-col gap-4 items-center scale-110">
+            <div className="flex flex-col gap-3 items-center scale-110">
 
                 {/* 1. Tab Switcher */}
                 <div className="bg-white p-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-1">
@@ -54,10 +54,10 @@ export default function SoftUiPanelsCRM() {
                 </div>
 
                 {/* 3. Toggles & View Switcher Row */}
-                <div className="flex gap-4 w-full justify-center">
+                <div className="flex gap-3 w-full justify-center">
 
                     {/* Checkboxes */}
-                    <div className="bg-white p-2 pr-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-4">
+                    <div className="bg-white p-2 pr-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-3">
                         <motion.button
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}

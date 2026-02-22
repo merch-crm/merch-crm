@@ -103,8 +103,8 @@ export function ProfileForm({ user }: { user: UserProfile }) {
     const deptName = user.department?.name || "Общий отдел";
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex flex-col md:flex-row items-center gap-4">
+        <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="flex flex-col md:flex-row items-center gap-3">
                 <div className="relative group/avatar">
                     <div className="absolute -inset-1 bg-primary rounded-full blur opacity-20 group-hover/avatar:opacity-40 transition duration-1000 group-hover/avatar:duration-200" />
                     <div className="relative h-32 w-32 rounded-full overflow-hidden border-4 border-white shadow-xl ring-1 ring-slate-100">
@@ -143,7 +143,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-3">
                 <div className="space-y-2 group/input">
                     <Label className="text-xs font-black text-slate-400 ml-1 group-hover/input:text-primary transition-colors">ФИО</Label>
                     <Input
@@ -225,7 +225,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
 
             {message.text && (
                 <div className={cn(
-                    "p-5 rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300",
+                    "p-5 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300",
                     message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-100" : "bg-rose-50 text-rose-800 border border-rose-100"
                 )}>
                     {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}

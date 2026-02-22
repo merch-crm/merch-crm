@@ -48,7 +48,7 @@ export default function FloatingPanelsCRM() {
                 <h2 className="text-3xl font-bold text-slate-800">Floating Action Panels</h2>
             </div>
 
-            <div className="flex flex-col gap-4 items-start scale-110 p-12">
+            <div className="flex flex-col gap-3 items-start scale-110 p-[--padding-xl]">
 
                 {/* 1. Type Selector (Small pill) */}
                 <PanelContainer className="self-start mb-2 px-3">
@@ -84,7 +84,7 @@ export default function FloatingPanelsCRM() {
                 </PanelContainer>
 
                 {/* 3. Audio Recorder (Idle) */}
-                <PanelContainer className="gap-4 pr-3 pl-6 h-16 w-full max-w-xl justify-between">
+                <PanelContainer className="gap-3 pr-3 pl-6 h-16 w-full max-w-xl justify-between">
                     <span className="text-slate-600 font-medium font-mono text-lg">0:00</span>
 
                     {/* Dotted Line Placeholder */}
@@ -103,14 +103,14 @@ export default function FloatingPanelsCRM() {
                 </PanelContainer>
 
                 {/* 4. Audio Recorder (Active/Recorded) */}
-                <PanelContainer className="gap-4 pr-3 pl-6 h-16 w-full max-w-xl justify-between">
+                <PanelContainer className="gap-3 pr-3 pl-6 h-16 w-full max-w-xl justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-[#3b5bdb] rounded-full animate-pulse" />
                         <span className="text-[#3b5bdb] font-medium font-mono text-lg">0:04</span>
                     </div>
 
                     {/* Waveform Visualization */}
-                    <div className="flex-1 flex items-center gap-[3px] h-8 mx-2 overflow-hidden">
+                    <div className="flex-1 flex items-center gap-3 h-8 mx-2 overflow-hidden">
                         {[4, 8, 5, 10, 14, 20, 12, 16, 24, 18, 12, 8, 4, 3, 6, 12, 22, 14, 8, 5, 8, 12, 6, 4, 8, 12, 16, 20, 14, 8, 4, 2].map((height, i) => (
                             <motion.div
                                 key={i}
@@ -141,7 +141,7 @@ export default function FloatingPanelsCRM() {
                 </PanelContainer>
 
                 {/* 5. Time Schedule Picker */}
-                <PanelContainer className="gap-4 pr-3 pl-6 h-16 w-full max-w-xl justify-between">
+                <PanelContainer className="gap-3 pr-3 pl-6 h-16 w-full max-w-xl justify-between">
                     <div className="flex items-center gap-3">
                         <Clock className="text-slate-400" size={20} />
                         <span className="text-slate-900 font-semibold text-lg">12:00</span>

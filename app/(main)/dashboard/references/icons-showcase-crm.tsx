@@ -315,8 +315,8 @@ const IconSection = ({ title, color, hoverColor, icons, packageName }: IconSecti
 
 export default function IconsShowcaseCRM() {
     return (
-        <section className="space-y-4">
-            <div className="glass-panel p-8">
+        <section className="space-y-3">
+            <div className="glass-panel p-6">
                 <h2 className="text-2xl font-bold text-slate-900 mb-2">Иконки</h2>
                 <p className="text-slate-500 text-sm mb-8">
                     Все доступные иконки из 6 пакетов: Custom, Phosphor, Tabler, React Icons (FA, BS, HI), Lucide

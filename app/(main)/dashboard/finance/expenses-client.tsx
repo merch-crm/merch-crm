@@ -56,8 +56,8 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
     };
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col md:flex-row md:items-center justify-end gap-4">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <div className="flex flex-col md:flex-row md:items-center justify-end gap-3">
                 <Button
                     type="button"
                     onClick={() => setIsAdding(true)}
@@ -69,7 +69,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                 </Button>
             </div>
 
-            <div className="crm-card !p-6 flex-1 flex min-h-0 gap-3 px-8 pb-8 pt-4 items-center shadow-sm">
+            <div className="crm-card  flex-1 flex min-h-0 gap-3 px-8 pb-8 pt-4 items-center shadow-sm">
                 <div className="relative flex-1 w-full group">
                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <Input
@@ -229,13 +229,13 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             onClose={onClose}
             title="Новый расход"
         >
-            <form onSubmit={handleSubmit} className="p-4 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 space-y-3">
                 <div className="space-y-1.5">
                     <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
                     <Input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                         <label className="text-sm font-bold text-slate-700 ml-1">Категория</label>
                         <Select

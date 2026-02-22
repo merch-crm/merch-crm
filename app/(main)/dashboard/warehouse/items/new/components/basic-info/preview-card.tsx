@@ -13,7 +13,7 @@ export function PreviewCard({ itemName, sku }: PreviewCardProps) {
                 <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Визуальный контроль данных</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="text-xl font-bold leading-tight text-slate-900">
                     {itemName || 'Название будет здесь'}
                 </div>

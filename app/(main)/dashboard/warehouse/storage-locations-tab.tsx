@@ -180,7 +180,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                 icon={MapPin}
                 title="Места хранения не найдены"
                 description="Добавьте первое место хранения для систематизации учета."
-                className="py-24 crm-card shadow-sm"
+                className="py-20"
             />
         );
     }
@@ -199,7 +199,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     items={dataState.localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-[var(--crm-grid-gap)] animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-3 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
                         {dataState.localLocations.map((loc) => (
                             <SortableLocationCard
                                 key={loc.id}
@@ -342,7 +342,7 @@ const LocationCardContent = memo(({
                 </div>
             </div>
 
-            <div className="space-y-4 sm:space-y-4 mt-auto">
+            <div className="space-y-3 sm:space-y-3 mt-auto">
                 <div className="space-y-1 sm:space-y-2">
                     <div className="flex items-center gap-2">
                         <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight text-balance">

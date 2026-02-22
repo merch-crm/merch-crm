@@ -35,7 +35,7 @@ function FundCard({ fund, currencySymbol }: FundCardProps) {
     const Icon = IconMap[fund.icon] || Layers;
 
     return (
-        <div className="crm-card p-10 bg-white flex flex-col justify-between hover:scale-[1.02] transition-all duration-500 border-none shadow-md group overflow-hidden relative h-full">
+        <div className="crm-card p-6 bg-white flex flex-col justify-between hover:scale-[1.02] transition-all duration-500 border-none shadow-md group overflow-hidden relative h-full">
             <div className="flex justify-between items-start mb-10">
                 <div className={cn(
                     "h-14 w-14 rounded-[var(--radius-inner)] flex items-center justify-center font-bold shadow-inner group-hover:scale-110 transition-transform duration-500",
@@ -69,14 +69,14 @@ export function FundsClient({ fundsData }: FundsClientProps) {
     const { currencySymbol = "₽" } = useBranding();
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--crm-grid-gap)]">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {fundsData.funds.map((fund, i) => (
                     <FundCard key={i} fund={fund} currencySymbol={currencySymbol} />
                 ))}
             </div>
 
-            <div className="crm-card p-10 bg-white border-none shadow-lg relative overflow-hidden group !rounded-[32px]">
+            <div className="crm-card p-6 bg-white border-none shadow-lg relative overflow-hidden group !rounded-[32px]">
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full -mr-48 -mt-48 blur-[80px] opacity-40" />
 
                 <div className="relative flex items-center gap-3 mb-16">
@@ -103,7 +103,7 @@ export function FundsClient({ fundsData }: FundsClientProps) {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 p-8 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-100">
+                <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 p-6 bg-slate-50/50 rounded-[var(--radius-inner)] border border-slate-100">
                     {fundsData.funds.map((fund, i) => (
                         <div key={i} className="flex items-center gap-3 group/item">
                             <div className={cn("w-4 h-4 rounded-full shadow-sm ring-4 ring-white transition-transform group-hover/item:scale-125", fund.color)} />

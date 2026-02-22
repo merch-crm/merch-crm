@@ -30,7 +30,7 @@ export function BackupsTab({
     };
 
     return (
-        <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300 px-1">
+        <div className="space-y-3 animate-in slide-in-from-bottom-2 duration-300 px-1">
             <Card className="border-slate-200/60 shadow-sm overflow-hidden bg-white rounded-[32px] border">
                 <CardContent className="p-0">
                     {backups.length === 0 ? (
@@ -102,7 +102,7 @@ export function BackupsTab({
                 </CardContent>
             </Card>
 
-            <div className="bg-amber-50 border border-amber-100 rounded-[18px] p-4 flex gap-4">
+            <div className="bg-amber-50 border border-amber-100 rounded-[18px] p-4 flex gap-3">
                 <div className="p-2 rounded-[18px] bg-amber-100 text-amber-600 h-fit">
                     <ShieldCheck size={20} />
                 </div>

@@ -25,13 +25,13 @@ export function EmptyState({
     children,
 }: EmptyStateProps) {
     return (
-        <div className={cn("text-center py-20", className)} data-testid="empty-state">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-50 mb-4">
-                <Icon className={cn("w-8 h-8 text-slate-200", iconClassName)} />
+        <div className={cn("text-center py-20 flex flex-col items-center justify-center animate-in fade-in duration-500", className)} data-testid="empty-state">
+            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 transition-transform duration-500 hover:scale-110">
+                <Icon className={cn("w-8 h-8 text-slate-300", iconClassName)} />
             </div>
-            <p className="text-base font-bold text-slate-900">{title}</p>
+            <h3 className="text-lg font-bold text-slate-700 tracking-tight">{title}</h3>
             {description && (
-                <p className="text-sm text-slate-400 mt-1">{description}</p>
+                <p className="text-sm font-medium text-slate-400/80 mt-1.5 max-w-sm mx-auto leading-relaxed">{description}</p>
             )}
             {children}
         </div>

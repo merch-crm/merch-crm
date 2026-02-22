@@ -13,7 +13,7 @@ interface GlassEmptyStateProps {
 
 export function GlassEmptyState({ icon, title, description, className }: GlassEmptyStateProps) {
     return (
-        <div className={cn("p-12 text-center flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500", className)}>
+        <div className={cn("p-[--padding-xl] text-center flex flex-col items-center justify-center animate-in fade-in zoom-in duration-500", className)}>
             <div className="relative mb-6">
                 {/* Background Glass Orb */}
                 <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150 animate-pulse" />

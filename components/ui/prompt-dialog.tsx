@@ -59,8 +59,8 @@ export function PromptDialog({
         >
             <div className="flex flex-col">
                 {/* Header */}
-                <div className="p-6 md:p-8 pb-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="p-6 md:p-6 pb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-sm">
                             <Edit3 className="w-6 h-6" />
                         </div>
@@ -70,7 +70,7 @@ export function PromptDialog({
                     </div>
                 </div>
 
-                <div className="p-6 md:p-8 pt-4 space-y-4">
+                <div className="p-6 md:p-6 pt-4 space-y-3">
                     {(description) && (
                         <p className="text-sm font-bold text-slate-600 leading-relaxed">
                             {description}

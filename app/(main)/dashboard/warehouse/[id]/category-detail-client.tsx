@@ -189,10 +189,10 @@ export function CategoryDetailClient({
         dialogs.massActions.showArchiveReason;
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header Group */}
             <div className="flex flex-row items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                     <Button
                         type="button"
                         variant="ghost"
@@ -249,7 +249,7 @@ export function CategoryDetailClient({
             {/* Subcategories Grid - Show if this is a parent category */}
             {
                 subCategories.length > 0 && (
-                    <div className="space-y-4 mt-8">
+                    <div className="space-y-3 mt-8">
                         <div className="flex items-center gap-3 px-2">
                             <h2 className="text-sm font-bold text-slate-500">Подкатегории</h2>
                             <div className="h-px flex-1 bg-[#e2e8f0]" />
@@ -265,7 +265,7 @@ export function CategoryDetailClient({
                                 items={subCategories.map(s => s.id)}
                                 strategy={rectSortingStrategy}
                             >
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                                     {currentSubCategories.map((subcat) => (
                                         <SortableSubCategoryCard
                                             key={subcat.id}
@@ -309,7 +309,7 @@ export function CategoryDetailClient({
             }
 
             {/* Items Table Section */}
-            <div className="space-y-4 mt-8">
+            <div className="space-y-3 mt-8">
                 <div className="flex items-center gap-3 px-2">
                     <h2 className="text-sm font-bold text-slate-500">Позиции</h2>
                     <div className="h-px flex-1 bg-[#e2e8f0]" />
@@ -326,7 +326,7 @@ export function CategoryDetailClient({
                 )}
 
                 {totalItems > 0 ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <CategoryItemsList
                             items={items || []}
                             selectedIds={ui.selectedIds}

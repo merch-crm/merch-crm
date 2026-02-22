@@ -23,7 +23,7 @@ export function TaskHeader({ task, onClose }: TaskHeaderProps) {
     const config = getPriorityConfig(task.priority);
 
     return (
-        <div className="flex justify-between items-start gap-4 mb-8">
+        <div className="flex justify-between items-start gap-3 mb-8">
             <div className="space-y-3 flex-1">
                 <div className="flex items-center gap-3">
                     <span className={cn("px-4 py-1.5 rounded-full text-xs font-bold", config.color)}>

@@ -165,9 +165,9 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                             e.preventDefault();
                             handleSubmit(new FormData(e.currentTarget));
                         }}
-                        className="space-y-4 pb-2"
+                        className="space-y-3 pb-2"
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название роли</label>
                                 <IconInput

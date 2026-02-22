@@ -202,7 +202,7 @@ function StepsProgress({ steps, currentStep, variant = "primary", className }: S
                 const isCurrent = index === currentStep;
 
                 return (
-                    <div key={step.id} className="flex gap-4 relative">
+                    <div key={step.id} className="flex gap-3 relative">
                         {/* Линия соединения (вертикальный прогресс) */}
                         {index < steps.length - 1 && (
                             <div

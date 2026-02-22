@@ -47,7 +47,7 @@ export function PromocodeFormModal({
             className="sm:max-w-[520px] p-0 overflow-hidden"
         >
             <div className="flex flex-col h-full overflow-hidden">
-                <div className="p-6 sm:p-8 flex items-center justify-between border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-20">
+                <div className="p-6 sm:p-6 flex items-center justify-between border-b border-slate-50 bg-white/80 backdrop-blur-md sticky top-0 z-20">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
                             <Ticket className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
@@ -71,9 +71,9 @@ export function PromocodeFormModal({
                     </Button>
                 </div>
 
-                <div className="flex-1 p-6 sm:p-8 overflow-y-auto custom-scrollbar">
-                    <form id="promocode-form" action={onSubmit} className="space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-[1fr,120px] gap-4">
+                <div className="flex-1 p-6 sm:p-6 overflow-y-auto custom-scrollbar">
+                    <form id="promocode-form" action={onSubmit} className="space-y-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-[1fr,120px] gap-3">
                             <div className="space-y-2">
                                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Название</label>
                                 <Input
@@ -98,7 +98,7 @@ export function PromocodeFormModal({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Тип скидки</label>
                                 <input type="hidden" name="discountType" value={form.discountType} />
@@ -127,7 +127,7 @@ export function PromocodeFormModal({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Мин. сумма заказа</label>
                                 <Input
@@ -151,7 +151,7 @@ export function PromocodeFormModal({
                             />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
                                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Лимит использований</label>
                                 <Input
@@ -178,7 +178,7 @@ export function PromocodeFormModal({
                     </form>
                 </div>
 
-                <div className="p-6 sm:p-8 bg-white/80 backdrop-blur-md border-t border-slate-50 sticky bottom-0 z-20">
+                <div className="p-6 sm:p-6 bg-white/80 backdrop-blur-md border-t border-slate-50 sticky bottom-0 z-20">
                     <SubmitButton
                         form="promocode-form"
                         isLoading={isLoading}

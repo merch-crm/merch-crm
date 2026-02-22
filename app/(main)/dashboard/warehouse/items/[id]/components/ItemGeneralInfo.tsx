@@ -100,7 +100,7 @@ export const ItemGeneralInfo = React.memo(({
         <div className="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {isDense ? (
                 /* Dense List Layout (> 10 items) */
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-6 gap-y-2 overflow-y-auto custom-scrollbar pr-2 h-full">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-3 gap-y-2 overflow-y-auto custom-scrollbar pr-2 h-full">
                     {allParams.map((param) => {
                         const attrLabel = getAttrLabel(param.slug, param.code as string | number | null);
                         const hexColor = getColorHex(attrLabel);

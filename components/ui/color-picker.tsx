@@ -85,7 +85,7 @@ export function ColorPicker({
                     >
                         <style>{colorPickerStyles}</style>
 
-                        <div className="p-3.5 space-y-4">
+                        <div className="p-3.5 space-y-3">
                             <div className="custom-color-picker-wrapper">
                                 <HexColorPicker
                                     color={color}

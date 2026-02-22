@@ -25,7 +25,7 @@ export function ResponsiveDetailLayout({
             <div className="flex-1 w-full mx-auto space-y-0 text-foreground">
                 {header}
 
-                <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-2 xl:flex xl:flex-row xl:items-start md:gap-4 xl:gap-3">
+                <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-2 xl:flex xl:flex-row xl:items-start md:gap-3 xl:gap-3">
 
                     {/* LEFT SIDEBAR (Image, Mobile Info, Actions) */}
                     {leftSidebar && (

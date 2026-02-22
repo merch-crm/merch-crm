@@ -14,9 +14,10 @@ import { useToast } from "@/components/ui/toast";
 
 import { Category } from "./types";
 
-import { getCategoryIcon, getGradientStyles, getColorStyles, COLORS, getIconNameFromName, generateCategoryPrefix } from "./category-utils";
+import { getCategoryIcon, getGradientStyles, getColorStyles, COLORS, getIconNameFromName, generateCategoryPrefix, ALL_ICONS_MAP } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Switch } from "@/components/ui/switch";
+import { CategoryIconPicker } from "./category-icon-picker";
 
 
 interface EditCategoryDialogProps {
@@ -44,6 +45,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         prefix: category.prefix || "",
         prefixManuallyEdited: false,
         color: category.color || "primary",
+        icon: category.icon || "tshirt-custom",
         showInSku: category.showInSku ?? true,
         showInName: category.showInName ?? true,
     });
@@ -65,6 +67,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             prefix: category.prefix || "",
             prefixManuallyEdited: false,
             color: category.color || "primary",
+            icon: category.icon || "tshirt-custom",
             showInSku: category.showInSku ?? true,
             showInName: category.showInName ?? true,
         });
@@ -81,8 +84,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         setUiState(prev => ({ ...prev, isPending: true, error: null }));
 
         const formData = new FormData(event.currentTarget);
-        const nameInput = (event.currentTarget.elements.namedItem("name") as HTMLInputElement).value;
-        formData.set("icon", getIconNameFromName(nameInput));
+        formData.set("icon", formState.icon);
         formData.set("color", formState.color);
         formData.set("parentId", selectedParentId);
         formData.set("showInSku", String(formState.showInSku));
@@ -137,7 +139,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-500 shadow-lg shrink-0 text-white bg-gradient-to-br", getGradientStyles(formState.color))}>
-                            {createElement(MainIcon, { className: "w-6 h-6 stroke-[2.5]" })}
+                            {createElement(ALL_ICONS_MAP[formState.icon] || getCategoryIcon({ name: formState.name }), { className: "w-6 h-6 stroke-[2.5]" })}
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Редактировать</h2>
@@ -149,7 +151,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                 </div>
 
-                <form id="edit-category-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                <form id="edit-category-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
                     {uiState.error && (
                         <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                             <AlertCircle className="w-4 h-4" />
@@ -191,13 +193,15 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">
                             <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
                             <div className="flex items-center justify-center py-2">
-                                <div className={cn("w-10 h-10 shrink-0 rounded-[12px] flex items-center justify-center transition-all shadow-md ring-1 ring-black/5 text-white bg-gradient-to-br", getGradientStyles(formState.color))}>
-                                    {createElement(MainIcon, { className: "w-5 h-5 stroke-[2.5]" })}
-                                </div>
+                                <CategoryIconPicker
+                                    value={formState.icon}
+                                    color={formState.color}
+                                    onChange={(iconName) => setFormState(prev => ({ ...prev, icon: iconName }))}
+                                />
                             </div>
                         </div>
 
@@ -207,27 +211,25 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                 {COLORS.map((color) => {
                                     const isSelected = formState.color === color.name;
                                     return (
-                                        <Button
+                                        <button
                                             key={color.name}
                                             type="button"
-                                            variant="ghost"
-                                            size="icon"
                                             onClick={() => setFormState(prev => ({ ...prev, color: color.name }))}
                                             className={cn(
-                                                "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group shadow-sm ring-1 ring-black/5 p-0",
+                                                "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group shadow-sm ring-1 ring-black/5 p-0 outline-none",
                                                 color.class,
-                                                isSelected ? "ring-2 ring-offset-2 ring-slate-300 scale-110" : "opacity-80 hover:opacity-100"
+                                                isSelected ? "ring-2 ring-offset-2 ring-slate-300 scale-110" : "opacity-80 hover:opacity-100 hover:scale-105"
                                             )}
                                         >
                                             {isSelected && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white stroke-[4]" />}
-                                        </Button>
+                                        </button>
                                     );
                                 })}
                             </div>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
                             <div className="flex items-center justify-between group w-full">
                                 <div className="flex flex-col gap-0.5">
@@ -267,13 +269,13 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     </div>
 
                     {isParentCategory && (
-                        <div className="space-y-4 pt-3">
+                        <div className="space-y-3 pt-3">
                             <div className="flex items-center justify-between px-1">
                                 <label className="text-sm font-bold text-slate-700">Подкатегории</label>
                                 <span className="bg-slate-50 text-slate-900 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">{subCategories.length}</span>
                             </div>
 
-                            <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 gap-3 md:gap-4">
+                            <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 gap-3 md:gap-3">
                                 {subCategories.map(sub => {
                                     const IconComponent = getCategoryIcon(sub);
                                     return (
@@ -329,7 +331,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                 {/* Subcategory Deletion Confirmation */}
                 <ResponsiveModal isOpen={!!uiState.subToDelete} onClose={() => setUiState(prev => ({ ...prev, subToDelete: null }))}>
-                    <div className="p-8 text-center flex flex-col items-center">
+                    <div className="p-6 text-center flex flex-col items-center">
                         <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-5 text-rose-500 shadow-sm border border-rose-100">
                             <Trash2 className="w-6 h-6" />
                         </div>
@@ -365,7 +367,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     onClose={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword: "" })); }}
                     showVisualTitle={false}
                 >
-                    <div className="p-10 text-center flex flex-col items-center">
+                    <div className="p-6 text-center flex flex-col items-center">
                         <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 text-rose-500 shadow-sm border border-rose-100">
                             <Trash2 className="w-8 h-8" />
                         </div>

@@ -32,7 +32,7 @@ async function AdminOverview() {
 
 function AdminDashboardSkeleton() {
     return (
-        <div className="space-y-4 animate-pulse">
+        <div className="space-y-3 animate-pulse">
             <div className="flex justify-between items-end">
                 <div className="space-y-3">
                     <div className="h-10 w-64 bg-slate-200 rounded-xl" />
@@ -40,15 +40,15 @@ function AdminDashboardSkeleton() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                <div className="lg:col-span-8 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                <div className="lg:col-span-8 space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="h-64 bg-white rounded-[2rem] border border-slate-200" />
                         <div className="h-64 bg-white rounded-[2rem] border border-slate-200" />
                     </div>
                     <div className="h-[400px] bg-white rounded-[2rem] border border-slate-200" />
                 </div>
-                <div className="lg:col-span-4 space-y-4">
+                <div className="lg:col-span-4 space-y-3">
                     <div className="h-[300px] bg-slate-200 rounded-[2rem]" />
                     <div className="h-full bg-white rounded-[2rem] border border-slate-200" />
                 </div>

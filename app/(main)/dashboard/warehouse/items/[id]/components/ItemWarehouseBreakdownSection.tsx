@@ -15,13 +15,13 @@ export function ItemWarehouseBreakdownSection({
     unit,
 }: ItemWarehouseBreakdownSectionProps) {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {stocks.map((stock) => (
                 <div
                     key={stock.id} // Kept original key, assuming stock.id is still valid
                     className="flex items-center justify-between p-4 rounded-2xl bg-muted/30 border border-border hover:bg-muted/50 transition-colors group" // Replaced slate colors
                 >
-                    <div className="flex items-center gap-3"> {/* Changed gap-3 to gap-4 */}
+                    <div className="flex items-center gap-3"> {/* Changed gap-3 to gap-3 */}
                         <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border shadow-sm group-hover:border-primary/20 transition-colors"> {/* Replaced slate colors and rounded-2xl to rounded-xl */}
                             <Store className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" /> {/* Replaced Warehouse icon and slate colors */}
                         </div>
@@ -41,7 +41,7 @@ export function ItemWarehouseBreakdownSection({
                 </div>
             ))}
             {stocks.length === 0 && ( // Kept original condition, assuming stocks is still the array
-                <div className="p-8 text-center bg-muted/30 rounded-3xl border border-dashed border-border/50"> {/* Replaced slate colors and styling */}
+                <div className="p-6 text-center bg-muted/30 rounded-3xl border border-dashed border-border/50"> {/* Replaced slate colors and styling */}
                     <p className="text-sm font-bold text-muted-foreground">Нет данных по размещению</p> {/* Replaced text-xs font-bold text-slate-400 and text */}
                 </div>
             )}

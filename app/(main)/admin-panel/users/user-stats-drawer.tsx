@@ -71,7 +71,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                 onClick={onClose} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} />
             <div className="relative w-full max-w-lg h-full bg-white shadow-2xl animate-in slide-in-from-right duration-300 flex flex-col border-l border-slate-200">
                 {/* Header */}
-                <div className="p-8 border-b border-slate-200 bg-white">
+                <div className="p-6 border-b border-slate-200 bg-white">
                     <div className="flex items-start justify-between mb-6">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">
@@ -93,9 +93,9 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white">
+                <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-white">
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center h-full space-y-4">
+                        <div className="flex flex-col items-center justify-center h-full space-y-3">
                             <Loader2 className="w-10 h-10 text-primary animate-spin" />
                             <p className="text-xs font-medium text-slate-400">Считаем показатели...</p>
                         </div>
@@ -104,7 +104,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                             {error}
                         </div>
                     ) : stats ? (
-                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                             {/* Orders Section */}
                             <section>
@@ -112,7 +112,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                     <TrendingUp className="w-4 h-4 text-slate-400" />
                                     <h3 className="text-xs font-bold  text-slate-400">Продажи и Заказы</h3>
                                 </div>
-                                <div className="grid grid-cols-1 gap-4">
+                                <div className="grid grid-cols-1 gap-3">
                                     <div className="p-6 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                         <p className="text-xs font-medium text-slate-400 mb-1">Выручка за месяц</p>
                                         <div className="text-3xl font-bold text-slate-900">
@@ -123,7 +123,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                             {stats.orders.month} заказов в этом месяце
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-3">
                                         <div className="p-5 bg-slate-50 rounded-[18px] border border-slate-200 shadow-sm">
                                             <p className="text-xs font-medium text-slate-400 mb-1">Всего заказов</p>
                                             <div className="text-xl font-bold text-slate-900">{stats.orders.total}</div>
@@ -154,7 +154,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                             <CheckCircle className="w-6 h-6 text-white" />
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
                                         <div>
                                             <p className="text-white/70 text-xs mb-1">Выполнено задач</p>
                                             <p className="text-lg font-bold">{stats.tasks.completed} <span className="text-xs text-white/50 font-normal">/ {stats.tasks.total}</span></p>

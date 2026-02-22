@@ -83,8 +83,8 @@ export default function LoginPage() {
                 </>
             )}
 
-            <Card className="w-full max-w-md p-8 shadow-2xl bg-white/80 backdrop-blur-xl border-white/20 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500 rounded-[32px]">
-                <div className="flex flex-col items-center mb-10 space-y-4">
+            <Card className="w-full max-w-md p-6 shadow-2xl bg-white/80 backdrop-blur-xl border-white/20 relative overflow-hidden group hover:shadow-primary/10 transition-all duration-500 rounded-[32px]">
+                <div className="flex flex-col items-center mb-10 space-y-3">
                     {!branding ? (
                         <>
                             <div className="w-20 h-20 rounded-2xl bg-slate-200 animate-pulse" />
@@ -116,8 +116,8 @@ export default function LoginPage() {
                     )}
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-3">
+                    <div className="space-y-3">
                         <div className="space-y-2">
                             <label className="text-sm font-semibold text-slate-700 pl-1" htmlFor="email">
                                 Email

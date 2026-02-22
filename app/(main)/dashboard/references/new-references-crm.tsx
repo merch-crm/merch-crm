@@ -68,7 +68,7 @@ import { ru } from "date-fns/locale";
 /* --- 1. LOGISTICS BUBBLES --- */
 const FlightBubbles = () => {
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#F9F9F9] flex flex-col gap-y-12 items-center justify-center min-h-[500px] overflow-hidden">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#F9F9F9] flex flex-col gap-y-3 items-center justify-center min-h-[500px] overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ const FlightBubbles = () => {
                 </svg>
             </motion.div>
 
-            <div className="flex flex-wrap gap-12 justify-center w-full">
+            <div className="flex flex-wrap gap-3 justify-center w-full">
                 {[
                     { label: "Пересадка в KIV", time: "1ч 30м", variant: "dark" },
                     { label: "Турецкие авиалинии", time: "3ч 45м", variant: "light" },
@@ -128,19 +128,19 @@ const FlightBubbles = () => {
 /* --- 2. DELIVERY TRACKING --- */
 const DeliveryTracking = () => {
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#F2F2F2] flex items-center justify-center overflow-hidden">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#F2F2F2] flex items-center justify-center overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 whileHover={{ y: -5 }}
-                className="w-[400px] bg-white rounded-[48px] p-10 shadow-crm-lg border border-slate-200"
+                className="w-[400px] bg-white rounded-[48px] p-6 shadow-crm-lg border border-slate-200"
             >
                 <div className="space-y-1 mb-10">
                     <h2 className="text-[32px] font-bold text-[#1A1B2E]">В пути</h2>
                     <p className="text-[#1A1B2E]/50 text-[18px] font-medium">Ваш груз доставляется.</p>
                 </div>
 
-                <div className="bg-[#1A1B2E] rounded-[40px] p-8 relative overflow-hidden flex items-center justify-between mb-10 min-h-[120px]">
+                <div className="bg-[#1A1B2E] rounded-[40px] p-6 relative overflow-hidden flex items-center justify-between mb-10 min-h-[120px]">
                     <div className="absolute left-[50px] right-[50px] h-4 bg-white/5 rounded-full top-1/2 -translate-y-1/2 z-0" />
 
                     <motion.div
@@ -198,7 +198,7 @@ const DeliveryTracking = () => {
 /* --- 3. TASKELLO CARD --- */
 const TaskelloCard = () => {
     return (
-        <div className="p-10 md:p-20 rounded-[48px] bg-[#F5F5F0] flex items-center justify-center overflow-hidden">
+        <div className="p-6 md:p-20 rounded-[48px] bg-[#F5F5F0] flex items-center justify-center overflow-hidden">
             <motion.div
                 whileHover={{ scale: 1.02, rotate: 0.5 }}
                 className="w-[380px] h-[380px] bg-black rounded-[54px] p-2 shadow-2xl overflow-hidden flex flex-col cursor-pointer group"
@@ -253,7 +253,7 @@ const TaskelloCard = () => {
 /* --- 4. SOFT MESH FOLDER --- */
 const SoftFolder = () => {
     return (
-        <div className="p-10 md:p-24 rounded-[40px] bg-[#F9F9F9] flex items-center justify-center overflow-hidden relative">
+        <div className="p-6 md:p-24 rounded-[40px] bg-[#F9F9F9] flex items-center justify-center overflow-hidden relative">
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 0)', backgroundSize: '24px 24px' }} />
             <motion.div
                 whileHover={{ y: -8, rotate: 1 }}
@@ -296,15 +296,15 @@ const SoftFolder = () => {
 /* --- 5. CRYPTO SWAP WIDGET --- */
 const CryptoSwap = () => {
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
             <div className="w-full max-w-[480px] flex flex-col items-center">
-                <div className="flex gap-4 mb-8">
+                <div className="flex gap-3 mb-8">
                     <button type="button" className="px-6 py-2 rounded-full bg-black/5 text-black font-bold text-[15px]">Обмен</button>
                     <button type="button" className="px-6 py-2 text-black/40 font-bold text-[15px] hover:text-black transition-colors">Отправить</button>
                     <button type="button" className="px-6 py-2 text-black/40 font-bold text-[15px] hover:text-black transition-colors">Купить</button>
                 </div>
                 <div className="w-full space-y-1 relative">
-                    <motion.div whileHover={{ scale: 1.01 }} className="bg-white rounded-[32px] p-8 shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-white">
+                    <motion.div whileHover={{ scale: 1.01 }} className="bg-white rounded-[32px] p-6 shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-white">
                         <div className="text-[15px] font-bold text-black/40 mb-4">Продать</div>
                         <div className="flex justify-between items-center mb-2">
                             <input type="text" defaultValue="10" className="text-[48px] font-bold text-black bg-transparent w-1/2 outline-none" />
@@ -331,7 +331,7 @@ const CryptoSwap = () => {
                             </div>
                         </motion.button>
                     </div>
-                    <motion.div whileHover={{ scale: 1.01 }} className="bg-white rounded-[32px] p-8 shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-white">
+                    <motion.div whileHover={{ scale: 1.01 }} className="bg-white rounded-[32px] p-6 shadow-[0_4px_30px_rgba(0,0,0,0.02)] border border-white">
                         <div className="text-[15px] font-bold text-black/40 mb-4">Купить</div>
                         <div className="flex justify-between items-center mb-2">
                             <input type="text" defaultValue="147.712" className="text-[48px] font-bold text-black bg-transparent w-1/2 outline-none" />
@@ -365,7 +365,7 @@ const QuickSettings = () => {
         { icon: <Volume2 className="w-7 h-7" />, active: false }
     ];
     return (
-        <div className="p-10 md:p-24 rounded-[40px] bg-[#FDFDF9] flex flex-col items-center justify-center overflow-hidden relative min-h-[500px]">
+        <div className="p-6 md:p-24 rounded-[40px] bg-[#FDFDF9] flex flex-col items-center justify-center overflow-hidden relative min-h-[500px]">
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.05]">
                 <div className="w-[300px] h-[300px] border border-black rounded-full" />
                 <div className="w-[500px] h-[500px] border border-black rounded-full absolute" />
@@ -387,7 +387,7 @@ const QuickSettings = () => {
                 </div>
             </motion.div>
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between px-10 py-5 bg-black rounded-3xl text-white">
-                <div className="flex gap-4 items-center">
+                <div className="flex gap-3 items-center">
                     <span className="text-[18px] font-black">{new Date().getFullYear()}</span>
                     <div className="flex flex-col text-xs font-bold opacity-60">
                         <span>23</span>
@@ -403,20 +403,20 @@ const QuickSettings = () => {
 /* --- 7. DARK SCHEDULE --- */
 const DarkSchedule = () => {
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#EAEAEA] flex items-center justify-center overflow-hidden">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="w-[380px] bg-black rounded-[48px] p-10 shadow-3xl">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#EAEAEA] flex items-center justify-center overflow-hidden">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} className="w-[380px] bg-black rounded-[48px] p-6 shadow-3xl">
                 <div className="flex items-center justify-between mb-10">
                     <h2 className="text-[32px] font-semibold text-white">Март</h2>
                     <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} className="w-10 h-10 rounded-xl bg-[#1A1A1A] flex items-center justify-center text-white border border-white/5 shadow-lg"><Plus className="w-6 h-6" /></motion.button>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {[
                         { d: "Пн", n: "20", t: "На сегодня ничего не запланировано", active: false },
                         { d: "Вт", n: "21", t: "Встреча по онбордингу проекта", sub: "09:15 - 10:15", active: true },
                         { d: "Вт", n: "21", t: "Ужин с клиентом", sub: "18:30 - 20:00", active: true },
                         { d: "Сб", n: "25", t: "Кофе", sub: "14:30 - 15:30", active: false }
                     ].map((item, i) => (
-                        <motion.div key={i} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} whileHover={{ scale: 1.03, x: 5 }} className="flex gap-4 cursor-pointer group">
+                        <motion.div key={i} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} whileHover={{ scale: 1.03, x: 5 }} className="flex gap-3 cursor-pointer group">
                             <div className="w-10 pt-1.5 flex flex-col items-center">
                                 <span className="text-[11px] font-bold text-[#444] group-hover:text-[#666] transition-colors">{item.d}</span>
                                 <span className="text-[20px] font-semibold text-white">{item.n}</span>
@@ -443,9 +443,9 @@ const CalendarWidgets = () => {
         return eachDayOfInterval({ start, end });
     };
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
-            <div className="flex flex-col xl:flex-row gap-4 items-center justify-center w-full">
-                <motion.div whileHover={{ y: -10 }} className="w-[320px] bg-white rounded-[40px] p-8 shadow-2xl border border-slate-200 flex-shrink-0">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#F2F2F2] flex flex-col items-center justify-center overflow-hidden">
+            <div className="flex flex-col xl:flex-row gap-3 items-center justify-center w-full">
+                <motion.div whileHover={{ y: -10 }} className="w-[320px] bg-white rounded-[40px] p-6 shadow-2xl border border-slate-200 flex-shrink-0">
                     <div className="flex justify-between items-start mb-6">
                         <motion.div layout>
                             <div className="text-[36px] font-bold text-black leading-noneer">{selectedDate ? getDate(selectedDate) : getDate(new Date())}</div>
@@ -499,8 +499,8 @@ const ModernDropdown = () => {
     ];
 
     return (
-        <div className="p-10 md:p-24 flex flex-col items-center justify-center pb-64">
-            <div className="w-full max-w-[320px] space-y-4">
+        <div className="p-6 md:p-24 flex flex-col items-center justify-center pb-64">
+            <div className="w-full max-w-[320px] space-y-3">
                 <label className="block text-[15px] font-bold text-slate-900 ml-1">Share with</label>
 
                 <div className="relative">
@@ -529,7 +529,7 @@ const ModernDropdown = () => {
                                                 setIsOpen(false);
                                             }}
                                             className={cn(
-                                                "flex items-start gap-4 p-4 rounded-2xl transition-all text-left group/item",
+                                                "flex items-start gap-3 p-4 rounded-2xl transition-all text-left group/item",
                                                 option.active ? "bg-blue-50/50" : "hover:bg-slate-50"
                                             )}
                                         >
@@ -569,11 +569,11 @@ const ModernDropdown = () => {
 /* --- 13. AI CHAT CARDS --- */
 const AIChatCards = () => {
     return (
-        <div className="p-10 md:p-24 rounded-[40px] bg-[#F3F4F6] flex flex-wrap gap-4 items-center justify-center overflow-hidden">
+        <div className="p-6 md:p-24 rounded-[40px] bg-[#F3F4F6] flex flex-wrap gap-3 items-center justify-center overflow-hidden">
             {/* DARK CARD */}
             <motion.div
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="w-[320px] aspect-square bg-[#171717] rounded-[48px] p-8 flex flex-col items-center justify-between shadow-crm-xl cursor-default"
+                className="w-[320px] aspect-square bg-[#171717] rounded-[48px] p-6 flex flex-col items-center justify-between shadow-crm-xl cursor-default"
             >
                 <div className="w-12 h-12 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" className="w-8 h-8 text-white fill-current">
@@ -593,7 +593,7 @@ const AIChatCards = () => {
             {/* LIGHT CARD */}
             <motion.div
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="w-[320px] aspect-square bg-white rounded-[48px] p-8 flex flex-col items-center justify-between shadow-crm-xl border border-slate-200 cursor-default"
+                className="w-[320px] aspect-square bg-white rounded-[48px] p-6 flex flex-col items-center justify-between shadow-crm-xl border border-slate-200 cursor-default"
             >
                 <div className="w-12 h-12 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" className="w-8 h-8 text-[#171717] fill-current">
@@ -617,7 +617,7 @@ const PaginationCRM = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const pages = [1, 2, 3, "...", 10];
     return (
-        <div className="p-10 md:p-24 rounded-[40px] bg-[#EBEBEB] flex flex-col gap-12 items-center justify-center overflow-hidden">
+        <div className="p-6 md:p-24 rounded-[40px] bg-[#EBEBEB] flex flex-col gap-3 items-center justify-center overflow-hidden">
             <div className="flex items-center bg-[#D9D9D9]/50 p-1 rounded-[20px] shadow-inner">
                 <motion.button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="flex items-center gap-1.5 px-6 py-3.5 rounded-[16px] bg-white text-black font-bold text-[15px] shadow-sm hover:bg-white/90 mr-1"><ChevronLeft className="w-4 h-4" />Пред</motion.button>
                 <div className="flex items-center px-2 gap-1.5">
@@ -633,7 +633,7 @@ const PaginationCRM = () => {
 
 const PWAPrompt = () => {
     return (
-        <div className="p-10 md:p-24 rounded-[40px] bg-[#121212] flex items-center justify-center overflow-hidden relative min-h-[400px]">
+        <div className="p-6 md:p-24 rounded-[40px] bg-[#121212] flex items-center justify-center overflow-hidden relative min-h-[400px]">
             {/* Background Mesh/Grid */}
             <div className="absolute inset-0 opacity-10 pointer-events-none"
                 style={{
@@ -650,7 +650,7 @@ const PWAPrompt = () => {
                 className="relative group w-full max-w-[420px]"
             >
                 <div className="bg-[#BFFF07] rounded-[32px] p-6 pr-12 shadow-[0_20px_50px_rgba(191,255,7,0.15)] relative">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         {/* Icon Block */}
                         <div className="w-24 h-24 bg-black rounded-3xl flex items-center justify-center relative flex-shrink-0">
                             <Share className="w-8 h-8 text-white" />
@@ -709,7 +709,7 @@ const JobActionsGrid = () => {
     ];
 
     return (
-        <div className="p-5 md:p-12 rounded-[20px] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center overflow-hidden relative">
+        <div className="p-5 md:p-[--padding-xl] rounded-[20px] bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center overflow-hidden relative">
             {/* Background decoration */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 0)', backgroundSize: '16px 16px' }} />
 
@@ -820,13 +820,13 @@ const WeatherWidget = () => {
     ];
 
     return (
-        <div className="p-5 md:p-12 rounded-[20px] bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden relative">
+        <div className="p-5 md:p-[--padding-xl] rounded-[20px] bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center overflow-hidden relative">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="w-full max-w-[400px] aspect-[9/16] bg-black rounded-[40px] p-8 shadow-[0_32px_64px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col"
+                className="w-full max-w-[400px] aspect-[9/16] bg-black rounded-[40px] p-6 shadow-[0_32px_64px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col"
             >
                 {/* Status Bar */}
                 <div className="flex items-center justify-between text-white text-xs mb-8 z-20 relative">
@@ -850,7 +850,7 @@ const WeatherWidget = () => {
                 </div>
 
                 {/* City Selector */}
-                <div className="flex items-center justify-center gap-4 mb-4 z-20 relative">
+                <div className="flex items-center justify-center gap-3 mb-4 z-20 relative">
                     <button type="button" className="text-white/50 text-base font-light hover:text-white transition-colors">Los Angeles</button>
                     <button type="button" className="text-white text-base font-light border-b border-white pb-0.5">New York</button>
                     <button type="button" className="text-white/50 text-base font-light hover:text-white transition-colors">Be</button>
@@ -930,7 +930,7 @@ const WeatherWidget = () => {
                 {/* Temperature */}
                 <div className="text-center mb-8 relative z-20 mt-4">
                     <div className="text-white text-[100px] font-thin leading-[0.9]er">16°</div>
-                    <div className="flex items-center justify-center gap-4 text-white/80 text-base font-light mt-2">
+                    <div className="flex items-center justify-center gap-3 text-white/80 text-base font-light mt-2">
                         <div className="flex items-center gap-1">
                             <ArrowDown className="w-4 h-4 text-white/60" />
                             <span>7°</span>
@@ -978,10 +978,10 @@ const WeatherWidget = () => {
 /* --- SMART HOME DASHBOARD --- */
 const SmartHomeDashboard = () => {
     return (
-        <div className="p-5 md:p-12 rounded-[40px] bg-[#E0E5EC] flex flex-col lg:flex-row gap-4 items-start justify-center overflow-hidden relative">
+        <div className="p-5 md:p-[--padding-xl] rounded-[40px] bg-[#E0E5EC] flex flex-col lg:flex-row gap-3 items-start justify-center overflow-hidden relative">
 
             {/* LEFT COLUMN */}
-            <div className="flex flex-col gap-4 w-full lg:w-[320px]">
+            <div className="flex flex-col gap-3 w-full lg:w-[320px]">
                 {/* Profile Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -989,7 +989,7 @@ const SmartHomeDashboard = () => {
                     viewport={{ once: true }}
                     className="bg-[#D4F82C] rounded-[32px] p-6 flex items-center justify-between relative overflow-hidden shadow-lg shadow-[#D4F82C]/20"
                 >
-                    <div className="flex items-center gap-4 z-10">
+                    <div className="flex items-center gap-3 z-10">
                         <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-black/5 bg-white">
                             {/* Placeholder avatar */}
                             <Image
@@ -1035,7 +1035,7 @@ const SmartHomeDashboard = () => {
                         </button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {[
                             { icon: Fan, label: "Air Conditioner", units: "2 unit", power: "18kWh", active: true },
                             { icon: Router, label: "Wi-Fi Router", units: "1 unit", power: "8kWh", active: false },
@@ -1043,7 +1043,7 @@ const SmartHomeDashboard = () => {
                             { icon: Droplets, label: "Humidifier", units: "1 unit", power: "2kWh", active: false },
                         ].map((item, i) => (
                             <div key={i} className={cn("flex items-center justify-between p-4 rounded-3xl cursor-pointer transition-all hover:scale-[1.02]", item.active ? "bg-slate-50" : "hover:bg-slate-50")}>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3">
                                     <div className={cn("w-12 h-12 rounded-[20px] flex items-center justify-center", item.active ? "bg-white shadow-sm text-slate-800" : "bg-white border border-slate-200 text-slate-400")}>
                                         <item.icon className="w-6 h-6" />
                                     </div>
@@ -1064,17 +1064,17 @@ const SmartHomeDashboard = () => {
             </div>
 
             {/* RIGHT COLUMN */}
-            <div className="flex flex-col gap-4 w-full lg:w-[480px]">
+            <div className="flex flex-col gap-3 w-full lg:w-[480px]">
                 {/* Air Conditioner Widget */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white rounded-[40px] p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden"
+                    className="bg-white rounded-[40px] p-6 shadow-xl shadow-slate-200/50 relative overflow-hidden"
                 >
                     <div className="flex items-start justify-between mb-8">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center">
                                 <Fan className="w-6 h-6 text-slate-800" />
                             </div>
@@ -1083,7 +1083,7 @@ const SmartHomeDashboard = () => {
                                 <p className="text-slate-400 text-sm font-medium">Auto cooling</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="text-xs font-bold text-slate-400">On <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full inline-block ml-1" /></div>
                             <button type="button" className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-105 transition-transform shadow-lg shadow-black/20">
                                 <Power className="w-5 h-5" />
@@ -1132,7 +1132,7 @@ const SmartHomeDashboard = () => {
                 </motion.div>
 
                 {/* Bottom Row - Scenes */}
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                     {/* Morning Scene */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -1182,7 +1182,7 @@ const SmartHomeDashboard = () => {
                     transition={{ delay: 0.5 }}
                     className="bg-white rounded-3xl p-3 pl-5 flex items-center justify-between shadow-lg shadow-slate-200/50"
                 >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <button type="button" className="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-300 hover:text-slate-600 transition-colors">
                             <PlusCircle className="w-5 h-5" />
                         </button>
@@ -1255,7 +1255,7 @@ const DateRangePickers = () => {
     const isRange = (date: Date, range: DateRange) => range.start && range.end && isWithinInterval(date, { start: range.start, end: range.end }) && !isSameDay(date, range.start) && !isSameDay(date, range.end);
 
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#EAEAEA] flex flex-wrap gap-12 items-center justify-center min-h-[600px]">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#EAEAEA] flex flex-wrap gap-3 items-center justify-center min-h-[600px]">
 
             {/* BLUE CALENDAR */}
             <motion.div
@@ -1320,7 +1320,7 @@ const DateRangePickers = () => {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="flex flex-col-reverse sm:flex-row gap-4 mt-auto">
+                <div className="flex flex-col-reverse sm:flex-row gap-3 mt-auto">
                     <button type="button" className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
                         Отмена
                     </button>
@@ -1393,7 +1393,7 @@ const DateRangePickers = () => {
                 </div>
 
                 {/* Footer Buttons */}
-                <div className="flex flex-col-reverse sm:flex-row gap-4 mt-auto">
+                <div className="flex flex-col-reverse sm:flex-row gap-3 mt-auto">
                     <button type="button" className="hidden md:block flex-1 py-3 rounded-2xl bg-slate-50 text-slate-500 font-semibold text-sm hover:bg-slate-100 transition-colors">
                         Отмена
                     </button>
@@ -1458,7 +1458,7 @@ const PricingPlans = () => {
     ];
 
     return (
-        <div className="p-10 md:p-20 rounded-[40px] bg-[#F5F5F7] flex flex-wrap gap-4 items-center justify-center">
+        <div className="p-6 md:p-20 rounded-[40px] bg-[#F5F5F7] flex flex-wrap gap-3 items-center justify-center">
             {plans.map((plan, index) => (
                 <motion.div
                     key={index}
@@ -1493,7 +1493,7 @@ const PricingPlans = () => {
                     </div>
 
                     {/* Features List */}
-                    <div className="px-6 py-8 space-y-4 flex-1">
+                    <div className="px-6 py-8 space-y-3 flex-1">
                         {plan.features.map((feature, i) => (
                             <div key={i} className="flex items-start gap-3 text-sm font-medium text-slate-600">
                                 <CheckCircle2 className="w-5 h-5 text-slate-300 shrink-0" />
@@ -1529,11 +1529,11 @@ export default function NewReferencesCRM() {
             case "logistics":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><TruckIcon className="text-blue-500" />Отслеживание и статус</h3>
                             <DeliveryTracking />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><TruckIcon className="text-blue-500" />Инфо-бабблы логистики</h3>
                             <FlightBubbles />
                         </section>
@@ -1542,7 +1542,7 @@ export default function NewReferencesCRM() {
             case "ai":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Sparkles className="text-purple-500" />Модули AI чата</h3>
                             <AIChatCards />
                         </section>
@@ -1551,15 +1551,15 @@ export default function NewReferencesCRM() {
             case "cards":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Invoice Dashboard</h3>
                             <InvoiceDashboard />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Карточка Taskello</h3>
                             <TaskelloCard />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Soft Mesh Folder</h3>
                             <SoftFolder />
                         </section>
@@ -1568,15 +1568,15 @@ export default function NewReferencesCRM() {
             case "widgets":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Обмен криптовалюты</h3>
                             <CryptoSwap />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Быстрые настройки (Bento)</h3>
                             <QuickSettings />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Умный дом</h3>
                             <SmartHomeDashboard />
                         </section>
@@ -1585,15 +1585,15 @@ export default function NewReferencesCRM() {
             case "calendar":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Расписание (Тёмная тема)</h3>
                             <DarkSchedule />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Календарные виджеты</h3>
                             <CalendarWidgets />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Выбор диапазона дат</h3>
                             <DateRangePickers />
                         </section>
@@ -1602,15 +1602,15 @@ export default function NewReferencesCRM() {
             case "ui":
                 return (
                     <div className="space-y-24">
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><MousePointer2 className="text-green-500" />Установка приложения (PWA)</h3>
                             <PWAPrompt />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><MousePointer2 className="text-green-500" />Премиальная пагинация</h3>
                             <PaginationCRM />
                         </section>
-                        <section className="space-y-4">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-green-500" />Тарифные планы</h3>
                             <PricingPlans />
                         </section>
@@ -1618,8 +1618,8 @@ export default function NewReferencesCRM() {
                 );
             case "dropdowns":
                 return (
-                    <div className="space-y-48">
-                        <section className="space-y-4">
+                    <div className="space-y-38">
+                        <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><ChevronDown className="text-blue-500" />Современный Dropdown</h3>
                             <ModernDropdown />
                         </section>
@@ -1627,44 +1627,44 @@ export default function NewReferencesCRM() {
                 );
             default:
                 return (
-                    <div className="space-y-44">
+                    <div className="space-y-34">
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <TruckIcon className="w-8 h-8 text-blue-500" />
                                 <div>
                                     <h3 className="text-2xl font-black">Логистика и доставка</h3>
                                     <p className="text-slate-400 font-medium">Виджеты отслеживания и транспортные статусы</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <DeliveryTracking />
                                 <FlightBubbles />
                             </div>
                         </section>
 
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <CreditCard className="w-8 h-8 text-orange-500" />
                                 <div>
                                     <h3 className="text-2xl font-black">Карточки и контент</h3>
                                     <p className="text-slate-400 font-medium">Премиальные дизайны карточек и контейнеров</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <TaskelloCard />
                                 <SoftFolder />
                             </div>
                         </section>
 
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <Layers className="w-8 h-8 text-purple-500" />
                                 <div>
                                     <h3 className="text-2xl font-black">Интерактивные виджеты</h3>
                                     <p className="text-slate-400 font-medium">Сложные UI взаимодействия и инструменты</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <CryptoSwap />
                                 <QuickSettings />
                                 <SmartHomeDashboard />
@@ -1672,14 +1672,14 @@ export default function NewReferencesCRM() {
                         </section>
 
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <Calendar className="w-8 h-8 text-red-500" />
                                 <div>
                                     <h3 className="text-2xl font-black">Календари и расписания</h3>
                                     <p className="text-slate-400 font-medium">Управление временем и событиями</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <DarkSchedule />
                                 <CalendarWidgets />
                                 <DateRangePickers />
@@ -1687,14 +1687,14 @@ export default function NewReferencesCRM() {
                         </section>
 
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <MousePointer2 className="w-8 h-8 text-green-500" />
                                 <div>
                                     <h3 className="text-2xl font-black">UI Компоненты</h3>
                                     <p className="text-slate-400 font-medium">Навигация и базовые элементы интерфейса</p>
                                 </div>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <PaginationCRM />
                                 <PWAPrompt />
                                 <JobActionsGrid />
@@ -1704,20 +1704,20 @@ export default function NewReferencesCRM() {
                         </section>
 
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <ChevronDown className="w-8 h-8 text-blue-500" />
                                 <div>
                                     <h3 className="text-2xl font-black">Выпадающие списки</h3>
                                     <p className="text-slate-400 font-medium">Интерактивные меню выбора и фильтрации</p>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                                 <ModernDropdown />
                             </div>
                         </section>
 
                         <section className="space-y-12">
-                            <div className="flex items-center gap-4 border-b pb-4">
+                            <div className="flex items-center gap-3 border-b pb-4">
                                 <Sparkles className="w-8 h-8 text-purple-600" />
                                 <div>
                                     <h3 className="text-2xl font-black">OpenAI / GPT Модули</h3>
@@ -1733,7 +1733,7 @@ export default function NewReferencesCRM() {
 
     return (
         <section className="max-w-[1600px] mx-auto px-6 py-12 space-y-12">
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-3">
                 <div className="space-y-2">
                     <span className="text-blue-600 font-black tracking-[0.3em] text-xs">Reference Hub</span>
                     <h2 className="text-6xl font-black text-slate-900er leading-none">Библиотека референсов</h2>

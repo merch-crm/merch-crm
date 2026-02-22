@@ -17,9 +17,9 @@ interface SalaryClientProps {
 export function SalaryClient({ salaryData }: SalaryClientProps) {
     const { currencySymbol } = useBranding();
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-[var(--crm-grid-gap)]">
-                <div className="crm-card p-8 bg-white flex flex-col justify-between h-44 hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="crm-card p-6 bg-white flex flex-col justify-between h-44 hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm">
                     <div className="flex justify-between items-start">
                         <div className="h-12 w-12 rounded-[20px] bg-primary/5 flex items-center justify-center text-primary font-bold shadow-inner group-hover:scale-110 transition-transform duration-500">
                             <Activity className="w-6 h-6" />
@@ -36,7 +36,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                     </div>
                 </div>
 
-                <div className="crm-card p-8 bg-white flex flex-col justify-between h-44 hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm">
+                <div className="crm-card p-6 bg-white flex flex-col justify-between h-44 hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm">
                     <div className="flex justify-between items-start">
                         <div className="h-12 w-12 rounded-[20px] bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold shadow-inner group-hover:scale-110 transition-transform duration-500">
                             <Users className="w-6 h-6" />
@@ -54,7 +54,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {Object.entries(
                     salaryData.employeePayments.reduce((acc, emp) => {
                         const dept = emp.department || "Общий";

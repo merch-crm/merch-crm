@@ -74,7 +74,7 @@ export function PromocodeCard({ promo, currencySymbol, onEdit, onToggle, onDelet
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pb-4 border-b border-slate-200">
+                    <div className="grid grid-cols-2 gap-3 pb-4 border-b border-slate-200">
                         <div>
                             <div className="text-xs font-bold text-slate-300 mb-1">Выгода</div>
                             <div className="text-lg font-bold text-primary">

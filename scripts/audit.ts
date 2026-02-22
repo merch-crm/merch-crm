@@ -322,15 +322,9 @@ function checkUXStandards(files: string[]): AuditError[] {
     const errors: AuditError[] = [];
 
     const forbiddenPatterns = [
-        { regex: /\bgap-5\b/g, message: 'gap-5 запрещён', suggestion: 'Используй gap-4 или gap-3' },
-        { regex: /\bgap-6\b/g, message: 'gap-6 запрещён', suggestion: 'Используй gap-4' },
-        { regex: /\bgap-7\b/g, message: 'gap-7 запрещён', suggestion: 'Используй gap-4' },
-        { regex: /\bgap-8\b/g, message: 'gap-8 запрещён', suggestion: 'Используй gap-4' },
-        { regex: /\bgap-10\b/g, message: 'gap-10 запрещён', suggestion: 'Используй gap-4' },
-        { regex: /\bgap-12\b/g, message: 'gap-12 запрещён', suggestion: 'Используй gap-4' },
-        { regex: /\bspace-y-5\b/g, message: 'space-y-5 запрещён', suggestion: 'Используй space-y-4' },
-        { regex: /\bspace-y-6\b/g, message: 'space-y-6 запрещён', suggestion: 'Используй space-y-4' },
-        { regex: /\bspace-y-8\b/g, message: 'space-y-8 запрещён', suggestion: 'Используй space-y-4' },
+        { regex: /\bgap-[4-9]\b|\bgap-1[0-9]\b|\bgap-20\b/g, message: 'Нестандартный gap (запрещено > gap-3)', suggestion: 'Используй gap-3 (12px)' },
+        { regex: /\bgap-(x|y)-[4-9]\b|\bgap-(x|y)-1[0-9]\b/g, message: 'Нестандартный gap-x/y (запрещено > gap-3)', suggestion: 'Используй gap-3 (12px)' },
+        { regex: /\bspace-(y|x)-[4-9]\b|\bspace-(y|x)-1[0-9]\b/g, message: 'Нестандартный space (запрещено > space-3)', suggestion: 'Используй space-3 (12px)' },
         { regex: /\buppercase\b/g, message: 'uppercase запрещён', suggestion: 'Убери uppercase' },
         { regex: /\btracking-widest\b/g, message: 'tracking-widest запрещён', suggestion: 'Используй tracking-normal' },
         { regex: /text-\[10px\]/g, message: 'text-[10px] слишком мелкий', suggestion: 'Минимум text-xs' },

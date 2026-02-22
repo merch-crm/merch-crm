@@ -301,9 +301,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                 />
 
                 {/* Main Content Area */}
-                <div className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-[var(--crm-grid-gap)]">
+                <div className="flex-1 overflow-visible lg:overflow-hidden h-full flex flex-col gap-3">
                     <div className="crm-card flex-1 min-w-0 flex flex-col h-full min-h-[400px]" data-testid="order-form">
-                        <div className="flex-1 overflow-y-auto p-6 md:p-10">
+                        <div className="flex-1 overflow-y-auto p-6 md:p-6">
                             {uiState.step === 0 && (
                                 <StepClientSelection
                                     searchQuery={searchState.query}

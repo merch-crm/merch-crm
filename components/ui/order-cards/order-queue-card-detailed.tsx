@@ -37,7 +37,7 @@ export function OrderQueueCardDetailed({
         <div className={cn("rounded-xl border border-slate-200 bg-white overflow-hidden", className)}>
             {/* Хедер */}
             <div className="p-4 border-b border-slate-100">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
                     <div>
                         <div className="flex items-center gap-2">
                             {order.priority !== "normal" && (

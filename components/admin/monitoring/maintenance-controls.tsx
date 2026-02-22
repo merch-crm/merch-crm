@@ -16,9 +16,9 @@ export function MaintenanceControls({
     isRestartingAction,
 }: MaintenanceControlsProps) {
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="p-5 rounded-[18px] bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-indigo-100 transition-all">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="p-3 rounded-[18px] bg-indigo-50 text-[#5d00ff] group-hover:bg-[#5d00ff] group-hover:text-white transition-all shadow-sm">
                         <Zap size={20} />
                     </div>
@@ -42,7 +42,7 @@ export function MaintenanceControls({
             </div>
 
             <div className="p-5 rounded-[18px] bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-rose-100 transition-all">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="p-3 rounded-[18px] bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white transition-all shadow-sm">
                         <Power size={20} />
                     </div>

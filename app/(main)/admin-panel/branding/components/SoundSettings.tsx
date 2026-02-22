@@ -79,7 +79,7 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 p-6 lg:p-8 bg-white/30 overflow-y-auto">
+            <div className="flex-1 p-6 lg:p-6 bg-white/30 overflow-y-auto">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={ui.activeSoundTab}
@@ -87,7 +87,7 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="space-y-4"
+                        className="space-y-3"
                     >
                         {/* Category Header */}
                         <div className="flex items-center justify-between border-b border-slate-200/60 pb-6">
@@ -96,13 +96,13 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                 <p className="text-sm text-slate-500 mt-1">Настройте звуковое сопровождение для событий в этой категории</p>
                             </div>
 
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3">
                                 {/* Global controls removed as requested */}
                             </div>
                         </div>
 
                         {/* Sound List */}
-                        <div className="grid grid-cols-1 gap-4">
+                        <div className="grid grid-cols-1 gap-3">
                             {SOUND_CATEGORIES[ui.activeSoundTab as keyof typeof SOUND_CATEGORIES].sounds.map((soundType) => {
                                 const soundInfo: Record<string, { title: string, desc: string }> = {
                                     // Уведомления и Чат
@@ -200,7 +200,7 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                             config.enabled ? "bg-white border-slate-100 shadow-sm hover:shadow-md hover:border-primary/20" : "bg-slate-50 border-slate-100 opacity-75"
                                         )}
                                     >
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-3">
                                             <div role="button" tabIndex={0}
                                                 className={cn(
                                                     "w-10 h-10 rounded-xl flex items-center justify-center transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20",

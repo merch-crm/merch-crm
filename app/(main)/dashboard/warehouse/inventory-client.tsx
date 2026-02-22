@@ -10,6 +10,8 @@ import { Session } from "@/lib/auth";
 
 import { InventoryItem, Category } from "./types";
 import { EditCategoryDialog } from "./edit-category-dialog";
+import { EmptyState } from "@/components/ui/empty-state";
+import { LayoutGrid } from "lucide-react";
 
 interface InventoryClientProps {
     items?: InventoryItem[];
@@ -81,21 +83,18 @@ export function InventoryClient({ categories = [], user }: InventoryClientProps)
 
     if (itemsByCategory.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-                <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z" />
-                    </svg>
-                </div>
-                <h3 className="text-lg font-bold text-slate-700 mb-1">Категории не созданы</h3>
-                <p className="text-sm text-slate-400 max-w-xs">Создайте первую категорию через кнопку «Добавить категорию»</p>
-            </div>
+            <EmptyState
+                icon={LayoutGrid}
+                title="Категории не созданы"
+                description="Создайте первую категорию через кнопку «Добавить категорию»."
+                className="py-24"
+            />
         );
     }
 
     return (
         <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]" data-testid="categories-list">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" data-testid="categories-list">
                 {itemsByCategory.map((category) => {
                     const IconComponent = getCategoryIcon(category);
                     const isOrphaned = category.id === "orphaned";

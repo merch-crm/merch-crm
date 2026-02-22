@@ -92,7 +92,7 @@ export function BarcodeScannerDialog({
                     </Button>
                 </div>
 
-                <div className="p-6 space-y-4 flex-1 overflow-y-auto">
+                <div className="p-6 space-y-3 flex-1 overflow-y-auto">
                     <div className="relative bg-black rounded-2xl overflow-hidden aspect-square border border-white/10 shadow-2xl ring-1 ring-white/5 mx-auto max-w-[320px] w-full">
                         <div id="reader" className="w-full h-full" />
                         <div className="absolute inset-0 pointer-events-none border-[40px] border-black/40">
@@ -105,7 +105,7 @@ export function BarcodeScannerDialog({
                             </div>
                         </div>
                         {error && (
-                            <div className="absolute inset-0 flex items-center justify-center p-8 text-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
+                            <div className="absolute inset-0 flex items-center justify-center p-6 text-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
                                 <p className="text-rose-400 text-[11px] font-bold leading-relaxed">{error}</p>
                             </div>
                         )}

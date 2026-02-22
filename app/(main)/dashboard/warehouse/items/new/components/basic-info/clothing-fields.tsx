@@ -15,7 +15,7 @@ export function ClothingFields({
     remainingCustomTypes
 }: ClothingFieldsProps) {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Brand & Quality Group */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <AttributeSelector
@@ -79,7 +79,7 @@ export function ClothingFields({
             </div>
 
             {compositionType && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <AttributeSelector
                         type={compositionType.slug}
                         label={compositionType.name}
@@ -96,10 +96,10 @@ export function ClothingFields({
 
             {/* Custom Attributes (Conditional) */}
             {remainingCustomTypes.length > 0 && (
-                <div className="space-y-7 pt-3">
-                    <div className="space-y-4">
+                <div className="space-y-3 pt-3">
+                    <div className="space-y-3">
                         {remainingCustomTypes.map((type: AttributeType) => (
-                            <div key={type.id} className="space-y-4">
+                            <div key={type.id} className="space-y-3">
                                 <div className="h-px bg-slate-100" />
                                 <AttributeSelector
                                     type={type.slug}

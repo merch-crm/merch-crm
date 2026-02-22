@@ -295,12 +295,12 @@ export function SystemStats() {
 
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Header and Controls */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm relative overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-full -z-10 opacity-50" />
 
-        <div className="flex items-center gap-4 relative z-10">
+        <div className="flex items-center gap-3 relative z-10">
           <div className="p-3 bg-indigo-50 text-[#5d00ff] rounded-[24px] shadow-sm shadow-indigo-100">
             <ActivityIcon size={32} />
           </div>
@@ -446,7 +446,7 @@ export function SystemStats() {
 
       {uiState.isRestarting && (
         <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-500">
-          <div className="bg-white p-8 rounded-[18px] shadow-2xl max-w-md w-full text-center space-y-4">
+          <div className="bg-white p-6 rounded-[18px] shadow-2xl max-w-md w-full text-center space-y-3">
             <div className="relative w-20 h-20 mx-auto">
               <div className="absolute inset-0 rounded-full border-4 border-slate-200"></div>
               <div className="absolute inset-0 rounded-full border-4 border-[#5d00ff] border-t-transparent animate-spin"></div>

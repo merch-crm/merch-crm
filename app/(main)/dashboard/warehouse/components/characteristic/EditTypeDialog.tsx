@@ -63,8 +63,8 @@ export function EditTypeDialog({
                     </div>
                 </div>
 
-                <div className="px-6 py-4 space-y-4 shrink-0 bg-slate-50/30">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="px-6 py-4 space-y-3 shrink-0 bg-slate-50/30">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold text-slate-700 ml-1">Название раздела</label>
                             <Input

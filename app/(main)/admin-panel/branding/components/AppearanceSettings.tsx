@@ -16,12 +16,12 @@ interface AppearanceSettingsProps {
 
 export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload, initialIconGroups }: AppearanceSettingsProps) {
     return (
-        <div className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 {/* Color & Background Settings Block */}
-                <div className="crm-card p-6 space-y-4">
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
+                <div className="crm-card p-6 space-y-3">
+                    <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
                             <div>
                                 <ColorPicker
                                     label="Фирменный цвет"
@@ -41,12 +41,12 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-slate-100 space-y-4">
+                        <div className="pt-4 border-t border-slate-100 space-y-3">
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Фоновое изображение CRM
                             </label>
 
-                            <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
+                            <div className="flex items-center gap-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
                                 <div className="relative group shrink-0">
                                     {formData.crmBackgroundUrl ? (
                                         <div className="relative">
@@ -96,9 +96,9 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                 </div>
                             </div>
 
-                            <div className="space-y-4 pt-4 border-t border-slate-100">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-4">
+                            <div className="space-y-3 pt-4 border-t border-slate-100">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <label className="text-sm font-bold text-slate-700">
                                                 Скругление (внешнее)
@@ -121,7 +121,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <label className="text-sm font-bold text-slate-700">
                                                 Скругление (внутреннее)
@@ -145,8 +145,8 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                                    <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                                    <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <label className="text-sm font-bold text-slate-700">
                                                 Размытие фона CRM
@@ -169,7 +169,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         <div className="flex justify-between items-center">
                                             <label className="text-sm font-bold text-slate-700">
                                                 Яркость фона CRM
@@ -200,7 +200,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Фон страницы входа
                             </label>
-                            <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
+                            <div className="flex items-center gap-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
                                 <div className="relative group shrink-0">
                                     {formData.loginBackgroundUrl ? (
                                         <div className="relative">
@@ -254,14 +254,14 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                 </div>
 
                 {/* Brand Assets Block */}
-                <div className="crm-card p-6 space-y-4">
-                    <div className="space-y-4">
+                <div className="crm-card p-6 space-y-3">
+                    <div className="space-y-3">
                         {/* Logo */}
                         <div>
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Логотип системы
                             </label>
-                            <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
+                            <div className="flex items-center gap-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
                                 <div className="relative group">
                                     {formData.logoUrl ? (
                                         <div className="relative">
@@ -290,7 +290,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Иконка вкладки (Favicon)
                             </label>
-                            <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
+                            <div className="flex items-center gap-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
                                 <div className="relative group">
                                     {formData.faviconUrl ? (
                                         <div className="relative">

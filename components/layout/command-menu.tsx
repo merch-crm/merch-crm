@@ -150,7 +150,7 @@ export function CommandMenu() {
                                                     key={item.href}
                                                     variant="ghost"
                                                     onClick={() => onSelect(item.href)}
-                                                    className="flex items-center justify-start gap-4 px-5 py-4 h-auto rounded-[20px] bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all text-sm font-bold text-slate-700 hover:shadow-md hover:scale-[1.02] active:scale-95 group"
+                                                    className="flex items-center justify-start gap-3 px-5 py-4 h-auto rounded-[20px] bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all text-sm font-bold text-slate-700 hover:shadow-md hover:scale-[1.02] active:scale-95 group"
                                                 >
                                                     <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
                                                         {item.icon}
@@ -170,7 +170,7 @@ export function CommandMenu() {
                                             onClick={() => onSelect(res.href)}
                                             className="w-full flex items-center justify-between px-4 py-3.5 h-auto rounded-[22px] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100"
                                         >
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-3">
                                                 <div className="w-12 h-12 rounded-[18px] bg-white border border-slate-200 flex items-center justify-center group-hover:scale-110 transition-all shadow-sm">
                                                     {icons[res.type as keyof typeof icons]}
                                                 </div>

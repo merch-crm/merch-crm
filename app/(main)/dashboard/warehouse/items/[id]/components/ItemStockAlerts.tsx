@@ -114,7 +114,7 @@ export const ItemStockAlerts = React.memo(({
                     </div>
 
                     {isEditing ? (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-baseline gap-1.5">
                                     <Input

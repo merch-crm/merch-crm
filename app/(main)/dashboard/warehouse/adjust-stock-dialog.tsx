@@ -66,10 +66,10 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     </div>
                 </div>
 
-                <form id="adjust-stock-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
-                    <div className="space-y-4">
+                <form id="adjust-stock-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
+                    <div className="space-y-3">
                         {/* 1. Context: Where and What */}
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="space-y-2 overflow-visible">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Склад</label>
                                 <StorageLocationSelect

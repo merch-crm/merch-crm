@@ -14,16 +14,16 @@ interface CommunicationSettingsProps {
 
 export function CommunicationSettings({ formData, setFormData, ui, handleFileUpload }: CommunicationSettingsProps) {
     return (
-        <div className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="crm-card p-6 space-y-4">
+        <div className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <div className="crm-card p-6 space-y-3">
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div>
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                 Логотип для писем (PNG/JPG)
                             </label>
-                            <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed flex items-center gap-4">
+                            <div className="p-4 bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed flex items-center gap-3">
                                 <div className="w-20 h-12 bg-white rounded-xl border border-slate-200 p-2 flex items-center justify-center">
                                     {formData.emailLogoUrl ? (
                                         <Image
@@ -47,7 +47,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             <ColorPicker
                                 label="Цвет кнопок и ссылок"
                                 color={formData.emailPrimaryColor || "#5d00ff"}
@@ -86,11 +86,11 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                     </div>
                 </div>
 
-                <div className="crm-card p-6 space-y-4">
+                <div className="crm-card p-6 space-y-3">
 
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-4">
+                    <div className="space-y-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="space-y-3">
                                 <div>
                                     <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                         Telegram (Username)
@@ -114,7 +114,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                     />
                                 </div>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div>
                                     <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
                                         Веб-сайт (URL)
@@ -143,7 +143,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                         height={32}
                                     />
                                 </div>
-                                <div className="p-8 space-y-4">
+                                <div className="p-6 space-y-3">
                                     <div className="h-4 w-3/4 bg-slate-100 rounded-full" />
                                     <div className="h-4 w-full bg-slate-100 rounded-full" />
                                     <div className="h-4 w-1/2 bg-slate-100 rounded-full" />
@@ -165,14 +165,14 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                 </div>
             </div>
 
-            <div className="crm-card p-5 space-y-4">
+            <div className="crm-card p-5 space-y-3">
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="space-y-3">
                         <label className="text-xs font-bold text-slate-700 ml-1 mb-2 block">
                             Логотип для документов (High-Res PNG)
                         </label>
-                        <div className="p-6 bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed flex items-center gap-4">
+                        <div className="p-6 bg-slate-50/50 rounded-2xl border border-slate-200 border-dashed flex items-center gap-3">
                             <div className="w-20 h-20 bg-white rounded-xl border border-slate-200 p-3 flex items-center justify-center shadow-inner">
                                 {formData.printLogoUrl ? (
                                     <Image
@@ -200,7 +200,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                         <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-4">
                             Макет страницы A4
                         </div>
-                        <div className="bg-white p-8 border border-slate-200 shadow-sm rounded-sm w-full max-w-[280px] aspect-[1/1.41] space-y-4">
+                        <div className="bg-white p-6 border border-slate-200 shadow-sm rounded-sm w-full max-w-[280px] aspect-[1/1.41] space-y-3">
                             <div className="flex justify-between items-start">
                                 <Image
                                     src={formData.printLogoUrl || formData.logoUrl || "/logo.png"}
@@ -223,7 +223,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                             </div>
                             <div className="mt-auto pt-10">
                                 <div className="h-px bg-slate-100 w-full mb-4" />
-                                <div className="flex justify-between gap-4">
+                                <div className="flex justify-between gap-3">
                                     <div className="h-1.5 w-1/3 bg-slate-50 rounded" />
                                     <div className="h-1.5 w-1/4 bg-slate-100 rounded" />
                                 </div>

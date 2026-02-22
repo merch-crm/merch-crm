@@ -24,7 +24,7 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
     ], [analytics]);
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
             {/* Main Multi-Line Chart Section - 9 columns on desktop */}
             <ItemAnalyticsChart
                 analytics={analytics}

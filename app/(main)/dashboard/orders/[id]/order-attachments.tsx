@@ -64,7 +64,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
     };
 
     return (
-        <div className="crm-card !p-8">
+        <div className="crm-card ">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-slate-900 flex items-center  text-xs">
                     <Paperclip className="w-4 h-4 mr-3 text-primary" />
@@ -87,7 +87,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                 </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {attachments.map((file: Attachment) => (
                     <a
                         key={file.id}
@@ -110,7 +110,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                 {attachments.length === 0 && (
                     <div role="button" tabIndex={0}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => fileInputRef.current?.click()}
-                        className="col-span-full border-2 border-dashed border-slate-200 rounded-2xl p-10 text-center text-slate-400 cursor-pointer hover:border-primary/20 hover:bg-slate-50/50 transition-all group"
+                        className="col-span-full border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center text-slate-400 cursor-pointer hover:border-primary/20 hover:bg-slate-50/50 transition-all group"
                     >
                         <div className="mx-auto w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                             <Plus className="w-6 h-6 text-slate-300 group-hover:text-primary" />

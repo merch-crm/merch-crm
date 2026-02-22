@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn, formatUnit } from "@/lib/utils";
 import { type Transaction } from "../history-types";
+import { EmptyState } from "@/components/ui/empty-state";
+import { History as HistoryIcon } from "lucide-react";
 
 interface HistoryDisplayProps {
     currentItems: Transaction[];
@@ -34,6 +36,16 @@ export function HistoryDisplay({
     setExpandedId
 }: HistoryDisplayProps) {
     const router = useRouter();
+    if (currentItems.length === 0) {
+        return (
+            <EmptyState
+                icon={HistoryIcon}
+                title="История операций пуста"
+                description="Все действия с товарами на складе будут отображаться здесь."
+                className="py-24"
+            />
+        );
+    }
 
     return (
         <>

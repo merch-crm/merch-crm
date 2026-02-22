@@ -237,7 +237,7 @@ function ScrollAreaHorizontalList({
     const gapClasses = {
         sm: "gap-2",
         md: "gap-3",
-        lg: "gap-4",
+        lg: "gap-3",
     };
 
     return (

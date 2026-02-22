@@ -24,7 +24,7 @@ export default async function WarehouseCategoriesPage() {
             </Suspense>
 
             <Suspense fallback={
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[var(--crm-grid-gap)]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                     {[1, 2, 3, 4].map(i => (
                         <div key={i} className="crm-card flex flex-col p-0 overflow-hidden bg-white shadow-sm border border-slate-100 animate-pulse">
                             {/* Header skeleton */}
@@ -38,7 +38,7 @@ export default async function WarehouseCategoriesPage() {
                                 </div>
                             </div>
                             {/* Body skeleton */}
-                            <div className="flex-1 p-5 pt-4 space-y-4">
+                            <div className="flex-1 p-5 pt-4 space-y-3">
                                 <div className="space-y-2">
                                     <div className="h-2 w-1/3 bg-slate-100 rounded" />
                                     <div className="grid grid-cols-2 gap-2">

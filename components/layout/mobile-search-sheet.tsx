@@ -210,7 +210,7 @@ export function MobileSearchSheet() {
                                             key={`${result.type}-${result.id}`}
                                             variant="ghost"
                                             onClick={() => handleSelect(result)}
-                                            className="w-full flex items-center justify-start gap-4 p-4 h-auto bg-slate-50/50 hover:bg-slate-100/50 active:scale-[0.98] rounded-2xl transition-all text-left"
+                                            className="w-full flex items-center justify-start gap-3 p-4 h-auto bg-slate-50/50 hover:bg-slate-100/50 active:scale-[0.98] rounded-2xl transition-all text-left"
                                         >
                                             <div className={cn(
                                                 "w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm",

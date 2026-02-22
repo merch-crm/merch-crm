@@ -43,7 +43,7 @@ export function ActivityGraph({ monitoringData }: ActivityGraphProps) {
                     </span>
                 </div>
             </CardHeader>
-            <CardContent className="space-y-4 pt-8 px-8">
+            <CardContent className="space-y-3 pt-8 px-8">
                 <div className="space-y-2">
                     <div className="h-[120px] w-full flex items-end gap-1 px-1">
                         {!monitoringData
@@ -125,7 +125,7 @@ export function ActivityGraph({ monitoringData }: ActivityGraphProps) {
                                                 {hourStats.map((s) => (
                                                     <div
                                                         key={s.type}
-                                                        className="flex items-center justify-between gap-4 font-normal text-xs opacity-80"
+                                                        className="flex items-center justify-between gap-3 font-normal text-xs opacity-80"
                                                     >
                                                         <span className="capitalize">
                                                             {s.type === "orders"
@@ -160,7 +160,7 @@ export function ActivityGraph({ monitoringData }: ActivityGraphProps) {
                 </div>
 
                 {monitoringData && monitoringData.entityStats.length > 0 && (
-                    <div className="flex flex-wrap gap-4 pt-2 border-t border-slate-200">
+                    <div className="flex flex-wrap gap-3 pt-2 border-t border-slate-200">
                         {monitoringData.entityStats.map((stat) => (
                             <div key={stat.type} className="flex items-center gap-2">
                                 <div

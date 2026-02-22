@@ -50,7 +50,7 @@ export function MaintenanceModeCard({
                 </div>
             </CardHeader>
             <CardContent className="pt-2 pb-6">
-                <div className="flex items-center justify-between gap-4 bg-slate-50/50 p-6 rounded-[18px] border border-slate-200/50">
+                <div className="flex items-center justify-between gap-3 bg-slate-50/50 p-6 rounded-[18px] border border-slate-200/50">
                     <div className="space-y-1">
                         <p className="text-xs text-slate-500 font-medium leading-relaxed max-w-[320px]">
                             При активации доступ к CRM будет разрешен только

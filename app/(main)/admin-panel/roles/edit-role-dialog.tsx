@@ -75,7 +75,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                         e.preventDefault();
                         handleSubmit(new FormData(e.currentTarget));
                     }}
-                    className="space-y-4 pb-2"
+                    className="space-y-3 pb-2"
                 >
                     <div className="space-y-1">
                         <label className="text-xs font-bold text-slate-700  pl-1">Название роли</label>

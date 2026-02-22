@@ -15,7 +15,7 @@ export function FinanceCard({ formData }: FinanceCardProps) {
     const margin = Math.round((profit / (costPrice || 1)) * 100);
 
     return (
-        <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm p-8 flex flex-col gap-4">
+        <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm p-6 flex flex-col gap-3">
             <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-sm shadow-emerald-100/50">
                     <Banknote className="w-5 h-5" />
@@ -26,7 +26,7 @@ export function FinanceCard({ formData }: FinanceCardProps) {
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100 group transition-all">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-slate-900 transition-colors">

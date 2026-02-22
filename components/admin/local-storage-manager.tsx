@@ -50,7 +50,7 @@ export function LocalStorageManager() {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header Stats */}
             <StorageStats
                 fileCount={data?.stats.fileCount || 0}
@@ -62,8 +62,8 @@ export function LocalStorageManager() {
 
             {/* File Browser */}
             <Card className="border-slate-200 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
-                <CardHeader className="p-8 pb-4">
-                    <div className="flex flex-col gap-4">
+                <CardHeader className="p-6 pb-4">
+                    <div className="flex flex-col gap-3">
                         <StorageBrowserHeader
                             searchTerm={uiState.searchTerm}
                             onSearchChange={(val) => setUiState(prev => ({ ...prev, searchTerm: val }))}
@@ -124,12 +124,12 @@ export function LocalStorageManager() {
                 <CardContent className="p-0">
                     <div className="h-[500px] overflow-y-auto">
                         {uiState.loading ? (
-                            <div className="flex flex-col items-center justify-center h-[400px] gap-4 text-slate-300">
+                            <div className="flex flex-col items-center justify-center h-[400px] gap-3 text-slate-300">
                                 <RefreshCw className="animate-spin" size={48} />
                                 <p className="text-xs font-bold">Загрузка...</p>
                             </div>
                         ) : filteredFolders.length === 0 && filteredFiles.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center h-[400px] gap-4 text-slate-300">
+                            <div className="flex flex-col items-center justify-center h-[400px] gap-3 text-slate-300">
                                 <div className="p-6 bg-slate-50 rounded-full">
                                     <File size={48} className="opacity-20" />
                                 </div>

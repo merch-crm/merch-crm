@@ -90,16 +90,16 @@ export function StatisticsView({ data }: StatisticsViewProps) {
     };
 
     return (
-        <div className="space-y-4 pb-10">
+        <div className="space-y-3 pb-10">
             {/* Main Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {stats.map((stat, i) => (
                     <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="group relative crm-card p-8 hover:bg-slate-900 border-none transition-all duration-500 overflow-hidden"
+                        className="group relative crm-card p-6 hover:bg-slate-900 border-none transition-all duration-500 overflow-hidden"
                     >
                         {/* Decorative Showcase sphere on hover */}
                         <div className="absolute -top-10 -right-10 w-24 h-24 bg-white/10 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-0" />
@@ -126,13 +126,13 @@ export function StatisticsView({ data }: StatisticsViewProps) {
             </div>
 
             {/* Detailed Charts/Analysis Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 {/* Tasks Distribution */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="crm-card p-10 relative overflow-hidden group/tasks border-none"
+                    className="crm-card p-6 relative overflow-hidden group/tasks border-none"
                 >
                     <div className="absolute -top-20 -right-20 w-48 h-48 bg-primary/5 rounded-full blur-3xl -z-10 group-hover/tasks:bg-primary/10 transition-all duration-700" />
 
@@ -146,7 +146,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {data.tasksByStatus.length > 0 ? (
                             data.tasksByStatus.map((item, i) => {
                                 const total = data.tasksByStatus.reduce((acc, curr) => acc + curr.count, 0);
@@ -187,7 +187,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.5 }}
-                    className="crm-card p-10 relative overflow-hidden group/eff border-none"
+                    className="crm-card p-6 relative overflow-hidden group/eff border-none"
                 >
                     <div className="absolute -bottom-20 -left-20 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl -z-10 group-hover/eff:bg-emerald-500/10 transition-all duration-700" />
 
@@ -242,7 +242,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                             </div>
                         </div>
 
-                        <div className="mt-12 w-full p-6 rounded-3xl bg-slate-50 group-hover/eff:bg-white border border-transparent group-hover/eff:border-slate-200 transition-all duration-500 flex items-center gap-4">
+                        <div className="mt-12 w-full p-6 rounded-3xl bg-slate-50 group-hover/eff:bg-white border border-transparent group-hover/eff:border-slate-200 transition-all duration-500 flex items-center gap-3">
                             <div className="h-14 w-14 rounded-2xl bg-white shadow-xl flex items-center justify-center text-emerald-500">
                                 <Sparkles className="w-7 h-7" />
                             </div>

@@ -50,7 +50,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="relative max-w-md">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 z-10" />
                 <Input
@@ -75,7 +75,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
 
             <ResponsiveDataView
                 data={initialUsers}
-                mobileGridClassName="grid grid-cols-1 gap-4 md:hidden"
+                mobileGridClassName="grid grid-cols-1 gap-3 md:hidden"
                 desktopClassName="hidden md:block"
                 renderTable={() => (
                     <div className="crm-card !p-0">
@@ -118,7 +118,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                     />
                                                 </td>
                                                 <td className="crm-td">
-                                                    <div className="flex items-center gap-4">
+                                                    <div className="flex items-center gap-3">
                                                         <div
                                                             className={cn(
                                                                 "h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
@@ -206,7 +206,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                         <div role="button" tabIndex={0}
                             key={user.id}
                             className={cn(
-                                "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4 active:scale-[0.98] transition-all",
+                                "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 active:scale-[0.98] transition-all",
                                 isSelected ? "crm-tr-selected" : ""
                             )}
                             onKeyDown={(e) => handleA11yKeyDown(e, () => actions.setEditingUser(user))}

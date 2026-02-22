@@ -67,7 +67,7 @@ export default async function OrdersPage({
     return (
         <PageContainer>
             {/* Header Area */}
-            <div className="flex flex-row items-center justify-between gap-4 px-1">
+            <div className="flex flex-row items-center justify-between gap-3 px-1">
                 <div className="flex-1 min-w-0">
                     <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Заказы</h1>
                     <p className="hidden sm:block text-slate-400 text-sm font-medium mt-3">Управление производственным циклом и логистикой</p>
@@ -80,7 +80,7 @@ export default async function OrdersPage({
             <OrdersWidgets stats={stats} showFinancials={showFinancials} />
 
             {/* Main Content Area */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <OrdersTable
                     orders={allOrders}
                     error={error}

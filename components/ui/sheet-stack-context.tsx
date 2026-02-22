@@ -62,7 +62,16 @@ export function SheetStackProvider({ children }: { children: ReactNode }) {
 export function useSheetStack() {
     const context = useContext(SheetStackContext);
     if (!context) {
-        throw new Error("This hook must be used within SheetStackProvider");
+        // Fallback for SSR or if used outside provider
+        return {
+            stack: [],
+            pushSheet: () => { },
+            popSheet: () => { },
+            clearSheets: () => { },
+            registerSheet: () => { },
+            unregisterSheet: () => { },
+            getStackDepth: () => -1
+        };
     }
     return context;
 }

@@ -23,17 +23,17 @@ export default function StepsMenuCRM() {
     ];
 
     return (
-        <div className="w-full glass-panel p-8 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative min-h-[600px] flex items-center justify-center bg-slate-50/20">
+        <div className="w-full glass-panel p-6 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative min-h-[600px] flex items-center justify-center bg-slate-50/20">
             {/* Ambient backgrounds */}
             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(223,255,0,0.05),transparent_40%)] pointer-events-none" />
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 w-full max-w-6xl relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 w-full max-w-6xl relative z-10">
 
                 {/* Sidebar Menu (based on Photo 1) */}
                 <div className="lg:col-span-4">
                     <div className="bg-white rounded-3xl border border-slate-200 shadow-crm-xl overflow-hidden flex flex-col min-h-[500px]">
                         {/* Header part */}
-                        <div className="p-8 pb-6">
+                        <div className="p-6 pb-6">
                             <button type="button" className="flex items-center gap-2 text-xs font-bold  text-slate-400 hover:text-slate-900 transition-colors mb-6 group">
                                 <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
                                 Назад
@@ -70,7 +70,7 @@ export default function StepsMenuCRM() {
                                         )}
 
                                         <div className={cn(
-                                            "flex items-center gap-4 p-5 transition-all relative z-10",
+                                            "flex items-center gap-3 p-5 transition-all relative z-10",
                                             isActive ? "translate-x-1" : "translate-x-0"
                                         )}>
                                             {/* Step Indicator */}
@@ -129,8 +129,8 @@ export default function StepsMenuCRM() {
                 </div>
 
                 {/* Content Placeholder */}
-                <div className="lg:col-span-8 flex flex-col gap-4">
-                    <div className="crm-card h-full p-12 flex flex-col justify-center items-center text-center">
+                <div className="lg:col-span-8 flex flex-col gap-3">
+                    <div className="crm-card h-full p-[--padding-xl] flex flex-col justify-center items-center text-center">
                         <div className="w-24 h-24 rounded-[32px] bg-slate-50 flex items-center justify-center text-slate-200 mb-8 border-2 border-dashed border-slate-200">
                             <MousePointer2 className="w-10 h-10" />
                         </div>
@@ -140,7 +140,7 @@ export default function StepsMenuCRM() {
                             Select other steps to see the glowing transition effect on the menu.
                         </p>
 
-                        <div className="mt-12 w-full grid grid-cols-2 gap-4">
+                        <div className="mt-12 w-full grid grid-cols-2 gap-3">
                             {[1, 2, 3, 4].map(i => (
                                 <div key={i} className="h-20 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200" />
                             ))}

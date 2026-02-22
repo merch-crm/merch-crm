@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getIconNameFromName, getGradientStyles, getCategoryIcon, COLORS, generateCategoryPrefix } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { CategoryIconPicker } from "./category-icon-picker";
 
 
 interface AddCategoryDialogProps {
@@ -46,7 +47,7 @@ function SwitchRow({ mainLabel, subLabel, checked, onCheckedChange }: SwitchRowP
     );
 }
 
-function CategoryIconPreview({ name, color, size = "md" }: { name: string, color: string, size?: "sm" | "md" | "lg" }) {
+function CategoryIconPreview({ iconName, color, size = "md" }: { iconName: string, color: string, size?: "sm" | "md" | "lg" }) {
     const sizeClasses = {
         sm: "w-8 h-8 rounded-[10px]",
         md: "w-10 h-10 rounded-[12px]",
@@ -64,7 +65,7 @@ function CategoryIconPreview({ name, color, size = "md" }: { name: string, color
             sizeClasses[size],
             getGradientStyles(color)
         )}>
-            {createElement(getCategoryIcon({ name }), {
+            {createElement(getCategoryIcon({ icon: iconName }), {
                 className: cn("stroke-[2.5]", iconSizeClasses[size])
             })}
         </div>
@@ -119,6 +120,8 @@ export function AddCategoryDialog({
         prefix: "",
         prefixManuallyEdited: false,
         color: "primary",
+        icon: "tshirt-custom",
+        iconManuallyEdited: false,
         showInSku: true,
         showInName: true,
         parentId: parentId || ""
@@ -142,7 +145,7 @@ export function AddCategoryDialog({
 
         setUiState(prev => ({ ...prev, error: null, fieldErrors: {} }));
 
-        formData.set("icon", getIconNameFromName(name));
+        formData.set("icon", formState.icon);
         formData.set("color", formState.color);
         formData.set("parentId", formState.parentId);
         formData.set("showInSku", String(formState.showInSku));
@@ -184,7 +187,7 @@ export function AddCategoryDialog({
                 <form onSubmit={handleSubmit} noValidate className="flex flex-col flex-1 min-h-0 overflow-hidden">
                     <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                         <div className="flex items-center gap-3">
-                            <CategoryIconPreview name={formState.name} color={formState.color} size="lg" />
+                            <CategoryIconPreview iconName={formState.icon} color={formState.color} size="lg" />
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">
                                     {parentId ? "Подкатегория" : "Новая категория"}
@@ -194,7 +197,7 @@ export function AddCategoryDialog({
                         </div>
                     </div>
 
-                    <div className="px-6 py-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1">
+                    <div className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
                         <div className="flex gap-3">
                             <div className="space-y-1.5 flex-1">
                                 <ValidatedInput
@@ -209,7 +212,8 @@ export function AddCategoryDialog({
                                         setFormState(prev => ({
                                             ...prev,
                                             name,
-                                            prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name)
+                                            prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name),
+                                            icon: prev.iconManuallyEdited ? prev.icon : getIconNameFromName(name)
                                         }));
                                     }}
                                     onInput={() => {
@@ -250,11 +254,15 @@ export function AddCategoryDialog({
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-2 shadow-sm">
                                 <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
                                 <div className="flex items-center justify-center py-1">
-                                    <CategoryIconPreview name={formState.name} color={formState.color} size="md" />
+                                    <CategoryIconPicker
+                                        value={formState.icon}
+                                        color={formState.color}
+                                        onChange={(iconName) => setFormState(prev => ({ ...prev, icon: iconName, iconManuallyEdited: true }))}
+                                    />
                                 </div>
                             </div>
 
@@ -264,27 +272,25 @@ export function AddCategoryDialog({
                                     {COLORS.map((color) => {
                                         const isSelected = formState.color === color.name;
                                         return (
-                                            <Button
+                                            <button
                                                 key={color.name}
                                                 type="button"
-                                                variant="ghost"
-                                                size="icon"
                                                 onClick={() => setFormState(prev => ({ ...prev, color: color.name }))}
                                                 className={cn(
-                                                    "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-90 shadow-sm p-0",
+                                                    "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group active:scale-95 shadow-sm p-0 outline-none",
                                                     color.class,
-                                                    isSelected ? "ring-2 ring-offset-2 ring-primary/40 scale-110" : "opacity-80 hover:opacity-100"
+                                                    isSelected ? "ring-2 ring-offset-2 ring-primary/40 scale-110" : "opacity-80 hover:opacity-100 hover:scale-105"
                                                 )}
                                             >
                                                 {isSelected && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white stroke-[4]" />}
-                                            </Button>
+                                            </button>
                                         );
                                     })}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             <SwitchRow
                                 mainLabel="Добавлять в артикул"
                                 subLabel="Будет в SKU"
@@ -324,7 +330,7 @@ export function AddCategoryDialog({
                         />
                     </div>
                 </form>
-            </ResponsiveModal>
+            </ResponsiveModal >
         </>
     );
 }

@@ -11,7 +11,7 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
     const locationName = storageLocations.find(l => l.id === formData.storageLocationId)?.name || 'Не выбран';
 
     return (
-        <div className="bg-slate-900 rounded-[32px] p-8 text-white shadow-2xl shadow-slate-900/10 relative overflow-hidden group">
+        <div className="bg-slate-900 rounded-[32px] p-6 text-white shadow-2xl shadow-slate-900/10 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-150 transition-transform duration-1000" />
 
             <div className="relative z-10 flex flex-col h-full gap-3">
@@ -35,8 +35,8 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
 
                 <div className="h-px bg-white/10 w-full" />
 
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="flex flex-col p-4 rounded-2xl bg-white/5 border border-white/5 group-hover:border-white/10 transition-colors">
                             <div className="flex items-center gap-2 mb-2">
                                 <AlertCircle className="w-3.5 h-3.5 text-amber-400" />

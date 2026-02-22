@@ -54,7 +54,7 @@ export function StockStep({
     return (
         <div className="flex flex-col h-full overflow-hidden">
             <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 overflow-hidden min-h-0 flex flex-col">
-                <div className="max-w-[1400px] mx-auto space-y-4 flex-1 flex flex-col min-h-0 w-full">
+                <div className="max-w-[1400px] mx-auto space-y-3 flex-1 flex flex-col min-h-0 w-full">
                     <div className="flex items-center gap-3 shrink-0">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                             <Warehouse className="w-6 h-6 text-white" />
@@ -65,10 +65,10 @@ export function StockStep({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 gap-4 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pt-2 pb-6 -mx-4 sm:-mx-8">
+                    <div className="grid grid-cols-12 gap-3 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pt-2 pb-6 -mx-4 sm:-mx-8">
                         {/* FIRST ROW */}
                         {/* BENTO BLOCK 1: MAIN QUANTITY */}
-                        <div className="col-span-12 md:col-span-5 xl:col-span-5 crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col items-start text-left">
+                        <div className="col-span-12 md:col-span-5 xl:col-span-5 crm-card  !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col items-start text-left">
                             <div className="mb-6">
                                 <h3 className="text-base font-bold text-slate-900">Количество</h3>
                                 <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Укажите начальный остаток</p>
@@ -118,12 +118,12 @@ export function StockStep({
                         </div>
 
                         {/* BENTO BLOCK 2: FINANCIALS */}
-                        <div className="col-span-12 md:col-span-7 xl:col-span-7 crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col">
+                        <div className="col-span-12 md:col-span-7 xl:col-span-7 crm-card  !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col">
                             <div className="mb-6">
                                 <h3 className="text-base font-bold text-slate-900">Финансы</h3>
                                 <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Себестоимость и цена продажи</p>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative">
                                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2 hidden sm:block" />
 
                                 <div className="space-y-3 min-w-0">
@@ -169,14 +169,14 @@ export function StockStep({
                         </div>
 
                         {/* SECOND ROW */}
-                        <div className="col-span-12 md:col-span-5 xl:col-span-5 flex flex-col gap-4">
+                        <div className="col-span-12 md:col-span-5 xl:col-span-5 flex flex-col gap-3">
                             {/* BENTO BLOCK 3: THRESHOLDS */}
-                            <div className="crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col gap-4 shrink-0">
+                            <div className="crm-card  !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col gap-3 shrink-0">
                                 <div className="mb-6">
                                     <h3 className="text-base font-bold text-slate-900">Уведомления</h3>
                                     <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Настройка лимитов</p>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative">
                                     <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2 hidden sm:block" />
 
                                     <div className="space-y-3 min-w-0">
@@ -211,7 +211,7 @@ export function StockStep({
                             </div>
 
                             {/* BENTO BLOCK 4: RESPONSIBLE PERSON */}
-                            <div className="crm-card !p-6 !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col gap-3 flex-1">
+                            <div className="crm-card  !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col gap-3 flex-1">
                                 <div className="mb-6">
                                     <h3 className="text-base font-bold text-slate-900">Ответственный</h3>
                                     <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Кто создал позицию</p>

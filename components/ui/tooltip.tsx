@@ -130,7 +130,7 @@ function TooltipList({
                     )}
                     <div className="space-y-1">
                         {(items || []).map((item, index) => (
-                            <div key={index} className="flex items-center justify-between gap-4">
+                            <div key={index} className="flex items-center justify-between gap-3">
                                 <span className="text-slate-300">{item.label}</span>
                                 {item.value && (
                                     <kbd className="px-1.5 py-0.5 rounded bg-slate-700 text-xs font-mono text-white">

@@ -44,7 +44,7 @@ export function SummaryHeader({
                 <div className="w-1/3 bg-emerald-500/30" />
             </div>
 
-            <div className="p-6 sm:p-10">
+            <div className="p-6 sm:p-6">
                 <div
                     className="absolute top-0 right-0 w-64 h-64 opacity-[0.03] pointer-events-none z-0"
                     style={{
@@ -56,8 +56,8 @@ export function SummaryHeader({
                     }}
                 />
 
-                <div className="relative z-10 flex items-start justify-between gap-4 sm:gap-3">
-                    <div className="flex-1 min-w-0 space-y-4">
+                <div className="relative z-10 flex items-start justify-between gap-3 sm:gap-3">
+                    <div className="flex-1 min-w-0 space-y-3">
                         <div className="flex items-center gap-2">
                             <div className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -113,7 +113,7 @@ export function SummaryHeader({
                             )}
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                             <div className="flex flex-col">
                                 <span className="text-xs font-black text-slate-700 leading-none mb-1">Артикул SKU</span>
                                 <div className="flex items-center gap-2">

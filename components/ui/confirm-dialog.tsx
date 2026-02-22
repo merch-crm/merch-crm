@@ -39,7 +39,7 @@ export function ConfirmDialog({
         <ResponsiveModal isOpen={isOpen} onClose={onClose} title={title} showVisualTitle={false}>
             <div className="flex flex-col relative pt-4">
                 {/* Header with Icon */}
-                <div className="p-6 md:p-8 pb-3 flex flex-col items-center text-center">
+                <div className="p-6 md:p-6 pb-3 flex flex-col items-center text-center">
                     <motion.div
                         initial={{ scale: 0.5, rotate: -10, opacity: 0 }}
                         animate={{
@@ -96,7 +96,7 @@ export function ConfirmDialog({
 
                 {/* Footer Actions */}
                 <div className={cn(
-                    "p-6 md:p-8 pt-2 flex gap-3 shrink-0",
+                    "p-6 md:p-6 pt-2 flex gap-3 shrink-0",
                     isDestructive ? "flex-col md:flex-row items-center" : "flex-row"
                 )}>
                     <Button

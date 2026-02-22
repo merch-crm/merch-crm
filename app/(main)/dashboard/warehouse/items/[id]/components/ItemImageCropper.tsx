@@ -84,7 +84,7 @@ export function ItemImageCropper({
 }: ItemImageCropperProps) {
     return (
         <div className="crm-card rounded-3xl p-4 animate-in fade-in slide-in-from-top-4 duration-500 col-span-2 md:col-span-1">
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {/* ZOOM SLIDER */}
                 <div className="flex items-center gap-3">
                     <div className="flex-1 space-y-0.5">

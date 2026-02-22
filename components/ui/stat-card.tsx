@@ -158,7 +158,7 @@ export function StatCard({
             type={onClick ? "button" : undefined}
         >
             <CardContent className="p-6">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className={cn("p-3 rounded-[18px]", oldColorMap[colorScheme])}>
                         <Icon size={24} />
                     </div>

@@ -128,8 +128,8 @@ export function CategoryDialog({
                             </Button>
                         </div>
 
-                        <div className="space-y-4">
-                            <div className="flex gap-4">
+                        <div className="space-y-3">
+                            <div className="flex gap-3">
                                 <div className="flex-1">
                                     <label className="flex items-center gap-2 text-sm font-bold text-slate-700 mb-2">
                                         <Building2 className="w-4 h-4 text-primary" /> Название категории

@@ -55,7 +55,7 @@ export function ItemPlacementWrapper({
 
             <div className="space-y-3">
                 {sortedStocks.length === 0 ? (
-                    <div className="table-empty p-8">
+                    <div className="table-empty p-6">
                         <Package className="w-8 h-8 text-muted-foreground mx-auto mb-2 opacity-50" />
                         <p className="text-xs font-bold text-muted-foreground">Нет данных о размещении</p>
                     </div>

@@ -53,7 +53,7 @@ export function MobileEditSheet({
                     </Button>
                 </div>
 
-                <div className="flex-1 p-6 space-y-4 overflow-y-auto min-h-0">
+                <div className="flex-1 p-6 space-y-3 overflow-y-auto min-h-0">
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-700 ml-1">Текущее название</label>
                         <textarea

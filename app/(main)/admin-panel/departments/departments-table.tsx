@@ -87,12 +87,12 @@ export function DepartmentsTable() {
         return { Icon, ...colorConfig };
     };
 
-    if (loading) return <div className="text-slate-400 p-12 text-center text-sm font-medium">Загрузка отделов...</div>;
+    if (loading) return <div className="text-slate-400 p-[--padding-xl] text-center text-sm font-medium">Загрузка отделов...</div>;
 
     return (
-        <div className="space-y-4 pb-20">
+        <div className="space-y-3 pb-20">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {departments.map((dept) => {
                     const config = getDepartmentConfig(dept.name, dept.color);
                     const Icon = config.Icon;
@@ -104,7 +104,7 @@ export function DepartmentsTable() {
                             className={`group relative rounded-[18px] border border-slate-200 overflow-hidden bg-gradient-to-br ${config.gradient} hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/10 transition-all h-[200px] flex flex-col cursor-pointer active:scale-[0.98]`}
                         >
                             <div className="p-7 flex flex-col h-full">
-                                <div className="flex items-start gap-4 mb-4">
+                                <div className="flex items-start gap-3 mb-4">
                                     <div className={`flex-shrink-0 h-14 w-14 rounded-[18px] ${config.iconBg} flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 border border-white shadow-sm`}>
                                         <Icon className={`w-7 h-7 ${config.iconColor}`} />
                                     </div>

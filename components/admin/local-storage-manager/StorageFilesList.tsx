@@ -87,7 +87,7 @@ export function StorageFilesList({
                                             </td>
                                         )}
                                         <td className="crm-td">
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-3">
                                                 <div className={cn(
                                                     "p-2.5 rounded-[12px] group-hover:scale-110 transition-transform shadow-sm",
                                                     isDirectory ? "bg-amber-50 text-amber-500" : (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(name.split('.').pop()?.toLowerCase() || '') ? "bg-emerald-50 text-emerald-500" : "bg-slate-100 text-slate-400")
@@ -151,11 +151,11 @@ export function StorageFilesList({
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         onClick={() => !isMultiMode && (isDirectory ? onNavigate(path) : onFileClick(item as LocalFile))}
                         className={cn(
-                            "p-4 rounded-[24px] border transition-all active:scale-[0.98] flex items-center justify-between gap-4",
+                            "p-4 rounded-[24px] border transition-all active:scale-[0.98] flex items-center justify-between gap-3",
                             isSelected ? "crm-tr-selected" : "bg-white border-slate-100 shadow-sm"
                         )}
                     >
-                        <div className="flex items-center gap-4 min-w-0">
+                        <div className="flex items-center gap-3 min-w-0">
                             <div className={cn(
                                 "p-3 rounded-[18px] flex-shrink-0",
                                 isDirectory ? "bg-amber-50 text-amber-500" : (['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg'].includes(name.split('.').pop()?.toLowerCase() || '') ? "bg-emerald-50 text-emerald-500" : "bg-slate-100 text-slate-400")

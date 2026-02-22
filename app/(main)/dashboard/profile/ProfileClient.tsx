@@ -48,7 +48,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
             />
 
             {/* Main Content Area */}
-            <div className="flex-1 p-6 md:p-8 lg:p-12 relative z-0 overflow-y-auto bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-full">
+            <div className="flex-1 p-6 md:p-6 lg:p-[--padding-xl] relative z-0 overflow-y-auto bg-slate-50/50 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-full">
                 <ProfileHeader
                     user={user}
                     view={view}
@@ -79,7 +79,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         {view === "settings" && <SettingsTab user={user} />}
 
                         {view === "statistics" && (
-                            <div className="crm-card !p-8 !rounded-3xl min-h-[400px]">
+                            <div className="crm-card  !rounded-3xl min-h-[400px]">
                                 {loading && !statsData ? (
                                     <div className="flex items-center justify-center h-40 font-bold text-slate-300">Загрузка данных...</div>
                                 ) : (
@@ -91,7 +91,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         {view === "notifications" && <NotificationsTab activities={activities} />}
 
                         {view === "schedule" && (
-                            <div className="crm-card !p-6 md:!p-8 !rounded-3xl min-h-[400px]">
+                            <div className="crm-card  md: !rounded-3xl min-h-[400px]">
                                 {loading && scheduleData.length === 0 ? (
                                     <div className="flex items-center justify-center h-40 font-bold text-slate-300">Загрузка расписания...</div>
                                 ) : (

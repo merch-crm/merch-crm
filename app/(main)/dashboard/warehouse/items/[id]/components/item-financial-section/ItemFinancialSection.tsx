@@ -51,7 +51,7 @@ export const ItemFinancialSection = React.memo(({
 
     return (
         <div className={cn(
-            "crm-card rounded-3xl p-6 transition-all bg-card relative overflow-hidden flex flex-col gap-4 shadow-sm hover:shadow-md duration-500",
+            "crm-card rounded-3xl p-6 transition-all bg-card relative overflow-hidden flex flex-col gap-3 shadow-sm hover:shadow-md duration-500",
             className
         )}>
             {/* Main Header */}
@@ -96,7 +96,7 @@ export const ItemFinancialSection = React.memo(({
                     currencySymbol={currencySymbol}
                 />
 
-                <div className="flex flex-col gap-4 mt-6">
+                <div className="flex flex-col gap-3 mt-6">
                     {/* Timeframe selector tabs */}
                     <TimeframeTabs
                         timeframe={timeframe}

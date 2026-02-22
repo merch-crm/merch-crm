@@ -107,13 +107,13 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
     ];
 
     return (
-        <div className="space-y-4 animate-in fade-in duration-500 h-full flex flex-col">
+        <div className="space-y-3 animate-in fade-in duration-500 h-full flex flex-col">
             {/* Premium Header */}
             <div className="crm-card relative shrink-0 mb-6">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl opacity-50" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-50" />
 
-                <div className="relative flex flex-col gap-4">
+                <div className="relative flex flex-col gap-3">
                     <div className="flex flex-row items-center justify-between gap-3">
                         <div className="min-w-0 flex-1">
                             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none truncate">Рабочие процессы</h1>
@@ -144,7 +144,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                 </div>
 
                 {/* Filter Toolbar */}
-                <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-4">
+                <div className="flex flex-col sm:flex-row items-center justify-between mt-10 gap-3">
                     <div className="crm-filter-tray w-full sm:w-fit overflow-x-auto no-scrollbar flex-nowrap p-1.5">
                         <div className="flex items-center gap-1 auto-cols-min">
                             {tabs.map((tab) => {

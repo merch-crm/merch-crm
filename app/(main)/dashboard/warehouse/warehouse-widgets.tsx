@@ -58,24 +58,29 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
     return (
         <PageContainer>
             {/* Top Row: Combined Stats & Expanded Deficit */}
-            <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-12 gap-3">
                 {/* Combined Stats Block */}
                 <div
-                    className="col-span-12 md:col-span-5 lg:col-span-4 crm-card shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between p-0 overflow-hidden bg-white"
+                    className="col-span-12 md:col-span-5 lg:col-span-4 crm-card shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col justify-between bg-white"
                     role="region"
                     aria-label="Общая статистика склада"
                 >
-                    <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+                    {/* Header */}
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 text-white shrink-0">
+                            <Layers className="w-5 h-5 stroke-[2.5]" aria-hidden="true" />
+                        </div>
                         <div>
                             <h4 className="text-[17px] font-bold text-slate-900 leading-tight">Общая статистика</h4>
-                            <p className="text-xs font-medium text-slate-500 mt-1">Сводка по складу</p>
-                        </div>
-                        <div className="w-12 h-12 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/25 text-white">
-                            <Layers className="w-6 h-6 stroke-[2.5]" aria-hidden="true" />
+                            <p className="text-xs font-medium text-slate-500 mt-0.5">Сводка по складу</p>
                         </div>
                     </div>
 
-                    <div className="flex-1 p-6 grid grid-cols-1 gap-3">
+                    {/* Divider breaks out of card padding */}
+                    <div className="card-breakout border-b border-slate-100 mt-6" />
+
+                    {/* Content */}
+                    <div className="flex-1 py-3 grid grid-cols-1 gap-0">
                         <SummaryStatCard
                             icon={Package}
                             iconColor="text-indigo-500"
@@ -102,52 +107,54 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                 {/* Expanded Deficit (Replenishment) */}
                 <div
                     className={cn(
-                        "col-span-12 md:col-span-7 lg:col-span-8 crm-card flex flex-col shadow-sm hover:shadow-md transition-shadow duration-300 p-0 bg-white",
+                        "col-span-12 md:col-span-7 lg:col-span-8 crm-card flex flex-col shadow-sm hover:shadow-md transition-shadow duration-300 bg-white",
                         criticalItems.length > 0 ? "ring-1 ring-rose-500/10" : ""
                     )}
                     role="region"
                     aria-label="Товары, требующие пополнения"
                 >
-                    <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between bg-white relative z-10">
-                        <div className="flex items-center gap-3">
-                            <div className={cn(
-                                "w-12 h-12 rounded-[14px] flex items-center justify-center shadow-lg text-white shrink-0",
-                                criticalItems.length > 0
-                                    ? "bg-gradient-to-br from-rose-500 to-pink-500 shadow-rose-500/25"
-                                    : "bg-gradient-to-br from-emerald-500 to-teal-500 shadow-emerald-500/25"
+                    {/* Header */}
+                    <div className="flex items-center gap-3 bg-white relative z-10">
+                        <div className={cn(
+                            "w-10 h-10 rounded-[12px] flex items-center justify-center shadow-lg text-white shrink-0",
+                            criticalItems.length > 0
+                                ? "bg-gradient-to-br from-rose-500 to-pink-500 shadow-rose-500/25"
+                                : "bg-gradient-to-br from-emerald-500 to-teal-500 shadow-emerald-500/25"
+                        )}>
+                            {criticalItems.length > 0 ? (
+                                <AlertTriangle className="w-5 h-5 stroke-[2.5]" aria-hidden="true" />
+                            ) : (
+                                <TrendingUp className="w-5 h-5 stroke-[2.5]" aria-hidden="true" />
+                            )}
+                        </div>
+                        <div>
+                            <h4 className={cn(
+                                "text-[17px] font-bold leading-tight mb-0.5",
+                                criticalItems.length > 0 ? "text-rose-600" : "text-emerald-700"
                             )}>
-                                {criticalItems.length > 0 ? (
-                                    <AlertTriangle className="w-6 h-6 stroke-[2.5]" aria-hidden="true" />
-                                ) : (
-                                    <TrendingUp className="w-6 h-6 stroke-[2.5]" aria-hidden="true" />
-                                )}
-                            </div>
-                            <div>
-                                <h4 className={cn(
-                                    "text-[17px] font-bold leading-tight mb-1",
-                                    criticalItems.length > 0 ? "text-rose-600" : "text-emerald-700"
-                                )}>
-                                    {criticalItems.length > 0 ? "Требуют пополнения" : "Запасы в норме"}
-                                </h4>
-                                <p className="text-xs font-bold text-slate-400">
-                                    {criticalItems.length > 0
-                                        ? `${criticalItems.length} ${pluralize(criticalItems.length, 'позиция', 'позиции', 'позиций')} ниже лимита`
-                                        : 'Все позиции соответствуют норме остатка'
-                                    }
-                                </p>
-                            </div>
+                                {criticalItems.length > 0 ? "Требуют пополнения" : "Запасы в норме"}
+                            </h4>
+                            <p className="text-xs font-bold text-slate-400">
+                                {criticalItems.length > 0
+                                    ? `${criticalItems.length} ${pluralize(criticalItems.length, 'позиция', 'позиции', 'позиций')} ниже лимита`
+                                    : 'Все позиции соответствуют норме остатка'
+                                }
+                            </p>
                         </div>
                     </div>
 
-                    <div className="flex-1 p-6 relative">
+                    {/* Divider */}
+                    <div className="card-breakout border-b border-slate-100 mt-6" />
+
+                    <div className="flex-1 py-6 relative">
                         {criticalItems.length > 0 ? (
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto max-h-[260px] custom-scrollbar px-2 pb-10 pt-2 -mx-2">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto max-h-[260px] custom-scrollbar pb-4 pt-1">
                                 {criticalItems.map((item) => (
                                     <Link
                                         key={item.id}
                                         href={`/dashboard/warehouse/items/${item.id}`}
                                         aria-label={`Товар: ${item.name}, Остаток: ${item.quantity} ${formatUnit(item.unit)}`}
-                                        className="group flex items-center justify-between p-3.5 rounded-[12px] bg-white border border-rose-100 hover:border-rose-300 hover:shadow-md transition-all shadow-sm"
+                                        className="group flex items-center justify-between p-3.5 rounded-[12px] bg-white border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all shadow-sm"
                                     >
                                         <div className="flex items-center gap-3.5 min-w-0">
                                             <div className="w-10 h-10 rounded-[10px] bg-rose-50 flex items-center justify-center border border-rose-100 shrink-0 transition-transform">
@@ -168,7 +175,7 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                                 ))}
                             </div>
                         ) : (
-                            <div className="flex-1 p-6 pt-4 flex flex-col items-center justify-center text-center bg-emerald-50/20 rounded-[16px] border border-dashed border-emerald-100/50">
+                            <div className="flex-1 flex flex-col items-start justify-center text-left bg-emerald-50/20 rounded-[var(--radius-inner)] border border-dashed border-emerald-100/50 p-6 min-h-[160px]">
                                 <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-lg shadow-emerald-100 mb-4 animate-bounce-slow">
                                     <TrendingUp className="w-7 h-7 text-emerald-500" aria-hidden="true" />
                                 </div>
@@ -180,14 +187,14 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                 </div>
             </div>
 
-            {/* Activity Trend - Ultra Compact Status Bar */}
+            {/* Activity Trend */}
             <div
-                className="crm-card flex flex-col sm:flex-row items-center gap-4 md:justify-between py-4 px-6 transition-all shadow-sm hover:shadow-md bg-white border border-slate-100"
+                className="col-span-12 crm-card shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col sm:flex-row items-center gap-6 sm:justify-between bg-white mt-3"
                 role="region"
                 aria-label="Активность склада за 30 дней"
             >
                 <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
-                    <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-slate-700 to-slate-900 text-white flex items-center justify-center shadow-lg shadow-slate-500/25 shrink-0">
+                    <div className="w-10 h-10 rounded-[12px] bg-slate-900 text-white flex items-center justify-center shadow-lg shadow-slate-900/10 shrink-0">
                         <Activity className="w-5 h-5" aria-hidden="true" />
                     </div>
                     <div>
@@ -213,28 +220,27 @@ export function WarehouseWidgets({ stats }: WarehouseWidgetsProps) {
                     ))}
                 </div>
             </div>
-
         </PageContainer>
     );
 }
 
 export function WarehouseWidgetsSkeleton() {
     return (
-        <div className="space-y-4 animate-pulse px-1">
+        <div className="space-y-3 animate-pulse">
             {/* Top Row Skeleton */}
-            <div className="grid grid-cols-12 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-12 gap-3">
                 {/* Stats Skeleton */}
-                <div className="col-span-12 md:col-span-5 lg:col-span-4 crm-card shadow-sm p-0 overflow-hidden bg-white border border-slate-100">
-                    <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+                <div className="col-span-12 md:col-span-5 lg:col-span-4 crm-card shadow-sm bg-white border border-slate-100">
+                    <div className="pb-4 border-b border-slate-100 card-breakout flex items-center justify-between pt-0">
                         <div className="space-y-2">
                             <div className="h-5 w-32 bg-slate-100 rounded" />
                             <div className="h-3 w-20 bg-slate-50 rounded" />
                         </div>
-                        <div className="w-12 h-12 rounded-[14px] bg-indigo-50 flex items-center justify-center border border-indigo-100">
-                            <Layers className="w-6 h-6 text-indigo-200" />
+                        <div className="w-10 h-10 rounded-[12px] bg-indigo-50 border border-indigo-100 flex items-center justify-center">
+                            <Layers className="w-5 h-5 text-indigo-200" />
                         </div>
                     </div>
-                    <div className="p-6 grid grid-cols-1 gap-3">
+                    <div className="pt-4 grid grid-cols-1 gap-3">
                         {[1, 2, 3].map((i) => (
                             <div key={i} className="flex items-center justify-between p-3.5 rounded-[12px] bg-slate-50/50 border border-slate-100">
                                 <div className="flex items-center gap-3.5">
@@ -248,20 +254,20 @@ export function WarehouseWidgetsSkeleton() {
                 </div>
 
                 {/* Replenishment Skeleton */}
-                <div className="col-span-12 md:col-span-7 lg:col-span-8 crm-card flex flex-col shadow-sm p-0 overflow-hidden bg-white border border-slate-100">
-                    <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+                <div className="col-span-12 md:col-span-7 lg:col-span-8 crm-card flex flex-col shadow-sm bg-white border border-slate-100">
+                    <div className="pb-4 card-breakout border-b border-slate-100 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-[14px] bg-emerald-50 border border-emerald-100 flex items-center justify-center">
                                 <TrendingUp className="w-6 h-6 text-emerald-200" />
                             </div>
-                            <div className="space-y-2">
-                                <div className="h-5 w-40 bg-slate-100 rounded" />
-                                <div className="h-3 w-32 bg-slate-50 rounded" />
-                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="h-5 w-40 bg-slate-100 rounded" />
+                            <div className="h-3 w-32 bg-slate-50 rounded" />
                         </div>
                     </div>
                     <div className="flex-1 p-5">
-                        <div className="h-full flex flex-col items-center justify-center p-8 border border-dashed border-slate-100 rounded-[16px]">
+                        <div className="h-full flex flex-col items-center justify-center p-6 border border-dashed border-slate-100 rounded-[16px]">
                             <div className="w-14 h-14 bg-slate-50 rounded-full mb-4" />
                             <div className="h-4 w-48 bg-slate-100 rounded mb-2" />
                             <div className="h-3 w-32 bg-slate-50 rounded" />
@@ -271,7 +277,7 @@ export function WarehouseWidgetsSkeleton() {
             </div>
 
             {/* Activity Skeleton */}
-            <div className="crm-card flex flex-col sm:flex-row items-center gap-4 md:justify-between py-4 px-6 shadow-sm bg-white border border-slate-100">
+            <div className="crm-card flex flex-col sm:flex-row items-center gap-3 md:justify-between py-4 px-6 shadow-sm bg-white border border-slate-100">
                 <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
                     <div className="w-10 h-10 rounded-[12px] bg-slate-100 flex items-center justify-center">
                         <Activity className="w-5 h-5 text-slate-300" />

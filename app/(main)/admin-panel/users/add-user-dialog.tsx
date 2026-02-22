@@ -47,7 +47,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4 pb-5">
+                    <form onSubmit={handleSubmit} className="space-y-3 pb-5">
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">ФИО сотрудника</label>
                             <IconInput
@@ -84,7 +84,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                             />
                         </div>
 
-                        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}>
+                        <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-3`}>
                             <div className="space-y-1">
                                 <label className="text-sm font-bold text-slate-700 pl-1">Роль в системе</label>
                                 <IconSelect

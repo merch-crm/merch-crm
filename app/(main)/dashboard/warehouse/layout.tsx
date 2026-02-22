@@ -134,11 +134,11 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     };
 
     return (
-        <div className="flex flex-col gap-4 animate-in fade-in duration-700">
+        <div className="flex flex-col gap-3 animate-in fade-in duration-700">
             {isRootPage && (
                 <>
                     {/* Header */}
-                    <div className="flex flex-row items-center justify-between gap-3">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-0">
                         <div className="flex flex-col gap-1 min-w-0">
                             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight truncate">
                                 {currentInfo.title}

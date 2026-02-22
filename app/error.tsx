@@ -23,8 +23,8 @@ export default function Error({
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
-            <div className="text-center p-8 md:p-12 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full mx-4 space-y-4 animate-in zoom-in-95 duration-700">
-                <div className="w-[80px] h-[80px] bg-rose-50 rounded-[24px] flex items-center justify-center text-rose-500 mx-auto">
+            <div className="text-center p-[--radius-padding] md:p-[--padding-xl] bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full mx-4 space-y-3 animate-in zoom-in-95 duration-700">
+                <div className="w-[80px] h-[80px] bg-rose-50 rounded-[var(--radius-outer)] flex items-center justify-center text-rose-500 mx-auto">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
                 </div>
 

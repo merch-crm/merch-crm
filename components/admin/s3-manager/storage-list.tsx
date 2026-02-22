@@ -75,12 +75,12 @@ export const StorageList = ({
     return (
         <div className="h-[500px] overflow-y-auto">
             {loading ? (
-                <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
+                <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-300">
                     <RefreshCw className="animate-spin" size={48} />
                     <p className="text-xs font-bold ">Загрузка...</p>
                 </div>
             ) : filteredFolders.length === 0 && filteredFiles.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-300">
+                <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-300">
                     <div className="p-6 bg-slate-50 rounded-full">
                         <File size={48} className="opacity-20" />
                     </div>

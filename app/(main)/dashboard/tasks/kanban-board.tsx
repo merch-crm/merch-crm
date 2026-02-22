@@ -86,7 +86,7 @@ export function KanbanBoard({ tasks, currentUserId, currentUserDepartmentId }: K
 
     return (
         <>
-            <div className="flex gap-4 overflow-x-auto pb-8 pt-4 min-h-[75vh] items-start scrollbar-hide">
+            <div className="flex gap-3 overflow-x-auto pb-8 pt-4 min-h-[75vh] items-start scrollbar-hide">
                 {COLUMNS.map((column) => {
                     const columnTasks = tasks.filter(t => t.status === column.id);
 

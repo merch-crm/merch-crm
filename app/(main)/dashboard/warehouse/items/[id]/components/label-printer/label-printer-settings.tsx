@@ -59,7 +59,7 @@ export function LabelPrinterSettings({
             </div>
 
             {/* Scrollable Settings */}
-            <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-4 custom-scrollbar relative">
+            <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 space-y-3 custom-scrollbar relative">
                 {/* Paper Size */}
                 <div className="space-y-2.5">
                     <label className="text-[11px] font-bold text-slate-500 ml-1">Размер этикетки</label>
@@ -219,7 +219,7 @@ export function LabelPrinterSettings({
             </div>
 
             {/* Footer: Quantity & Actions */}
-            <div className="flex-none px-6 pt-5 pb-6 bg-white border-t border-slate-200 z-50 space-y-4 shadow-[0_-12px_30px_-15px_rgba(0,0,0,0.08)]">
+            <div className="flex-none px-6 pt-5 pb-6 bg-white border-t border-slate-200 z-50 space-y-3 shadow-[0_-12px_30px_-15px_rgba(0,0,0,0.08)]">
                 {/* Quantity Row */}
                 <div className="flex items-center justify-between">
                     <label className="text-[11px] font-bold text-slate-500 ml-1">Тираж</label>

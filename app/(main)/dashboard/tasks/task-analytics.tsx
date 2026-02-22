@@ -72,10 +72,10 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
     }).length;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Основные метрики */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
-                <div className="crm-card !p-6 shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="crm-card  shadow-lg shadow-slate-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-primary/5 rounded-2xl">
                             <Target className="w-6 h-6 text-primary" />
@@ -88,7 +88,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                     <p className="text-sm font-bold text-slate-400 ">Задач в системе</p>
                 </div>
 
-                <div className="crm-card !p-6 !border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card  !border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-emerald-50 rounded-2xl">
                             <CheckCircle2 className="w-6 h-6 text-emerald-600" />
@@ -101,7 +101,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                     <p className="text-sm font-bold text-slate-400 ">Выполнено</p>
                 </div>
 
-                <div className="crm-card !p-6 !border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card  !border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-amber-50 rounded-2xl">
                             <Clock className="w-6 h-6 text-amber-600" />
@@ -114,7 +114,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                     <p className="text-sm font-bold text-slate-400 ">На этой неделе</p>
                 </div>
 
-                <div className="crm-card !p-6 !border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
+                <div className="crm-card  !border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
                     <div className="flex items-start justify-between mb-4">
                         <div className="p-3 bg-rose-50 rounded-2xl">
                             <AlertTriangle className="w-6 h-6 text-rose-600" />
@@ -131,9 +131,9 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
             </div>
 
             {/* Детальная статистика */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 {/* Статусы */}
-                <div className="crm-card !p-8 shadow-lg shadow-slate-200/50">
+                <div className="crm-card  shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-slate-50 rounded-2xl">
                             <Activity className="w-6 h-6 text-slate-600" />
@@ -144,7 +144,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {[
                             { label: "Новые", count: statusStats.new, color: "bg-slate-400", textColor: "text-slate-600" },
                             { label: "В работе", count: statusStats.in_progress, color: "bg-primary", textColor: "text-primary" },
@@ -171,7 +171,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                 </div>
 
                 {/* Приоритеты */}
-                <div className="crm-card !p-8 shadow-lg shadow-slate-200/50">
+                <div className="crm-card  shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-slate-50 rounded-2xl">
                             <BarChart3 className="w-6 h-6 text-slate-600" />
@@ -182,7 +182,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {[
                             { label: "Высокий приоритет", count: priorityStats.high, color: "bg-rose-500", bgColor: "bg-rose-50", textColor: "text-rose-600" },
                             { label: "Обычный приоритет", count: priorityStats.normal, color: "bg-amber-400", bgColor: "bg-amber-50", textColor: "text-amber-600" },
@@ -204,7 +204,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
 
             {/* Топ исполнителей */}
             {userTaskCounts.length > 0 && (
-                <div className="crm-card !p-8 shadow-lg shadow-slate-200/50">
+                <div className="crm-card  shadow-lg shadow-slate-200/50">
                     <div className="flex items-center gap-3 mb-6">
                         <div className="p-3 bg-slate-50 rounded-2xl">
                             <Users className="w-6 h-6 text-slate-600" />

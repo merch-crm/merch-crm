@@ -108,7 +108,7 @@ export function AuditLogsList({ logs, loading }: AuditLogsListProps) {
                 const Icon = entity.icon;
                 const formattedDetails = formatLogDetails(log.details);
                 return (
-                    <div key={log.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <div key={log.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className={cn("h-10 w-10 rounded-xl flex items-center justify-center shadow-sm border border-transparent", entity.bg, entity.color)}>
@@ -150,7 +150,7 @@ export function AuditLogsList({ logs, loading }: AuditLogsListProps) {
                     </div>
                 );
             }}
-            mobileGridClassName="grid grid-cols-1 gap-4"
+            mobileGridClassName="grid grid-cols-1 gap-3"
         />
     );
 }

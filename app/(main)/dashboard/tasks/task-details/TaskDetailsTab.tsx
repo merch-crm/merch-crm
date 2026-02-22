@@ -40,8 +40,8 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-10">
+                <div className="space-y-3">
                     <div className="text-xs font-bold text-slate-400 mb-1">Исполнитель</div>
                     <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-white shadow-sm overflow-hidden">
@@ -92,7 +92,7 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
             </div>
 
             {task.description && (
-                <div className="mb-10 p-8 bg-slate-50/30 rounded-2xl border border-slate-200/50">
+                <div className="mb-10 p-6 bg-slate-50/30 rounded-2xl border border-slate-200/50">
                     <h4 className="text-xs font-bold text-slate-400 mb-4 flex items-center gap-2">
                         <AlignLeft className="w-3.5 h-3.5" />
                         Подробное описание

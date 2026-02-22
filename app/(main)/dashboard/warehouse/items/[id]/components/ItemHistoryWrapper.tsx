@@ -20,7 +20,7 @@ export function ItemHistoryWrapper({
 }: ItemHistoryWrapperProps) {
     return (
         <div className={cn(
-            "crm-card rounded-3xl p-4 sm:p-8 space-y-4",
+            "crm-card rounded-3xl p-4 sm:p-6 space-y-3",
             "md:col-span-2 xl:col-span-12",
             tabletTab === 'history' ? "block" : "hidden",
             "xl:block"

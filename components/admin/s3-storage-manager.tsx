@@ -66,7 +66,7 @@ export function S3StorageManager() {
     } = useS3StorageManager();
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             {/* Header Info */}
             <StorageStats
                 data={data}
@@ -75,14 +75,14 @@ export function S3StorageManager() {
                 fetchData={fetchData}
             />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                 {/* S3 Storage Management */}
-                <div className="lg:col-span-2 space-y-4">
+                <div className="lg:col-span-2 space-y-3">
                     <Card className="border-slate-200 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
-                        <CardHeader className="p-8 pb-4">
-                            <div className="flex flex-col gap-4">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                                    <div className="flex items-center gap-4">
+                        <CardHeader className="p-6 pb-4">
+                            <div className="flex flex-col gap-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3">
                                         <div className="p-3.5 bg-primary text-white rounded-[24px] shadow-lg shadow-indigo-200">
                                             <CloudUpload size={24} />
                                         </div>
@@ -211,7 +211,7 @@ export function S3StorageManager() {
                 title="Новая папка"
                 description={`Введите имя папки. Она будет создана в: ${currentPrefix || "/"}`}
             >
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400">Имя папки</label>
                         <Input
@@ -250,7 +250,7 @@ export function S3StorageManager() {
                 title="Переименование"
                 description={`Введите новое имя для ${modals.rename.key?.endsWith("/") ? "папки" : "файла"}`}
             >
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400">Новое имя</label>
                         <Input
@@ -314,7 +314,7 @@ export function S3StorageManager() {
                 description={preview.file?.name || "Информация о файле"}
             >
                 {preview.file && (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="relative aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl group">
                             {preview.file.type === 'image' ? (
                                 <NextImage
@@ -365,7 +365,7 @@ export function S3StorageManager() {
             {/* Loading Overlay for Preview */}
             {preview.loading && (
                 <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center gap-4 text-white"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-md flex flex-col items-center justify-center gap-3 text-white"
                     style={{ zIndex: Z_INDEX.loadingOverlay }}
                 >
                     <RefreshCw className="animate-spin" size={48} />

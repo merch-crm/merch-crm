@@ -62,7 +62,7 @@ export function AdminSidebar({ }: AdminSidebarProps) {
                         variant="ghost"
                         onClick={() => router.push(item.href)}
                         className={cn(
-                            "w-full flex items-center justify-start gap-4 px-4 py-3 rounded-2xl text-[13px] font-black transition-all group relative outline-none h-auto border-none hover:bg-transparent",
+                            "w-full flex items-center justify-start gap-3 px-4 py-3 rounded-2xl text-[13px] font-black transition-all group relative outline-none h-auto border-none hover:bg-transparent",
                             isActive ? "text-white" : "text-slate-400 hover:text-slate-100"
                         )}
                     >
@@ -110,13 +110,13 @@ export function AdminSidebar({ }: AdminSidebarProps) {
 export function AdminUserCard({ user }: AdminSidebarProps) {
     const router = useRouter();
     return (
-        <div className="mt-auto space-y-4">
+        <div className="mt-auto space-y-3">
             <div className="pt-4 border-t border-slate-800">
                 <Button
                     type="button"
                     variant="ghost"
                     onClick={() => router.push('/dashboard')}
-                    className="w-full flex items-center justify-start gap-4 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group h-auto border-none"
+                    className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group h-auto border-none"
                 >
                     <LogOut className="w-5 h-5" />
                     <span>Вернуться в CRM</span>

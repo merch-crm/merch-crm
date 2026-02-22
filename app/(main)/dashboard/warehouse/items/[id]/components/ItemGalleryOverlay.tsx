@@ -56,7 +56,7 @@ export const ItemGalleryOverlay = React.memo(({
                 aria-label="Закрыть галерею"
             />
             {/* Header Info */}
-            <div className="absolute top-0 inset-x-0 p-8 flex justify-between items-center z-10">
+            <div className="absolute top-0 inset-x-0 p-6 flex justify-between items-center z-10">
                 <div className="flex flex-col">
                     <h3 className="text-white text-xl font-black">{itemName}</h3>
                     <p className="text-white/40 text-xs font-bold mt-1">

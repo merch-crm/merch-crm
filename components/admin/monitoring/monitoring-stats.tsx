@@ -24,7 +24,7 @@ interface MonitoringStatsProps {
 
 export function MonitoringStats({ stats, monitoringData }: MonitoringStatsProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             <Card className="border-none shadow-sm bg-gradient-to-br from-indigo-500 to-[#5d00ff] text-white overflow-hidden relative">
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                     <Server size={80} strokeWidth={1} />

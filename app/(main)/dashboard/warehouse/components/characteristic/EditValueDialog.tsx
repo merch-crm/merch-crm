@@ -48,7 +48,7 @@ export function EditValueDialog({
                 </div>
 
                 <div className="px-6 py-6 pb-4 bg-slate-50/30 overflow-y-auto custom-scrollbar">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5">
                             <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                             <Input

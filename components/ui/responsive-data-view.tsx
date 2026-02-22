@@ -19,7 +19,7 @@ export function ResponsiveDataView<T>({
     data = [],
     renderTable,
     renderCard,
-    mobileGridClassName = "grid grid-cols-1 md:grid-cols-2 gap-4 md:hidden",
+    mobileGridClassName = "grid grid-cols-1 md:grid-cols-2 gap-3 md:hidden",
     desktopClassName = "hidden md:block"
 }: ResponsiveDataViewProps<T>) {
     if (!data || !Array.isArray(data)) return null;

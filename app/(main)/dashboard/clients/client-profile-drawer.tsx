@@ -129,7 +129,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                     )}
 
                     {/* Tabs */}
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                         {(["general", "orders", "activity"] as const).map((tab) => (
                             <button type="button"
                                 key={tab}
@@ -155,15 +155,15 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                 {/* Scrollable Content */}
                 <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-white">
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center h-40 space-y-4">
+                        <div className="flex flex-col items-center justify-center h-40 space-y-3">
                             <div className="w-8 h-8 border-4 border-primary/10 border-t-primary rounded-full animate-spin" />
                             <p className="text-xs font-medium text-slate-400">Загрузка данных...</p>
                         </div>
                     ) : client ? (
-                        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
 
                             {activeTab === "general" && (
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {/* Stats Cards */}
                                     <div className="grid grid-cols-2 gap-3">
                                         <ModernStatCard
@@ -315,13 +315,13 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                             )}
 
                             {activeTab === "activity" && (
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center gap-2 px-1">
                                         <Activity className="w-4 h-4 text-slate-400" />
                                         <h3 className="text-xs font-semibold text-slate-400">Лента событий</h3>
                                     </div>
                                     {client.activity?.length > 0 ? (
-                                        <div className="relative pl-6 space-y-4 before:absolute before:left-[9px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+                                        <div className="relative pl-6 space-y-3 before:absolute before:left-[9px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
                                             {client.activity?.map((log) => (
                                                 <div key={log.id} className="relative group">
                                                     <div className="absolute -left-[23px] top-1 w-5 h-5 rounded-full bg-white border-4 border-slate-200 flex items-center justify-center z-10">

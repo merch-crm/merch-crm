@@ -32,10 +32,10 @@ export default async function ClientPage({ params }: { params: { id: string } })
     const balance = Math.round(client.stats?.balance || 0);
 
     return (
-        <div className="flex flex-col gap-4 animate-in fade-in duration-500">
+        <div className="flex flex-col gap-3 animate-in fade-in duration-500">
             {/* Minimal Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
                     <Link href="/dashboard/clients">
                         <Button variant="outline" size="icon" className="group rounded-2xl border-slate-200">
                             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -60,9 +60,9 @@ export default async function ClientPage({ params }: { params: { id: string } })
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
                 {/* Sidebar */}
-                <aside className="lg:col-span-4 space-y-4 lg:sticky lg:top-6">
+                <aside className="lg:col-span-4 space-y-3 lg:sticky lg:top-6">
                     {/* Contact Profile Card */}
                     <div className="crm-card !p-0 overflow-hidden !rounded-[32px] border-none shadow-xl shadow-slate-200/50">
                         <div className="relative h-32 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 overflow-hidden">
@@ -85,7 +85,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                 {client.company || "Частное лицо"}
                             </p>
 
-                            <div className="w-full mt-8 space-y-4">
+                            <div className="w-full mt-8 space-y-3">
                                 <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100/50 group hover:bg-white hover:border-primary/20 transition-all cursor-pointer">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-slate-200 shadow-sm group-hover:scale-110 transition-transform">
@@ -128,10 +128,10 @@ export default async function ClientPage({ params }: { params: { id: string } })
                     </div>
 
                     {/* Meta Info */}
-                    <div className="crm-card !p-8 !rounded-[32px] space-y-4">
+                    <div className="crm-card  !rounded-[32px] space-y-3">
                         <div>
                             <span className="text-xs font-bold text-slate-300">Адрес доставки</span>
-                            <div className="flex items-start gap-4 mt-3">
+                            <div className="flex items-start gap-3 mt-3">
                                 <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center border border-slate-100 shrink-0">
                                     <MapPin className="w-5 h-5 text-slate-400" />
                                 </div>
@@ -158,9 +158,9 @@ export default async function ClientPage({ params }: { params: { id: string } })
                 </aside>
 
                 {/* Main Content Area */}
-                <div className="lg:col-span-8 flex flex-col gap-4">
+                <div className="lg:col-span-8 flex flex-col gap-3">
                     {/* Stats Overview */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {[
                             { label: 'Заказов', value: client.stats?.count || 0, icon: ShoppingBag, color: 'text-blue-500' },
                             { label: 'Сумма', value: `${Math.round(client.stats?.total || 0).toLocaleString()} ${currencySymbol}`, icon: CreditCard, color: 'text-indigo-500' },
@@ -202,7 +202,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                         </TabsContent>
 
                         <TabsContent value="finance" className="mt-0">
-                            <div className="crm-card !p-12 text-center text-slate-500 rounded-3xl border-dashed">
+                            <div className="crm-card !p-[--padding-xl] text-center text-slate-500 rounded-3xl border-dashed">
                                 <Wallet className="w-12 h-12 mx-auto mb-4 text-slate-200" />
                                 <h3 className="text-lg font-black text-slate-900">Финансовый профиль</h3>
                                 <p className="text-sm text-slate-400 mt-2 max-w-sm mx-auto">Детальная история платежей и расчетов будет доступна в следующем обновлении CRM.</p>

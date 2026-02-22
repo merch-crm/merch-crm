@@ -42,10 +42,10 @@ export function StepConfirmation({
     const finalTotal = Math.max(0, Math.round(cartTotal - discount));
 
     return (
-        <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h4 className="text-xl font-bold text-foreground">Подтверждение заказа</h4>
 
-            <div className="bg-muted/50 rounded-2xl p-6 space-y-4 border border-border">
+            <div className="bg-muted/50 rounded-2xl p-6 space-y-3 border border-border">
                 <div className="flex justify-between border-b border-border pb-4">
                     <span className="text-muted-foreground font-bold text-xs">Клиент</span>
                     <span className="font-bold">{selectedClient?.displayName || selectedClient?.fullName}</span>
@@ -78,7 +78,7 @@ export function StepConfirmation({
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-4 bg-card border border-border rounded-2xl shadow-sm">
                     <p className="text-xs font-bold text-muted-foreground mb-1">Приоритет</p>
                     <p className="font-bold text-sm tracking-tight">{details.priority === 'low' ? 'Низкий' : details.priority === 'medium' ? 'Средний' : 'Высокий'}</p>

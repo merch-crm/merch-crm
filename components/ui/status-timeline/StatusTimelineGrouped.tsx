@@ -29,7 +29,7 @@ export function StatusTimelineGrouped({ events, className }: StatusTimelineGroup
     }, [events]);
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("space-y-3", className)}>
             {groupedEvents.map((group) => (
                 <div key={group.date.toISOString()}>
                     {/* Дата */}

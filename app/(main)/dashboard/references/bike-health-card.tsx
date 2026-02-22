@@ -27,7 +27,7 @@ export default function BikeHealthCard() {
                 <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/5 to-transparent z-10 pointer-events-none" />
 
                 {/* Content Container */}
-                <div className="relative z-20 h-full flex flex-col p-8">
+                <div className="relative z-20 h-full flex flex-col p-6">
 
                     {/* Header */}
                     <div className="flex justify-between items-start">
@@ -64,7 +64,7 @@ export default function BikeHealthCard() {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         {/* Stat Item 1: Last Service */}
                         <div className="bg-[#383A35]/50 rounded-[1.5rem] p-5 backdrop-blur-md border border-white/5 hover:bg-[#383A35]/70 transition-colors">
                             <div className="flex items-center gap-3 mb-2">

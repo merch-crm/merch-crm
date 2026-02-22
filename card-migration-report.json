@@ -1,0 +1,354 @@
+{
+  "files": [
+    {
+      "path": "app/(main)/admin-panel/admin-overview-client.tsx",
+      "occurrences": 5
+    },
+    {
+      "path": "app/(main)/admin-panel/branding/components/AppearanceSettings.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/admin-panel/branding/components/BrandingTabs.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/admin-panel/branding/components/CommunicationSettings.tsx",
+      "occurrences": 3
+    },
+    {
+      "path": "app/(main)/admin-panel/branding/components/GeneralSettings.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/admin-panel/branding/components/SoundSettings.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/admin-panel/branding/icon-manager.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/admin-panel/monitoring/page.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/admin-panel/notifications/notifications-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/admin-panel/users/users-table.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/clients/[id]/client-timeline.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/clients/[id]/page.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/clients/components/client-table.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/clients/page.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/dashboard-client.tsx",
+      "occurrences": 6
+    },
+    {
+      "path": "app/(main)/dashboard/design/design-queue.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/design/design-widgets.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/finance/expenses-client.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/finance/funds-client.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/finance/loading.tsx",
+      "occurrences": 3
+    },
+    {
+      "path": "app/(main)/dashboard/finance/pl-client.tsx",
+      "occurrences": 5
+    },
+    {
+      "path": "app/(main)/dashboard/finance/promocodes/components/PromocodeCard.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/finance/salary-client.tsx",
+      "occurrences": 3
+    },
+    {
+      "path": "app/(main)/dashboard/finance/sales-client.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/finance/transactions-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/knowledge-base/wiki-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/orders/[id]/order-attachments.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/orders/[id]/order-items-table.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/orders/[id]/page.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/orders/bulk-actions-panel.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/orders/new/components/OrderSidebar.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/orders/new/page-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/orders/orders-table.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/orders/orders-widgets.tsx",
+      "occurrences": 5
+    },
+    {
+      "path": "app/(main)/dashboard/production/production-board.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/production/production-widgets.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/profile/ProfileClient.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/profile/components/views/NotificationsTab.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/profile/components/views/OverviewTab.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/profile/components/views/SettingsTab.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/profile/schedule-view.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/profile/statistics-view.tsx",
+      "occurrences": 3
+    },
+    {
+      "path": "app/(main)/dashboard/references/aquaflow-landing-crm.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/references/eduplex-dashboard-crm.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/references/focus-flow-dashboard-crm.tsx",
+      "occurrences": 3
+    },
+    {
+      "path": "app/(main)/dashboard/references/invoice-dashboard-crm.tsx",
+      "occurrences": 3
+    },
+    {
+      "path": "app/(main)/dashboard/references/smart-home-dashboard-crm.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/references/steps-menu-crm.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/references/twisty-crm.tsx",
+      "occurrences": 6
+    },
+    {
+      "path": "app/(main)/dashboard/references/ui-components-showcase-crm.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/tasks/calendar-view.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/tasks/task-analytics.tsx",
+      "occurrences": 7
+    },
+    {
+      "path": "app/(main)/dashboard/tasks/tasks-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/tasks/tasks-list.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/[id]/components/SubCategoryCard.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/archive-table.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/categories/page.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/components/HistoryDisplay.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/components/HistoryMobileList.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/components/characteristic/CategoryTabs.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/components/characteristic/CharacteristicCard.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/inventory-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemActiveOrdersWrapper.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemCharacteristicSection.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsMainContent.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemDetailsRightSidebar.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemHistoryWrapper.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemImageCropper.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemImagePreview.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemInventorySection.tsx",
+      "occurrences": 4
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemMobileInfo.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemOfflineOverlay.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemPlacementWrapper.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemStockAlerts.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/ItemTabletView.tsx",
+      "occurrences": 2
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/[id]/components/item-financial-section/ItemFinancialSection.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/new/components/new-item-sidebar.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/new/components/stock-step.tsx",
+      "occurrences": 5
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/items/new/new-item-page-client.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/layout.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/loading.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/storage-locations-tab.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "app/(main)/dashboard/warehouse/warehouse-widgets.tsx",
+      "occurrences": 7
+    },
+    {
+      "path": "components/ui/card.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "components/ui/stat-card.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "components/ui/time-tracker/TimeTracker.tsx",
+      "occurrences": 1
+    },
+    {
+      "path": "components/ui/time-tracker/TimeTrackerWidget.tsx",
+      "occurrences": 2
+    }
+  ],
+  "totalOccurrences": 174,
+  "nestedCases": []
+}

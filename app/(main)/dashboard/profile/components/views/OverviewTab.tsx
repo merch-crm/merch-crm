@@ -24,9 +24,9 @@ export function OverviewTab({
     handleNavClick
 }: OverviewTabProps) {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 pb-12">
             {/* Left Column - Stats & Activity */}
-            <div className="lg:col-span-8 space-y-4">
+            <div className="lg:col-span-8 space-y-3">
                 <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold text-slate-900">Ключевые показатели</h3>
                     <Button
@@ -39,7 +39,7 @@ export function OverviewTab({
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                         {
                             title: "Выполнено заказов",
@@ -60,7 +60,7 @@ export function OverviewTab({
                             icon: <CreditCard />
                         },
                     ].map((stat, i) => (
-                        <div key={i} className="group crm-card !p-6 !rounded-3xl hover:shadow-xl hover:shadow-primary/5 transition-all cursor-default">
+                        <div key={i} className="group crm-card  !rounded-3xl hover:shadow-xl hover:shadow-primary/5 transition-all cursor-default">
                             <div className="flex justify-between items-start mb-8">
                                 <div className={cn(
                                     "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110",
@@ -90,13 +90,13 @@ export function OverviewTab({
                 </div>
 
                 {/* Activity Chart Mock */}
-                <div className="crm-card !p-8 !rounded-3xl relative overflow-hidden">
+                <div className="crm-card  !rounded-3xl relative overflow-hidden">
                     <div className="flex items-center justify-between mb-8 relative z-10">
                         <div>
                             <h3 className="font-bold text-slate-900 text-lg">Активность за неделю</h3>
                             <p className="text-xs font-bold text-slate-400 mt-1">Количество действий в системе</p>
                         </div>
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
                                 <div className="w-2.5 h-2.5 rounded-full bg-primary" />
                                 <span className="text-xs font-bold text-slate-500">Вы</span>
@@ -108,7 +108,7 @@ export function OverviewTab({
                         </div>
                     </div>
 
-                    <div className="h-48 flex items-end justify-between gap-2 md:gap-4 relative z-10 pl-2">
+                    <div className="h-48 flex items-end justify-between gap-2 md:gap-3 relative z-10 pl-2">
                         {[45, 70, 30, 85, 60, 40, 95].map((h, i) => (
                             <div key={i} className="flex-1 flex flex-col items-center gap-3 group cursor-pointer">
                                 <div className="w-full relative h-full flex items-end rounded-t-lg bg-slate-50/50 hover:bg-slate-50 transition-colors">
@@ -131,8 +131,8 @@ export function OverviewTab({
             </div>
 
             {/* Right Column - Info & Tasks */}
-            <div className="lg:col-span-4 space-y-4">
-                <div className="crm-card !bg-primary !border-primary/50 text-white !rounded-3xl !p-8 shadow-2xl shadow-primary/30 relative overflow-hidden group">
+            <div className="lg:col-span-4 space-y-3">
+                <div className="crm-card !bg-primary !border-primary/50 text-white !rounded-3xl  shadow-2xl shadow-primary/30 relative overflow-hidden group">
                     <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
                     <div className="absolute -left-10 bottom-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
 
@@ -147,7 +147,7 @@ export function OverviewTab({
                     </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="flex items-center justify-between px-2">
                         <h3 className="text-lg font-bold text-slate-900">Последние задачи</h3>
                         <Button variant="ghost" size="icon" className="text-primary hover:bg-primary/10 p-2 rounded-lg transition-colors">
@@ -155,9 +155,9 @@ export function OverviewTab({
                         </Button>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {tasks.length > 0 ? tasks.slice(0, 3).map((task, i) => (
-                            <div key={i} className="flex gap-4 p-5 crm-card !rounded-2xl hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group">
+                            <div key={i} className="flex gap-3 p-5 crm-card !rounded-2xl hover:shadow-md hover:border-primary/20 transition-all cursor-pointer group">
                                 <div className="flex flex-col items-center justify-center shrink-0 border-r border-slate-200 pr-5 gap-1">
                                     <Clock className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                                     <span className="text-xs font-bold text-slate-400 group-hover:text-slate-600">{task.time}</span>

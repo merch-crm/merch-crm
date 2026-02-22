@@ -49,7 +49,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         : (categories.find(c => c.id === activeCategoryId)?.name || "Категория");
 
     return (
-        <div className="space-y-4 pb-20">
+        <div className="space-y-3 pb-20">
             <CategoryTabs
                 rootCategories={rootCategories}
                 hasUncategorized={hasUncategorized}

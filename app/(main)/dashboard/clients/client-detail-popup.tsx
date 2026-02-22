@@ -65,17 +65,17 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
         >
             <div className="flex flex-col h-full bg-white">
                 {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20 gap-4">
+                    <div className="flex flex-col items-center justify-center py-20 gap-3">
                         <div className="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
                         <p className="text-sm font-medium text-slate-400">Загружаем данные клиента...</p>
                     </div>
                 ) : client ? (
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 p-6 overflow-y-auto max-h-[80vh]">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 p-6 overflow-y-auto max-h-[80vh]">
                         {/* Left Column: Basic Info - 4 cols */}
-                        <div className="md:col-span-5 space-y-4">
+                        <div className="md:col-span-5 space-y-3">
                             {/* Entity Header */}
                             <div className="bg-slate-50 rounded-3xl p-6 border border-slate-200">
-                                <div className="flex items-center gap-4 mb-6">
+                                <div className="flex items-center gap-3 mb-6">
                                     <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
                                         <Building2 className="w-8 h-8" />
                                     </div>
@@ -89,7 +89,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                     </div>
                                 </div>
 
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     <div className="flex items-center gap-3 group">
                                         <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-primary/5 group-hover:text-primary transition-all">
                                             <Phone className="w-4 h-4" />
@@ -129,7 +129,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                             {/* Tags / Social */}
                             <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm">
                                 <h3 className="text-xs font-bold text-slate-400 mb-4 px-1">Дополнительно</h3>
-                                <div className="space-y-4">
+                                <div className="space-y-3">
                                     {client.telegram && (
                                         <div className="flex items-center justify-between p-3 rounded-2xl bg-blue-50 border border-blue-100 group transition-all">
                                             <div className="flex items-center gap-3">
@@ -166,9 +166,9 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                         </div>
 
                         {/* Right Column: Active Stuff - 8 cols */}
-                        <div className="md:col-span-7 space-y-4">
+                        <div className="md:col-span-7 space-y-3">
                             {/* Summary Stats */}
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <div className="bg-primary/5 rounded-3xl p-5 border border-primary/10 shadow-sm">
                                     <div className="flex items-center gap-3 mb-3">
                                         <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-primary border border-primary/10">

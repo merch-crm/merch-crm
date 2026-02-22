@@ -35,15 +35,15 @@ export function StepItemSelection({
     currencySymbol
 }: StepItemSelectionProps) {
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex justify-between items-center">
                 <h4 className="text-lg font-bold text-foreground">Выберите товары из каталога</h4>
                 <div className="text-xs font-bold text-muted-foreground">Выбрано: {selectedItems.length} {pluralize(selectedItems.length, 'позиция', 'позиции', 'позиций')}</div>
             </div>
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
                 {/* Catalog */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="relative">
                         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input type="search" placeholder="Поиск товара..." className="pl-9" aria-label="Поиск товара" />
@@ -72,7 +72,7 @@ export function StepItemSelection({
                 </div>
 
                 {/* Selected */}
-                <div className="bg-muted/50 rounded-2xl p-6 border border-border space-y-4">
+                <div className="bg-muted/50 rounded-2xl p-6 border border-border space-y-3">
                     <p className="text-xs font-bold text-muted-foreground">Выбранные позиции</p>
                     {selectedItems.length === 0 ? (
                         <div className="h-40 flex flex-col items-center justify-center text-muted-foreground/50 gap-2">
@@ -82,7 +82,7 @@ export function StepItemSelection({
                     ) : (
                         <div className="space-y-3">
                             {selectedItems.map(item => (
-                                <div key={item.id} className="bg-card p-4 rounded-2xl shadow-sm border border-border space-y-4">
+                                <div key={item.id} className="bg-card p-4 rounded-2xl shadow-sm border border-border space-y-3">
                                     <div className="flex justify-between items-start gap-2">
                                         <p className="text-sm font-bold truncate">{item.name}</p>
                                         <Button
@@ -95,7 +95,7 @@ export function StepItemSelection({
                                             Удалить
                                         </Button>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-bold">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold">
                                         <div className="space-y-1.5">
                                             <label className="text-[11px] font-bold text-muted-foreground ml-1">Кол-во</label>
                                             <Input

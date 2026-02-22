@@ -200,11 +200,11 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     }, [viewState.data, selectedIds, toast]);
 
     if (viewState.loading && !viewState.data) {
-        return <div className="text-slate-400 p-12 text-center font-bold text-[11px]">Загрузка...</div>;
+        return <div className="text-slate-400 p-[--padding-xl] text-center font-bold text-[11px]">Загрузка...</div>;
     }
 
     return (
-        <div className="space-y-4" data-testid="clients-list">
+        <div className="space-y-3" data-testid="clients-list">
             <ClientFilterPanel
                 filters={filters}
                 setFilters={setFilters}

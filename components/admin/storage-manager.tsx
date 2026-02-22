@@ -39,7 +39,7 @@ export function StorageManager() {
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="flex items-center justify-between">
                 {/* Tab Navigation */}
                 <div className="flex items-center gap-2 p-1.5 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit overflow-x-auto no-scrollbar max-w-full">
@@ -84,10 +84,10 @@ export function StorageManager() {
 
             {/* Quota Alerts */}
             {quotaUsage && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {quotaUsage.local.status !== 'ok' && (
                         <div className={cn(
-                            "p-4 rounded-[18px] flex items-center gap-4 shadow-sm border animate-in slide-in-from-top-2",
+                            "p-4 rounded-[18px] flex items-center gap-3 shadow-sm border animate-in slide-in-from-top-2",
                             quotaUsage.local.status === 'critical' ? "bg-rose-50 border-rose-100 text-rose-700" : "bg-amber-50 border-amber-100 text-amber-700"
                         )}>
                             <div className={cn(
@@ -109,7 +109,7 @@ export function StorageManager() {
 
                     {quotaUsage.s3.status !== 'ok' && (
                         <div className={cn(
-                            "p-4 rounded-[18px] flex items-center gap-4 shadow-sm border animate-in slide-in-from-top-2",
+                            "p-4 rounded-[18px] flex items-center gap-3 shadow-sm border animate-in slide-in-from-top-2",
                             quotaUsage.s3.status === 'critical' ? "bg-rose-50 border-rose-100 text-rose-700" : "bg-amber-50 border-amber-100 text-amber-700"
                         )}>
                             <div className={cn(

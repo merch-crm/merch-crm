@@ -73,7 +73,7 @@ function RadioGroup({
                 value={value}
                 onValueChange={onValueChange}
                 className={cn(
-                    orientation === "horizontal" ? "flex flex-wrap gap-4" : "grid gap-3"
+                    orientation === "horizontal" ? "flex flex-wrap gap-3" : "grid gap-3"
                 )}
             >
                 {options.map((option) => (
@@ -141,7 +141,7 @@ function RadioCards({
                     <label
                         key={option.value}
                         className={cn(
-                            "relative flex items-start gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                            "relative flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
                             value === option.value
                                 ? "border-primary bg-primary/5"
                                 : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",

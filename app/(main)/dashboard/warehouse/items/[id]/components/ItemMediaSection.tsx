@@ -76,7 +76,7 @@ export const ItemMediaSection = React.memo(({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
                 <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
@@ -322,7 +322,7 @@ export const ItemMediaSection = React.memo(({
                     ref={lightboxRef}
                     tabIndex={0}
                     onKeyDown={handleKeyDown}
-                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12 animate-in fade-in duration-300 outline-none"
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-[--padding-xl] animate-in fade-in duration-300 outline-none"
                     role="dialog"
                     aria-modal="true"
                     data-dialog-open="true"

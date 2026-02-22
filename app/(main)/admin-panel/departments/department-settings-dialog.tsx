@@ -29,8 +29,8 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
     const colorStyle = DEPARTMENT_COLORS.find(c => c.value === state.selectedColor) || DEPARTMENT_COLORS[0];
 
     const FormContent = (
-        <div className="space-y-4">
-            <div className="space-y-4">
+        <div className="space-y-3">
+            <div className="space-y-3">
                 <div className="space-y-1">
                     <label className="text-sm font-bold text-slate-700 ml-1">Название подразделения</label>
                     <IconInput
@@ -58,10 +58,9 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                     <label className="text-sm font-bold text-slate-700 ml-1">Визуальный идентификатор (Цвет)</label>
                     <div className="flex flex-wrap gap-3">
                         {DEPARTMENT_COLORS.map((color) => (
-                            <Button
+                            <button
                                 key={color.value}
                                 type="button"
-                                variant="ghost"
                                 onClick={() => updateState({ selectedColor: color.value })}
                                 className={cn(
                                     "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110",
@@ -71,7 +70,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                 title={color.name}
                             >
                                 <input type="radio" name="color" value={color.value} checked={state.selectedColor === color.value} className="hidden" readOnly />
-                            </Button>
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -91,7 +90,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
     );
 
     const RolesContent = (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 h-full">
             {/* Current Roles */}
             <div className="flex flex-col bg-slate-50 rounded-xl border border-slate-200 p-5 min-h-[300px] md:h-[450px]">
                 <div className="flex items-center justify-between mb-5">

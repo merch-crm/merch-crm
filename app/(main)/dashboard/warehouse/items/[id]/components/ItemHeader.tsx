@@ -72,7 +72,7 @@ export const ItemHeader = React.memo(({
             )}
 
             {/* Main Header Content */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 w-full">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 w-full">
                 <div className="flex-1 min-w-0 overflow-hidden w-full">
                     <div className="flex items-center gap-2 sm:gap-3">
                         {isEditing ? (

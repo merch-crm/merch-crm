@@ -332,11 +332,11 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                 </div>
 
                 {/* Content Area */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-10">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6">
                     {uiState.selectedPageId ? (
                         <>
                             {pageState.isEditing ? (
-                                <div className="flex flex-col h-full gap-4">
+                                <div className="flex flex-col h-full gap-3">
                                     <div className="flex items-center justify-between gap-2 mb-2 p-2 bg-slate-50/50 rounded-xl border border-slate-200/60">
                                         <div className="flex items-center gap-0.5">
                                             <Button variant="ghost" size="sm" onClick={() => insertMarkdown('**', '**')} className="h-8 w-8 p-0 text-slate-500 hover:text-slate-900" title="Жирный"><Bold className="w-4 h-4" /></Button>
@@ -405,7 +405,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                             )}
                         </>
                     ) : (
-                        <div className="flex-1 h-full flex flex-col items-center justify-center text-center p-6 md:p-12">
+                        <div className="flex-1 h-full flex flex-col items-center justify-center text-center p-6 md:p-[--padding-xl]">
                             <div className="w-20 h-20 md:w-24 md:h-24 rounded-[28px] md:rounded-[32px] bg-slate-100 flex items-center justify-center mb-6 md:mb-8 animate-bounce transition-all duration-1000">
                                 <Search className="w-8 h-8 md:w-10 md:h-10 text-slate-300" />
                             </div>

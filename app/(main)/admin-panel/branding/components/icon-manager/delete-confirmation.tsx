@@ -36,7 +36,7 @@ export function DeleteConfirmation({
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.95, opacity: 0, y: 20 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="bg-white rounded-[24px] shadow-2xl max-w-sm w-full p-8 border border-slate-100"
+                        className="bg-white rounded-[var(--radius-outer)] shadow-2xl max-w-sm w-full p-6 border border-slate-100"
                     >
                         <div className="flex flex-col items-center text-center">
                             <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-6">

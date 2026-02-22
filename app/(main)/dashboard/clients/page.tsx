@@ -72,9 +72,9 @@ export default async function ClientsPage() {
     ].filter(card => card.visible);
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-row items-center justify-between gap-4 px-1">
+        <div className="space-y-3">
+            <div className="flex flex-col gap-3">
+                <div className="flex flex-row items-center justify-between gap-3 px-1">
                     <div className="min-w-0 flex-1">
                         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Клиенты</h1>
                         <p className="text-slate-500 text-[11px] sm:text-[13px] font-medium mt-1.5 sm:mt-3 line-clamp-1">
@@ -94,7 +94,7 @@ export default async function ClientsPage() {
                 </div>
 
                 {/* Stats Grid */}
-                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${statCards.length} gap-[var(--crm-grid-gap)]`}>
+                <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${statCards.length} gap-3`}>
                     {statCards.map((item) => (
                         <div key={item.name} className="crm-card p-6 bg-white flex flex-col justify-between h-36 transition-all duration-500 group border-none">
                             <div className="flex justify-between items-start">

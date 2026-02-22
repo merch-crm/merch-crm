@@ -62,7 +62,7 @@ export const S3RowBase = ({
                 className="crm-td cursor-pointer"
                 onClick={onClick}
             >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className={cn("p-2.5 rounded-[12px] group-hover:scale-110 transition-transform shadow-sm", iconWrapperClass)}>
                         {icon}
                     </div>

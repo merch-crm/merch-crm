@@ -54,7 +54,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                             e.preventDefault();
                             handleSubmit(new FormData(e.currentTarget));
                         }}
-                        className="space-y-4"
+                        className="space-y-3"
                     >
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 ml-1">Название отдела</label>
@@ -82,20 +82,19 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                             <label className="text-sm font-bold text-slate-700 ml-1">Цветовая метка</label>
                             <div className={`flex flex-wrap ${isMobile ? 'grid grid-cols-4' : ''} gap-2`}>
                                 {DEPARTMENT_COLORS.map((color) => (
-                                    <Button
+                                    <button
                                         key={color.value}
                                         type="button"
-                                        variant="ghost"
                                         onClick={() => updateState({ selectedColor: color.value })}
                                         className={cn(
-                                            "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110",
+                                            "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110 outline-none",
                                             state.selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100'
                                         )}
                                         style={{ backgroundColor: getDepartmentColorHex(color.value) }}
                                         title={color.name}
                                     >
                                         <input type="radio" name="color" value={color.value} checked={state.selectedColor === color.value} className="hidden" readOnly />
-                                    </Button>
+                                    </button>
                                 ))}
                             </div>
                         </div>
@@ -123,7 +122,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                                     variant="ghost"
                                                     onClick={() => toggleRole(role.id)}
                                                     className={cn(
-                                                        "flex items-center justify-start gap-4 p-6 rounded-[var(--radius-inner)] transition-all text-left group h-auto border-none",
+                                                        "flex items-center justify-start gap-3 p-6 rounded-[var(--radius-inner)] transition-all text-left group h-auto border-none",
                                                         isSelected ? 'bg-white shadow-md border-primary/20 ring-4 ring-primary/5 hover:bg-white' : 'hover:bg-white/80 border-transparent hover:border-slate-200'
                                                     )}
                                                 >

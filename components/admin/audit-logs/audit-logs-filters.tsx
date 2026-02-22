@@ -43,8 +43,8 @@ export function AuditLogsFilters({
     const hasFilters = searchTerm || selectedUserId || selectedEntityType || startDate || endDate;
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="flex flex-col xl:flex-row xl:items-end gap-4">
+        <div className="flex flex-col gap-3">
+            <div className="flex flex-col xl:flex-row xl:items-end gap-3">
                 <div className="flex-1 space-y-2 min-w-[200px]">
                     <label className="text-xs font-bold text-slate-400 ml-1">Поиск</label>
                     <div className="relative">

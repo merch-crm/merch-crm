@@ -37,7 +37,7 @@ export function DeliveryTracker({
         <div className={cn("rounded-xl border border-slate-200 bg-white overflow-hidden", className)}>
             {/* Хедер */}
             <div className="p-4 border-b border-slate-100">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                         <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", providerConfig.bgColor)}>
                             <Truck className={cn("w-6 h-6", providerConfig.color)} />
@@ -115,7 +115,7 @@ export function DeliveryTracker({
             )}
 
             {/* Информация о доставке */}
-            <div className="p-4 border-b border-slate-100 grid grid-cols-2 gap-4">
+            <div className="p-4 border-b border-slate-100 grid grid-cols-2 gap-3">
                 {delivery.estimatedDelivery && (
                     <div>
                         <p className="text-xs text-slate-500 mb-1">Ожидаемая дата</p>

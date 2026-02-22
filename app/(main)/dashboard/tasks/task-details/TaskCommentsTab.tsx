@@ -20,8 +20,8 @@ export function TaskCommentsTab({
     onAddComment
 }: TaskCommentsTabProps) {
     return (
-        <div className="space-y-4">
-            <div className="space-y-4">
+        <div className="space-y-3">
+            <div className="space-y-3">
                 <textarea
                     value={newCommentValue}
                     onChange={(e) => onCommentValueChange(e.target.value)}
@@ -46,7 +46,7 @@ export function TaskCommentsTab({
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {task.comments?.map((comment) => (
                     <div key={comment.id} className="flex gap-3">
                         <div className="h-10 w-10 rounded-2xl bg-slate-100 shrink-0 overflow-hidden">

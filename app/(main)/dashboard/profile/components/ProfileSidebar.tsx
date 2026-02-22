@@ -73,7 +73,7 @@ export function ProfileSidebar({
                             variant="ghost"
                             onClick={() => handleNavClick(item.id)}
                             className={cn(
-                                "w-full flex items-center justify-start gap-4 px-4 py-6 rounded-xl text-sm font-bold transition-all group relative overflow-hidden",
+                                "w-full flex items-center justify-start gap-3 px-4 py-6 rounded-xl text-sm font-bold transition-all group relative overflow-hidden",
                                 view === item.id
                                     ? "bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary-hover"
                                     : "text-slate-400 hover:bg-white/5 hover:text-white"
@@ -95,7 +95,7 @@ export function ProfileSidebar({
                     <Button
                         variant="ghost"
                         onClick={() => router.push('/dashboard')}
-                        className="w-full flex items-center justify-start gap-4 px-4 py-6 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
+                        className="w-full flex items-center justify-start gap-3 px-4 py-6 rounded-xl text-sm font-bold text-slate-400 hover:bg-white/5 hover:text-white transition-all group"
                     >
                         <LogOut className="w-5 h-5" />
                         <span>Вернуться в CRM</span>

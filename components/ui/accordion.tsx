@@ -117,7 +117,7 @@ function AccordionCards({
     const gapClasses = {
         sm: "space-y-2",
         md: "space-y-3",
-        lg: "space-y-4",
+        lg: "space-y-3",
     };
 
     return (
@@ -224,7 +224,7 @@ function AccordionSettings({
                     className="rounded-xl border border-slate-200 bg-white overflow-hidden"
                 >
                     <AccordionPrimitive.Header className="flex">
-                        <AccordionPrimitive.Trigger className="flex flex-1 items-center gap-4 p-4 text-left transition-all hover:bg-slate-50 [&[data-state=open]]:bg-slate-50 [&[data-state=open]>div:last-child>svg]:rotate-180">
+                        <AccordionPrimitive.Trigger className="flex flex-1 items-center gap-3 p-4 text-left transition-all hover:bg-slate-50 [&[data-state=open]]:bg-slate-50 [&[data-state=open]>div:last-child>svg]:rotate-180">
                             {item.icon && (
                                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                                     <span className="text-primary">{item.icon}</span>
@@ -321,7 +321,7 @@ function AccordionSteps({
                     className="rounded-xl border border-slate-200 bg-white overflow-hidden group"
                 >
                     <AccordionPrimitive.Header className="flex">
-                        <AccordionPrimitive.Trigger className="flex flex-1 items-center gap-4 p-4 text-left transition-all hover:bg-slate-50 [&[data-state=open]>div:first-child]:bg-primary [&[data-state=open]>div:first-child]:text-white [&[data-state=open]>div:last-child>svg]:rotate-180">
+                        <AccordionPrimitive.Trigger className="flex flex-1 items-center gap-3 p-4 text-left transition-all hover:bg-slate-50 [&[data-state=open]>div:first-child]:bg-primary [&[data-state=open]>div:first-child]:text-white [&[data-state=open]>div:last-child>svg]:rotate-180">
                             <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 text-sm font-bold text-slate-600 transition-colors">
                                 {index + 1}
                             </div>

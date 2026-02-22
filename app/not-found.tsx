@@ -10,7 +10,7 @@ export default function NotFound() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] p-4">
-            <div className="max-w-[360px] w-full bg-white rounded-[2rem] shadow-crm-xl border border-slate-100/50 overflow-hidden text-center p-8 space-y-4 animate-in zoom-in-95 duration-700">
+            <div className="max-w-[360px] w-full bg-white rounded-[2rem] shadow-crm-xl border border-slate-100/50 overflow-hidden text-center p-[--radius-padding] space-y-3 animate-in zoom-in-95 duration-700">
 
                 {/* Icon Container */}
                 <div className="w-16 h-16 bg-sky-50 rounded-2xl flex items-center justify-center text-sky-500 mx-auto border border-sky-100/50 shadow-sm">

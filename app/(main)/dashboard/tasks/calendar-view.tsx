@@ -51,7 +51,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
     };
 
     return (
-        <div className="crm-card !p-8 h-full flex flex-col shadow-xl shadow-slate-200/50">
+        <div className="crm-card  h-full flex flex-col shadow-xl shadow-slate-200/50">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
@@ -165,7 +165,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             </div>
 
             {/* Legend */}
-            <div className="flex items-center gap-4 mt-6 pt-6 border-t border-slate-200">
+            <div className="flex items-center gap-3 mt-6 pt-6 border-t border-slate-200">
                 <div className="flex items-center gap-2">
                     <div className="h-3 w-3 rounded-full bg-rose-500" />
                     <span className="text-xs font-bold text-slate-600">Высокий</span>

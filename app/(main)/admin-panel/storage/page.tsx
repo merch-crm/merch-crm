@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function AdminStoragePage() {
     return (
         <PageContainer>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-primary/5 rounded-[18px] flex items-center justify-center border border-primary/10">
                     <HardDrive className="w-6 h-6 text-primary" />
                 </div>

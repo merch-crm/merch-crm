@@ -27,7 +27,7 @@ export function ItemActiveOrdersSection({ orders = [] }: ItemActiveOrdersSection
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {(orders || []).map((item, idx) => {
                 if (!item.order) return null;
 

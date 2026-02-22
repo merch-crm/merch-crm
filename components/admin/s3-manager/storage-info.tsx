@@ -11,7 +11,7 @@ interface StorageInfoProps {
 
 export const StorageInfo = ({ data, formatSize }: StorageInfoProps) => {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <Card className="border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden">
                 <CardHeader className="pb-2">
                     <div className="flex items-center gap-3">
@@ -24,7 +24,7 @@ export const StorageInfo = ({ data, formatSize }: StorageInfoProps) => {
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent className="space-y-4 pt-4">
+                <CardContent className="space-y-3 pt-4">
                     <div className="bg-slate-50 p-4 rounded-[18px] border border-slate-200 space-y-3">
                         <div className="flex justify-between items-center">
                             <span className="text-[11px] font-bold text-slate-500  tracking-tight">Путь системы</span>

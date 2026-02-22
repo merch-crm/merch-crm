@@ -14,13 +14,13 @@ const tabs = [
 
 export default function ProjectTabsCRM() {
     return (
-        <section className="space-y-4 flex flex-col items-center py-12 px-4 bg-[#0a0a0a] rounded-[3rem]">
+        <section className="space-y-3 flex flex-col items-center py-12 px-4 bg-[#0a0a0a] rounded-[3rem]">
             <div className="flex items-center gap-3 self-start px-4 mb-4">
                 <div className="h-8 w-1 bg-white/20 rounded-full" />
                 <h2 className="text-3xl font-bold text-white">Project Phases</h2>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-4 max-w-4xl">
+            <div className="flex flex-wrap justify-center gap-3 max-w-4xl">
                 {tabs.map((tab) => (
                     <motion.button
                         key={tab.id}
@@ -28,7 +28,7 @@ export default function ProjectTabsCRM() {
                         whileInView={{ opacity: 1, y: 0 }}
                         whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
                         whileTap={{ scale: 0.98 }}
-                        className="group flex items-center gap-4 px-8 py-5 rounded-2xl bg-[#161616] border border-white/5 hover:border-white/10 transition-colors duration-300"
+                        className="group flex items-center gap-3 px-8 py-5 rounded-2xl bg-[#161616] border border-white/5 hover:border-white/10 transition-colors duration-300"
                     >
                         <span className="text-lg font-light text-white/40 tracking-wide font-mono group-hover:text-white/60 transition-colors">
                             {tab.id}

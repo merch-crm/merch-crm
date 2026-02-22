@@ -85,9 +85,9 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
             className="max-w-2xl max-h-[90vh]"
         >
             <form onSubmit={handleSubmit} className="flex flex-col h-full bg-white">
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-4 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-6 md:p-6 space-y-3 custom-scrollbar">
                     {/* Name Group */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <User className="w-3.5 h-3.5 inline mr-1" /> Фамилия <span className="text-rose-500">*</span>
@@ -114,7 +114,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Отчество
@@ -140,7 +140,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                     </div>
 
                     {/* Contact Group */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Phone className="w-3.5 h-3.5 inline mr-1" /> Телефон <span className="text-rose-500">*</span>
@@ -166,7 +166,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Telegram
@@ -193,7 +193,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <LinkIcon className="w-3.5 h-3.5 inline mr-1" /> Ссылка на соцсеть
@@ -226,7 +226,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-4">
+                    <div className="grid grid-cols-1 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 Менеджер
@@ -244,7 +244,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <MapPin className="w-3.5 h-3.5 inline mr-1" /> Город
@@ -283,7 +283,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                 </div>
 
                 {/* Footer Actions */}
-                <div className="p-6 md:p-8 pt-4 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto flex-shrink-0">
+                <div className="p-6 md:p-6 pt-4 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto flex-shrink-0">
                     <Button
                         type="button"
                         variant="ghost"

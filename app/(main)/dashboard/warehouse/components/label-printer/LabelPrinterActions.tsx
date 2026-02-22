@@ -17,7 +17,7 @@ export function LabelPrinterActions({
     handlePrint
 }: LabelPrinterActionsProps) {
     return (
-        <div className="flex-none px-6 pt-5 pb-6 bg-white border-t border-slate-200 z-50 space-y-4 shadow-[0_-12px_30px_-15px_rgba(0,0,0,0.08)]">
+        <div className="flex-none px-6 pt-5 pb-6 bg-white border-t border-slate-200 z-50 space-y-3 shadow-[0_-12px_30px_-15px_rgba(0,0,0,0.08)]">
             <div className="flex items-center justify-between">
                 <label className="text-sm font-bold text-slate-900 ml-1">Тираж</label>
                 <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-[var(--radius-inner)]">

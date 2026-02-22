@@ -25,7 +25,7 @@ export function PreviewModal({
             description={file?.name || "Информация о файле"}
         >
             {file && (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <div className="relative aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl group">
                         {file.type === 'image' ? (
                             <NextImage

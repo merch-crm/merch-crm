@@ -226,8 +226,8 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                         </div>
                     </div>
 
-                    <div className="px-6 py-6 pb-5 bg-slate-50/30 overflow-y-auto custom-scrollbar space-y-4">
-                        <div className={cn("grid gap-4", type !== "color" && "grid-cols-2")}>
+                    <div className="px-6 py-6 pb-5 bg-slate-50/30 overflow-y-auto custom-scrollbar space-y-3">
+                        <div className={cn("grid gap-3", type !== "color" && "grid-cols-2")}>
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                                 <Input

@@ -76,7 +76,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
     ];
 
     return (
-        <div className="space-y-4 pb-20">
+        <div className="space-y-3 pb-20">
             {/* Page Header */}
             <AdminPageHeader
                 title="Обзор системы"
@@ -85,8 +85,8 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
             />
 
             {/* Row 1: Greetings & Recommended Items (Platform Health) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
-                <div className="lg:col-span-8 space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+                <div className="lg:col-span-8 space-y-3">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl font-bold text-slate-900">Состояние платформы</h2>
                         <Button
@@ -98,7 +98,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                         </Button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {platformItems.map((item, i) => (
                             <div key={i} className="crm-card group cursor-default">
                                 <div className="flex justify-between items-start mb-8">
@@ -137,7 +137,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
 
                     {/* Chart Area - System Activity */}
                     <div className="crm-card relative h-[400px]">
-                        <div className="absolute inset-x-4 md:inset-x-8 bottom-8 top-32 flex items-end justify-between gap-1.5 md:gap-4">
+                        <div className="absolute inset-x-4 md:inset-x-8 bottom-8 top-32 flex items-end justify-between gap-1.5 md:gap-3">
                             {(isMobile ? [30, 60, 40, 80, 50, 90] : [30, 45, 25, 60, 40, 80, 50, 70, 40, 90, 60, 30]).map((h, i) => (
                                 <div key={i} className="flex-1 flex flex-col items-center gap-3 group h-full">
                                     <div className="w-full relative h-full flex items-end">
@@ -159,7 +159,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                 </div>
 
                 {/* Right Column - Status & Logs */}
-                <div className="lg:col-span-4 space-y-4">
+                <div className="lg:col-span-4 space-y-3">
                     {/* System Guard Card (Premium Perks style) */}
                     <div className="crm-card !bg-primary !border-primary text-white !shadow-2xl !shadow-primary/30 relative min-h-[300px] flex flex-col justify-between group">
                         <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
@@ -184,7 +184,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                     </div>
 
                     {/* Active Sessions List (Daily Schedule style) */}
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-lg font-bold text-slate-900">Сотрудники онлайн</h3>
                             <Button
@@ -197,11 +197,11 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                             </Button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {activeUsers.length > 0 ? activeUsers.slice(0, 5).map((user: ActiveUser, i: number) => (
                                 <div
                                     key={i}
-                                    className="crm-card flex items-center gap-4 cursor-pointer group !p-4 outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                                    className="crm-card flex items-center gap-3 cursor-pointer group  outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
                                     role="button"
                                     tabIndex={0}
                                     onKeyDown={(e) => {
@@ -250,14 +250,14 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
             </div>
 
             {/* Row 2: Secondary Metrics (Bento Grid Bottom) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {[
                     { title: "Пользователей", value: entityStats.find((s: EntityStat) => s.type === "users")?.count || 0, icon: <Users />, color: "text-blue-600 bg-blue-50" },
                     { title: "Всего заказов", value: entityStats.find((s: EntityStat) => s.type === "orders")?.count || 0, icon: <BarChart3 />, color: "text-emerald-600 bg-emerald-50" },
                     { title: "Ошибки системы", value: systemErrors.length, icon: <AlertTriangle />, color: "text-rose-600 bg-rose-50" },
                     { title: "Бэкапов", value: backups?.length || 0, icon: <Clock />, color: "text-amber-600 bg-amber-50" },
                 ].map((stat, i) => (
-                    <div key={i} className="crm-card flex items-center gap-4 group">
+                    <div key={i} className="crm-card flex items-center gap-3 group">
                         <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all", stat.color)}>
                             {stat.icon}
                         </div>

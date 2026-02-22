@@ -66,7 +66,7 @@ export function BasicInfoStep({
     return (
         <div className="flex flex-col h-full min-h-0">
             <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 sm:pb-10 overflow-y-auto min-h-0">
-                <div className="max-w-6xl mx-auto space-y-4">
+                <div className="max-w-6xl mx-auto space-y-3">
 
                     {/* Header */}
                     <div className="flex items-center justify-between">

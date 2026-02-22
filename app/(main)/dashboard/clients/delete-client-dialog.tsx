@@ -55,7 +55,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
             description="Это действие нельзя отменить"
             className="max-w-lg"
         >
-            <div className="p-6 md:p-8 flex flex-col items-center text-center bg-white">
+            <div className="p-6 md:p-6 flex flex-col items-center text-center bg-white">
                 <div className="h-14 w-14 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-4">
                     <AlertTriangle className="w-7 h-7" />
                 </div>

@@ -74,7 +74,7 @@ export function ItemDetailsMainContent() {
 
             <div className={
                 cn(
-                    "md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-8 flex flex-col",
+                    "md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-6 flex flex-col",
                     tabletTab === 'characteristic' ? "flex" : "hidden",
                     "xl:flex"
                 )}>

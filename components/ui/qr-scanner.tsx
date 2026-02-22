@@ -140,7 +140,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                     )}
 
                     {error && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 text-white bg-rose-500/95 backdrop-blur-md z-20">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 text-white bg-rose-500/95 backdrop-blur-md z-20">
                             <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mb-6 border border-white/20">
                                 <Camera className="w-8 h-8 text-white" />
                             </div>

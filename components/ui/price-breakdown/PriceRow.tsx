@@ -26,7 +26,7 @@ export function PriceRow({
         <Component
             type={onClick ? "button" : undefined}
             className={cn(
-                "w-full text-left p-4 flex items-center gap-4 border-none outline-none focus-visible:ring-2 focus-visible:ring-primary/20 bg-transparent",
+                "w-full text-left p-4 flex items-center gap-3 border-none outline-none focus-visible:ring-2 focus-visible:ring-primary/20 bg-transparent",
                 highlighted && "bg-amber-50",
                 onClick && "cursor-pointer hover:bg-slate-50 transition-colors"
             )}

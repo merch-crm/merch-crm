@@ -80,10 +80,10 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
     };
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 pb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 pb-10">
             {/* Left Column: Tasks List */}
-            <div className="lg:col-span-2 space-y-4">
-                <div className="crm-card p-10 relative overflow-hidden group/tasks border-none">
+            <div className="lg:col-span-2 space-y-3">
+                <div className="crm-card p-6 relative overflow-hidden group/tasks border-none">
                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 group-hover/tasks:bg-primary/10 transition-all duration-1000" />
 
                     <div className="flex items-center justify-between mb-12">
@@ -100,7 +100,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {sortedTasks.length > 0 ? (
                             sortedTasks.map((task, idx) => {
                                 const pStyle = getPriorityStyle(task.priority);
@@ -110,7 +110,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: idx * 0.1 }}
-                                        className="group/item relative flex items-start gap-4 p-6 rounded-3xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
+                                        className="group/item relative flex items-start gap-3 p-6 rounded-3xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
                                     >
                                         <div className="mt-1 transition-transform duration-500 group-hover/item:scale-110">
                                             {getStatusIcon(task.status, task.dueDate)}
@@ -130,7 +130,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                             <p className="text-slate-400 text-sm font-bold mb-4 line-clamp-2 leading-relaxed">
                                                 {task.description || "Описание задачи отсутствует."}
                                             </p>
-                                            <div className="flex flex-wrap items-center gap-4">
+                                            <div className="flex flex-wrap items-center gap-3">
                                                 <div className="flex items-center gap-2 text-slate-400 font-black text-xs bg-white/50 px-3 py-1.5 rounded-xl group-hover/item:bg-primary/5 transition-colors">
                                                     <CalendarIcon className="w-3.5 h-3.5" />
                                                     {formatDateLabel(task.dueDate)}
@@ -163,13 +163,13 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
             </div>
 
             {/* Right Column: Info Cards */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {/* Modern Info Card */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="bg-slate-900 rounded-[var(--radius-outer)] p-10 text-white relative overflow-hidden group/info shadow-2xl shadow-slate-900/40 border-none"
+                    className="bg-slate-900 rounded-[var(--radius-outer)] p-6 text-white relative overflow-hidden group/info shadow-2xl shadow-slate-900/40 border-none"
                 >
                     <div className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-[100px] -z-0 group-hover/info:bg-white/20 transition-all duration-700" />
                     <div className="relative z-10">
@@ -178,7 +178,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                         </div>
                         <h2 className="text-2xl font-black mb-8er">Сводная информация</h2>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="p-5 rounded-3xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
                                 <h4 className="text-xs font-black text-white/50 mb-2">Рабочий график</h4>
                                 <div className="flex justify-between items-center">
@@ -208,7 +208,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="bg-white rounded-[32px] p-8 shadow-crm-sm border border-slate-200 relative overflow-hidden group/events"
+                    className="bg-white rounded-[32px] p-6 shadow-crm-sm border border-slate-200 relative overflow-hidden group/events"
                 >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-rose-50 rounded-bl-full -z-10 group-hover/events:bg-rose-100/50 transition-colors duration-700" />
 

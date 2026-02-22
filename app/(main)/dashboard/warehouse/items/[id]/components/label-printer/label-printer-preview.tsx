@@ -81,7 +81,7 @@ export function LabelPrinterPreview({
             {/* Label Preview */}
             <div
                 ref={setRefNode}
-                className="absolute inset-0 flex items-center justify-center overflow-hidden p-8"
+                className="absolute inset-0 flex items-center justify-center overflow-hidden p-6"
             >
                 <div
                     id="label-preview-content"
@@ -137,7 +137,7 @@ export function LabelPrinterPreview({
                                 </div>
                             ) : (
                                 <div className={cn(
-                                    "grid gap-x-4 gap-y-0.5",
+                                    "grid gap-x-3 gap-y-0.5",
                                     useTwoColumns ? "grid-cols-2" : "grid-cols-1",
                                     uiState.alignment === 'center' ? "justify-items-center" : "justify-items-start"
                                 )}>

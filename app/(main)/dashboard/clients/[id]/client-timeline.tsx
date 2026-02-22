@@ -27,7 +27,7 @@ interface ClientTimelineProps {
 export function ClientTimeline({ activity }: ClientTimelineProps) {
     if (!activity || activity.length === 0) {
         return (
-            <div className="crm-card p-12 text-center text-slate-500 rounded-2xl">
+            <div className="crm-card p-[--padding-xl] text-center text-slate-500 rounded-2xl">
                 <History className="w-12 h-12 mx-auto mb-4 text-slate-200" />
                 <p className="font-bold">История активности пуста</p>
                 <p className="text-xs text-slate-400 mt-1">Здесь будут отображаться действия менеджеров</p>
@@ -54,7 +54,7 @@ export function ClientTimeline({ activity }: ClientTimelineProps) {
     };
 
     return (
-        <div className="relative pl-8 space-y-4 before:absolute before:left-[15px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
+        <div className="relative pl-8 space-y-3 before:absolute before:left-[15px] before:top-2 before:bottom-2 before:w-[2px] before:bg-slate-100">
             {activity.map((item, idx) => (
                 <div key={item.id} className="relative group animate-in slide-in-from-left-4 duration-500" style={{ animationDelay: `${idx * 100}ms` }}>
                     {/* Icon Dot */}

@@ -190,7 +190,7 @@ export const WikiSidebar = memo(({
 
     return (
         <aside
-            className="w-72 bg-white/50 backdrop-blur-sm border-r border-slate-200/60 p-4 flex flex-col gap-4"
+            className="w-72 bg-white/50 backdrop-blur-sm border-r border-slate-200/60 p-4 flex flex-col gap-3"
             role="navigation"
             aria-label="Навигация по базе знаний"
         >

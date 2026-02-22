@@ -42,9 +42,9 @@ export function StepOrderDetails({
     currencySymbol
 }: StepOrderDetailsProps) {
     return (
-        <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h4 className="text-lg font-bold text-foreground">Детали заказа</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-muted-foreground ml-1">Приоритет</label>
                     <Select
@@ -70,7 +70,7 @@ export function StepOrderDetails({
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-muted-foreground ml-1">Срочный заказ</label>
                     <div
@@ -120,7 +120,7 @@ export function StepOrderDetails({
                 </div>
             </div>
 
-            <div className="space-y-4 pt-2">
+            <div className="space-y-3 pt-2">
                 <label className="text-xs font-bold text-muted-foreground ml-1">Промокод</label>
                 <div className="flex gap-2">
                     <div className="relative flex-1">

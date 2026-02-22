@@ -57,7 +57,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
             </div>
 
             {/* Right Column Grid - Span 4 */}
-            <div className="col-span-12 md:col-span-4 lg:col-span-4 flex flex-col gap-4">
+            <div className="col-span-12 md:col-span-4 lg:col-span-4 flex flex-col gap-3">
                 {/* New Orders - Accent Card */}
                 <div className="crm-card flex-1 relative group">
                     <div className="flex items-center justify-between mb-4">
@@ -90,7 +90,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
             {/* Bottom Row - Completed & Efficiency */}
             <div className="col-span-12 grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Completed */}
-                <div className="crm-card flex items-center gap-4 hover:border-emerald-200 group">
+                <div className="crm-card flex items-center gap-3 hover:border-emerald-200 group">
                     <div className="w-16 h-16 rounded-[var(--radius)] bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
                         <CheckCircle2 className="w-8 h-8" />
                     </div>
@@ -106,7 +106,7 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                 </div>
 
                 {/* Efficiency / AI Insight */}
-                <div className="crm-card flex items-center gap-4 relative">
+                <div className="crm-card flex items-center gap-3 relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-50" />
                     <div className="w-16 h-16 rounded-[var(--radius)] bg-primary/10 flex items-center justify-center text-primary shadow-sm relative z-10">
                         <Sparkles className="w-8 h-8" />

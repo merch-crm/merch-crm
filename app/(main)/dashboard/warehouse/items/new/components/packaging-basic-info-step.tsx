@@ -156,7 +156,7 @@ export function PackagingBasicInfoStep({
     return (
         <div className="flex flex-col h-full overflow-hidden">
             <div className="flex-1 px-10 pt-10 pb-0 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="max-w-[800px] mx-auto space-y-4 pb-10">
+                <div className="max-w-[800px] mx-auto space-y-3 pb-10">
 
                     {/* Header */}
                     <div className="flex items-center gap-3 shrink-0">
@@ -184,13 +184,13 @@ export function PackagingBasicInfoStep({
                     )}
 
                     {/* Section 1: Type & Brand */}
-                    <section className="space-y-4">
+                    <section className="space-y-3">
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
                             <span className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs font-bold">1</span>
                             <h3 className="text-sm font-bold text-slate-900">Основное</h3>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Тип упаковки</label>
                                 <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-[14px]">
@@ -235,13 +235,13 @@ export function PackagingBasicInfoStep({
                     </section>
 
                     {/* Section 2: Dimensions & Specs */}
-                    <section className="space-y-4">
+                    <section className="space-y-3">
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
                             <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-xs font-bold">2</span>
                             <h3 className="text-sm font-bold text-slate-900">Габариты и Характеристики</h3>
                         </div>
 
-                        <div className="grid grid-cols-12 gap-4">
+                        <div className="grid grid-cols-12 gap-3">
                             {/* Dimensions */}
                             <div className="col-span-12 md:col-span-7 grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-[20px] border border-slate-200/60">
                                 {renderInput("Длина", formData.depth, "depth", "300", <Ruler className="w-3 h-3" />, "мм", "number")}
@@ -270,7 +270,7 @@ export function PackagingBasicInfoStep({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Материал</label>
                                 <Select
@@ -308,7 +308,7 @@ export function PackagingBasicInfoStep({
                         </div>
 
                         {/* Features Checkboxes */}
-                        <div className="grid grid-cols-2 gap-4 pt-2">
+                        <div className="grid grid-cols-2 gap-3 pt-2">
                             <label className="flex items-center gap-3 p-3 rounded-[14px] border border-slate-200 cursor-pointer hover:bg-slate-50 transition-all group">
                                 <div className={cn(
                                     "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
@@ -352,13 +352,13 @@ export function PackagingBasicInfoStep({
                     </section>
 
                     {/* Section 3: Logistics */}
-                    <section className="space-y-4">
+                    <section className="space-y-3">
                         <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
                             <span className="w-6 h-6 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-xs font-bold">3</span>
                             <h3 className="text-sm font-bold text-slate-900">Закупка и Логистика</h3>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {renderInput("Поставщик", formData.supplierName, "supplierName", "Название компании")}
 
                             <div className="space-y-1.5">

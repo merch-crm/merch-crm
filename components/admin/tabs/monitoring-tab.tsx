@@ -35,7 +35,7 @@ export function MonitoringTab({
     isRestartingAction,
 }: MonitoringTabProps) {
     return (
-        <div className="space-y-4 animate-in fade-in duration-300">
+        <div className="space-y-3 animate-in fade-in duration-300">
             <div className="flex items-center justify-between px-1">
                 <div className="text-slate-400 text-xs font-bold">
                     Живой поток данных

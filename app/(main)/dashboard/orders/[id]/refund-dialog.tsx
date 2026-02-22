@@ -80,7 +80,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                 className="sm:max-w-[425px]"
             >
                 <div className="flex flex-col h-full">
-                    <div className="p-6 pb-20 space-y-4 flex-1 overflow-y-auto">
+                    <div className="p-6 pb-20 space-y-3 flex-1 overflow-y-auto">
                         <div className="space-y-2">
                             <Label htmlFor="amount" className="text-xs font-bold text-slate-400 ml-1">Сумма возврата ({currencySymbol})</Label>
                             <Input

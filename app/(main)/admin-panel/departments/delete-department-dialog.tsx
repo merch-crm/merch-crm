@@ -47,7 +47,7 @@ export function DeleteDepartmentDialog({ department, isOpen, onClose, onConfirm 
             description="Вы уверены, что хотите удалить этот отдел?"
             className="items-start"
         >
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="bg-slate-50 rounded-[18px] p-4 mb-6 border border-slate-200">
                     <p className="text-sm font-bold text-slate-700 mb-1">Отдел для удаления:</p>
                     <p className="text-lg font-bold text-slate-900">{department.name}</p>

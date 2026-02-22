@@ -16,10 +16,10 @@ import { cn } from "@/lib/utils";
 
 export default function TwistyCRM() {
     return (
-        <div className="w-full glass-panel p-8 rounded-[var(--radius-outer)] mt-10">
+        <div className="w-full glass-panel p-6 rounded-[var(--radius-outer)] mt-10">
 
             {/* --- HEADER --- */}
-            <header className="flex flex-col md:flex-row items-center justify-between mb-8 gap-4">
+            <header className="flex flex-col md:flex-row items-center justify-between mb-8 gap-3">
                 <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-[#5d00ff] flex items-center justify-center text-white font-bold text-lg">
                         T
@@ -27,7 +27,7 @@ export default function TwistyCRM() {
                     <span className="font-bold text-lg">TWISTY</span>
                 </div>
 
-                <nav className="hidden md:flex items-center gap-4 bg-transparent text-sm font-medium text-slate-500">
+                <nav className="hidden md:flex items-center gap-3 bg-transparent text-sm font-medium text-slate-500">
                     <a href="#" className="text-slate-900 font-bold">Home</a>
                     <a href="#" className="hover:text-slate-900 transition-colors">Messages</a>
                     <a href="#" className="hover:text-slate-900 transition-colors">Discover</a>
@@ -45,13 +45,13 @@ export default function TwistyCRM() {
                 </div>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
 
                 {/* LEFT COLUMN (8 cols) */}
-                <div className="lg:col-span-8 flex flex-col gap-4">
+                <div className="lg:col-span-8 flex flex-col gap-3">
 
                     {/* 1. INCOME TRACKER */}
-                    <div className="crm-card p-8 relative overflow-hidden">
+                    <div className="crm-card p-6 relative overflow-hidden">
                         <div className="flex justify-between items-start mb-8">
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
@@ -123,14 +123,14 @@ export default function TwistyCRM() {
                     </div>
 
                     {/* BOTTOM ROW (Connect + Premium) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {/* Let's Connect */}
                         <div className="crm-card p-6">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="font-bold text-lg">Let&apos;s Connect</h3>
                                 <button type="button" className="text-xs font-bold text-slate-400 hover:text-slate-900">See all</button>
                             </div>
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 {[
                                     { name: "Randy Gouse", role: "Cybersecurity specialist", tag: "Senior", bg: "bg-[#5d00ff]" },
                                     { name: "Giana Schleifer", role: "UX/UI Designer", tag: "Middle", bg: "bg-blue-400" },
@@ -182,11 +182,11 @@ export default function TwistyCRM() {
                 </div>
 
                 {/* RIGHT COLUMN (4 cols) */}
-                <div className="lg:col-span-4 flex flex-col gap-4">
+                <div className="lg:col-span-4 flex flex-col gap-3">
 
                     <h3 className="text-lg font-bold px-2">Your Recent Projects</h3>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {/* Project 1 */}
                         <div className="crm-card p-6 hover:shadow-crm-lg transition-shadow cursor-pointer">
                             <div className="flex justify-between items-start mb-4">
@@ -204,7 +204,7 @@ export default function TwistyCRM() {
                             <p className="text-xs text-slate-400 leading-relaxed line-clamp-2 mb-4 font-medium">
                                 This project involves implementing new features as well as integrating with third-party APIs
                             </p>
-                            <div className="flex items-center gap-4 text-xs text-slate-400 border-t border-slate-200 pt-4 font-medium">
+                            <div className="flex items-center gap-3 text-xs text-slate-400 border-t border-slate-200 pt-4 font-medium">
                                 <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full border border-slate-300" /> Germany</span>
                                 <span>2h ago</span>
                             </div>

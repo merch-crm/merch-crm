@@ -103,7 +103,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 title="Новая задача"
                 description="Заполните детали поручения"
             >
-                <form onSubmit={handleSubmit} className="p-4 space-y-4">
+                <form onSubmit={handleSubmit} className="p-4 space-y-3">
                     {/* Title */}
                     <div className="space-y-1">
                         <label className="text-sm font-bold text-slate-700 pl-1">Что нужно сделать?</label>
@@ -131,7 +131,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         {/* Task Type */}
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">Тип задачи</label>
@@ -169,7 +169,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         {/* Related Order */}
                         <div className="space-y-1">
                             <label className="text-sm font-bold text-slate-700 pl-1">Связанный заказ</label>

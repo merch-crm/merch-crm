@@ -30,7 +30,7 @@ export function StepClientSelection({
     userRoleName
 }: StepClientSelectionProps) {
     return (
-        <div className="max-w-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h4 className="text-lg font-bold text-foreground">Выберите клиента</h4>
             <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

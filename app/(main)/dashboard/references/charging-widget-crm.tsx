@@ -22,7 +22,7 @@ export const ChargingWidget = () => {
     `;
 
     return (
-        <div className="flex items-center justify-center p-12 bg-[#f0f0f0] dark:bg-black rounded-[4rem]">
+        <div className="flex items-center justify-center p-[--padding-xl] bg-[#f0f0f0] dark:bg-black rounded-[4rem]">
             {/* Main Card Container */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -141,7 +141,7 @@ export default function ChargingWidgetCRM() {
                 <h2 className="text-3xl font-bold">Smart Charging Interface</h2>
             </div>
 
-            <div className="flex flex-wrap gap-12 items-start justify-center md:justify-start">
+            <div className="flex flex-wrap gap-3 items-start justify-center md:justify-start">
                 <ChargingWidget />
 
                 {/* 88% Variant for Showcase */}

@@ -24,6 +24,10 @@ export function CategoryTabs({
     activeCategoryId,
     handleCategoryChange
 }: CategoryTabsProps) {
+    if (rootCategories.length === 0 && !hasUncategorized) {
+        return null;
+    }
+
     return (
         <div className="crm-card flex w-full overflow-x-auto h-[58px] items-center gap-2 !p-[6px] !rounded-[22px] scrollbar-hide">
             {rootCategories.map((cat) => {

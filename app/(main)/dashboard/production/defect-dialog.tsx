@@ -69,7 +69,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                 className="max-w-md"
             >
                 <div className="flex flex-col">
-                    <div className="p-6 space-y-4">
+                    <div className="p-6 space-y-3">
                         <div className="flex items-center gap-3 mb-2">
                             <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 shadow-sm">
                                 <AlertTriangle className="w-6 h-6" />
@@ -82,7 +82,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                             </div>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="space-y-2">
                                 <Label htmlFor="quantity" className="text-[11px] font-bold text-slate-400">Количество брака (шт)</Label>
                                 <Input

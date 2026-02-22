@@ -111,7 +111,7 @@ export function UserNav({ user, branding }: {
 
                             {/* Header */}
                             <div className="p-6 md:p-6 border-b border-slate-200/60 bg-slate-50/40 text-left shrink-0">
-                                <div className="flex items-start gap-4">
+                                <div className="flex items-start gap-3">
                                     <div className="relative shrink-0">
                                         <div className="h-16 w-16 md:h-12 md:w-12 rounded-[var(--radius-inner)] bg-indigo-100/30 flex items-center justify-center text-indigo-500 overflow-hidden shadow-inner border border-indigo-200/20">
                                             {user.avatar ? (

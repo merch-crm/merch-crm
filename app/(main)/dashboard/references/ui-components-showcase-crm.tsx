@@ -26,7 +26,7 @@ export default function UiComponentsShowcaseCRM() {
     const [range, setRange] = useState(45);
 
     return (
-        <div className="w-full glass-panel p-8 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative min-h-[800px]">
+        <div className="w-full glass-panel p-6 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative min-h-[800px]">
             <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
             {/* Header */}
@@ -53,17 +53,17 @@ export default function UiComponentsShowcaseCRM() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 relative z-10">
 
                 {/* Left Column: Form Elements */}
-                <div className="lg:col-span-4 space-y-10">
-                    <div className="crm-card p-8 space-y-4">
+                <div className="lg:col-span-4 space-y-3">
+                    <div className="crm-card p-6 space-y-3">
                         <h3 className="text-sm font-bold  text-slate-900 flex items-center gap-2">
                             <User className="w-4 h-4 text-primary" />
                             Auth Controls
                         </h3>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="relative">
                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
@@ -86,12 +86,12 @@ export default function UiComponentsShowcaseCRM() {
                         </div>
                     </div>
 
-                    <div className="crm-card p-8 space-y-4">
+                    <div className="crm-card p-6 space-y-3">
                         <h3 className="text-sm font-bold  text-slate-900 flex items-center gap-2">
                             <Upload className="w-4 h-4 text-primary" />
                             File Assets
                         </h3>
-                        <div className="border-2 border-dashed border-slate-200 rounded-[var(--radius-inner)] p-10 flex flex-col items-center justify-center gap-4 group hover:border-primary/20 hover:bg-primary/5 transition-all cursor-pointer">
+                        <div className="border-2 border-dashed border-slate-200 rounded-[var(--radius-inner)] p-6 flex flex-col items-center justify-center gap-3 group hover:border-primary/20 hover:bg-primary/5 transition-all cursor-pointer">
                             <div className="w-14 h-14 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:scale-110 group-hover:bg-primary/10 group-hover:text-primary transition-all">
                                 <Upload className="w-6 h-6" />
                             </div>
@@ -104,14 +104,14 @@ export default function UiComponentsShowcaseCRM() {
                 </div>
 
                 {/* Center Column: Interactive Widgets */}
-                <div className="lg:col-span-4 space-y-10">
-                    <div className="crm-card p-8 space-y-4">
+                <div className="lg:col-span-4 space-y-3">
+                    <div className="crm-card p-6 space-y-3">
                         <h3 className="text-sm font-bold  text-slate-900 flex items-center gap-2">
                             <Search className="w-4 h-4 text-primary" />
                             Smart Selectors
                         </h3>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <div className="flex items-center justify-between p-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 group cursor-pointer hover:border-primary/20 transition-all">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-lg shadow-sm">🇺🇸</div>
@@ -120,7 +120,7 @@ export default function UiComponentsShowcaseCRM() {
                                 <ChevronDown className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="flex justify-between items-center text-xs font-bold  text-slate-400">
                                     <span>Price Range</span>
                                     <span className="text-primary">${range} — $250</span>
@@ -142,8 +142,8 @@ export default function UiComponentsShowcaseCRM() {
                         </div>
                     </div>
 
-                    <div className="glass-panel p-8 bg-primary/5 border-2 border-primary/20 space-y-4">
-                        <div className="flex items-center gap-4">
+                    <div className="glass-panel p-6 bg-primary/5 border-2 border-primary/20 space-y-3">
+                        <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-primary shadow-xl shadow-slate-900/10">
                                 <Calendar className="w-6 h-6" />
                             </div>
@@ -162,8 +162,8 @@ export default function UiComponentsShowcaseCRM() {
                 </div>
 
                 {/* Right Column: Editor & Tools */}
-                <div className="lg:col-span-4 space-y-10">
-                    <div className="crm-card p-8 space-y-4 min-h-[440px] flex flex-col">
+                <div className="lg:col-span-4 space-y-3">
+                    <div className="crm-card p-6 space-y-3 min-h-[440px] flex flex-col">
                         <h3 className="text-sm font-bold  text-slate-900 flex items-center gap-2">
                             <Sparkles className="w-4 h-4 text-primary" />
                             Text Engine
@@ -195,7 +195,7 @@ export default function UiComponentsShowcaseCRM() {
 
             {/* Footer Meta */}
             <div className="mt-16 pt-8 border-t border-slate-200 flex items-center justify-between px-4 relative z-10">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="flex -space-x-3">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 overflow-hidden">

@@ -48,7 +48,7 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
             }
         >
             <div className="flex flex-col h-full print:hidden">
-                <div className="px-6 py-6 space-y-4 bg-card flex-1">
+                <div className="px-6 py-6 space-y-3 bg-card flex-1">
                     {/* Label Preview */}
                     <div className="flex flex-col items-center">
                         <label className="text-sm font-bold text-foreground mb-3">Предпросмотр</label>
@@ -70,7 +70,7 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 bg-card p-4 rounded-2xl border border-border shadow-sm">
+                    <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border shadow-sm">
                         <div className="flex-1 space-y-1">
                             <label className="text-sm font-bold text-foreground ml-1">Копии</label>
                             <div className="flex items-center gap-2">

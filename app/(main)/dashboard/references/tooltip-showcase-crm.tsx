@@ -6,7 +6,7 @@ import { Lightbulb, Sparkles } from "lucide-react";
 
 const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
     return (
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-3">
             {/* Tooltip Bubble */}
             <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -57,7 +57,7 @@ export default function TooltipShowcaseCRM() {
                 <h2 className="text-3xl font-bold text-slate-800">Smart Tooltips</h2>
             </div>
 
-            <div className="flex flex-wrap gap-12 md:gap-24 items-start justify-center p-8 bg-[#e8e8e8] rounded-[3rem] w-full">
+            <div className="flex flex-wrap gap-3 md:gap-3 items-start justify-center p-6 bg-[#e8e8e8] rounded-[3rem] w-full">
                 <TooltipVariant />
                 <TooltipVariant dark />
             </div>

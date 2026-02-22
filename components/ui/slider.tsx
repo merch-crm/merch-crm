@@ -174,7 +174,7 @@ function PriceRangeSlider({
     };
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("space-y-3", className)}>
             <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-slate-700">{label}</span>
             </div>

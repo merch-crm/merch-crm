@@ -113,7 +113,7 @@ export function OrderHistoryTable({ orders, currencySymbol }: OrderHistoryTableP
                     mobileGridClassName="grid grid-cols-1 gap-3 p-4 bg-slate-50/30"
                 />
             ) : (
-                <div className="p-12 text-center text-slate-500">
+                <div className="p-[--padding-xl] text-center text-slate-500">
                     История заказов пуста
                 </div>
             )}

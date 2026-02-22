@@ -16,14 +16,14 @@ import { cn } from "@/lib/utils";
 
 export default function InvoiceDashboardCRM() {
     return (
-        <div className="w-full glass-panel p-8 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative">
+        <div className="w-full glass-panel p-6 rounded-[var(--radius-outer)] mt-10 overflow-hidden relative">
             {/* Ambient Orbs */}
             <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none" />
             <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none" />
 
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4 relative z-10">
-                <div className="flex items-center gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-3 relative z-10">
+                <div className="flex items-center gap-3">
                     <div className="w-14 h-14 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center text-primary shadow-2xl shadow-slate-900/20">
                         <FileText className="w-7 h-7" />
                     </div>
@@ -52,14 +52,14 @@ export default function InvoiceDashboardCRM() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 relative z-10">
                 {/* Main Content */}
-                <div className="lg:col-span-8 flex flex-col gap-4">
+                <div className="lg:col-span-8 flex flex-col gap-3">
 
                     {/* Hero Section */}
-                    <div className="bg-slate-900 rounded-[var(--radius-outer)] p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
+                    <div className="bg-slate-900 rounded-[var(--radius-outer)] p-6 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[60px]" />
-                        <div className="relative z-10 flex flex-col md:flex-row justify-between gap-4">
+                        <div className="relative z-10 flex flex-col md:flex-row justify-between gap-3">
                             <div>
                                 <span className="text-xs font-bold  text-white/50 mb-3 block">Total amount to pay</span>
                                 <div className="flex items-baseline gap-2">
@@ -151,7 +151,7 @@ export default function InvoiceDashboardCRM() {
                                         </div>
                                         <span className="text-sm font-bold text-primary">{row.total}</span>
                                     </div>
-                                    <div className="flex items-center gap-4 ml-12 text-xs text-slate-400">
+                                    <div className="flex items-center gap-3 ml-12 text-xs text-slate-400">
                                         <span>Qty: <span className="font-bold text-slate-600">{row.qty}</span></span>
                                         <span>Price: <span className="font-bold text-slate-600">{row.price}</span></span>
                                         <span>Tax: <span className="font-bold text-slate-600">{row.tax}</span></span>
@@ -163,10 +163,10 @@ export default function InvoiceDashboardCRM() {
                 </div>
 
                 {/* Sidebar / Stats */}
-                <div className="lg:col-span-4 flex flex-col gap-4">
+                <div className="lg:col-span-4 flex flex-col gap-3">
                     <div className="crm-card p-6 border-2 border-primary/20 bg-primary/5">
                         <h3 className="font-bold text-lg mb-6">Payment Progress</h3>
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {[
                                 { label: "Design Fee", val: 100, color: "bg-primary" },
                                 { label: "Production", val: 65, color: "bg-primary/60" },
@@ -187,13 +187,13 @@ export default function InvoiceDashboardCRM() {
 
                     <div className="crm-card p-6">
                         <h3 className="font-bold text-lg mb-6">Recent Activity</h3>
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {[
                                 { user: "Leo M.", action: "Invoiced updated", time: "2h ago", icon: <Clock className="w-3 h-3" /> },
                                 { user: "System", action: "Payment received", time: "5h ago", icon: <Check className="w-3 h-3" /> },
                                 { user: "Design Dept", action: "File attached", time: "1d ago", icon: <Plus className="w-3 h-3" /> },
                             ].map((item, idx) => (
-                                <div key={idx} className="flex gap-4 relative">
+                                <div key={idx} className="flex gap-3 relative">
                                     {idx !== 2 && <div className="absolute left-5 top-10 bottom-0 w-px bg-slate-100" />}
                                     <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 z-10">
                                         <div className="text-primary">{item.icon}</div>

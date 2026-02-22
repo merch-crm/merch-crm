@@ -28,7 +28,7 @@ export function DiagnosticsTab({
     onRunDiagnostics,
 }: DiagnosticsTabProps) {
     return (
-        <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300 px-1">
+        <div className="space-y-3 animate-in slide-in-from-bottom-2 duration-300 px-1">
             <Card className="border-slate-200/60 shadow-sm overflow-hidden">
                 <CardHeader className="bg-slate-50/50 border-b border-slate-200 pb-4">
                     <div className="flex items-center justify-between">
@@ -64,8 +64,8 @@ export function DiagnosticsTab({
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-3">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                 {/* DB */}
                                 <div
                                     className={cn(

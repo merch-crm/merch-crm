@@ -103,7 +103,7 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
                     </nav>
 
                     {/* Right Side: Notifications & Profile */}
-                    <div className="flex items-center justify-end gap-2 md:gap-4 shrink-0">
+                    <div className="flex items-center justify-end gap-2 md:gap-3 shrink-0">
                         <NotificationCenter notifications={notifications} unreadCount={unreadCount} branding={branding} />
 
                         <div className="h-6 w-px bg-slate-200 mx-1 md:mx-2" />

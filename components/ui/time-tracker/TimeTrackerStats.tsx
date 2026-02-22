@@ -12,7 +12,7 @@ export function TimeTrackerStats({
     className,
 }: TimeTrackerStatsProps) {
     return (
-        <div className={cn("grid grid-cols-1 sm:grid-cols-3 gap-4", className)}>
+        <div className={cn("grid grid-cols-1 sm:grid-cols-3 gap-3", className)}>
             <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-2 text-slate-400 mb-2">
                     <Clock className="w-4 h-4" />

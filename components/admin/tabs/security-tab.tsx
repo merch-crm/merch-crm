@@ -33,8 +33,8 @@ export function SecurityTab({
     const [selectedError, setSelectedError] = useState<SystemError | null>(null);
 
     return (
-        <div className="space-y-4 animate-in slide-in-from-bottom-2 duration-300 px-1">
-            <div className="space-y-4">
+        <div className="space-y-3 animate-in slide-in-from-bottom-2 duration-300 px-1">
+            <div className="space-y-3">
                 {/* Security Section Header */}
                 <div className="px-1 flex items-center justify-between">
                     <div>
@@ -56,7 +56,7 @@ export function SecurityTab({
                     </Button>
                 </div>
 
-                <div className="flex flex-col gap-4 pb-4">
+                <div className="flex flex-col gap-3 pb-4">
                     {/* Maintenance Mode */}
                     <MaintenanceModeCard
                         maintenanceMode={securityData?.maintenanceMode || false}

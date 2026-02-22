@@ -78,11 +78,11 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
     };
 
     return (
-        <div className="space-y-4 pb-20">
-            <form onSubmit={onSubmitStrinct} className="space-y-4">
+        <div className="space-y-3 pb-20">
+            <form onSubmit={onSubmitStrinct} className="space-y-3">
                 {/* Header with Save Button */}
-                <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
                         <div className="w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center border border-primary/10 shadow-sm">
                             <Palette className="w-7 h-7 text-primary" />
                         </div>
@@ -103,7 +103,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                 </div>
 
                 {/* Tabs for different sections */}
-                <Tabs defaultValue="main" value={ui.activeTab} onValueChange={(val) => setUi(prev => ({ ...prev, activeTab: val }))} className="space-y-4">
+                <Tabs defaultValue="main" value={ui.activeTab} onValueChange={(val) => setUi(prev => ({ ...prev, activeTab: val }))} className="space-y-3">
                     <BrandingTabs ui={ui} />
 
                     <TabsContent value="main">

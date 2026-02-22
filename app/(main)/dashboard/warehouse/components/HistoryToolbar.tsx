@@ -155,14 +155,14 @@ export function HistoryToolbar({
                 role="tablist"
                 aria-label="Фильтры истории"
                 className={cn(
-                    "hidden md:flex items-center gap-[6px] shrink-0 transition-all duration-500 ease-in-out",
+                    "hidden md:flex items-center gap-3 shrink-0 transition-all duration-500 ease-in-out",
                     isMobileSearchExpanded
                         ? "xl:w-auto xl:opacity-100 xl:visible xl:translate-x-0 xl:overflow-visible w-0 opacity-0 invisible -translate-x-10 overflow-hidden"
                         : "w-auto opacity-100 visible translate-x-0"
                 )}
             >
                 <div className="w-px h-6 bg-slate-500/40 mx-2 shrink-0" aria-hidden="true" />
-                <div className="flex items-center gap-[4px]">
+                <div className="flex items-center gap-3">
                     {FILTERS.map(f => {
                         const isActive = activeFilter === f.id;
                         return (

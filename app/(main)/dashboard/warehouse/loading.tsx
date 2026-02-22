@@ -2,14 +2,14 @@ import { SkeletonPageHeader } from "@/components/ui/skeleton";
 
 export default function WarehouseLoading() {
     return (
-        <div className="space-y-4 animate-pulse">
+        <div className="space-y-3 animate-pulse">
             <SkeletonPageHeader buttons={2} />
 
             {/* Tabs Skeleton */}
             <div className="h-[58px] bg-white/50 border border-slate-200/50 rounded-[22px]" />
 
             {/* Content Skeleton - Premium Variant B Style */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                     <div key={i} className="crm-card flex flex-col p-0 overflow-hidden bg-white shadow-sm border border-slate-100">
                         {/* Header skeleton */}
@@ -23,7 +23,7 @@ export default function WarehouseLoading() {
                             </div>
                         </div>
                         {/* Body skeleton */}
-                        <div className="flex-1 p-5 pt-4 space-y-4">
+                        <div className="flex-1 p-5 pt-4 space-y-3">
                             <div className="space-y-2">
                                 <div className="h-2 w-1/3 bg-slate-100 rounded" />
                                 <div className="grid grid-cols-2 gap-2">

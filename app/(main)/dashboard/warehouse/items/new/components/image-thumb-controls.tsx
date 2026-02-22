@@ -32,7 +32,7 @@ export function ImageThumbControls({
             )}
             style={{ width: containerDims ? containerDims.w : '100%' }}
         >
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {/* ZOOM SLIDER */}
                 <div className="flex items-center gap-3">
                     <div className="flex-1 space-y-2 relative pt-2">

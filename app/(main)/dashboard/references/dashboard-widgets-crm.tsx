@@ -9,7 +9,7 @@ const BrandCard = () => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-br from-[#5b3fd9] to-[#4a2fb8] rounded-3xl p-8 flex items-center justify-center aspect-square"
+        className="bg-gradient-to-br from-[#5b3fd9] to-[#4a2fb8] rounded-3xl p-6 flex items-center justify-center aspect-square"
     >
         <div className="text-white">
             <h2 className="text-6xl font-bold">nue</h2>
@@ -115,7 +115,7 @@ const RevenueLifecycleCard = () => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-[#e8e4f0] rounded-3xl p-8 flex flex-col justify-between row-span-2"
+        className="bg-[#e8e4f0] rounded-3xl p-6 flex flex-col justify-between row-span-2"
     >
         <div>
             <h3 className="text-2xl font-semibold text-[#3d3850] leading-tight">
@@ -143,7 +143,7 @@ const MRRChartCard = () => (
         transition={{ delay: 0.5 }}
         className="bg-gradient-to-br from-[#5b3fd9] to-[#4a2fb8] rounded-3xl p-6 col-span-2 relative overflow-hidden"
     >
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-3 mb-4">
             <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-[#b8a8e6] rounded-full" />
                 <span className="text-white/80 text-sm">Basic</span>
@@ -210,7 +210,7 @@ const ProfileCard = () => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-[#e8e4f0] rounded-3xl p-8 flex items-center justify-center relative overflow-hidden"
+        className="bg-[#e8e4f0] rounded-3xl p-6 flex items-center justify-center relative overflow-hidden"
     >
         <div className="absolute inset-0 bg-gradient-to-br from-[#b8a8e6] to-[#9888d6] rounded-full transform scale-75" />
         <div className="relative z-10 flex flex-col items-center">
@@ -231,7 +231,7 @@ const RevenueCard = () => (
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="bg-gradient-to-br from-[#5b3fd9] to-[#4a2fb8] rounded-3xl p-8 relative overflow-hidden"
+        className="bg-gradient-to-br from-[#5b3fd9] to-[#4a2fb8] rounded-3xl p-6 relative overflow-hidden"
     >
         {/* Abstract shapes background */}
         <div className="absolute top-4 right-4 w-32 h-32">
@@ -251,14 +251,14 @@ const RevenueCard = () => (
 
 export default function DashboardWidgetsCRM() {
     return (
-        <section className="space-y-10">
+        <section className="space-y-3">
             <div className="flex items-center gap-3">
                 <div className="h-8 w-1 bg-[#5b3fd9] rounded-full" />
                 <h2 className="text-3xl font-bold">Dashboard Widgets Collection</h2>
             </div>
 
-            <div className="bg-[#2d2a3d] rounded-[3rem] p-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-auto">
+            <div className="bg-[#2d2a3d] rounded-[3rem] p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 auto-rows-auto">
                     {/* Row 1 */}
                     <BrandCard />
                     <AppIconCard />

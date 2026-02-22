@@ -46,7 +46,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
     return (
         <div className="flex flex-col min-h-0 h-full overflow-hidden">
             <div className="flex-1 flex flex-col px-4 sm:px-10 pt-6 sm:pt-10 pb-0 min-h-0">
-                <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col min-h-0 space-y-4">
+                <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col min-h-0 space-y-3">
                     {/* Header Area */}
                     <div className="flex items-center gap-3 shrink-0 relative">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
@@ -69,7 +69,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                     <div className="flex-1 bg-white rounded-3xl flex flex-col min-h-0 overflow-hidden">
                         <div className="flex-1 flex flex-col md:flex-row min-h-0">
                             {/* LEFT: MAIN PHOTO */}
-                            <div className="w-full md:w-[45%] h-full flex flex-col min-h-0 bg-slate-50/20 px-4 md:pl-8 pt-6 pb-2 space-y-4">
+                            <div className="w-full md:w-[45%] h-full flex flex-col min-h-0 bg-slate-50/20 px-4 md:pl-8 pt-6 pb-2 space-y-3">
                                 <div className="mb-2">
                                     <h4 className="text-base font-bold text-slate-900">Основной ракурс <span className="text-rose-500">*</span></h4>
                                 </div>
@@ -103,9 +103,9 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
 
                             {/* RIGHT: STORYBOARD & GALLERY */}
                             <div className="flex-1 flex flex-col min-h-0 bg-white pt-6 px-8 pb-8 overflow-y-auto custom-scrollbar">
-                                <div className="flex flex-col min-h-0 space-y-10">
-                                    <div className="space-y-4 shrink-0">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-[480px]">
+                                <div className="flex flex-col min-h-0 space-y-3">
+                                    <div className="space-y-3 shrink-0">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[480px]">
                                             <CompactDropzone
                                                 label={<>Вид со спины <span className="text-rose-500">*</span></>}
                                                 preview={formData.imageBackPreview ?? null}
@@ -125,7 +125,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4 flex-1 flex flex-col min-h-0">
+                                    <div className="space-y-3 flex-1 flex flex-col min-h-0">
                                         <div className="mb-2">
                                             <h4 className="text-base font-bold text-slate-900">Дополнительные фото</h4>
                                             <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">До 3-х фотографий</p>

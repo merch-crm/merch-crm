@@ -18,7 +18,7 @@ interface CategorySelectorProps {
 export function CategorySelector({ categories, onSelect, variant = "default", hideTitle = false, selectedCategoryId }: CategorySelectorProps) {
     return (
         <div className={cn("px-4 sm:px-10 pb-6", hideTitle ? "pt-2" : "pt-6 sm:pt-10")}>
-            <div className="max-w-6xl mx-auto w-full space-y-4">
+            <div className="max-w-6xl mx-auto w-full space-y-3">
                 {!hideTitle && (
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
@@ -32,7 +32,7 @@ export function CategorySelector({ categories, onSelect, variant = "default", hi
                 )}
 
                 <div className={cn(
-                    "grid gap-4",
+                    "grid gap-3",
                     variant === "default"
                         ? "grid-cols-2 md:grid-cols-4 lg:grid-cols-4"
                         : "grid-cols-2 md:grid-cols-4 lg:grid-cols-5 w-full"

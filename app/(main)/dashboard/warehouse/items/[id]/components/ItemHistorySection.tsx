@@ -208,7 +208,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     );
 
     return (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Header / Controls - Photo 2 Style */}
             <div className="crm-filter-tray-light p-1.5 ">
                 {/* Search Input Box */}
@@ -240,7 +240,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                 </div>
 
                 {/* Filters - Right Aligned */}
-                <div className="flex items-center gap-[6px] shrink-0">
+                <div className="flex items-center gap-3 shrink-0">
                     <div className="w-px h-6 bg-border mx-1" />
                     {[
                         { id: null, label: 'Все', icon: Layers },

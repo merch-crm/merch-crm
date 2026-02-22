@@ -212,7 +212,7 @@ export default function SidebarNavigationCRM() {
 
     return (
         <section className="py-12 flex justify-center bg-[#ecedf0]">
-            <div className="flex gap-20">
+            <div className="flex gap-3">
                 {/* 
                     We render two independent sidebars side-by-side for the showcase.
                     In a real app, this would be one component toggling state.

@@ -66,7 +66,7 @@ export function UploadIconModal({ isOpen, onClose, onUpload }: UploadIconModalPr
                         <label
                             htmlFor="svg-upload-modal-standalone"
                             className={cn(
-                                "border-2 border-dashed rounded-[20px] p-10 text-center transition-all cursor-pointer group bg-slate-50/50 hover:bg-white active:scale-[0.98] block",
+                                "border-2 border-dashed rounded-[20px] p-6 text-center transition-all cursor-pointer group bg-slate-50/50 hover:bg-white active:scale-[0.98] block",
                                 uploadedFile
                                     ? "border-primary/50 bg-primary/5"
                                     : "border-slate-200 hover:border-primary/50"

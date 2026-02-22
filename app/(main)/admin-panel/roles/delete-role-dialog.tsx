@@ -45,7 +45,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
             description={`Вы уверены, что хотите удалить роль ${role.name}?`}
             className="items-start"
         >
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="bg-slate-50 rounded-[18px] p-4 mb-6 border border-slate-200 text-center backdrop-blur-sm">
                     <p className="text-[13px] text-slate-600 leading-relaxed font-medium">
                         Это действие <span className="text-slate-900 font-bold">нельзя будет отменить</span>. Все настройки разрешений для этой роли будут безвозвратно удалены.

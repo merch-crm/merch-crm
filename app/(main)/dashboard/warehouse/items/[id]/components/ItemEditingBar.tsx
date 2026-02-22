@@ -52,7 +52,7 @@ export const ItemEditingBar = React.memo(({
                 animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                 exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
                 transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
-                className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-card p-2.5 px-4 md:px-8 gap-3 md:gap-4 rounded-3xl md:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-border w-[calc(100%-2rem)] md:w-auto overflow-hidden"
+                className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-card p-2.5 px-4 md:px-8 gap-3 md:gap-3 rounded-3xl md:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-border w-[calc(100%-2rem)] md:w-auto overflow-hidden"
                 data-dialog-open="true"
             >
                 {/* Left Side: Info */}
@@ -60,7 +60,7 @@ export const ItemEditingBar = React.memo(({
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    className="flex items-center gap-3 md:gap-4 flex-1 min-w-0"
+                    className="flex items-center gap-3 md:gap-3 flex-1 min-w-0"
                 >
                     <div className="flex flex-col relative min-w-0">
                         <div className="flex items-center gap-2 mb-0.5">
@@ -81,7 +81,7 @@ export const ItemEditingBar = React.memo(({
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex items-center gap-3 md:gap-4 shrink-0"
+                    className="flex items-center gap-3 md:gap-3 shrink-0"
                 >
                     <Button
                         variant="ghost"

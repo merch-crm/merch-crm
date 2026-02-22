@@ -35,8 +35,8 @@ export function LocationForm({
     handleAutoSave
 }: LocationFormProps) {
     return (
-        <div className="space-y-4">
-            <div className="space-y-4">
+        <div className="space-y-3">
+            <div className="space-y-3">
                 <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 ml-1">Название склада <span className="text-rose-500">*</span></label>
                     <Input

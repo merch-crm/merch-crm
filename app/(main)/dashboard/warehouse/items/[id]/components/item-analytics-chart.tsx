@@ -83,7 +83,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                     <p className="text-[13px] font-black text-foreground leading-none">Динамика за последние 30 дней</p>
                 </div>
 
-                <div className="flex flex-wrap gap-x-8 gap-y-4">
+                <div className="flex flex-wrap gap-x-3 gap-y-3">
                     {(chartLines || []).map(line => (
                         <div key={line.id} className="flex items-center gap-3">
                             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: line.color }} />

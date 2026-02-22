@@ -47,7 +47,7 @@ export function GlobalUndo() {
 
     return (
         <div className={cn(
-            "fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 px-6 py-4 bg-slate-900 text-white rounded-[24px] shadow-2xl z-50 animate-in slide-in-from-bottom-5 duration-500",
+            "fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-slate-900 text-white rounded-[24px] shadow-2xl z-50 animate-in slide-in-from-bottom-5 duration-500",
             isUndoing && "opacity-50 pointer-events-none"
         )}>
             <div className="flex items-center gap-3">

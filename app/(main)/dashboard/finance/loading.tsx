@@ -1,8 +1,8 @@
 export default function FinanceLoading() {
     return (
-        <div className="space-y-4 animate-in fade-in duration-500">
+        <div className="space-y-3 animate-in fade-in duration-500">
             {/* Grid for Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-6 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
                 {[...Array(6)].map((_, i) => (
                     <div key={i} className="crm-card p-6 bg-white flex flex-col justify-between h-40 border-none shadow-sm animate-pulse">
                         <div className="flex justify-between items-start">
@@ -18,9 +18,9 @@ export default function FinanceLoading() {
             </div>
 
             {/* Grid for Larger Widgets / Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--crm-grid-gap)]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 {[...Array(2)].map((_, i) => (
-                    <div key={i} className="crm-card p-8 bg-white h-72 border-none shadow-md animate-pulse">
+                    <div key={i} className="crm-card p-6 bg-white h-72 border-none shadow-md animate-pulse">
                         <div className="flex items-center gap-3 mb-8">
                             <div className="w-12 h-12 rounded-2xl bg-slate-100" />
                             <div className="space-y-2">
@@ -42,7 +42,7 @@ export default function FinanceLoading() {
                     </div>
                     <div className="h-8 w-32 bg-slate-200/50 rounded" />
                 </div>
-                <div className="p-8 space-y-4">
+                <div className="p-6 space-y-3">
                     {[...Array(5)].map((_, i) => (
                         <div key={i} className="flex items-center justify-between">
                             <div className="flex items-center gap-3">

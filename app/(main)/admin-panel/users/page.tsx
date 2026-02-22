@@ -22,7 +22,7 @@ export default async function AdminUsersPage({
     const error = res.success ? undefined : res.error;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
             <AdminPageHeader
                 title="Пользователи"
                 subtitle="Управление сотрудниками и их доступом к системе"

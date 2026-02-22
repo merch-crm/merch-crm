@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 export function Header() {
     return (
         <header className="flex h-16 items-center justify-between border-b border-border bg-card/80 px-6 backdrop-blur-sm sticky top-0 z-10">
-            <div className="flex items-center gap-4 w-1/3">
+            <div className="flex items-center gap-3 w-1/3">
                 <div className="relative w-full max-w-sm">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <input
@@ -17,7 +17,7 @@ export function Header() {
                 </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 <Button variant="ghost" size="icon" className="rounded-full">
                     <Bell className="h-5 w-5 text-muted-foreground" />
                 </Button>

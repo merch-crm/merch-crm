@@ -22,7 +22,7 @@ export function TimeTrackerWidget({
     const elapsed = useTimeTracker(startTime, isWorking);
 
     return (
-        <div className={cn("space-y-4", className)}>
+        <div className={cn("space-y-3", className)}>
             <div className="crm-card bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">

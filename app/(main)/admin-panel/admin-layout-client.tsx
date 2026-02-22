@@ -107,7 +107,7 @@ export function AdminLayoutClient({
                 title="Навигация"
             >
                 <div className="bg-[#0F172A] -mx-4 -mb-4 p-6 rounded-t-[2.5rem] min-h-[60vh]">
-                    <div className="flex items-center gap-4 mb-8">
+                    <div className="flex items-center gap-3 mb-8">
                         <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                             <ShieldAlert className="w-7 h-7 text-white" />
                         </div>
@@ -154,7 +154,7 @@ export function AdminLayoutClient({
             <div className="flex-1 flex flex-col h-full bg-slate-50/50 relative z-0 overflow-hidden">
                 {/* Desktop Top Bar */}
                 <header className="hidden md:flex h-20 border-b border-slate-200 bg-white/80 backdrop-blur-md px-12 items-center justify-between shrink-0 z-20">
-                    <div className="flex items-center gap-4 flex-1">
+                    <div className="flex items-center gap-3 flex-1">
                         <AdminSearch />
                     </div>
 
@@ -166,7 +166,7 @@ export function AdminLayoutClient({
                 </header>
 
                 {/* Sub-page Content */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-[--radius-padding] scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
                     {children}
                 </div>
             </div>

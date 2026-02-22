@@ -72,7 +72,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                         </div>
                     </div>
 
-                    <div className="px-6 pb-6 pt-4 space-y-4 overflow-y-auto custom-scrollbar">
+                    <div className="px-6 pb-6 pt-4 space-y-3 overflow-y-auto custom-scrollbar">
                         <div className="space-y-1.5 overflow-visible">
                             <label className="text-sm font-bold text-slate-700 ml-1">Раздел каталога товаров</label>
 
@@ -93,7 +93,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                                 <Input

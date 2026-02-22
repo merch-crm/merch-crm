@@ -17,11 +17,11 @@ import {
 
 export default function CardsCRM() {
     return (
-        <div className="space-y-4">
+        <div className="space-y-3">
 
             {/* --- HEADER --- */}
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
+            <header className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
                     <button type="button" className="w-10 h-10 rounded-[var(--radius-inner)] glass-panel flex items-center justify-center text-slate-500 hover:text-slate-900 transition-colors">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M19 12H5" /><path d="M12 19l-7-7 7-7" /></svg>
                     </button>
@@ -46,7 +46,7 @@ export default function CardsCRM() {
                 {/* Purple Glow */}
                 <div className="absolute top-[20%] left-[20%] w-[300px] h-[300px] bg-[#5d00ff]/30 rounded-full blur-[100px] pointer-events-none" />
 
-                <div className="flex flex-col xl:flex-row gap-4 p-6 md:p-8">
+                <div className="flex flex-col xl:flex-row gap-3 p-6 md:p-6">
                     {/* Left Text Block */}
                     <div className="flex flex-col justify-center min-w-[280px] relative z-10">
                         <div className="flex items-center gap-3 mb-4">
@@ -59,7 +59,7 @@ export default function CardsCRM() {
                     </div>
 
                     {/* Cards Container */}
-                    <div className="flex-1 flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex-1 flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
 
                         {/* Add Button */}
                         <button type="button" className="min-w-[80px] w-[80px] h-[200px] rounded-[var(--radius-outer)] bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors group backdrop-blur-sm">
@@ -81,9 +81,9 @@ export default function CardsCRM() {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="font-mono text-xl text-white/90">7812 2139 0823 XXXX</div>
-                                <div className="flex gap-4 text-xs  text-white/50 font-bold">
+                                <div className="flex gap-3 text-xs  text-white/50 font-bold">
                                     <div>
                                         <div className="mb-1 text-xs">Valid Thru</div>
                                         <div className="text-white font-mono">05/24</div>
@@ -115,9 +115,9 @@ export default function CardsCRM() {
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
+                            <div className="space-y-3">
                                 <div className="font-mono text-xl text-white/90">5622 4544 0845 XXXX</div>
-                                <div className="flex gap-4 text-xs  text-white/50 font-bold">
+                                <div className="flex gap-3 text-xs  text-white/50 font-bold">
                                     <div>
                                         <div className="mb-1 text-xs">Valid Thru</div>
                                         <div className="text-white font-mono">02/25</div>
@@ -140,10 +140,10 @@ export default function CardsCRM() {
 
 
             {/* --- BOTTOM GRID --- */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
 
                 {/* 1. PHYSICAL CARD */}
-                <div className="lg:col-span-4 glass-panel p-8 flex flex-col justify-between min-h-[400px]">
+                <div className="lg:col-span-4 glass-panel p-6 flex flex-col justify-between min-h-[400px]">
                     <div>
                         <div className="flex items-start justify-between mb-4">
                             <div>
@@ -179,7 +179,7 @@ export default function CardsCRM() {
                 </div>
 
                 {/* 2. WHATS NEW */}
-                <div className="lg:col-span-4 glass-panel p-8">
+                <div className="lg:col-span-4 glass-panel p-6">
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="text-lg font-bold">Whats new</h3>
                         <div className="flex gap-2">
@@ -188,13 +188,13 @@ export default function CardsCRM() {
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         {[
                             { icon: "16%", text: "Short-term deposits with increased income up to 16%", date: "27 Feb, 2025" },
                             { icon: "x2", text: "we have increased the limits on physical cards by 2 times", date: "16 Feb, 2025" },
                             { icon: "2%", text: "2% cashback is now available for tickets to sports matches", date: "02 Feb, 2025" },
                         ].map((item, idx) => (
-                            <div key={idx} className="bg-slate-50/50 rounded-[var(--radius-inner)] p-4 flex gap-4 hover:bg-slate-100/50 transition-colors cursor-pointer border border-white/60">
+                            <div key={idx} className="bg-slate-50/50 rounded-[var(--radius-inner)] p-4 flex gap-3 hover:bg-slate-100/50 transition-colors cursor-pointer border border-white/60">
                                 <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center shrink-0">
                                     <span className="text-[#5d00ff] text-xs font-bold">{item.icon}</span>
                                 </div>
@@ -208,7 +208,7 @@ export default function CardsCRM() {
                 </div>
 
                 {/* 3. WIDGETS & CASHBACK */}
-                <div className="lg:col-span-4 flex flex-col gap-4">
+                <div className="lg:col-span-4 flex flex-col gap-3">
 
                     {/* 3 Small Widgets */}
                     <div className="grid grid-cols-3 gap-3">
@@ -244,7 +244,7 @@ export default function CardsCRM() {
                             <button type="button" className="w-8 h-8 rounded-[var(--radius-inner)] bg-white/50 border border-white/60 flex items-center justify-center hover:scale-110 transition-transform"><ArrowUpRight className="w-4 h-4 text-slate-600" /></button>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             {[
                                 { name: "Apple", cashback: "1.5%" },
                                 { name: "McDonald's", cashback: "1.2%" },

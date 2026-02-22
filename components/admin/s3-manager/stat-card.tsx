@@ -33,7 +33,7 @@ export const StatCard = ({
         onClick={onClick}
     >
         <CardContent className={cn("p-6", onClick && "flex items-center justify-between")}>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 <div className={cn("p-3 rounded-[18px]", iconBgClassName, iconTextClassName)}>
                     {icon}
                 </div>

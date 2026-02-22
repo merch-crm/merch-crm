@@ -40,7 +40,7 @@ const InvoiceDashboard = () => {
 
             {/* Top Navigation Bar */}
             <div className="px-10 py-8 flex items-center justify-between">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="text-[28px] font-black tracking-tighter text-black flex items-center">sf.</div>
 
                     <div className="flex items-center gap-2">
@@ -81,9 +81,9 @@ const InvoiceDashboard = () => {
             </div>
 
             {/* Main Hero Section */}
-            <div className="px-14 py-6 flex flex-col gap-14">
+            <div className="px-14 py-6 flex flex-col gap-3">
                 <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                         <div className="w-20 h-20 rounded-3xl bg-white/40 border border-white/60 backdrop-blur-xl flex items-center justify-center shadow-[0_20px_40px_-5px_rgba(0,0,0,0.05)]">
                             <CreditCard className="w-9 h-9 text-black/20" />
                         </div>
@@ -94,7 +94,7 @@ const InvoiceDashboard = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-16 pr-10">
+                    <div className="flex items-center gap-3 pr-10">
                         <div className="space-y-1.5">
                             <div className="text-[11px] font-semibold text-black/30 tracking-[0.15em]">Account</div>
                             <div className="flex items-center gap-2">
@@ -126,7 +126,7 @@ const InvoiceDashboard = () => {
                 </div>
 
                 {/* Progress Stats Bar */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <div className="flex items-center gap-3 px-6 py-4.5 rounded-[26px] bg-[#9cf8ce] border border-white/40 shadow-[0_10px_25px_-5px_rgba(156,248,206,0.3)]">
                         <CheckCircle2 className="w-5 h-5 text-black/60" />
                         <span className="text-[19px] font-bold text-black">$ 25.000</span>
@@ -144,8 +144,8 @@ const InvoiceDashboard = () => {
                     </div>
 
                     {/* Days Outstanding Dotted Bar */}
-                    <div className="flex-1 h-[72px] bg-white/30 backdrop-blur-md rounded-[26px] overflow-hidden flex items-center px-5 gap-4">
-                        <div className="flex-1 h-3 flex gap-[3px] items-center"
+                    <div className="flex-1 h-[72px] bg-white/30 backdrop-blur-md rounded-[26px] overflow-hidden flex items-center px-5 gap-3">
+                        <div className="flex-1 h-3 flex gap-3 items-center"
                             style={{ background: "repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 1.5px, transparent 1.5px, transparent 4px)" }}>
                             <div className="h-full bg-black/10 w-[45%]" />
                         </div>
@@ -186,14 +186,14 @@ const InvoiceDashboard = () => {
                         </div>
                     </div>
 
-                    <div className="flex-1 bg-white rounded-tl-[60px] p-12 shadow-[inset_0_20px_40px_rgba(0,0,0,0.01)] border-t border-white relative z-20 min-h-[700px]">
+                    <div className="flex-1 bg-white rounded-tl-[60px] p-[--padding-xl] shadow-[inset_0_20px_40px_rgba(0,0,0,0.01)] border-t border-white relative z-20 min-h-[700px]">
                         <div className="flex items-center justify-between mb-12">
                             <div className="flex items-baseline gap-2">
                                 <span className="text-[64px] font-black text-black leading-none">67</span>
                                 <span className="text-[20px] font-bold text-black/30">Items</span>
                             </div>
 
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-3 px-6 py-4 bg-[#f5f6f8] rounded-2xl w-[360px] border border-black/[0.03]">
                                     <Globe className="w-5 h-5 text-black/20" />
                                     <input type="text" placeholder="Search Items" className="bg-transparent outline-none text-[16px] font-bold text-black placeholder:text-black/20 w-full" />
@@ -208,9 +208,9 @@ const InvoiceDashboard = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-3 gap-3">
                             {invoiceItems.map((item) => (
-                                <div key={item.id} className="group bg-white rounded-[40px] p-8 border border-black/[0.06] hover:border-black/[0.1] hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.08)] transition-all duration-500 cursor-pointer relative overflow-hidden flex flex-col justify-between">
+                                <div key={item.id} className="group bg-white rounded-[40px] p-6 border border-black/[0.06] hover:border-black/[0.1] hover:shadow-[0_20px_60px_-10px_rgba(0,0,0,0.08)] transition-all duration-500 cursor-pointer relative overflow-hidden flex flex-col justify-between">
                                     <div className="flex items-start justify-between mb-10">
                                         <div className="w-20 h-20 rounded-[28px] bg-[#f5f6f8] flex items-center justify-center p-3">
                                             <Image src={item.image} alt={item.name} width={64} height={64} className="object-contain" />
@@ -225,7 +225,7 @@ const InvoiceDashboard = () => {
                                             <span className="text-[42px] font-black text-black leading-none">{item.qty}</span>
                                             <span className="text-[14px] font-bold text-black/20 text-xs">Qty</span>
                                         </div>
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-3">
                                             <span className="text-[14px] font-bold text-black/30">{item.store}</span>
                                             <button type="button" className="w-11 h-11 rounded-[18px] bg-black/5 flex items-center justify-center text-black/20 group-hover:bg-black group-hover:text-white transition-all duration-300">
                                                 <MoreHorizontal className="w-5 h-5" />
@@ -244,7 +244,7 @@ const InvoiceDashboard = () => {
                         <h2 className="text-[22px] font-black text-black">Activity</h2>
                     </div>
 
-                    <div className="flex-1 bg-white rounded-tr-[48px] p-12 border-t border-white shadow-[inset_0_20px_40px_rgba(0,0,0,0.02)]">
+                    <div className="flex-1 bg-white rounded-tr-[48px] p-[--padding-xl] border-t border-white shadow-[inset_0_20px_40px_rgba(0,0,0,0.02)]">
                         {/* Icons Bar */}
                         <div className="flex items-center gap-3.5 mb-14">
                             {[Calendar, Plus, CreditCard, Plus, Globe, Plus, Bell, Plus].map((Icon, i) => (
@@ -290,7 +290,7 @@ const InvoiceDashboard = () => {
                                             </div>
                                         </div>
 
-                                        <div className={cn("p-12 pl-24 rounded-[56px] border-2 border-white transition-all duration-500 shadow-sm hover:shadow-xl relative overflow-hidden", act.color)}>
+                                        <div className={cn("p-[--padding-xl] pl-24 rounded-[56px] border-2 border-white transition-all duration-500 shadow-sm hover:shadow-xl relative overflow-hidden", act.color)}>
                                             <div className="flex items-start justify-between mb-12">
                                                 <div className="space-y-1.5 pt-4">
                                                     <div className="text-[14px] font-bold text-black/25 tracking-[0.2em] mb-1">{act.date}</div>
@@ -303,7 +303,7 @@ const InvoiceDashboard = () => {
 
                                             <h3 className="text-[30px] font-bold text-black mb-12 leading-[1.05] tracking-tight max-w-[280px]">{act.title}</h3>
 
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-3">
                                                 <div className="w-14 h-14 rounded-full border-[5px] border-white overflow-hidden shadow-md bg-white">
                                                     <Image src={act.personImg} alt={act.person} width={56} height={56} className="object-cover" />
                                                 </div>

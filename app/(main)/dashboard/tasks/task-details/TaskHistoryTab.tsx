@@ -25,7 +25,7 @@ export function TaskHistoryTab({ task }: TaskHistoryTabProps) {
     };
 
     return (
-        <div className="relative pl-6 space-y-4 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
+        <div className="relative pl-6 space-y-3 before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-100">
             {task.history?.map((activity) => (
                 <div key={activity.id} className="relative">
                     <div className="absolute -left-[23px] top-1 h-3 w-3 rounded-full bg-white border-2 border-primary z-10" />

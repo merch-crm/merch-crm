@@ -28,8 +28,8 @@ export function NonClothingFields({
     remainingCustomTypes
 }: NonClothingFieldsProps) {
     return (
-        <div className="space-y-10">
-            <div className="space-y-4">
+        <div className="space-y-3">
+            <div className="space-y-3">
                 <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                     <Package className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                     Название позиции <span className="text-rose-500">*</span>
@@ -44,7 +44,7 @@ export function NonClothingFields({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                         <Hash className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                         Артикул (SKU) <span className="text-rose-500">*</span>
@@ -57,7 +57,7 @@ export function NonClothingFields({
                         className="w-full h-11 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus-visible:border-slate-900 transition-all font-mono shadow-none"
                     />
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                         <Ruler className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
                         Единица измерения <span className="text-rose-500">*</span>
@@ -74,9 +74,9 @@ export function NonClothingFields({
 
             {/* Custom Attributes for non-clothing */}
             {remainingCustomTypes.length > 0 && (
-                <div className="space-y-4 pt-4">
+                <div className="space-y-3 pt-4">
                     {remainingCustomTypes.map((type: AttributeType) => (
-                        <div key={type.id} className="space-y-4">
+                        <div key={type.id} className="space-y-3">
                             <div className="h-px bg-slate-100" />
                             <AttributeSelector
                                 type={type.slug}
@@ -103,7 +103,7 @@ export function NonClothingFields({
                     </div>
 
                     {isPackaging && (
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-3 gap-3">
                             {['width', 'height', 'depth'].map(dim => (
                                 <div key={dim} className="space-y-2">
                                     <label className="text-sm font-bold text-slate-700 px-1">
@@ -124,7 +124,7 @@ export function NonClothingFields({
                     )}
 
                     {isConsumables && (
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                             <label className="text-sm font-bold text-slate-700 ml-1">
                                 <Wrench className="w-3.5 h-3.5" />
                                 Область применения

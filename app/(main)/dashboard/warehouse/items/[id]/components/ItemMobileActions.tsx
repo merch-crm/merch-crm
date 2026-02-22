@@ -40,7 +40,7 @@ export function ItemMobileActions({
                 type="button"
                 aria-label="Корректировка остатка"
                 onClick={() => setAdjustType("set")}
-                className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-primary rounded-[24px] shadow-lg shadow-primary/20 hover:bg-[#731cff] transition-all active:scale-95 overflow-hidden border-none text-white cursor-pointer w-full"
+                className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-primary rounded-[var(--radius-outer)] shadow-lg shadow-primary/20 hover:bg-[#731cff] transition-all active:scale-95 overflow-hidden border-none text-white cursor-pointer w-full"
             >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-8 -mt-8 transition-transform duration-700" />
                 <div className="w-10 h-10 rounded-2xl bg-white/20 flex items-center justify-center text-white relative z-10 p-0">
@@ -55,7 +55,7 @@ export function ItemMobileActions({
                 type="button"
                 aria-label="Перемещение товара"
                 onClick={() => setShowTransfer(true)}
-                className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-slate-900 rounded-[24px] shadow-lg shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-95 overflow-hidden border-none text-white cursor-pointer w-full"
+                className="group relative flex flex-col items-start justify-between p-4 aspect-square bg-slate-900 rounded-[var(--radius-outer)] shadow-lg shadow-slate-900/10 hover:bg-slate-800 transition-all active:scale-95 overflow-hidden border-none text-white cursor-pointer w-full"
             >
                 <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-8 -mt-8 transition-transform duration-700" />
                 <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center text-white relative z-10 p-0">

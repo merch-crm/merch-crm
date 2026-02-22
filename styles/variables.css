@@ -39,10 +39,11 @@
     --ring: #5d00ff;
 
     /* Radii */
-    --radius: 24px;
-    --radius-outer: 24px;
-    --radius-inner: 18px;
-    --radius-padding: 24px;
+    --radius: 27px;
+    --radius-outer: 27px;
+    --radius-inner: 20px;
+    --radius-padding: 27px;
+    --padding-xl: 48px;
 
     /* Shadows */
     --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02);
@@ -52,7 +53,7 @@
 
     /* Grid & Spacing */
     --crm-blur: 24px;
-    --crm-grid-gap: 20px;
+    --crm-grid-gap: 12px;
     --crm-border-alpha: rgba(15, 23, 42, 0.05);
 
     /* Graphite */
@@ -67,7 +68,7 @@
     --dept-design: #ec4899;
 }
 
-@theme inline {
+@theme {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-card: var(--card);
@@ -96,6 +97,9 @@
     --radius-sm: 4px;
 
     --spacing-container: var(--radius-padding);
+    --spacing-xl: var(--padding-xl);
+    --spacing-6: var(--radius-padding);
+    --spacing-3: var(--crm-grid-gap);
 
     --font-sans: var(--font-manrope);
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

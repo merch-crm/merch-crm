@@ -1,26 +1,34 @@
-.glass-panel {
-    background-color: white;
-    border: 1px solid var(--border);
-    box-shadow: var(--crm-shadow-sm);
-    border-radius: var(--radius-outer);
-    transition: all 0.3s ease;
-}
-
-.glass-panel:hover {
-    box-shadow: var(--crm-shadow-md);
-}
-
-.glass-panel:focus,
-.glass-panel:focus-visible {
-    outline: none;
-    box-shadow: none;
-}
+/* ===========================================
+   BENTO CARD SYSTEM
+   ===========================================
+ 
+   Система карточек:
+ 
+   .crm-card          — внешний контейнер бенто-блока
+                        padding + border + shadow + bg
+                        Контент автоматически получает отступ от краёв.
+ 
+   .crm-card-body     — вложенный контейнер БЕЗ стилей.
+                        Используй вместо div внутри crm-card
+                        чтобы структурировать контент без накопления отступов.
+ 
+   .card-breakout     — для элементов, которые должны тянуться
+                        от края до края карточки (separator, цветной хедер).
+                        Применяй отрицательные горизонтальные маргины.
+ 
+   Модификаторы .crm-card:
+   .crm-card--elevated  — с тенью
+   .crm-card--ghost     — серый фон без рамки
+   .crm-card--compact   — меньше padding
+   .crm-card--spacious  — больше padding
+*/
 
 .crm-card {
     background-color: white;
     border: 1px solid var(--border);
     color: var(--card-foreground);
     border-radius: var(--radius-outer);
+    /* Единственное место, задающее отступ контента от края */
     padding: var(--radius-padding);
     box-shadow: var(--crm-shadow-sm);
     overflow: hidden;
@@ -38,6 +46,71 @@
         padding: 16px;
         border-radius: 16px;
     }
+}
+
+/* Внутренний контейнер без визуальных стилей */
+.crm-card-body {
+    /* Намеренно пустой — только структура */
+}
+
+/* Breakout: элемент тянется от края до края карточки */
+.card-breakout {
+    margin-left: calc(-1 * var(--radius-padding));
+    margin-right: calc(-1 * var(--radius-padding));
+}
+
+/* Breakout на весь блок (включая вертикаль) */
+.card-breakout-full {
+    margin: calc(-1 * var(--radius-padding));
+}
+
+/* Модификаторы */
+.crm-card--elevated {
+    box-shadow: var(--crm-shadow-lg);
+    border: none;
+}
+
+.crm-card--ghost {
+    background-color: var(--muted);
+    border: none;
+}
+
+.crm-card--compact {
+    padding: 16px;
+}
+
+.crm-card--spacious {
+    padding: var(--padding-xl);
+}
+
+/* Страховка на время миграции:
+   Если где-то остались вложенные .crm-card — сбрасываем их стили.
+   УДАЛИТЬ после завершения миграции. */
+.crm-card .crm-card {
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+}
+
+.glass-panel {
+    background-color: white;
+    border: 1px solid var(--border);
+    box-shadow: var(--crm-shadow-sm);
+    border-radius: var(--radius-outer);
+    transition: all 0.3s ease;
+}
+
+.glass-panel:hover {
+    box-shadow: var(--crm-shadow-md);
+}
+
+.glass-panel:focus,
+.glass-panel:focus-visible {
+    outline: none;
+    box-shadow: none;
 }
 
 .sticky-glass-header {

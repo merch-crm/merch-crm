@@ -68,7 +68,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                     {/* Main Body */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar">
                         {/* Mobile Two-Stack Layout */}
-                        <div className="md:hidden px-5 pb-6 space-y-4">
+                        <div className="md:hidden px-5 pb-6 space-y-3">
                             <LocationForm
                                 form={form}
                                 fieldErrors={fieldErrors}
@@ -94,7 +94,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
 
                         {/* Desktop Side-by-Side Layout */}
                         <div className="hidden md:grid grid-cols-5 gap-3 p-5 h-full overflow-hidden">
-                            <div className="col-span-2 space-y-4 overflow-y-auto custom-scrollbar pr-2 pl-1">
+                            <div className="col-span-2 space-y-3 overflow-y-auto custom-scrollbar pr-2 pl-1">
                                 <LocationForm
                                     form={form}
                                     fieldErrors={fieldErrors}
@@ -117,7 +117,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                 </div>
                             </div>
 
-                            <div className="col-span-3 flex flex-col gap-4 border-l border-slate-200 pl-5 h-full min-h-[440px] overflow-hidden">
+                            <div className="col-span-3 flex flex-col gap-3 border-l border-slate-200 pl-5 h-full min-h-[440px] overflow-hidden">
                                 <div className="flex items-center justify-between mb-4">
                                     <label className="text-sm font-bold text-slate-700 block">
                                         <Package className="w-3.5 h-3.5 text-slate-300 inline-block mr-2" /> Товары в наличии <span className="opacity-30">/</span> {localItems?.length || 0}

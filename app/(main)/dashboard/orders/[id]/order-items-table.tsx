@@ -79,7 +79,7 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                     </table>
                 )}
                 renderCard={(item) => (
-                    <div key={item.id} className="crm-card !p-4 space-y-3">
+                    <div key={item.id} className="crm-card  space-y-3">
                         <div className="text-sm font-bold text-slate-900">{item.description || "Без названия"}</div>
                         <div className="flex justify-between items-center pt-2 border-t border-slate-50">
                             <div className="text-xs text-slate-500">Количество: <span className="font-bold text-slate-700">{item.quantity} шт</span></div>

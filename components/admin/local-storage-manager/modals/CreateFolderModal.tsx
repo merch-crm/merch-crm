@@ -32,7 +32,7 @@ export function CreateFolderModal({
             title="Новая папка"
             description={`Создание в: ${currentPrefix || "/"}`}
         >
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400">Имя папки</label>
                     <Input

@@ -15,8 +15,8 @@ export function AdminPageHeader({
     actions
 }: AdminPageHeaderProps) {
     return (
-        <div data-testid="admin-page-header" className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+        <div data-testid="admin-page-header" className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-3 sm:gap-3 min-w-0">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary/5 rounded-[12px] sm:rounded-[18px] flex items-center justify-center border border-primary/10 shrink-0">
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>

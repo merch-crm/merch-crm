@@ -18,7 +18,7 @@ export function ImageGallery({ formData }: ImageGalleryProps) {
 
     return (
         <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-6 sm:p-8 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
+            <div className="p-6 sm:p-6 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200">
                         <Package className="w-5 h-5 text-white" />
@@ -30,7 +30,7 @@ export function ImageGallery({ formData }: ImageGalleryProps) {
                 </div>
             </div>
 
-            <div className="p-6 sm:p-8">
+            <div className="p-6 sm:p-6">
                 <div className="flex flex-nowrap gap-3 overflow-x-auto pb-4 custom-scrollbar lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
                     {images.map((img, idx) => (
                         <div key={idx} className="relative w-32 h-32 sm:w-40 sm:h-40 xl:w-full xl:aspect-square shrink-0 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50">

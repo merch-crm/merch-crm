@@ -8,11 +8,11 @@ interface NotificationsTabProps {
 
 export function NotificationsTab({ activities }: NotificationsTabProps) {
     return (
-        <div className="crm-card !p-8 !rounded-3xl min-h-[400px]">
+        <div className="crm-card  !rounded-3xl min-h-[400px]">
             <h2 className="text-xl font-bold mb-6">История уведомлений</h2>
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {activities.map((activity) => (
-                    <div key={activity.id} className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer border border-transparent hover:border-slate-200 group">
+                    <div key={activity.id} className="flex items-center gap-3 p-4 rounded-2xl hover:bg-slate-50 transition-colors cursor-pointer border border-transparent hover:border-slate-200 group">
                         <div className="w-12 h-12 rounded-2xl bg-slate-50 group-hover:bg-white border border-slate-200 flex items-center justify-center text-primary font-bold shadow-sm group-hover:shadow-md transition-all">
                             {/* Simple Icon placeholder */}
                             <CheckCircle2 className="w-5 h-5 opacity-50 group-hover:opacity-100" />

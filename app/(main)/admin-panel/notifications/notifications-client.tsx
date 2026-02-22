@@ -131,7 +131,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
     };
 
     return (
-        <div className="space-y-4 pb-20">
+        <div className="space-y-3 pb-20">
             <AdminPageHeader
                 title="Уведомления"
                 subtitle="Управление каналами связи и триггерами системы"
@@ -150,10 +150,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                 }
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* System & Push Settings */}
-                <div className="crm-card space-y-4">
-                    <div className="flex items-center gap-4">
+                <div className="crm-card space-y-3">
+                    <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                             <Monitor className="w-6 h-6" />
                         </div>
@@ -163,7 +163,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <SwitchRow
                             icon={Bell}
                             title="Общие уведомления"
@@ -182,9 +182,9 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                 </div>
 
                 {/* Telegram Integration */}
-                <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl space-y-4 relative overflow-hidden group">
+                <div className="bg-slate-900 rounded-3xl p-6 text-white shadow-xl space-y-3 relative overflow-hidden group">
                     <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all" />
-                    <div className="flex items-center gap-4 relative z-10">
+                    <div className="flex items-center gap-3 relative z-10">
                         <div className="w-12 h-12 rounded-xl bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
                             <Send className="w-6 h-6" />
                         </div>
@@ -199,7 +199,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                         />
                     </div>
 
-                    <div className={cn("space-y-4 relative z-10 transition-all", !settings.telegram.enabled && "opacity-40 pointer-events-none grayscale")}>
+                    <div className={cn("space-y-3 relative z-10 transition-all", !settings.telegram.enabled && "opacity-40 pointer-events-none grayscale")}>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-400 ml-1">Токен бота (API Token)</label>
                             <Input
@@ -229,7 +229,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
             </div>
 
             {/* Event Triggers */}
-            <div className="space-y-4">
+            <div className="space-y-3">
                 <div className="flex items-center justify-between">
                     <h3 className="text-xl font-bold text-slate-900">События для уведомлений</h3>
                     <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-black">
@@ -237,7 +237,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {EVENT_CONFIG.map((item) => {
                         const Icon = item.icon;
                         const enabled = isEventEnabled(item.key);

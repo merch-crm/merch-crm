@@ -3,7 +3,7 @@ import { ShieldCheck } from "lucide-react";
 
 export default function AdminLoading() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4 animate-in fade-in duration-700">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-3 animate-in fade-in duration-700">
             <div className="relative">
                 <div className="w-24 h-24 rounded-3xl bg-primary/10 flex items-center justify-center text-primary animate-pulse">
                     <ShieldCheck className="w-12 h-12" />
@@ -17,7 +17,7 @@ export default function AdminLoading() {
                 <p className="text-sm font-bold text-slate-400 animate-pulse">Загрузка модулей администрирования...</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full max-w-4xl opacity-50">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 w-full max-w-4xl opacity-50">
                 {[1, 2, 3, 4].map(i => (
                     <div key={i} className="h-24 bg-white rounded-3xl border border-slate-200 animate-pulse" />
                 ))}
