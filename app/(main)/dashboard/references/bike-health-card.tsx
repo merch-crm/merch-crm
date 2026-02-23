@@ -31,7 +31,7 @@ export default function BikeHealthCard() {
 
                     {/* Header */}
                     <div className="flex justify-between items-start">
-                        <h3 className="text-white text-2xl font-medium tracking-wide">Bike Health Summary</h3>
+                        <h3 className="text-white text-2xl font-medium ">Bike Health Summary</h3>
                         <div className="w-12 h-12 rounded-full bg-[#3a3c36] flex items-center justify-center border border-white/5 cursor-pointer hover:bg-[#464842] transition-colors">
                             <ArrowUpRight className="text-[#d4fb4e] w-6 h-6" />
                         </div>
@@ -60,7 +60,7 @@ export default function BikeHealthCard() {
 
                     {/* Bike Model Name */}
                     <div className="text-center mb-8">
-                        <h2 className="text-white/90 text-2xl font-medium tracking-wide">KTM 450 SX-F</h2>
+                        <h2 className="text-white/90 text-2xl font-medium ">KTM 450 SX-F</h2>
                     </div>
 
                     {/* Stats Grid */}

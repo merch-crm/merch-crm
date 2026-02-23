@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
     const itemRes = await getCachedItem(id);
 
     if ('data' in itemRes && itemRes.data) {
-        return { title: `${itemRes.data.name} | Склад` };
+        return { title: `Склад | ${itemRes.data.name}` };
     }
 
-    return { title: "Товар | Склад" };
+    return { title: "Склад | Товар" };
 }
 
 export default async function ItemPage({ params }: PageParams) {

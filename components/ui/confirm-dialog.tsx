@@ -76,7 +76,7 @@ export function ConfirmDialog({
                     </motion.div>
 
                     {/* Main Title - Swapped to be below icon */}
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-tight px-4 text-center">
+                    <h3 className="text-2xl font-black text-slate-900  leading-tight px-4 text-center">
                         {title}
                     </h3>
 

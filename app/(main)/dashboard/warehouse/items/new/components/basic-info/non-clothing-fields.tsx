@@ -47,7 +47,7 @@ export function NonClothingFields({
                 <div className="space-y-3">
                     <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
                         <Hash className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
-                        Артикул (SKU) <span className="text-rose-500">*</span>
+                        Артикул: <span className="text-rose-500">*</span>
                     </label>
                     <Input
                         type="text"

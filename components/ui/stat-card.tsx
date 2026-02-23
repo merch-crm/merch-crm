@@ -86,9 +86,9 @@ export function ModernStatCard({
             </div>
 
             <div className="space-y-1">
-                <p className="text-slate-400 text-[11px] font-black tracking-wider mb-1">{label}</p>
+                <p className="text-slate-400 text-[11px] font-black  mb-1">{label}</p>
                 <div className="flex items-baseline gap-1">
-                    <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
+                    <h3 className="text-3xl font-black text-slate-900  leading-none">
                         {value}
                     </h3>
                     {suffix && (

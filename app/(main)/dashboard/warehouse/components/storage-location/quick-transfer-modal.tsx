@@ -63,7 +63,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
 
     return (
         <ResponsiveModal isOpen={!!item} onClose={onClose} showVisualTitle={false}>
-            <div className="p-6 flex flex-col gap-3 text-left">
+            <div className="p-6 pt-2 flex flex-col gap-3 text-left">
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h3>
@@ -85,7 +85,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
                     <input type="hidden" name="fromLocationId" value={currentLocationId} />
 
                     <div className="space-y-2 overflow-visible">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Куда переместить <span className="text-rose-500">*</span></label>
+                        <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Куда переместить <span className="text-rose-500">*</span></label>
                         <Select
                             options={locations.filter(l => l.id !== currentLocationId).map(l => ({ id: l.id, title: l.name, icon: <Building className="w-4 h-4 opacity-50" /> }))}
                             value={state.toLocationId}
@@ -98,7 +98,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
 
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Количество <span className="text-rose-500">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Количество <span className="text-rose-500">*</span></label>
                             <Input
                                 type="number"
                                 name="quantity"
@@ -112,7 +112,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Причина <span className="text-rose-500">*</span></label>
                             <Input
                                 name="comment"
                                 placeholder="..."

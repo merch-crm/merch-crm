@@ -4,7 +4,7 @@ import { WarehouseCharacteristic } from "../warehouse-characteristic";
 import { getSession } from "@/lib/auth";
 
 export const metadata = {
-    title: "Характеристики | Склад",
+    title: "Склад | Характеристики",
 };
 
 export const dynamic = "force-dynamic";

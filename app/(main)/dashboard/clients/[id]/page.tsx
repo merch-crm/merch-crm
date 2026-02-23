@@ -42,7 +42,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                         </Button>
                     </Link>
                     <div>
-                        <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">Карточка клиента</h1>
+                        <h1 className="text-2xl font-black text-slate-900  leading-none">Карточка клиента</h1>
                         <div className="text-slate-400 text-xs font-bold mt-2 flex items-center gap-2">
                             ID: {client.id.slice(0, 8)} • <Badge variant="secondary" className="text-xs font-bold">{client.clientType === 'b2b' ? 'B2B' : 'B2C'}</Badge>
                         </div>
@@ -91,7 +91,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                         <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-slate-200 shadow-sm group-hover:scale-110 transition-transform">
                                             <Phone className="w-4 h-4 text-primary" />
                                         </div>
-                                        <span className="text-xs font-black text-slate-600 tracking-tight">{client.phone}</span>
+                                        <span className="text-xs font-black text-slate-600 ">{client.phone}</span>
                                     </div>
                                     <ExternalLink className="w-3.5 h-3.5 text-slate-300 group-hover:text-primary transition-colors" />
                                 </div>
@@ -102,7 +102,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                             <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-slate-200 shadow-sm group-hover:scale-110 transition-transform">
                                                 <Mail className="w-4 h-4 text-indigo-500" />
                                             </div>
-                                            <span className="text-xs font-black text-slate-600 tracking-tight truncate max-w-[150px]">{client.email}</span>
+                                            <span className="text-xs font-black text-slate-600  truncate max-w-[150px]">{client.email}</span>
                                         </div>
                                         <ExternalLink className="w-3.5 h-3.5 text-slate-300 group-hover:text-primary transition-colors" />
                                     </div>

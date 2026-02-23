@@ -142,7 +142,7 @@ export function PackagingBasicInfoStep({
                     value={value || ""}
                     onChange={(e) => updateFormData({ [field]: e.target.value })}
                     placeholder={placeholder}
-                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm text-slate-900 shadow-sm placeholder:text-slate-300 placeholder:font-medium shadow-none"
+                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white transition-all font-bold text-sm text-slate-900 shadow-sm placeholder:text-slate-300 placeholder:font-medium shadow-none"
                 />
                 {suffix && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md pointer-events-none">
@@ -370,7 +370,7 @@ export function PackagingBasicInfoStep({
                                     value={formData.supplierLink || ""}
                                     onChange={(e) => updateFormData({ supplierLink: e.target.value })}
                                     placeholder="https://..."
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 transition-all font-bold text-sm text-slate-900 shadow-sm text-blue-600 underline-offset-2 placeholder:text-slate-300 placeholder:no-underline shadow-none"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-slate-400 transition-all font-bold text-sm text-slate-900 shadow-sm text-blue-600 underline-offset-2 placeholder:text-slate-300 placeholder:no-underline shadow-none"
                                 />
                             </div>
 

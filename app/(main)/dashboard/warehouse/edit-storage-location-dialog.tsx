@@ -37,7 +37,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                 onClose={onClose}
                 title="Редактирование локации"
                 showVisualTitle={false}
-                className="sm:max-w-[800px]"
+                className="sm:max-w-[720px]"
             >
                 <div className="flex flex-col h-full overflow-hidden">
                     {/* Header - Mobile & Desktop via tailwind */}
@@ -81,7 +81,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                             />
 
                             <div className="pt-6 border-t border-slate-100">
-                                <label className="text-sm font-bold text-slate-700 mb-4 block">Наличие товаров</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Наличие товаров</label>
                                 <LocationItemsList
                                     currentPage={ui.currentPage}
                                     itemsPerPage={ITEMS_PER_PAGE}
@@ -94,7 +94,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
 
                         {/* Desktop Side-by-Side Layout */}
                         <div className="hidden md:grid grid-cols-5 gap-3 p-5 h-full overflow-hidden">
-                            <div className="col-span-2 space-y-3 overflow-y-auto custom-scrollbar pr-2 pl-1">
+                            <div className="col-span-2 space-y-3 pt-2 overflow-y-auto custom-scrollbar">
                                 <LocationForm
                                     form={form}
                                     fieldErrors={fieldErrors}
@@ -119,8 +119,8 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
 
                             <div className="col-span-3 flex flex-col gap-3 border-l border-slate-200 pl-5 h-full min-h-[440px] overflow-hidden">
                                 <div className="flex items-center justify-between mb-4">
-                                    <label className="text-sm font-bold text-slate-700 block">
-                                        <Package className="w-3.5 h-3.5 text-slate-300 inline-block mr-2" /> Товары в наличии <span className="opacity-30">/</span> {localItems?.length || 0}
+                                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
+                                        <Package className="w-3.5 h-3.5 text-slate-300 inline-block mr-1.5" />Товары в наличии: {localItems?.length || 0}
                                     </label>
                                     <div className={cn(
                                         "flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-sm transition-colors",
@@ -138,7 +138,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                                <div className="flex-1 overflow-y-auto custom-scrollbar h-full">
                                     <LocationItemsList
                                         currentPage={ui.currentPage}
                                         itemsPerPage={ITEMS_PER_PAGE}
@@ -166,22 +166,24 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                         </Button>
                     </div>
                 </div>
-            </ResponsiveModal>
+            </ResponsiveModal >
 
-            {ui.transferItem && (
-                <QuickTransferModal
-                    item={ui.transferItem}
-                    currentLocationId={location.id}
-                    locations={locations}
-                    onClose={() => setUi(prev => ({ ...prev, transferItem: null }))}
-                    onSuccess={(itemId, quantity) => {
-                        setLocalItems(prev => prev.map(i => {
-                            if (i.id === itemId) return { ...i, quantity: i.quantity - quantity };
-                            return i;
-                        }).filter(i => i.quantity > 0));
-                    }}
-                />
-            )}
+            {
+                ui.transferItem && (
+                    <QuickTransferModal
+                        item={ui.transferItem}
+                        currentLocationId={location.id}
+                        locations={locations}
+                        onClose={() => setUi(prev => ({ ...prev, transferItem: null }))}
+                        onSuccess={(itemId, quantity) => {
+                            setLocalItems(prev => prev.map(i => {
+                                if (i.id === itemId) return { ...i, quantity: i.quantity - quantity };
+                                return i;
+                            }).filter(i => i.quantity > 0));
+                        }}
+                    />
+                )
+            }
         </>
     );
 }

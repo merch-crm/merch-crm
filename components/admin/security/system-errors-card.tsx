@@ -157,7 +157,7 @@ export function SystemErrorsCard({
                                                 <td className="crm-td">
                                                     <span
                                                         className={cn(
-                                                            "px-2 py-0.5 rounded-[18px] text-xs font-bold tracking-tight",
+                                                            "px-2 py-0.5 rounded-[18px] text-xs font-bold ",
                                                             error.severity === "critical"
                                                                 ? "bg-rose-600 text-white"
                                                                 : "bg-amber-100 text-amber-600"

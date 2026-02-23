@@ -46,6 +46,7 @@ interface SelectAppearance {
     center?: boolean;
     triggerClassName?: string;
     align?: "start" | "center" | "end";
+    alignOffset?: number;
 }
 
 interface SelectSearch {
@@ -82,7 +83,8 @@ export function Select({
     center = false,
     triggerClassName,
     name,
-    align = "start"
+    align = "start",
+    alignOffset = 0
 }: SelectProps) {
     const triggerId = useId();
     const [open, setOpen] = useState(false);
@@ -138,17 +140,27 @@ export function Select({
                             "w-full transition-all group disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
                             (center || variant === "minimal") ? "justify-center" : "justify-between",
                             variant === "default" ? [
-                                "bg-background border border-border rounded-[var(--radius-inner)] shadow-sm hover:shadow-md",
-                                compact ? "h-10 px-3.5" : "h-11 px-4",
+                                "bg-slate-50 border border-border rounded-[var(--radius-inner)] shadow-sm hover:shadow-md",
+                                compact ? "h-10 px-3.5" : "h-12 px-4",
                                 open && "ring-4 ring-primary/5 border-primary/20 shadow-md"
                             ] : [
-                                "bg-background rounded-[var(--radius-inner)] h-11 px-5 border border-border hover:border-border/80",
+                                "bg-slate-50 rounded-[var(--radius-inner)] h-12 px-5 border border-border hover:border-border/80",
                                 open && "ring-4 ring-primary/5 border-primary/20"
                             ],
                             triggerClassName
                         )}
                     >
                         <div className="flex items-center gap-2 overflow-hidden">
+                            {selectedOption?.icon && !compact && variant !== "minimal" && (
+                                <div className="shrink-0 text-muted-foreground group-hover:text-primary transition-colors">
+                                    {selectedOption.icon}
+                                </div>
+                            )}
+                            {selectedOption?.icon && compact && (
+                                <div className="shrink-0 text-muted-foreground group-hover:text-primary transition-colors">
+                                    {selectedOption.icon}
+                                </div>
+                            )}
                             <span className={cn(
                                 "font-bold transition-colors truncate",
                                 compact ? "text-xs" : "text-sm",
@@ -174,7 +186,9 @@ export function Select({
                         <PopoverContent
                             className="p-0 bg-white border-none shadow-crm-xl w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
                             align={align}
+                            alignOffset={alignOffset}
                             sideOffset={8}
+                            collisionPadding={0}
                             forceMount
                             asChild
                         >
@@ -211,14 +225,16 @@ export function Select({
                                     <div className="overflow-y-auto scrollbar-hide flex-1" role="listbox">
                                         {filteredOptions.length > 0 ? (
                                             <div className={cn(
-                                                "p-0",
+                                                "p-0.5",
                                                 effectiveGridColumns ? [
                                                     "grid gap-2",
                                                     effectiveGridColumns === 2 ? "grid-cols-2" : "grid-cols-3"
                                                 ] : "flex flex-col gap-1"
                                             )}>
-                                                {filteredOptions.map((option) => {
+                                                {filteredOptions.map((option, index) => {
                                                     const isSelected = option.id === value;
+                                                    const isLastOdd = effectiveGridColumns === 2 && index === filteredOptions.length - 1 && filteredOptions.length % 2 !== 0;
+
                                                     return (
                                                         <button
                                                             key={option.id}
@@ -229,7 +245,8 @@ export function Select({
                                                             className={cn(
                                                                 "transition-all text-left group/item rounded-[var(--radius-inner)] border",
                                                                 effectiveGridColumns ? [
-                                                                    "flex flex-col items-center justify-center p-3 gap-1",
+                                                                    "flex items-center p-3",
+                                                                    isLastOdd ? "col-span-2 flex-row justify-center px-5 gap-3" : "flex-col justify-center gap-1",
                                                                     isSelected ? "bg-primary/5 ring-2 ring-primary/20 border-primary/20" : "bg-slate-50 hover:bg-slate-100 border-border"
                                                                 ] : [
                                                                     "flex items-center gap-2 p-2.5",
@@ -267,10 +284,10 @@ export function Select({
                                                                 />
                                                             )}
                                                             <div className={cn(
-                                                                effectiveGridColumns ? "flex flex-col items-center text-center" : "flex flex-col flex-1 min-w-0"
+                                                                (effectiveGridColumns && !isLastOdd) ? "flex flex-col items-center text-center" : "flex flex-col min-w-0"
                                                             )}>
                                                                 <div className={cn(
-                                                                    effectiveGridColumns ? "flex items-center gap-1" : "flex items-center justify-between gap-2"
+                                                                    (effectiveGridColumns && !isLastOdd) ? "flex items-center gap-1" : "flex items-center justify-center gap-2"
                                                                 )}>
                                                                     <div className="flex items-center gap-2 min-w-0">
                                                                         <span className={cn(

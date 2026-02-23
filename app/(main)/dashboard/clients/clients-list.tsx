@@ -215,7 +215,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             />
 
             <div className="px-1 flex items-center justify-between">
-                <p className="text-[11px] font-bold text-slate-500 tracking-tight">
+                <p className="text-[11px] font-bold text-slate-500 ">
                     Найдено: <span className="text-slate-900">{viewState.data?.total || 0}</span>
                 </p>
                 <div className="text-[11px] font-black text-slate-300">

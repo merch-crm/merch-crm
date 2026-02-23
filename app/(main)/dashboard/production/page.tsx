@@ -2,6 +2,7 @@ import { ProductionWidgets } from "./production-widgets";
 import { ProductionBoard } from "./production-board";
 import { getProductionStats, getProductionItems } from "./actions";
 import { PageContainer } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function ProductionPage() {
     const statsRes = await getProductionStats();
@@ -13,10 +14,11 @@ export default async function ProductionPage() {
     return (
         <PageContainer>
             {/* Header */}
-            <div className="px-1">
-                <h1 className="text-4xl font-bold text-slate-900 leading-none">Производство</h1>
-                <p className="text-slate-400 text-sm font-medium mt-3">Управление очередью печати и цеховыми процессами</p>
-            </div>
+            <PageHeader
+                title="Производство"
+                description="Управление очередью печати и цеховыми процессами"
+                className="px-1"
+            />
 
             {/* Widgets */}
             <ProductionWidgets stats={stats} />

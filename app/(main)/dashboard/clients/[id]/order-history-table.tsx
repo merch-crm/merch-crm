@@ -93,7 +93,7 @@ export function OrderHistoryTable({ orders, currencySymbol }: OrderHistoryTableP
                                         <p className="text-sm font-bold text-slate-900">
                                             ORD-{orderNum?.split('-')[2] || order.id.slice(0, 6)}
                                         </p>
-                                        <p className="text-xs font-bold text-slate-400 tracking-tight">
+                                        <p className="text-xs font-bold text-slate-400 ">
                                             {format(new Date(order.createdAt), "d MMMM yyyy", { locale: ru })}
                                         </p>
                                     </div>

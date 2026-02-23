@@ -5,7 +5,7 @@
  * Each source file has its own "use server" directive.
  * All new code should ideally import directly from specific action files.
  */
- // Bypass audit constraint for barrel files
+// Bypass audit constraint for barrel files
 
 export {
     getInventoryItems, getArchivedItems, getInventoryItem, addInventoryItem,
@@ -26,7 +26,7 @@ export {
 export {
     getInventoryCategories, addInventoryCategory, updateInventoryCategory,
     deleteInventoryCategory, updateInventoryCategoriesOrder,
-    getOrphanedItemCount
+    getOrphanedItemStats
 } from "./category-actions";
 
 export {

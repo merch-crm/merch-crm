@@ -98,7 +98,7 @@ export function SummaryHeader({
                                 </div>
                             ) : (
                                 <>
-                                    <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.1] tracking-tight pr-4">
+                                    <h1 className="text-4xl sm:text-5xl font-black text-slate-900 leading-[1.1]  pr-4">
                                         {formData.itemName}
                                     </h1>
                                     <Button
@@ -115,20 +115,20 @@ export function SummaryHeader({
 
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                             <div className="flex flex-col">
-                                <span className="text-xs font-black text-slate-700 leading-none mb-1">Артикул SKU</span>
+                                <span className="text-xs font-bold text-slate-700 leading-none mb-1">Артикул:</span>
                                 <div className="flex items-center gap-2">
                                     <span className="text-xl font-mono font-bold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200/50">{formData.sku || "---"}</span>
                                 </div>
                             </div>
 
                             <div className="flex flex-col">
-                                <span className="text-xs font-black text-slate-700 leading-none mb-1">Категория</span>
+                                <span className="text-xs font-bold text-slate-700 leading-none mb-1">Категория:</span>
                                 <div className="flex items-center gap-2">
                                     <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center border shadow-sm", getColorStyles(activeSubcategory?.color || category.color))}>
                                         {createElement(getCategoryIcon(activeSubcategory || category), { className: "w-4 h-4", strokeWidth: 2.5 })}
                                     </div>
                                     <span className="text-base font-bold text-slate-600">
-                                        {category.name} <span className="text-slate-300 mx-1">/</span> {activeSubcategory?.name || "Основная"}
+                                        {category.name}: {activeSubcategory?.name || "Основная"}
                                     </span>
                                 </div>
                             </div>

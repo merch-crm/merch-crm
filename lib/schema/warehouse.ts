@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, boolean, index, integer, jsonb, decimal, AnyPgColumn } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, boolean, index, uniqueIndex, integer, jsonb, decimal, AnyPgColumn } from "drizzle-orm/pg-core";
 import { sql, relations } from "drizzle-orm";
 import { measurementUnitEnum, inventoryItemTypeEnum } from "./enums";
 import { users } from "./users";
@@ -71,7 +71,7 @@ export const inventoryCategoriesRelations = relations(inventoryCategories, ({ on
 
 export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
     id: uuid("id").defaultRandom().primaryKey(),
-    slug: text("slug").notNull().unique(),
+    slug: text("slug").notNull(),
     name: text("name").notNull(),
     isSystem: boolean("is_system").default(false).notNull(),
     sortOrder: integer("sort_order").default(0).notNull(),
@@ -84,6 +84,8 @@ export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
     return {
         deptIdx: index("inv_attr_types_department_idx").on(table.categoryId),
         createdIdx: index("inv_attr_types_created_idx").on(table.createdAt),
+        // Composite unique: same slug can exist in different categories, but not within the same one
+        slugCategoryUniq: uniqueIndex("inv_attr_types_slug_category_unique").on(table.slug, table.categoryId),
     }
 });
 

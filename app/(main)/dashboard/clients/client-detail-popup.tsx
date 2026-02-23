@@ -95,7 +95,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                             <Phone className="w-4 h-4" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-slate-400 tracking-tight">Телефон</p>
+                                            <p className="text-xs font-bold text-slate-400 ">Телефон</p>
                                             <p className="text-sm font-bold text-slate-700">{client.phone || "---"}</p>
                                         </div>
                                     </div>
@@ -106,7 +106,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                 <Mail className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <p className="text-xs font-bold text-slate-400 tracking-tight">Email</p>
+                                                <p className="text-xs font-bold text-slate-400 ">Email</p>
                                                 <p className="text-sm font-bold text-slate-700">{client.email}</p>
                                             </div>
                                         </div>
@@ -118,7 +118,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                 <MapPin className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <p className="text-xs font-bold text-slate-400 tracking-tight">Адрес</p>
+                                                <p className="text-xs font-bold text-slate-400 ">Адрес</p>
                                                 <p className="text-sm font-bold text-slate-700">{client.city}{client.address ? `, ${client.address}` : ''}</p>
                                             </div>
                                         </div>
@@ -200,7 +200,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                         <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400">
                                             <Clock className="w-4 h-4" />
                                         </div>
-                                        <h3 className="text-sm font-extrabold text-slate-800 tracking-tight">История заказов</h3>
+                                        <h3 className="text-sm font-extrabold text-slate-800 ">История заказов</h3>
                                     </div>
                                     <Badge className="bg-slate-100 text-slate-600 border-none font-bold">{(client.orders?.length || 0)}</Badge>
                                 </div>
@@ -225,7 +225,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                         <div className="text-sm font-bold text-slate-900">
                                                             {showFinancials && `${order.totalPrice || 0} ${currencySymbol}`}
                                                         </div>
-                                                        <p className="text-xs font-bold text-slate-400 tracking-tight">
+                                                        <p className="text-xs font-bold text-slate-400 ">
                                                             {formatDate(order.createdAt, "d MMMM yyyy")}
                                                         </p>
                                                     </div>

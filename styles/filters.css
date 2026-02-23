@@ -2,7 +2,7 @@
     position: relative;
     background-color: var(--accent);
     padding: 6px;
-    border-radius: var(--radius-outer);
+    border-radius: 22px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -15,7 +15,7 @@
     position: relative;
     background-color: var(--accent);
     padding: 6px;
-    border-radius: var(--radius-outer);
+    border-radius: 22px;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -27,7 +27,7 @@
 .crm-filter-tray-search {
     height: 44px;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 18px;
     font-size: 13px;
     font-weight: 700;
     transition: all 0.2s ease;
@@ -38,7 +38,7 @@
     position: relative;
     height: 44px;
     padding: 0 24px;
-    border-radius: 10px;
+    border-radius: 18px;
     font-size: 13px;
     font-weight: 700;
     transition: all 0.2s ease;
@@ -74,7 +74,7 @@
     position: relative;
     height: 44px;
     padding: 0 24px;
-    border-radius: 10px !important;
+    border-radius: 18px !important;
     font-size: 13px;
     font-weight: 700;
     transition: all 0.2s ease;
@@ -101,13 +101,18 @@
 
 @media (max-width: 640px) {
     .crm-filter-tray {
-        border-radius: calc(var(--radius-inner) - 4px);
-        padding: 8px;
-        gap: 12px;
+        border-radius: 22px;
+        padding: 6px;
+        gap: 6px;
+    }
+
+    .crm-filter-tray-search {
+        border-radius: 18px;
     }
 
     .crm-filter-tab,
     .crm-filter-tray-tab {
         padding: 0 12px;
+        border-radius: 18px !important;
     }
 }

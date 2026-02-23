@@ -4,19 +4,19 @@ import { z } from "zod";
 
 export const InventoryCategorySchema = z.object({
     name: z.string().min(1, "Название обязательно"),
-    description: z.string().optional().or(z.literal("")),
-    parentId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v === "" ? null : v),
-    color: z.string().optional().or(z.literal("")),
-    singularName: z.string().optional().or(z.literal("")),
-    pluralName: z.string().optional().or(z.literal("")),
-    gender: z.enum(["masculine", "feminine", "neuter"]).default("masculine"),
+    description: z.string().nullish().transform(v => v ?? ""),
+    parentId: z.string().uuid().nullish().or(z.literal("")).transform(v => (!v || v === "") ? null : v),
+    color: z.string().nullish().transform(v => v ?? ""),
+    singularName: z.string().nullish().transform(v => v ?? ""),
+    pluralName: z.string().nullish().transform(v => v ?? ""),
+    gender: z.preprocess((val) => val || "masculine", z.enum(["masculine", "feminine", "neuter"])).default("masculine"),
     sortOrder: z.coerce.number().int().default(0),
     isActive: z.coerce.boolean().default(true),
-    defaultUnit: z.string().optional().or(z.literal("")),
+    defaultUnit: z.string().nullish().transform(v => v ?? ""),
     showInSku: z.coerce.boolean().default(true),
     showInName: z.coerce.boolean().default(true),
-    prefix: z.string().optional().or(z.literal("")),
-    icon: z.string().optional().or(z.literal("")),
+    prefix: z.string().nullish().transform(v => v ?? ""),
+    icon: z.string().nullish().transform(v => v ?? ""),
 });
 
 export const InventoryItemSchema = z.object({

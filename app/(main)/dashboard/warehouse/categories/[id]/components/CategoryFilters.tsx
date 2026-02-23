@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
-import { InventoryFilters } from "../../types";
-import { StorageLocation } from "../../storage-locations-tab";
+import { InventoryFilters } from "@/app/(main)/dashboard/warehouse/types";
+import { StorageLocation } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
 
 interface CategoryFiltersProps {
     searchQuery: string;
@@ -44,29 +44,15 @@ export const CategoryFilters = React.memo(({
             {/* Search & Storage Group */}
             <div className={cn(
                 "flex items-center gap-2",
-                "w-full lg:w-auto lg:flex-1",
-                (isSearchExpanded && isMobile) ? "gap-0" : ""
+                "w-full lg:w-auto lg:flex-1"
             )}>
                 {/* Search Field */}
                 <div className={cn(
-                    "relative transition-all duration-300 ease-in-out h-11",
-                    (isSearchExpanded && isMobile) ? "flex-1 w-full" : "flex-1"
+                    "relative transition-all duration-300 ease-in-out h-11 flex-1"
                 )}>
                     <div
-                        role="button"
-                        tabIndex={0}
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (isMobile) setIsSearchExpanded(true);
-                        }}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                if (isMobile) setIsSearchExpanded(true);
-                            }
-                        }}
                         className={cn(
-                            "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 cursor-pointer transition-colors duration-300",
+                            "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 transition-colors duration-300",
                             isSearchExpanded && "text-primary"
                         )}
                     >
@@ -74,20 +60,18 @@ export const CategoryFilters = React.memo(({
                     </div>
                     <input
                         type="text"
-                        placeholder={isSearchExpanded ? "Поиск по названию или артикулу..." : "Поиск..."}
+                        placeholder={isMobile ? "Поиск" : "Поиск по названию или артикулу..."}
                         value={searchQuery}
                         onFocus={() => setIsSearchExpanded(true)}
                         onBlur={() => {
                             if (!searchQuery) {
-                                setTimeout(() => setIsSearchExpanded(false), 200);
+                                setIsSearchExpanded(false);
                             }
                         }}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className={cn(
-                            "crm-filter-tray-search w-full h-full focus:outline-none min-w-0 transition-all duration-300 rouded-[16px]",
-                            (isSearchExpanded && isMobile)
-                                ? "pl-11 pr-4 bg-white/50 rounded-[16px]"
-                                : "pl-11 pr-10 bg-white rounded-[16px] shadow-sm"
+                            "crm-filter-tray-search w-full h-full focus:outline-none min-w-0 transition-all duration-300 rounded-[18px]",
+                            "pl-11 pr-10 bg-white shadow-sm"
                         )}
                     />
                     {searchQuery && (
@@ -107,12 +91,10 @@ export const CategoryFilters = React.memo(({
                     )}
                 </div>
 
-                {/* Storage Select - Hides on search expand (Mobile) */}
+                {/* Storage Select */}
                 <div className={cn(
-                    "transition-all duration-300 ease-in-out bg-white rounded-[16px] shadow-sm",
-                    (isSearchExpanded && isMobile)
-                        ? "w-0 flex-none opacity-0 invisible overflow-hidden border-none"
-                        : "w-auto opacity-100 visible flex-1 sm:flex-none min-w-[140px]"
+                    "transition-all duration-300 ease-in-out bg-white rounded-[18px] shadow-sm",
+                    "w-auto opacity-100 visible flex-1 sm:flex-none min-w-[140px]"
                 )}>
                     <Select
                         options={[
@@ -137,7 +119,7 @@ export const CategoryFilters = React.memo(({
 
             {/* Status Pills Section */}
             <div className={cn(
-                "flex items-center gap-1.5 p-1 lg:p-0 rounded-2xl w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
+                "flex items-center gap-1.5 p-1 lg:p-0 rounded-full w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
             )}>
                 {[
                     { id: "all", label: "Все", icon: Layers },
@@ -154,14 +136,20 @@ export const CategoryFilters = React.memo(({
                             variant="ghost"
                             onClick={() => setFilterStatus(f.id as InventoryFilters["status"])}
                             className={cn(
-                                "crm-filter-tab flex-1 lg:flex-none text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0",
+                                "crm-filter-tab flex-1 lg:flex-none text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0 rounded-[18px]",
                                 isActive && "active"
                             )}
                         >
                             {isActive && (
                                 <motion.div
                                     layoutId="activeItemStatusTab"
-                                    className="absolute inset-0 bg-primary rounded-[10px] z-0"
+                                    className={cn(
+                                        "absolute inset-0 z-0 rounded-[18px]",
+                                        f.id === "all" ? "bg-primary" :
+                                            f.id === "in" ? "bg-emerald-500" :
+                                                f.id === "low" ? "bg-orange-500" :
+                                                    f.id === "out" ? "bg-rose-500" : "bg-primary"
+                                    )}
                                     transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                 />
                             )}

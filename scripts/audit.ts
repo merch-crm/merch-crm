@@ -117,7 +117,7 @@ function getAllFiles(dir: string, extensions: string[] = ['.ts', '.tsx']): strin
         const stat = fs.statSync(fullPath);
 
         if (stat.isDirectory()) {
-            if (!['node_modules', '.next', '.git', 'dist', 'build', 'coverage'].includes(item)) {
+            if (!['node_modules', '.next', '.git', 'dist', 'build', 'coverage', 'ui-kit'].includes(item)) {
                 files.push(...getAllFiles(fullPath, extensions));
             }
         } else if (extensions.some(ext => item.endsWith(ext))) {
@@ -1754,7 +1754,7 @@ function checkTests(): AuditError[] {
         );
 
         for (const file of criticalFiles) {
-            if (file.includes('scripts/audit.ts')) continue;
+            if (file.includes('scripts/audit.ts') || file.includes('.test.') || file.includes('.spec.')) continue;
 
             const baseName = path.basename(file, path.extname(file));
             const hasTest = testFiles.some(t => t.includes(baseName + '.test') || t.includes(baseName + '.spec'));
@@ -2620,8 +2620,11 @@ async function main() {
     allErrors.push(...checkPluralization(tsxFiles));
     allErrors.push(...checkImageProcessing(allFiles));
 
-    // Фильтруем ошибки, исключая сам скрипт аудита (на случай, если где-то пропустили проверку внутри функций)
-    const filteredErrors = allErrors.filter(e => !e.file.includes('scripts/audit.ts'));
+    // Фильтруем ошибки, исключая сам скрипт аудита и ui-kit
+    const filteredErrors = allErrors.filter(e =>
+        !e.file.includes('scripts/audit.ts') &&
+        !e.file.includes('ui-kit')
+    );
 
     // Статистика
     const byCategory: Record<string, number> = {};

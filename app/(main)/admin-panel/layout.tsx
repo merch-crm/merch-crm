@@ -17,7 +17,7 @@ export default async function AdminLayout({
     const notifications = await getNotifications();
     const brandingRes = await getBrandingAction();
     const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
-        companyName: "MerchCRM",
+        companyName: "",
         logoUrl: null,
         primaryColor: "#5d00ff",
         faviconUrl: null,

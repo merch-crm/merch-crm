@@ -72,7 +72,7 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
                                     <Printer className="h-8 w-8 text-white" />
                                 )}
                             </div>
-                            <span className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors">
+                            <span className="text-xl md:text-2xl font-bold text-slate-900  group-hover:text-primary transition-colors">
                                 {branding.companyName}
                             </span>
                         </Link>

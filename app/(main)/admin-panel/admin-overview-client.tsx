@@ -177,7 +177,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
 
                         <Button
                             type="button"
-                            className="relative z-10 w-full py-6 bg-white text-slate-900 rounded-2xl font-bold text-sm tracking-wide shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 transition-all h-auto border-none hover:bg-white/90"
+                            className="relative z-10 w-full py-6 bg-white text-slate-900 rounded-2xl font-bold text-sm  shadow-lg shadow-black/5 hover:scale-[1.02] active:scale-95 transition-all h-auto border-none hover:bg-white/90"
                         >
                             Запустить диагностику
                         </Button>

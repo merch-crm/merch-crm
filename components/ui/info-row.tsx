@@ -27,7 +27,7 @@ export function InfoRow({
             <div className={cn("flex items-center gap-3 py-2 px-1", className)}>
                 <Icon className={cn("w-4 h-4 text-slate-400 shrink-0", iconClassName)} />
                 <div className="min-w-0">
-                    <p className="text-xs font-medium text-slate-400 tracking-wider">{label}</p>
+                    <p className="text-xs font-medium text-slate-400 ">{label}</p>
                     <p className="text-sm font-bold text-slate-900 truncate">{value}</p>
                 </div>
             </div>
@@ -40,7 +40,7 @@ export function InfoRow({
                 <Icon className={cn("w-5 h-5", iconClassName)} />
             </div>
             <div className="min-w-0">
-                <p className="text-xs font-bold text-slate-400 mb-0.5 tracking-tight">{label}</p>
+                <p className="text-xs font-bold text-slate-400 mb-0.5 ">{label}</p>
                 <div className="text-sm font-bold text-slate-900 truncate">{value}</div>
             </div>
         </div>

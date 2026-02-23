@@ -47,9 +47,10 @@ export function LabelPrinterActions({
                 <Button
                     type="button"
                     onClick={handlePrint}
-                    className="flex-1 h-11 bg-slate-900 hover:bg-black text-white rounded-[var(--radius-inner)] font-bold text-sm flex items-center justify-center gap-2.5 shadow-xl hover:shadow-2xl transition-all active:scale-[0.98] group"
+                    variant="btn-dark"
+                    className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm flex items-center justify-center gap-2.5 shadow-xl transition-all active:scale-[0.98] group border-none"
                 >
-                    <Printer className="w-4 h-4 transition-transform" />
+                    <Printer className="w-4 h-4" />
                     Печать
                 </Button>
             </div>

@@ -273,7 +273,7 @@ export function TransactionsClient({
                                             {t.category}
                                         </span>
                                         <span className={cn(
-                                            "text-sm font-black tracking-tight",
+                                            "text-sm font-black ",
                                             t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
                                         )}>
                                             {t.type === 'payment' ? '+' : '-'}{Math.round(Number(t.amount)).toLocaleString()} {currencySymbol}

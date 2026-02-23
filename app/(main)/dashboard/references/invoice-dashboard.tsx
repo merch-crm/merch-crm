@@ -41,7 +41,7 @@ const InvoiceDashboard = () => {
             {/* Top Navigation Bar */}
             <div className="px-10 py-8 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="text-[28px] font-black tracking-tighter text-black flex items-center">sf.</div>
+                    <div className="text-[28px] font-black  text-black flex items-center">sf.</div>
 
                     <div className="flex items-center gap-2">
                         <button type="button" className="w-11 h-11 rounded-full bg-white/60 border border-white flex items-center justify-center text-black/30 hover:bg-white transition-all">
@@ -52,7 +52,7 @@ const InvoiceDashboard = () => {
                         </button>
                     </div>
 
-                    <h1 className="text-[24px] font-medium text-black/30 tracking-tight">Invoice</h1>
+                    <h1 className="text-[24px] font-medium text-black/30 ">Invoice</h1>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ const InvoiceDashboard = () => {
                         <div className="flex items-baseline">
                             <span className="text-[100px] font-bold text-black leading-none tracking-[-0.04em]">$</span>
                             <span className="text-[100px] font-bold text-black leading-none tracking-[-0.04em] ml-2">68,575</span>
-                            <span className="text-[48px] font-medium text-black/25 leading-none tracking-tight">.00</span>
+                            <span className="text-[48px] font-medium text-black/25 leading-none ">.00</span>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@ const InvoiceDashboard = () => {
                                 <div className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center">
                                     <span className="text-[11px] font-bold text-black/40">#</span>
                                 </div>
-                                <span className="text-[19px] font-bold text-black tracking-tight">INV-4905</span>
+                                <span className="text-[19px] font-bold text-black ">INV-4905</span>
                             </div>
                         </div>
                         <div className="space-y-1.5">
@@ -217,7 +217,7 @@ const InvoiceDashboard = () => {
                                         </div>
                                         <div className="text-right">
                                             <h4 className="text-[19px] font-black text-black leading-tight mb-1.5">{item.name}</h4>
-                                            <p className="text-[15px] font-bold text-black/30 tracking-tight">$ {item.price}</p>
+                                            <p className="text-[15px] font-bold text-black/30 ">$ {item.price}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-end justify-between">
@@ -258,7 +258,7 @@ const InvoiceDashboard = () => {
                         <div className="space-y-12">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-[64px] font-bold text-black leading-none tracking-tighter">12</span>
+                                    <span className="text-[64px] font-bold text-black leading-none ">12</span>
                                     <span className="text-[18px] font-bold text-black/15">Activities</span>
                                 </div>
                                 <div className="flex -space-x-3">
@@ -301,7 +301,7 @@ const InvoiceDashboard = () => {
                                                 </button>
                                             </div>
 
-                                            <h3 className="text-[30px] font-bold text-black mb-12 leading-[1.05] tracking-tight max-w-[280px]">{act.title}</h3>
+                                            <h3 className="text-[30px] font-bold text-black mb-12 leading-[1.05]  max-w-[280px]">{act.title}</h3>
 
                                             <div className="flex items-center gap-3">
                                                 <div className="w-14 h-14 rounded-full border-[5px] border-white overflow-hidden shadow-md bg-white">

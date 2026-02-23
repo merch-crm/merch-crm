@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FinanceDateFilter } from "./finance-date-filter";
+import { PageHeader } from "@/components/layout/page-header";
 
 const TABS = [
     { id: "sales", label: "Продажи", icon: TrendingUp, href: "/dashboard/finance/sales" },
@@ -48,20 +49,11 @@ export default function FinanceLayout({
     return (
         <div className="flex flex-col gap-3 animate-in fade-in duration-700">
             {/* 1. Page Header */}
-            <div className="flex flex-row items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight tracking-tight truncate">
-                        {currentTabInfo.title}
-                    </h1>
-                    <p className="text-slate-400 text-[11px] sm:text-[13px] font-medium max-w-2xl truncate">
-                        {currentTabInfo.description}
-                    </p>
-                </div>
-
-                <div className="shrink-0">
-                    <FinanceDateFilter />
-                </div>
-            </div>
+            <PageHeader
+                title={currentTabInfo.title}
+                description={currentTabInfo.description}
+                actions={<FinanceDateFilter />}
+            />
 
             {/* 2. Control Header: Navigation Tabs */}
             <div className="flex w-full h-[58px] items-center gap-2 p-[6px] !rounded-[22px] bg-white border border-slate-200/50 shadow-sm relative z-20">

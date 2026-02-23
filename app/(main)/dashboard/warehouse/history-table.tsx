@@ -4,14 +4,13 @@ import { useState } from "react";
 import { useHistoryTable } from "./hooks/useHistoryTable";
 import { Pagination } from "@/components/ui/pagination";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { useToast } from "@/components/ui/toast";
 import { formatPlural } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
 import { History } from "lucide-react";
 
-import { HistoryToolbar } from "./components/HistoryToolbar";
-import { HistorySelectionBar } from "./components/HistorySelectionBar";
-import { HistoryDisplay } from "./components/HistoryDisplay";
+import { HistoryToolbar } from "./components/history/HistoryToolbar";
+import { HistorySelectionBar } from "./components/history/HistorySelectionBar";
+import { HistoryDisplay } from "./components/history/HistoryDisplay";
 
 import { type Transaction } from "./history-types";
 
@@ -46,12 +45,12 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
         handleSelectAll,
         handleSelectRow,
         setIsDeleteDialogOpen: setShowDeleteConfirm,
-        confirmDeleteItems: confirmDelete
+        confirmDeleteItems: confirmDelete,
+        handleExportSelected
     } = actions;
 
     const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
     const [isMobileSearchExpanded, setIsMobileSearchExpanded] = useState(false);
-    const { toast } = useToast();
 
     if (!mounted) {
         return <div className="min-h-[400px]" data-testid="history-container" />;
@@ -68,9 +67,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
         );
     }
 
-    const handleExportSelected = () => {
-        toast("Экспорт будет доступен в следующем обновлении", "info");
-    };
+
 
     return (
         <div className="space-y-3 relative pb-0" data-testid="history-container">
@@ -81,7 +78,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 setSearchQuery={setSearchQuery}
                 setCurrentPage={setCurrentPage}
                 activeFilter={activeFilter}
-                setActiveFilter={setActiveFilter}
+                setActiveFilter={(val) => setActiveFilter(val)}
             />
 
             <HistorySelectionBar
@@ -126,8 +123,8 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 onClose={() => setShowDeleteConfirm(false)}
                 onConfirm={confirmDelete}
                 isLoading={isDeleting}
-                title="УДАЛИТЬ ЗАПИСИ ИЗ ИСТОРИИ?"
-                description={`Вы уверены, что хотите безвозвратно удалить ${selectedIds.length} выбр. ${formatPlural(selectedIds.length, ["запись", "записи", "записей"])}? Это действие нельзя отменить.`}
+                title="Удалить записи из истории?"
+                description={`Вы уверены, что хотите безвозвратно удалить ${selectedIds.length} ${formatPlural(selectedIds.length, ["выбранную запись", "выбранные записи", "выбранных записей"])}? Это действие нельзя отменить.`}
                 confirmText="Удалить"
                 variant="destructive"
             />

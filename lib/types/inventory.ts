@@ -85,6 +85,7 @@ export interface Category {
     showInName?: boolean;
     itemCount?: number;
     totalQuantity?: number;
+    totalCost?: number;
     parent?: {
         id: string;
         name: string;

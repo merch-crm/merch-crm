@@ -26,7 +26,7 @@ export function MaintenanceControls({
                         <p className="text-sm font-bold text-slate-800">
                             Очистка RAM
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium tracking-tight">
+                        <p className="text-[11px] text-slate-400 font-medium ">
                             Принудительный запуск Garbage Collector
                         </p>
                     </div>
@@ -50,7 +50,7 @@ export function MaintenanceControls({
                         <p className="text-sm font-bold text-slate-800">
                             Перезагрузка
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium tracking-tight">
+                        <p className="text-[11px] text-slate-400 font-medium ">
                             Мягкий перезапуск инстанса Next.js
                         </p>
                     </div>

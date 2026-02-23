@@ -56,7 +56,7 @@ export function FinancialMetricCard({
                     </div>
                 ) : (
                     <div className={cn(onDoubleClick && "cursor-pointer")} onDoubleClick={onDoubleClick}>
-                        <p className="text-lg font-black text-foreground tracking-tight group-hover:text-foreground/80 transition-colors">
+                        <p className="text-lg font-black text-foreground  group-hover:text-foreground/80 transition-colors">
                             {typeof value === "number" ? Math.round(value).toLocaleString('ru-RU') : value} {currencySymbol}
                         </p>
                         {secondaryValue && (

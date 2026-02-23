@@ -1096,10 +1096,10 @@ export function getComponentById(id: string) {
 }
 
 export const categories = [
-    { id: 'layout' as const, name: 'Layout', description: 'Компоненты разметки' },
-    { id: 'primitives' as const, name: 'Primitives', description: 'Базовые элементы' },
-    { id: 'forms' as const, name: 'Forms', description: 'Элементы форм' },
-    { id: 'navigation' as const, name: 'Navigation', description: 'Навигация' },
-    { id: 'data-display' as const, name: 'Data Display', description: 'Отображение данных' },
-    { id: 'feedback' as const, name: 'Feedback', description: 'Обратная связь' },
+    { id: 'layout' as const, name: 'Разметка', description: 'Компоненты разметки' },
+    { id: 'primitives' as const, name: 'Примитивы', description: 'Базовые элементы' },
+    { id: 'forms' as const, name: 'Формы', description: 'Элементы форм' },
+    { id: 'navigation' as const, name: 'Навигация', description: 'Навигация' },
+    { id: 'data-display' as const, name: 'Отображение данных', description: 'Отображение данных' },
+    { id: 'feedback' as const, name: 'Обратная связь', description: 'Обратная связь' },
 ];

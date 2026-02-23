@@ -7,9 +7,9 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 
 import { Button } from "@/components/ui/button";
 
-import { updateInventoryCategoriesOrder } from "../category-actions";
+import { updateInventoryCategoriesOrder } from "../../category-actions";
 import { Pagination } from "@/components/ui/pagination";
-import { StorageLocation } from "../storage-locations-tab";
+import { StorageLocation } from "../../storage-locations-tab";
 
 import { useBranding } from "@/components/branding-provider";
 import { Session } from "@/lib/auth";
@@ -38,7 +38,7 @@ import type {
     InventoryItem, Category, InventoryAttribute, AttributeType,
     MeasurementUnit, ItemStock, ItemHistoryTransaction, ActiveOrderItem,
     InventoryFilters, ThumbnailSettings
-} from "../types";
+} from "../../types";
 
 import { SortableSubCategoryCard, SubCategoryCardContent } from "./components/SubCategoryCard";
 import { CategoryFilters } from "./components/CategoryFilters";
@@ -48,12 +48,12 @@ import { MassActionsBar } from "./components/MassActionsBar";
 import { useCategoryDetail } from "./hooks/use-category-detail";
 import dynamic from "next/dynamic";
 
-const AdjustStockDialog = dynamic(() => import("../adjust-stock-dialog").then(m => m.AdjustStockDialog), { ssr: false });
-const EditCategoryDialog = dynamic(() => import("../edit-category-dialog").then(m => m.EditCategoryDialog), { ssr: false });
-const AddCategoryDialog = dynamic(() => import("../add-category-dialog").then(m => m.AddCategoryDialog), { ssr: false });
+const AdjustStockDialog = dynamic(() => import("../../adjust-stock-dialog").then(m => m.AdjustStockDialog), { ssr: false });
+const EditCategoryDialog = dynamic(() => import("../../edit-category-dialog").then(m => m.EditCategoryDialog), { ssr: false });
+const AddCategoryDialog = dynamic(() => import("../../add-category-dialog").then(m => m.AddCategoryDialog), { ssr: false });
 const ConfirmDialog = dynamic(() => import("@/components/ui/confirm-dialog").then(m => m.ConfirmDialog), { ssr: false });
-const ArchiveReasonDialog = dynamic(() => import("../components/archive-reason-dialog").then(m => m.ArchiveReasonDialog), { ssr: false });
-const LabelPrinterDialog = dynamic(() => import("../components/LabelPrinterDialog").then(m => m.LabelPrinterDialog), { ssr: false });
+const ArchiveReasonDialog = dynamic(() => import("../../components/archive-reason-dialog").then(m => m.ArchiveReasonDialog), { ssr: false });
+const LabelPrinterDialog = dynamic(() => import("../../components/LabelPrinterDialog").then(m => m.LabelPrinterDialog), { ssr: false });
 const BulkMoveDialog = dynamic(() => import("./components/CategoryBulkDialogs").then(m => m.BulkMoveDialog), { ssr: false });
 const BulkCategoryDialog = dynamic(() => import("./components/CategoryBulkDialogs").then(m => m.BulkCategoryDialog), { ssr: false });
 
@@ -350,7 +350,7 @@ export function CategoryDetailClient({
                         </div>
                     </div>
                 ) : (
-                    <div className="py-32 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[3rem] border border-dashed border-slate-200">
+                    <div className="py-32 flex flex-col items-center justify-center text-center px-4 bg-slate-50/30 rounded-[var(--radius-outer)] border border-dashed border-slate-200">
                         <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 text-slate-300 shadow-sm">
                             {filters.search ? <SearchX className="w-10 h-10" /> : <Package className="w-10 h-10" />}
                         </div>

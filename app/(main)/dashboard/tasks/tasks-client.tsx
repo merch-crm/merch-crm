@@ -24,6 +24,7 @@ import { Task } from "./types";
 import { X } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/layout/page-header";
 
 
 import { User, Order } from "@/lib/types";
@@ -114,15 +115,11 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                 <div className="absolute bottom-0 left-0 w-48 h-48 bg-primary/5 rounded-full -ml-24 -mb-24 blur-3xl opacity-50" />
 
                 <div className="relative flex flex-col gap-3">
-                    <div className="flex flex-row items-center justify-between gap-3">
-                        <div className="min-w-0 flex-1">
-                            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-none truncate">Рабочие процессы</h1>
-                            <p className="hidden sm:block text-slate-400 font-medium max-w-md text-[13px] leading-relaxed mt-1">Контролируйте движение задач в реальном времени на интерактивной доске</p>
-                        </div>
-                        <div className="shrink-0">
-                            <CreateTaskDialog users={users} departments={departments} orders={orders} />
-                        </div>
-                    </div>
+                    <PageHeader
+                        title="Рабочие процессы"
+                        description="Контролируйте движение задач в реальном времени на интерактивной доске"
+                        actions={<CreateTaskDialog users={users} departments={departments} orders={orders} />}
+                    />
 
                     <div className="flex items-center gap-3">
                         <div className="relative group flex-1">

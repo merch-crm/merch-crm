@@ -83,7 +83,7 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
                         )}
                     </div>
                 </Link>
-                <h1 className="text-[17px] font-bold text-slate-900 tracking-tight">
+                <h1 className="text-[17px] font-bold text-slate-900 ">
                     {currentTitle}
                 </h1>
             </div>

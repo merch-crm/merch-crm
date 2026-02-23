@@ -11,7 +11,7 @@ interface PageContainerProps {
 
 const spacingMap = {
     none: "",
-    sm: "flex flex-col gap-2",
+    sm: "flex flex-col gap-3",
     md: "flex flex-col gap-3",
     lg: "flex flex-col gap-3",
 };

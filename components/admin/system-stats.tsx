@@ -305,7 +305,7 @@ export function SystemStats() {
             <ActivityIcon size={32} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">
+            <h2 className="text-2xl font-bold text-slate-800 ">
               Состояние системы
             </h2>
             <p className="text-sm font-bold text-slate-400">

@@ -7,7 +7,7 @@ export default function WarehouseRootPage() {
     const router = useRouter();
 
     useEffect(() => {
-        router.replace("/dashboard/warehouse/categories");
+        router.replace("/dashboard/warehouse/overview");
     }, [router]);
 
     return null;

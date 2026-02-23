@@ -38,7 +38,7 @@ export function TimeTracker({
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h2 className="text-lg font-black text-slate-900 tracking-tight">Трекер смены</h2>
+                            <h2 className="text-lg font-black text-slate-900 ">Трекер смены</h2>
                             {isWorking && (
                                 <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-xs font-black text-emerald-600 animate-pulse">
                                     Активен
@@ -52,9 +52,9 @@ export function TimeTracker({
                 <div className="flex flex-col items-end">
                     <div className="flex items-center gap-2 text-slate-400 mb-1">
                         <Timer className="w-3.5 h-3.5" />
-                        <span className="text-xs font-black tracking-wider">Всего за сегодня</span>
+                        <span className="text-xs font-black ">Всего за сегодня</span>
                     </div>
-                    <p className="text-2xl font-black text-slate-900 tabular-nums tracking-tighter">
+                    <p className="text-2xl font-black text-slate-900 tabular-nums ">
                         {formatDurationLong(totalToday + elapsed)}
                     </p>
                 </div>
@@ -62,7 +62,7 @@ export function TimeTracker({
 
             <div className="bg-slate-50/50 rounded-2xl border border-slate-100 p-6 mb-8 flex flex-col items-center">
                 <div className={cn(
-                    "text-6xl font-black tabular-nums tracking-tighter mb-4 transition-all duration-500",
+                    "text-6xl font-black tabular-nums  mb-4 transition-all duration-500",
                     isWorking ? "text-emerald-600 scale-110" : "text-slate-200"
                 )}>
                     {isActive ? formatDuration(elapsed) : "00:00:00"}

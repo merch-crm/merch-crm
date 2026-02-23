@@ -132,7 +132,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                                         )}>
                                             {task.title}
                                         </h3>
-                                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-black tracking-tighter", config.color)}>
+                                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-black ", config.color)}>
                                             {config.label}
                                         </span>
                                     </div>

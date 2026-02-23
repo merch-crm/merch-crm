@@ -3,7 +3,7 @@ import { ArchiveTable } from "../archive-table";
 import { InventoryItem } from "../types";
 
 export const metadata = {
-    title: "Архив | Склад",
+    title: "Склад | Архив",
 };
 
 export const dynamic = "force-dynamic";

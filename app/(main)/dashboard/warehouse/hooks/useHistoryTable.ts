@@ -7,7 +7,7 @@ import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { sentence } from "@/lib/pluralize";
 
-export type FilterType = "all" | "in" | "out" | "transfer" | "attribute_change" | "archive";
+export type FilterType = "all" | "in" | "out" | "transfer" | "other";
 
 interface UseHistoryTableProps {
     transactions: Transaction[];
@@ -38,8 +38,8 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
         return transactions.filter(t => {
             const matchesFilter = activeFilter === "all"
                 ? true
-                : activeFilter === "archive"
-                    ? (t.type === "archive" || t.type === "restore")
+                : activeFilter === "other"
+                    ? ["archive", "restore", "attribute_change", "adjustment", "stock_in", "stock_out"].includes(t.type)
                     : t.type === activeFilter;
 
             const search = searchQuery.toLowerCase();
@@ -138,7 +138,15 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
             handleSelectRow,
             handleDeleteSelected,
             confirmDeleteItems,
-            resetFilters
+            resetFilters,
+            handleExportSelected: async () => {
+                // Simulate a small delay for better UX
+                const promise = new Promise(resolve => setTimeout(resolve, 300));
+                playSound("notification_success");
+                toast("Подготовка данных для экспорта...", "info");
+                await promise;
+                toast("Экспорт будет доступен в следующем обновлении", "warning");
+            }
         }
     };
 }

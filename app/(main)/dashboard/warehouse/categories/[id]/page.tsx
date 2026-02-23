@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from "./category-detail-client";
-import type { StorageLocation, InventoryFilters } from "../types";
+import type { StorageLocation, InventoryFilters } from "../../types";
 import { getSession } from "@/lib/auth";
 import { serializeForClient, type Serialized } from "@/lib/serialize";
 import { cache } from "react";
@@ -49,12 +49,12 @@ const getCachedCategory = cache(async (id: string, isUuid: boolean) => {
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
     const { id: paramId } = await params;
-    if (paramId === "orphaned") return { title: "Без категории | Склад" };
+    if (paramId === "orphaned") return { title: "Склад | Без категории" };
 
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
     const found = await getCachedCategory(paramId, isUuid);
 
-    return { title: found ? `${found.name} | Склад` : "Категория | Склад" };
+    return { title: found ? `Склад | ${found.name}` : "Склад | Категория" };
 }
 
 export default async function CategoryPage({
@@ -114,7 +114,7 @@ export default async function CategoryPage({
 
     // Fetch subcategories for this category
     // Fetch all categories to calculate recursive counts
-    const { getInventoryCategories, getInventoryItems, getStorageLocations, getInventoryAttributeTypes, getInventoryAttributes } = await import("../actions");
+    const { getInventoryCategories, getInventoryItems, getStorageLocations, getInventoryAttributeTypes, getInventoryAttributes } = await import("../../actions");
     const allCatsRes = await getInventoryCategories();
     const allCats = (allCatsRes.success ? allCatsRes.data : []) as Category[];
 
@@ -206,20 +206,18 @@ export default async function CategoryPage({
     const serializedParentCategory = parentCategory ? serializeForClient(parentCategory) as Serialized<Category> : undefined;
 
     return (
-        <div className="p-4">
-            <CategoryDetailClient
-                category={finalCategory as Category}
-                parentCategory={serializedParentCategory as Category}
-                subCategories={subCategories as Category[]}
-                items={items as InventoryItem[]}
-                totalItems={totalItems}
-                currentPage={page}
-                storageLocations={locations as StorageLocation[]}
+        <CategoryDetailClient
+            category={finalCategory as Category}
+            parentCategory={serializedParentCategory as Category}
+            subCategories={subCategories as Category[]}
+            items={items as InventoryItem[]}
+            totalItems={totalItems}
+            currentPage={page}
+            storageLocations={locations as StorageLocation[]}
 
-                attributeTypes={attributeTypes as AttributeType[]}
-                allAttributes={allAttributes as InventoryAttribute[]}
-                user={session}
-            />
-        </div>
+            attributeTypes={attributeTypes as AttributeType[]}
+            allAttributes={allAttributes as InventoryAttribute[]}
+            user={session}
+        />
     );
 }

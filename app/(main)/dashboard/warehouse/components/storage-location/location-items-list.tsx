@@ -25,14 +25,14 @@ export function LocationItemsList({
     const currentItems = localItems?.slice(startIndex, endIndex) || [];
 
     return (
-        <div className="space-y-3">
+        <div className="space-y-3 h-full flex flex-col">
             <div className="flex md:hidden items-center justify-between pb-1">
                 <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                    <Package className="w-4 h-4 text-slate-300" /> Товары <span className="opacity-30">/</span> {localItems?.length || 0}
+                    <Package className="w-4 h-4 text-slate-300" /> Товары: {localItems?.length || 0}
                 </label>
             </div>
 
-            <div className="space-y-2">
+            <div className="flex-1 flex flex-col space-y-2 min-h-0">
                 {currentItems.length > 0 ? (
                     currentItems.map((item) => (
                         <div
@@ -41,7 +41,7 @@ export function LocationItemsList({
                         >
                             <div className="flex flex-col min-w-0 flex-1 mr-3">
                                 <span className="text-xs font-bold text-slate-900 truncate">{item.name}</span>
-                                {item.sku && <span className="text-xs text-slate-400 font-bold mt-0.5">SKU: {item.sku}</span>}
+                                {item.sku && <span className="text-xs text-slate-400 font-bold mt-0.5">Артикул: {item.sku}</span>}
                             </div>
                             <div className="flex items-center gap-3">
                                 <div className="text-[11px] font-bold text-primary tabular-nums">
@@ -64,7 +64,7 @@ export function LocationItemsList({
                         </div>
                     ))
                 ) : (
-                    <div className="flex flex-col items-center justify-center text-center p-6 text-slate-400 bg-slate-50/30 rounded-2xl border border-dashed border-slate-200">
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 text-slate-400 bg-slate-50/30 rounded-2xl border border-dashed border-slate-200">
                         <Package className="w-8 h-8 text-slate-200 mb-2" />
                         <p className="text-xs font-bold text-slate-400">Склад пуст</p>
                     </div>

@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import { Package } from "lucide-react";
-import { InventoryItem, ThumbnailSettings } from "../../types";
+import { InventoryItem, ThumbnailSettings } from "@/app/(main)/dashboard/warehouse/types";
 
 interface ItemThumbnailProps {
     item: InventoryItem;

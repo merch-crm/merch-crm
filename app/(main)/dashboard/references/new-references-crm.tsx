@@ -78,7 +78,7 @@ const FlightBubbles = () => {
             >
                 <div className="flex items-center gap-3 px-7 py-4 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-black">
                     <span className="text-[16px] font-semibold">Смена аэропорта</span>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold tracking-wide">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold ">
                         <span>IST</span>
                         <ChevronRight className="w-2.5 h-2.5 opacity-30 mx-0.5" />
                         <span>SAW</span>
@@ -941,7 +941,7 @@ const WeatherWidget = () => {
                             <span>21°</span>
                         </div>
                     </div>
-                    <div className="text-[#FFD54F] text-2xl font-light tracking-wide mt-2">Stormy Monday</div>
+                    <div className="text-[#FFD54F] text-2xl font-light  mt-2">Stormy Monday</div>
                 </div>
 
                 {/* Forecast */}

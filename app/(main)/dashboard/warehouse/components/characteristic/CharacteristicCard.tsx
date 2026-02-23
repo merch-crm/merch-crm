@@ -50,12 +50,12 @@ export function CharacteristicCard({
                             )}
                             {type.showInSku && (
                                 <span className="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-[4px]">
-                                    Sku
+                                    в артикуле
                                 </span>
                             )}
                             {type.showInName && (
                                 <span className="text-xs font-bold text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded-[4px]">
-                                    Name
+                                    в названии
                                 </span>
                             )}
                             {!type.isSystem && !type.showInSku && !type.showInName && (

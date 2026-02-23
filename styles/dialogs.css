@@ -53,7 +53,7 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
     padding: 10px 12px;
     transition: border-color 0.2s, box-shadow 0.2s;
-    height: 44px;
+    height: 48px;
 }
 
 .crm-dialog-field::placeholder {
@@ -62,7 +62,8 @@
 
 /* slate-300 */
 .crm-dialog-field:focus {
-    border-color: hsl(var(--primary));
+    border-color: #94a3b8;
+    /* slate-400 */
     box-shadow: none;
     outline: none;
 }
@@ -129,8 +130,10 @@
 }
 
 .crm-dialog-textarea:focus {
-    border-color: hsl(var(--primary));
-    box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.05);
+    outline: none;
+    border-color: #94a3b8;
+    /* slate-400 */
+    box-shadow: none;
 }
 
 .crm-dialog-textarea::placeholder {

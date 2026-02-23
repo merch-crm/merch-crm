@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowRightLeft, ChevronUp, ChevronDown, RefreshCw } from "lucide-react";
+import { ArrowRightLeft, ChevronUp, ChevronDown } from "lucide-react";
 import { InventoryItem } from "./types";
 import { StorageLocation } from "./storage-locations-tab";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { Select, SelectOption } from "@/components/ui/select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useMoveInventory } from "./hooks/use-move-inventory";
@@ -42,7 +43,7 @@ export function MoveInventoryDialog({
     const itemOptions: SelectOption[] = (items || []).map(item => ({
         id: item.id,
         title: item.name,
-        description: item.sku ? `SKU: ${item.sku}` : `Остаток: ${item.quantity} шт.`
+        description: item.sku ? `Артикул: ${item.sku}` : `Остаток: ${item.quantity} шт.`
     }));
 
     const locationOptions: SelectOption[] = (locations || []).map(loc => ({
@@ -67,7 +68,14 @@ export function MoveInventoryDialog({
                 </Button>
             )}
 
-            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Перемещение товара" showVisualTitle={false}>
+            <ResponsiveModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Перемещение товара"
+                description="Перемещение товарных позиций между различными складами или местами хранения"
+                showVisualTitle={false}
+                className="sm:max-w-[720px]"
+            >
                 <form
                     onSubmit={handleSubmit}
                     className="flex flex-col h-full overflow-hidden"
@@ -85,7 +93,7 @@ export function MoveInventoryDialog({
                         </div>
                     </div>
 
-                    <div className="overflow-y-auto px-6 flex-1 pb-6 custom-scrollbar space-y-3 pt-4">
+                    <div className="overflow-y-auto px-6 flex-1 pb-6 custom-scrollbar space-y-3 pt-2">
                         <div className="space-y-1.5 overflow-visible">
                             <label className="text-sm font-bold text-slate-700 ml-1">Объект перемещения</label>
                             <Select
@@ -98,13 +106,14 @@ export function MoveInventoryDialog({
                                 }}
                                 placeholder="Выберите товар из списка..."
                                 showSearch
+                                triggerClassName="bg-slate-50"
                             />
                             {fieldErrors.itemId && <p className="text-xs font-bold text-rose-500 ml-1">{fieldErrors.itemId}</p>}
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Откуда</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Откуда</label>
                                 <Select
                                     options={locationOptions}
                                     value={fromLocationId}
@@ -114,11 +123,12 @@ export function MoveInventoryDialog({
                                     }}
                                     placeholder="Склад..."
                                     showSearch
+                                    triggerClassName="bg-slate-50"
                                 />
                                 {fieldErrors.fromLocationId && <p className="text-xs font-bold text-rose-500 ml-1">{fieldErrors.fromLocationId}</p>}
                             </div>
                             <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Куда</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Куда</label>
                                 <Select
                                     options={locationOptions}
                                     value={toLocationId}
@@ -129,13 +139,14 @@ export function MoveInventoryDialog({
                                     placeholder="Склад..."
                                     showSearch
                                     align="end"
+                                    triggerClassName="bg-slate-50"
                                 />
                                 {fieldErrors.toLocationId && <p className="text-xs font-bold text-rose-500 ml-1">{fieldErrors.toLocationId}</p>}
                             </div>
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Количество <span className="text-rose-500-none">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Количество <span className="text-rose-500">*</span></label>
                             <div className="relative group">
                                 <Input
                                     type="number"
@@ -147,7 +158,7 @@ export function MoveInventoryDialog({
                                         setFieldErrors(prev => ({ ...prev, quantity: "" }));
                                     }}
                                     className={cn(
-                                        "w-full h-11 pl-4 pr-12 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-sm font-bold outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm",
+                                        "w-full h-12 pl-4 pr-12 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-sm font-bold outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm",
                                         fieldErrors.quantity && "border-rose-300 bg-rose-50 text-rose-900"
                                     )}
                                 />
@@ -176,7 +187,7 @@ export function MoveInventoryDialog({
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина перемещения <span className="text-rose-500-none">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Причина перемещения <span className="text-rose-500">*</span></label>
                             <Input
                                 name="comment"
                                 placeholder="Напр: Пополнение дефицита..."
@@ -186,7 +197,7 @@ export function MoveInventoryDialog({
                                     setFieldErrors(prev => ({ ...prev, comment: "" }));
                                 }}
                                 className={cn(
-                                    "w-full h-11 px-4 rounded-[var(--radius-inner)] border text-sm font-bold outline-none transition-all shadow-sm",
+                                    "w-full h-12 px-4 rounded-[var(--radius-inner)] border text-sm font-bold outline-none transition-all shadow-sm",
                                     fieldErrors.comment ? "border-rose-300 bg-rose-50 text-rose-900" : "border-slate-200 bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5"
                                 )}
                             />
@@ -200,11 +211,17 @@ export function MoveInventoryDialog({
                             type="button"
                             onClick={() => setIsOpen(false)}
                             disabled={isPending}
-                            className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
+                            className="flex h-12 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
                         >
                             Отмена
                         </Button>
-                        <SubmitButton loading={isPending} />
+                        <SubmitButton
+                            isLoading={isPending}
+                            text="Переместить"
+                            loadingText="Обработка..."
+                            variant="btn-dark"
+                            className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
+                        />
                     </div>
                 </form>
             </ResponsiveModal >
@@ -212,19 +229,4 @@ export function MoveInventoryDialog({
     );
 }
 
-function SubmitButton({ loading }: { loading: boolean }) {
-    return (
-        <Button
-            type="submit"
-            disabled={loading}
-            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 bg-slate-900 hover:bg-slate-800 text-white rounded-[var(--radius-inner)] font-bold text-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2 shadow-sm"
-        >
-            {loading ? (
-                <div className="flex items-center gap-2">
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin text-white" />
-                    Обработка...
-                </div>
-            ) : "Переместить"}
-        </Button>
-    );
-}
+

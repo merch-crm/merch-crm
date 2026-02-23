@@ -50,7 +50,7 @@ export function ItemTabletView({
                 <div className="flex flex-col crm-card rounded-3xl p-6 justify-between overflow-hidden bg-card/50">
                     <div className="flex items-start justify-between mb-4 gap-3">
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-[11px] font-bold text-muted-foreground mb-1 leading-none">Артикул / SKU</h3>
+                            <h3 className="text-[11px] font-bold text-muted-foreground mb-1 leading-none">Артикул:</h3>
                             <p className="text-[14px] font-black text-foreground leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>{item.sku || "—"}</p>
                         </div>
                         <div className="text-right shrink-0">

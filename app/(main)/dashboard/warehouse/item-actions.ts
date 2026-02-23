@@ -471,7 +471,7 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
 
         await checkItemStockAlerts(id);
         revalidatePath("/dashboard/warehouse");
-        if (categoryId) revalidatePath(`/dashboard/warehouse/${categoryId}`);
+        if (categoryId) revalidatePath(`/dashboard/warehouse/categories/${categoryId}`);
         return { success: true };
     } catch (error) {
         await logError({

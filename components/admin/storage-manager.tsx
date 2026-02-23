@@ -97,7 +97,7 @@ export function StorageManager() {
                                 <AlertTriangle size={20} />
                             </div>
                             <div>
-                                <p className="font-bold text-sm  tracking-wide">
+                                <p className="font-bold text-sm  ">
                                     {quotaUsage.local.status === 'critical' ? "Критическая нехватка места на диске" : "Заканчивается место на диске"}
                                 </p>
                                 <p className="text-xs font-medium opacity-80 mt-1">
@@ -119,7 +119,7 @@ export function StorageManager() {
                                 <AlertTriangle size={20} />
                             </div>
                             <div>
-                                <p className="font-bold text-sm  tracking-wide">
+                                <p className="font-bold text-sm  ">
                                     {quotaUsage.s3.status === 'critical' ? "S3 хранилище переполнено" : "Заканчивается место в S3"}
                                 </p>
                                 <p className="text-xs font-medium opacity-80 mt-1">

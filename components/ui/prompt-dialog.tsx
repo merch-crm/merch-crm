@@ -65,7 +65,7 @@ export function PromptDialog({
                             <Edit3 className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 tracking-tighter">{title}</h3>
+                            <h3 className="text-xl font-black text-slate-900 ">{title}</h3>
                         </div>
                     </div>
                 </div>

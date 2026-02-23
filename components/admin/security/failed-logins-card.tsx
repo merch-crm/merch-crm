@@ -133,7 +133,7 @@ export function FailedLoginsCard({
                                                 <td className="crm-td">
                                                     <span
                                                         className={cn(
-                                                            "px-2 py-0.5 rounded-[18px] text-xs font-bold tracking-tight",
+                                                            "px-2 py-0.5 rounded-[18px] text-xs font-bold ",
                                                             login.reason === "password_mismatch"
                                                                 ? "bg-amber-50 text-amber-600"
                                                                 : "bg-rose-50 text-rose-600"

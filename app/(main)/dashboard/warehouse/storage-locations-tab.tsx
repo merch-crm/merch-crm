@@ -199,7 +199,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     items={dataState.localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-3 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
+                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
                         {dataState.localLocations.map((loc) => (
                             <SortableLocationCard
                                 key={loc.id}
@@ -300,7 +300,7 @@ const LocationCardContent = memo(({
 
     return (
         <div className={cn(
-            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[300px] sm:min-h-[380px] crm-card shadow-sm p-4 sm:p-6",
+            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[220px] sm:min-h-[380px] crm-card shadow-sm p-3 sm:p-6",
             !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
             isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
                 isDefault
@@ -309,57 +309,63 @@ const LocationCardContent = memo(({
                         ? "!bg-rose-50/30 !border-rose-100"
                         : ""
         )}>
-            <div className="flex items-start justify-between mb-2">
-                <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-start justify-between gap-2 mb-2">
+                <div className="flex items-center gap-1 sm:gap-3 min-w-0">
                     <div role="button" tabIndex={0}
                         {...dragHandleProps}
-                        className="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-4px] sm:mr-[-8px]"
+                        className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-4px] sm:mr-[-8px]"
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
                     >
-                        <GripVertical className="w-4 h-4 sm:w-5 sm:h-5" />
+                        <GripVertical className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                     </div>
-                    <span className="text-xs font-bold text-slate-300">
+                    <span className={cn(
+                        "text-xs sm:text-xs font-bold px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-[4px] sm:rounded-[6px] border truncate shrink-0",
+                        loc.type === "warehouse" ? "bg-purple-50 text-purple-600 border-purple-100" :
+                            loc.type === "production" ? "bg-orange-50 text-orange-600 border-orange-100" :
+                                loc.type === "office" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                    "bg-slate-50 text-slate-500 border-slate-200"
+                    )}>
                         {loc.type === "warehouse" ? "Склад" :
                             loc.type === "production" ? "Производство" :
                                 loc.type === "office" ? "Офис" : "Склад"}
                     </span>
                 </div>
                 <div className={cn(
-                    "w-10 h-10 sm:w-12 sm:h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500",
+                    "w-7 h-7 sm:w-12 sm:h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shrink-0",
                     isDefault ? "bg-primary/10 text-primary" : "bg-slate-50 text-slate-400"
                 )}>
-                    <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <MapPin className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center py-2 sm:py-4">
-                <div className="text-5xl sm:text-6xl font-bold text-slate-900 tabular-nums">
+            <div className="flex-1 flex flex-col justify-center py-1 sm:py-4">
+                <div className="text-3xl sm:text-6xl font-bold text-slate-900 tabular-nums">
                     {totalItemsInLoc}
                 </div>
-                <div className="text-xs font-bold text-slate-400 flex items-center gap-2">
-                    единиц товара
+                <div className="text-xs sm:text-xs font-bold text-slate-400 flex items-center gap-2">
+                    <span className="truncate">единиц</span>
                     <div className="h-px flex-1 bg-slate-50" />
                 </div>
             </div>
 
             <div className="space-y-3 sm:space-y-3 mt-auto">
-                <div className="space-y-1 sm:space-y-2">
-                    <div className="flex items-center gap-2">
-                        <h3 className="text-xl sm:text-2xl font-bold text-slate-900 leading-tight text-balance">
-                            {loc.name} {(!loc.isActive && loc.isActive !== undefined) && <span className="text-slate-400 text-xs sm:text-sm font-medium">(Архив)</span>}
+                <div className="space-y-0.5 sm:space-y-2">
+                    <div className="flex items-center gap-1.5">
+                        <h3 className="text-base sm:text-2xl font-bold text-slate-900 leading-tight truncate">
+                            {loc.name} {(!loc.isActive && loc.isActive !== undefined) && <span className="text-slate-400 text-xs sm:text-sm font-medium">(Арх)</span>}
                         </h3>
 
                         {loc.isDefault && <Star className="w-3 h-3 sm:w-4 sm:h-4 text-primary fill-primary shrink-0" />}
-                        {loc.isSystem && <Lock className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-300 shrink-0" />}
+                        {loc.isSystem && <Lock className="w-2 h-2 sm:w-3 sm:h-3 text-slate-300 shrink-0" />}
                     </div>
-                    <p className="text-[11px] sm:text-xs font-bold text-slate-400 truncate">
+                    <p className="text-xs sm:text-xs font-bold text-slate-400 truncate">
                         {loc.address || "Адрес не указан"}
                     </p>
                 </div>
 
                 {categoriesList.length > 0 && (
-                    <div className="space-y-3 pt-4 border-t border-slate-200">
-                        <div className="flex h-1.5 rounded-full overflow-hidden bg-slate-50/50 w-full mb-1">
+                    <div className="space-y-1.5 pt-2 sm:pt-4 border-t border-slate-200">
+                        <div className="flex h-1 rounded-full overflow-hidden bg-slate-50/50 w-full mb-0.5 sm:mb-1">
                             {categoriesList.map((cat, idx) => {
                                 const percent = (cat.count / total) * 100;
                                 const colors = ["bg-primary", "bg-slate-700", "bg-slate-400", "bg-slate-200"];
@@ -373,23 +379,28 @@ const LocationCardContent = memo(({
                                 );
                             })}
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            {categoriesList.slice(0, 2).map((cat, idx) => (
-                                <span key={idx} className="text-xs font-bold text-slate-400">
+                        <div className="flex flex-wrap gap-1.5">
+                            {categoriesList.slice(0, 1).map((cat, idx) => (
+                                <span key={idx} className="text-xs sm:text-xs font-bold text-slate-400 truncate">
                                     {cat.name}: <span className="text-slate-900 tabular-nums">{cat.count}</span>
                                 </span>
                             ))}
+                            {categoriesList.length > 1 && (
+                                <span className="text-xs sm:text-xs font-bold text-slate-300 hidden sm:inline">
+                                    +{categoriesList.length - 1} еще
+                                </span>
+                            )}
                         </div>
                     </div>
                 )}
 
-                <div className="flex items-center justify-between pt-3 sm:pt-4 transition-all">
-                    <div className="flex items-center gap-1.5 min-w-0">
-                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                            <User className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-400" />
+                <div className="flex items-center justify-between pt-2 sm:pt-4 transition-all">
+                    <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
+                        <div className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
+                            <User className="w-2 sm:w-3 sm:h-3 text-slate-400" />
                         </div>
-                        <span className="text-xs font-bold text-slate-500 truncate">
-                            {loc.responsibleUser?.name || "Нет ответственного"}
+                        <span className="text-xs sm:text-xs font-bold text-slate-500 truncate">
+                            {loc.responsibleUser?.name || "Нет отв."}
                         </span>
                     </div>
 

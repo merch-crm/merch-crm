@@ -140,7 +140,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         <LayoutGrid className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight">Главная</h1>
+                        <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight ">Главная</h1>
                     </div>
                 </div>
 

@@ -13,18 +13,22 @@ export function SummaryStatCard({ icon: Icon, iconColor, label, value, className
     return (
         <div
             className={cn(
-                "group flex items-center justify-between px-[var(--radius-padding)] py-3 hover:bg-slate-50/80 transition-all",
+                "flex items-center gap-3 p-3 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors duration-200",
                 className
             )}
             aria-label={`${label}: ${value}`}
         >
-            <div className="flex items-center gap-3.5 min-w-0">
-                <div className="w-10 h-10 rounded-[10px] bg-white flex items-center justify-center shrink-0 border border-slate-100 shadow-sm transition-transform">
-                    <Icon className={cn("w-5 h-5", iconColor)} aria-hidden="true" />
-                </div>
-                <span className="text-xs font-bold text-slate-500 group-hover:text-slate-600 transition-colors uppercase tracking-wider">{label}</span>
+            <div className="w-10 h-10 rounded-2xl bg-white hidden sm:flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
+                <Icon className={cn("w-5 h-5", iconColor)} aria-hidden="true" />
             </div>
-            <div className="text-xl font-black text-slate-900 tabular-nums shrink-0">{value}</div>
+            <div className="flex flex-col min-w-0">
+                <div className="text-xs font-bold text-slate-500 leading-tight sm:truncate mt-0.5">
+                    {label}
+                </div>
+                <div className="text-xl font-black text-slate-900 tabular-nums leading-none ">
+                    {value}
+                </div>
+            </div>
         </div>
     );
 }

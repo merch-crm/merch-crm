@@ -27,6 +27,7 @@ type InventoryCategory = InferSelectModel<typeof inventoryCategories>;
 export interface CategoryWithStats extends InventoryCategory {
     itemCount: number;
     totalQuantity: number;
+    totalCost: number;
 }
 
 export async function getInventoryCategories(): Promise<ActionResult<CategoryWithStats[]>> {
@@ -55,7 +56,8 @@ export async function getInventoryCategories(): Promise<ActionResult<CategoryWit
             updatedAt: inventoryCategories.updatedAt,
             createdAt: inventoryCategories.createdAt,
             itemCount: sql<number>`count(${inventoryItems.id})::int`,
-            totalQuantity: sql<number>`coalesce(sum(${inventoryItems.quantity}), 0)::int`
+            totalQuantity: sql<number>`coalesce(sum(${inventoryItems.quantity}), 0)::int`,
+            totalCost: sql<number>`coalesce(sum(${inventoryItems.quantity} * ${inventoryItems.costPrice}), 0)::numeric`
         })
             .from(inventoryCategories)
             .leftJoin(inventoryItems, and(
@@ -80,21 +82,30 @@ export async function getInventoryCategories(): Promise<ActionResult<CategoryWit
 /**
  * Get count of items without category
  */
-export async function getOrphanedItemCount(): Promise<ActionResult<number>> {
+export async function getOrphanedItemStats(): Promise<ActionResult<{ count: number, totalCost: number }>> {
     try {
-        const result = await db.select({ count: sql<number>`count(*)` })
+        const result = await db.select({
+            count: sql<number>`count(*)`,
+            totalCost: sql<number>`coalesce(sum(${inventoryItems.quantity} * ${inventoryItems.costPrice}), 0)::numeric`
+        })
             .from(inventoryItems)
             .where(and(
                 isNull(inventoryItems.categoryId),
                 eq(inventoryItems.isArchived, false)
             ))
             .limit(1);
-        return { success: true, data: Number(result[0]?.count || 0) };
+        return {
+            success: true,
+            data: {
+                count: Number(result[0]?.count || 0),
+                totalCost: Number(result[0]?.totalCost || 0)
+            }
+        };
     } catch (error) {
         await logError({
             error,
             path: "/dashboard/warehouse/category-actions",
-            method: "getOrphanedItemCount"
+            method: "getOrphanedItemStats"
         });
         return { success: false, error: "Не удалось получить количество товаров без категории" };
     }

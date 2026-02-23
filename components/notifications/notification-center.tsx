@@ -145,7 +145,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                             {/* Header */}
                             <div className="p-6 md:p-6 md:pb-6 flex items-center justify-between bg-white z-10 relative shrink-0">
                                 <div>
-                                    <h3 className="text-xl font-black md:font-bold text-slate-900 tracking-tight md:tracking-normal">Уведомления</h3>
+                                    <h3 className="text-xl font-black md:font-bold text-slate-900  md:">Уведомления</h3>
                                     <p className="text-slate-400 text-xs font-bold mt-1">
                                         {unreadCount > 0
                                             ? formatCount(unreadCount, 'непрочитанное сообщение', 'непрочитанных сообщения', 'непрочитанных сообщений')

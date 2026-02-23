@@ -190,7 +190,7 @@ export function StockStep({
                                                 />
                                                 <span className="text-[12px] text-slate-700 font-bold shrink-0">{formData.unit}</span>
                                             </div>
-                                            <span className="text-xs font-black text-amber-500 tracking-tight mt-2 px-0.5">Предупреждение</span>
+                                            <span className="text-xs font-black text-amber-500  mt-2 px-0.5">Предупреждение</span>
                                         </div>
                                     </div>
                                     <div className="space-y-3 min-w-0">
@@ -204,7 +204,7 @@ export function StockStep({
                                                 />
                                                 <span className="text-[12px] text-slate-700 font-bold shrink-0">{formData.unit}</span>
                                             </div>
-                                            <span className="text-xs font-black text-rose-500 tracking-tight mt-2 px-0.5">Критический лимит</span>
+                                            <span className="text-xs font-black text-rose-500  mt-2 px-0.5">Критический лимит</span>
                                         </div>
                                     </div>
                                 </div>

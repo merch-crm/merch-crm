@@ -61,7 +61,7 @@ export function Sidebar({ className, user }: SidebarProps) {
                 <div className="bg-primary rounded-[14px] w-9 h-9 p-1 flex items-center justify-center shadow-sm">
                     <Printer className="h-7 w-7 text-white" />
                 </div>
-                <span className="text-xl font-bold text-slate-900 tracking-tight">MerchCRM</span>
+                <span className="text-xl font-bold text-slate-900 ">MerchCRM</span>
             </div>
 
             <nav data-testid="main-nav" className="flex-1 px-4 space-y-1">

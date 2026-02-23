@@ -10,6 +10,7 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { PageContainer } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -67,12 +68,11 @@ export default async function OrdersPage({
     return (
         <PageContainer>
             {/* Header Area */}
-            <div className="flex flex-row items-center justify-between gap-3 px-1">
-                <div className="flex-1 min-w-0">
-                    <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Заказы</h1>
-                    <p className="hidden sm:block text-slate-400 text-sm font-medium mt-3">Управление производственным циклом и логистикой</p>
-                </div>
-            </div>
+            <PageHeader
+                title="Заказы"
+                description="Управление производственным циклом и логистикой"
+                className="px-1"
+            />
 
             <OrdersToolbar />
 

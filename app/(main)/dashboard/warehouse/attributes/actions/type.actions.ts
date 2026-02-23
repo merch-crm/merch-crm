@@ -83,7 +83,7 @@ export async function createInventoryAttributeType(
             method: "createInventoryAttributeType",
             details: { name, slug }
         });
-        return { success: false, error: "Не удалось создать раздел (возможно, такой код уже существует)" };
+        return { success: false, error: "Характеристика с таким артикулом уже существует в этой категории" };
     }
 }
 

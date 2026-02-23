@@ -59,7 +59,7 @@ export default function LoginPage() {
     const logoUrl = branding?.logoUrl;
     const bgUrl = branding?.loginBackgroundUrl;
     const slogan = branding?.loginSlogan || "Система управления производством";
-    const companyName = branding?.companyName || "MerchCRM";
+    const companyName = branding?.companyName || "";
 
     return (
         <div
@@ -105,7 +105,7 @@ export default function LoginPage() {
                                 )}
                             </div>
                             <div className="text-center">
-                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+                                <h1 className="text-3xl font-extrabold  text-slate-900">
                                     {companyName}
                                 </h1>
                                 <p className="text-sm text-slate-500 mt-2 font-medium">

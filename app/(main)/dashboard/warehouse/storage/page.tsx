@@ -3,7 +3,7 @@ import { getAllUsers } from "../warehouse-stats-actions";;
 import { StorageLocationsTab } from "../storage-locations-tab";
 
 export const metadata = {
-    title: "Хранение | Склад",
+    title: "Склад | Хранение",
 };
 
 export const dynamic = "force-dynamic";

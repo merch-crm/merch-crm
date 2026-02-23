@@ -3,6 +3,7 @@
 import { Plus, Minus, AlertCircle, Package, RefreshCw, Check } from "lucide-react";
 
 import { cn, formatUnit } from "@/lib/utils";
+import { SubmitButton } from "@/components/ui/submit-button";
 import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
@@ -66,12 +67,12 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     </div>
                 </div>
 
-                <form id="adjust-stock-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
+                <form id="adjust-stock-form" onSubmit={handleSubmit} className="px-6 py-4 pt-2 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
                     <div className="space-y-3">
                         {/* 1. Context: Where and What */}
                         <div className="space-y-3">
                             <div className="space-y-2 overflow-visible">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Склад</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Склад</label>
                                 <StorageLocationSelect
                                     value={selectedLocationId}
                                     onChange={setSelectedLocationId}
@@ -81,7 +82,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Операция</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Операция</label>
                                 <div className="grid grid-cols-3 gap-2">
                                     {[
                                         { id: 'in', label: 'Приход', icon: Plus, color: 'emerald' },
@@ -105,7 +106,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 )}
                                             >
                                                 <op.icon className={cn("w-5 h-5", isActive && "stroke-[3]")} />
-                                                <span className="text-xs font-black mt-1 tracking-tighter">{op.label}</span>
+                                                <span className="text-xs font-black mt-1 ">{op.label}</span>
                                             </Button>
                                         );
                                     })}
@@ -140,7 +141,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                         </span>
                                     </div>
                                     <div className="flex items-baseline gap-2 pl-1">
-                                        <span className="text-4xl font-black text-slate-900 tabular-nums tracking-tight">
+                                        <span className="text-4xl font-black text-slate-900 tabular-nums ">
                                             {selectedLocationId ? currentStockOnLocation : item.quantity}
                                         </span>
                                         <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
@@ -190,7 +191,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                     </div>
                                     <div className="flex items-baseline gap-2 justify-end pr-1">
                                         <span className={cn(
-                                            "text-5xl font-black tabular-nums tracking-tight drop-shadow-sm transition-colors duration-500",
+                                            "text-5xl font-black tabular-nums  drop-shadow-sm transition-colors duration-500",
                                             type === 'in' ? "text-emerald-600" :
                                                 type === 'out' ? "text-rose-600" :
                                                     "text-primary"
@@ -209,7 +210,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {/* Quantity Block */}
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                                     {type === "set" ? "Новое количество" : "Количество"}
                                 </label>
                                 <div className="bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
@@ -253,7 +254,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                             {/* Price Block */}
                             {(type === "in" || type === "out") && canSeeCost && (
                                 <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">
+                                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                                         {type === "in" ? "Цена закупки" : "Цена списания"}
                                     </label>
                                     <div className="grid grid-cols-5 gap-2 h-[72px]">
@@ -287,7 +288,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
 
                         {/* 4. Reason */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500-none">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500">*</span></label>
                             <textarea
                                 value={reason}
                                 required
@@ -315,23 +316,14 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     >
                         Отмена
                     </Button>
-                    <Button
-                        type="submit"
-                        form="adjust-stock-form"
+                    <SubmitButton
+                        isLoading={isSubmitting}
+                        text="Сохранить"
+                        loadingText="Сохранение..."
+                        variant="btn-dark"
                         disabled={isSubmitting || amount <= 0 || !reason.trim()}
-                        className={cn(
-                            "h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-none"
-                        )}
-                    >
-                        {isSubmitting ? (
-                            <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                        ) : (
-                            <>
-                                {type === "in" ? <Plus className="w-4 h-4 stroke-[3] text-white" /> : type === "out" ? <Minus className="w-4 h-4 stroke-[3] text-white" /> : <Check className="w-4 h-4 stroke-[3] text-white" />}
-                                Сохранить
-                            </>
-                        )}
-                    </Button>
+                        className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-none"
+                    />
 
                 </div>
             </div>

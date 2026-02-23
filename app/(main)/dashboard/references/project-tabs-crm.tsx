@@ -30,7 +30,7 @@ export default function ProjectTabsCRM() {
                         whileTap={{ scale: 0.98 }}
                         className="group flex items-center gap-3 px-8 py-5 rounded-2xl bg-[#161616] border border-white/5 hover:border-white/10 transition-colors duration-300"
                     >
-                        <span className="text-lg font-light text-white/40 tracking-wide font-mono group-hover:text-white/60 transition-colors">
+                        <span className="text-lg font-light text-white/40  font-mono group-hover:text-white/60 transition-colors">
                             {tab.id}
                         </span>
                         <span className="text-xl font-normal text-white/90 group-hover:text-white transition-colors">

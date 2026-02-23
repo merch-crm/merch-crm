@@ -20,7 +20,7 @@ export function ItemMobileInfo({
         <div className="flex flex-col gap-2 justify-between md:contents h-full">
             <div className="md:hidden xl:flex flex flex-col flex-1 crm-card rounded-3xl p-3 sm:p-6 justify-between overflow-hidden h-full">
                 <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-border">
-                    <h3 className="text-[6px] sm:text-[11px] font-bold text-muted-foreground mb-0.5">Артикул / SKU</h3>
+                    <h3 className="text-[11px] font-bold text-muted-foreground mb-0.5">Артикул:</h3>
                     <p className="text-[14px] sm:text-[16px] font-black text-foreground leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>
                         {item.sku || "—"}
                     </p>

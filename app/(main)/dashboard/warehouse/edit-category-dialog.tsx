@@ -2,7 +2,8 @@
 
 import { useState, createElement } from "react";
 import { Check, Trash2, AlertCircle } from "lucide-react";
-import { SubmitButton } from "./submit-button";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { updateInventoryCategory, deleteInventoryCategory } from "./category-actions";;
@@ -13,11 +14,11 @@ import { useToast } from "@/components/ui/toast";
 
 
 import { Category } from "./types";
-
-import { getCategoryIcon, getGradientStyles, getColorStyles, COLORS, getIconNameFromName, generateCategoryPrefix, ALL_ICONS_MAP } from "./category-utils";
+import { getCategoryIcon, COLORS, generateCategoryPrefix, ALL_ICONS_MAP, getDynamicGradient, getHexColor } from "./category-utils";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Switch } from "@/components/ui/switch";
+import { SwitchRow } from "@/components/ui/switch-row";
 import { CategoryIconPicker } from "./category-icon-picker";
+
 
 
 interface EditCategoryDialogProps {
@@ -130,15 +131,26 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         setUiState(prev => ({ ...prev, subPending: false, subToDelete: null }));
     }
 
-    const MainIcon = getCategoryIcon({ name: formState.name });
     const subToDeleteData = subCategories.find(s => s.id === uiState.subToDelete);
 
     return (
-        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Редактирование категории" showVisualTitle={false}>
+        <ResponsiveModal
+            isOpen={isOpen}
+            onClose={onClose}
+            title="Редактирование категории"
+            description="Изменение параметров названия, цвета, иконки и артикула существующей категории"
+            showVisualTitle={false}
+            className="sm:max-w-[720px]"
+        >
             <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-3">
-                        <div className={cn("w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-500 shadow-lg shrink-0 text-white bg-gradient-to-br", getGradientStyles(formState.color))}>
+                        <div
+                            className={cn(
+                                "w-12 h-12 rounded-[14px] flex items-center justify-center transition-all duration-500 shadow-lg shrink-0 text-white"
+                            )}
+                            style={getDynamicGradient(formState.color)}
+                        >
                             {createElement(ALL_ICONS_MAP[formState.icon] || getCategoryIcon({ name: formState.name }), { className: "w-6 h-6 stroke-[2.5]" })}
                         </div>
                         <div>
@@ -151,156 +163,171 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                 </div>
 
-                <form id="edit-category-form" onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
-                    {uiState.error && (
-                        <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
-                            <AlertCircle className="w-4 h-4" />
-                            {uiState.error}
-                        </div>
-                    )}
+                {/* Two-column layout */}
+                <div className="flex flex-1 min-h-0 overflow-hidden">
+                    {/* Left column: form */}
+                    <form id="edit-category-form" onSubmit={handleSubmit} className="flex-1 px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar border-r border-slate-100">
+                        {uiState.error && (
+                            <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                                <AlertCircle className="w-4 h-4" />
+                                {uiState.error}
+                            </div>
+                        )}
 
-                    <div className="flex gap-3">
-                        <div className="space-y-2 flex-1">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Название категории</label>
-                            <input
-                                name="name"
-                                required
-                                value={formState.name}
-                                placeholder="Напр. Футболки"
-                                onChange={(e) => {
-                                    const name = e.target.value;
-                                    setFormState(prev => ({
-                                        ...prev,
-                                        name,
-                                        prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name)
-                                    }));
-                                }}
-                                className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm"
+                        <div className="flex gap-3">
+                            <div className="space-y-2 flex-1">
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название</label>
+                                <Input
+                                    name="name"
+                                    required
+                                    value={formState.name}
+                                    placeholder="Напр. Футболки"
+                                    onChange={(e) => {
+                                        const name = e.target.value;
+                                        setFormState(prev => ({
+                                            ...prev,
+                                            name,
+                                            prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name)
+                                        }));
+                                    }}
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm"
+                                />
+                            </div>
+                            <div className="space-y-2 w-28">
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Артикул</label>
+                                <Input
+                                    name="prefix"
+                                    value={formState.prefix}
+                                    placeholder="TS"
+                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm tabular-nums"
+                                    onChange={(e) => {
+                                        const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+                                        setFormState(prev => ({ ...prev, prefix: val, prefixManuallyEdited: true }));
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-bold text-slate-700 block ml-1">Описание</label>
+                            <textarea
+                                name="description"
+                                defaultValue={category.description || ""}
+                                placeholder="Опциональное описание назначения этой категории..."
+                                className="crm-dialog-textarea"
                             />
                         </div>
-                        <div className="space-y-2 w-28">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Артикул</label>
-                            <input
-                                name="prefix"
-                                value={formState.prefix}
-                                placeholder="TS"
-                                className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-center text-sm outline-none shadow-sm tabular-nums"
-                                onChange={(e) => {
-                                    const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
-                                    setFormState(prev => ({ ...prev, prefix: val, prefixManuallyEdited: true }));
-                                }}
-                            />
-                        </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">
-                            <span className="text-sm font-bold text-slate-700 leading-none">Иконка</span>
-                            <div className="flex items-center justify-center py-2">
+                        <div className="space-y-3">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-bold text-slate-700 block ml-1">Иконка</label>
                                 <CategoryIconPicker
                                     value={formState.icon}
                                     color={formState.color}
                                     onChange={(iconName) => setFormState(prev => ({ ...prev, icon: iconName }))}
                                 />
                             </div>
-                        </div>
 
-                        <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 flex flex-col gap-3 shadow-sm">
-                            <span className="text-sm font-bold text-slate-700 leading-none">Цвет</span>
-                            <div className="grid grid-cols-5 sm:flex sm:flex-wrap gap-2.5">
-                                {COLORS.map((color) => {
-                                    const isSelected = formState.color === color.name;
-                                    return (
-                                        <button
-                                            key={color.name}
-                                            type="button"
-                                            onClick={() => setFormState(prev => ({ ...prev, color: color.name }))}
-                                            className={cn(
-                                                "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center transition-all duration-300 relative group shadow-sm ring-1 ring-black/5 p-0 outline-none",
-                                                color.class,
-                                                isSelected ? "ring-2 ring-offset-2 ring-slate-300 scale-110" : "opacity-80 hover:opacity-100 hover:scale-105"
-                                            )}
-                                        >
-                                            {isSelected && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-white stroke-[4]" />}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
-                            <div className="flex items-center justify-between group w-full">
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в артикул</span>
-                                    <span className="text-xs text-slate-400 font-bold leading-tight mt-0.5">Будет в SKU</span>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-bold text-slate-700 block ml-1">Цвет</label>
+                                <div className="p-3 sm:p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
+                                    <div className="grid grid-cols-10 gap-2 sm:gap-3 px-0.5">
+                                        {COLORS.map((color) => {
+                                            const colorHex = getHexColor(color.name);
+                                            const normalizedFormColor = (formState.color || "").toLowerCase();
+                                            const isSelected = normalizedFormColor === color.name.toLowerCase() || normalizedFormColor === colorHex.toLowerCase();
+                                            return (
+                                                <button
+                                                    key={color.name}
+                                                    type="button"
+                                                    onClick={() => setFormState(prev => ({ ...prev, color: colorHex }))}
+                                                    className={cn(
+                                                        "w-full aspect-square rounded-full flex items-center justify-center transition-all duration-300 relative active:scale-95 p-0 outline-none",
+                                                        !isSelected && "opacity-90 hover:opacity-100 hover:scale-105"
+                                                    )}
+                                                    style={{
+                                                        backgroundColor: colorHex,
+                                                        boxShadow: isSelected
+                                                            ? `0 0 0 2px white, 0 0 0 2.5px ${colorHex}`
+                                                            : `0 1px 2px rgba(0,0,0,0.05)`
+                                                    }}
+                                                >
+                                                    {isSelected && <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white stroke-[3.5]" />}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
-                                <Switch
-                                    checked={formState.showInSku}
-                                    onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
-                                    variant="success"
-                                />
                             </div>
                         </div>
-                        <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm relative overflow-hidden flex items-center min-h-[70px]">
-                            <div className="flex items-center justify-between group w-full">
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="text-[11px] font-bold text-slate-900 leading-[1.1]">Добавлять<br className="sm:hidden" /><span className="hidden sm:inline"> </span>в название</span>
-                                    <span className="text-xs text-slate-400 font-bold leading-tight mt-0.5">Будет в имени</span>
-                                </div>
-                                <Switch
-                                    checked={formState.showInName}
-                                    onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
-                                    variant="success"
-                                />
-                            </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <SwitchRow
+                                title="Добавлять в артикул"
+                                description=""
+                                checked={formState.showInSku}
+                                onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
+                                variant="success"
+                                className="p-3 bg-slate-50"
+                            />
+                            <SwitchRow
+                                title="Добавлять в название"
+                                description=""
+                                checked={formState.showInName}
+                                onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
+                                variant="success"
+                                className="p-3 bg-slate-50"
+                            />
                         </div>
-                    </div>
+                    </form>
 
-                    <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-700 ml-1">Описание категории</label>
-                        <textarea
-                            name="description"
-                            defaultValue={category.description || ""}
-                            placeholder="Расскажите об этой категории..."
-                            className="w-full min-h-[64px] p-4 rounded-[var(--radius-inner)] border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold text-sm placeholder:text-slate-300 resize-none bg-slate-50 leading-relaxed shadow-sm"
-                        />
-                    </div>
-
+                    {/* Right column: subcategories */}
                     {isParentCategory && (
-                        <div className="space-y-3 pt-3">
-                            <div className="flex items-center justify-between px-1">
-                                <label className="text-sm font-bold text-slate-700">Подкатегории</label>
-                                <span className="bg-slate-50 text-slate-900 border border-slate-200 px-2.5 py-0.5 rounded-full text-xs font-bold shadow-sm">{subCategories.length}</span>
+                        <div className="w-[280px] shrink-0 flex flex-col overflow-hidden">
+                            <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                                <span className="text-sm font-bold text-slate-700">Подкатегории</span>
+                                <span className="bg-slate-50 text-slate-900 border border-slate-200 px-2 py-1 rounded-full text-[13px] font-bold shadow-sm">{subCategories.length}</span>
                             </div>
-
-                            <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 gap-3 md:gap-3">
-                                {subCategories.map(sub => {
-                                    const IconComponent = getCategoryIcon(sub);
-                                    return (
-                                        <div key={sub.id} className="group relative flex flex-col items-center justify-center p-2 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 hover:border-primary/20 hover:shadow-md transition-all cursor-default shadow-sm overflow-visible min-h-[90px]">
-                                            <Button
-                                                type="button"
-                                                variant="destructive"
-                                                size="icon"
-                                                disabled={uiState.subPending}
-                                                onClick={() => handleDeleteSubcategory(sub.id)}
-                                                className="absolute -top-2 -right-2 w-7 h-7 bg-rose-500 hover:bg-rose-600 text-white shadow-lg rounded-full flex items-center justify-center transition-all z-10 border border-white active:scale-95"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </Button>
-                                            <div className={cn("w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-sm ring-1 ring-black/5 mb-2 transition-all", getColorStyles(sub.color || 'primary'))}>
-                                                <IconComponent className="w-6 h-6 md:w-7 md:h-7 shadow-sm" />
-                                            </div>
-                                            <span className="text-xs md:text-[11px] font-bold text-slate-500 truncate w-full text-center px-0.5 leading-tight">{sub.name}</span>
+                            <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
+                                {subCategories.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center h-full py-8 text-center">
+                                        <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-3 border border-slate-100">
+                                            <span className="text-xl">📂</span>
                                         </div>
-                                    );
-                                })}
+                                        <p className="text-xs font-bold text-slate-300">Нет подкатегорий</p>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {subCategories.map(sub => {
+                                            const IconComponent = getCategoryIcon(sub);
+                                            return (
+                                                <div key={sub.id} className="group relative flex flex-col items-center justify-center p-2 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 hover:border-primary/20 hover:shadow-md transition-all cursor-default shadow-sm overflow-visible min-h-[80px]">
+                                                    <Button
+                                                        type="button"
+                                                        variant="destructive"
+                                                        size="icon"
+                                                        disabled={uiState.subPending}
+                                                        onClick={() => handleDeleteSubcategory(sub.id)}
+                                                        className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 hover:bg-rose-600 text-white shadow-lg rounded-full flex items-center justify-center transition-all z-10 border border-white active:scale-95 opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <Trash2 className="w-3 h-3" />
+                                                    </Button>
+                                                    <div
+                                                        className={cn("w-10 h-10 rounded-xl flex items-center justify-center shadow-sm mb-1.5 transition-all text-white")}
+                                                        style={getDynamicGradient(sub.color)}
+                                                    >
+                                                        <IconComponent className="w-5 h-5" />
+                                                    </div>
+                                                    <span className="text-xs font-bold text-slate-500 truncate w-full text-center leading-tight">{sub.name}</span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
-                </form>
+                </div>
 
                 <div className="sticky bottom-0 z-10 p-4 sm:p-6 sm:pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 grid grid-cols-2 lg:flex items-center lg:justify-between gap-3 shrink-0">
                     <Button
@@ -323,14 +350,21 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                     <SubmitButton
                         form="edit-category-form"
-                        label="Сохранить"
-                        pendingLabel="..."
-                        className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm transition-all"
+                        isLoading={uiState.isPending}
+                        text="Сохранить"
+                        loadingText="Сохранение..."
+                        variant="btn-dark"
+                        className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm transition-all"
                     />
                 </div>
 
                 {/* Subcategory Deletion Confirmation */}
-                <ResponsiveModal isOpen={!!uiState.subToDelete} onClose={() => setUiState(prev => ({ ...prev, subToDelete: null }))}>
+                <ResponsiveModal
+                    isOpen={!!uiState.subToDelete}
+                    onClose={() => setUiState(prev => ({ ...prev, subToDelete: null }))}
+                    title="Удаление подкатегории"
+                    description="Подтверждение удаления подкатегории из системы"
+                >
                     <div className="p-6 text-center flex flex-col items-center">
                         <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-5 text-rose-500 shadow-sm border border-rose-100">
                             <Trash2 className="w-6 h-6" />
@@ -365,6 +399,8 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 <ResponsiveModal
                     isOpen={uiState.showDeleteModal}
                     onClose={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword: "" })); }}
+                    title="Удаление категории"
+                    description="Подтверждение удаления основной категории и всех связанных данных"
                     showVisualTitle={false}
                 >
                     <div className="p-6 text-center flex flex-col items-center">

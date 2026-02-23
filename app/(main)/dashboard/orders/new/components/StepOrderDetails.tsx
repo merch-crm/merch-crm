@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
+import { SwitchRow } from "@/components/ui/switch-row";
 
 interface StepOrderDetailsProps {
     details: {
@@ -73,22 +73,22 @@ export function StepOrderDetails({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-muted-foreground ml-1">Срочный заказ</label>
-                    <div
+                    <SwitchRow
+                        icon={AlertCircle}
+                        title="Срочный заказ"
+                        description=""
+                        checked={details.isUrgent}
+                        onCheckedChange={(val) => onUpdateDetails({ isUrgent: val })}
+                        variant="success"
                         className={cn(
-                            "w-full h-12 px-4 rounded-[var(--radius)] border flex items-center justify-between transition-all",
-                            details.isUrgent ? "bg-rose-50 border-rose-200 text-rose-700 font-bold" : "bg-muted/50 border-border text-muted-foreground"
+                            "h-12 px-4 transition-all duration-300",
+                            details.isUrgent ? "bg-rose-50/50 border-rose-200" : "bg-slate-50 border-slate-200"
                         )}
-                    >
-                        <div className="flex items-center gap-3">
-                            <AlertCircle className={cn("w-4 h-4", details.isUrgent ? "text-rose-500" : "text-muted-foreground/40")} />
-                            <span className="text-sm">{details.isUrgent ? "Да, срочно" : "Обычный заказ"}</span>
-                        </div>
-                        <Switch
-                            checked={details.isUrgent}
-                            onCheckedChange={(val) => onUpdateDetails({ isUrgent: val })}
-                            variant="success"
-                        />
-                    </div>
+                        iconClassName={cn(
+                            "w-8 h-8 rounded-lg transition-colors duration-300",
+                            details.isUrgent ? "bg-rose-100 text-rose-600 border-rose-200" : "bg-white text-slate-400 border-slate-100"
+                        )}
+                    />
                 </div>
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-muted-foreground ml-1">Способ оплаты</label>

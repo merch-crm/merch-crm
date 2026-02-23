@@ -60,7 +60,7 @@ export function AdminLayoutClient({
                     </div>
                     <div>
                         <span className="font-bold text-lg leading-none block">Админ-панель</span>
-                        <span className="text-xs text-slate-400 font-bold tracking-wide">Система</span>
+                        <span className="text-xs text-slate-400 font-bold ">Система</span>
                     </div>
                 </Link>
 

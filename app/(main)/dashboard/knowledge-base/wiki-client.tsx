@@ -381,7 +381,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                             ) : (
                                 <div className="prose prose-premium prose-slate max-w-none animate-in fade-in duration-500">
                                     {pageState.content?.content ? (
-                                        <div className="text-slate-800 font-medium leading-[1.75] text-base md:text-[17px] tracking-tight">
+                                        <div className="text-slate-800 font-medium leading-[1.75] text-base md:text-[17px] ">
                                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                 {pageState.content.content}
                                             </ReactMarkdown>

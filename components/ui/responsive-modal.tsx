@@ -27,7 +27,7 @@ export function ResponsiveModal({
     showVisualTitle = true,
     description,
     className,
-    desktopBreakpoint = 768,
+    desktopBreakpoint = 1100,
     hideClose,
     footer
 }: ResponsiveModalProps) {
@@ -42,20 +42,13 @@ export function ResponsiveModal({
     if (isDesktop) {
         return (
             <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-                <DialogContent className={cn("p-0 overflow-hidden flex flex-col", className)} hideClose={shouldHideClose}>
-                    {(title || description) && (
-                        <DialogHeader className={cn("px-6 py-4 border-b border-border shrink-0", !showVisualTitle && "sr-only")}>
-                            <DialogTitle className="text-xl font-bold">{title || "Modal"}</DialogTitle>
-                            {description && (
-                                <DialogDescription className="text-[11px] font-medium text-muted-foreground mt-0.5">
-                                    {description}
-                                </DialogDescription>
-                            )}
-                        </DialogHeader>
-                    )}
-                    {!title && !description && (
-                        <DialogTitle className="sr-only">Modal</DialogTitle>
-                    )}
+                <DialogContent className={cn("p-0 overflow-hidden flex flex-col sm:max-w-[800px]", className)} hideClose={shouldHideClose}>
+                    <DialogHeader className={cn("px-6 py-4 border-b border-border shrink-0", !showVisualTitle && "sr-only")}>
+                        <DialogTitle className="text-xl font-bold">{title || "Modal"}</DialogTitle>
+                        <DialogDescription className={cn("text-[11px] font-medium text-muted-foreground mt-0.5", !description && "sr-only")}>
+                            {description || `Dialog for ${title || "action"}`}
+                        </DialogDescription>
+                    </DialogHeader>
                     <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
                         {children}
                     </div>

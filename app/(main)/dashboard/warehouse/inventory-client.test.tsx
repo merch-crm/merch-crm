@@ -13,6 +13,12 @@ vi.mock('next/navigation', () => ({
 vi.mock('./category-utils', () => ({
     getCategoryIcon: () => () => <div data-testid="category-icon" />,
     getGradientStyles: () => 'bg-blue-500',
+    getCategoryCardStyles: () => ({
+        glow: { backgroundColor: '#000', opacity: 0.1 },
+        gradient: { backgroundImage: 'none' },
+        icon: { background: 'none', boxShadow: 'none' }
+    }),
+    getHexColor: () => '#000000',
 }));
 
 vi.mock('./edit-category-dialog', () => ({
@@ -44,7 +50,7 @@ describe('InventoryClient', () => {
     it('navigates to category detail on click', async () => {
         render(<InventoryClient categories={mockCategories} user={null} />);
         fireEvent.click(screen.getByText('Одежда'));
-        expect(mockPush).toHaveBeenCalledWith('/dashboard/warehouse/1');
+        expect(mockPush).toHaveBeenCalledWith('/dashboard/warehouse/categories/1');
     });
 
     it('shows subcategories for a category', () => {

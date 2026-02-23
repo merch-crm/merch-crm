@@ -66,7 +66,7 @@ export function AuditLogsList({ logs, loading }: AuditLogsListProps) {
                                             </td>
                                             <td className="crm-td">
                                                 <span className={cn(
-                                                    "px-2 py-0.5 rounded-md text-xs font-bold tracking-tight",
+                                                    "px-2 py-0.5 rounded-md text-xs font-bold ",
                                                     entity.bg,
                                                     entity.color
                                                 )}>
@@ -117,7 +117,7 @@ export function AuditLogsList({ logs, loading }: AuditLogsListProps) {
                                 <div>
                                     <div className="font-bold text-slate-900 text-sm leading-tight">{log.action}</div>
                                     <span className={cn(
-                                        "inline-block px-2 py-0.5 rounded-lg text-xs font-bold tracking-tight mt-1",
+                                        "inline-block px-2 py-0.5 rounded-lg text-xs font-bold  mt-1",
                                         entity.bg,
                                         entity.color
                                     )}>

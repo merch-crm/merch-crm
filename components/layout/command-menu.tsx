@@ -143,7 +143,7 @@ export function CommandMenu() {
                                             {[
                                                 { label: 'Заказы', href: '/dashboard/orders', icon: icons.order },
                                                 { label: 'Клиенты', href: '/dashboard/clients', icon: icons.client },
-                                                { label: 'Склад', href: '/dashboard/warehouse', icon: icons.item },
+                                                { label: 'Склад', href: '/dashboard/warehouse/overview', icon: icons.item },
                                                 { label: 'База знаний', href: '/dashboard/knowledge-base', icon: icons.wiki },
                                             ].map(item => (
                                                 <Button
@@ -179,7 +179,7 @@ export function CommandMenu() {
                                                     <div className="text-[11px] text-slate-400 font-bold mt-0.5">{res.subtitle}</div>
                                                 </div>
                                             </div>
-                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-xs font-black text-slate-500 tracking-tight group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
+                                            <div className="px-3 py-1 rounded-full bg-slate-100 text-xs font-black text-slate-500  group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
                                                 {res.type === 'item' ? 'Товар' :
                                                     res.type === 'order' ? 'Заказ' :
                                                         res.type === 'client' ? 'Клиент' :

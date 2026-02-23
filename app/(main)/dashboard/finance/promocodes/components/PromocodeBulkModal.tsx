@@ -42,7 +42,7 @@ export function PromocodeBulkModal({
                             <Layers className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight leading-tight">
+                            <h2 className="text-xl sm:text-2xl font-bold text-slate-900  leading-tight">
                                 Массовая генерация
                             </h2>
                             <p className="text-slate-400 text-xs font-bold mt-0.5">

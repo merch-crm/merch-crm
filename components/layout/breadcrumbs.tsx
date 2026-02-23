@@ -23,7 +23,7 @@ const routeLabels: Record<string, string> = {
     departments: "Отделы",
     promocodes: "Промокоды",
     monitoring: "Мониторинг",
-    storage: "Хранилище",
+    storage: "Места хранения",
     characteristics: "Характеристики",
     history: "История",
     archive: "Архив",
@@ -35,6 +35,7 @@ const routeLabels: Record<string, string> = {
     expenses: "Расходы",
     pl: "P&L отчет",
     sales: "Продажи",
+    overview: "Обзор",
 };
 
 export function Breadcrumbs() {
@@ -50,6 +51,8 @@ export function Breadcrumbs() {
 
     if (paths.length <= 1) return null;
 
+    const isUuid = (str: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
     const breadcrumbItems = paths.slice(1)
         .map((path, index) => {
             const href = `/${paths.slice(0, index + 2).join("/")}`;
@@ -57,7 +60,12 @@ export function Breadcrumbs() {
             const isLast = index === paths.length - 2;
             return { href, label, isLast, path };
         })
-        .filter(item => item.path !== 'items')
+        .filter(item => {
+            // Filter out 'items' segment and any raw UUIDs that don't have a label yet
+            if (item.path === 'items') return false;
+            if (isUuid(item.path) && item.label === item.path) return false;
+            return true;
+        })
         .map(({ href, label, isLast }) => ({ href, label, isLast }));
 
     return <BreadcrumbsUI items={breadcrumbItems} />;

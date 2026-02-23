@@ -82,7 +82,10 @@ export function BasicInfoStep({
 
                         <div className="hidden sm:flex items-center gap-2 xl:gap-3">
                             <div className="flex items-center gap-2 xl:gap-3 bg-slate-50 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm">
-                                <div className={cn("w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color))}>
+                                <div
+                                    className={cn("w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color).className)}
+                                    style={getColorStyles(displayCategory.color).style}
+                                >
                                     {createElement(getCategoryIcon(displayCategory), { className: "w-4 h-4 xl:w-5 xl:h-5" })}
                                 </div>
                                 <div className="text-left">

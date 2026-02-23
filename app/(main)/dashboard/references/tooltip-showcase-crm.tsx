@@ -13,8 +13,8 @@ const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className={`relative p-6 rounded-[1.25rem] w-[320px] shadow-[0_10px_40px_-5px_rgba(0,0,0,0.1)] ${dark
-                        ? "bg-[#161617] text-white"
-                        : "bg-white text-[#161617]"
+                    ? "bg-[#161617] text-white"
+                    : "bg-white text-[#161617]"
                     }`}
             >
                 {/* Content */}
@@ -36,8 +36,8 @@ const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`w-14 h-14 rounded-[1.2rem] flex items-center justify-center shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] self-start ml-4 ${dark
-                        ? "bg-[#161617] text-white"
-                        : "bg-white text-[#161617]"
+                    ? "bg-[#161617] text-white"
+                    : "bg-white text-[#161617]"
                     }`}
             >
                 <div className="relative">
@@ -57,7 +57,7 @@ export default function TooltipShowcaseCRM() {
                 <h2 className="text-3xl font-bold text-slate-800">Smart Tooltips</h2>
             </div>
 
-            <div className="flex flex-wrap gap-3 md:gap-3 items-start justify-center p-6 bg-[#e8e8e8] rounded-[3rem] w-full">
+            <div className="flex flex-wrap gap-3 md:gap-3 items-start justify-center p-6 bg-[#e8e8e8] rounded-[var(--radius-outer)] w-full">
                 <TooltipVariant />
                 <TooltipVariant dark />
             </div>

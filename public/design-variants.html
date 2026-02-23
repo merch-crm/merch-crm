@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Design Variants - Category Edit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
         :root {
@@ -23,7 +25,12 @@
             --crm-grid-gap: 20px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: #f4f4f7;
@@ -35,7 +42,11 @@
             align-items: center;
         }
 
-        h1 { font-weight: 900; letter-spacing: -0.02em; font-size: 32px; }
+        h1 {
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            font-size: 32px;
+        }
 
         /* Existing Design Language */
         .crm-card {
@@ -89,7 +100,7 @@
             align-items: center;
             justify-content: center;
             font-size: 28px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .content-section {
@@ -267,10 +278,25 @@
             transition: all 0.2s;
         }
 
-        .btn-ghost { background: transparent; color: var(--slate-400); }
-        .btn-destructive { background: #ef4444; color: white; }
-        .btn-dark { background: var(--slate-900); color: white; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-ghost {
+            background: transparent;
+            color: var(--slate-400);
+        }
+
+        .btn-destructive {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-dark {
+            background: var(--slate-900);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
         /* Specific Variant Styling */
         /* Variant D: The "Perfect Match" Popup */
@@ -279,13 +305,28 @@
             margin: 0 auto;
         }
 
-        .purple-bg { background: #7c5cfc15; color: var(--primary); }
-        .emerald-bg { background: #10b98115; color: #10b981; }
-        .orange-bg { background: #f9731615; color: #f97316; }
-        .blue-bg { background: #3b82f615; color: #3b82f6; }
+        .purple-bg {
+            background: #7c5cfc15;
+            color: var(--primary);
+        }
 
+        .emerald-bg {
+            background: #10b98115;
+            color: #10b981;
+        }
+
+        .orange-bg {
+            background: #f9731615;
+            color: #f97316;
+        }
+
+        .blue-bg {
+            background: #3b82f615;
+            color: #3b82f6;
+        }
     </style>
 </head>
+
 <body>
 
     <h1>Категории: Дизайн Меню</h1>
@@ -296,7 +337,7 @@
             <div class="variant-badge">D</div>
             <h3>Попап в стиле "Warehouse Perfect" (Максимально похож на CRM)</h3>
         </div>
-        
+
         <div class="crm-card">
             <div class="header-section">
                 <div class="icon-box purple-bg">
@@ -347,14 +388,18 @@
                     <div class="bento-card toggle-box">
                         <div>
                             <p style="font-size: 11px; font-weight: 800;">Добавлять в артикул</p>
-                            <p style="font-size: 9px; font-weight: 700; color: var(--slate-400); text-transform: uppercase; margin-top: 2px;">Будет в SKU</p>
+                            <p
+                                style="font-size: 9px; font-weight: 700; color: var(--slate-400); text-transform: uppercase; margin-top: 2px;">
+                                Будет в SKU</p>
                         </div>
                         <div class="toggle-switch"></div>
                     </div>
                     <div class="bento-card toggle-box">
                         <div>
                             <p style="font-size: 11px; font-weight: 800;">Добавлять в название</p>
-                            <p style="font-size: 9px; font-weight: 700; color: var(--slate-400); text-transform: uppercase; margin-top: 2px;">Будет в имени</p>
+                            <p
+                                style="font-size: 9px; font-weight: 700; color: var(--slate-400); text-transform: uppercase; margin-top: 2px;">
+                                Будет в имени</p>
                         </div>
                         <div class="toggle-switch"></div>
                     </div>
@@ -362,13 +407,16 @@
 
                 <div class="input-group">
                     <label class="input-label">Описание категории</label>
-                    <textarea class="input-field" style="height: 80px; padding: 12px; resize: none;" placeholder="Расскажите об этой категории..."></textarea>
+                    <textarea class="input-field" style="height: 80px; padding: 12px; resize: none;"
+                        placeholder="Расскажите об этой категории..."></textarea>
                 </div>
 
                 <div class="subcategory-section">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <h4 style="font-size: 14px; font-weight: 800;">Подкатегории</h4>
-                        <span style="background: var(--slate-100); padding: 2px 10px; border-radius: 99px; font-size: 10px; font-weight: 700;">6</span>
+                        <span
+                            style="background: var(--slate-100); padding: 2px 10px; border-radius: 99px; font-size: 10px; font-weight: 700;">6</span>
                     </div>
                     <div class="subcategory-grid">
                         <div class="sub-chip">
@@ -378,7 +426,8 @@
                         </div>
                         <div class="sub-chip">
                             <div class="btn-delete">✕</div>
-                            <div class="sub-icon yellow-bg" style="background: #f59e0b15; color:#f59e0b;"><i class="ph-light ph-baseball-cap"></i></div>
+                            <div class="sub-icon yellow-bg" style="background: #f59e0b15; color:#f59e0b;"><i
+                                    class="ph-light ph-baseball-cap"></i></div>
                             <span class="sub-name">Кепка</span>
                         </div>
                         <div class="sub-chip">
@@ -405,4 +454,5 @@
     </div>
 
 </body>
+
 </html>

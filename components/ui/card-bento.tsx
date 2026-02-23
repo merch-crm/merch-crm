@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
    
    // Карточка без доп. стилей внутри
    <Card>
-     <CardBody className="flex gap-4">
+     <CardBody className="flex gap-3">
        <span>Элемент 1</span>
        <span>Элемент 2</span>
      </CardBody>

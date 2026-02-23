@@ -166,15 +166,15 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                     <div className="space-y-3">
                         <SwitchRow
                             icon={Bell}
-                            title="Общие уведомления"
-                            description="Показывать в колокольчике CRM"
+                            title="Показывать в колокольчике CRM"
+                            description=""
                             checked={settings.system.enabled}
                             onCheckedChange={() => toggleNested("system", "enabled")}
                         />
                         <SwitchRow
                             icon={Smartphone}
-                            title="Push-уведомления"
-                            description="Всплывающие окна рабочего стола"
+                            title="Всплывающие окна рабочего стола"
+                            description=""
                             checked={settings.system.browserPush}
                             onCheckedChange={() => toggleNested("system", "browserPush")}
                         />

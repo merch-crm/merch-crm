@@ -1,13 +1,11 @@
-import { getInventoryCategories, getOrphanedItemCount } from "../category-actions";
+import { getInventoryCategories, getOrphanedItemStats } from "../category-actions";
 import { getSession } from "../warehouse-stats-actions";;
 import { InventoryClient } from "../inventory-client";
-import { WarehouseWidgetsContainer } from "./widgets-container";
-import { WarehouseWidgetsSkeleton } from "../warehouse-widgets";
 import { Suspense } from "react";
 import { PageContainer } from "@/components/ui/page-container";
 
 export const metadata = {
-    title: "Категории | Склад",
+    title: "Склад | Категории",
 };
 
 export const dynamic = "force-dynamic";
@@ -19,9 +17,7 @@ export default async function WarehouseCategoriesPage() {
 
     return (
         <PageContainer>
-            <Suspense fallback={<WarehouseWidgetsSkeleton />}>
-                <WarehouseWidgetsContainer />
-            </Suspense>
+            {/* Only Categories List here */}
 
             <Suspense fallback={
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
@@ -68,11 +64,13 @@ import { Session } from "@/lib/auth";
 async function InventoryListContainer({ session }: { session: Session | null }) {
     const [categoriesResult, orphanedResult] = await Promise.all([
         getInventoryCategories(),
-        getOrphanedItemCount()
+        getOrphanedItemStats()
     ]);
 
     const categoriesRes = categoriesResult.success ? (categoriesResult.data || []) : [];
-    const orphanedCount = orphanedResult.success ? (orphanedResult.data || 0) : 0;
+    const orphanedData = orphanedResult.success ? (orphanedResult.data || { count: 0, totalCost: 0 }) : { count: 0, totalCost: 0 };
+    const orphanedCount = orphanedData.count;
+    const orphanedTotalCost = orphanedData.totalCost;
 
     const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
     const categories: Category[] = [...categoriesRes];
@@ -83,6 +81,7 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
             name: "Без категории",
             itemCount: orphanedCount,
             totalQuantity: orphanedCount,
+            totalCost: orphanedTotalCost,
             description: "Позиции без привязки к категории",
             color: "slate",
             icon: "box",

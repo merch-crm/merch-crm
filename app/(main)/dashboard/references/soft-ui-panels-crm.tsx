@@ -6,7 +6,7 @@ import { ChevronLeft, Check, Grid, List } from "lucide-react";
 
 export default function SoftUiPanelsCRM() {
     return (
-        <section className="space-y-12 py-12 flex flex-col items-center bg-[#f0f2f5] rounded-[3rem]">
+        <section className="space-y-12 py-12 flex flex-col items-center bg-[#f0f2f5] rounded-[var(--radius-outer)]">
             <div className="flex items-center gap-3 self-start px-12 mb-[-1rem]">
                 <div className="h-8 w-1 bg-black rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Soft UI Controls</h2>

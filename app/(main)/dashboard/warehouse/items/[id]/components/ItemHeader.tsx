@@ -57,7 +57,7 @@ export const ItemHeader = React.memo(({
                             <Trash2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-destructive leading-none mb-1 tracking-wide">Архив товара</p>
+                            <p className="text-sm font-bold text-destructive leading-none mb-1 ">Архив товара</p>
                             <p className="text-[11px] font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
                         </div>
                     </div>
@@ -82,7 +82,7 @@ export const ItemHeader = React.memo(({
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
                                     aria-label="Название товара"
-                                    className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden tracking-tight"
+                                    className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden "
                                     placeholder="Название…"
                                     rows={1}
                                 />
@@ -98,7 +98,7 @@ export const ItemHeader = React.memo(({
                                     <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                                 </Button>
                                 <h1
-                                    className="text-2xl md:text-4xl font-bold text-foreground leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer tracking-tight outline-none focus-visible:text-primary"
+                                    className="text-2xl md:text-4xl font-bold text-foreground leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer  outline-none focus-visible:text-primary"
                                     onDoubleClick={onEdit}
                                     tabIndex={0}
                                     onKeyDown={(e) => {

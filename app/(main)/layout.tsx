@@ -79,7 +79,7 @@ export default async function DashboardLayout({
     // Fetch branding settings
     const brandingRes = await getBrandingAction();
     const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
-        companyName: "MerchCRM",
+        companyName: "",
         logoUrl: null,
         primaryColor: "#5d00ff",
         faviconUrl: null,

@@ -32,7 +32,7 @@ export function PriceAnalyticsSummary({
                         <stat.icon className={cn("w-3.5 h-3.5 transition-transform duration-500 group-hover/stat:scale-110", stat.iconColor)} />
                     </div>
                     <div className="flex items-baseline gap-1.5">
-                        <span className={cn("text-xl font-black tracking-tight", stat.color)}>
+                        <span className={cn("text-xl font-black ", stat.color)}>
                             {Math.round(stat.value).toLocaleString()}
                         </span>
                         <span className="text-xs font-black text-muted-foreground/50">{currencySymbol}</span>

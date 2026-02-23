@@ -28,6 +28,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     const [slug, setSlug] = useState("");
     const [isSystem, setIsSystem] = useState(false);
     const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -42,6 +43,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
         setSlug("");
         setIsSystem(false);
         setIsSlugManuallyEdited(false);
+        setError(null);
         const currentCat = searchParams.get("cat");
         if (currentCat) {
             setActiveCategoryId(currentCat);
@@ -57,6 +59,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
             return;
         }
         setIsLoading(true);
+        setError(null);
         try {
             const catIdToSave = activeCategoryId === "uncategorized" ? undefined : activeCategoryId;
             const res = await createInventoryAttributeType({ name: label, slug, category: catIdToSave, isSystem });
@@ -66,7 +69,9 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
                 setIsOpen(false);
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка создания", "error");
+                const errorMsg = res.error || "Ошибка создания";
+                setError(errorMsg);
+                toast(errorMsg, "error");
                 playSound("notification_error");
             }
         } catch {
@@ -85,6 +90,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
         isSlugManuallyEdited, setIsSlugManuallyEdited,
         activeCategoryId, setActiveCategoryId,
         rootCategories,
+        error, setError,
         handleOpen,
         handleCreate
     };

@@ -29,7 +29,7 @@ export function EmptyState({
             <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 transition-transform duration-500 hover:scale-110">
                 <Icon className={cn("w-8 h-8 text-slate-300", iconClassName)} />
             </div>
-            <h3 className="text-lg font-bold text-slate-700 tracking-tight">{title}</h3>
+            <h3 className="text-lg font-bold text-slate-700 ">{title}</h3>
             {description && (
                 <p className="text-sm font-medium text-slate-400/80 mt-1.5 max-w-sm mx-auto leading-relaxed">{description}</p>
             )}

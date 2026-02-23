@@ -29,10 +29,10 @@ export function LabelPrinterSettings({
 }: LabelPrinterSettingsProps) {
 
     return (
-        <div className="md:flex-1 md:min-h-0 md:overflow-y-auto px-6 py-6 space-y-3 md:custom-scrollbar relative">
+        <div className="md:flex-1 md:min-h-0 md:overflow-y-auto px-6 pt-2 pb-6 space-y-3 md:custom-scrollbar relative">
             {/* Paper Size */}
             <div className="space-y-2.5">
-                <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Размер этикетки</label>
+                <label className="text-sm font-bold text-slate-900 block mb-2 ml-1">Размер этикетки</label>
                 <div className="grid grid-cols-3 gap-2">
                     {['58x40', '58x60', '75x120', 'a4', 'custom'].map((size) => (
                         <Button
@@ -59,7 +59,7 @@ export function LabelPrinterSettings({
                                 type="number"
                                 value={config.customWidth}
                                 onChange={(e) => setConfig(prev => ({ ...prev, customWidth: Number(e.target.value) }))}
-                                className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
+                                className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold transition-all shadow-none"
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">MM</span>
                         </div>
@@ -78,7 +78,7 @@ export function LabelPrinterSettings({
 
             {/* Layout Style Settings */}
             <div className="space-y-2.5">
-                <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Стиль макета</label>
+                <label className="text-sm font-bold text-slate-900 block mb-2 ml-1">Стиль макета</label>
                 <div className="grid grid-cols-2 gap-2">
                     {[
                         { id: 'standard', label: 'Стандарт' },
@@ -104,7 +104,7 @@ export function LabelPrinterSettings({
 
             {/* Characteristics Toggles */}
             <div className={cn("space-y-2.5 transition-opacity", config.layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
-                <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Характеристики</label>
+                <label className="text-sm font-bold text-slate-900 block mb-2 ml-1">Характеристики</label>
                 <div className="-mx-2 grid grid-cols-2 gap-x-1 gap-y-0.5">
                     <ToggleItem label="Артикул товара" checked={displayOptions.article} onChange={(val) => setDisplayOptions(prev => ({ ...prev, article: val }))} compact />
                     <ToggleItem label="Цена с/с" checked={displayOptions.costPrice} onChange={(val) => setDisplayOptions(prev => ({ ...prev, costPrice: val }))} compact />
@@ -136,20 +136,20 @@ export function LabelPrinterSettings({
 
             {/* Custom Text */}
             <div className={cn("space-y-2.5 transition-opacity", config.layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
-                <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Дополнительная строка</label>
+                <label className="text-sm font-bold text-slate-900 block mb-2 ml-1">Дополнительная строка</label>
                 <Input
                     type="text"
                     value={config.customText}
                     onChange={(e) => setConfig(prev => ({ ...prev, customText: e.target.value }))}
                     placeholder="Например: Сделано в России"
                     disabled={config.layoutStyle === 'minimal'}
-                    className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
+                    className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold transition-all shadow-none"
                 />
             </div>
 
             {/* Layout Settings */}
             <div className="space-y-2.5 pb-2">
-                <label className="text-sm font-bold text-slate-900 ml-1 mb-1.5 block">Расположение контента</label>
+                <label className="text-sm font-bold text-slate-900 block mb-2 ml-1">Расположение контента</label>
                 <div className="grid grid-cols-2 gap-2">
                     <Button
                         type="button"
@@ -199,8 +199,8 @@ function ToggleItem({ label, checked, onChange, compact }: { label: string; chec
             compact ? "p-2 rounded-[var(--radius-inner)] hover:bg-slate-50/80" : "p-3 rounded-[var(--radius-inner)] hover:bg-slate-50"
         )}>
             <span className={cn(
-                "font-bold text-slate-700 group-hover:text-slate-900 transition-colors",
-                compact ? "text-xs" : "text-sm"
+                "font-bold text-slate-900 transition-colors",
+                compact ? "text-[12px]" : "text-sm"
             )}>{label}</span>
             <Switch checked={checked} onCheckedChange={onChange} variant="success" className={compact ? "scale-75 origin-right" : ""} />
         </label>

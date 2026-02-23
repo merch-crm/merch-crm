@@ -16,44 +16,56 @@ export default function Error({
         console.error('Stack:', error.stack)
         console.error('Digest:', error.digest)
         console.error('--------------------------------------------------')
-
-        // In a real app, you would send this to Sentry or a custom endpoint
-        // Optional: fetch('/api/log/error', { method: 'POST', body: JSON.stringify({ message: error.message, stack: error.stack }) }).catch(() => {})
     }, [error])
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
-            <div className="text-center p-[--radius-padding] md:p-[--padding-xl] bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full mx-4 space-y-3 animate-in zoom-in-95 duration-700">
-                <div className="w-[80px] h-[80px] bg-rose-50 rounded-[var(--radius-outer)] flex items-center justify-center text-rose-500 mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 font-sans p-6">
+            <div className="relative overflow-hidden rounded-[42px] border border-slate-100/80 shadow-2xl shadow-slate-200/50 p-10 flex flex-col items-center text-center max-w-[480px] w-full bg-white animate-in zoom-in-95 duration-700">
+                {/* Background Glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-[80px] -mt-32 pointer-events-none opacity-15 bg-rose-500" />
+
+                {/* Error Icon */}
+                <div className="w-24 h-24 rounded-[32px] flex items-center justify-center text-white shadow-2xl shadow-rose-500/30 mb-8 transition-colors bg-rose-500 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
                 </div>
 
-                <div className="space-y-3">
-                    <h2 className="text-2xl font-bold text-slate-900 leading-tight">Произошла ошибка</h2>
-                    <p className="text-slate-500 font-medium text-sm leading-relaxed">
+                <div className="flex-1 w-full flex flex-col items-center relative z-10">
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+                        Произошла ошибка
+                    </h2>
+                    <p className="text-sm font-medium text-slate-500 mb-8 max-w-[320px]">
                         Приложение столкнулось с неожиданной проблемой на стороне клиента.
                     </p>
-                    <div className="mt-4 p-4 bg-slate-50 rounded-2xl text-[11px] font-mono text-slate-500 break-all border border-slate-100 italic">
-                        {error.message || "Unknown client-side exception"}
+
+                    <div className="w-full bg-slate-50 rounded-2xl border border-slate-100/80 p-5 mb-8 text-left shadow-inner">
+                        <div className="text-[13px] font-mono text-rose-500/90 break-all leading-relaxed font-semibold">
+                            {error.message || "Unknown client-side exception"}
+                        </div>
                     </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <div className="w-full flex gap-3 relative z-10">
+                    <button type="button"
+                        onClick={() => window.location.href = '/dashboard'}
+                        className="flex-1 px-4 py-4 bg-slate-100 text-slate-600 hover:text-slate-900 font-bold rounded-[20px] hover:bg-slate-200 transition-all active:scale-[0.98] shadow-sm text-sm"
+                    >
+                        На главную
+                    </button>
                     <button type="button"
                         onClick={() => reset()}
-                        className="flex-1 px-6 py-3.5 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-900/10"
+                        className="flex-1 px-4 py-4 bg-slate-900 text-white font-bold rounded-[20px] hover:bg-slate-800 transition-all active:scale-[0.98] shadow-xl shadow-slate-900/20 text-sm"
                     >
                         Попробовать снова
                     </button>
-                    <button type="button"
-                        onClick={() => window.location.href = '/dashboard'}
-                        className="flex-1 px-6 py-3.5 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all active:scale-[0.98]"
-                    >
-                        В панель
-                    </button>
                 </div>
 
-                <div className="pt-4 border-t border-slate-100 text-xs font-bold text-slate-300">
+                <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
+
+                <div className="text-[11px] font-bold text-slate-300 relative z-10">
                     Merch CRM Recovery Mode
                 </div>
             </div>

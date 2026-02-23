@@ -4,7 +4,6 @@ import { Plus, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
@@ -23,10 +22,10 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
         isLoading,
         label, setLabel,
         slug, setSlug,
-        isSystem, setIsSystem,
         isSlugManuallyEdited, setIsSlugManuallyEdited,
         activeCategoryId, setActiveCategoryId,
         rootCategories,
+        error, setError,
         handleOpen,
         handleCreate
     } = useAddAttributeType({ categories });
@@ -49,7 +48,14 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                 <span className="hidden sm:inline">Новая характеристика</span>
             </Button>
 
-            <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Новая характеристика" showVisualTitle={false}>
+            <ResponsiveModal
+                isOpen={isOpen}
+                onClose={() => setIsOpen(false)}
+                title="Новая характеристика"
+                description="Создание нового типа характеристики для товаров в каталоге"
+                showVisualTitle={false}
+                className="sm:max-w-[480px]"
+            >
                 <form
                     id="add-attribute-type-form"
                     onSubmit={(e) => {
@@ -72,9 +78,9 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                         </div>
                     </div>
 
-                    <div className="px-6 pb-6 pt-4 space-y-3 overflow-y-auto custom-scrollbar">
-                        <div className="space-y-1.5 overflow-visible">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Раздел каталога товаров</label>
+                    <div className="px-6 pb-6 pt-2 space-y-3 overflow-y-auto custom-scrollbar">
+                        <div className="space-y-2 overflow-visible">
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Раздел каталога товаров</label>
 
                             <Select
                                 value={activeCategoryId}
@@ -93,34 +99,42 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название характеристики</label>
                                 <Input
                                     value={label}
                                     onChange={e => {
                                         const val = e.target.value;
                                         setLabel(val);
+                                        setError(null);
                                         if (!isSlugManuallyEdited) {
                                             setSlug(transliterateToSlug(val));
                                         }
                                     }}
                                     placeholder="Напр. Цвет"
-                                    className="h-11 rounded-[var(--radius-inner)] bg-slate-50 border-slate-200 font-bold text-sm text-slate-900 shadow-sm"
+                                    className={cn(
+                                        "h-12 rounded-[var(--radius-inner)] bg-slate-50 border-slate-200 font-bold text-sm text-slate-900 shadow-sm transition-all",
+                                        error && "border-rose-500 bg-rose-50/10"
+                                    )}
                                 />
                             </div>
 
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Системный SLUG</label>
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Артикул</label>
                                 <div className="relative">
                                     <Input
                                         value={slug}
                                         onChange={e => {
                                             setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""));
                                             setIsSlugManuallyEdited(true);
+                                            setError(null);
                                         }}
                                         placeholder="color"
-                                        className="h-11 pr-10 rounded-[var(--radius-inner)] bg-slate-50 border-slate-200 font-mono text-sm font-bold text-primary shadow-sm"
+                                        className={cn(
+                                            "h-12 pr-10 rounded-[var(--radius-inner)] bg-slate-50 border-slate-200 font-mono text-sm font-bold text-primary shadow-sm transition-all",
+                                            error && "border-rose-500 bg-rose-50/10"
+                                        )}
                                     />
                                     {isSlugManuallyEdited && label && (
                                         <Button
@@ -130,6 +144,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                             onClick={() => {
                                                 setSlug(transliterateToSlug(label));
                                                 setIsSlugManuallyEdited(false);
+                                                setError(null);
                                             }}
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1 h-8 w-8"
                                             title="Сгенерировать автоматически"
@@ -138,20 +153,11 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                         </Button>
                                     )}
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className="p-3 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
-                            <div className={cn("flex items-center justify-between group")}>
-                                <div className="flex flex-col gap-0.5">
-                                    <span className="text-[11px] font-bold text-slate-900">Глобальная характеристика</span>
-                                    <span className="text-xs text-slate-500 font-bold">Будет видна во всех категориях товаров</span>
-                                </div>
-                                <Switch
-                                    checked={isSystem}
-                                    onCheckedChange={setIsSystem}
-                                    variant="success"
-                                />
+                                {error && (
+                                    <p className="text-[11px] font-bold text-rose-500 mt-1 ml-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                                        {error}
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -161,15 +167,15 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                             type="button"
                             variant="ghost"
                             onClick={() => setIsOpen(false)}
-                            className="flex-1 lg:flex-none h-11 lg:px-8 text-slate-400 font-bold text-sm"
+                            className="flex-1 lg:flex-none h-12 lg:px-8 text-slate-400 font-bold text-sm"
                         >
                             Отмена
                         </Button>
                         <SubmitButton
-                            form="add-attribute-type-form"
                             isLoading={isLoading}
                             disabled={isLoading || !label || !slug}
-                            className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
+                            variant="btn-dark"
+                            className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
                             text="Сохранить"
                             loadingText="Сохранение..."
                         />

@@ -5,7 +5,7 @@ import { getInventoryAttributes, getInventoryAttributeTypes } from "../../attrib
 import { NewItemPageClient } from "./new-item-page-client";
 
 export const metadata = {
-    title: "Новый товар | Склад",
+    title: "Склад | Новый товар",
     description: "Создание нового товара в складской системе",
 };
 

@@ -6,7 +6,7 @@ import { MapPin, Tag, Download, Archive, X, LucideIcon } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { exportToCSV } from "@/lib/export-utils";
-import { InventoryItem, StorageLocation } from "../../types";
+import { InventoryItem, StorageLocation } from "@/app/(main)/dashboard/warehouse/types";
 
 interface MassActionsBarProps {
     selectedIds: string[];

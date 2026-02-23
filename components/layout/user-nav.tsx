@@ -155,7 +155,7 @@ export function UserNav({ user, branding }: {
                                     {(["Руководство", "Отдел продаж"].includes(user.departmentName) || user.roleName === "Администратор") && (
                                         <>
                                             <Link
-                                                href="/dashboard/warehouse"
+                                                href="/dashboard/warehouse/overview"
                                                 onClick={() => setIsOpen(false)}
                                                 className="dropdown-item py-3 md:py-2"
                                             >

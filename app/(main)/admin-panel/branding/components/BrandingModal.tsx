@@ -35,7 +35,7 @@ export function BrandingModal({ ui, closeModal }: BrandingModalProps) {
                         )}
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-slate-900 tracking-tighter">{ui.modal.title}</h3>
+                        <h3 className="text-xl font-black text-slate-900 ">{ui.modal.title}</h3>
                         <p className="text-sm font-bold text-slate-500 mt-2 max-w-[280px] leading-relaxed">
                             {ui.modal.message}
                         </p>

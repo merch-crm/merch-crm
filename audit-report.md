@@ -1,9 +1,9 @@
 # 🔍 MerchCRM Audit Report
 
-**Дата:** 22.02.2026, 02:42:40
-**Время:** 17519ms
+**Дата:** 23.02.2026, 06:28:22
+**Время:** 11343ms
 
-## 🟢 Здоровье: A (99/100)
+## 🟢 Здоровье: A (100/100)
 
 **Отличное состояние**
 
@@ -11,26 +11,18 @@
 
 | Метрика | Значение |
 |---------|----------|
-| Файлов | 692 |
-| Строк | 90 582 |
+| Файлов | 709 |
+| Строк | 91 262 |
 | Размер | 3.9 MB |
-| Страниц | 39 |
-| Компонентов | 188 |
+| Страниц | 41 |
+| Компонентов | 191 |
 | API роутов | 10 |
-| Тестов | 108 |
+| Тестов | 112 |
 | Таблиц БД | 31 |
-| Миграций | 16 |
+| Миграций | 17 |
 
 ### По категориям
 
 | Категория | Количество |
 |-----------|------------|
-| UX Standards | 2 |
-
-## 🟡 Предупреждения (2)
-
-| Файл | Строка | Категория | Сообщение |
-|------|--------|-----------|----------|
-| [app/(main)/dashboard/warehouse/warehouse-widgets.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/warehouse-widgets.tsx#L187) | 187 | UX Standards | Нестандартный gap (запрещено > gap-3) |
-| [components/ui/summary-stat-card.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/components/ui/summary-stat-card.tsx#L25) | 25 | UX Standards | uppercase запрещён |
 

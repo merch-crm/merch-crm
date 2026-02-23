@@ -130,7 +130,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 </div>
                 <div className="text-left">
                     <div className="text-[13px] font-bold text-slate-900 leading-tight">Справочник</div>
-                    <div className="text-xs font-bold text-slate-400 tracking-tight">Полный список характеристик</div>
+                    <div className="text-xs font-bold text-slate-400 ">Полный список характеристик</div>
                 </div>
             </div>
             <ArrowRight className="w-4 h-4 text-primary group-hover/link:translate-x-1 transition-all" />
@@ -143,7 +143,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 type="button"
                 variant="ghost"
                 onClick={() => setShowCustom(false)}
-                className="flex h-11 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
+                className="flex h-12 sm:w-auto sm:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
             >
                 Отмена
             </Button>
@@ -153,7 +153,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                 onClick={onSave}
                 disabled={isSaving || disabled}
                 variant="btn-dark"
-                className="h-11 w-full sm:w-auto sm:px-8 rounded-[var(--radius-inner)] text-sm font-bold flex items-center justify-center gap-2"
+                className="h-12 w-full sm:w-auto sm:px-8 rounded-[var(--radius-inner)] text-sm font-bold flex items-center justify-center gap-2"
             >
                 {isSaving && (
                     <span className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin mr-2" />
@@ -233,7 +233,7 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
                                 <Input
                                     type="text"
                                     placeholder={type === "color" ? "Напр: Полночный синий" : "Напр: Muse Wear"}
-                                    className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
+                                    className="w-full h-12 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 font-bold text-sm text-slate-900 shadow-sm"
                                     value={customName}
                                     onChange={(e) => setCustomName(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleCustomSubmit()}
@@ -243,8 +243,8 @@ export function AttributeSelector({ type, value, onChange, onCodeChange, allowCu
 
                             {type !== "color" ? (
                                 <div className="space-y-1.5">
-                                    <label className="text-sm font-bold text-slate-700 ml-1">Код (SKU)</label>
-                                    <div className="h-11 px-4 rounded-[var(--radius-inner)] bg-slate-100/50 border border-slate-200 flex items-center text-slate-400 font-mono text-sm font-bold shadow-inner">
+                                    <label className="text-sm font-bold text-slate-700 ml-1">Код для артикула:</label>
+                                    <div className="h-12 px-4 rounded-[var(--radius-inner)] bg-slate-100/50 border border-slate-200 flex items-center text-slate-400 font-mono text-sm font-bold shadow-inner">
                                         {transliterate(customName.substring(0, 3).toUpperCase()) || "---"}
                                     </div>
                                 </div>

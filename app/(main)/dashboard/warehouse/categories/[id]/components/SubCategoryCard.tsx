@@ -6,8 +6,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Category } from "../../types";
-import { getCategoryIcon, getColorStyles } from "../../category-utils";
+import { Category } from "@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon, getColorStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 interface NavigationRouter {
     push: (href: string) => void;
@@ -47,11 +47,11 @@ export const SortableSubCategoryCard = React.memo(({
             style={style}
             role="button"
             tabIndex={0}
-            onClick={() => router.push(`/dashboard/warehouse/${subcat.id}`)}
+            onClick={() => router.push(`/dashboard/warehouse/categories/${subcat.id}`)}
             onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    router.push(`/dashboard/warehouse/${subcat.id}`);
+                    router.push(`/dashboard/warehouse/categories/${subcat.id}`);
                 }
             }}
             className={cn(
@@ -88,7 +88,7 @@ export const SubCategoryCardContent = React.memo(({
     onDelete,
 }: SubCategoryCardContentProps) => {
     const IconComponent = getCategoryIcon(subcat);
-    const colorStyle = getColorStyles(subcat.color);
+    const colorStyles = getColorStyles(subcat.color);
 
     return (
         <>
@@ -105,10 +105,10 @@ export const SubCategoryCardContent = React.memo(({
                     <GripVertical className="w-5 h-5" />
                 </div>
 
-                <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center transition-all",
-                    colorStyle
-                )}>
+                <div
+                    className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-all", colorStyles.className)}
+                    style={colorStyles.style}
+                >
                     {createElement(IconComponent, { className: "w-5 h-5" })}
                 </div>
                 <div>

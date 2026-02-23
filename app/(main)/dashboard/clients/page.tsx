@@ -3,6 +3,7 @@ import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown 
 import { ClientsTable } from "./clients-list";
 import { getClientStats } from "./actions/core.actions";;
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { PageHeader } from "@/components/layout/page-header";
 
 
 import { db } from "@/lib/db";
@@ -74,14 +75,11 @@ export default async function ClientsPage() {
     return (
         <div className="space-y-3">
             <div className="flex flex-col gap-3">
-                <div className="flex flex-row items-center justify-between gap-3 px-1">
-                    <div className="min-w-0 flex-1">
-                        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 leading-none truncate">Клиенты</h1>
-                        <p className="text-slate-500 text-[11px] sm:text-[13px] font-medium mt-1.5 sm:mt-3 line-clamp-1">
-                            База контрагентов и история взаимодействий
-                        </p>
-                    </div>
-                    <div className="shrink-0">
+                <PageHeader
+                    title="Клиенты"
+                    description="База контрагентов и история взаимодействий"
+                    className="px-1"
+                    actions={
                         <Link
                             href="/dashboard/clients/new"
                             className="h-11 w-11 sm:h-12 sm:w-auto bg-slate-900 hover:bg-slate-800 text-white rounded-full sm:rounded-2xl sm:px-6 gap-2 font-bold shadow-xl shadow-slate-200 transition-all active:scale-95 inline-flex items-center justify-center p-0 sm:p-auto"
@@ -90,8 +88,8 @@ export default async function ClientsPage() {
                             <Plus className="w-5 h-5" />
                             <span className="hidden sm:inline">Добавить клиента</span>
                         </Link>
-                    </div>
-                </div>
+                    }
+                />
 
                 {/* Stats Grid */}
                 <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${statCards.length} gap-3`}>

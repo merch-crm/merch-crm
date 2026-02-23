@@ -90,7 +90,7 @@ export function LabelPrinterSettings({
                                     type="number"
                                     value={dimensions.customWidth}
                                     onChange={(e) => setDimensions(prev => ({ ...prev, customWidth: Number(e.target.value) }))}
-                                    className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
+                                    className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold transition-all shadow-none"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-slate-400 pointer-events-none">MM</span>
                             </div>
@@ -172,7 +172,7 @@ export function LabelPrinterSettings({
                         onChange={(e) => setContentSettings(prev => ({ ...prev, customText: e.target.value }))}
                         placeholder="Например: Сделано в России"
                         disabled={uiState.layoutStyle === 'minimal'}
-                        className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
+                        className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold transition-all shadow-none"
                     />
                 </div>
 
@@ -270,8 +270,8 @@ function ToggleItem({ label, checked, onChange, compact }: { label: string; chec
             compact ? "p-2 rounded-2xl hover:bg-slate-50/80" : "p-3 rounded-2xl hover:bg-slate-50"
         )}>
             <span className={cn(
-                "font-bold text-slate-700 group-hover:text-slate-900 transition-colors",
-                compact ? "text-xs" : "text-sm"
+                "font-bold text-slate-900 transition-colors",
+                compact ? "text-[12px]" : "text-sm"
             )}>{label}</span>
             <Switch checked={checked} onCheckedChange={onChange} variant="success" className={compact ? "scale-75 origin-right" : ""} />
         </label>

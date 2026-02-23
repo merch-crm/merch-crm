@@ -75,7 +75,7 @@ export function AttributesSection({
                                     </div>
                                     <span className="text-xs font-black text-slate-700">{item.label}</span>
                                 </div>
-                                <span className="text-sm font-bold text-slate-900 tracking-tight">{item.value}</span>
+                                <span className="text-sm font-bold text-slate-900 ">{item.value}</span>
                             </div>
                         )
                     })}
@@ -140,7 +140,7 @@ export function AttributesSection({
                                 .map(([key, val]) => (
                                     <div key={key} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-200/50 flex items-center gap-3 shadow-sm group hover:border-slate-300 transition-all">
                                         <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-slate-900 transition-colors" />
-                                        <span className="text-[11px] font-bold text-slate-700 tracking-tight">{key}:</span>
+                                        <span className="text-[11px] font-bold text-slate-700 ">{key}:</span>
                                         <span className="text-sm font-bold text-slate-900">{String(val)}</span>
                                     </div>
                                 ))}

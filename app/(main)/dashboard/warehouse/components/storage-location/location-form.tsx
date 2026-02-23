@@ -1,9 +1,9 @@
-import { Building, MapPin, User, Plus, RefreshCw } from "lucide-react";
+import { Building, User, Plus, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { StorageLocation } from "../../storage-locations-tab";
+import { SwitchRow } from "@/components/ui/switch-row";
 
 interface LocationFormProps {
     form: {
@@ -38,7 +38,7 @@ export function LocationForm({
         <div className="space-y-3">
             <div className="space-y-3">
                 <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Название склада <span className="text-rose-500">*</span></label>
+                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название склада <span className="text-rose-500">*</span></label>
                     <Input
                         name="name"
                         value={form.name}
@@ -60,7 +60,7 @@ export function LocationForm({
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Тип локации</label>
+                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Тип локации</label>
                     <Select
                         options={[
                             { id: "warehouse", title: "Склад", icon: <Building className="w-4 h-4" /> },
@@ -75,19 +75,20 @@ export function LocationForm({
                             handleAutoSave({ type: typeVal });
                         }}
                         variant="default"
+                        triggerClassName="bg-slate-50 focus:bg-slate-50"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Адрес объекта <span className="text-rose-500">*</span></label>
+                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Адрес объекта <span className="text-rose-500">*</span></label>
                     <div className="relative group">
-                        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors z-10" />
+                        <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors z-10" />
                         <Input
                             name="address"
                             value={form.address}
                             placeholder="Ул. Примерная, 10"
                             className={cn(
-                                "w-full h-12 pl-10 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm",
+                                "w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm",
                                 fieldErrors.address
                                     ? "border-rose-200 bg-rose-50/50 text-rose-900"
                                     : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5"
@@ -103,7 +104,7 @@ export function LocationForm({
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Ответственное лицо</label>
+                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Ответственное лицо</label>
                     <Select
                         options={[
                             { id: "", title: "Не назначен", icon: <User className="w-4 h-4 opacity-50" /> },
@@ -117,61 +118,52 @@ export function LocationForm({
                         }}
                         showSearch
                         placeholder="Поиск сотрудника..."
+                        triggerClassName="bg-slate-50 focus:bg-slate-50"
                     />
                 </div>
 
                 <div className="pt-2 space-y-3">
-                    <Button
-                        type="button"
-                        variant="ghost"
+                    <SwitchRow
+                        icon={Plus}
+                        title="Основной склад"
+                        description=""
+                        checked={form.isDefault}
+                        onCheckedChange={(val) => {
+                            setFormValue("isDefault", val);
+                            handleAutoSave({ isDefault: val });
+                        }}
                         onClick={() => {
                             const isNewValue = !form.isDefault;
                             setFormValue("isDefault", isNewValue);
                             handleAutoSave({ isDefault: isNewValue });
                         }}
-                        disabled={isSaving}
-                        className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 transition-all h-auto"
-                    >
-                        <div className={cn(
-                            "w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-white text-slate-400 border border-slate-200 shadow-sm",
-                            form.isDefault && "bg-primary text-white border-primary"
-                        )}>
-                            <Plus className={cn("w-5 h-5 transition-transform stroke-[2.5]", form.isDefault ? "rotate-0" : "rotate-45")} />
-                        </div>
-                        <div className="flex-1 text-left">
-                            <p className="text-[11px] font-bold text-slate-900 mb-1">Основной склад</p>
-                            <p className="text-xs font-bold text-slate-400">По умолчанию для всех товаров</p>
-                        </div>
-                        <div className={cn("w-10 h-6 rounded-full transition-all flex items-center px-0.5", form.isDefault ? "bg-primary" : "bg-slate-300")}>
-                            <div className={cn("w-5 h-5 rounded-full bg-white transition-all shadow-sm", form.isDefault ? "translate-x-4" : "translate-x-0")} />
-                        </div>
-                    </Button>
+                        variant="primary"
+                        iconClassName={cn(
+                            "transition-all",
+                            form.isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400"
+                        )}
+                    />
 
-                    <Button
-                        type="button"
-                        variant="ghost"
+                    <SwitchRow
+                        icon={RefreshCw}
+                        title="Склад активен"
+                        description=""
+                        checked={form.isActive}
+                        onCheckedChange={(val) => {
+                            setFormValue("isActive", val);
+                            handleAutoSave({ isActive: val });
+                        }}
                         onClick={() => {
                             const isNewValue = !form.isActive;
                             setFormValue("isActive", isNewValue);
                             handleAutoSave({ isActive: isNewValue });
                         }}
-                        disabled={isSaving}
-                        className="w-full flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 transition-all h-auto"
-                    >
-                        <div className={cn(
-                            "w-10 h-10 rounded-xl flex items-center justify-center transition-all bg-white text-slate-400 border border-slate-200 shadow-sm",
-                            form.isActive && "bg-emerald-500 text-white border-emerald-500"
-                        )}>
-                            <RefreshCw className={cn("w-5 h-5 transition-transform stroke-[2.5]", form.isActive ? "rotate-0" : "rotate-180 opacity-50")} />
-                        </div>
-                        <div className="flex-1 text-left">
-                            <p className="text-[11px] font-bold text-slate-900 mb-1">Статус склада</p>
-                            <p className="text-xs font-bold text-slate-400">{form.isActive ? "Склад активен" : "Склад деактивирован"}</p>
-                        </div>
-                        <div className={cn("w-10 h-6 rounded-full transition-all flex items-center px-0.5", form.isActive ? "bg-emerald-500" : "bg-slate-300")}>
-                            <div className={cn("w-5 h-5 rounded-full bg-white transition-all shadow-sm", form.isActive ? "translate-x-4" : "translate-x-0")} />
-                        </div>
-                    </Button>
+                        variant="success"
+                        iconClassName={cn(
+                            "transition-all",
+                            form.isActive ? "bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20" : "bg-white text-slate-400"
+                        )}
+                    />
                 </div>
             </div>
         </div>

@@ -68,7 +68,7 @@ export const S3RowBase = ({
                     </div>
                     <div className="max-w-[300px] sm:max-w-none">
                         <p className="text-sm font-bold text-slate-700 truncate">{title}</p>
-                        {subtitle && <p className="text-xs text-slate-400 font-medium tracking-tight">{subtitle}</p>}
+                        {subtitle && <p className="text-xs text-slate-400 font-medium ">{subtitle}</p>}
                     </div>
                 </div>
             </td>

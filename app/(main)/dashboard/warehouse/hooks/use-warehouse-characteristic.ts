@@ -55,6 +55,7 @@ export interface TypeFormState {
     showInSku: boolean;
     showInName: boolean;
     isLoading: boolean;
+    error: string | null;
 }
 
 export interface DeleteDialogState {
@@ -118,7 +119,8 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         isSystem: false,
         showInSku: true,
         showInName: true,
-        isLoading: false
+        isLoading: false,
+        error: null
     });
 
     const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>({
@@ -281,13 +283,14 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             isSystem: type.isSystem || false,
             showInSku: type.showInSku ?? true,
             showInName: type.showInName ?? true,
-            isLoading: false
+            isLoading: false,
+            error: null
         });
     }
 
     async function handleTypeUpdate() {
         if (!typeForm.editingType || !typeForm.name.trim()) return;
-        setTypeForm(prev => ({ ...prev, isLoading: true }));
+        setTypeForm(prev => ({ ...prev, isLoading: true, error: null }));
         try {
             const catId = typeForm.categoryId === "uncategorized" ? null : typeForm.categoryId;
             const res = await updateInventoryAttributeType(
@@ -306,7 +309,9 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
                 setTypeForm(prev => ({ ...prev, editingType: null }));
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка обновления", "error");
+                const errorMsg = res.error || "Ошибка обновления";
+                setTypeForm(prev => ({ ...prev, error: errorMsg }));
+                toast(errorMsg, "error");
             }
         } catch (err) {
             console.error("[WAREHOUSE_CHARACTERISTIC] Update type error:", err);

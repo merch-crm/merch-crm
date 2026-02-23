@@ -45,7 +45,7 @@ function FundCard({ fund, currencySymbol }: FundCardProps) {
                     <Icon className="w-7 h-7" />
                 </div>
                 <div className="text-right">
-                    <div className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">{fund.percentage}%</div>
+                    <div className="text-3xl font-black text-slate-900  leading-none mb-1">{fund.percentage}%</div>
                     <div className="text-xs font-bold text-slate-400">доля фонда</div>
                 </div>
             </div>
@@ -84,7 +84,7 @@ export function FundsClient({ fundsData }: FundsClientProps) {
                         <PieChart className="w-8 h-8" />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-black text-slate-900 tracking-tight">Распределение капитала</h3>
+                        <h3 className="text-3xl font-black text-slate-900 ">Распределение капитала</h3>
                         <p className="text-slate-400 text-xs font-bold mt-1.5 opacity-80">Визуальный баланс всех фондов организации</p>
                     </div>
                 </div>

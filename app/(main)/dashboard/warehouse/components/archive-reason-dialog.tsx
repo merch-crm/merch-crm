@@ -80,14 +80,14 @@ export function ArchiveReasonDialog({
                     </div>
                 </div>
 
-                <div className="px-6 pb-20 space-y-3 flex-1 overflow-y-auto custom-scrollbar">
+                <div className="px-6 pt-2 pb-20 space-y-3 flex-1 overflow-y-auto custom-scrollbar">
                     <div className="space-y-3">
-                        <p className="text-xs font-bold text-slate-700 leading-relaxed px-4">
+                        <p className="text-xs font-bold text-slate-700 leading-relaxed px-4 text-center">
                             {displayDescription}
                         </p>
 
                         <div className="space-y-1.5 pt-2">
-                            <label htmlFor="archive-reason" className="text-sm font-bold text-slate-700 ml-1">
+                            <label htmlFor="archive-reason" className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                                 Причина архивации <span className="text-rose-500">*</span>
                             </label>
                             <textarea

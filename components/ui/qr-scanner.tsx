@@ -111,7 +111,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             <QrCode className="w-4 h-4 text-primary" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-black text-slate-900 tracking-tight">Сканер SKU</h3>
+                            <h3 className="text-sm font-black text-slate-900 ">Сканер SKU</h3>
                             <p className="text-xs font-bold text-slate-400 mt-0.5">Наведите на QR-код</p>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                         {torchOn ? <Zap className="w-5 h-5 fill-current" /> : <ZapOff className="w-5 h-5" />}
                     </Button>
                     <div className="text-right">
-                        <p className="text-xs font-black text-slate-900 tracking-tighter">Система готова</p>
+                        <p className="text-xs font-black text-slate-900 ">Система готова</p>
                         <p className="text-xs font-bold text-slate-400 mt-0.5">Ожидание кода...</p>
                     </div>
                 </div>

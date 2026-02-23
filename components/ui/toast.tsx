@@ -61,7 +61,7 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
             )}
         >
             <div className="flex-shrink-0">{icons[type]}</div>
-            <p className="text-sm font-bold tracking-tight whitespace-nowrap">{message}</p>
+            <p className="text-sm font-bold  whitespace-nowrap">{message}</p>
 
             {
                 action && (
@@ -114,6 +114,7 @@ export function useToast() {
 }
 
 import { triggerMutation } from "../global-undo";
+import { playSound } from "@/lib/sounds";
 
 export function ToastContainer() {
     const [activeToast, setActiveToast] = useState<ToastState | null>(null);
@@ -126,12 +127,13 @@ export function ToastContainer() {
                 triggerMutation();
             }
 
-            // Play sound for success and warning
-            if (type === "success" || type === "warning") {
-                const audio = new Audio("/sounds/notification.mp3");
-                audio.play().catch(() => {
-                    // Ignore errors as browsers might block autoplay
-                });
+            // Play sound for success and warning using global sound system
+            if (type === "success") {
+                playSound("notification_success");
+            } else if (type === "warning") {
+                playSound("notification_warning");
+            } else if (type === "error" || type === "destructive") {
+                playSound("notification_error");
             }
         };
     }, []);

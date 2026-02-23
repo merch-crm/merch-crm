@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle, RefreshCw, Check } from "lucide-react";
-import { transferInventoryStock } from "../../stock-actions";;
+import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle } from "lucide-react";
+import { transferInventoryStock } from "../../stock-actions";
 import { StorageLocation } from "../../types";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -11,6 +11,7 @@ import { LocationSelect } from "../../location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 
 interface ItemStock {
     storageLocationId: string;
@@ -128,18 +129,18 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h2>
                             <p className="text-[11px] font-bold text-slate-700 mt-0.5">
-                                Объект: <span className="text-slate-900 font-bold tracking-tight">{item.name}</span>
+                                Объект: <span className="text-slate-900 font-bold ">{item.name}</span>
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
+                <form onSubmit={handleSubmit} className="px-6 py-4 pt-2 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
                     <div className="space-y-3">
                         {/* 1. Source & Destination selection */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Откуда (источник)</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Откуда (источник)</label>
                                 <LocationSelect
                                     locations={availableFromLocations}
                                     value={fromLocationId}
@@ -151,7 +152,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Куда (получатель)</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Куда (получатель)</label>
                                 <LocationSelect
                                     locations={locations}
                                     value={toLocationId}
@@ -187,7 +188,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         </span>
                                     </div>
                                     <div className="flex items-baseline gap-2 pl-1">
-                                        <span className="text-4xl font-black text-slate-900 tabular-nums tracking-tight">{fromStock}</span>
+                                        <span className="text-4xl font-black text-slate-900 tabular-nums ">{fromStock}</span>
                                         <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
@@ -208,7 +209,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         </span>
                                     </div>
                                     <div className="flex items-baseline gap-2 justify-end pr-1">
-                                        <span className="text-5xl font-black text-primary tabular-nums tracking-tight drop-shadow-sm">
+                                        <span className="text-5xl font-black text-primary tabular-nums  drop-shadow-sm">
                                             {toStock + amount}
                                         </span>
                                         <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
@@ -220,7 +221,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         {/* 3. Inputs: Amount */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Количество</label>
+                                <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Количество</label>
                                 <div className="bg-slate-50 border border-slate-200 rounded-2xl flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
                                     <Button
                                         type="button"
@@ -291,7 +292,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
 
                         {/* 4. Reason */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500-none">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500">*</span></label>
                             <textarea
                                 value={reason}
                                 required
@@ -319,24 +320,14 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                     >
                         Отмена
                     </Button>
-                    <Button
-                        type="submit"
-                        variant="default"
+                    <SubmitButton
+                        isLoading={isSubmitting}
+                        text="Переместить"
+                        loadingText="Перемещение..."
+                        variant="btn-dark"
                         disabled={isSubmitting || amount <= 0 || !reason.trim()}
-                        onClick={() => handleSubmit()}
-                        className={cn(
-                            "h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 btn-dark rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
-                        )}
-                    >
-                        {isSubmitting ? (
-                            <RefreshCw className="w-4 h-4 animate-spin text-white" />
-                        ) : (
-                            <>
-                                <Check className="w-4 h-4 stroke-[3] text-white" />
-                                Переместить
-                            </>
-                        )}
-                    </Button>
+                        className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
+                    />
                 </div>
             </div>
         </ResponsiveModal>

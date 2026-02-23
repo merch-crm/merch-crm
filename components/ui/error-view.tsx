@@ -1,6 +1,7 @@
 "use client";
 
-import { AlertCircle, RefreshCw } from "lucide-react";
+import { AlertCircle, RefreshCcw, Home } from "lucide-react";
+import Link from "next/link";
 
 interface ErrorViewProps {
     title?: string;
@@ -16,25 +17,55 @@ export function ErrorView({
     icon,
 }: ErrorViewProps) {
     return (
-        <div className="flex items-center justify-center min-h-[60vh] p-4">
-            <div className="text-center p-6 bg-white rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 max-w-md w-full space-y-3 animate-in zoom-in-95 duration-700">
-                <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center text-rose-500 mx-auto">
-                    {icon || <AlertCircle size={32} strokeWidth={2.5} />}
+        <div className="flex items-center justify-center min-h-[60vh] p-4 font-sans">
+            <div className="relative overflow-hidden rounded-[42px] border border-slate-100/80 shadow-2xl shadow-slate-200/50 p-10 flex flex-col items-center text-center max-w-[480px] w-full bg-white transition-all hover:shadow-3xl">
+                {/* Background Glow */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-[80px] -mt-32 pointer-events-none opacity-15 bg-rose-500" />
+
+                {/* Error Icon */}
+                <div className="w-24 h-24 rounded-[32px] flex items-center justify-center text-white shadow-2xl shadow-rose-500/30 mb-8 transition-colors bg-rose-500 relative z-10">
+                    {icon || <AlertCircle className="w-12 h-12 stroke-[2]" />}
                 </div>
-                <div className="space-y-2">
-                    <h2 className="text-xl font-bold text-slate-900">{title}</h2>
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed">{message}</p>
+
+                <div className="flex-1 w-full flex flex-col items-center relative z-10">
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+                        {title}
+                    </h2>
+                    <p className="text-sm font-medium text-slate-500 mb-8 max-w-[320px]">
+                        Приложение столкнулось с неожиданной проблемой на стороне клиента.
+                    </p>
+
+                    <div className="w-full bg-slate-50 rounded-2xl border border-slate-100/80 p-5 mb-8 text-left shadow-inner overflow-hidden">
+                        <div className="text-[13px] font-mono text-rose-500/90 break-words whitespace-pre-wrap leading-relaxed font-semibold max-h-[120px] overflow-y-auto w-full">
+                            Error: {message}
+                        </div>
+                    </div>
                 </div>
-                {onReset && (
-                    <button
-                        type="button"
-                        onClick={onReset}
-                        className="w-full px-6 py-3 bg-slate-900 text-white font-bold rounded-2xl hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2"
-                    >
-                        <RefreshCw size={18} />
-                        Попробовать снова
-                    </button>
-                )}
+
+                <div className="w-full flex gap-3 relative z-10">
+                    <Link href="/dashboard" className="flex-[0.7] block">
+                        <button type="button" className="w-full flex items-center justify-center gap-2 px-4 py-4 bg-slate-100 text-slate-600 hover:text-slate-900 font-bold rounded-[20px] hover:bg-slate-200 transition-all active:scale-[0.98] shadow-sm text-sm">
+                            <Home className="w-4 h-4" />
+                            На главную
+                        </button>
+                    </Link>
+                    {onReset && (
+                        <button
+                            type="button"
+                            onClick={onReset}
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-4 bg-slate-900 text-white font-bold rounded-[20px] hover:bg-slate-800 transition-all active:scale-[0.98] shadow-xl shadow-slate-900/20 text-sm"
+                        >
+                            <RefreshCcw className="w-4 h-4" />
+                            Попробовать снова
+                        </button>
+                    )}
+                </div>
+
+                <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
+
+                <div className="text-[11px] font-bold text-slate-300 relative z-10">
+                    Merch CRM Recovery Mode
+                </div>
             </div>
         </div>
     );

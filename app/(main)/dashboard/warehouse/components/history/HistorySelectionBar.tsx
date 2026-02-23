@@ -48,7 +48,7 @@ export function HistorySelectionBar({
                         transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
                         className="fixed bottom-6 sm:bottom-10 left-1/2 z-[100] flex items-center bg-white p-1.5 sm:p-2 gap-2 sm:gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 max-w-[95vw]"
                     >
-                        <div className="flex items-center gap-2 sm:gap-3 px-1 sm:px-2">
+                        <div className="flex items-center gap-2 sm:gap-3 pl-0 sm:pl-0 pr-1 sm:pr-2">
                             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary flex items-center justify-center text-xs sm:text-sm font-bold shadow-lg shadow-primary/20 text-white shrink-0">
                                 {selectedIds.length}
                             </div>
@@ -60,10 +60,10 @@ export function HistorySelectionBar({
                         <div className="flex items-center gap-1">
                             <Button
                                 type="button"
-                                variant="default"
+                                variant="ghost"
                                 size="default"
                                 onClick={handleExportSelected}
-                                className="h-auto py-2.5 rounded-full bg-transparent hover:bg-slate-50 hover:text-slate-900 border-none shadow-none text-slate-500"
+                                className="h-auto py-2.5 rounded-full flex items-center gap-2 text-slate-500 hover:bg-primary/10 hover:text-primary border-none shadow-none !shadow-none group"
                             >
                                 <FileDown className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
                                 <span className="hidden sm:inline text-xs font-bold transition-colors">Экспорт</span>
@@ -75,9 +75,9 @@ export function HistorySelectionBar({
                                     variant="ghost"
                                     size="default"
                                     onClick={handleDeleteSelected}
-                                    className="h-auto py-2.5 rounded-full hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 border-none shadow-none"
+                                    className="h-auto py-2.5 rounded-full flex items-center gap-2 hover:bg-rose-500/10 text-slate-500 hover:text-rose-600 border-none shadow-none group"
                                 >
-                                    <Trash2 className="w-4 h-4 text-slate-400 group-hover:text-rose-500 transition-colors" />
+                                    <Trash2 className="w-4 h-4 text-slate-400 group-hover:text-rose-600 transition-colors" />
                                     <span className="hidden sm:inline text-xs font-bold transition-colors">Удалить</span>
                                 </Button>
                             )}

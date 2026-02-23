@@ -33,7 +33,7 @@ export function TimeTrackerWidget({
                             <Clock className="w-5 h-5" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-black text-slate-900 tracking-tight">Рабочее время</h3>
+                            <h3 className="text-sm font-black text-slate-900 ">Рабочее время</h3>
                             <p className="text-xs font-bold text-slate-400">
                                 {format(new Date(), "d MMMM, EEEE", { locale: ru })}
                             </p>
@@ -43,7 +43,7 @@ export function TimeTrackerWidget({
 
                 <div className="flex flex-col items-center justify-center py-6 bg-slate-50 rounded-2xl border border-slate-100 mb-6">
                     <span className={cn(
-                        "text-4xl font-black tabular-nums tracking-tighter mb-2",
+                        "text-4xl font-black tabular-nums  mb-2",
                         isWorking ? "text-emerald-600" : "text-slate-300"
                     )}>
                         {isWorking ? formatDuration(elapsed) : "00:00:00"}
@@ -79,7 +79,7 @@ export function TimeTrackerWidget({
                     {entries.length === 0 ? (
                         <div className="text-center py-6">
                             <CalendarDays className="w-8 h-8 text-slate-100 mx-auto mb-2" />
-                            <p className="text-xs font-bold text-slate-300 tracking-tight">Записей пока нет</p>
+                            <p className="text-xs font-bold text-slate-300 ">Записей пока нет</p>
                         </div>
                     ) : (
                         entries.map((entry) => (

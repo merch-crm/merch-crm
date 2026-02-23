@@ -42,7 +42,7 @@ const Divider = () => <div className="w-[1px] h-6 bg-slate-100 mx-2" />;
 
 export default function FloatingPanelsCRM() {
     return (
-        <section className="space-y-12 py-12 bg-[#f8f9fa] rounded-[3rem] items-center flex flex-col justify-center">
+        <section className="space-y-12 py-12 bg-[#f8f9fa] rounded-[var(--radius-outer)] items-center flex flex-col justify-center">
             <div className="flex items-center gap-3 self-start px-12 mb-[-2rem]">
                 <div className="h-8 w-1 bg-[#3b5bdb] rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Floating Action Panels</h2>

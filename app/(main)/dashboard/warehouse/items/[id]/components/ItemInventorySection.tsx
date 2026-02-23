@@ -131,7 +131,7 @@ export function ItemInventorySection({
                             type="number"
                             value={editData.lowStockThreshold}
                             onChange={(e) => onUpdateField("lowStockThreshold", parseInt(e.target.value))}
-                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus-visible:ring-4 focus-visible:ring-primary/10 transition-all h-auto shadow-none"
+                            className="w-full text-2xl font-bold bg-slate-50 border-none outline-none p-4 rounded-2xl focus-visible:border-slate-400 transition-all h-auto shadow-none"
                         />
                     </div>
                     <div className="crm-card  !rounded-2xl space-y-3">
@@ -200,7 +200,7 @@ export function ItemInventorySection({
                                         </div>
                                         <div className="flex items-baseline gap-2">
                                             <span className={cn(
-                                                "text-4xl font-black tracking-tight",
+                                                "text-4xl font-black ",
                                                 stockStatus === 'critical' ? "text-rose-600" :
                                                     stockStatus === 'low' ? "text-amber-600" : "text-foreground"
                                             )}>

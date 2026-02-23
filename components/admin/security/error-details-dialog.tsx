@@ -63,7 +63,7 @@ export function ErrorDetailsDialog({
                         </label>
                         <div
                             className={cn(
-                                "inline-flex px-2 py-0.5 rounded-[18px] text-xs font-bold tracking-tight",
+                                "inline-flex px-2 py-0.5 rounded-[18px] text-xs font-bold ",
                                 error?.severity === "critical"
                                     ? "bg-rose-100 text-rose-600"
                                     : "bg-amber-100 text-amber-600"

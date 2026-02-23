@@ -20,7 +20,11 @@ export async function getInventoryHistory(): Promise<ActionResult<ItemHistoryTra
                 item: true,
                 storageLocation: true,
                 fromStorageLocation: true,
-                creator: true
+                creator: {
+                    with: {
+                        role: true
+                    }
+                }
             },
             orderBy: [desc(inventoryTransactions.createdAt)],
             limit: 100

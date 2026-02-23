@@ -30,7 +30,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                     </div>
                     <div className="mt-auto">
                         <p className="text-slate-400 text-xs font-bold leading-none mb-3">Общий Фонд Оплаты Труда (ФОТ)</p>
-                        <div className="text-4xl font-black text-slate-900 tracking-tight leading-none">
+                        <div className="text-4xl font-black text-slate-900  leading-none">
                             {salaryData.totalBudget.toLocaleString('ru-RU')} <span className="text-base font-bold text-slate-400 ml-1">{currencySymbol} /мес.</span>
                         </div>
                     </div>
@@ -47,7 +47,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                     </div>
                     <div className="mt-auto">
                         <p className="text-slate-400 text-xs font-bold leading-none mb-3">Сотрудников в базе</p>
-                        <div className="text-4xl font-black text-slate-900 tracking-tight leading-none">
+                        <div className="text-4xl font-black text-slate-900  leading-none">
                             {salaryData.employeePayments.length} <span className="text-base font-bold text-slate-400 ml-1">{pluralize(salaryData.employeePayments.length, 'человек', 'человека', 'человек')}</span>
                         </div>
                     </div>

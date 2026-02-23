@@ -22,7 +22,7 @@ export function ComponentSection({ component }: ComponentSectionProps) {
         <section id={component.id} className="mb-16 scroll-mt-24">
             {/* Header */}
             <div className="mb-6">
-                <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start justify-between gap-3">
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900">{component.name}</h2>
                         <p className="text-slate-500 mt-1 text-sm leading-relaxed">{component.description}</p>
@@ -64,7 +64,7 @@ export function ComponentSection({ component }: ComponentSectionProps) {
             </div>
 
             {/* Variants Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {component.variants.map((variant, index) => (
                     <ComponentCard key={index} variant={variant} />
                 ))}

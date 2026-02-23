@@ -1,90 +1,69 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, X, LayoutGrid, ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Tag, Archive, Layers, ChevronDown } from "lucide-react";
+import { Search, X, Layers, ArrowDownLeft, ArrowUpRight, ArrowLeftRight, Settings2, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { FilterType } from "../../hooks/useHistoryTable";
+
+export type FilterType = "all" | "in" | "out" | "transfer" | "other";
 
 interface HistoryToolbarProps {
-    searchQuery: string;
-    setSearchQuery: (query: string) => void;
-    activeFilter: FilterType;
-    setActiveFilter: (filter: FilterType) => void;
-    currentFilterLabel: string;
     isMobileSearchExpanded: boolean;
-    setIsMobileSearchExpanded: (expanded: boolean) => void;
-    resetPagination: () => void;
+    setIsMobileSearchExpanded: (val: boolean) => void;
+    searchQuery: string;
+    setSearchQuery: (val: string) => void;
+    setCurrentPage: (val: number) => void;
+    activeFilter: string;
+    setActiveFilter: (val: FilterType) => void;
 }
 
+const FILTERS: { id: string; label: string; icon: LucideIcon; color?: string }[] = [
+    { id: "all", label: "Все", icon: Layers },
+    { id: "in", label: "Приход", icon: ArrowUpRight },
+    { id: "out", label: "Расход", icon: ArrowDownLeft },
+    { id: "transfer", label: "Перемещение", icon: ArrowLeftRight },
+    { id: "other", label: "Другое", icon: Settings2, color: "bg-slate-500" },
+];
+
 export function HistoryToolbar({
-    searchQuery,
-    setSearchQuery,
-    activeFilter,
-    setActiveFilter,
-    currentFilterLabel,
     isMobileSearchExpanded,
     setIsMobileSearchExpanded,
-    resetPagination
+    searchQuery,
+    setSearchQuery,
+    setCurrentPage,
+    activeFilter,
+    setActiveFilter
 }: HistoryToolbarProps) {
-
-    const filters = [
-        { id: "all", label: "Все", icon: Layers },
-        { id: "in", label: "Приход", icon: ArrowDownLeft },
-        { id: "out", label: "Расход", icon: ArrowUpRight },
-        { id: "transfer", label: "Перемещение", icon: ArrowLeftRight },
-        { id: "attribute_change", label: "Изменения", icon: Tag },
-        { id: "archive", label: "Архив", icon: Archive },
-    ];
-
-    const dropdownFilters = [
-        { id: "all", label: "Все операции", icon: LayoutGrid },
-        { id: "in", label: "Приход", icon: ArrowDownLeft },
-        { id: "out", label: "Расход", icon: ArrowUpRight },
-        { id: "transfer", label: "Перемещение", icon: ArrowLeftRight },
-        { id: "attribute_change", label: "Изменение", icon: Tag },
-        { id: "archive", label: "Архив", icon: Archive },
-    ];
-
     return (
         <div className={cn(
-            "crm-filter-tray w-full overflow-hidden flex items-center p-1.5",
-            isMobileSearchExpanded ? "!gap-0 !p-[6px]" : "gap-1"
+            "crm-filter-tray w-full overflow-hidden flex items-center p-1.5 gap-1"
         )}>
             {/* Desktop: Search Box */}
             <div
-                role="button"
-                tabIndex={0}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setIsMobileSearchExpanded(true);
-                }}
                 className={cn(
-                    "hidden md:block relative transition-all duration-400 ease-in-out overflow-hidden h-11 bg-white rounded-[10px] shadow-sm",
-                    isMobileSearchExpanded
-                        ? "flex-1"
-                        : "xl:flex-1 xl:w-auto xl:cursor-default xl:hover:bg-white w-[120px] cursor-pointer hover:bg-slate-50"
+                    "hidden md:block relative h-11 bg-white rounded-[18px] shadow-sm flex-1"
                 )}
             >
                 <Search className={cn("absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 transition-colors", isMobileSearchExpanded && "text-primary")} />
                 <Input
                     type="text"
-                    placeholder={isMobileSearchExpanded ? "Поиск по истории..." : "Поиск"}
+                    placeholder="Поиск по истории..."
                     value={searchQuery}
                     onChange={(e) => {
                         setSearchQuery(e.target.value);
-                        resetPagination();
+                        setCurrentPage(1);
                     }}
                     onBlur={() => {
                         if (!searchQuery) {
-                            setTimeout(() => setIsMobileSearchExpanded(false), 200);
+                            setIsMobileSearchExpanded(false);
                         }
                     }}
+                    onFocus={() => setIsMobileSearchExpanded(true)}
                     className={cn(
-                        "w-full h-full pl-11 pr-10 bg-transparent border-none shadow-none focus-visible:ring-0 text-[13px] font-bold text-slate-800 transition-all duration-300 rounded-[10px]",
-                        isMobileSearchExpanded ? "xl:placeholder:text-slate-400" : "xl:placeholder:text-slate-400 xl:cursor-text cursor-pointer"
+                        "w-full h-full pl-11 pr-10 bg-transparent border-none shadow-none focus-visible:ring-0 text-[13px] font-bold text-slate-800 rounded-[18px]",
+                        "xl:placeholder:text-slate-400"
                     )}
                 />
                 {searchQuery && (
@@ -95,7 +74,7 @@ export function HistoryToolbar({
                         onClick={(e) => {
                             e.stopPropagation();
                             setSearchQuery("");
-                            resetPagination();
+                            setCurrentPage(1);
                         }}
                         className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors"
                     >
@@ -106,53 +85,43 @@ export function HistoryToolbar({
 
             {/* Mobile Search */}
             <div className={cn(
-                "md:hidden relative transition-all duration-300 ease-in-out min-w-0 flex-1"
+                "md:hidden relative min-w-0 flex-1"
             )}>
-                <button
-                    type="button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsMobileSearchExpanded(!isMobileSearchExpanded);
-                    }}
+                <div
                     className={cn(
-                        "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 cursor-pointer",
+                        "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10",
                         isMobileSearchExpanded && "text-primary"
                     )}
                 >
                     <Search className={cn("w-4 h-4 text-slate-400 transition-colors", isMobileSearchExpanded && "text-primary")} />
-                </button>
+                </div>
                 <Input
                     type="text"
                     placeholder="Поиск..."
                     value={searchQuery}
                     onChange={(e) => {
                         setSearchQuery(e.target.value);
-                        resetPagination();
+                        setCurrentPage(1);
                     }}
                     onBlur={() => {
                         if (!searchQuery) {
-                            setTimeout(() => setIsMobileSearchExpanded(false), 200);
+                            setIsMobileSearchExpanded(false);
                         }
                     }}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsMobileSearchExpanded(true);
-                    }}
+                    onFocus={() => setIsMobileSearchExpanded(true)}
                     className={cn(
-                        "crm-filter-tray-search w-full border-none shadow-none focus-visible:ring-0 min-w-0 transition-all duration-300",
-                        isMobileSearchExpanded
-                            ? "pl-11 pr-4 opacity-100"
-                            : "pl-11 pr-10 w-full opacity-100 bg-white"
+                        "crm-filter-tray-search w-full border-none shadow-none focus-visible:ring-0 min-w-0 !rounded-[18px]",
+                        "pl-11 pr-10 opacity-100 bg-white"
                     )}
                 />
-                {searchQuery && isMobileSearchExpanded && (
+                {searchQuery && (
                     <Button
                         type="button"
                         variant="ghost"
                         size="icon"
                         onClick={() => {
                             setSearchQuery("");
-                            resetPagination();
+                            setCurrentPage(1);
                         }}
                         className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600"
                     >
@@ -167,14 +136,12 @@ export function HistoryToolbar({
                 aria-label="Фильтры истории"
                 className={cn(
                     "hidden md:flex items-center gap-3 shrink-0 transition-all duration-500 ease-in-out",
-                    isMobileSearchExpanded
-                        ? "xl:w-auto xl:opacity-100 xl:visible xl:translate-x-0 xl:overflow-visible w-0 opacity-0 invisible -translate-x-10 overflow-hidden"
-                        : "w-auto opacity-100 visible translate-x-0"
+                    "w-auto opacity-100 visible translate-x-0"
                 )}
             >
                 <div className="w-px h-6 bg-slate-500/40 mx-2 shrink-0" aria-hidden="true" />
                 <div className="flex items-center gap-3">
-                    {filters.map(f => {
+                    {FILTERS.map(f => {
                         const isActive = activeFilter === f.id;
                         return (
                             <Button
@@ -185,17 +152,20 @@ export function HistoryToolbar({
                                 aria-selected={isActive}
                                 onClick={() => {
                                     setActiveFilter(f.id as FilterType);
-                                    resetPagination();
+                                    setCurrentPage(1);
                                 }}
                                 className={cn(
-                                    "crm-filter-tab",
+                                    "crm-filter-tab rounded-[18px]",
                                     isActive && "active"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
-                                        layoutId="activeFilterHistory"
-                                        className="absolute inset-0 bg-primary rounded-[10px] z-0"
+                                        layoutId="activeFilterHistoryOld"
+                                        className={cn(
+                                            "absolute inset-0 z-0 rounded-[18px]",
+                                            f.color ? f.color : "bg-primary"
+                                        )}
                                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}
@@ -209,50 +179,27 @@ export function HistoryToolbar({
                 </div>
             </nav>
 
-            {/* Mobile: Separator & Dropdown */}
-            <div className={cn(
-                "md:hidden w-px h-6 bg-slate-200 shrink-0 transition-opacity duration-200 mx-0",
-                isMobileSearchExpanded && "hidden"
-            )} />
-
-            <div className={cn(
-                "md:hidden min-w-0 flex items-center transition-all duration-300 ease-in-out",
-                isMobileSearchExpanded
-                    ? "w-0 flex-none opacity-0 invisible"
-                    : "flex-1 opacity-100 visible"
-            )}>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            className="w-full h-11 flex items-center justify-between gap-2 px-4 rounded-[10px] bg-white shadow-sm hover:bg-slate-50 transition-colors border-none"
-                        >
-                            <span className="text-[13px] font-bold text-slate-800 truncate">
-                                {currentFilterLabel || "Фильтр"}
-                            </span>
-                            <ChevronDown className="w-3 h-3 text-slate-400" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[180px]">
-                        {dropdownFilters.map(f => (
-                            <DropdownMenuItem
-                                key={f.id}
-                                onClick={() => {
-                                    setActiveFilter(f.id as FilterType);
-                                    resetPagination();
-                                }}
-                                className={cn(
-                                    "flex items-center gap-2 text-xs font-bold py-2 cursor-pointer",
-                                    activeFilter === f.id ? "text-primary bg-primary/5" : "text-slate-600"
-                                )}
-                            >
-                                <f.icon className="w-3.5 h-3.5" />
-                                {f.label}
-                            </DropdownMenuItem>
-                        ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+            {/* Mobile: Dropdown Filter */}
+            <div className="md:hidden w-px h-6 bg-slate-400/20 shrink-0 mx-1" />
+            <div className="md:hidden flex-1 min-w-0">
+                <Select
+                    options={FILTERS.map(f => ({
+                        id: f.id,
+                        title: f.label,
+                        icon: <f.icon className="w-4 h-4 shrink-0" />
+                    }))}
+                    value={activeFilter}
+                    onChange={(val: string) => {
+                        setActiveFilter(val as FilterType);
+                        setCurrentPage(1);
+                    }}
+                    variant="minimal"
+                    compact
+                    align="end"
+                    alignOffset={-6}
+                    className="w-full"
+                    triggerClassName="!bg-white border-none shadow-sm !h-11 !rounded-[18px]"
+                />
             </div>
         </div>
     );

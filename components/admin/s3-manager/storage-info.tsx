@@ -27,17 +27,17 @@ export const StorageInfo = ({ data, formatSize }: StorageInfoProps) => {
                 <CardContent className="space-y-3 pt-4">
                     <div className="bg-slate-50 p-4 rounded-[18px] border border-slate-200 space-y-3">
                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-slate-500  tracking-tight">Путь системы</span>
+                            <span className="text-[11px] font-bold text-slate-500  ">Путь системы</span>
                             <code className="text-xs font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-600 max-w-[150px] truncate" title={data?.local.path}>
                                 {data?.local.path}
                             </code>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-slate-500  tracking-tight">Доступно</span>
+                            <span className="text-[11px] font-bold text-slate-500  ">Доступно</span>
                             <span className="text-sm font-bold text-emerald-600">{formatSize(data?.local.free || 0)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-slate-500  tracking-tight">Использовано</span>
+                            <span className="text-[11px] font-bold text-slate-500  ">Использовано</span>
                             <span className="text-sm font-bold text-slate-900">{formatSize(data?.local.used || 0)}</span>
                         </div>
                     </div>

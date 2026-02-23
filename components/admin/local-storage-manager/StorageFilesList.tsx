@@ -163,7 +163,7 @@ export function StorageFilesList({
                                 {isDirectory ? <Folder size={20} fill="currentColor" fillOpacity={0.2} /> : <File size={20} />}
                             </div>
                             <div className="min-w-0">
-                                <p className="text-sm font-bold text-slate-900 truncate tracking-tight">{name}</p>
+                                <p className="text-sm font-bold text-slate-900 truncate ">{name}</p>
                                 <div className="flex items-center gap-2 mt-0.5">
                                     <span className="text-xs font-bold text-slate-400">
                                         {isDirectory ? "Папка" : formatSize((item as LocalFile).size)}

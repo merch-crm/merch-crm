@@ -177,7 +177,7 @@ export function ActivityGraph({ monitoringData }: ActivityGraphProps) {
                                                         : "bg-slate-400"
                                     )}
                                 />
-                                <span className="text-xs font-bold text-slate-600 tracking-tight">
+                                <span className="text-xs font-bold text-slate-600 ">
                                     {stat.type === "orders"
                                         ? "Заказы"
                                         : stat.type === "inventory"

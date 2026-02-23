@@ -136,7 +136,7 @@ export function MobileSearchSheet() {
                         {/* Header */}
                         <div className="px-6 pb-4 shrink-0">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-black text-slate-900 tracking-tight">Поиск</h2>
+                                <h2 className="text-xl font-black text-slate-900 ">Поиск</h2>
                                 <Button
                                     variant="ghost"
                                     size="icon"

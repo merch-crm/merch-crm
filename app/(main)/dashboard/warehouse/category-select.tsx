@@ -69,10 +69,10 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                 <div className="flex items-center gap-3">
                     {value ? (
                         <>
-                            <div className={cn(
-                                "w-7 h-7 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-colors",
-                                getColorStyles(selectedCategory?.color)
-                            )}>
+                            <div
+                                className={cn("w-7 h-7 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-colors")}
+                                style={getColorStyles(selectedCategory?.color).style}
+                            >
                                 {createElement(iconComponent, { className: "w-4 h-4" })}
                             </div>
                             <span className="font-bold text-slate-900">{selectedCategory?.name}</span>
@@ -120,10 +120,10 @@ export function CategorySelect({ categories, value, onChange, placeholder = "Ð’Ñ
                                         )}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <div className={cn(
-                                                "w-9 h-9 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-transform",
-                                                colorStyles
-                                            )}>
+                                            <div
+                                                className={cn("w-9 h-9 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-transform")}
+                                                style={colorStyles.style}
+                                            >
                                                 {createElement(CatIcon, { className: "w-4 h-4" })}
                                             </div>
                                             <span className="font-bold text-sm ">{cat.name}</span>

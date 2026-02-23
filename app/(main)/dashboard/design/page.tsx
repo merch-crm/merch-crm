@@ -2,6 +2,7 @@ import { DesignWidgets } from "./design-widgets";
 import { DesignQueue } from "./design-queue";
 import { getDesignStats, getDesignOrders } from "./actions";
 import { PageContainer } from "@/components/ui/page-container";
+import { PageHeader } from "@/components/layout/page-header";
 
 export default async function DesignPage() {
     const statsRes = await getDesignStats();
@@ -18,10 +19,11 @@ export default async function DesignPage() {
     return (
         <PageContainer>
             {/* Header */}
-            <div className="px-1">
-                <h1 className="text-4xl font-bold text-slate-900 leading-none">Дизайн-студия</h1>
-                <p className="text-slate-400 text-sm font-medium mt-3">Управление макетами и согласованиями</p>
-            </div>
+            <PageHeader
+                title="Дизайн-студия"
+                description="Управление макетами и согласованиями"
+                className="px-1"
+            />
 
             {/* Widgets */}
             <DesignWidgets stats={stats} />

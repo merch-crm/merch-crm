@@ -21,7 +21,7 @@ export function PreviewCard({ itemName, sku }: PreviewCardProps) {
                 <div className="h-px bg-slate-100" />
 
                 <div className="space-y-1">
-                    <div className="text-sm font-bold text-slate-700 ml-1">Артикул (SKU)</div>
+                    <div className="text-sm font-bold text-slate-700 ml-1">Артикул:</div>
                     <div className="text-lg font-mono font-bold break-all text-slate-900">
                         {sku || '---'}
                     </div>

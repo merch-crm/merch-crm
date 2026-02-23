@@ -4,10 +4,10 @@ import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { pluralize } from "@/lib/pluralize";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
-import { deleteInventoryItems, archiveInventoryItems } from "../../bulk-actions";
-import { getInventoryCategories, deleteInventoryCategory } from "../../category-actions";
-import { getItemStocks } from "../../stock-actions";;
-import type { Category, InventoryItem, InventoryFilters } from "../../types";
+import { deleteInventoryItems, archiveInventoryItems } from "@/app/(main)/dashboard/warehouse/bulk-actions";
+import { getInventoryCategories, deleteInventoryCategory } from "@/app/(main)/dashboard/warehouse/category-actions";
+import { getItemStocks } from "@/app/(main)/dashboard/warehouse/stock-actions";;
+import type { Category, InventoryItem, InventoryFilters } from "@/app/(main)/dashboard/warehouse/types";
 
 export function useCategoryDetail(
     category: Category,
@@ -61,9 +61,9 @@ export function useCategoryDetail(
     useEffect(() => {
         const trail = [{ label: "Склад", href: "/dashboard/warehouse" }];
         if (parentCategory) {
-            trail.push({ label: parentCategory.name, href: `/dashboard/warehouse/${parentCategory.id}` });
+            trail.push({ label: parentCategory.name, href: `/dashboard/warehouse/categories/${parentCategory.id}` });
         }
-        trail.push({ label: category.name, href: `/dashboard/warehouse/${category.id}` });
+        trail.push({ label: category.name, href: `/dashboard/warehouse/categories/${category.id}` });
         setCustomTrail(trail);
         return () => setCustomTrail(null);
     }, [category, parentCategory, setCustomTrail]);

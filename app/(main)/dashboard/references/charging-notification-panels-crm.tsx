@@ -22,7 +22,7 @@ export default function ChargingNotificationPanelsCRM() {
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 text-gray-200 font-medium">
                             <Zap size={20} className="fill-white text-white" />
-                            <span className="text-xl tracking-wide">46.2%</span>
+                            <span className="text-xl ">46.2%</span>
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -36,7 +36,7 @@ export default function ChargingNotificationPanelsCRM() {
                         </div>
                     </div>
 
-                    <div className="text-gray-400 font-medium tracking-wide">
+                    <div className="text-gray-400 font-medium ">
                         Est. end in <span className="text-gray-200">~25 mins</span>
                     </div>
                 </div>
@@ -63,7 +63,7 @@ export default function ChargingNotificationPanelsCRM() {
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 text-gray-200 font-medium">
                             <Zap size={20} className="fill-current text-gray-400" />
-                            <span className="text-xl tracking-wide">82.6%</span>
+                            <span className="text-xl ">82.6%</span>
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export default function ChargingNotificationPanelsCRM() {
                         </div>
                     </div>
 
-                    <div className="text-gray-400 font-medium tracking-wide">
+                    <div className="text-gray-400 font-medium ">
                         Charged in <span className="text-gray-200">42 mins</span>
                     </div>
                 </div>

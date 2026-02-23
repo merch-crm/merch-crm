@@ -56,7 +56,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/dashboard/warehouse',
-        destination: '/dashboard/warehouse/categories',
+        destination: '/dashboard/warehouse/overview',
         permanent: true,
       },
     ];

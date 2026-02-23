@@ -33,3 +33,13 @@
         transform: scale(0.98);
     }
 }
+
+@utility px-container {
+    padding-left: var(--radius-padding);
+    padding-right: var(--radius-padding);
+
+    @media (max-width: 640px) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

@@ -6,8 +6,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ItemThumbnail } from "./ItemThumbnail";
 import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
 import { cn, formatUnit } from "@/lib/utils";
-import { InventoryItem } from "../../types";
-import { StorageLocation } from "../../storage-locations-tab";
+import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { StorageLocation } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
 import { useRouter } from "next/navigation";
 
 interface CategoryItemsListProps {
@@ -306,7 +306,7 @@ export function CategoryItemsList({
                                             <span className="bg-slate-50 px-1.5 py-0.5 rounded-[4px] font-mono">{item.sku || "N/A"}</span>
                                             <span className="text-slate-200">•</span>
                                             <span className={cn(
-                                                "px-1.5 py-0.5 rounded-full tracking-tighter text-xs font-black",
+                                                "px-1.5 py-0.5 rounded-full  text-xs font-black",
                                                 isCritical ? "bg-rose-50 text-rose-600 border border-rose-100" :
                                                     isLowStock ? "bg-amber-50 text-amber-600 border border-amber-100" :
                                                         "bg-emerald-50 text-emerald-600 border border-emerald-100"

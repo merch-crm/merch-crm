@@ -326,7 +326,7 @@ export const ItemGeneralInfo = React.memo(({
                                     ) : (
                                         <div className="flex flex-col">
                                             <h2
-                                                className="text-xl xl:text-2xl font-black text-foreground leading-tight tracking-tight break-words cursor-pointer transition-colors group-hover:text-primary outline-none focus-visible:text-primary"
+                                                className="text-xl xl:text-2xl font-black text-foreground leading-tight  break-words cursor-pointer transition-colors group-hover:text-primary outline-none focus-visible:text-primary"
                                                 onDoubleClick={onEdit}
                                                 tabIndex={0}
                                                 onKeyDown={(e) => {
@@ -360,7 +360,7 @@ export const ItemGeneralInfo = React.memo(({
                                 <div className="w-10 h-10 rounded-xl bg-muted group-hover:bg-primary/10 flex items-center justify-center transition-colors">
                                     <Plus className="w-5 h-5" />
                                 </div>
-                                <span className="text-xs font-bold tracking-wide">
+                                <span className="text-xs font-bold ">
                                     Добавить
                                     <span className="ml-1 opacity-50">
                                         ({

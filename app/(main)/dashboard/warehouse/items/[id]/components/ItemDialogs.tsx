@@ -75,7 +75,7 @@ export function ItemDialogs() {
                 onClose={() => setDialogs(prev => ({ ...prev, deleteConfirm: false }))}
                 onConfirm={handleDelete}
                 isLoading={isSaving}
-                title="АРХИВИРОВАТЬ ТОВАР?"
+                title="Архивировать товар?"
                 description="Товар будет перемещен в архив. Вы сможете восстановить его позже."
             />
 
@@ -87,7 +87,7 @@ export function ItemDialogs() {
                     handleSave(true);
                 }}
                 isLoading={isSaving}
-                title="ПОХОЖИЙ ТОВАР УЖЕ ЕСТЬ"
+                title="Похожий товар уже есть"
                 confirmText="Всё равно сохранить"
                 cancelText="Отмена"
                 description={`Найден товар с похожим названием или SKU: «${dialogs.duplicateConfirm.item?.name}». Вы уверены, что хотите создать/обновить этот товар?`}

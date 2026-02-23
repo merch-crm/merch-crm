@@ -50,7 +50,7 @@ export function Breadcrumbs({
         <nav
             aria-label="Breadcrumb"
             className={cn(
-                "flex items-center gap-2 mb-6 animate-in fade-in slide-in-from-left-2 duration-500",
+                "flex items-center gap-2 mb-3 sm:mb-6 animate-in fade-in slide-in-from-left-2 duration-500",
                 className
             )}
         >
@@ -85,7 +85,7 @@ export function Breadcrumbs({
                                 {item.href && !isLast ? (
                                     <Link
                                         href={item.href}
-                                        className="flex items-center gap-1.5 text-[12px] font-bold tracking-tight text-slate-400 hover:text-primary transition-all hover:scale-[1.05] active:scale-95 truncate group"
+                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all hover:scale-[1.05] active:scale-95 truncate group"
                                     >
                                         {Icon && <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />}
                                         <span className="truncate">{item.label}</span>
@@ -94,7 +94,7 @@ export function Breadcrumbs({
                                     <button
                                         type="button"
                                         onClick={item.onClick}
-                                        className="flex items-center gap-1.5 text-[12px] font-bold tracking-tight text-slate-400 hover:text-primary transition-all hover:scale-[1.05] active:scale-95 truncate group"
+                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all hover:scale-[1.05] active:scale-95 truncate group"
                                     >
                                         {Icon && <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />}
                                         <span className="truncate">{item.label}</span>
@@ -102,7 +102,7 @@ export function Breadcrumbs({
                                 ) : (
                                     <span
                                         className={cn(
-                                            "flex items-center gap-1.5 text-[12px] font-bold tracking-tight transition-all truncate",
+                                            "flex items-center gap-1.5 text-[12px] font-bold  transition-all truncate",
                                             isLast ? "text-slate-900" : "text-slate-400"
                                         )}
                                         aria-current={isLast ? "page" : undefined}

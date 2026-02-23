@@ -1,6 +1,6 @@
 "use client";
 import { type Dispatch, type SetStateAction } from "react";
-import { Plus, Check, Trash2, Loader2, Pencil, AlertCircle } from "lucide-react";
+import { Plus, Trash2, Loader2, Pencil, AlertCircle } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,10 +47,10 @@ export function EditValueDialog({
                     </div>
                 </div>
 
-                <div className="px-6 py-6 pb-4 bg-slate-50/30 overflow-y-auto custom-scrollbar">
+                <div className="px-6 pt-2 pb-6 bg-slate-50/30 overflow-y-auto custom-scrollbar">
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название</label>
                             <Input
                                 value={valueForm.name}
                                 onChange={e => {
@@ -66,7 +66,7 @@ export function EditValueDialog({
                             />
                         </div>
                         <div className="space-y-1.5">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Код (SKU)</label>
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Код для артикула:</label>
                             <Input
                                 value={valueForm.code}
                                 onChange={e => {
@@ -81,7 +81,7 @@ export function EditValueDialog({
 
                     {valueForm.targetTypeSlug === "color" && (
                         <div className="space-y-1.5 pt-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Цвет (HEX)</label>
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Цвет (HEX)</label>
                             <ColorPicker
                                 color={valueForm.colorHex}
                                 onChange={val => setValueForm((prev: ValueFormState) => ({ ...prev, colorHex: val }))}
@@ -126,9 +126,7 @@ export function EditValueDialog({
                         >
                             {valueForm.isSaving ? (
                                 <Loader2 className="w-3 h-3 animate-spin" />
-                            ) : (
-                                <Check className="w-4 h-4 stroke-[3] text-white" />
-                            )}
+                            ) : null}
                             Сохранить
                         </Button>
                     </div>

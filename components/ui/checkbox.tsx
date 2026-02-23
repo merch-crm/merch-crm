@@ -38,7 +38,7 @@ export function Checkbox({
                 }
             }}
             className={cn(
-                "w-[18px] h-[18px] rounded-[5px] border-2 transition-all duration-200 flex items-center justify-center cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                "w-[16px] h-[16px] rounded-[4px] border-2 transition-all duration-200 flex items-center justify-center cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
                 checked
                     ? "bg-primary border-primary text-white"
                     : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50",
@@ -54,7 +54,7 @@ export function Checkbox({
                         exit={{ scale: 0.5, opacity: 0 }}
                         transition={{ duration: 0.15, ease: "easeOut" }}
                     >
-                        <Check className="w-3 h-3 stroke-[4]" />
+                        <Check className="w-2.5 h-2.5 stroke-[4]" />
                     </motion.div>
                 )}
             </AnimatePresence>

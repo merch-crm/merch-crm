@@ -82,7 +82,7 @@ export const ItemFinancialSection = React.memo(({
                             <TrendingUp className="w-5 h-5" />
                         </div>
                         <div className="space-y-0.5">
-                            <h3 className="text-lg font-black text-foreground tracking-tight leading-none">Аналитика цен</h3>
+                            <h3 className="text-lg font-black text-foreground  leading-none">Аналитика цен</h3>
                             <p className="text-xs font-black text-muted-foreground whitespace-nowrap">Динамика закупок</p>
                         </div>
                     </div>

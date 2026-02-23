@@ -5,11 +5,11 @@ import { Button } from "@/components/ui/button";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { useToast } from "@/components/ui/toast";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
-import { CategorySelect } from "../../category-select";
+import { CategorySelect } from "@/app/(main)/dashboard/warehouse/category-select";
 import { pluralize } from "@/lib/pluralize";
-import { bulkMoveInventoryItems, bulkUpdateInventoryCategory } from "../../bulk-actions";;
-import { Category } from "../../types";
-import { StorageLocation } from "../../storage-locations-tab";
+import { bulkMoveInventoryItems, bulkUpdateInventoryCategory } from "@/app/(main)/dashboard/warehouse/bulk-actions";;
+import { Category } from "@/app/(main)/dashboard/warehouse/types";
+import { StorageLocation } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
 
 interface BulkMoveDialogProps {
     isOpen: boolean;

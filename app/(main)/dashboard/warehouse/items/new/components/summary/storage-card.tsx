@@ -40,14 +40,14 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
                         <div className="flex flex-col p-4 rounded-2xl bg-white/5 border border-white/5 group-hover:border-white/10 transition-colors">
                             <div className="flex items-center gap-2 mb-2">
                                 <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                                <span className="text-xs font-black text-white/30 truncate">Порог (Low)</span>
+                                <span className="text-xs font-bold text-white/30 truncate">Порог (Низко):</span>
                             </div>
                             <div className="text-xl font-bold">{formData.lowStockThreshold || 0}</div>
                         </div>
                         <div className="flex flex-col p-4 rounded-2xl bg-white/5 border border-white/5 group-hover:border-white/10 transition-colors">
                             <div className="flex items-center gap-2 mb-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                                <span className="text-xs font-black text-white/30 truncate">Порог (Crit)</span>
+                                <span className="text-xs font-bold text-white/30 truncate">Порог (Критично):</span>
                             </div>
                             <div className="text-xl font-bold">{formData.criticalStockThreshold || 0}</div>
                         </div>
