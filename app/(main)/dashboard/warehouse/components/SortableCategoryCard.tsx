@@ -124,10 +124,10 @@ export const CategoryCardContent = React.memo(({
             )}
 
             {/* Adaptive layout container */}
-            <div className="flex flex-row flex-wrap items-center justify-center gap-x-12 gap-y-8 w-full py-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full py-4 items-center">
 
-                {/* Block 1: Identity */}
-                <div className="flex flex-col items-center justify-center flex-1 min-w-[240px] max-w-[600px]">
+                {/* Column 1: Identity */}
+                <div className="flex flex-col items-center justify-center h-full">
                     <div
                         className="w-[72px] h-[72px] rounded-full flex items-center justify-center text-white mb-5 transition-transform group-hover:scale-[1.03]"
                         style={{ backgroundColor: hexColor }}
@@ -135,34 +135,41 @@ export const CategoryCardContent = React.memo(({
                         <IconComponent className="w-8 h-8 stroke-[1.5]" />
                     </div>
 
-                    <h3 className="text-[22px] font-black text-slate-900 leading-tight mb-1">
+                    <h3 className="text-[22px] font-black text-slate-900 leading-tight mb-1 text-center">
                         {category.name}
                     </h3>
 
-                    <p className="text-[12px] font-semibold text-slate-400 mb-4">
+                    <p className="text-[12px] font-semibold text-slate-400 text-center">
                         {category.itemCount || 0} активных SKU на складе
                     </p>
-
-                    <div className="flex flex-wrap justify-center gap-1.5 min-h-[24px]">
-                        {category.children && category.children.length > 0 && (
-                            <>
-                                {category.children.slice(0, 3).map((child: Category) => (
-                                    <span key={child.id} className="px-3 py-0.5 bg-slate-50 border border-slate-100 rounded-lg text-[11px] font-bold text-slate-500">
-                                        {child.name}
-                                    </span>
-                                ))}
-                                {category.children.length > 3 && (
-                                    <span className="text-[11px] font-bold text-slate-400 mt-1">+{category.children.length - 3}</span>
-                                )}
-                            </>
-                        )}
-                    </div>
                 </div>
 
-                {/* Block 2: Stats */}
-                <div className="flex flex-col items-center justify-center flex-1 min-w-[240px] max-w-[450px]">
-                    <div className="mb-6 flex flex-col items-center">
-                        <span className="text-[52px] font-black text-slate-900 leading-[1.1] tabular-nums tracking-tight mb-1">
+                {/* Column 2: Subcategories List */}
+                <div className="flex flex-col items-center justify-center h-full min-h-[100px] border-y md:border-y-0 md:border-x border-slate-100/80 py-4 md:py-0 px-4">
+                    {category.children && category.children.length > 0 ? (
+                        <div className="flex flex-col gap-2 w-full max-w-[200px]">
+                            {category.children.slice(0, 4).map((child: Category) => (
+                                <span key={child.id} className="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-xl text-[12px] text-center font-bold text-slate-600 w-full truncate shadow-sm transition-colors hover:bg-slate-100/70 cursor-default">
+                                    {child.name}
+                                </span>
+                            ))}
+                            {category.children.length > 4 && (
+                                <span className="text-[11px] font-bold text-slate-400 mt-1 text-center block">
+                                    и ещё {category.children.length - 4}...
+                                </span>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="text-[13px] font-semibold text-slate-300 text-center italic">
+                            Нет подкатегорий
+                        </div>
+                    )}
+                </div>
+
+                {/* Column 3: Stats */}
+                <div className="flex flex-col items-center justify-center h-full">
+                    <div className="mb-4 flex flex-col items-center">
+                        <span className="text-[48px] font-black text-slate-900 leading-[1.1] tabular-nums tracking-tight mb-1">
                             {(category.totalQuantity || 0).toLocaleString()}
                         </span>
                         <span
@@ -173,7 +180,7 @@ export const CategoryCardContent = React.memo(({
                         </span>
                     </div>
 
-                    <div className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 mb-8 w-max">
+                    <div className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 mb-6 w-max">
                         <span className="text-[12px] font-bold text-slate-400 tracking-wide">На сумму:</span>
                         <span className="text-slate-800 font-extrabold tabular-nums text-[13px]">
                             {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(category.totalCost || 0)}
@@ -181,7 +188,7 @@ export const CategoryCardContent = React.memo(({
                     </div>
 
                     <div className={cn(
-                        "flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-50 text-slate-900 transition-all font-extrabold text-[12px]",
+                        "flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-50 text-slate-900 transition-all font-extrabold text-[12px] cursor-pointer",
                         "group-hover:bg-slate-900 group-hover:text-white group-hover:shadow-lg group-hover:shadow-slate-900/10"
                     )}>
                         <span>Перейти к категории</span>

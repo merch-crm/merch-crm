@@ -200,22 +200,25 @@ export function BasicInfoStep({
 
                             {/* Свойства позиции (Dynamic Attributes) */}
                             {categoryAttributes.length > 0 && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {categoryAttributes.map((attr) => {
-                                        const isFullWidth = attr.dataType === 'composition' || attr.dataType === 'color' || attr.slug === 'department';
-                                        return (
-                                            <div key={attr.id} className={cn("crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 h-full", isFullWidth && "md:col-span-2")}>
-                                                <AttributeSelector
-                                                    type={attr.slug}
-                                                    label={attr.name}
-                                                    value={(getCodeForSlug(attr.slug) as string) || ""}
-                                                    required={true}
-                                                    onChange={(name, code) => handleAttributeChange(attr.slug, name, code)}
-                                                    categoryId={category.id}
-                                                />
-                                            </div>
-                                        );
-                                    })}
+                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                        {categoryAttributes.map((attr) => {
+                                            const isFullWidth = attr.dataType === 'composition' || attr.dataType === 'color' || attr.slug === 'department';
+                                            return (
+                                                <div key={attr.id} className={cn(isFullWidth && "md:col-span-2")}>
+                                                    <AttributeSelector
+                                                        type={attr.slug}
+                                                        label={attr.name}
+                                                        value={(getCodeForSlug(attr.slug) as string) || ""}
+                                                        required={true}
+                                                        onChange={(name, code) => handleAttributeChange(attr.slug, name, code)}
+                                                        categoryId={category.id}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
                                 </div>
                             )}
 

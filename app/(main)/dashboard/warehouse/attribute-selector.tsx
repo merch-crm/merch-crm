@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Settings2, ArrowRight, Shapes, Palette, Tag, Hash, Ruler, Box, Layers, Maximize, Component, Waves, Weight, Droplets, Package, Wrench, LucideIcon, Plus } from "lucide-react";
+import { Settings2, ArrowRight } from "lucide-react";
+import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { createInventoryAttribute, getInventoryAttributes, getInventoryAttributeTypes } from "./attribute-actions";
@@ -9,7 +10,6 @@ import { useToast } from "@/components/ui/toast";
 import { AttributeType } from "./types";
 import { AttributeCustomModal } from "./attribute-custom-modal";
 import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
-import { Globe } from "lucide-react";
 
 interface AttributeSelectorProps {
     type: string;
@@ -31,23 +31,7 @@ interface DbAttribute {
     meta: Record<string, unknown> | null;
 }
 
-const DATA_TYPE_ICONS: Record<string, LucideIcon> = {
-    text: Shapes,
-    unit: Ruler,
-    color: Palette,
-    dimensions: Box,
-    quantity: Hash,
-    composition: Component,
-    material: Layers,
-    size: Maximize,
-    brand: Tag,
-    country: Globe,
-    density: Waves,
-    weight: Weight,
-    volume: Droplets,
-    package: Package,
-    consumable: Wrench,
-};
+
 
 const UNIT_DISPLAY_NAMES: Record<string, string> = {
     "PCS": "шт",
@@ -254,7 +238,7 @@ export function AttributeSelector({
         if (result.success) {
             const res = await getInventoryAttributes();
             if (res.success && res.data) {
-                setDbAttributes((res.data as unknown as DbAttribute[]).filter(a => a.type === resolvedTypeSlug));
+                setDbAttributes((res.data as unknown as DbAttribute[]).filter(a => a.type === type));
             }
             onChange(finalName, code);
             if (onCodeChange) onCodeChange(code);
@@ -294,7 +278,55 @@ export function AttributeSelector({
         CharacteristicsLink,
     };
 
-    const TypeIcon = DATA_TYPE_ICONS[currentAttributeType?.dataType || ""] || DATA_TYPE_ICONS[type] || Shapes;
+    if (isColorType) {
+        return (
+            <div className={cn("space-y-2 w-full relative", showCustom && "z-50")}>
+                <div className="mb-2 flex items-start justify-between">
+                    <h4 className="text-base font-bold text-slate-900">
+                        {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
+                    </h4>
+                </div>
+                <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-7 gap-2">
+                    {allOptions.map(c => (
+                        <Button
+                            key={c.name}
+                            type="button"
+                            onClick={() => {
+                                onChange(c.name, c.code);
+                                if (onCodeChange) onCodeChange(c.code);
+                            }}
+                            className={cn(
+                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border transition-all duration-300 shadow-sm p-0 w-auto",
+                                value === c.code ? "bg-white border-slate-900 shadow-md z-10" : "bg-white border-slate-200 hover:border-slate-400 hover:shadow-md"
+                            )}
+                        >
+                            <div
+                                className="w-11 h-11 rounded-full border border-black/5 shadow-inner shrink-0 transition-all duration-300 group-hover:shadow-md"
+                                style={{ backgroundColor: c.hex }}
+                            />
+                            <span className={cn(
+                                "text-xs font-bold truncate w-full px-2 text-center transition-colors duration-300",
+                                value === c.code ? "text-slate-900" : "text-slate-400 group-hover:text-slate-900"
+                            )}>{c.name}</span>
+                        </Button>
+                    ))}
+                    {allowCustom && (
+                        <button
+                            type="button"
+                            onClick={() => setShowCustom(true)}
+                            className="group h-[94px] flex flex-col items-center justify-center gap-1.5 rounded-[14px] border-2 border-dashed border-slate-200 bg-slate-50/50 text-slate-400 hover:border-slate-300 hover:text-slate-600 hover:bg-slate-100/50 transition-all shadow-none p-0 w-auto cursor-pointer"
+                        >
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-200 text-slate-400 shadow-sm transition-all group-hover:scale-105 group-hover:text-slate-600 group-hover:border-slate-300">
+                                <span className="text-lg leading-none mb-0.5">+</span>
+                            </div>
+                            <span className="text-[11px] font-bold">Добавить</span>
+                        </button>
+                    )}
+                </div>
+                <AttributeCustomModal {...sharedModalProps} />
+            </div>
+        );
+    }
 
     const displayLabel = label || (
         type === "brand" ? "Бренд" :
@@ -303,70 +335,52 @@ export function AttributeSelector({
                     type === "quality" ? "Качество ткани" : type
     );
 
+    const addLabel = type === "brand" ? "Создать бренд" :
+        type === "material" ? "Создать материал" :
+            type === "size" ? "Создать размер" :
+                type === "quality" ? "Создать качество" :
+                    label ? `Создать ${label.toLowerCase()}` : "Создать опцию";
+
+    const placeholder = type === "brand" ? "Выберите бренд..." :
+        type === "material" ? "Выберите материал..." :
+            type === "size" ? "Выберите размер..." :
+                type === "quality" ? "Выберите качество..." : `Выберите ${displayLabel.toLowerCase()}...`;
+
     return (
-        <div className={cn("space-y-4 w-full relative", showCustom && "z-50")}>
-            <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0">
-                    <TypeIcon className="w-5 h-5" />
-                </div>
-                <div>
-                    <h4 className="text-[17px] font-bold text-slate-900 leading-tight">
-                        {displayLabel} {required && <span className="text-rose-500">*</span>}
-                    </h4>
-                    <p className="text-xs font-medium text-slate-500 mt-0.5">Выберите из списка или добавьте новый</p>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 max-h-[320px] overflow-y-auto pr-2 custom-scrollbar">
-                {allOptions.map((opt) => (
-                    <button
-                        key={opt.code}
-                        type="button"
-                        onClick={() => {
-                            onChange(opt.name, opt.code);
-                            if (onCodeChange) onCodeChange(opt.code);
-                        }}
-                        className={cn(
-                            "relative group/val flex items-center gap-2.5 px-3 py-2.5 rounded-[14px] border transition-all duration-300 cursor-pointer overflow-hidden min-h-[52px]",
-                            value === opt.code
-                                ? "bg-white border-primary shadow-md ring-2 ring-primary/10"
-                                : "bg-slate-50 border-slate-100 hover:bg-white hover:shadow-md hover:border-slate-200"
-                        )}
-                    >
-                        {isColorType ? (
-                            <span
-                                className="w-6 h-6 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0"
-                                style={{ backgroundColor: opt.hex }}
-                            />
-                        ) : (
-                            <span className="w-6 h-6 rounded-full flex items-center justify-center bg-white text-slate-400 border border-slate-200 flex-shrink-0 shadow-sm text-[10px] font-bold uppercase">
-                                {opt.name.substring(0, 1)}
-                            </span>
-                        )}
-                        <span className={cn(
-                            "text-[13px] font-bold break-words transition-colors text-left font-sans line-clamp-2",
-                            value === opt.code ? "text-primary" : "text-slate-700 group-hover/val:text-slate-900"
-                        )}>
-                            {opt.name}
-                        </span>
-                    </button>
-                ))}
-
+        <div className={cn("space-y-2 relative w-full", showCustom && "z-50")}>
+            <div className="mb-2 flex items-baseline justify-between gap-3 overflow-hidden">
+                <h4 className="text-base font-bold text-slate-900 truncate">
+                    {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
+                </h4>
                 {allowCustom && (
-                    <button
+                    <Button
                         type="button"
+                        variant="ghost"
+                        size="sm"
                         onClick={() => setShowCustom(true)}
-                        className="group flex items-center gap-2.5 px-3 py-2.5 bg-white border border-dashed border-slate-300 rounded-[14px] text-slate-400 hover:border-primary hover:text-primary transition-all duration-300 min-h-[52px]"
+                        className="flex items-center py-1 text-slate-400 hover:text-slate-900 transition-all shrink-0 h-auto"
                     >
-                        <div className="w-6 h-6 rounded-full flex items-center justify-center bg-slate-50 text-slate-400 border border-dashed border-slate-300 group-hover:border-primary group-hover:text-primary group-hover:bg-primary/5 transition-all">
-                            <Plus className="w-3 h-3" />
-                        </div>
-                        <span className="text-[13px] font-bold">Добавить</span>
-                    </button>
+                        <span className="text-xs font-bold whitespace-nowrap">{addLabel}</span>
+                    </Button>
                 )}
             </div>
 
+            <Select
+                options={allOptions.map(opt => ({ id: opt.code, title: opt.name }))}
+                value={value || ""}
+                onChange={(code) => {
+                    const opt = allOptions.find(o => o.code === code);
+                    if (opt) {
+                        onChange(opt.name, opt.code);
+                        if (onCodeChange) onCodeChange(opt.code);
+                    }
+                }}
+                placeholder={placeholder}
+                autoLayout={true}
+                showSearch={type === "brand"}
+            />
             <AttributeCustomModal {...sharedModalProps} />
         </div>
     );
 }
+

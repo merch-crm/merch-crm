@@ -1,10 +1,7 @@
-import { db } from "../lib/db";
-import { inventoryCategories } from "../lib/schema";
+import { db } from "@/lib/db";
+import { inventoryCategories } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import * as dotenv from "dotenv";
-import { generateCategoryPrefix } from "../app/(main)/dashboard/warehouse/category/naming";
-
-dotenv.config();
+import { generateCategoryPrefix } from "@/app/(main)/dashboard/warehouse/category/naming";
 
 async function main() {
     const rootCategoryName = "Производство";
@@ -50,9 +47,11 @@ async function main() {
                 icon: "package",
                 color: "blue",
                 prefix,
+                fullPath: rootCategory.fullPath ? `${rootCategory.fullPath}/${name}` : name,
                 gender: "masculine",
                 isActive: true,
-                sortOrder: i + 1
+                sortOrder: i + 1,
+                level: (rootCategory.level || 0) + 1
             });
             console.log(`[${i + 1}/10] Created: ${name} (${prefix})`);
         } catch (err) {

@@ -1,19 +1,22 @@
 # 🔍 MerchCRM Audit Report
 
-**Дата:** 02.03.2026, 20:39:52
-**Время:** 9208ms
+**Дата:** 03.03.2026, 00:35:56
+**Время:** 12802ms
 
-## 🟢 Здоровье: A (100/100)
+## 🟢 Здоровье: A (95/100)
 
 **Отличное состояние**
+
+### Рекомендации
+- Исправь нарушения UX стандартов
 
 ## 📊 Статистика
 
 | Метрика | Значение |
 |---------|----------|
-| Файлов | 842 |
-| Строк | 99 617 |
-| Размер | 4.3 MB |
+| Файлов | 726 |
+| Строк | 93 440 |
+| Размер | 4.0 MB |
 | Страниц | 41 |
 | Компонентов | 193 |
 | API роутов | 10 |
@@ -25,30 +28,28 @@
 
 | Категория | Количество |
 |-----------|------------|
-| Импорты | 4 |
-| Компоненты | 2 |
-| Доступность | 1 |
-| Именование | 1 |
-| Запросы | 1 |
-| Плюрализация | 1 |
+| UX Standards | 16 |
+| Импорты | 1 |
 
-## 🟠 Ошибки (2)
+## 🟡 Предупреждения (17)
 
 | Файл | Строка | Категория | Сообщение |
 |------|--------|-----------|----------|
-| [app/(main)/dashboard/clients/components/client-filter-panel.test.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/client-filter-panel.test.tsx#L11) | 11 | Компоненты | Нативный <select> запрещён |
-| [app/(main)/dashboard/orders/new/page-client.test.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/orders/new/page-client.test.tsx#L45) | 45 | Компоненты | Нативный <select> запрещён |
-
-## 🔵 Информация (8)
-
-| Файл | Строка | Категория | Сообщение |
-|------|--------|-----------|----------|
-| [app/(main)/dashboard/tasks/kanban-board.test.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/tasks/kanban-board.test.tsx#L15) | 15 | Доступность | Кнопка без type |
-| [app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts#L5) | 5 | Импорты | Глубокий относительный импорт |
-| [app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts#L6) | 6 | Импорты | Глубокий относительный импорт |
-| [app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts#L7) | 7 | Импорты | Глубокий относительный импорт |
-| [app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/categories/[id]/hooks/use-category-detail.test.ts#L9) | 9 | Импорты | Глубокий относительный импорт |
-| [app/(main)/dashboard/clients/components/client-filter-panel.test.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/client-filter-panel.test.tsx) | - | Именование | Нестандартное имя: client-filter-panel.test.tsx |
-| [tests/dashboard/orders.test.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/tests/dashboard/orders.test.ts#L130) | 130 | Запросы | Запрос без limit (findMany) |
-| [components/ui/select.test.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/components/ui/select.test.tsx#L47) | 47 | Плюрализация | Возможно жестко задано склонение |
+| [app/(main)/dashboard/warehouse/attribute-selector.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/attribute-selector.tsx#L307) | 307 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/attribute-selector.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/attribute-selector.tsx#L342) | 342 | UX Standards | uppercase запрещён |
+| [app/(main)/dashboard/warehouse/attribute-selector.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/attribute-selector.tsx#L342) | 342 | UX Standards | text-[10px] слишком мелкий |
+| [app/(main)/dashboard/warehouse/components/SortableCategoryCard.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/SortableCategoryCard.tsx#L127) | 127 | UX Standards | Нестандартный gap-x/y (запрещено > gap-3) |
+| [app/(main)/dashboard/warehouse/components/SortableCategoryCard.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/SortableCategoryCard.tsx#L127) | 127 | UX Standards | Нестандартный gap-x/y (запрещено > gap-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L140) | 140 | UX Standards | Нестандартный gap (запрещено > gap-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L141) | 141 | UX Standards | Нестандартный gap (запрещено > gap-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L170) | 170 | UX Standards | Нестандартный gap (запрещено > gap-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L203) | 203 | UX Standards | Нестандартный gap (запрещено > gap-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L97) | 97 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L145) | 145 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L156) | 156 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L224) | 224 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L235) | 235 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L279) | 279 | UX Standards | Нестандартный space (запрещено > space-3) |
+| [app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/basic-info-step.tsx#L251) | 251 | UX Standards | text-[10px] слишком мелкий |
+| [app/(main)/dashboard/warehouse/attribute-selector.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/attribute-selector.tsx) | - | Импорты | Дубликаты: lucide-react |
 
