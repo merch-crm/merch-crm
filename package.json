@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:push": "drizzle-kit push --force",
-    "audit": "npx ts-node scripts/audit.ts",
+    "audit": "npx tsx scripts/audit.ts",
     "audit:quick": "npx tsc --noEmit && npm run lint",
     "audit:fix": "npm run lint -- --fix",
     "test": "vitest",
@@ -94,6 +94,7 @@
     "jsdom": "^28.1.0",
     "msw": "^2.12.10",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.0.18"
   },

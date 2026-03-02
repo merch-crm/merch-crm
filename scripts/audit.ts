@@ -1,4 +1,4 @@
-#!/usr/bin/env npx ts-node
+#!/usr/bin/env npx tsx
 
 /**
  * MerchCRM Full Project Audit Script v4.1
