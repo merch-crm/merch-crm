@@ -426,7 +426,7 @@ export function AttributeCustomModal({
                     </div>
 
                     {!isColorType && (
-                        <p className="text-xs text-slate-400 font-bold mt-4 ml-1 italic opacity-60">
+                        <p className="text-xs text-slate-400 font-bold mt-4 ml-1 opacity-60">
                             Короткий код для артикула генерируется автоматически на основе названия
                         </p>
                     )}
