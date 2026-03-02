@@ -68,9 +68,9 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
                     >
                         <CurrentIcon className="w-6 h-6 stroke-[2.5]" />
                     </div>
-                    <div className="flex-1 text-left min-w-0 py-1">
+                    <div className="flex-1 flex flex-col items-start justify-center min-w-0 py-1">
                         <div className="text-sm font-black text-slate-900 leading-tight">{currentIconEntry?.label ?? "Иконка"}</div>
-                        <span className="text-[11px] font-medium text-slate-500 line-clamp-1 w-full text-center px-1">Нажмите, чтобы изменить</span>
+                        <span className="text-[11px] font-medium text-slate-500 line-clamp-1">Нажмите, чтобы изменить</span>
                     </div>
                     <ChevronDown className={cn(
                         "w-4 h-4 text-slate-300 shrink-0 transition-transform duration-200",
