@@ -176,14 +176,15 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
                     items={itemsByCategory.map(c => c.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" data-testid="categories-list">
+                    <div className="flex flex-wrap gap-3" data-testid="categories-list">
                         {itemsByCategory.map((category) => (
-                            <SortableCategoryCard
-                                key={category.id}
-                                category={category}
-                                router={router}
-                                setEditingCategory={setEditingCategory}
-                            />
+                            <div key={category.id} className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-12px)] xl:basis-[calc(25%-12px)] min-w-[280px]">
+                                <SortableCategoryCard
+                                    category={category}
+                                    router={router}
+                                    setEditingCategory={setEditingCategory}
+                                />
+                            </div>
                         ))}
                     </div>
                 </SortableContext>

@@ -265,15 +265,16 @@ export function CategoryDetailClient({
                                 items={subCategories.map(s => s.id)}
                                 strategy={rectSortingStrategy}
                             >
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                                <div className="flex flex-wrap gap-3">
                                     {currentSubCategories.map((subcat) => (
-                                        <SortableSubCategoryCard
-                                            key={subcat.id}
-                                            subcat={subcat}
-                                            router={router}
-                                            setEditingCategory={(cat) => setDialogs(prev => ({ ...prev, edit: { ...prev.edit, category: cat } }))}
-                                            setDeletingCategory={(cat) => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, category: cat } }))}
-                                        />
+                                        <div key={subcat.id} className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-12px)] xl:basis-[calc(25%-12px)] min-w-[280px]">
+                                            <SortableSubCategoryCard
+                                                subcat={subcat}
+                                                router={router}
+                                                setEditingCategory={(cat) => setDialogs(prev => ({ ...prev, edit: { ...prev.edit, category: cat } }))}
+                                                setDeletingCategory={(cat) => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, category: cat } }))}
+                                            />
+                                        </div>
                                     ))}
                                 </div>
                             </SortableContext>

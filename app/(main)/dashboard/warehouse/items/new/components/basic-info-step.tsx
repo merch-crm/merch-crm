@@ -2,7 +2,7 @@
 
 import { createElement } from "react";
 import Link from "next/link";
-import { ClipboardList, Settings2, Package, Hash, Ruler, Wrench, Printer, Shirt, Scissors } from "lucide-react";
+import { ClipboardList, Settings2, Package, Ruler, Wrench, Printer, Shirt, Scissors, AlignLeft } from "lucide-react";
 import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-selector";
 import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
@@ -13,7 +13,6 @@ import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 import { useBasicInfoLogic } from "./basic-info/hooks/useBasicInfoLogic";
-import { PreviewCard } from "./basic-info/preview-card";
 
 interface MeasurementUnit {
     id: string;
@@ -138,149 +137,161 @@ export function BasicInfoStep({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 pt-2">
-                        {/* LEFT COLUMN */}
-                        <div className="lg:col-span-8 flex flex-col gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+                        <div className="lg:col-span-12 flex flex-col gap-6">
 
-                            {/* Non-clothing basic manual fields */}
+                            {/* Базовые данные */}
                             {!isClothing && (
-                                <div className="space-y-4">
-                                    <div className="space-y-3">
-                                        <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
-                                            <Package className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
-                                            Название позиции <span className="text-rose-500">*</span>
-                                        </label>
-                                        <Input
-                                            type="text"
-                                            value={formData.itemName}
-                                            onChange={(e) => updateFormData({ itemName: e.target.value })}
-                                            placeholder="Например: Коробка картонная 40x40"
-                                            className="w-full h-12 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-base focus-visible:border-slate-900 focus-visible:ring-4 focus-visible:ring-slate-900/5 transition-all shadow-none"
-                                        />
+                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25 text-white shrink-0">
+                                            <Package className="w-5 h-5 stroke-[2.5]" />
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[17px] font-bold text-slate-900 leading-tight">Базовые данные</h4>
+                                            <p className="text-xs font-medium text-slate-500 mt-0.5">Основные идентификаторы позиции</p>
+                                        </div>
                                     </div>
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <div className="space-y-3">
-                                            <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
-                                                <Hash className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
-                                                Артикул: <span className="text-rose-500">*</span>
+                                    <div className="space-y-4">
+                                        <div className="space-y-2">
+                                            <label className="text-[13px] font-bold text-slate-500 ml-1">
+                                                Название позиции <span className="text-rose-500">*</span>
                                             </label>
                                             <Input
                                                 type="text"
-                                                value={formData.sku}
-                                                onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '') })}
-                                                placeholder="SKU-123"
-                                                className="w-full h-11 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus-visible:border-slate-900 transition-all font-mono shadow-none"
+                                                value={formData.itemName}
+                                                onChange={(e) => updateFormData({ itemName: e.target.value })}
+                                                placeholder="Например: Коробка картонная 40x40"
+                                                className="w-full h-12 px-5 rounded-2xl border border-slate-100 bg-slate-50/50 text-slate-900 font-bold text-base focus-visible:border-slate-300 focus-visible:ring-0 transition-all shadow-none"
                                             />
                                         </div>
-                                        <div className="space-y-3">
-                                            <label className="text-sm font-bold text-slate-700 ml-1 leading-none">
-                                                <Ruler className="w-3.5 h-3.5 inline mr-2 -mt-0.5" />
-                                                Единица измерения <span className="text-rose-500">*</span>
-                                            </label>
-                                            <UnitSelect
-                                                name="unit"
-                                                value={isPackaging ? "шт." : (formData.unit || "шт.")}
-                                                onChange={(val) => updateFormData({ unit: val })}
-                                                options={measurementUnits.map(u => ({ id: u.id, name: u.name.toUpperCase() }))}
-                                                disabled={isPackaging}
-                                            />
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="text-[13px] font-bold text-slate-500 ml-1">
+                                                    Артикул <span className="text-rose-500">*</span>
+                                                </label>
+                                                <Input
+                                                    type="text"
+                                                    value={formData.sku}
+                                                    onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '') })}
+                                                    placeholder="SKU-123"
+                                                    className="w-full h-12 px-5 rounded-2xl border border-slate-100 bg-slate-50/50 text-slate-900 font-bold text-sm focus-visible:border-slate-300 transition-all font-mono shadow-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="text-[13px] font-bold text-slate-500 ml-1">
+                                                    Единица измерения <span className="text-rose-500">*</span>
+                                                </label>
+                                                <UnitSelect
+                                                    name="unit"
+                                                    value={isPackaging ? "шт." : (formData.unit || "шт.")}
+                                                    onChange={(val) => updateFormData({ unit: val })}
+                                                    options={measurementUnits.map(u => ({ id: u.id, name: u.name.toUpperCase() }))}
+                                                    disabled={isPackaging}
+                                                    className="h-12 rounded-2xl border-slate-100 bg-slate-50/50"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                    {categoryAttributes.length > 0 && <div className="h-px bg-slate-100 my-2" />}
                                 </div>
                             )}
 
-                            {/* Dynamic Characteristics */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-4">
-                                {categoryAttributes.map((attr) => {
-                                    const isFullWidth = attr.dataType === 'composition' || attr.dataType === 'color' || attr.slug === 'department';
-                                    return (
-                                        <div key={attr.id} className={cn(isFullWidth && "md:col-span-2")}>
-                                            <AttributeSelector
-                                                type={attr.slug}
-                                                label={attr.name}
-                                                value={(getCodeForSlug(attr.slug) as string) || ""}
-                                                required={true}
-                                                onChange={(name, code) => handleAttributeChange(attr.slug, name, code)}
-                                                categoryId={category.id}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                            {/* Свойства позиции (Dynamic Attributes) */}
+                            {categoryAttributes.length > 0 && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {categoryAttributes.map((attr) => {
+                                        const isFullWidth = attr.dataType === 'composition' || attr.dataType === 'color' || attr.slug === 'department';
+                                        return (
+                                            <div key={attr.id} className={cn("crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 h-full", isFullWidth && "md:col-span-2")}>
+                                                <AttributeSelector
+                                                    type={attr.slug}
+                                                    label={attr.name}
+                                                    value={(getCodeForSlug(attr.slug) as string) || ""}
+                                                    required={true}
+                                                    onChange={(name, code) => handleAttributeChange(attr.slug, name, code)}
+                                                    categoryId={category.id}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
 
-                            {/* Additional Info for non-clothing */}
+                            {/* Дополнительно */}
                             {(isPackaging || isConsumables) && (
-                                <div className="mt-4 p-6 bg-slate-50 rounded-[var(--radius)] border border-slate-200 space-y-2">
-                                    <div className="mb-2">
-                                        <h4 className="text-base font-bold text-slate-900">Дополнительно</h4>
-                                        <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Параметры и размеры</p>
+                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white shrink-0">
+                                            {isPackaging ? <Ruler className="w-5 h-5 stroke-[2.5]" /> : <Wrench className="w-5 h-5 stroke-[2.5]" />}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[17px] font-bold text-slate-900 leading-tight">Технические параметры</h4>
+                                            <p className="text-xs font-medium text-slate-500 mt-0.5">Размеры и назначение</p>
+                                        </div>
                                     </div>
 
-                                    {isPackaging && (
-                                        <div className="grid grid-cols-3 gap-3">
-                                            {['width', 'height', 'depth'].map(dim => (
-                                                <div key={dim} className="space-y-2">
-                                                    <label className="text-sm font-bold text-slate-700 px-1">
-                                                        {dim === 'width' ? 'Ширина' : dim === 'height' ? 'Высота' : 'Глубина'}
-                                                    </label>
-                                                    <div className="relative">
-                                                        <Input
-                                                            type="number"
-                                                            value={(formData[dim as keyof ItemFormData] as string) || ""}
-                                                            onChange={(e) => updateFormData({ [dim]: e.target.value })}
-                                                            className="w-full h-11 px-4 pr-10 rounded-[var(--radius)] border border-slate-200 bg-white text-sm font-bold focus-visible:border-amber-500 transition-all shadow-none"
-                                                        />
-                                                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-300 pointer-events-none">СМ</span>
+                                    <div className="space-y-4">
+                                        {isPackaging && (
+                                            <div className="grid grid-cols-3 gap-3">
+                                                {['width', 'height', 'depth'].map(dim => (
+                                                    <div key={dim} className="space-y-2">
+                                                        <label className="text-[13px] font-bold text-slate-500 ml-1">
+                                                            {dim === 'width' ? 'Ширина' : dim === 'height' ? 'Высота' : 'Глубина'}
+                                                        </label>
+                                                        <div className="relative">
+                                                            <Input
+                                                                type="number"
+                                                                value={(formData[dim as keyof ItemFormData] as string) || ""}
+                                                                onChange={(e) => updateFormData({ [dim]: e.target.value })}
+                                                                className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-100 bg-slate-50/50 text-sm font-bold focus-visible:border-slate-300 transition-all shadow-none"
+                                                                placeholder="0"
+                                                            />
+                                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 pointer-events-none">СМ</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                                                ))}
+                                            </div>
+                                        )}
 
-                                    {isConsumables && (
-                                        <div className="space-y-3">
-                                            <label className="text-sm font-bold text-slate-700 ml-1">
-                                                <Wrench className="w-3.5 h-3.5" />
-                                                Область применения
-                                            </label>
-                                            <Select
-                                                options={[
-                                                    { id: "printing", title: "Печатный цех", icon: <Printer className="w-4 h-4 opacity-50" /> },
-                                                    { id: "embroidery", title: "Вышивальный цех", icon: <Shirt className="w-4 h-4 opacity-50" /> },
-                                                    { id: "sewing", title: "Швейный цех", icon: <Scissors className="w-4 h-4 opacity-50" /> },
-                                                ]}
-                                                value={formData.department || ""}
-                                                onChange={(val) => updateFormData({ department: val })}
-                                                placeholder="Выберите отдел..."
-                                            />
-                                        </div>
-                                    )}
+                                        {isConsumables && (
+                                            <div className="space-y-2">
+                                                <label className="text-[13px] font-bold text-slate-500 ml-1">Область применения</label>
+                                                <Select
+                                                    options={[
+                                                        { id: "printing", title: "Печатный цех", icon: <Printer className="w-4 h-4 opacity-50" /> },
+                                                        { id: "embroidery", title: "Вышивальный цех", icon: <Shirt className="w-4 h-4 opacity-50" /> },
+                                                        { id: "sewing", title: "Швейный цех", icon: <Scissors className="w-4 h-4 opacity-50" /> },
+                                                    ]}
+                                                    value={formData.department || ""}
+                                                    onChange={(val) => updateFormData({ department: val })}
+                                                    placeholder="Выберите отдел..."
+                                                    className="h-12 rounded-2xl border-slate-100 bg-slate-50/50"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             )}
 
-                            {/* Description Block */}
-                            <div className="space-y-2 pt-2">
-                                <div className="mb-2">
-                                    <h4 className="text-base font-bold text-slate-900">Описание</h4>
+                            {/* Заметки */}
+                            <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25 text-white shrink-0">
+                                        <AlignLeft className="w-5 h-5 stroke-[2.5]" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-[17px] font-bold text-slate-900 leading-tight">Заметки</h4>
+                                        <p className="text-xs font-medium text-slate-500 mt-0.5">Дополнительная информация о позиции</p>
+                                    </div>
                                 </div>
+
                                 <textarea
                                     value={formData.description || ""}
                                     onChange={(e) => updateFormData({ description: e.target.value })}
-                                    className="w-full p-5 min-h-[120px] rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-medium text-sm focus:border-slate-900 focus:ring-4 focus:ring-slate-900/5 transition-all outline-none resize-none shadow-sm hover:shadow-md overflow-y-auto custom-scrollbar"
+                                    className="w-full p-5 min-h-[140px] rounded-2xl border border-slate-100 bg-slate-50/50 text-slate-900 font-medium text-sm focus:border-slate-300 transition-all outline-none resize-none shadow-none hover:bg-slate-50 overflow-y-auto custom-scrollbar"
                                     placeholder={isClothing ? "Особенности кроя, советы по уходу..." : "Особенности материала, советы по использованию..."}
-                                />
-                            </div>
-
-                        </div>
-
-                        {/* RIGHT COLUMN (Preview Card) */}
-                        <div className="lg:col-span-4 mt-8 lg:mt-0">
-                            <div className="sticky top-6">
-                                <PreviewCard
-                                    itemName={formData.itemName || ""}
-                                    sku={formData.sku || ""}
                                 />
                             </div>
                         </div>
