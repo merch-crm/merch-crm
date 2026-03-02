@@ -1,4 +1,5 @@
 import { getInventoryCategories, getOrphanedItemStats } from "../category-actions";
+import { sortCategories } from "../category-utils";
 import { getSession } from "../warehouse-stats-actions";;
 import { InventoryClient } from "../inventory-client";
 import { Suspense } from "react";
@@ -72,7 +73,6 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
     const orphanedCount = orphanedData.count;
     const orphanedTotalCost = orphanedData.totalCost;
 
-    const desiredOrder = ["Одежда", "Упаковка", "Расходники", "Без категории"];
     const categories: Category[] = [...categoriesRes];
 
     if (orphanedCount > 0) {
@@ -85,18 +85,12 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
             description: "Позиции без привязки к категории",
             color: "slate",
             icon: "box",
-            isSystem: true
+            isSystem: true,
+            sortOrder: 0 // Rely on DESIRED_ORDER names if manual order not set
         });
     }
 
-    const sortedCategories = categories.sort((a, b) => {
-        const indexA = desiredOrder.indexOf(a.name);
-        const indexB = desiredOrder.indexOf(b.name);
-        if (indexA === -1 && indexB === -1) return 0;
-        if (indexA === -1) return 1;
-        if (indexB === -1) return -1;
-        return indexA - indexB;
-    });
+    const sortedCategories = sortCategories(categories);
 
     return (
         <InventoryClient

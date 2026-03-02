@@ -3,11 +3,10 @@
 import { createElement } from "react";
 import Link from "next/link";
 import { ClipboardList, Settings2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-selector";
 import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { getCategoryIcon, getColorStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { getCategoryIcon, getCategoryCardStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 import { useBasicInfoLogic } from "./basic-info/hooks/useBasicInfoLogic";
 import { ClothingFields } from "./basic-info/clothing-fields";
@@ -65,8 +64,8 @@ export function BasicInfoStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 sm:pb-10 overflow-y-auto min-h-0">
-                <div className="max-w-6xl mx-auto space-y-3">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
+                <div className="space-y-3">
 
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -83,8 +82,8 @@ export function BasicInfoStep({
                         <div className="hidden sm:flex items-center gap-2 xl:gap-3">
                             <div className="flex items-center gap-2 xl:gap-3 bg-slate-50 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm">
                                 <div
-                                    className={cn("w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center border shadow-sm shrink-0", getColorStyles(displayCategory.color).className)}
-                                    style={getColorStyles(displayCategory.color).style}
+                                    className="w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center shadow-sm shrink-0 text-white"
+                                    style={getCategoryCardStyles(displayCategory.color).icon}
                                 >
                                     {createElement(getCategoryIcon(displayCategory), { className: "w-4 h-4 xl:w-5 xl:h-5" })}
                                 </div>
@@ -119,6 +118,7 @@ export function BasicInfoStep({
                                         updateFormData={updateFormData}
                                         compositionType={compositionType}
                                         remainingCustomTypes={remainingCustomTypes}
+                                        categoryId={category.id}
                                     />
                                 </div>
 
@@ -148,6 +148,7 @@ export function BasicInfoStep({
                                         }}
                                         onCodeChange={(code) => updateFormData({ attributeCode: code })}
                                         allowCustom={true}
+                                        categoryId={category.id}
                                     />
                                 </div>
                                 <div className="lg:col-span-4">
@@ -177,6 +178,7 @@ export function BasicInfoStep({
                                         isConsumables={isConsumables}
                                         measurementUnits={measurementUnits}
                                         remainingCustomTypes={remainingCustomTypes}
+                                        categoryId={category.id}
                                     />
                                 </div>
                                 <div className="lg:col-span-4" />
@@ -204,11 +206,13 @@ export function BasicInfoStep({
                 </div>
             </div>
 
-            <StepFooter
-                onBack={onBack}
-                onNext={onNext}
-                validationError={validationError}
-            />
+            <div className="card-breakout card-breakout-bottom mt-auto">
+                <StepFooter
+                    onBack={onBack}
+                    onNext={onNext}
+                    validationError={validationError}
+                />
+            </div>
         </div>
     );
 }

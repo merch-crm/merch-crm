@@ -6,7 +6,7 @@ import { pluralize } from "@/lib/pluralize";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { deleteInventoryItems, archiveInventoryItems } from "@/app/(main)/dashboard/warehouse/bulk-actions";
 import { getInventoryCategories, deleteInventoryCategory } from "@/app/(main)/dashboard/warehouse/category-actions";
-import { getItemStocks } from "@/app/(main)/dashboard/warehouse/stock-actions";;
+import { getItemStocks } from "@/app/(main)/dashboard/warehouse/stock-actions";
 import type { Category, InventoryItem, InventoryFilters } from "@/app/(main)/dashboard/warehouse/types";
 
 export function useCategoryDetail(
@@ -46,7 +46,6 @@ export function useCategoryDetail(
     });
 
     const { setCustomTrail } = useBreadcrumbs();
-
     useEffect(() => {
         setUi(prev => ({ ...prev, mounted: true }));
         getInventoryCategories().then(res => {

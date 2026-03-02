@@ -15,10 +15,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Tooltip, TooltipRich, TooltipList } from "@/components/ui/tooltip";
-import { Slider, SliderWithValue, RangeSlider, PriceRangeSlider } from "@/components/ui/slider";
-import { Accordion, AccordionCards, AccordionFAQ, AccordionSettings } from "@/components/ui/accordion";
-import { RadioGroup } from "@/components/ui/radio-group";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
 import { Progress, ProgressWithLabel } from "@/components/ui/progress";
@@ -27,7 +23,7 @@ import { ModernStatCard } from "@/components/ui/stat-card";
 import {
     ShoppingCart, Settings,
     ChevronDown, Plus, Trash2, Edit, MoreHorizontal, Search,
-    AlertCircle, Home, RefreshCcw, WifiOff, ServerCrash, XOctagon, FileSearch
+    AlertCircle, Home, RefreshCcw, WifiOff, ServerCrash, XOctagon
 } from "lucide-react";
 
 // Определение секций

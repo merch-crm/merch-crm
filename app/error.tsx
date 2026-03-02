@@ -20,13 +20,13 @@ export default function Error({
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 font-sans p-6">
-            <div className="relative overflow-hidden rounded-[42px] border border-slate-100/80 shadow-2xl shadow-slate-200/50 p-10 flex flex-col items-center text-center max-w-[480px] w-full bg-white animate-in zoom-in-95 duration-700">
+            <div className="relative overflow-hidden rounded-[42px] border-2 border-slate-200/60 shadow-2xl shadow-slate-200/50 p-10 flex flex-col items-center text-center max-w-[480px] w-full bg-white/90 backdrop-blur-xl animate-in zoom-in-95 duration-700 ring-8 ring-slate-100/30">
                 {/* Background Glow */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-[80px] -mt-32 pointer-events-none opacity-15 bg-rose-500" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full blur-[80px] -mt-32 pointer-events-none opacity-20 bg-rose-500" />
 
                 {/* Error Icon */}
-                <div className="w-24 h-24 rounded-[32px] flex items-center justify-center text-white shadow-2xl shadow-rose-500/30 mb-8 transition-colors bg-rose-500 relative z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <div className="w-24 h-24 rounded-[32px] flex items-center justify-center text-white shadow-2xl shadow-rose-500/40 mb-8 transition-all hover:scale-105 bg-rose-500 relative z-10 border-4 border-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-sm">
                         <circle cx="12" cy="12" r="10" />
                         <line x1="12" y1="8" x2="12" y2="12" />
                         <line x1="12" y1="16" x2="12.01" y2="16" />

@@ -174,15 +174,13 @@ export default function LoginPage() {
                     <SubmitButton
                         isLoading={isLoading}
                         className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg border-none bg-[var(--primary)] text-white hover:opacity-90"
-                    >
-                        Войти в систему
-                    </SubmitButton>
+                    >Войти в систему</SubmitButton>
                 </form>
 
                 <div className="mt-8 text-center h-4">
                     {branding ? (
                         <p className="text-xs text-slate-400 font-bold">
-                            © {new Date().getFullYear()} {companyName}. CRM System
+                            © <span suppressHydrationWarning>{new Date().getFullYear()}</span> {companyName}. CRM System
                         </p>
                     ) : (
                         <div className="mx-auto h-2.5 w-32 bg-slate-200 rounded-full animate-pulse" />

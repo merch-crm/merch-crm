@@ -6,13 +6,15 @@ interface ClothingFieldsProps {
     updateFormData: (updates: Partial<ItemFormData>) => void;
     compositionType?: AttributeType;
     remainingCustomTypes: AttributeType[];
+    categoryId?: string;
 }
 
 export function ClothingFields({
     formData,
     updateFormData,
     compositionType,
-    remainingCustomTypes
+    remainingCustomTypes,
+    categoryId
 }: ClothingFieldsProps) {
     return (
         <div className="space-y-3">
@@ -29,6 +31,7 @@ export function ClothingFields({
                             attributes: { ...currentAttrs, "Бренд": name }
                         });
                     }}
+                    categoryId={categoryId}
                 />
 
                 <AttributeSelector
@@ -43,6 +46,7 @@ export function ClothingFields({
                         });
                     }}
                     onCodeChange={(code) => updateFormData({ qualityCode: code })}
+                    categoryId={categoryId}
                 />
             </div>
 
@@ -60,6 +64,7 @@ export function ClothingFields({
                         });
                     }}
                     allowCustom={true}
+                    categoryId={categoryId}
                 />
 
                 <AttributeSelector
@@ -75,6 +80,7 @@ export function ClothingFields({
                     }}
                     onCodeChange={(code) => updateFormData({ sizeCode: code })}
                     allowCustom={true}
+                    categoryId={categoryId}
                 />
             </div>
 
@@ -90,6 +96,7 @@ export function ClothingFields({
                                 attributes: { ...currentAttrs, [compositionType.slug]: code }
                             });
                         }}
+                        categoryId={categoryId}
                     />
                 </div>
             )}
@@ -111,6 +118,7 @@ export function ClothingFields({
                                             attributes: { ...currentAttrs, [type.slug]: code }
                                         });
                                     }}
+                                    categoryId={categoryId}
                                 />
                             </div>
                         ))}

@@ -39,7 +39,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
     const { setIsScannerOpen, setIsClearHistoryOpen, setIsClearingHistory, loadDialogData } = actions;
 
     const isRootPage = WAREHOUSE_TABS.some(tab => pathname === tab.href);
-    const currentInfo = WAREHOUSE_TAB_INFO[pathname] || WAREHOUSE_TAB_INFO["/dashboard/warehouse/categories"];
+    const currentInfo = WAREHOUSE_TAB_INFO[pathname];
 
     // Update document title immediately on client-side navigation
     useEffect(() => {

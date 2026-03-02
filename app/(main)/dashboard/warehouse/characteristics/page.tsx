@@ -1,6 +1,7 @@
 import { getInventoryAttributes, getInventoryAttributeTypes } from "../attribute-actions";
 import { getInventoryCategories } from "../category-actions";;
 import { WarehouseCharacteristic } from "../warehouse-characteristic";
+import { AttributeType } from "../types";
 import { getSession } from "@/lib/auth";
 
 export const metadata = {
@@ -30,7 +31,7 @@ export default async function CharacteristicsPage() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
             <WarehouseCharacteristic
                 attributes={attributes}
-                attributeTypes={attributeTypes}
+                attributeTypes={attributeTypes as AttributeType[]}
                 categories={categories}
                 user={session}
             />

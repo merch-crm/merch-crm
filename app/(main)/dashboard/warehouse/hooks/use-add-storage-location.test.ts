@@ -101,7 +101,7 @@ describe('useAddStorageLocation', () => {
     });
 
     it('should handle successful submission', async () => {
-        vi.mocked(addStorageLocation).mockResolvedValue({ success: true, data: {} as any });
+        vi.mocked(addStorageLocation).mockResolvedValue({ success: true });
         const { result } = renderHook(() => useAddStorageLocation());
 
         // Set state that should be reset

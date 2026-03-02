@@ -122,9 +122,13 @@ export const AttributeTypeSchema = z.object({
     name: z.string().min(1, "Название обязательно"),
     slug: z.string().min(1, "Slug обязателен"),
     category: z.string().optional().nullable(),
+    dataType: z.enum(["text", "unit", "color", "dimensions", "quantity", "composition", "material", "size", "brand", "country", "density", "weight", "volume", "package", "consumable"]).default("text"),
     isSystem: z.coerce.boolean().default(false),
     showInSku: z.coerce.boolean().default(true),
     showInName: z.coerce.boolean().default(true),
+    hasColor: z.coerce.boolean().default(false),
+    hasUnits: z.coerce.boolean().default(false),
+    hasComposition: z.coerce.boolean().default(false),
 });
 
 export const AttributeSchema = z.object({

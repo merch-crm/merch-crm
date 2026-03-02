@@ -5,16 +5,37 @@ import { createInventoryAttributeType } from "../attribute-actions";;
 import { playSound } from "@/lib/sounds";
 import type { Category } from "../types";
 
-const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
-    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
-    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
-    'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
-    ' ': '_'
+export const transliterateToSlug = (text: string) => {
+    const MAP: Record<string, string> = {
+        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
+        'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
+        'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
+        'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
+        ' ': '_'
+    };
+    return text.toLowerCase().split('').map(char => MAP[char] ?? char).join('').replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '');
 };
 
-export const transliterateToSlug = (text: string) => {
-    return text.toLowerCase().split('').map(char => RUSSIAN_TO_LATIN_MAP[char] || char).join('').replace(/\s+/g, '_').replace(/[^a-z0-9_-]/g, '');
+
+export type DataTypeKey = "text" | "unit" | "color" | "dimensions" | "quantity" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
+
+export const DATA_TYPE_META: Record<DataTypeKey, { name: string; slug: string }> = {
+    text: { name: "Общая", slug: "text" },
+    unit: { name: "Единица измерения", slug: "unit" },
+    color: { name: "Цвет", slug: "color" },
+    dimensions: { name: "Габариты", slug: "dimensions" },
+    quantity: { name: "Количество", slug: "quantity" },
+
+    composition: { name: "Состав", slug: "composition" },
+    material: { name: "Материал", slug: "material" },
+    size: { name: "Размер", slug: "size" },
+    brand: { name: "Бренд", slug: "brand" },
+    country: { name: "Страна", slug: "country" },
+    density: { name: "Плотность", slug: "density" },
+    weight: { name: "Вес", slug: "weight" },
+    volume: { name: "Объем", slug: "volume" },
+    package: { name: "Упаковка", slug: "package" },
+    consumable: { name: "Расходники", slug: "consumable" },
 };
 
 interface UseAddAttributeTypeProps {
@@ -24,10 +45,11 @@ interface UseAddAttributeTypeProps {
 export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [label, setLabel] = useState("");
-    const [slug, setSlug] = useState("");
+    const [dataType, setDataTypeRaw] = useState<DataTypeKey>("text");
     const [isSystem, setIsSystem] = useState(false);
-    const [isSlugManuallyEdited, setIsSlugManuallyEdited] = useState(false);
+    const [hasColor, setHasColor] = useState(false);
+    const [hasUnits, setHasUnits] = useState(false);
+    const [hasComposition, setHasComposition] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const searchParams = useSearchParams();
@@ -38,11 +60,21 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     const catParam = searchParams.get("cat");
     const [activeCategoryId, setActiveCategoryId] = useState<string>(catParam || (rootCategories.length > 0 ? rootCategories[0].id : "uncategorized"));
 
+    // Name and slug are always derived from the selected data type
+    const name = DATA_TYPE_META[dataType].name;
+    const slug = DATA_TYPE_META[dataType].slug;
+
+    const setDataType = (type: DataTypeKey) => {
+        setDataTypeRaw(type);
+        setError(null);
+    };
+
     const handleOpen = () => {
-        setLabel("");
-        setSlug("");
+        setDataTypeRaw("text");
         setIsSystem(false);
-        setIsSlugManuallyEdited(false);
+        setHasColor(false);
+        setHasUnits(false);
+        setHasComposition(false);
         setError(null);
         const currentCat = searchParams.get("cat");
         if (currentCat) {
@@ -54,15 +86,15 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     };
 
     const handleCreate = async () => {
-        if (!label.trim() || !slug.trim()) {
-            toast("Заполните название и SLUG", "error");
-            return;
-        }
+
         setIsLoading(true);
         setError(null);
         try {
             const catIdToSave = activeCategoryId === "uncategorized" ? undefined : activeCategoryId;
-            const res = await createInventoryAttributeType({ name: label, slug, category: catIdToSave, isSystem });
+            const res = await createInventoryAttributeType({
+                name, slug, category: catIdToSave, isSystem, dataType,
+                hasColor, hasUnits, hasComposition
+            });
             if (res.success) {
                 toast("Новый раздел создан", "success");
                 playSound("notification_success");
@@ -84,11 +116,14 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     return {
         isOpen, setIsOpen,
         isLoading,
-        label, setLabel,
-        slug, setSlug,
+        name,
+        slug,
+        dataType, setDataType,
         isSystem, setIsSystem,
-        isSlugManuallyEdited, setIsSlugManuallyEdited,
         activeCategoryId, setActiveCategoryId,
+        hasColor, setHasColor,
+        hasUnits, setHasUnits,
+        hasComposition, setHasComposition,
         rootCategories,
         error, setError,
         handleOpen,

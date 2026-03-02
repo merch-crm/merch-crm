@@ -32,8 +32,8 @@ export function StepFooter({
     className
 }: StepFooterProps) {
     return (
-        <div className={cn("h-auto sm:h-[109px] py-4 sm:py-0 shrink-0 bg-white border-t border-slate-200 z-30 px-4 sm:px-8 flex items-center", className)}>
-            <div className="max-w-6xl mx-auto flex items-center justify-between w-full gap-3 sm:gap-0">
+        <div className={cn("h-auto sm:h-[109px] py-4 sm:py-0 shrink-0 bg-white border-t border-slate-200 z-30 px-[var(--current-padding)] flex items-center", className)}>
+            <div className="flex items-center justify-between w-full gap-3 sm:gap-0">
                 <Button
                     type="button"
                     variant="ghost"

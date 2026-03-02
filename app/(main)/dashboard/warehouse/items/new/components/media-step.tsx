@@ -45,7 +45,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
 
     return (
         <div className="flex flex-col min-h-0 h-full overflow-hidden">
-            <div className="flex-1 flex flex-col px-4 sm:px-10 pt-6 sm:pt-10 pb-0 min-h-0">
+            <div className="flex-1 flex flex-col min-h-0">
                 <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col min-h-0 space-y-3">
                     {/* Header Area */}
                     <div className="flex items-center gap-3 shrink-0 relative">
@@ -102,8 +102,8 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                             </div>
 
                             {/* RIGHT: STORYBOARD & GALLERY */}
-                            <div className="flex-1 flex flex-col min-h-0 bg-white pt-6 px-8 pb-8 overflow-y-auto custom-scrollbar">
-                                <div className="flex flex-col min-h-0 space-y-3">
+                            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
+                                <div className="flex flex-col min-h-0 space-y-3 pt-6 px-8 pb-8">
                                     <div className="space-y-3 shrink-0">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[480px]">
                                             <CompactDropzone
@@ -146,13 +146,15 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                     </div>
                 </div>
             </div>
-            <StepFooter
-                onBack={onBack}
-                onNext={onNext}
-                isNextDisabled={!isMinimumRequiredMet || isProcessing}
-                validationError={!isMinimumRequiredMet ? "Загрузите обязательно 3 главных ракурса" : undefined}
-                hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 3 ? "Вы можете добавить еще 3 дополнительных ракурса" : undefined}
-            />
+            <div className="card-breakout card-breakout-bottom mt-auto">
+                <StepFooter
+                    onBack={onBack}
+                    onNext={onNext}
+                    isNextDisabled={!isMinimumRequiredMet || isProcessing}
+                    validationError={!isMinimumRequiredMet ? "Загрузите обязательно 3 главных ракурса" : undefined}
+                    hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 3 ? "Вы можете добавить еще 3 дополнительных ракурса" : undefined}
+                />
+            </div>
         </div>
     );
 }

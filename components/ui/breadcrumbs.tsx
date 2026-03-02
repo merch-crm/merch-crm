@@ -50,7 +50,7 @@ export function Breadcrumbs({
         <nav
             aria-label="Breadcrumb"
             className={cn(
-                "flex items-center gap-2 mb-3 sm:mb-6 animate-in fade-in slide-in-from-left-2 duration-500",
+                "flex items-center gap-2 mb-1.5 sm:mb-3 animate-in fade-in slide-in-from-left-2 duration-500",
                 className
             )}
         >

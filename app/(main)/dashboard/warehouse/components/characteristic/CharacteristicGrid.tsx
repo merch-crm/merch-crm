@@ -11,7 +11,6 @@ interface CharacteristicGridProps {
     activeCategoryName: string;
     openEditType: (type: AttributeType) => void;
     openEditValue: (attr: Attribute) => void;
-    openAddValue: (slug: string) => void;
 }
 
 export function CharacteristicGrid({
@@ -20,8 +19,7 @@ export function CharacteristicGrid({
     activeCategoryId,
     activeCategoryName,
     openEditType,
-    openEditValue,
-    openAddValue
+    openEditValue
 }: CharacteristicGridProps) {
     return (
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -34,7 +32,6 @@ export function CharacteristicGrid({
                             attributes={attributes}
                             openEditType={openEditType}
                             openEditValue={openEditValue}
-                            openAddValue={openAddValue}
                         />
                     ))}
                     {filteredTypes.length === 0 && (

@@ -35,7 +35,7 @@ import {
 
 import {
     Plus, Trash2, Download, Settings, Bell,
-    Shield, User, HelpCircle, Info, Package,
+    HelpCircle,
 } from 'lucide-react';
 
 // =========================================

@@ -2,19 +2,14 @@
 
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Session } from "@/lib/auth";
-import { InventoryAttribute as Attribute, AttributeType } from "./types";
+import { InventoryAttribute as Attribute, AttributeType, Category } from "./types";
 import { useWarehouseCharacteristic } from "./hooks/use-warehouse-characteristic";
 import { CategoryTabs } from "./components/characteristic/CategoryTabs";
 import { CharacteristicGrid } from "./components/characteristic/CharacteristicGrid";
 import { EditTypeDialog } from "./components/characteristic/EditTypeDialog";
-import { EditValueDialog } from "./components/characteristic/EditValueDialog";
 import { PasswordProtection } from "./components/characteristic/PasswordProtection";
 
-interface Category {
-    id: string;
-    name: string;
-    parentId?: string | null;
-}
+
 
 interface CharacteristicProps {
     attributes?: Attribute[];
@@ -64,28 +59,29 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
                 activeCategoryName={activeCategoryName}
                 openEditType={openEditType}
                 openEditValue={openEditValue}
-                openAddValue={openAddValue}
             />
 
             <EditTypeDialog
-                typeForm={typeForm}
-                setTypeForm={setTypeForm}
-                rootCategories={rootCategories}
+                typeState={{
+                    form: typeForm,
+                    setForm: setTypeForm,
+                    latest: editingTypeLatest,
+                    values: editingTypeValues
+                }}
+                valueState={{
+                    form: valueForm,
+                    setForm: setValueForm
+                }}
+                actions={{
+                    openAddValue,
+                    openEditValue,
+                    setDeleteDialog,
+                    handleTypeUpdate,
+                    handleValueSave
+                }}
                 user={user}
-                editingTypeLatest={editingTypeLatest}
-                editingTypeValues={editingTypeValues}
-                openAddValue={openAddValue}
-                openEditValue={openEditValue}
-                setDeleteDialog={setDeleteDialog}
-                handleTypeUpdate={handleTypeUpdate}
-            />
-
-            <EditValueDialog
-                valueForm={valueForm}
-                setValueForm={setValueForm}
                 attributeTypes={attributeTypes}
-                setDeleteDialog={setDeleteDialog}
-                handleValueSave={handleValueSave}
+                categories={categories}
             />
 
             <ConfirmDialog

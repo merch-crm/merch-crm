@@ -155,7 +155,7 @@ export function PackagingBasicInfoStep({
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            <div className="flex-1 px-10 pt-10 pb-0 overflow-y-auto min-h-0 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
                 <div className="max-w-[800px] mx-auto space-y-3 pb-10">
 
                     {/* Header */}
@@ -404,15 +404,17 @@ export function PackagingBasicInfoStep({
                 </div>
             </div>
 
-            <StepFooter
-                onBack={onBack}
-                onNext={() => {
-                    // Basic validation
-                    if (!formData.packagingType) updateFormData({ packagingType: "individual" }); // Default
-                    onNext();
-                }}
-                validationError={validationError}
-            />
+            <div className="card-breakout card-breakout-bottom mt-auto">
+                <StepFooter
+                    onBack={onBack}
+                    onNext={() => {
+                        // Basic validation
+                        if (!formData.packagingType) updateFormData({ packagingType: "individual" }); // Default
+                        onNext();
+                    }}
+                    validationError={validationError}
+                />
+            </div>
         </div>
     );
 }

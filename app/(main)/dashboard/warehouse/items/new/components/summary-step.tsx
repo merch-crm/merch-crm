@@ -44,7 +44,7 @@ export function SummaryStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 sm:pb-10 overflow-y-auto min-h-0 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
                 <div className="max-w-6xl mx-auto space-y-3">
                     {/* Item Name & Status Header */}
                     <SummaryHeader
@@ -90,13 +90,15 @@ export function SummaryStep({
                 </div>
             </div>
 
-            <StepFooter
-                onBack={onBack}
-                onNext={onSubmit}
-                nextLabel="Создать позицию"
-                isSubmitting={isSubmitting}
-                validationError={validationError}
-            />
+            <div className="card-breakout card-breakout-bottom mt-auto">
+                <StepFooter
+                    onBack={onBack}
+                    onNext={onSubmit}
+                    nextLabel="Создать позицию"
+                    isSubmitting={isSubmitting}
+                    validationError={validationError}
+                />
+            </div>
 
             {/* Mobile Name Edit Sheet */}
             <MobileEditSheet

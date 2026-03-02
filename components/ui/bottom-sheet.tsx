@@ -108,7 +108,7 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                             mass: 0.8
                         }}
                         className={cn(
-                            "fixed bottom-0 left-0 right-0 shadow-2xl max-h-[95vh] !w-full !max-w-none flex flex-col touch-none overflow-hidden bg-white",
+                            "fixed bottom-0 left-0 right-0 shadow-2xl max-h-[95vh] !w-full !max-w-none flex flex-col overflow-hidden bg-white",
                             !hasCustomRounding && "rounded-t-[32px]",
                             className,
                             "rounded-b-none" // Force flat bottom to avoid gaps
@@ -155,7 +155,7 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                             </div>
                         )}
 
-                        <div className="flex-1 flex flex-col overflow-hidden">
+                        <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar">
                             {children}
                         </div>
 

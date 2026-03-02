@@ -53,7 +53,7 @@ export function StockStep({
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            <div className="flex-1 px-4 sm:px-10 pt-6 sm:pt-10 pb-6 overflow-hidden min-h-0 flex flex-col">
+            <div className="flex-1 overflow-hidden min-h-0 flex flex-col">
                 <div className="max-w-[1400px] mx-auto space-y-3 flex-1 flex flex-col min-h-0 w-full">
                     <div className="flex items-center gap-3 shrink-0">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
@@ -65,7 +65,7 @@ export function StockStep({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 gap-3 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-8 pt-2 pb-6 -mx-4 sm:-mx-8">
+                    <div className="grid grid-cols-12 gap-3 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar pt-2 pb-6">
                         {/* FIRST ROW */}
                         {/* BENTO BLOCK 1: MAIN QUANTITY */}
                         <div className="col-span-12 md:col-span-5 xl:col-span-5 crm-card  !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col items-start text-left">
@@ -297,14 +297,16 @@ export function StockStep({
                 </div>
             </div>
 
-            <StepFooter
-                onBack={onBack}
-                onNext={onNext}
-                nextLabel="Далее"
-                isNextDisabled={!formData.storageLocationId}
-                isSubmitting={isSubmitting}
-                validationError={validationError}
-            />
+            <div className="card-breakout card-breakout-bottom mt-auto">
+                <StepFooter
+                    onBack={onBack}
+                    onNext={onNext}
+                    nextLabel="Далее"
+                    isNextDisabled={!formData.storageLocationId}
+                    isSubmitting={isSubmitting}
+                    validationError={validationError}
+                />
+            </div>
         </div>
     );
 }

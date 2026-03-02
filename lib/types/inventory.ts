@@ -19,8 +19,12 @@ export interface AttributeType {
     categoryId?: string | null;
     isSystem: boolean;
     sortOrder?: number;
+    dataType: "text" | "unit" | "color" | "dimensions" | "quantity" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
     showInSku?: boolean;
     showInName?: boolean;
+    hasColor?: boolean;
+    hasUnits?: boolean;
+    hasComposition?: boolean;
 }
 
 export interface ItemFormData {

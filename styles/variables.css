@@ -42,8 +42,8 @@
     --radius: 27px;
     --radius-outer: 27px;
     --radius-inner: 20px;
-    --radius-padding: 27px;
-    --padding-xl: 48px;
+    --radius-padding: 22px;
+    --padding-xl: 32px;
 
     /* Shadows */
     --crm-shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.04), 0 1px 4px -1px rgba(0, 0, 0, 0.02);

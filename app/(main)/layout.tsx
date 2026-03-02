@@ -21,6 +21,8 @@ import { GlobalUndo } from "@/components/global-undo";
 import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
 import { FloatingSearch } from "@/components/layout/floating-search";
 import { MobileSearchSheet } from "@/components/layout/mobile-search-sheet";
+import { LayoutShell } from "@/components/layout/layout-shell";
+import { ClientSideMain } from "@/components/layout/client-side-main";
 
 
 export default async function DashboardLayout({
@@ -151,8 +153,7 @@ export default async function DashboardLayout({
             </style>
 
             <PullToRefresh>
-                <div className="min-h-screen pb-24 md:pb-0 relative">
-                    {branding.crmBackgroundUrl && <div className="crm-background" />}
+                <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
                     {session?.impersonatorId && (
                         <ImpersonationBanner
                             impersonatorName={session.impersonatorName || "Admin"}
@@ -179,11 +180,11 @@ export default async function DashboardLayout({
                     <FloatingSearch />
                     <MobileSearchSheet />
 
-                    <main className="flex-1 px-container pt-4 md:pt-6 pb-4 max-w-[1480px] mx-auto w-full">
+                    <ClientSideMain>
                         <Breadcrumbs />
                         {children}
-                    </main>
-                </div>
+                    </ClientSideMain>
+                </LayoutShell>
             </PullToRefresh>
         </BreadcrumbsProvider>
     );

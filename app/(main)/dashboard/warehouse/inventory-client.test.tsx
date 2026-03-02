@@ -19,6 +19,7 @@ vi.mock('./category-utils', () => ({
         icon: { background: 'none', boxShadow: 'none' }
     }),
     getHexColor: () => '#000000',
+    sortCategories: (cats: any[]) => cats,
 }));
 
 vi.mock('./edit-category-dialog', () => ({

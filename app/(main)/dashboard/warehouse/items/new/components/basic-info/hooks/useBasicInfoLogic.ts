@@ -44,7 +44,7 @@ export function useBasicInfoLogic({
             const lowChar = char.toLowerCase();
             const res = map[lowChar] || lowChar;
             return char === char.toUpperCase() ? res.toUpperCase() : res;
-        }).join('');
+        }).join('').replace(/[^A-Za-z0-9_-]/g, '');
     };
 
     // Автогенерация SKU и названия для одежды

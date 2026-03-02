@@ -17,6 +17,7 @@ interface NonClothingFieldsProps {
     isConsumables: boolean;
     measurementUnits: MeasurementUnit[];
     remainingCustomTypes: AttributeType[];
+    categoryId?: string;
 }
 
 export function NonClothingFields({
@@ -25,7 +26,8 @@ export function NonClothingFields({
     isPackaging,
     isConsumables,
     measurementUnits,
-    remainingCustomTypes
+    remainingCustomTypes,
+    categoryId
 }: NonClothingFieldsProps) {
     return (
         <div className="space-y-3">
@@ -52,7 +54,7 @@ export function NonClothingFields({
                     <Input
                         type="text"
                         value={formData.sku}
-                        onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase() })}
+                        onChange={(e) => updateFormData({ sku: e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '') })}
                         placeholder="SKU-123"
                         className="w-full h-11 px-5 rounded-[var(--radius)] border border-slate-200 bg-white text-slate-900 font-bold text-sm focus-visible:border-slate-900 transition-all font-mono shadow-none"
                     />
@@ -88,6 +90,7 @@ export function NonClothingFields({
                                         attributes: { ...currentAttrs, [type.slug]: code }
                                     });
                                 }}
+                                categoryId={categoryId}
                             />
                         </div>
                     ))}

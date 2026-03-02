@@ -60,7 +60,7 @@ export function NewItemPageClient({
     });
 
     const steps = [
-        { id: 0, title: "Тип позиции", desc: "Категория и вид" },
+        { id: 0, title: "Категория", desc: "Выбор категории" },
         { id: 2, title: "Описание", desc: "Характеристики" },
         { id: 3, title: "Галерея", desc: "Фото и медиа" },
         { id: 4, title: "Склад", desc: "Остатки и хранение" },
@@ -69,7 +69,7 @@ export function NewItemPageClient({
 
     return (
         <div className="flex flex-col">
-            <div className="flex flex-col xl:flex-row min-h-[calc(100vh-160px)] gap-3 xl:gap-3">
+            <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-160px)] gap-2 xl:gap-2">
                 <NewItemSidebar
                     step={step}
                     steps={steps}
@@ -80,9 +80,9 @@ export function NewItemPageClient({
                     onStepClick={handleSidebarClick}
                 />
 
-                <div className="flex-1 relative h-full flex flex-col gap-3 pb-4 xl:pb-8 px-1">
+                <div className="flex-1 relative h-full flex flex-col gap-2">
                     <div className="relative flex-1 flex flex-col min-h-0">
-                        <div className="crm-card !p-0 !rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
+                        <div className="crm-card crm-card--spacious !rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
                             {step === 0 && (
                                 <CategoryStep
                                     topLevelCategories={topLevelCategories}

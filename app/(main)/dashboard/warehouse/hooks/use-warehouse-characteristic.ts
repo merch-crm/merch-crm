@@ -3,36 +3,25 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "../attribute-actions";
 import type { InventoryAttribute as Attribute, AttributeType } from "../types";
-
-export const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
-    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
-    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts',
-    'ч': 'ch', 'ш': 'sh', 'щ': 'sch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
-    ' ': '_'
-};
-
-export const DESIRED_CATEGORY_ORDER = ["Одежда", "Упаковка", "Расходники"];
-
-export const getColorHex = (meta: unknown): string => {
-    if (typeof meta === 'object' && meta !== null && 'hex' in meta) {
-        return (meta as { hex: string }).hex;
-    }
-    return "#000000";
-};
-
-export const transliterateToSku = (text: string) => {
-    const transliterated = text.toLowerCase().split('').map(char => {
-        if (char === ' ') return '';
-        return RUSSIAN_TO_LATIN_MAP[char] || char;
-    }).join('').replace(/[^a-z0-9]/g, '');
-    return transliterated.substring(0, 3);
-};
+import {
+    DESIRED_CATEGORY_ORDER,
+    sortAttributeValues,
+    transliterateToSku,
+    DEFAULT_VALUE_FORM,
+    DEFAULT_TYPE_FORM,
+    DEFAULT_DELETE_DIALOG
+} from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 interface Category {
     id: string;
     name: string;
     parentId?: string | null;
+}
+
+export interface CompositionItem {
+    name: string;
+    value: string;
+    unit: string;
 }
 
 export interface ValueFormState {
@@ -42,6 +31,23 @@ export interface ValueFormState {
     name: string;
     code: string;
     colorHex: string;
+    // Dimensions
+    length: string;
+    width: string;
+    height: string;
+    dimensionUnit: "мм" | "см" | "м";
+    // General metadata
+    fullName: string;
+    shortName: string;
+    isOversize: boolean;
+    // Composition
+    compositionItems: CompositionItem[];
+    // Consumables
+    consumableType: string;
+    consumableCustomType: string;
+    consumableValue: string;
+    consumableUnit: string;
+    consumableExtra: string;
     error: string;
     isSaving: boolean;
     isCodeManuallyEdited: boolean;
@@ -51,9 +57,13 @@ export interface TypeFormState {
     editingType: AttributeType | null;
     name: string;
     categoryId: string;
+    dataType: "text" | "unit" | "color" | "dimensions" | "quantity" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
     isSystem: boolean;
     showInSku: boolean;
     showInName: boolean;
+    hasColor: boolean;
+    hasUnits: boolean;
+    hasComposition: boolean;
     isLoading: boolean;
     error: string | null;
 }
@@ -100,39 +110,16 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         return "";
     });
 
-    const [valueForm, setValueForm] = useState<ValueFormState>({
-        isOpen: false,
-        targetTypeSlug: null,
-        editingAttribute: null,
-        name: "",
-        code: "",
-        colorHex: "#000000",
-        error: "",
-        isSaving: false,
-        isCodeManuallyEdited: false
-    });
-
-    const [typeForm, setTypeForm] = useState<TypeFormState>({
-        editingType: null,
-        name: "",
-        categoryId: "uncategorized",
-        isSystem: false,
-        showInSku: true,
-        showInName: true,
-        isLoading: false,
-        error: null
-    });
-
-    const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>({
-        attribute: null,
-        type: null,
-        isDeleting: false,
-        isDeletingType: false,
-        password: ""
-    });
+    const [valueForm, setValueForm] = useState<ValueFormState>(DEFAULT_VALUE_FORM);
+    const [typeForm, setTypeForm] = useState<TypeFormState>(DEFAULT_TYPE_FORM);
+    const [deleteDialog, setDeleteDialog] = useState<DeleteDialogState>(DEFAULT_DELETE_DIALOG);
 
     const editingTypeLatest = typeForm.editingType ? attributeTypes.find(t => t.id === typeForm.editingType?.id) : null;
-    const editingTypeValues = editingTypeLatest ? attributes.filter(a => a.type === editingTypeLatest.slug) : [];
+    const editingTypeValues = useMemo(() => {
+        if (!editingTypeLatest) return [];
+        const baseValues = attributes.filter(a => a.type === editingTypeLatest.slug);
+        return sortAttributeValues(baseValues, editingTypeLatest.dataType);
+    }, [editingTypeLatest, attributes]);
 
     useEffect(() => {
         const cat = searchParams.get("cat");
@@ -160,19 +147,16 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
 
     function openAddValue(typeSlug: string) {
         setValueForm({
+            ...DEFAULT_VALUE_FORM,
             isOpen: true,
-            targetTypeSlug: typeSlug,
-            editingAttribute: null,
-            name: "",
-            code: "",
-            isCodeManuallyEdited: false,
-            colorHex: "#000000",
-            error: "",
-            isSaving: false
+            targetTypeSlug: typeSlug
         });
     }
 
     function openEditValue(attr: Attribute) {
+        const type = attributeTypes.find(t => t.slug === attr.type);
+        if (type) openEditType(type);
+
         let meta: unknown = attr.meta;
         if (typeof meta === 'string') {
             try { meta = JSON.parse(meta); } catch { meta = {}; }
@@ -180,7 +164,39 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             meta = {};
         }
 
-        const typedMeta = meta as { hex?: string; showInName?: boolean; showInSku?: boolean };
+        const typedMeta = meta as {
+            hex?: string;
+            length?: string;
+            width?: string;
+            height?: string;
+            dimensionUnit?: "мм" | "см" | "м";
+            fullName?: string;
+            shortName?: string;
+            isOversize?: boolean;
+            items?: { name: string; value?: string; percent?: string; unit?: string }[];
+            consumableType?: string;
+            consumableCustomType?: string;
+            consumableValue?: string;
+            consumableUnit?: string;
+            consumableExtra?: string;
+        };
+
+        const compositionItems = typedMeta?.items && typedMeta.items.length > 0
+            ? typedMeta.items.map((it) => ({
+                name: it.name || "",
+                value: it.value || it.percent || "",
+                unit: it.unit || "%"
+            }))
+            : [{ name: "", value: "", unit: "%" }];
+
+        const isDensity = type?.dataType === "density";
+        const isWeight = type?.dataType === "weight";
+        const isVolume = type?.dataType === "volume";
+
+        let initialFullName = typedMeta?.fullName || "";
+        if (!initialFullName && (isDensity || isWeight || isVolume)) {
+            initialFullName = attr.name.replace(/[^0-9.]/g, '').trim();
+        }
 
         setValueForm({
             isOpen: true,
@@ -188,30 +204,106 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             editingAttribute: attr,
             name: attr.name,
             code: attr.value,
-            isCodeManuallyEdited: true,
+            isCodeManuallyEdited: false,
             colorHex: typedMeta?.hex || "#000000",
+            length: typedMeta?.length || "",
+            width: typedMeta?.width || "",
+            height: typedMeta?.height || "",
+            dimensionUnit: typedMeta?.dimensionUnit || "мм",
+            fullName: initialFullName,
+            shortName: typedMeta?.shortName || "",
+            isOversize: typedMeta?.isOversize || false,
+            compositionItems,
+            consumableType: typedMeta?.consumableType || "краска",
+            consumableCustomType: typedMeta?.consumableCustomType || "",
+            consumableValue: typedMeta?.consumableValue || "",
+            consumableUnit: typedMeta?.consumableUnit || "мл",
+            consumableExtra: typedMeta?.consumableExtra || "",
             error: "",
             isSaving: false
         });
+
+        if (type?.dataType === "consumable" && typedMeta?.hex) {
+            setTypeForm(prev => ({ ...prev, hasColor: true }));
+        }
     }
 
     async function handleValueSave() {
-        if (!valueForm.name.trim()) { setValueForm(prev => ({ ...prev, error: "Введите название" })); return; }
-        if (!valueForm.code.trim()) { setValueForm(prev => ({ ...prev, error: "Введите код" })); return; }
         if (!valueForm.targetTypeSlug) return;
 
-        setValueForm(prev => ({ ...prev, error: "", isSaving: true }));
+        const currentType = attributeTypes.find(t => t.slug === valueForm.targetTypeSlug);
+        const dataType = currentType?.dataType;
+        const isComposition = dataType === "composition";
+        const isConsumable = dataType === "consumable";
+        const hasComposition = typeForm.hasComposition || isComposition || isConsumable;
+        const hasColor = (dataType === "color") || typeForm.hasColor;
+        const isDimensions = dataType === "dimensions";
+        const filled = (hasComposition || isComposition) ? valueForm.compositionItems.filter(i => i.name.trim()) : [];
+
+        let effectiveName = valueForm.name;
+        let effectiveCode = valueForm.code;
+
+        if ((hasComposition || isComposition) && !isConsumable) {
+            if (filled.length === 0) { setValueForm(prev => ({ ...prev, error: "Добавьте хотя бы один компонент" })); return; }
+            effectiveName = filled.map(i => `${i.name}${i.unit === '%' ? '%' : ` ${i.unit}`}`).join(", ");
+            effectiveCode = filled.map(i => `${transliterateToSku(i.name).substring(0, 4).toUpperCase()}${transliterateToSku(i.unit).toUpperCase()}`).join("");
+            setValueForm(prev => ({ ...prev, name: effectiveName, code: effectiveCode }));
+        } else if (isConsumable) {
+            const typeValue = valueForm.consumableType === "другое" ? valueForm.consumableCustomType : valueForm.consumableType;
+            if (hasComposition) {
+                const compName = filled.map(i => `${i.name}${i.unit === '%' ? '%' : ` ${i.unit}`}`).join(", ");
+                const compCode = filled.map(i => `${transliterateToSku(i.name).substring(0, 4).toUpperCase()}${transliterateToSku(i.unit).toUpperCase()}`).join("");
+                effectiveName = `${typeValue}${compName ? ` ${compName}` : ""}${valueForm.consumableExtra ? ` (${valueForm.consumableExtra})` : ""}`;
+                if (!valueForm.isCodeManuallyEdited) {
+                    effectiveCode = `${transliterateToSku(typeValue).toUpperCase()}${compCode}${valueForm.consumableExtra ? transliterateToSku(valueForm.consumableExtra).substring(0, 3).toUpperCase() : ""}`;
+                }
+            } else {
+                effectiveName = `${typeValue}${valueForm.consumableValue ? ` ${valueForm.consumableValue}${valueForm.consumableUnit}` : ""}${valueForm.consumableExtra ? ` (${valueForm.consumableExtra})` : ""}`;
+                if (!valueForm.isCodeManuallyEdited) {
+                    effectiveCode = `${transliterateToSku(typeValue).toUpperCase()}${valueForm.consumableValue}${transliterateToSku(valueForm.consumableUnit).toUpperCase()}${valueForm.consumableExtra ? transliterateToSku(valueForm.consumableExtra).substring(0, 3).toUpperCase() : ""}`;
+                }
+            }
+        } else {
+            if (!valueForm.name.trim()) { setValueForm(prev => ({ ...prev, error: "Введите название" })); return; }
+            if (!valueForm.code.trim()) { setValueForm(prev => ({ ...prev, error: "Введите код" })); return; }
+        }
+
+        const normalizedCode = effectiveCode.trim().toUpperCase();
+        const isDuplicate = editingTypeValues.some((attr: Attribute) => {
+            if (valueForm.editingAttribute && attr.id === valueForm.editingAttribute.id) return false;
+            return normalizedCode === attr.value.trim().toUpperCase();
+        });
+
+        if (isDuplicate) {
+            setValueForm(prev => ({ ...prev, error: "Значение с таким кодом уже существует", isSaving: false }));
+            toast("Значение с таким кодом уже существует", "error");
+            return;
+        }
 
         const meta = {
-            ...(valueForm.targetTypeSlug === "color" ? { hex: valueForm.colorHex } : {}),
+            hex: hasColor ? valueForm.colorHex : undefined,
+            length: isDimensions ? valueForm.length : undefined,
+            width: isDimensions ? valueForm.width : undefined,
+            height: isDimensions ? valueForm.height : undefined,
+            dimensionUnit: isDimensions ? valueForm.dimensionUnit : undefined,
+            fullName: valueForm.fullName,
+            shortName: valueForm.shortName,
+            isOversize: (dataType === "size") ? valueForm.isOversize : undefined,
+            items: (hasComposition || isComposition) ? filled : undefined,
+            consumableType: isConsumable ? valueForm.consumableType : undefined,
+            consumableCustomType: isConsumable ? valueForm.consumableCustomType : undefined,
+            consumableValue: isConsumable ? valueForm.consumableValue : undefined,
+            consumableUnit: isConsumable ? valueForm.consumableUnit : undefined,
+            consumableExtra: isConsumable ? valueForm.consumableExtra : undefined,
         };
 
         try {
+            setValueForm(prev => ({ ...prev, isSaving: true }));
             let res;
             if (valueForm.editingAttribute) {
-                res = await updateInventoryAttribute(valueForm.editingAttribute.id, { type: valueForm.editingAttribute.type, name: valueForm.name, value: valueForm.code, meta });
+                res = await updateInventoryAttribute(valueForm.editingAttribute.id, { type: valueForm.editingAttribute.type, name: effectiveName, value: effectiveCode, meta });
             } else {
-                res = await createInventoryAttribute({ type: valueForm.targetTypeSlug, name: valueForm.name, value: valueForm.code, meta });
+                res = await createInventoryAttribute({ type: valueForm.targetTypeSlug, name: effectiveName, value: effectiveCode, meta });
             }
 
             if (!res.success) {
@@ -280,9 +372,13 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             editingType: type,
             name: type.name,
             categoryId: type.categoryId || "uncategorized",
+            dataType: type.dataType || "text",
             isSystem: type.isSystem || false,
             showInSku: type.showInSku ?? true,
             showInName: type.showInName ?? true,
+            hasColor: type.hasColor ?? false,
+            hasUnits: type.hasUnits ?? false,
+            hasComposition: type.hasComposition ?? false,
             isLoading: false,
             error: null
         });
@@ -301,7 +397,10 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
                     category: catId,
                     isSystem: typeForm.isSystem,
                     showInSku: typeForm.showInSku,
-                    showInName: typeForm.showInName
+                    showInName: typeForm.showInName,
+                    dataType: typeForm.dataType,
+                    hasColor: typeForm.hasColor,
+                    hasComposition: typeForm.hasComposition
                 }
             );
             if (res.success) {

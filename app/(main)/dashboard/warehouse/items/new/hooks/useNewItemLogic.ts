@@ -6,6 +6,7 @@ import { addInventoryItem } from "@/app/(main)/dashboard/warehouse/item-actions"
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { ROUTES } from "@/lib/routes";
+import { sortCategories } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 const CATEGORY_TYPES = {
     packaging: "упаковка",
@@ -164,18 +165,14 @@ export function useNewItemLogic({
     };
 
     const subCategories = selectedCategory
-        ? categories.filter(c => c.parentId === selectedCategory.id)
+        ? sortCategories(categories.filter(c => c.parentId === selectedCategory.id))
         : [];
 
     const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
 
-    const topLevelCategories = categories
-        .filter(c => !c.parentId || c.parentId === "")
-        .sort((a, b) => {
-            if (a.name.toLowerCase().includes(CATEGORY_TYPES.uncategorized)) return 1;
-            if (b.name.toLowerCase().includes(CATEGORY_TYPES.uncategorized)) return -1;
-            return a.name.localeCompare(b.name);
-        });
+    const topLevelCategories = sortCategories(
+        categories.filter(c => !c.parentId || c.parentId === "")
+    );
 
     const hasSubCategories = subCategories.length > 0;
 
@@ -288,7 +285,14 @@ export function useNewItemLogic({
 
     const handleNext = () => {
         if (!validateStep(step)) return;
-        setStep(step + 1);
+
+        // Jump from 0 to 2 as 1 is currently obsolete/missing in Client and Sidebar
+        if (step === 0) {
+            setStep(2);
+        } else {
+            setStep(step + 1);
+        }
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 

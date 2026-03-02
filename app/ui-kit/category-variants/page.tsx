@@ -1,6 +1,5 @@
 import React from "react";
 import { Shirt, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 // Mock Data
 const category = {

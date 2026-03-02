@@ -16,6 +16,8 @@ export const inventoryAttributes = pgTable("inventory_attributes", {
     meta: jsonb("meta"), // { hex: '#...' } for colors
 }, (table) => {
     return {
+        typeIdx: index("inv_attr_type_idx").on(table.type),
+        valueIdx: index("inv_attr_value_idx").on(table.value),
         createdIdx: index("inv_attr_created_idx").on(table.createdAt),
     }
 });
@@ -53,6 +55,7 @@ export const inventoryCategories = pgTable("inventory_categories", {
         activeIdx: index("inv_cats_active_idx").on(table.isActive),
         createdIdx: index("inv_cats_created_idx").on(table.createdAt),
         slugIdx: index("inv_cats_slug_idx").on(table.slug),
+        pathIdx: index("inv_cats_path_idx").on(table.fullPath),
     }
 });
 
@@ -76,10 +79,15 @@ export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
     isSystem: boolean("is_system").default(false).notNull(),
     sortOrder: integer("sort_order").default(0).notNull(),
     categoryId: uuid("category_id").references(() => inventoryCategories.id),
+    dataType: text("data_type").default("text").notNull(), // 'text', 'unit', 'color'
     showInSku: boolean("show_in_sku").default(true).notNull(),
     showInName: boolean("show_in_name").default(true).notNull(),
+    hasColor: boolean("has_color").default(false).notNull(),
+    hasUnits: boolean("has_units").default(false).notNull(),
+    hasComposition: boolean("has_composition").default(false).notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    meta: jsonb("meta"),
 }, (table) => {
     return {
         deptIdx: index("inv_attr_types_department_idx").on(table.categoryId),
@@ -133,6 +141,7 @@ export const inventoryItems = pgTable("inventory_items", {
     return {
         categoryIdx: index("inv_items_category_idx").on(table.categoryId),
         skuIdx: index("inv_items_sku_idx").on(table.sku),
+        nameIdx: index("inv_items_name_idx").on(table.name),
         typeIdx: index("inv_items_type_idx").on(table.itemType),
         archivedIdx: index("inv_items_archived_idx").on(table.isArchived),
         createdIdx: index("inv_items_created_idx").on(table.createdAt),

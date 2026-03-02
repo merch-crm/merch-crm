@@ -3,9 +3,8 @@ import Image from "next/image";
 import { CheckCircle2, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { Category, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { getCategoryIcon, getColorStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { getCategoryIcon, getCategoryCardStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 interface SummaryHeaderProps {
     formData: ItemFormData;
@@ -36,6 +35,9 @@ export function SummaryHeader({
     onCancelName,
     onKeyDown
 }: SummaryHeaderProps) {
+    const cardStyles = getCategoryCardStyles(category?.color || "#000");
+    const categoryIcon = getCategoryIcon(category);
+
     return (
         <div className="relative bg-white rounded-[32px] border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
             {/* Status Bar */}
@@ -124,8 +126,11 @@ export function SummaryHeader({
                             <div className="flex flex-col">
                                 <span className="text-xs font-bold text-slate-700 leading-none mb-1">Категория:</span>
                                 <div className="flex items-center gap-2">
-                                    <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center border shadow-sm", getColorStyles(activeSubcategory?.color || category.color))}>
-                                        {createElement(getCategoryIcon(activeSubcategory || category), { className: "w-4 h-4", strokeWidth: 2.5 })}
+                                    <div
+                                        className="w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 shadow-lg text-white"
+                                        style={cardStyles.icon}
+                                    >
+                                        {createElement(categoryIcon, { className: "w-5 h-5", "aria-label": category.name })}
                                     </div>
                                     <span className="text-base font-bold text-slate-600">
                                         {category.name}: {activeSubcategory?.name || "Основная"}

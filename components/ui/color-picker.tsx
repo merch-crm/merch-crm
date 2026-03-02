@@ -36,8 +36,9 @@ export function ColorPicker({
     label,
     icon,
     className,
-    presets = DEFAULT_PRESETS
-}: ColorPickerProps) {
+    presets = DEFAULT_PRESETS,
+    isInline = false
+}: ColorPickerProps & { isInline?: boolean }) {
     const [inputValue, setInputValue] = useState(color);
 
     useEffect(() => {
@@ -51,6 +52,70 @@ export function ColorPicker({
             onChange(value);
         }
     };
+
+    const pickerNode = (
+        <div className={cn("p-1 space-y-3", !isInline && "p-3.5")}>
+            <style>{colorPickerStyles}</style>
+
+            <div className="custom-color-picker-wrapper block w-full">
+                <HexColorPicker
+                    color={color}
+                    onChange={onChange}
+                    className="!w-full !h-32"
+                />
+            </div>
+
+            {!isInline && (
+                <div className="space-y-3.5">
+                    <div className="flex items-center gap-2 p-2 bg-slate-50/80 rounded-xl border border-slate-100 shadow-inner group/hex">
+                        <Hash className="w-3.5 h-3.5 text-slate-400 group-focus-within/hex:text-primary transition-colors" />
+                        <input
+                            value={inputValue}
+                            onChange={handleInputChange}
+                            className="bg-transparent border-none outline-none font-mono text-xs font-bold text-slate-900 w-full"
+                            spellCheck={false}
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-5 gap-2 px-0.5">
+                        {presets.map((p) => (
+                            <Button
+                                key={p}
+                                type="button"
+                                variant="ghost"
+                                onClick={() => onChange(p)}
+                                className={cn(
+                                    "w-full h-auto aspect-square p-0 rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center bg-transparent hover:bg-transparent",
+                                    color.toLowerCase() === p.toLowerCase() && "ring-2 ring-primary ring-offset-1"
+                                )}
+                                style={{ backgroundColor: p }}
+                            >
+                                {color.toLowerCase() === p.toLowerCase() && (
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" style={{ backgroundColor: p === "#FFFFFF" ? "#cbd5e1" : "white" }} />
+                                )}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
+    if (isInline) {
+        return (
+            <div className={cn("flex flex-col gap-2", className)}>
+                {label && (
+                    <label className="flex items-center gap-2 text-[13px] font-bold text-slate-700 mb-2">
+                        {icon}
+                        {label}
+                    </label>
+                )}
+                <div className="bg-white rounded-2xl border border-slate-100 p-2 shadow-sm">
+                    {pickerNode}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={cn("flex flex-col gap-2", className)}>
@@ -83,48 +148,7 @@ export function ColorPicker({
                         sideOffset={8}
                         collisionPadding={20}
                     >
-                        <style>{colorPickerStyles}</style>
-
-                        <div className="p-3.5 space-y-3">
-                            <div className="custom-color-picker-wrapper">
-                                <HexColorPicker
-                                    color={color}
-                                    onChange={onChange}
-                                    className="!w-full !h-32"
-                                />
-                            </div>
-
-                            <div className="space-y-3.5">
-                                <div className="flex items-center gap-2 p-2 bg-slate-50/80 rounded-xl border border-slate-100 shadow-inner group/hex">
-                                    <Hash className="w-3.5 h-3.5 text-slate-400 group-focus-within/hex:text-primary transition-colors" />
-                                    <input
-                                        value={inputValue}
-                                        onChange={handleInputChange}
-                                        className="bg-transparent border-none outline-none font-mono text-xs font-bold text-slate-900 w-full"
-                                        spellCheck={false}
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-5 gap-2 px-0.5">
-                                    {presets.map((p) => (
-                                        <Button
-                                            key={p}
-                                            variant="ghost"
-                                            onClick={() => onChange(p)}
-                                            className={cn(
-                                                "w-full h-auto aspect-square p-0 rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center bg-transparent hover:bg-transparent",
-                                                color.toLowerCase() === p.toLowerCase() && "ring-2 ring-primary ring-offset-1"
-                                            )}
-                                            style={{ backgroundColor: p }}
-                                        >
-                                            {color.toLowerCase() === p.toLowerCase() && (
-                                                <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" style={{ backgroundColor: p === "#FFFFFF" ? "#cbd5e1" : "white" }} />
-                                            )}
-                                        </Button>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
+                        {pickerNode}
                     </PopoverContent>
                 </Popover>
 
@@ -150,7 +174,11 @@ const colorPickerStyles = `
         border: none;
         width: 100% !important;
     }
+    .custom-color-picker-wrapper .react-colorful__interactive {
+        outline: none;
+    }
     .custom-color-picker-wrapper .react-colorful__saturation {
+
         border-radius: 8px;
         border-bottom: none;
         box-shadow: inset 0 0 10px rgba(0,0,0,0.02);

@@ -3,6 +3,7 @@ import { getStorageLocations } from "../../storage-actions";
 import { getMeasurementUnits } from "../../warehouse-shared.actions";
 import { getInventoryAttributes, getInventoryAttributeTypes } from "../../attribute-actions";;
 import { NewItemPageClient } from "./new-item-page-client";
+import { AttributeType } from "../../types";
 
 export const metadata = {
     title: "Склад | Новый товар",
@@ -41,7 +42,7 @@ export default async function NewItemPage({
             storageLocations={storageLocations}
             measurementUnits={measurementUnits}
             dynamicAttributes={dynamicAttributes}
-            attributeTypes={attributeTypes}
+            attributeTypes={attributeTypes as AttributeType[]}
             users={users}
             initialCategoryId={categoryId}
             initialSubcategoryId={subcategoryId}

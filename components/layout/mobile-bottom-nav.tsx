@@ -26,6 +26,11 @@ interface UserProp {
 export function MobileBottomNav({ user }: { user: UserProp }) {
     const pathname = usePathname();
 
+    // Hide navigation on item creation page for focused experience
+    const isHidden = pathname.startsWith("/dashboard/warehouse/items/new");
+
+    if (isHidden) return null;
+
     return (
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100]">
             <div className="absolute inset-0 bg-white/80 backdrop-blur-2xl border-t border-slate-200/50" />

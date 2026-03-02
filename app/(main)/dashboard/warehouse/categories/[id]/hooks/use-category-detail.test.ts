@@ -45,6 +45,8 @@ const mockItems: any[] = [
     { id: 'item-2', name: 'Худи' },
 ];
 
+const STABLE_EMPTY_ARRAY: any[] = [];
+
 describe('useCategoryDetail', () => {
     const mockPush = vi.fn();
     const mockRefresh = vi.fn();
@@ -59,7 +61,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('initializes state correctly', () => {
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         expect(result.current.ui.mounted).toBe(true);
         expect(result.current.subCategories).toEqual([]);
@@ -67,7 +69,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('sets breadcrumbs on mount', () => {
-        renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
         expect(mockSetCustomTrail).toHaveBeenCalledWith([
             { label: "Склад", href: "/dashboard/warehouse" },
             { label: "Одежда", href: "/dashboard/warehouse/categories/cat-1" }
@@ -75,7 +77,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('toggles item selection', () => {
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         act(() => {
             result.current.toggleSelectItem('item-1');
@@ -89,7 +91,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('toggles select all', () => {
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         act(() => {
             result.current.toggleSelectAll();
@@ -105,7 +107,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('updates URL when filters change', async () => {
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         act(() => {
             result.current.setFilters(prev => ({ ...prev, search: "test" }));
@@ -119,7 +121,7 @@ describe('useCategoryDetail', () => {
 
     it('handles item deletion', async () => {
         (deleteInventoryItems as any).mockResolvedValue({ success: true });
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         await act(async () => {
             await result.current.handleDeleteItems(['item-1']);
@@ -131,7 +133,7 @@ describe('useCategoryDetail', () => {
 
     it('handles category deletion', async () => {
         (deleteInventoryCategory as any).mockResolvedValue({ success: true });
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         await act(async () => {
             await result.current.handleDeleteCategory('cat-1');
@@ -144,7 +146,7 @@ describe('useCategoryDetail', () => {
     it('fetches stocks when opening adjust dialog', async () => {
         const mockStocks = [{ storageLocationId: 'loc-1', quantity: 10 }];
         (getItemStocks as any).mockResolvedValue({ success: true, data: mockStocks });
-        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, [], mockItems));
+        const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         await act(async () => {
             await result.current.handleOpenAdjust(mockItems[0]);

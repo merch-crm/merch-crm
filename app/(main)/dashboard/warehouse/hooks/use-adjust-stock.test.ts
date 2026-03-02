@@ -2,6 +2,7 @@ import { renderHook, act } from '@testing-library/react';
 import { useAdjustStock } from './use-adjust-stock';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { adjustInventoryStock } from '../stock-actions';
+import type { InventoryItem } from '../types';
 
 // Mock the server action
 vi.mock('../stock-actions', () => ({
@@ -12,17 +13,17 @@ vi.mock('@/lib/sounds', () => ({
     playSound: vi.fn(),
 }));
 
-const mockItem: any = {
+const mockItem = {
     id: 'item-1',
     quantity: 10,
     storageLocationId: 'loc-1',
     costPrice: 100,
-};
+} as unknown as InventoryItem;
 
-const mockLocations: any[] = [
+const mockLocations = [
     { id: 'loc-1', name: 'Склад 1' },
     { id: 'loc-2', name: 'Склад 2' },
-];
+] as any[];
 
 describe('useAdjustStock', () => {
     const mockOnClose = vi.fn();

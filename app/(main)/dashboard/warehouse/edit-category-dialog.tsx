@@ -286,7 +286,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div className="w-[280px] shrink-0 flex flex-col overflow-hidden">
                             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                                 <span className="text-sm font-bold text-slate-700">Подкатегории</span>
-                                <span className="bg-slate-50 text-slate-900 border border-slate-200 px-2 py-1 rounded-full text-[13px] font-bold shadow-sm">{subCategories.length}</span>
+                                <span className="bg-slate-50 text-slate-900 border border-slate-200 w-7 h-7 flex items-center justify-center rounded-full text-[13px] font-bold shadow-sm">{subCategories.length}</span>
                             </div>
                             <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                                 {subCategories.length === 0 ? (

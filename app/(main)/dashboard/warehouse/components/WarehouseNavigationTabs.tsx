@@ -20,7 +20,8 @@ export const WAREHOUSE_TAB_INFO: Record<string, { title: string; description: st
     "/dashboard/warehouse/storage": { title: "Места хранения", description: "Мониторинг складов, ячеек и перемещений продукции" },
     "/dashboard/warehouse/characteristics": { title: "Характеристики", description: "Настройка характеристик, типов атрибутов и параметров SKU" },
     "/dashboard/warehouse/history": { title: "Журнал операций", description: "Детальная история всех складских транзакций и изменений" },
-    "/dashboard/warehouse/archive": { title: "Архив продукции", description: "Список позиций, выведенных из эксплуатации или удаленных" }
+    "/dashboard/warehouse/archive": { title: "Архив продукции", description: "Список позиций, выведенных из эксплуатации или удаленных" },
+    "/dashboard/warehouse/items/new": { title: "Новая позиция", description: "Создание новой карточки товара в системе" }
 };
 
 interface WarehouseNavigationTabsProps {

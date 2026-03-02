@@ -1,47 +1,71 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { Plus, Settings, Pencil } from "lucide-react";
-import { InventoryAttribute as Attribute, AttributeType } from "../../types";
-import { getColorHex } from "../../hooks/use-warehouse-characteristic";
+import { Settings, Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize, Globe, Weight, Droplets, Package, LucideIcon, Component, Waves, Wrench } from "lucide-react";
+import { type InventoryAttribute as Attribute, AttributeType, AttributeMeta } from "../../types";
+import { sortAttributeValues, getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+
 
 interface CharacteristicCardProps {
     type: AttributeType;
     attributes: Attribute[];
     openEditType: (type: AttributeType) => void;
     openEditValue: (attr: Attribute) => void;
-    openAddValue: (slug: string) => void;
 }
+
+const DATA_TYPE_ICONS: Record<string, LucideIcon> = {
+    text: Shapes,
+    unit: Ruler,
+    color: Palette,
+    dimensions: Box,
+    quantity: Hash,
+    composition: Component,
+    material: Layers,
+    size: Maximize,
+    brand: Tag,
+    country: Globe,
+    density: Waves,
+    weight: Weight,
+    volume: Droplets,
+    package: Package,
+    consumable: Wrench,
+};
 
 export function CharacteristicCard({
     type,
     attributes: allAttributes,
     openEditType,
-    openEditValue,
-    openAddValue
+    openEditValue
 }: CharacteristicCardProps) {
-    let typeAttributes = allAttributes.filter(a => a.type === type.slug);
-
-    if (type.slug === "size") {
-        const sizeOrder = ["kids", "s", "s-m", "m", "l", "xl"];
-        typeAttributes = [...typeAttributes].sort((a, b) => {
-            const indexA = sizeOrder.indexOf(a.name.toLowerCase());
-            const indexB = sizeOrder.indexOf(b.name.toLowerCase());
-            if (indexA === -1 && indexB === -1) return a.name.localeCompare(b.name);
-            if (indexA === -1) return 1;
-            if (indexB === -1) return -1;
-            return indexA - indexB;
-        });
-    }
+    const typeAttributes = sortAttributeValues(
+        allAttributes.filter(a => a.type === type.slug),
+        type.dataType || "text"
+    );
 
     return (
-        <div className="crm-card flex flex-col h-full group shadow-sm hover:shadow-md transition-shadow duration-300">
+        <div
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openEditType(type);
+                }
+            }}
+            onClick={() => openEditType(type)}
+            className="crm-card flex flex-col h-full group shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border hover:border-indigo-200 active:scale-[0.99]"
+        >
             <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0">
-                        <span className="font-bold text-xl leading-none pt-0.5">{type.name[0]}</span>
+                    <div className="w-12 h-12 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 group-hover:scale-110 transition-transform">
+                        {(() => {
+                            const TypeIcon = DATA_TYPE_ICONS[type.dataType || ""];
+                            return TypeIcon
+                                ? <TypeIcon className="w-6 h-6" />
+                                : <span className="font-bold text-xl leading-none pt-0.5">{type.name[0]}</span>;
+                        })()}
                     </div>
                     <div>
-                        <h3 className="font-bold text-lg text-slate-800 leading-tight mb-1">{type.name}</h3>
+                        <h3 className="font-bold text-lg text-slate-800 leading-tight mb-1 group-hover:text-indigo-600 transition-colors">{type.name}</h3>
                         <div className="flex flex-wrap items-center gap-1.5">
                             {type.isSystem && (
                                 <span className="text-xs font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-[4px]">
@@ -72,7 +96,10 @@ export function CharacteristicCard({
                         {typeAttributes.length} шт
                     </span>
                     <button type="button"
-                        onClick={() => openEditType(type)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            openEditType(type);
+                        }}
                         className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
                     >
                         <Settings className="w-4 h-4" />
@@ -80,57 +107,57 @@ export function CharacteristicCard({
                 </div>
             </div>
 
-            <div className="flex-1">
-                <div className="grid grid-cols-2 gap-2">
-                    {typeAttributes.map(attr => (
+            <div className="flex-1 flex flex-col pt-2">
+                <div className={cn(
+                    "flex flex-wrap gap-2 content-stretch items-stretch",
+                    typeAttributes.length > 0 ? "flex-1" : "flex-1"
+                )}>
+                    {typeAttributes.map((attr: Attribute) => (
                         <button type="button"
                             key={attr.id}
-                            onClick={() => openEditValue(attr)}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                openEditValue(attr);
+                            }}
                             className={cn(
-                                "relative group/val flex items-center gap-2 px-3 py-2 bg-slate-50 border border-slate-100 rounded-[10px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-sm hover:border-slate-200 cursor-pointer overflow-hidden",
-                                attr.semanticColor && "pl-2"
+                                "relative group/val flex items-center gap-2.5 px-4 py-3 bg-slate-50 border border-slate-100 rounded-[14px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-md hover:border-slate-200 cursor-pointer overflow-hidden flex-1 min-w-[140px] min-h-[52px]",
+                                attr.semanticColor && "pl-3"
                             )}
                         >
-                            {type.slug === "color" ? (
+                            {(type as AttributeType & { dataType?: string }).dataType === "color" || type.slug === "color" ? (
                                 <span
-                                    className="w-6 h-6 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0"
+                                    className="w-7 h-7 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0"
                                     style={{ backgroundColor: getColorHex(attr.meta) }}
                                 />
-                            ) : (
-                                <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold bg-white text-slate-600 border border-slate-200 flex-shrink-0 shadow-sm">
-                                    {["size", "material"].includes(type.slug)
-                                        ? attr.value
-                                        : attr.name.substring(0, 1).toUpperCase()}
+                            ) : (() => {
+                                const TypeIcon = DATA_TYPE_ICONS[type.dataType || ""];
+                                return (
+                                    <span className="w-7 h-7 rounded-full flex items-center justify-center bg-white text-primary border border-slate-200 flex-shrink-0 shadow-sm">
+                                        {TypeIcon ? <TypeIcon className="w-3.5 h-3.5" /> : <span className="text-[12px] font-bold text-slate-600">{attr.name.substring(0, 1)}</span>}
+                                    </span>
+                                );
+                            })()}
+
+                            <div className="flex items-center gap-1.5 min-w-0 flex-1 px-1">
+                                <span className="text-[14px] font-bold text-slate-700 break-words group-hover/val:text-indigo-600 transition-colors text-left font-sans">
+                                    {(attr.meta as AttributeMeta)?.fullName || attr.name}
+                                    {type.dataType === "density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") && " г/м²"}
                                 </span>
-                            )}
-
-                            <span className="text-[13px] font-semibold text-slate-700 truncate group-hover/item:text-indigo-600 transition-colors flex-1 pr-4 text-left">
-                                {attr.name}
-                            </span>
-
-                            <div className="absolute right-2 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-200 text-indigo-500">
-                                <Pencil className="w-3.5 h-3.5" />
+                                {(attr.meta as AttributeMeta)?.isOversize && (
+                                    <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[11px] font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none">
+                                        oversize
+                                    </span>
+                                )}
                             </div>
                         </button>
                     ))}
 
                     {typeAttributes.length === 0 && (
-                        <div className="col-span-2 py-8 text-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+                        <div className="flex-1 flex items-center justify-center text-center bg-slate-50/50 rounded-[14px] border border-dashed border-slate-200 min-h-[80px]">
                             <span className="text-sm font-medium text-slate-400">Нет значений</span>
                         </div>
                     )}
                 </div>
-            </div>
-
-            <div className="mt-6 pt-4 border-t border-slate-100">
-                <button type="button"
-                    onClick={() => openAddValue(type.slug)}
-                    className="w-full h-11 flex items-center justify-center gap-2 rounded-[14px] border-2 border-dashed border-slate-200 text-slate-400 font-semibold text-[13px] hover:border-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/30 transition-all duration-200 group/add"
-                >
-                    <Plus className="w-4 h-4 transition-transform" />
-                    Добавить значение
-                </button>
-            </div>
-        </div>
+            </div>        </div>
     );
 }
