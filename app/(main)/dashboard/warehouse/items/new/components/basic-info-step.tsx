@@ -93,8 +93,8 @@ export function BasicInfoStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="space-y-4">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-0.5">
+                <div className="space-y-4 px-6 pb-10 pt-2">
 
                     {/* Header */}
                     <div className="flex items-center justify-between">

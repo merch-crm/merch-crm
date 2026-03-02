@@ -18,8 +18,7 @@ import {
 } from "@dnd-kit/sortable";
 import { EmptyState } from "@/components/ui/empty-state";
 import { InventoryAttribute as Attribute, AttributeType } from "../../types";
-import { SortableCharacteristicCard } from "./SortableCharacteristicCard";
-import { CharacteristicCard } from "./CharacteristicCard";
+import { SortableCharacteristicCard, CharacteristicCardContent } from "./SortableCharacteristicCard";
 import { reorderInventoryAttributeTypes } from "../../attribute-actions";
 import { useToast } from "@/components/ui/toast";
 
@@ -129,15 +128,16 @@ export function CharacteristicGrid({
                     </div>
                 </SortableContext>
 
-                {/* Drag overlay — shows a floating copy of the dragged card */}
-                <DragOverlay dropAnimation={{ duration: 200, easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)" }}>
+                {/* Drag overlay — shows floating card with primary border, original slot goes invisible */}
+                <DragOverlay adjustScale={true}>
                     {activeType ? (
-                        <div className="opacity-95 rotate-1 shadow-2xl shadow-indigo-500/20">
-                            <CharacteristicCard
+                        <div className="w-full h-full pointer-events-none">
+                            <CharacteristicCardContent
                                 type={activeType}
                                 attributes={attributes}
                                 openEditType={() => { }}
                                 openEditValue={() => { }}
+                                isOverlay
                             />
                         </div>
                     ) : null}

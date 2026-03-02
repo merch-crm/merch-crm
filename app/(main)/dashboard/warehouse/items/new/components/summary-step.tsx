@@ -44,8 +44,8 @@ export function SummaryStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="max-w-6xl mx-auto space-y-3">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-0.5">
+                <div className="max-w-6xl mx-auto space-y-3 px-6 pb-10">
                     {/* Item Name & Status Header */}
                     <SummaryHeader
                         formData={formData}

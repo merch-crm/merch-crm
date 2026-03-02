@@ -65,7 +65,7 @@ export function StockStep({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 gap-3 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar pt-2 pb-6">
+                    <div className="grid grid-cols-12 gap-3 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar px-6 pt-2 pb-10 pr-0.5">
                         {/* FIRST ROW */}
                         {/* BENTO BLOCK 1: MAIN QUANTITY */}
                         <div className="col-span-12 md:col-span-5 xl:col-span-5 crm-card  !rounded-[28px] hover:shadow-md transition-all duration-300 flex flex-col items-start text-left">

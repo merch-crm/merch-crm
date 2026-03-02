@@ -144,25 +144,31 @@ export const CategoryCardContent = React.memo(({
                     </p>
                 </div>
 
-                {/* Column 2: Subcategories List */}
-                <div className="flex flex-col items-center justify-center flex-1 min-w-[280px] max-w-[400px] border-y border-slate-100/80 py-6 my-auto lg:border-y-0 lg:py-0">
+                {/* Column 2: Subcategories List - Structured Grid */}
+                <div className="flex flex-col items-start justify-center flex-1 min-w-[300px] max-w-[450px] border-y border-slate-100/80 py-6 my-auto lg:border-y-0 lg:py-0">
                     {category.children && category.children.length > 0 ? (
-                        <div className="flex flex-col items-center gap-2 w-full px-2">
-                            <div className="flex flex-wrap justify-center gap-2 w-full">
-                                {category.children.slice(0, 6).map((child: Category) => (
-                                    <span key={child.id} className="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-xl text-[12px] text-center font-bold text-slate-600 truncate max-w-[140px] shadow-sm transition-colors hover:bg-slate-100/70 cursor-default">
-                                        {child.name}
-                                    </span>
+                        <div className="flex flex-col items-start gap-3 w-full px-8">
+                            <div className="grid grid-cols-2 gap-x-6 gap-y-2 w-full">
+                                {category.children.slice(0, 10).map((child: Category) => (
+                                    <div key={child.id} className="flex items-center gap-2 group/item">
+                                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: hexColor + '40' }} />
+                                        <span className="text-[13px] font-bold text-slate-600 truncate transition-colors group-hover/item:text-slate-900">
+                                            {child.name}
+                                        </span>
+                                    </div>
                                 ))}
                             </div>
-                            {category.children.length > 6 && (
-                                <span className="text-[11px] font-bold text-slate-400 mt-1 text-center block">
-                                    и ещё {category.children.length - 6}...
-                                </span>
+                            {category.children.length > 10 && (
+                                <div className="flex items-center gap-2 mt-2 px-1">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-slate-100 shrink-0" />
+                                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">
+                                        и ещё {category.children.length - 10}
+                                    </span>
+                                </div>
                             )}
                         </div>
                     ) : (
-                        <div className="text-[13px] font-semibold text-slate-300 text-center italic">
+                        <div className="text-[13px] font-semibold text-slate-300 text-center italic w-full">
                             Нет подкатегорий
                         </div>
                     )}

@@ -155,8 +155,8 @@ export function PackagingBasicInfoStep({
 
     return (
         <div className="flex flex-col h-full overflow-hidden">
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="max-w-[800px] mx-auto space-y-3 pb-10">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-0.5">
+                <div className="max-w-[800px] mx-auto space-y-3 px-6 pb-10">
 
                     {/* Header */}
                     <div className="flex items-center gap-3 shrink-0">
