@@ -3,9 +3,10 @@ import { useCategoryDetail } from './use-category-detail';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getInventoryCategories, deleteInventoryCategory } from '../../../category-actions';
-import { deleteInventoryItems, archiveInventoryItems } from '../../../bulk-actions';
+import { deleteInventoryItems } from '../../../bulk-actions';
 import { getItemStocks } from '../../../stock-actions';
 import { useBreadcrumbs } from '@/components/layout/breadcrumbs-context';
+import type { Category, InventoryItem } from '../../../types';
 
 // Mocks
 vi.mock('next/navigation', () => ({
@@ -39,13 +40,13 @@ vi.mock('../../../stock-actions', () => ({
     getItemStocks: vi.fn(),
 }));
 
-const mockCategory: any = { id: 'cat-1', name: 'Одежда' };
-const mockItems: any[] = [
-    { id: 'item-1', name: 'Футболка' },
-    { id: 'item-2', name: 'Худи' },
+const mockCategory: Category = { id: 'cat-1', name: 'Одежда' } as Category;
+const mockItems: InventoryItem[] = [
+    { id: 'item-1', name: 'Футболка' } as InventoryItem,
+    { id: 'item-2', name: 'Худи' } as InventoryItem,
 ];
 
-const STABLE_EMPTY_ARRAY: any[] = [];
+const STABLE_EMPTY_ARRAY: Category[] = [];
 
 describe('useCategoryDetail', () => {
     const mockPush = vi.fn();
@@ -54,10 +55,10 @@ describe('useCategoryDetail', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        (useRouter as any).mockReturnValue({ push: mockPush, refresh: mockRefresh });
-        (useSearchParams as any).mockReturnValue(new URLSearchParams());
-        (useBreadcrumbs as any).mockReturnValue({ setCustomTrail: mockSetCustomTrail });
-        (getInventoryCategories as any).mockResolvedValue({ success: true, data: [] });
+        (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({ push: mockPush, refresh: mockRefresh });
+        (useSearchParams as ReturnType<typeof vi.fn>).mockReturnValue(new URLSearchParams());
+        (useBreadcrumbs as ReturnType<typeof vi.fn>).mockReturnValue({ setCustomTrail: mockSetCustomTrail });
+        (getInventoryCategories as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true, data: [] });
     });
 
     it('initializes state correctly', () => {
@@ -120,7 +121,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('handles item deletion', async () => {
-        (deleteInventoryItems as any).mockResolvedValue({ success: true });
+        (deleteInventoryItems as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true });
         const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         await act(async () => {
@@ -132,7 +133,7 @@ describe('useCategoryDetail', () => {
     });
 
     it('handles category deletion', async () => {
-        (deleteInventoryCategory as any).mockResolvedValue({ success: true });
+        (deleteInventoryCategory as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true });
         const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         await act(async () => {
@@ -145,7 +146,7 @@ describe('useCategoryDetail', () => {
 
     it('fetches stocks when opening adjust dialog', async () => {
         const mockStocks = [{ storageLocationId: 'loc-1', quantity: 10 }];
-        (getItemStocks as any).mockResolvedValue({ success: true, data: mockStocks });
+        (getItemStocks as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true, data: mockStocks });
         const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         await act(async () => {
