@@ -288,7 +288,7 @@ export function AttributeSelector({
                 </div>
                 <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-7 gap-2">
                     {allOptions.map(c => (
-                        <Button
+                        <button
                             key={c.name}
                             type="button"
                             onClick={() => {
@@ -296,19 +296,19 @@ export function AttributeSelector({
                                 if (onCodeChange) onCodeChange(c.code);
                             }}
                             className={cn(
-                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[var(--radius)] border transition-all duration-300 shadow-sm p-0 w-auto",
-                                value === c.code ? "bg-white border-slate-900 shadow-md z-10" : "bg-white border-slate-200 hover:border-slate-400 hover:shadow-md"
+                                "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[14px] border bg-white transition-all duration-300 shadow-sm p-0 w-auto cursor-pointer",
+                                value === c.code ? "border-slate-900 shadow-md z-10" : "border-slate-200 hover:border-slate-300 hover:shadow-md"
                             )}
                         >
                             <div
-                                className="w-11 h-11 rounded-full border border-black/5 shadow-inner shrink-0 transition-all duration-300 group-hover:shadow-md"
+                                className="w-11 h-11 rounded-full border border-black/5 shadow-inner shrink-0 transition-all duration-300"
                                 style={{ backgroundColor: c.hex }}
                             />
                             <span className={cn(
                                 "text-xs font-bold truncate w-full px-2 text-center transition-colors duration-300",
                                 value === c.code ? "text-slate-900" : "text-slate-400 group-hover:text-slate-900"
                             )}>{c.name}</span>
-                        </Button>
+                        </button>
                     ))}
                     {allowCustom && (
                         <button
