@@ -12,6 +12,7 @@ const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '22222222-2222-4222-8222-222222222222', title: 'Test Task' }]) }) }),
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
+        select: mockSelect,
         query: {
             tasks: { findFirst: mockFindFirst, findMany: mockFindMany },
             taskComments: { findMany: mockFindMany },
@@ -37,7 +38,9 @@ vi.mock('@/lib/db', () => ({
             taskChecklists: { findMany: mockFindMany },
             users: { findMany: mockFindMany },
         },
+        insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) }),
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
+        delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
         transaction: vi.fn().mockImplementation(async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx as unknown as typeof mockTx)),
     },
 }));

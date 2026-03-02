@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { WikiClient } from './wiki-client';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { SheetStackProvider } from '@/components/ui/sheet-stack-context';
-import { getWikiPageDetail, WikiPage } from './actions';
+import { getWikiPageDetail } from './actions';
 
 // Mocks
 const mockPush = vi.fn();
