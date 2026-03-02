@@ -124,10 +124,10 @@ export const CategoryCardContent = React.memo(({
             )}
 
             {/* Adaptive layout container */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full py-4 items-center">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-8 w-full py-4">
 
                 {/* Column 1: Identity */}
-                <div className="flex flex-col items-center justify-center h-full">
+                <div className="flex flex-col items-center justify-center flex-1 min-w-[240px] max-w-[400px]">
                     <div
                         className="w-[72px] h-[72px] rounded-full flex items-center justify-center text-white mb-5 transition-transform group-hover:scale-[1.03]"
                         style={{ backgroundColor: hexColor }}
@@ -145,17 +145,19 @@ export const CategoryCardContent = React.memo(({
                 </div>
 
                 {/* Column 2: Subcategories List */}
-                <div className="flex flex-col items-center justify-center h-full min-h-[100px] border-y md:border-y-0 md:border-x border-slate-100/80 py-4 md:py-0 px-4">
+                <div className="flex flex-col items-center justify-center flex-1 min-w-[280px] max-w-[400px] border-y border-slate-100/80 py-6 my-auto lg:border-y-0 lg:py-0">
                     {category.children && category.children.length > 0 ? (
-                        <div className="flex flex-col gap-2 w-full max-w-[200px]">
-                            {category.children.slice(0, 4).map((child: Category) => (
-                                <span key={child.id} className="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-xl text-[12px] text-center font-bold text-slate-600 w-full truncate shadow-sm transition-colors hover:bg-slate-100/70 cursor-default">
-                                    {child.name}
-                                </span>
-                            ))}
-                            {category.children.length > 4 && (
+                        <div className="flex flex-col items-center gap-2 w-full px-2">
+                            <div className="flex flex-wrap justify-center gap-2 w-full">
+                                {category.children.slice(0, 6).map((child: Category) => (
+                                    <span key={child.id} className="px-3 py-1.5 bg-slate-50 border border-slate-100 rounded-xl text-[12px] text-center font-bold text-slate-600 truncate max-w-[140px] shadow-sm transition-colors hover:bg-slate-100/70 cursor-default">
+                                        {child.name}
+                                    </span>
+                                ))}
+                            </div>
+                            {category.children.length > 6 && (
                                 <span className="text-[11px] font-bold text-slate-400 mt-1 text-center block">
-                                    и ещё {category.children.length - 4}...
+                                    и ещё {category.children.length - 6}...
                                 </span>
                             )}
                         </div>
@@ -167,7 +169,7 @@ export const CategoryCardContent = React.memo(({
                 </div>
 
                 {/* Column 3: Stats */}
-                <div className="flex flex-col items-center justify-center h-full">
+                <div className="flex flex-col items-center justify-center flex-1 min-w-[240px] max-w-[400px]">
                     <div className="mb-4 flex flex-col items-center">
                         <span className="text-[48px] font-black text-slate-900 leading-[1.1] tabular-nums tracking-tight mb-1">
                             {(category.totalQuantity || 0).toLocaleString()}

@@ -99,7 +99,7 @@ export function AttributeCustomModal({
             title={title}
             showVisualTitle={false}
         >
-            <div className="flex flex-col overflow-hidden">
+            <div className="flex flex-col overflow-hidden rounded-[var(--radius-outer)]">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shrink-0">
