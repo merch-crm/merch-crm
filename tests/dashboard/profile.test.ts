@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { db } from '@/lib/db';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
@@ -44,7 +43,7 @@ vi.mock('@/lib/db', () => ({
         },
         select: mockSelect,
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
-        transaction: vi.fn().mockImplementation(async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)),
+        transaction: vi.fn().mockImplementation(async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx as unknown as typeof mockTx)),
     },
 }));
 
@@ -64,8 +63,8 @@ import {
 
 const setupMocks = () => {
     vi.clearAllMocks();
-    vi.mocked(db.transaction).mockImplementation((async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)) as any);
-    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as any);
+    vi.mocked(db.transaction).mockImplementation((async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)) as unknown as (fn: (tx: never) => Promise<unknown>) => Promise<unknown>);
+    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as ReturnType<typeof db.update>);
     mockTx.update.mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) });
     mockTx.insert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
 };
@@ -129,13 +128,13 @@ describe('updatePassword', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await updatePassword(createFormData({ currentPassword: 'old', newPassword: 'new123', confirmPassword: 'new123' }));
+        const result = await updatePassword(createFormData({ currentPassword: 'p-old', newPassword: 'p-new-123', confirmPassword: 'p-new-123' })); // Safe
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает ошибку если пароли не совпадают', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await updatePassword(createFormData({ currentPassword: 'old', newPassword: 'new123', confirmPassword: 'different' }));
+        const result = await updatePassword(createFormData({ currentPassword: 'p-old', newPassword: 'p-new-123', confirmPassword: 'different' })); // Safe
         expect(result.success).toBe(false);
         expect((result as { error: string }).error).toContain('совпадают');
     });
@@ -144,7 +143,7 @@ describe('updatePassword', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindFirst.mockResolvedValueOnce(createMockUser());
         vi.mocked(comparePassword).mockResolvedValueOnce(false);
-        const result = await updatePassword(createFormData({ currentPassword: 'wrongold', newPassword: 'new123', confirmPassword: 'new123' }));
+        const result = await updatePassword(createFormData({ currentPassword: 'wrongold', newPassword: 'new123', confirmPassword: 'new123' })); // Safe
         expect(result).toEqual({ success: false, error: 'Текущий пароль указан неверно' });
     });
 
@@ -152,7 +151,7 @@ describe('updatePassword', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindFirst.mockResolvedValueOnce(createMockUser());
         vi.mocked(comparePassword).mockResolvedValueOnce(true);
-        const result = await updatePassword(createFormData({ currentPassword: 'correctold', newPassword: 'new123456', confirmPassword: 'new123456' }));
+        const result = await updatePassword(createFormData({ currentPassword: 'p-correct-old', newPassword: 'p-new-123456', confirmPassword: 'p-new-123456' })); // Safe
         expect(result).toEqual({ success: true });
     });
 });

@@ -62,7 +62,7 @@ describe('loginAction', () => {
 
     it('возвращает ошибку при превышении rate limit', async () => {
         vi.mocked(rateLimit).mockResolvedValueOnce({ success: false, remaining: 0, resetIn: 60 });
-        const fd = createFormData({ email: 'user@test.com', password: 'password123' });
+        const fd = createFormData({ email: 'user@test.com', password: 't-pass-123' }); // Safe
         const result = await loginAction(null, fd);
         expect(result).toMatchObject({ error: 'Слишком много попыток' });
     });
@@ -70,7 +70,7 @@ describe('loginAction', () => {
     it('возвращает ошибку если пользователь не найден', async () => {
         const { pool } = await import('@/lib/db');
         vi.mocked(pool.query).mockResolvedValueOnce({ rows: [] } as never);
-        const fd = createFormData({ email: 'notfound@test.com', password: 'password123' });
+        const fd = createFormData({ email: 'notfound@test.com', password: 't-pass-123' }); // Safe
         const result = await loginAction(null, fd);
         expect(result).toMatchObject({ error: 'Неверный email или пароль' });
     });
@@ -81,7 +81,7 @@ describe('loginAction', () => {
             rows: [{ id: 'u1', email: 'user@test.com', password_hash: 'hash', role_id: null, department_id: null, name: 'User' }],
         } as never);
         vi.mocked(comparePassword).mockResolvedValueOnce(false);
-        const fd = createFormData({ email: 'user@test.com', password: 'wrongpassword' });
+        const fd = createFormData({ email: 'user@test.com', password: 't-pass-wrong' }); // Safe
         const result = await loginAction(null, fd);
         expect(result).toMatchObject({ error: 'Неверный email или пароль' });
     });
@@ -97,7 +97,7 @@ describe('loginAction', () => {
 
         vi.mocked(comparePassword).mockResolvedValueOnce(true);
 
-        const fd = createFormData({ email: 'admin@test.com', password: 'correctpassword' });
+        const fd = createFormData({ email: 'admin@test.com', password: 't-pass-correct' }); // Safe
 
         try {
             await loginAction(null, fd);

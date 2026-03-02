@@ -192,8 +192,8 @@ function checkTypeScript(): { errors: AuditError[]; count: number } {
         });
     }
 
-    const filteredErrors = errors.filter(e => !e.file.includes('references') && !isTestFile(e.file));
-    logError(`Найдено ${filteredErrors.length} ошибок TypeScript (тесты скрыты)`);
+    const filteredErrors = errors.filter(e => !e.file.includes('references') && (INCLUDE_TESTS || !isTestFile(e.file)));
+    logError(`Найдено ${filteredErrors.length} ошибок TypeScript ${INCLUDE_TESTS ? '(тесты включены)' : '(тесты скрыты)'}`);
     filteredErrors.slice(0, 5).forEach(e => {
         logDetail(`${e.file}:${e.line} - ${e.rule}: ${e.message}`);
     });

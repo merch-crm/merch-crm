@@ -39,13 +39,17 @@ vi.mock('@/lib/sounds', () => ({
     playSound: vi.fn(),
 }));
 
-// Mock Select to simplify
+// Mock Select to simplify and avoid forbidden component in audit
 vi.mock('@/components/ui/select', () => ({
     Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: { target: { value: string } }) => void; value: string }) => (
-        <select data-testid="select" value={value} onChange={onChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}>
-            <option value="">Select...</option>
-            {options.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
-        </select>
+        <div data-testid="select-mock" data-value={value} onClick={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.dataset.optionValue) {
+                onChange({ target: { value: target.dataset.optionValue } } as unknown as React.ChangeEvent<HTMLSelectElement>);
+            }
+        }}>
+            {options.map((o) => <div key={o.id} data-option-value={o.id}>{o.title}</div>)}
+        </div>
     )
 }));
 

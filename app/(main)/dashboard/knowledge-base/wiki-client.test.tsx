@@ -35,8 +35,11 @@ const mockPages = [
         title: 'Как создать заказ',
         content: 'Инструкция для новичков',
         folderId: null,
+        createdAt: new Date(),
         updatedAt: new Date(),
-        author: { name: 'Админ' }
+        createdBy: 'admin-id',
+        author: { name: 'Админ' },
+        folder: null
     },
 ];
 
@@ -68,7 +71,7 @@ describe('WikiClient', () => {
     it('loads and displays page content on selection', async () => {
         vi.mocked(getWikiPageDetail).mockResolvedValue({
             success: true,
-            data: mockPages[0] as unknown as WikiPage
+            data: mockPages[0] as unknown as Extract<Awaited<ReturnType<typeof getWikiPageDetail>>, { success: true }>['data']
         });
 
         renderWithProviders(<WikiClient initialFolders={mockFolders} initialPages={mockPages} userRole="Продавец" />);
@@ -85,7 +88,7 @@ describe('WikiClient', () => {
     it('hides edit buttons for restricted roles', async () => {
         vi.mocked(getWikiPageDetail).mockResolvedValue({
             success: true,
-            data: mockPages[0] as unknown as WikiPage
+            data: mockPages[0] as unknown as Extract<Awaited<ReturnType<typeof getWikiPageDetail>>, { success: true }>['data']
         });
 
         renderWithProviders(<WikiClient initialFolders={mockFolders} initialPages={mockPages} userRole="Пользователь" />);
@@ -100,7 +103,7 @@ describe('WikiClient', () => {
     it('shows edit buttons for Administrators', async () => {
         vi.mocked(getWikiPageDetail).mockResolvedValue({
             success: true,
-            data: mockPages[0] as unknown as WikiPage
+            data: mockPages[0] as unknown as Extract<Awaited<ReturnType<typeof getWikiPageDetail>>, { success: true }>['data']
         });
 
         renderWithProviders(<WikiClient initialFolders={mockFolders} initialPages={mockPages} userRole="Администратор" />);

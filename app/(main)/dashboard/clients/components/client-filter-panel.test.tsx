@@ -7,9 +7,14 @@ import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
 // Mock Select to simplify
 vi.mock('@/components/ui/select', () => ({
     Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: string) => void; value: string }) => (
-        <select data-testid="select" value={value} onChange={(e) => onChange(e.target.value)}>
-            {options.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
-        </select>
+        <div data-testid="select-mock" data-value={value} onClick={(e) => {
+            const target = e.target as HTMLElement;
+            if (target.dataset.optionValue) {
+                onChange(target.dataset.optionValue);
+            }
+        }}>
+            {options.map((o) => <div key={o.id} data-option-value={o.id}>{o.title}</div>)}
+        </div>
     )
 }));
 

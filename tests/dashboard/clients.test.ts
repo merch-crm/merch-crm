@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockSession, createMockClient, createMockUser } from '../helpers/mocks';
 
@@ -64,19 +63,19 @@ import {
 const setupMocks = () => {
     vi.resetAllMocks();
 
-    vi.mocked(db.transaction).mockImplementation((async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)) as any);
+    vi.mocked(db.transaction).mockImplementation(async (callback) => callback(mockTx as unknown as Parameters<typeof callback>[0]));
 
     mockTx.update.mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) });
     mockTx.insert.mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) });
     mockTx.delete.mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) });
 
     // Restore db.update/insert/delete (used outside transactions by some actions)
-    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as any);
-    vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as any);
-    vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as any);
+    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as ReturnType<typeof db.update>);
+    vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as ReturnType<typeof db.insert>);
+    vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as ReturnType<typeof db.delete>);
 
     // Default select chain
-    const chainObj: Record<string, any> = {};
+    const chainObj: Record<string, unknown> = {};
     chainObj.from = vi.fn().mockReturnValue(chainObj);
     chainObj.where = vi.fn().mockReturnValue(chainObj);
     chainObj.limit = vi.fn().mockReturnValue(chainObj);
@@ -119,7 +118,7 @@ describe('getClients', () => {
 
         // The chainObj from setupMocks handles all chaining and resolves to []
         // We need to make it resolve to our data on first await, then count on second
-        const chainObj: Record<string, any> = {};
+        const chainObj: Record<string, unknown> = {};
         chainObj.from = vi.fn().mockReturnValue(chainObj);
         chainObj.where = vi.fn().mockReturnValue(chainObj);
         chainObj.leftJoin = vi.fn().mockReturnValue(chainObj);
@@ -133,15 +132,15 @@ describe('getClients', () => {
         chainObj.then = (resolve: (val: unknown) => void, reject: (reason: unknown) => void) => Promise.resolve(clientData).then(resolve, reject);
 
         // Second call for count query
-        const countChain: Record<string, any> = {};
+        const countChain: Record<string, unknown> = {};
         countChain.from = vi.fn().mockReturnValue(countChain);
         countChain.where = vi.fn().mockReturnValue(countChain);
         countChain.limit = vi.fn().mockReturnValue(countChain);
         countChain.then = (resolve: (val: unknown) => void, reject: (reason: unknown) => void) => Promise.resolve([{ count: 2 }]).then(resolve, reject);
 
         vi.mocked(db.select)
-            .mockImplementationOnce(() => chainObj as any)
-            .mockImplementationOnce(() => countChain as any);
+            .mockImplementationOnce(() => chainObj as unknown as ReturnType<typeof db.select>)
+            .mockImplementationOnce(() => countChain as unknown as ReturnType<typeof db.select>);
 
         const result = await getClients({ page: 1, limit: 10 });
         expect(result.success).toBe(true);
@@ -172,7 +171,7 @@ describe('checkClientDuplicates', () => {
         chainObj.where = vi.fn().mockReturnValue(chainObj);
         chainObj.limit = vi.fn().mockReturnValue(chainObj);
         chainObj.then = (resolve: (val: unknown) => void, reject: (reason: unknown) => void) => Promise.resolve(existing).then(resolve, reject);
-        vi.mocked(db.select).mockImplementationOnce(() => chainObj as any);
+        vi.mocked(db.select).mockImplementationOnce(() => chainObj as unknown as ReturnType<typeof db.select>);
 
         const result = await checkClientDuplicates({ phone: '+79001234567' });
         expect(result.success).toBe(true);
@@ -212,7 +211,7 @@ describe('addClient', () => {
         dupChain.where = vi.fn().mockReturnValue(dupChain);
         dupChain.limit = vi.fn().mockReturnValue(dupChain);
         dupChain.then = (resolve: (val: unknown[]) => void, reject: (reason: unknown) => void) => Promise.resolve([]).then(resolve, reject);
-        vi.mocked(db.select).mockImplementationOnce(() => dupChain as any);
+        vi.mocked(db.select).mockImplementationOnce(() => dupChain as unknown as ReturnType<typeof db.select>);
 
         mockTx.insert.mockReturnValue({
             values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([newClient]) }),

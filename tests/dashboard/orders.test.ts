@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { db } from '@/lib/db';
 import { mockSession, createMockOrder, createFormData, createMockUser } from '../helpers/mocks';
@@ -9,7 +8,7 @@ const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
     const mockFindMany = vi.fn().mockResolvedValue([]);
     const mockFindFirst = vi.fn().mockResolvedValue(null);
     const mockSelect = vi.fn().mockImplementation(() => {
-        const chain: any = {
+        const chain: Record<string, unknown> = {
             from: vi.fn().mockReturnThis(),
             leftJoin: vi.fn().mockReturnThis(),
             innerJoin: vi.fn().mockReturnThis(),
@@ -17,7 +16,7 @@ const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
             orderBy: vi.fn().mockReturnThis(),
             limit: vi.fn().mockReturnThis(),
             offset: vi.fn().mockReturnThis(),
-            then: (resolve: any) => resolve([{ count: 0 }]),
+            then: (resolve: (val: unknown) => void) => resolve([{ count: 0 }]),
         };
         return chain;
     });
@@ -69,7 +68,7 @@ vi.mock('@/lib/db', () => ({
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) }),
         delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
-        transaction: vi.fn().mockImplementation(async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)),
+        transaction: vi.fn().mockImplementation(async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx as unknown as typeof mockTx)),
     },
 }));
 
@@ -92,7 +91,7 @@ const setupMocks = () => {
     vi.resetAllMocks();
 
     // Restore db.transaction implementation
-    vi.mocked(db.transaction).mockImplementation((async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)) as any);
+    vi.mocked(db.transaction).mockImplementation((async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)) as unknown as (fn: (tx: never) => Promise<unknown>) => Promise<unknown>);
 
     // Restore mockTx chainable defaults
     mockTx.update.mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) });
@@ -100,12 +99,12 @@ const setupMocks = () => {
     mockTx.delete.mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) });
 
     // Restore db.update/insert/delete (used outside transactions)
-    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as any);
-    vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as any);
-    vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as any);
+    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as ReturnType<typeof db.update>);
+    vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as ReturnType<typeof db.insert>);
+    vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as ReturnType<typeof db.delete>);
 
     // Default select chain (thenable)
-    const chainObj: Record<string, any> = {};
+    const chainObj: Record<string, unknown> = {};
     chainObj.from = vi.fn().mockReturnValue(chainObj);
     chainObj.where = vi.fn().mockReturnValue(chainObj);
     chainObj.orderBy = vi.fn().mockReturnValue(chainObj);
@@ -137,7 +136,7 @@ describe('getOrders', () => {
             leftJoin: vi.fn().mockReturnThis(),
             where: vi.fn().mockReturnThis(),
             limit: vi.fn().mockResolvedValue([{ count: 2 }])
-        } as any));
+        } as unknown as ReturnType<typeof db.select>));
 
         // Mock db.query.orders.findMany for paginated data
         mockFindMany.mockResolvedValueOnce(orders);
@@ -189,7 +188,7 @@ describe('getClientsForSelect', () => {
                     limit: vi.fn().mockResolvedValue(clients),
                 }),
             }),
-        } as unknown as any));
+        } as unknown as ReturnType<typeof db.select>));
         const result = await getClientsForSelect();
         expect(result).toEqual({ success: true, data: clients });
     });
@@ -204,7 +203,7 @@ describe('getInventoryForSelect', () => {
             from: vi.fn().mockReturnValue({
                 limit: vi.fn().mockResolvedValue(items),
             }),
-        } as unknown as any));
+        } as unknown as ReturnType<typeof db.select>));
         const result = await getInventoryForSelect();
         expect(result).toEqual({ success: true, data: items });
     });
@@ -234,7 +233,7 @@ describe('createOrder', () => {
         selectChain.from = vi.fn().mockReturnValue(selectChain);
         selectChain.orderBy = vi.fn().mockReturnValue(selectChain);
         selectChain.limit = vi.fn().mockResolvedValue([]);
-        mockTx.select.mockImplementation(() => selectChain as any);
+        mockTx.select.mockImplementation(() => selectChain as unknown as ReturnType<typeof db.select>);
 
         // Mock tx.insert for order creation
         mockTx.insert.mockReturnValue({
@@ -285,7 +284,7 @@ describe('updateOrderStatus', () => {
 
     it('возвращает ошибку при невалидном статусе', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'invalid-status' as unknown as any);
+        const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'invalid-status' as unknown as never);
         expect(result.success).toBe(false);
     });
 
@@ -311,7 +310,7 @@ describe('updateOrderPriority', () => {
 
     it('возвращает ошибку при невалидном приоритете', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'invalid-priority' as unknown as any);
+        const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'invalid-priority' as unknown as never);
         expect(result.success).toBe(false);
     });
 

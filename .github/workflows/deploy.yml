@@ -30,6 +30,9 @@ jobs:
       - name: Run tests
         run: npm run test
 
+      - name: Project Audit
+        run: npm run audit -- --include-tests
+
   build-and-push:
     needs: check
     runs-on: ubuntu-latest

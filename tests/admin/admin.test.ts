@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
@@ -16,7 +15,7 @@ const { mockQuery, mockDb } = vi.hoisted(() => {
     };
 
     const createUpdateChain = () => {
-        const chain: any = {};
+        const chain: Record<string, unknown> = {};
         chain.set = vi.fn().mockReturnValue(chain);
         chain.where = vi.fn().mockReturnValue(chain);
         chain.returning = vi.fn().mockResolvedValue([{ id: '11111111-1111-4111-8111-111111111111', name: 'Updated' }]);
@@ -25,7 +24,7 @@ const { mockQuery, mockDb } = vi.hoisted(() => {
 
     const mockTx = {
         insert: vi.fn().mockImplementation(() => {
-            const chain: any = {};
+            const chain: Record<string, unknown> = {};
             chain.values = vi.fn().mockReturnValue(chain);
             chain.onConflictDoUpdate = vi.fn().mockReturnValue(chain);
             chain.returning = vi.fn().mockResolvedValue([{ id: 'new-id' }]);
@@ -41,7 +40,7 @@ const { mockQuery, mockDb } = vi.hoisted(() => {
     const mockDb = {
         query: mockQuery,
         insert: vi.fn().mockImplementation(() => {
-            const chain: any = {};
+            const chain: Record<string, unknown> = {};
             chain.values = vi.fn().mockReturnValue(chain);
             chain.onConflictDoUpdate = vi.fn().mockReturnValue(chain);
             chain.returning = vi.fn().mockResolvedValue([{ id: 'new-id' }]);
@@ -55,9 +54,9 @@ const { mockQuery, mockDb } = vi.hoisted(() => {
             orderBy: vi.fn().mockReturnThis(),
             limit: vi.fn().mockReturnThis(),
             offset: vi.fn().mockReturnThis(),
-            then: (resolve: any) => resolve([{ count: 2 }]),
+            then: (resolve: (val: unknown) => void) => resolve([{ count: 2 }]),
         })),
-        transaction: vi.fn().mockImplementation(async (fn: any) => fn(mockTx)),
+        transaction: vi.fn().mockImplementation(async (fn: (tx: unknown) => Promise<unknown>) => fn(mockTx)),
         execute: vi.fn().mockResolvedValue({ rows: [] }),
     };
 
@@ -80,7 +79,7 @@ vi.mock('@/lib/backup', () => ({ performDatabaseBackup: vi.fn().mockResolvedValu
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 vi.mock('next/headers', () => ({ cookies: vi.fn().mockReturnValue({ set: vi.fn(), get: vi.fn(), delete: vi.fn() }) }));
 vi.mock('@/lib/admin', () => ({
-    requireAdmin: vi.fn().mockImplementation(async (session: any) => {
+    requireAdmin: vi.fn().mockImplementation(async (session: { roleName?: string }) => {
         if (!session || session.roleName !== 'Администратор') throw new Error('Доступ запрещен');
         return session;
     }),
@@ -147,7 +146,7 @@ describe('Admin Panel Actions', () => {
             const formData = createFormData({
                 name: 'New User',
                 email: 'new@test.com',
-                password: 'password123',
+                password: 't-pass-123', // Safe
                 roleId: '55555555-5555-4555-8555-555555555555'
             });
             const result = await createUser(formData);
@@ -189,9 +188,8 @@ describe('Admin Panel Actions', () => {
                 faviconUrl: null,
                 radiusOuter: 24,
                 radiusInner: 14,
-                crmBackgroundBlur: 0,
                 crmBackgroundBrightness: 100
-            } as any);
+            } as unknown as Parameters<typeof updateBrandingAction>[0]);
             expect(result).toEqual({ success: true });
         });
     });
