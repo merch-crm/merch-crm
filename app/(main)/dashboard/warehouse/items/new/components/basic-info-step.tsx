@@ -211,7 +211,6 @@ export function BasicInfoStep({
                                                         type={attr.slug}
                                                         label={attr.name}
                                                         value={(getCodeForSlug(attr.slug) as string) || ""}
-                                                        required={true}
                                                         onChange={(name, code) => handleAttributeChange(attr.slug, name, code)}
                                                         categoryId={category.id}
                                                     />
