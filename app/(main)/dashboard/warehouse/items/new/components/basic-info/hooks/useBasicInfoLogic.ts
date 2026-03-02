@@ -23,15 +23,24 @@ export function useBasicInfoLogic({
     const isPackaging = category.name.toLowerCase().includes("упаковка");
     const isConsumables = category.name.toLowerCase().includes("расходники");
 
-    const customTypes = attributeTypes.filter(t => {
-        if (["brand", "quality", "material", "size", "color"].includes(t.slug)) return false;
-        return !t.categoryId ||
-            t.categoryId === category.id ||
-            (formData.subcategoryId && t.categoryId === formData.subcategoryId);
-    });
+    const categoryAttributes = attributeTypes
+        .filter(t => {
+            return !t.categoryId ||
+                t.categoryId === category.id ||
+                (formData.subcategoryId && t.categoryId === formData.subcategoryId);
+        })
+        .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
-    const compositionType = customTypes.find(t => t.slug === 'composition' || t.name.toLowerCase() === 'состав');
-    const remainingCustomTypes = customTypes.filter(t => t.id !== compositionType?.id);
+    const getCodeForSlug = (slug: string) => {
+        switch (slug) {
+            case 'brand': return formData.brandCode;
+            case 'quality': return formData.qualityCode;
+            case 'material': return formData.materialCode;
+            case 'color': return formData.attributeCode;
+            case 'size': return formData.sizeCode;
+            default: return formData.attributes?.[slug];
+        }
+    };
 
     const transliterate = (text: string) => {
         const map: Record<string, string> = {
@@ -65,13 +74,15 @@ export function useBasicInfoLogic({
             const skuParts: string[] = [];
             if (prefix && activeCat?.showInSku !== false) skuParts.push(prefix);
 
+            // Hardcoded order to preserve existing behavior for standard attributes
             if (shouldShowInSku('brand', formData.brandCode)) skuParts.push(formData.brandCode!);
             if (shouldShowInSku('quality', formData.qualityCode)) skuParts.push(formData.qualityCode!);
             if (shouldShowInSku('material', formData.materialCode)) skuParts.push(formData.materialCode!);
             if (shouldShowInSku('color', formData.attributeCode)) skuParts.push(formData.attributeCode!);
             if (shouldShowInSku('size', formData.sizeCode)) skuParts.push(formData.sizeCode!);
 
-            customTypes.forEach((type: AttributeType) => {
+            categoryAttributes.forEach((type: AttributeType) => {
+                if (["brand", "quality", "material", "size", "color"].includes(type.slug)) return;
                 const code = formData.attributes?.[type.slug];
                 if (code && shouldShowInSku(type.slug, code)) {
                     skuParts.push(code);
@@ -148,7 +159,8 @@ export function useBasicInfoLogic({
                 sizeName
             ].filter(Boolean);
 
-            customTypes.forEach((type: AttributeType) => {
+            categoryAttributes.forEach((type: AttributeType) => {
+                if (["brand", "quality", "material", "size", "color"].includes(type.slug)) return;
                 const code = formData.attributes?.[type.slug];
                 if (code) {
                     const name = getAttrName(type.slug, code);
@@ -177,7 +189,7 @@ export function useBasicInfoLogic({
         formData.attributes,
         attributeTypes,
         category,
-        customTypes,
+        categoryAttributes,
         formData.itemName,
         formData.sku,
         updateFormData
@@ -187,7 +199,7 @@ export function useBasicInfoLogic({
         isClothing,
         isPackaging,
         isConsumables,
-        compositionType,
-        remainingCustomTypes
+        categoryAttributes,
+        getCodeForSlug
     };
 }
