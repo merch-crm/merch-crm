@@ -9,6 +9,8 @@ import { SummaryStep } from "./components/summary-step";
 import { NewItemSidebar } from "./components/new-item-sidebar";
 import { InventoryAttribute, AttributeType, Category, StorageLocation } from "../../types";
 import { useNewItemLogic } from "./hooks/useNewItemLogic";
+import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
+import { useEffect } from "react";
 
 interface NewItemPageClientProps {
     categories: Category[];
@@ -31,6 +33,15 @@ export function NewItemPageClient({
     attributeTypes,
     users
 }: NewItemPageClientProps) {
+    const { setCustomTrail } = useBreadcrumbs();
+
+    useEffect(() => {
+        setCustomTrail([
+            { label: "Склад", href: "/dashboard/warehouse" },
+            { label: "Создание позиции", href: "/dashboard/warehouse/items/new" }
+        ]);
+        return () => setCustomTrail(null);
+    }, [setCustomTrail]);
 
     const {
         step,
