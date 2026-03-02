@@ -25,6 +25,9 @@ const CONFIG = {
     apiDir: 'app/api',
 };
 
+const ARGS = process.argv.slice(2);
+const INCLUDE_TESTS = ARGS.includes('--include-tests');
+
 // ============================================
 // ТИПЫ
 // ============================================
@@ -2559,9 +2562,9 @@ async function main() {
 
     const allErrors: AuditError[] = [];
 
-    // Сбор файлов (исключаем тесты из всех проверок, кроме подсчета статистики)
+    // Сбор файлов (исключаем тесты из всех проверок, кроме подсчета статистики, если не указан флаг)
     const rawFiles = getAllFiles(CONFIG.srcDir).filter(f => !f.includes('references'));
-    const allFiles = rawFiles.filter(f => !isTestFile(f));
+    const allFiles = rawFiles.filter(f => INCLUDE_TESTS ? true : !isTestFile(f));
     const tsxFiles = allFiles.filter(f => f.endsWith('.tsx'));
     const pageFiles = getAllFiles(CONFIG.pagesDir).filter(f => f.includes('page.') && !f.includes('references'));
     const componentFiles = getAllFiles(CONFIG.componentsDir).filter(f => !f.includes('references'));

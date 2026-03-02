@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { InventoryClient } from './inventory-client';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { Category } from '@/lib/types';
 
 // Mocks
 const mockPush = vi.fn();
@@ -19,7 +20,7 @@ vi.mock('./category-utils', () => ({
         icon: { background: 'none', boxShadow: 'none' }
     }),
     getHexColor: () => '#000000',
-    sortCategories: (cats: any[]) => cats,
+    sortCategories: (cats: Category[]) => cats,
 }));
 
 vi.mock('./edit-category-dialog', () => ({
@@ -30,11 +31,11 @@ vi.mock('./edit-category-dialog', () => ({
     },
 }));
 
-const mockCategories = [
-    { id: '1', name: 'Одежда', totalQuantity: 100, color: 'blue', parentId: null, sortOrder: 1, itemCount: 10, icon: null, description: null },
-    { id: '2', name: 'Футболки', totalQuantity: 60, parentId: '1', sortOrder: 1, itemCount: 5, icon: null, description: null, color: null },
-    { id: '3', name: 'Худи', totalQuantity: 40, parentId: '1', sortOrder: 2, itemCount: 5, icon: null, description: null, color: null },
-    { id: '4', name: 'Сувениры', totalQuantity: 20, parentId: null, sortOrder: 2, description: 'Разные сувениры', icon: null, color: null },
+const mockCategories: Category[] = [
+    { id: '1', name: 'Одежда', totalQuantity: 100, color: 'blue', parentId: null, sortOrder: 1, itemCount: 10, icon: null, description: null } as Category,
+    { id: '2', name: 'Футболки', totalQuantity: 60, parentId: '1', sortOrder: 1, itemCount: 5, icon: null, description: null, color: null } as Category,
+    { id: '3', name: 'Худи', totalQuantity: 40, parentId: '1', sortOrder: 2, itemCount: 5, icon: null, description: null, color: null } as Category,
+    { id: '4', name: 'Сувениры', totalQuantity: 20, parentId: null, sortOrder: 2, description: 'Разные сувениры', icon: null, color: null } as Category,
 ];
 
 describe('InventoryClient', () => {

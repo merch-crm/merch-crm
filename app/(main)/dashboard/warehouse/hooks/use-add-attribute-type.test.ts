@@ -5,6 +5,7 @@ import { useToast } from '@/components/ui/toast';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { createInventoryAttributeType } from '../attribute-actions';
 import { playSound } from '@/lib/sounds';
+import type { Category } from '@/lib/types';
 
 // Mocks
 vi.mock('next/navigation', () => ({
@@ -24,9 +25,9 @@ vi.mock('@/lib/sounds', () => ({
     playSound: vi.fn()
 }));
 
-const mockCategories: any[] = [
-    { id: 'cat1', name: 'Одежда' },
-    { id: 'cat2', name: 'Обувь' }
+const mockCategories: Category[] = [
+    { id: 'cat1', name: 'Одежда' } as Category,
+    { id: 'cat2', name: 'Обувь' } as Category
 ];
 
 describe('transliterateToSlug', () => {
@@ -43,20 +44,17 @@ describe('transliterateToSlug', () => {
 });
 
 describe('useAddAttributeType', () => {
-    let mockRefresh: any;
-    let mockToastOptions: any;
+    const mockRefresh = vi.fn();
+    const mockToast = vi.fn();
 
     beforeEach(() => {
         vi.clearAllMocks();
 
-        mockRefresh = vi.fn();
-        (useRouter as any).mockReturnValue({ refresh: mockRefresh });
-
-        mockToastOptions = vi.fn();
-        (useToast as any).mockReturnValue({ toast: mockToastOptions });
+        (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({ refresh: mockRefresh });
+        (useToast as ReturnType<typeof vi.fn>).mockReturnValue({ toast: mockToast });
 
         const mockSearchParams = new URLSearchParams();
-        (useSearchParams as any).mockReturnValue(mockSearchParams);
+        (useSearchParams as ReturnType<typeof vi.fn>).mockReturnValue(mockSearchParams);
     });
 
     it('initializes with default values', () => {
@@ -96,7 +94,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleCreate calls createInventoryAttributeType with auto-derived name', async () => {
-        (createInventoryAttributeType as any).mockResolvedValueOnce({ success: true });
+        (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
@@ -109,7 +107,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleCreate succeeds and calls router.refresh()', async () => {
-        (createInventoryAttributeType as any).mockResolvedValueOnce({ success: true });
+        (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
@@ -133,14 +131,14 @@ describe('useAddAttributeType', () => {
             hasComposition: false
         });
 
-        expect(mockToastOptions).toHaveBeenCalledWith('Новый раздел создан', 'success');
+        expect(mockToast).toHaveBeenCalledWith('Новый раздел создан', 'success');
         expect(playSound).toHaveBeenCalledWith('notification_success');
         expect(result.current.isOpen).toBe(false);
         expect(mockRefresh).toHaveBeenCalled();
     });
 
     it('handleCreate fails and shows error toast', async () => {
-        (createInventoryAttributeType as any).mockResolvedValueOnce({ success: false, error: 'Database error' });
+        (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: false, error: 'Database error' });
 
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
@@ -149,7 +147,7 @@ describe('useAddAttributeType', () => {
         });
 
         expect(result.current.error).toBe('Database error');
-        expect(mockToastOptions).toHaveBeenCalledWith('Database error', 'error');
+        expect(mockToast).toHaveBeenCalledWith('Database error', 'error');
         expect(playSound).toHaveBeenCalledWith('notification_error');
     });
 });

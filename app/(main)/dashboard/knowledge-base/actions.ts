@@ -13,7 +13,7 @@ import { logError } from "@/lib/error-logger";
 // --- Folders ---
 
 type WikiFolder = typeof wikiFolders.$inferSelect;
-type WikiPage = typeof wikiPages.$inferSelect & { author: { name: string } | null };
+export type WikiPage = typeof wikiPages.$inferSelect & { author: { name: string } | null };
 
 export async function getWikiFolders(): Promise<ActionResult<WikiFolder[]>> {
     const session = await getSession();

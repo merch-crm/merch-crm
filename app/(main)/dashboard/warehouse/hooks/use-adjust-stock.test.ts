@@ -2,7 +2,8 @@ import { renderHook, act } from '@testing-library/react';
 import { useAdjustStock } from './use-adjust-stock';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { adjustInventoryStock } from '../stock-actions';
-import type { InventoryItem } from '../types';
+import type { InventoryItem, StorageLocation } from '@/lib/types';
+import type React from 'react';
 
 // Mock the server action
 vi.mock('../stock-actions', () => ({
@@ -20,10 +21,10 @@ const mockItem = {
     costPrice: 100,
 } as unknown as InventoryItem;
 
-const mockLocations = [
-    { id: 'loc-1', name: 'Склад 1' },
-    { id: 'loc-2', name: 'Склад 2' },
-] as any[];
+const mockLocations: StorageLocation[] = [
+    { id: 'loc-1', name: 'Склад 1' } as StorageLocation,
+    { id: 'loc-2', name: 'Склад 2' } as StorageLocation,
+];
 
 describe('useAdjustStock', () => {
     const mockOnClose = vi.fn();
@@ -60,7 +61,7 @@ describe('useAdjustStock', () => {
     it('selects first location if item has no storageLocationId', () => {
         const itemWithoutLoc = { ...mockItem, storageLocationId: null };
         const { result } = renderHook(() => useAdjustStock({
-            item: itemWithoutLoc,
+            item: itemWithoutLoc as InventoryItem,
             locations: mockLocations,
             onClose: mockOnClose
         }));
@@ -69,7 +70,7 @@ describe('useAdjustStock', () => {
     });
 
     it('handles successful submission (replenish)', async () => {
-        (adjustInventoryStock as any).mockResolvedValue({ success: true });
+        (adjustInventoryStock as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true });
         const { result } = renderHook(() => useAdjustStock({
             item: mockItem,
             locations: mockLocations,
@@ -77,7 +78,7 @@ describe('useAdjustStock', () => {
         }));
 
         await act(async () => {
-            const event = { preventDefault: vi.fn() } as any;
+            const event = { preventDefault: vi.fn() } as unknown as React.FormEvent;
             await result.current.handleSubmit(event);
         });
 
@@ -93,7 +94,7 @@ describe('useAdjustStock', () => {
     });
 
     it('handles successful submission (set)', async () => {
-        (adjustInventoryStock as any).mockResolvedValue({ success: true });
+        (adjustInventoryStock as ReturnType<typeof vi.fn>).mockResolvedValue({ success: true });
         const { result } = renderHook(() => useAdjustStock({
             item: mockItem,
             locations: mockLocations,
@@ -102,7 +103,7 @@ describe('useAdjustStock', () => {
         }));
 
         await act(async () => {
-            const event = { preventDefault: vi.fn() } as any;
+            const event = { preventDefault: vi.fn() } as unknown as React.FormEvent;
             await result.current.handleSubmit(event);
         });
 
@@ -118,7 +119,7 @@ describe('useAdjustStock', () => {
     });
 
     it('shows error on failed submission', async () => {
-        (adjustInventoryStock as any).mockResolvedValue({ success: false, error: 'Server error' });
+        (adjustInventoryStock as ReturnType<typeof vi.fn>).mockResolvedValue({ success: false, error: 'Server error' });
         const { result } = renderHook(() => useAdjustStock({
             item: mockItem,
             locations: mockLocations,
@@ -126,7 +127,7 @@ describe('useAdjustStock', () => {
         }));
 
         await act(async () => {
-            const event = { preventDefault: vi.fn() } as any;
+            const event = { preventDefault: vi.fn() } as unknown as React.FormEvent;
             await result.current.handleSubmit(event);
         });
 
@@ -146,7 +147,7 @@ describe('useAdjustStock', () => {
         });
 
         await act(async () => {
-            const event = { preventDefault: vi.fn() } as any;
+            const event = { preventDefault: vi.fn() } as unknown as React.FormEvent;
             await result.current.handleSubmit(event);
         });
 

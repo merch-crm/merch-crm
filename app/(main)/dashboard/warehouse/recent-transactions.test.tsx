@@ -5,8 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 // Mock next/image
 vi.mock('next/image', () => ({
     default: ({ src, alt }: { src: string; alt: string }) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={alt} />
+        <div data-testid="next-image-mock" data-src={src} data-alt={alt} />
     ),
 }));
 
@@ -101,8 +100,9 @@ describe('RecentTransactionsClient', () => {
 
     it('shows creator avatar image when avatar URL provided', () => {
         render(<RecentTransactionsClient transactions={[mockTransferTransaction]} />);
-        const avatar = screen.getByAltText('аватар');
-        expect(avatar).toHaveAttribute('src', 'https://example.com/avatar.jpg');
+        const avatar = screen.getByTestId('next-image-mock');
+        expect(avatar).toHaveAttribute('data-src', 'https://example.com/avatar.jpg');
+        expect(avatar).toHaveAttribute('data-alt', 'аватар');
     });
 
     it('renders without creator section when creator is null', () => {

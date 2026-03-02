@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen } from '@testing-library/react';
 import { SubmitButton } from './submit-button';
 import { describe, it, expect, vi } from 'vitest';
+import { useFormStatus } from 'react-dom';
 
 // Mock useFormStatus from react-dom
 vi.mock('react-dom', async (importOriginal) => {
@@ -11,8 +11,6 @@ vi.mock('react-dom', async (importOriginal) => {
         useFormStatus: vi.fn(() => ({ pending: false })),
     };
 });
-
-import { useFormStatus } from 'react-dom';
 
 describe('SubmitButton', () => {
     it('renders with children correctly', () => {
@@ -40,7 +38,12 @@ describe('SubmitButton', () => {
     });
 
     it('shows pending state from useFormStatus', () => {
-        vi.mocked(useFormStatus).mockReturnValue({ pending: true } as any);
+        vi.mocked(useFormStatus).mockReturnValue({
+            pending: true,
+            data: new FormData(),
+            method: 'POST',
+            action: () => { }
+        });
         render(<SubmitButton>Сохранить</SubmitButton>);
         expect(screen.getByRole('button')).toBeDisabled();
         const loader = screen.getByRole('button').querySelector('.animate-spin');

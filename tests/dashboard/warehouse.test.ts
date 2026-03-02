@@ -166,7 +166,7 @@ describe('getMeasurementUnits', () => {
         expect(result.success).toBe(true);
         if (result.success && result.data) {
             expect(result.data).toHaveLength(4);
-            expect(result.data.map(u => u.id)).toContain('шт.');
+            expect(result.data?.map(u => u.id)).toContain('шт.');
         }
     });
 });

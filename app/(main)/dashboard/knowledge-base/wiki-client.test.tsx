@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { WikiClient } from './wiki-client';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { SheetStackProvider } from '@/components/ui/sheet-stack-context';
+import { getWikiPageDetail, WikiPage } from './actions';
 
 // Mocks
 const mockPush = vi.fn();
@@ -23,18 +24,21 @@ vi.mock('./actions', () => ({
     getWikiPages: vi.fn(),
 }));
 
-import { getWikiPageDetail } from './actions';
-
 const mockFolders = [
     { id: 'f1', name: 'Продажи', parentId: null },
     { id: 'f2', name: 'Скрипты', parentId: 'f1' },
 ];
 
 const mockPages = [
-    { id: 'p1', title: 'Как создать заказ', content: 'Инструкция для новичков', folderId: null, updatedAt: new Date(), author: { name: 'Админ' } },
+    {
+        id: 'p1',
+        title: 'Как создать заказ',
+        content: 'Инструкция для новичков',
+        folderId: null,
+        updatedAt: new Date(),
+        author: { name: 'Админ' }
+    },
 ];
-
-import { SheetStackProvider } from '@/components/ui/sheet-stack-context';
 
 const renderWithProviders = (ui: React.ReactElement) => {
     return render(
@@ -64,7 +68,7 @@ describe('WikiClient', () => {
     it('loads and displays page content on selection', async () => {
         vi.mocked(getWikiPageDetail).mockResolvedValue({
             success: true,
-            data: mockPages[0] as any
+            data: mockPages[0] as unknown as WikiPage
         });
 
         renderWithProviders(<WikiClient initialFolders={mockFolders} initialPages={mockPages} userRole="Продавец" />);
@@ -79,7 +83,10 @@ describe('WikiClient', () => {
     });
 
     it('hides edit buttons for restricted roles', async () => {
-        vi.mocked(getWikiPageDetail).mockResolvedValue({ success: true, data: mockPages[0] as any });
+        vi.mocked(getWikiPageDetail).mockResolvedValue({
+            success: true,
+            data: mockPages[0] as unknown as WikiPage
+        });
 
         renderWithProviders(<WikiClient initialFolders={mockFolders} initialPages={mockPages} userRole="Пользователь" />);
 
@@ -91,7 +98,10 @@ describe('WikiClient', () => {
     });
 
     it('shows edit buttons for Administrators', async () => {
-        vi.mocked(getWikiPageDetail).mockResolvedValue({ success: true, data: mockPages[0] as any });
+        vi.mocked(getWikiPageDetail).mockResolvedValue({
+            success: true,
+            data: mockPages[0] as unknown as WikiPage
+        });
 
         renderWithProviders(<WikiClient initialFolders={mockFolders} initialPages={mockPages} userRole="Администратор" />);
 

@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CreateOrderPageClient } from './page-client';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { searchClients, createOrder } from "../actions/core.actions";
+import { validatePromocode } from '../../finance/actions';
 
 // Mocks
 const mockPush = vi.fn();
@@ -41,15 +42,12 @@ vi.mock('@/lib/sounds', () => ({
 // Mock Select to simplify
 vi.mock('@/components/ui/select', () => ({
     Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: { target: { value: string } }) => void; value: string }) => (
-        <select data-testid="select" value={value} onChange={onChange as any}>
+        <select data-testid="select" value={value} onChange={onChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}>
             <option value="">Select...</option>
             {options.map((o) => <option key={o.id} value={o.id}>{o.title}</option>)}
         </select>
     )
 }));
-
-import { searchClients, createOrder } from "../actions/core.actions";
-import { validatePromocode } from '../../finance/actions';
 
 const mockInventory = [
     { id: 'item1', name: 'Футболка', quantity: 100, unit: 'pcs', sellingPrice: 500, price: 500 },
@@ -68,7 +66,10 @@ describe('CreateOrderPageClient', () => {
     });
 
     it('flows through all steps to create an order', async () => {
-        vi.mocked(searchClients).mockResolvedValue({ success: true, data: mockClients as unknown as any[] });
+        vi.mocked(searchClients).mockResolvedValue({
+            success: true,
+            data: mockClients as unknown as never[]
+        });
         vi.mocked(createOrder).mockResolvedValue({ success: true });
 
         render(<CreateOrderPageClient initialInventory={mockInventory} />);
@@ -123,10 +124,20 @@ describe('CreateOrderPageClient', () => {
     });
 
     it('applies promocode correctly', async () => {
-        vi.mocked(searchClients).mockResolvedValue({ success: true, data: mockClients as unknown as any[] });
+        vi.mocked(searchClients).mockResolvedValue({
+            success: true,
+            data: mockClients as unknown as never[]
+        });
         vi.mocked(validatePromocode).mockResolvedValue({
             success: true,
-            data: { id: 'promo1', code: 'HELLO', discountType: 'percentage', value: '10', message: 'Скидка 10%', calculatedDiscount: 50 } as unknown as any
+            data: {
+                id: 'promo1',
+                code: 'HELLO',
+                discountType: 'percentage',
+                value: '10',
+                message: 'Скидка 10%',
+                calculatedDiscount: 50
+            } as unknown as never
         });
 
         render(<CreateOrderPageClient initialInventory={mockInventory} />);
