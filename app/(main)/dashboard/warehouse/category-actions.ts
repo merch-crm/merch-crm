@@ -65,7 +65,7 @@ export async function getInventoryCategories(): Promise<ActionResult<CategoryWit
                 eq(inventoryItems.isArchived, false)
             ))
             .groupBy(inventoryCategories.id)
-            .orderBy(asc(inventoryCategories.name))
+            .orderBy(asc(inventoryCategories.sortOrder), asc(inventoryCategories.name))
             .limit(1000);
 
         return { success: true, data: categories };
