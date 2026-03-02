@@ -436,7 +436,8 @@ export function AttributeCustomModal({
 
                 <div className="p-6 pt-0 bg-white shrink-0 mt-auto">
                     <Button
-                        className="w-full h-12 rounded-[var(--radius-inner)] bg-slate-900 hover:bg-slate-800 text-white font-bold text-base shadow-lg shadow-slate-200 transition-all disabled:opacity-50"
+                        variant="btn-dark"
+                        className="w-full h-12 rounded-[var(--radius-inner)] font-bold text-base disabled:opacity-50"
                         onClick={onSave}
                         disabled={
                             isDimensions ? (!customForm.l || !customForm.w || !customForm.h) :

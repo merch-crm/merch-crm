@@ -313,3 +313,35 @@ export async function updateInventoryAttributeType(
         return { success: false, error: "Не удалось обновить раздел" };
     }
 }
+
+/**
+ * Update the sort order of multiple attribute types
+ */
+export async function reorderInventoryAttributeTypes(
+    updates: { id: string; sortOrder: number }[]
+): Promise<ActionResult> {
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
+    }
+
+    try {
+        await db.transaction(async (tx) => {
+            for (const update of updates) {
+                await tx.update(inventoryAttributeTypes)
+                    .set({ sortOrder: update.sortOrder })
+                    .where(eq(inventoryAttributeTypes.id, update.id));
+            }
+        });
+
+        refreshWarehouse();
+        return { success: true };
+    } catch (error) {
+        await logError({
+            error,
+            path: "/dashboard/warehouse/attributes/actions/type.actions",
+            method: "reorderInventoryAttributeTypes"
+        });
+        return { success: false, error: "Не удалось сохранить порядок" };
+    }
+}

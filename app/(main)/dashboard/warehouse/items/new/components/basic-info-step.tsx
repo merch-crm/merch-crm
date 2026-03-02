@@ -204,7 +204,7 @@ export function BasicInfoStep({
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
                                         {categoryAttributes.map((attr) => {
-                                            const isFullWidth = attr.dataType === 'composition' || attr.dataType === 'color' || attr.slug === 'department';
+                                            const isFullWidth = attr.dataType === 'color';
                                             return (
                                                 <div key={attr.id} className={cn(isFullWidth && "md:col-span-2")}>
                                                     <AttributeSelector

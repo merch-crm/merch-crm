@@ -15,7 +15,8 @@ export {
     getInventoryAttributeTypes,
     createInventoryAttributeType,
     deleteInventoryAttributeType,
-    updateInventoryAttributeType
+    updateInventoryAttributeType,
+    reorderInventoryAttributeTypes
 } from "./attributes/actions/type.actions";
 export type { AttributeType } from "./attributes/actions/type.actions";
 
