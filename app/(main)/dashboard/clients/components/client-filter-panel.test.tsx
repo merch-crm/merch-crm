@@ -5,17 +5,25 @@ import { ClientFilters } from "../actions";
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
 
 // Mock Select to simplify
+// Mock Select to simplify
 vi.mock('@/components/ui/select', () => ({
     Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: string) => void; value: string }) => (
-        <div data-testid="select-mock" data-value={value} onClick={(e) => {
-            const target = e.target as HTMLElement;
-            if (target.dataset.optionValue) {
-                onChange(target.dataset.optionValue);
-            }
-        }}>
-            {options.map((o) => <div key={o.id} data-option-value={o.id}>{o.title}</div>)}
-        </div>
-    )
+        <select
+            data-testid="select"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+        >
+            {options.map((o) => (
+                <option key={o.id} value={o.id} role="option">
+                    {o.title}
+                </option>
+            ))}
+        </select>
+    ),
+    SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SelectTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SelectValue: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 describe('ClientFilterPanel', () => {

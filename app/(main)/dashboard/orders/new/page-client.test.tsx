@@ -41,16 +41,23 @@ vi.mock('@/lib/sounds', () => ({
 
 // Mock Select to simplify and avoid forbidden component in audit
 vi.mock('@/components/ui/select', () => ({
-    Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: { target: { value: string } }) => void; value: string }) => (
-        <div data-testid="select-mock" data-value={value} onClick={(e) => {
-            const target = e.target as HTMLElement;
-            if (target.dataset.optionValue) {
-                onChange({ target: { value: target.dataset.optionValue } } as unknown as React.ChangeEvent<HTMLSelectElement>);
-            }
-        }}>
-            {options.map((o) => <div key={o.id} data-option-value={o.id}>{o.title}</div>)}
-        </div>
-    )
+    Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: string) => void; value: string }) => (
+        <select
+            data-testid="select"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+        >
+            {options.map((o) => (
+                <option key={o.id} value={o.id}>
+                    {o.title}
+                </option>
+            ))}
+        </select>
+    ),
+    SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SelectTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SelectValue: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 const mockInventory = [
