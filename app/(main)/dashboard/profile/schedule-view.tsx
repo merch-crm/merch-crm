@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from"framer-motion";
 import {
     Calendar as CalendarIcon,
     Clock,
@@ -9,10 +9,10 @@ import {
     AlertCircle,
     Info,
     Sparkles
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { format, isToday, isTomorrow, isPast } from "date-fns";
-import { ru } from "date-fns/locale";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { format, isToday, isTomorrow, isPast } from"date-fns";
+import { ru } from"date-fns/locale";
 
 interface ScheduleTask {
     id: string;
@@ -39,9 +39,9 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
 
     const getPriorityStyle = (priority: string) => {
         const styles: Record<string, { bg: string, text: string, label: string }> = {
-            high: { bg: "bg-rose-50", text: "text-rose-600", label: "СРОЧНО" },
-            normal: { bg: "bg-primary/5", text: "text-primary", label: "НОРМА" },
-            low: { bg: "bg-slate-50", text: "text-slate-500", label: "НИЗКИЙ" }
+            high: { bg:"bg-rose-50", text:"text-rose-600", label:"СРОЧНО" },
+            normal: { bg:"bg-primary/5", text:"text-primary", label:"НОРМА" },
+            low: { bg:"bg-slate-50", text:"text-slate-500", label:"НИЗКИЙ" }
         };
         return styles[priority] || styles.normal;
     };
@@ -67,16 +67,16 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
     };
 
     const formatDateLabel = (dateInput: Date | null) => {
-        if (!dateInput) return "Без даты";
+        if (!dateInput) return"Без даты";
         const date = new Date(dateInput);
-        if (isToday(date)) return "Сегодня";
-        if (isTomorrow(date)) return "Завтра";
-        return format(date, "d MMMM", { locale: ru });
+        if (isToday(date)) return"Сегодня";
+        if (isTomorrow(date)) return"Завтра";
+        return format(date,"d MMMM", { locale: ru });
     };
 
     const formatTime = (dateInput: Date | null) => {
-        if (!dateInput) return "";
-        return format(new Date(dateInput), "HH:mm", { locale: ru });
+        if (!dateInput) return"";
+        return format(new Date(dateInput),"HH:mm", { locale: ru });
     };
 
     return (
@@ -117,9 +117,8 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
-                                                <h3 className={cn(
-                                                    "text-lg font-black truncate",
-                                                    task.status === 'done' ? "text-slate-300 line-through" : "text-slate-900 group-hover/item:text-primary transition-colors"
+                                                <h3 className={cn("text-lg font-black truncate",
+                                                    task.status === 'done' ?"text-slate-300 line-through" :"text-slate-900 group-hover/item:text-primary transition-colors"
                                                 )}>
                                                     {task.title}
                                                 </h3>
@@ -128,7 +127,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                                 </div>
                                             </div>
                                             <p className="text-slate-400 text-sm font-bold mb-4 line-clamp-2 leading-relaxed">
-                                                {task.description || "Описание задачи отсутствует."}
+                                                {task.description ||"Описание задачи отсутствует."}
                                             </p>
                                             <div className="flex flex-wrap items-center gap-3">
                                                 <div className="flex items-center gap-2 text-slate-400 font-black text-xs bg-white/50 px-3 py-1.5 rounded-xl group-hover/item:bg-primary/5 transition-colors">
@@ -137,7 +136,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                                 </div>
                                                 <div className="flex items-center gap-2 text-slate-400 font-black text-xs bg-white/50 px-3 py-1.5 rounded-xl group-hover/item:bg-primary/5 transition-colors">
                                                     <Clock className="w-3.5 h-3.5" />
-                                                    {formatTime(task.dueDate) || "Весь день"}
+                                                    {formatTime(task.dueDate) ||"Весь день"}
                                                 </div>
                                             </div>
                                         </div>

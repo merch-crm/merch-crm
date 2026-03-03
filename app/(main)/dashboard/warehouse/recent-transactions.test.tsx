@@ -94,7 +94,7 @@ describe('RecentTransactionsClient', () => {
 
     it('shows creator initials when no avatar', () => {
         render(<RecentTransactionsClient transactions={[mockInTransaction]} />);
-        // Иван Петров → "ИВ"
+        // Иван Петров →"ИВ"
         expect(screen.getByText('ИВ')).toBeInTheDocument();
     });
 
@@ -155,7 +155,7 @@ describe('RecentTransactionsClient', () => {
         }));
         render(<RecentTransactionsClient transactions={many} />);
 
-        // Find a button that contains "2" (the page 2 button)
+        // Find a button that contains"2" (the page 2 button)
         const buttons = screen.getAllByRole('button');
         const page2Button = buttons.find(btn => btn.textContent?.trim() === '2');
         if (!page2Button) throw new Error('Page 2 button not found');

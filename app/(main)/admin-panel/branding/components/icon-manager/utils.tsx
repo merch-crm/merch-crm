@@ -1,7 +1,7 @@
-import React from "react";
-import { IconGroup, IconGroupInput, SerializedIconGroup } from "./types";
+import React from"react";
+import { IconGroup, IconGroupInput, SerializedIconGroup } from"./types";
 
-import { ReactSVG } from "react-svg";
+import { ReactSVG } from"react-svg";
 
 /**
  * Creates a React component from an SVG string
@@ -46,7 +46,7 @@ export const pluralize = (count: number, one: string, two: string, five: string)
 export const prepareGroupsForSave = (groups: IconGroup[]): IconGroupInput[] => {
     return groups.map(g => ({
         name: g.label,
-        group_icon: (g.groupIcon as React.ComponentType & { displayName?: string }).displayName || g.groupIcon.name || "Sparkles",
+        group_icon: (g.groupIcon as React.ComponentType & { displayName?: string }).displayName || g.groupIcon.name ||"Sparkles",
         icons: g.icons.map(i => ({
             name: i.name,
             label: i.label,
@@ -71,7 +71,7 @@ export const hydrateIconGroups = (data: SerializedIconGroup[]): IconGroup[] => {
     // is usually handled via name-to-component dictionary
     return (data || []).map(group => ({
         id: group.name?.toLowerCase().replace(/\s+/g, '-') || `cat-${Math.random()}`,
-        label: group.name || "Untitled",
+        label: group.name ||"Untitled",
         groupIcon: (group as unknown as { groupIcon?: React.ComponentType<{ className?: string }> }).groupIcon || (() => null), // Actual mapping happens in main component if needed
         icons: (group.icons || []).map(icon => ({
             name: icon.name,

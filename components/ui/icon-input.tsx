@@ -20,8 +20,8 @@ export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
                 )}
                 <Input
                     className={cn(
-                        StartIcon && "pl-10",
-                        EndIcon && "pr-10",
+                        StartIcon &&"pl-10",
+                        EndIcon &&"pr-10",
                         className
                     )}
                     ref={ref}

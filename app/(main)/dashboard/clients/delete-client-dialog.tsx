@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { deleteClient } from "./actions/core.actions";;
-import { Loader2, AlertTriangle } from "lucide-react";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
+import { useState } from"react";
+import { deleteClient } from"./actions/core.actions";;
+import { Loader2, AlertTriangle } from"lucide-react";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
 
 interface DeleteClientDialogProps {
     client: {
@@ -63,7 +63,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
                 <div className="bg-slate-50 rounded-2xl p-4 mb-6 border border-slate-200 w-full text-left">
                     <p className="text-sm font-bold text-slate-700 mb-1">Клиент:</p>
                     <p className="text-lg font-bold text-slate-900">
-                        {client.lastName} {client.firstName} {client.patronymic || ""}
+                        {client.lastName} {client.firstName} {client.patronymic ||""}
                     </p>
                     <p className="text-xs text-red-600 font-bold mt-2">
                         Все данные будут безвозвратно удалены.
@@ -92,7 +92,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
                         className="flex-1 md:flex-none"
                     >
                         {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                        {isLoading ? "Удаление..." : "Удалить"}
+                        {isLoading ?"Удаление..." :"Удалить"}
                     </Button>
                 </div>
             </div>

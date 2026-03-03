@@ -1,10 +1,10 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { LayoutGrid, MapPin, Banknote, ClipboardList, type LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { type TabletTab } from "../hooks/useItemDetailController";
+import { motion } from"framer-motion";
+import { LayoutGrid, MapPin, Banknote, ClipboardList, type LucideIcon } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { type TabletTab } from"../hooks/useItemDetailController";
 
 interface ItemTabsSwitcherProps {
     tabletTab: TabletTab;
@@ -28,26 +28,24 @@ export function ItemTabsSwitcher({ tabletTab, setTabletTab }: ItemTabsSwitcherPr
                         key={tab.id}
                         onClick={() => setTabletTab(tab.id)}
                         variant="ghost"
-                        className={cn(
-                            "relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 active:scale-95 outline-none focus:outline-none border-none shadow-none h-auto bg-transparent hover:bg-transparent p-0",
-                            isActive ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                        className={cn("relative flex items-center justify-center gap-2 py-3 px-6 rounded-[16px] text-[13px] font-bold transition-all whitespace-nowrap flex-1 active:scale-95 outline-none focus:outline-none border-none shadow-none h-auto bg-transparent hover:bg-transparent p-0",
+                            isActive ?"text-primary-foreground" :"text-muted-foreground hover:text-foreground"
                         )}
-                        style={{ WebkitTapHighlightColor: "transparent" }}
+                        style={{ WebkitTapHighlightColor:"transparent" }}
                     >
                         {isActive && (
                             <motion.div
                                 layoutId="activeTabletTab"
                                 className="absolute inset-0 bg-primary rounded-[16px] shadow-md shadow-primary/20 -z-10"
                                 transition={{
-                                    type: "spring",
+                                    type:"spring",
                                     bounce: 0,
                                     duration: 0.4
                                 }}
                             />
                         )}
-                        <tab.icon className={cn(
-                            "relative z-10 w-4 h-4 transition-transform duration-300",
-                            isActive ? "text-primary-foreground scale-110" : "text-muted-foreground"
+                        <tab.icon className={cn("relative z-10 w-4 h-4 transition-transform duration-300",
+                            isActive ?"text-primary-foreground scale-110" :"text-muted-foreground"
                         )} />
                         <span className="relative z-10">{tab.label}</span>
                     </Button>

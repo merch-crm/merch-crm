@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { cn } from "@/lib/utils";
-import { Timeframe, PERIODS } from "./types";
+import React from"react";
+import { cn } from"@/lib/utils";
+import { Timeframe, PERIODS } from"./types";
 
 interface TimeframeTabsProps {
     timeframe: Timeframe;
@@ -19,11 +19,10 @@ export function TimeframeTabs({ timeframe, setTimeframe }: TimeframeTabsProps) {
                         onClick={() => setTimeframe(p.value as Timeframe)}
                         aria-label={`Период: ${p.label}`}
                         aria-pressed={timeframe === p.value}
-                        className={cn(
-                            "px-4 py-1.5 text-xs font-bold transition-all duration-300 rounded-full whitespace-nowrap",
+                        className={cn("px-4 py-1.5 text-xs font-bold transition-all duration-300 rounded-full whitespace-nowrap",
                             timeframe === p.value
-                                ? "bg-foreground text-background shadow-md transform scale-105"
-                                : "text-muted-foreground hover:text-foreground hover:bg-background/40"
+                                ?"bg-foreground text-background shadow-md transform scale-105"
+                                :"text-muted-foreground hover:text-foreground hover:bg-background/40"
                         )}
                     >
                         {p.label}

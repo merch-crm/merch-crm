@@ -1,20 +1,20 @@
 "use client";
 
-import { Plus, Archive, ArchiveRestore, Search, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { DateRangeFilter } from "./date-range-filter";
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Plus, Archive, ArchiveRestore, Search, X } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { motion } from"framer-motion";
+import Link from"next/link";
+import { useRouter, useSearchParams } from"next/navigation";
+import { DateRangeFilter } from"./date-range-filter";
+import { useState, useEffect } from"react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
 export function OrdersToolbar() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const showArchived = searchParams.get("archived") === "true";
-    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const showArchived = searchParams.get("archived") ==="true";
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ||"");
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -24,7 +24,7 @@ export function OrdersToolbar() {
             } else {
                 params.delete("search");
             }
-            params.set("page", "1");
+            params.set("page","1");
             router.push(`/dashboard/orders?${params.toString()}`);
         }, 500);
 
@@ -34,11 +34,11 @@ export function OrdersToolbar() {
     const handleTabChange = (archived: boolean) => {
         const params = new URLSearchParams(searchParams);
         if (archived) {
-            params.set("archived", "true");
+            params.set("archived","true");
         } else {
             params.delete("archived");
         }
-        params.set("page", "1");
+        params.set("page","1");
         router.push(`/dashboard/orders?${params.toString()}`);
     };
 
@@ -74,26 +74,24 @@ export function OrdersToolbar() {
                 <div className="flex-1 min-w-0 flex items-center">
                     <div className="flex items-center p-1 gap-1 overflow-x-auto no-scrollbar flex-nowrap w-full">
                         {[
-                            { id: "base", label: "База", active: !showArchived, icon: ArchiveRestore },
-                            { id: "archived", label: "Архив", active: showArchived, icon: Archive }
+                            { id:"base", label:"База", active: !showArchived, icon: ArchiveRestore },
+                            { id:"archived", label:"Архив", active: showArchived, icon: Archive }
                         ].map((tab) => (
                             <Button
                                 key={tab.id}
                                 variant="ghost"
-                                onClick={() => handleTabChange(tab.id === "archived")}
-                                className={cn(
-                                    "crm-filter-tab shrink-0",
-                                    tab.active && "active"
+                                onClick={() => handleTabChange(tab.id ==="archived")}
+                                className={cn("crm-filter-tab shrink-0",
+                                    tab.active &&"active"
                                 )}
                             >
                                 {tab.active && (
                                     <motion.div
                                         layoutId="activeOrderTab"
-                                        className={cn(
-                                            "absolute inset-0 rounded-[10px] z-0",
-                                            tab.id === "archived" ? "bg-amber-500 shadow-lg shadow-amber-500/20" : "bg-primary"
+                                        className={cn("absolute inset-0 rounded-[10px] z-0",
+                                            tab.id ==="archived" ?"bg-amber-500 shadow-lg shadow-amber-500/20" :"bg-primary"
                                         )}
-                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}
                                 <div className="relative z-10 flex items-center justify-center gap-2">
@@ -125,17 +123,16 @@ export function OrdersToolbar() {
             <div className="flex md:hidden items-center gap-3">
                 <div className="flex items-center p-1 gap-1 bg-slate-100/50 rounded-2xl border border-slate-200/50">
                     {[
-                        { id: "base", label: "База", active: !showArchived, icon: ArchiveRestore },
-                        { id: "archived", label: "Архив", active: showArchived, icon: Archive }
+                        { id:"base", label:"База", active: !showArchived, icon: ArchiveRestore },
+                        { id:"archived", label:"Архив", active: showArchived, icon: Archive }
                     ].map((tab) => (
                         <button
                             key={tab.id}
                             type="button"
-                            onClick={() => handleTabChange(tab.id === "archived")}
+                            onClick={() => handleTabChange(tab.id ==="archived")}
                             aria-pressed={tab.active}
-                            className={cn(
-                                "flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-bold transition-all relative",
-                                tab.active ? "bg-white text-primary shadow-sm" : "text-slate-500"
+                            className={cn("flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-bold transition-all relative",
+                                tab.active ?"bg-white text-primary shadow-sm" :"text-slate-500"
                             )}
                         >
                             <tab.icon className="w-4 h-4" aria-hidden="true" />

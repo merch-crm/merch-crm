@@ -1,24 +1,24 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from"react";
 import {
     Mail, Phone, MapPin, Building2, ShoppingBag,
     Edit2, CreditCard, Clock, AlertCircle,
     MessageCircle, ExternalLink,
     Plus as PlusIcon
-} from "lucide-react";
-import { formatDate } from "@/lib/formatters";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
-import { useBranding } from "@/components/branding-provider";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Pagination } from "@/components/ui/pagination";
-import StatusBadgeInteractive from "../orders/status-badge-interactive";
+} from"lucide-react";
+import { formatDate } from"@/lib/formatters";
+import { Button } from"@/components/ui/button";
+import { Badge } from"@/components/ui/badge";
+import { useRouter } from"next/navigation";
+import { useBranding } from"@/components/branding-provider";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Pagination } from"@/components/ui/pagination";
+import StatusBadgeInteractive from"../orders/status-badge-interactive";
 
-import { getClientDetails } from "./actions/core.actions";;
-import type { ClientDetails, ClientProfileOrder } from "@/lib/types";
-import type { OrderStatus } from "@/lib/types/order";
+import { getClientDetails } from"./actions/core.actions";;
+import type { ClientDetails, ClientProfileOrder } from"@/lib/types";
+import type { OrderStatus } from"@/lib/types/order";
 
 interface ClientDetailPopupProps {
     clientId: string;
@@ -59,7 +59,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
         <ResponsiveModal
             isOpen={isOpen}
             onClose={onClose}
-            title={loading ? "Загрузка..." : (client?.name || undefined)}
+            title={loading ?"Загрузка..." : (client?.name || undefined)}
             description="Детальная информация о клиенте"
             className="max-w-4xl"
         >
@@ -95,8 +95,8 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                             <Phone className="w-4 h-4" />
                                         </div>
                                         <div>
-                                            <p className="text-xs font-bold text-slate-400 ">Телефон</p>
-                                            <p className="text-sm font-bold text-slate-700">{client.phone || "---"}</p>
+                                            <p className="text-xs font-bold text-slate-400">Телефон</p>
+                                            <p className="text-sm font-bold text-slate-700">{client.phone ||"---"}</p>
                                         </div>
                                     </div>
 
@@ -106,7 +106,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                 <Mail className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <p className="text-xs font-bold text-slate-400 ">Email</p>
+                                                <p className="text-xs font-bold text-slate-400">Email</p>
                                                 <p className="text-sm font-bold text-slate-700">{client.email}</p>
                                             </div>
                                         </div>
@@ -118,7 +118,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                 <MapPin className="w-4 h-4" />
                                             </div>
                                             <div>
-                                                <p className="text-xs font-bold text-slate-400 ">Адрес</p>
+                                                <p className="text-xs font-bold text-slate-400">Адрес</p>
                                                 <p className="text-sm font-bold text-slate-700">{client.city}{client.address ? `, ${client.address}` : ''}</p>
                                             </div>
                                         </div>
@@ -143,10 +143,10 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                     )}
                                     <div className="flex items-center gap-2 px-1">
                                         <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
-                                            Создан {formatDate(client.createdAt, "dd.MM.yyyy")}
+                                            Создан {formatDate(client.createdAt,"dd.MM.yyyy")}
                                         </Badge>
                                         <Badge variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
-                                            Источник: {client.acquisitionSource || "---"}
+                                            Источник: {client.acquisitionSource ||"---"}
                                         </Badge>
                                     </div>
                                 </div>
@@ -200,7 +200,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                         <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400">
                                             <Clock className="w-4 h-4" />
                                         </div>
-                                        <h3 className="text-sm font-extrabold text-slate-800 ">История заказов</h3>
+                                        <h3 className="text-sm font-extrabold text-slate-800">История заказов</h3>
                                     </div>
                                     <Badge className="bg-slate-100 text-slate-600 border-none font-bold">{(client.orders?.length || 0)}</Badge>
                                 </div>
@@ -213,7 +213,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div>
                                                         <div className="text-sm font-black text-slate-900 group-hover:text-primary transition-colors">#{order.orderNumber || order.id.slice(0, 8)}</div>
-                                                        <div className="text-xs font-bold text-slate-400 mt-0.5">Заказ за {formatDate(order.createdAt, "dd.MM.yyyy")}</div>
+                                                        <div className="text-xs font-bold text-slate-400 mt-0.5">Заказ за {formatDate(order.createdAt,"dd.MM.yyyy")}</div>
                                                     </div>
                                                     <StatusBadgeInteractive
                                                         orderId={order.id}
@@ -225,12 +225,12 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                                                         <div className="text-sm font-bold text-slate-900">
                                                             {showFinancials && `${order.totalPrice || 0} ${currencySymbol}`}
                                                         </div>
-                                                        <p className="text-xs font-bold text-slate-400 ">
-                                                            {formatDate(order.createdAt, "d MMMM yyyy")}
+                                                        <p className="text-xs font-bold text-slate-400">
+                                                            {formatDate(order.createdAt,"d MMMM yyyy")}
                                                         </p>
                                                     </div>
                                                     <div className="px-2 py-1 rounded-md bg-slate-50 text-xs font-bold text-slate-500 border border-slate-100">
-                                                        {order.status || "—"}
+                                                        {order.status ||"—"}
                                                     </div>
                                                 </div>
                                             </div>

@@ -1,1 +1,1 @@
-export * from "./item-financial-section/index";
+export * from"./item-financial-section/index";

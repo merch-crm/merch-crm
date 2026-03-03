@@ -1,6 +1,6 @@
-import { Search, Layers, Plus, Download } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Search, Layers, Plus, Download } from"lucide-react";
+import { Input } from"@/components/ui/input";
+import { Button } from"@/components/ui/button";
 
 interface PromocodesHeaderProps {
     searchQuery: string;

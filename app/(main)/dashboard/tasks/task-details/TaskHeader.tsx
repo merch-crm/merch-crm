@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckCircle2, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Task } from "../types";
+import { CheckCircle2, X } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Task } from"../types";
 
 interface TaskHeaderProps {
     task: Task;
@@ -10,13 +10,13 @@ interface TaskHeaderProps {
 }
 
 export function TaskHeader({ task, onClose }: TaskHeaderProps) {
-    const isDone = task.status === "done";
+    const isDone = task.status ==="done";
 
     const getPriorityConfig = (priority: string) => {
         switch (priority) {
-            case "high": return { label: "Высокий приоритет", color: "text-rose-600 bg-rose-50" };
-            case "normal": return { label: "Обычный приоритет", color: "text-amber-600 bg-amber-50" };
-            default: return { label: "Низкий приоритет", color: "text-slate-500 bg-slate-50" };
+            case"high": return { label:"Высокий приоритет", color:"text-rose-600 bg-rose-50" };
+            case"normal": return { label:"Обычный приоритет", color:"text-amber-600 bg-amber-50" };
+            default: return { label:"Низкий приоритет", color:"text-slate-500 bg-slate-50" };
         }
     };
 
@@ -36,9 +36,8 @@ export function TaskHeader({ task, onClose }: TaskHeaderProps) {
                         </span>
                     )}
                 </div>
-                <h2 className={cn(
-                    "text-2xl sm:text-3xl font-bold text-slate-900 leading-tight",
-                    isDone && "line-through text-slate-400"
+                <h2 className={cn("text-2xl sm:text-3xl font-bold text-slate-900 leading-tight",
+                    isDone &&"line-through text-slate-400"
                 )}>
                     {task.title}
                 </h2>

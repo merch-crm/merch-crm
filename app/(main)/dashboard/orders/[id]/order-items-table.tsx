@@ -1,8 +1,8 @@
 "use client";
 
-import { Package } from "lucide-react";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { pluralize } from "@/lib/pluralize";
+import { Package } from"lucide-react";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
+import { pluralize } from"@/lib/pluralize";
 
 
 interface OrderItem {
@@ -51,7 +51,7 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                         <tbody className="crm-tbody">
                             {safeItems.map((item) => (
                                 <tr key={item.id} className="crm-tr">
-                                    <td className="crm-td font-semibold text-slate-900">{item.description || "Без названия"}</td>
+                                    <td className="crm-td font-semibold text-slate-900">{item.description ||"Без названия"}</td>
                                     <td className="crm-td crm-td-number">{item.quantity} шт</td>
                                     {showFinancials && (
                                         <>
@@ -80,7 +80,7 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                 )}
                 renderCard={(item) => (
                     <div key={item.id} className="crm-card  space-y-3">
-                        <div className="text-sm font-bold text-slate-900">{item.description || "Без названия"}</div>
+                        <div className="text-sm font-bold text-slate-900">{item.description ||"Без названия"}</div>
                         <div className="flex justify-between items-center pt-2 border-t border-slate-50">
                             <div className="text-xs text-slate-500">Количество: <span className="font-bold text-slate-700">{item.quantity} шт</span></div>
                             {showFinancials && (

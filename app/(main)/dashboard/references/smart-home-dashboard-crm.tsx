@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     Plus,
     MoreHorizontal,
@@ -17,8 +17,8 @@ import {
     Zap,
     Moon,
     Sun
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function SmartHomeDashboardCRM() {
     return (
@@ -37,7 +37,7 @@ export default function SmartHomeDashboardCRM() {
                         <div className="flex items-center gap-3 mt-1">
                             <span className="text-xs font-bold  text-slate-400">Monday, 27 Jan 2025</span>
                             <span className="w-1 h-1 rounded-full bg-slate-300" />
-                            <div className="flex items-center gap-1.5 text-primary text-xs font-bold ">
+                            <div className="flex items-center gap-1.5 text-primary text-xs font-bold">
                                 <Zap className="w-3 h-3" />
                                 <span>4 active devices</span>
                             </div>
@@ -69,24 +69,23 @@ export default function SmartHomeDashboardCRM() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                         {[
-                            { name: "Smart TV", room: "Living Room", icon: <Smartphone />, status: "On", color: "bg-primary" },
-                            { name: "Air Purifier", room: "Bedroom", icon: <Wind />, status: "Off", color: "bg-slate-200" },
-                            { name: "Smart Light", room: "Kitchen", icon: <Lightbulb />, status: "On", color: "bg-primary" },
-                            { name: "AC Unit", room: "Bedroom", icon: <Thermometer />, status: "Auto", color: "bg-primary" },
+                            { name:"Smart TV", room:"Living Room", icon: <Smartphone />, status:"On", color:"bg-primary" },
+                            { name:"Air Purifier", room:"Bedroom", icon: <Wind />, status:"Off", color:"bg-slate-200" },
+                            { name:"Smart Light", room:"Kitchen", icon: <Lightbulb />, status:"On", color:"bg-primary" },
+                            { name:"AC Unit", room:"Bedroom", icon: <Thermometer />, status:"Auto", color:"bg-primary" },
                         ].map((device, idx) => (
                             <div key={idx} className="crm-card p-6 flex flex-col justify-between min-h-[160px] group">
                                 <div className="flex justify-between items-start">
-                                    <div className={cn(
-                                        "w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500",
-                                        device.status === "Off" ? "bg-slate-100 text-slate-400" : "bg-primary text-white shadow-lg shadow-primary/20 scale-110"
+                                    <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500",
+                                        device.status ==="Off" ?"bg-slate-100 text-slate-400" :"bg-primary text-white shadow-lg shadow-primary/20 scale-110"
                                     )}>
-                                        {React.isValidElement(device.icon) && React.cloneElement(device.icon as React.ReactElement<{ className?: string }>, { className: "w-6 h-6" })}
+                                        {React.isValidElement(device.icon) && React.cloneElement(device.icon as React.ReactElement<{ className?: string }>, { className:"w-6 h-6" })}
                                     </div>
                                     <div className="flex flex-col items-end">
                                         <button type="button" className="w-8 h-8 rounded-full hover:bg-slate-50 flex items-center justify-center text-slate-300 hover:text-slate-600 transition-colors">
                                             <MoreHorizontal className="w-4 h-4" />
                                         </button>
-                                        {device.status === "On" && (
+                                        {device.status ==="On" && (
                                             <div className="mt-2 w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                                         )}
                                     </div>
@@ -103,7 +102,7 @@ export default function SmartHomeDashboardCRM() {
                             <div className="w-10 h-10 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center group-hover:border-primary/40">
                                 <Plus className="w-5 h-5" />
                             </div>
-                            <span className="text-xs font-bold ">Connect Device</span>
+                            <span className="text-xs font-bold">Connect Device</span>
                         </button>
                     </div>
 
@@ -177,20 +176,18 @@ export default function SmartHomeDashboardCRM() {
                         <h2 className="text-xl font-bold text-slate-900 px-2">Ready Scenes</h2>
                         <div className="grid grid-cols-2 gap-3">
                             {[
-                                { name: "Night Mode", icon: <Moon />, active: true, color: "bg-slate-900" },
-                                { name: "Morning", icon: <Sun />, active: false, color: "bg-white" },
+                                { name:"Night Mode", icon: <Moon />, active: true, color:"bg-slate-900" },
+                                { name:"Morning", icon: <Sun />, active: false, color:"bg-white" },
                             ].map((scene, idx) => (
-                                <div key={idx} className={cn(
-                                    "p-6 rounded-[var(--radius-outer)] flex flex-col gap-3 border transition-all cursor-pointer group shadow-crm-md hover:shadow-crm-lg",
-                                    scene.active ? (scene.color === "bg-slate-900" ? "bg-slate-900 text-white border-slate-800" : "bg-white text-slate-900 border-primary/40") : "bg-white text-slate-900 border-slate-200 opacity-60 hover:opacity-100"
+                                <div key={idx} className={cn("p-6 rounded-[var(--radius-outer)] flex flex-col gap-3 border transition-all cursor-pointer group shadow-crm-md hover:shadow-crm-lg",
+                                    scene.active ? (scene.color ==="bg-slate-900" ?"bg-slate-900 text-white border-slate-800" :"bg-white text-slate-900 border-primary/40") :"bg-white text-slate-900 border-slate-200 opacity-60 hover:opacity-100"
                                 )}>
-                                    <div className={cn(
-                                        "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center transition-transform group-hover:rotate-12",
-                                        scene.color === "bg-slate-900" ? "bg-white/10 text-primary" : "bg-slate-50 text-slate-400"
+                                    <div className={cn("w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center transition-transform group-hover:rotate-12",
+                                        scene.color ==="bg-slate-900" ?"bg-white/10 text-primary" :"bg-slate-50 text-slate-400"
                                     )}>
-                                        {React.isValidElement(scene.icon) && React.cloneElement(scene.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5" })}
+                                        {React.isValidElement(scene.icon) && React.cloneElement(scene.icon as React.ReactElement<{ className?: string }>, { className:"w-5 h-5" })}
                                     </div>
-                                    <div className="text-xs font-bold ">{scene.name}</div>
+                                    <div className="text-xs font-bold">{scene.name}</div>
                                 </div>
                             ))}
                         </div>

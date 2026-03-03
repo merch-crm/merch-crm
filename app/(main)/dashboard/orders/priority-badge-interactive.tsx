@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Zap, Circle, ChevronDown } from "lucide-react";
-import { updateOrderField } from "./actions/core.actions";;
-import { Button } from "@/components/ui/button";
+import { useState, useRef, useEffect } from"react";
+import { Badge } from"@/components/ui/badge";
+import { Zap, Circle, ChevronDown } from"lucide-react";
+import { updateOrderField } from"./actions/core.actions";;
+import { Button } from"@/components/ui/button";
 
 const priorities = [
-    { id: "normal", label: "Обычный", icon: Circle, color: "text-slate-500", lightBg: "bg-slate-50 border-slate-200", dot: "bg-slate-400" },
-    { id: "high", label: "Срочный", icon: Zap, color: "text-rose-600", lightBg: "bg-rose-50 border-rose-100", dot: "bg-rose-500" },
+    { id:"normal", label:"Обычный", icon: Circle, color:"text-slate-500", lightBg:"bg-slate-50 border-slate-200", dot:"bg-slate-400" },
+    { id:"high", label:"Срочный", icon: Zap, color:"text-rose-600", lightBg:"bg-rose-50 border-rose-100", dot:"bg-rose-500" },
 ];
 
 export default function PriorityBadgeInteractive({ orderId, priority }: { orderId: string, priority: string }) {
@@ -18,7 +18,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
     const containerRef = useRef<HTMLDivElement>(null);
 
     const activeItem = priorities.find(p => p.id === currentPriority) || priorities[0];
-    const isHigh = currentPriority === "high";
+    const isHigh = currentPriority ==="high";
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -41,7 +41,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
         setCurrentPriority(newId);
         setIsOpen(false);
 
-        const res = await updateOrderField(orderId, "priority", newId);
+        const res = await updateOrderField(orderId,"priority", newId);
         if (!res.success) {
             setCurrentPriority(prevPriority);
         }

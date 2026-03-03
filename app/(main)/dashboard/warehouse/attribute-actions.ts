@@ -8,8 +8,8 @@ export {
     createInventoryAttribute,
     updateInventoryAttribute,
     deleteInventoryAttribute
-} from "./attributes/actions/attribute.actions";
-export type { InventoryAttribute } from "./attributes/actions/attribute.actions";
+} from"./attributes/actions/attribute.actions";
+export type { InventoryAttribute } from"./attributes/actions/attribute.actions";
 
 export {
     getInventoryAttributeTypes,
@@ -17,7 +17,7 @@ export {
     deleteInventoryAttributeType,
     updateInventoryAttributeType,
     reorderInventoryAttributeTypes
-} from "./attributes/actions/type.actions";
-export type { AttributeType } from "./attributes/actions/type.actions";
+} from"./attributes/actions/type.actions";
+export type { AttributeType } from"./attributes/actions/type.actions";
 
-export { regenerateAllItemSKUs } from "./attributes/actions/maintenance.actions";
+export { regenerateAllItemSKUs } from"./attributes/actions/maintenance.actions";

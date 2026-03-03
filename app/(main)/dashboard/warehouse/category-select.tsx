@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect, createElement } from "react";
-import { ChevronDown, Check, Package, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Category } from "./types";
-import { getCategoryIcon, getColorStyles } from "./category-utils";
-import { GlassEmptyState } from "@/components/ui/glass-empty-state";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState, useRef, useEffect, createElement } from"react";
+import { ChevronDown, Check, Package, Search } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Category } from"./types";
+import { getCategoryIcon, getColorStyles } from"./category-utils";
+import { GlassEmptyState } from"@/components/ui/glass-empty-state";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
 interface CategorySelectProps {
     id?: string;
@@ -19,7 +19,7 @@ interface CategorySelectProps {
     excludeId?: string;
 }
 
-export function CategorySelect({ categories, value, onChange, placeholder = "Выберите категорию", disabled, excludeId }: CategorySelectProps) {
+export function CategorySelect({ categories, value, onChange, placeholder ="Выберите категорию", disabled, excludeId }: CategorySelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const containerRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
 
     // Filter parents and handle hierarchy
     const availableCategories = categories.filter(cat =>
-        cat.id !== excludeId && (!cat.parentId || cat.parentId === "")
+        cat.id !== excludeId && (!cat.parentId || cat.parentId ==="")
     );
 
     const filteredCategories = availableCategories.filter(cat =>
@@ -60,10 +60,9 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
                 variant="ghost"
-                className={cn(
-                    "w-full h-11 px-4 rounded-[var(--radius-inner)] border flex items-center justify-between transition-all outline-none group p-0 bg-transparent hover:bg-transparent shadow-none",
-                    isOpen ? "border-primary ring-4 ring-primary/10 bg-white shadow-crm-md" : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-crm-sm",
-                    disabled && "opacity-50 cursor-not-allowed"
+                className={cn("w-full h-11 px-4 rounded-[var(--radius-inner)] border flex items-center justify-between transition-all outline-none group p-0 bg-transparent hover:bg-transparent shadow-none",
+                    isOpen ?"border-primary ring-4 ring-primary/10 bg-white shadow-crm-md" :"border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-crm-sm",
+                    disabled &&"opacity-50 cursor-not-allowed"
                 )}
             >
                 <div className="flex items-center gap-3">
@@ -73,7 +72,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                                 className={cn("w-7 h-7 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-colors")}
                                 style={getColorStyles(selectedCategory?.color).style}
                             >
-                                {createElement(iconComponent, { className: "w-4 h-4" })}
+                                {createElement(iconComponent, { className:"w-4 h-4" })}
                             </div>
                             <span className="font-bold text-slate-900">{selectedCategory?.name}</span>
                         </>
@@ -81,7 +80,7 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                         <span className="font-bold text-slate-400">{placeholder}</span>
                     )}
                 </div>
-                <ChevronDown className={cn("w-5 h-5 text-slate-400 transition-transform duration-300", isOpen && "rotate-180 text-primary")} />
+                <ChevronDown className={cn("w-5 h-5 text-slate-400 transition-transform duration-300", isOpen &&"rotate-180 text-primary")} />
             </Button>
 
             {isOpen && (
@@ -114,9 +113,8 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                                         type="button"
                                         onClick={() => handleSelect(cat.id)}
                                         variant="ghost"
-                                        className={cn(
-                                            "w-full flex items-center justify-between p-3 rounded-[var(--radius-inner)] transition-all group h-auto mb-1 bg-transparent hover:bg-transparent shadow-none border-none",
-                                            isSelected ? "bg-primary/5 text-primary" : "hover:bg-slate-50 text-slate-600"
+                                        className={cn("w-full flex items-center justify-between p-3 rounded-[var(--radius-inner)] transition-all group h-auto mb-1 bg-transparent hover:bg-transparent shadow-none border-none",
+                                            isSelected ?"bg-primary/5 text-primary" :"hover:bg-slate-50 text-slate-600"
                                         )}
                                     >
                                         <div className="flex items-center gap-3">
@@ -124,9 +122,9 @@ export function CategorySelect({ categories, value, onChange, placeholder = "В�
                                                 className={cn("w-9 h-9 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-transform")}
                                                 style={colorStyles.style}
                                             >
-                                                {createElement(CatIcon, { className: "w-4 h-4" })}
+                                                {createElement(CatIcon, { className:"w-4 h-4" })}
                                             </div>
-                                            <span className="font-bold text-sm ">{cat.name}</span>
+                                            <span className="font-bold text-sm">{cat.name}</span>
                                         </div>
                                         {isSelected && <Check className="w-4 h-4 stroke-[3]" />}
                                     </Button>

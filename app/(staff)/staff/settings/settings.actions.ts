@@ -16,7 +16,7 @@ export async function getPresenceSettings() {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const settings = await db.query.presenceSettings.findMany()
+        const settings = await db.query.presenceSettings.findMany({ limit: 500 })
 
         const settingsMap = settings.reduce((acc, s) => {
             acc[s.key] = s.value as string | number | boolean
@@ -80,6 +80,7 @@ export async function testGo2rtcConnection() {
         }
 
         const settings = await db.query.presenceSettings.findMany({
+        limit: 500,
             where: eq(presenceSettings.key, 'go2rtc_url')
         })
 

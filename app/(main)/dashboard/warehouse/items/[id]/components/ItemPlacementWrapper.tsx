@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-import { MapPin, Package } from "lucide-react";
-import { pluralize } from "@/lib/pluralize";
-import { cn } from "@/lib/utils";
-import { StorageLocation, ItemStock } from "@/app/(main)/dashboard/warehouse/types";
-import { ItemStockLocations } from "./ItemStockLocations";
+import React from"react";
+import { MapPin, Package } from"lucide-react";
+import { pluralize } from"@/lib/pluralize";
+import { cn } from"@/lib/utils";
+import { StorageLocation, ItemStock } from"@/app/(main)/dashboard/warehouse/types";
+import { ItemStockLocations } from"./ItemStockLocations";
 
 interface ItemPlacementWrapperProps {
     storageLocations: StorageLocation[];
@@ -33,11 +33,8 @@ export function ItemPlacementWrapper({
 
     return (
         <div className={
-            cn(
-                "crm-card rounded-3xl p-6 flex-col flex-1 h-full",
-                "md:col-span-2 xl:col-span-4",
-                tabletTab === 'placement' ? "flex" : "hidden",
-                "xl:flex"
+            cn("crm-card rounded-3xl p-6 flex-col flex-1 h-full","md:col-span-2 xl:col-span-4",
+                tabletTab === 'placement' ?"flex" :"hidden","xl:flex"
             )}>
             <div className="flex items-center justify-between mb-8 text-left">
                 <div className="flex items-center gap-3">

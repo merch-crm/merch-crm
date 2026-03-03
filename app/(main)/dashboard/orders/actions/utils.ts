@@ -1,9 +1,9 @@
 "use server";
 
-import { eq, sql } from "drizzle-orm";
-import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { eq, sql } from"drizzle-orm";
+import { db } from"@/lib/db";
+import * as schema from"@/lib/schema";
+import { NodePgDatabase } from"drizzle-orm/node-postgres";
 
 const { inventoryItems, orderItems } = schema;
 

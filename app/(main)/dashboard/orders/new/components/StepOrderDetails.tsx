@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
-import { AlertCircle, CreditCard, Tag } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { SwitchRow } from "@/components/ui/switch-row";
+import React from"react";
+import { AlertCircle, CreditCard, Tag } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { SwitchRow } from"@/components/ui/switch-row";
 
 interface StepOrderDetailsProps {
     details: {
@@ -51,9 +51,9 @@ export function StepOrderDetails({
                         value={details.priority}
                         onChange={(val: string) => onUpdateDetails({ priority: val })}
                         options={[
-                            { id: "low", title: "Низкий" },
-                            { id: "medium", title: "Средний" },
-                            { id: "high", title: "Высокий" }
+                            { id:"low", title:"Низкий" },
+                            { id:"medium", title:"Средний" },
+                            { id:"high", title:"Высокий" }
                         ]}
                         placeholder="Выберите приоритет"
                     />
@@ -80,13 +80,11 @@ export function StepOrderDetails({
                         checked={details.isUrgent}
                         onCheckedChange={(val) => onUpdateDetails({ isUrgent: val })}
                         variant="success"
-                        className={cn(
-                            "h-12 px-4 transition-all duration-300",
-                            details.isUrgent ? "bg-rose-50/50 border-rose-200" : "bg-slate-50 border-slate-200"
+                        className={cn("h-12 px-4 transition-all duration-300",
+                            details.isUrgent ?"bg-rose-50/50 border-rose-200" :"bg-slate-50 border-slate-200"
                         )}
-                        iconClassName={cn(
-                            "w-8 h-8 rounded-lg transition-colors duration-300",
-                            details.isUrgent ? "bg-rose-100 text-rose-600 border-rose-200" : "bg-white text-slate-400 border-slate-100"
+                        iconClassName={cn("w-8 h-8 rounded-lg transition-colors duration-300",
+                            details.isUrgent ?"bg-rose-100 text-rose-600 border-rose-200" :"bg-white text-slate-400 border-slate-100"
                         )}
                     />
                 </div>
@@ -96,10 +94,10 @@ export function StepOrderDetails({
                         value={details.paymentMethod}
                         onChange={(val: string) => onUpdateDetails({ paymentMethod: val })}
                         options={[
-                            { id: "cash", title: "Наличные" },
-                            { id: "bank", title: "Безнал (Карта)" },
-                            { id: "online", title: "Онлайн-касса" },
-                            { id: "account", title: "Расчетный счет" }
+                            { id:"cash", title:"Наличные" },
+                            { id:"bank", title:"Безнал (Карта)" },
+                            { id:"online", title:"Онлайн-касса" },
+                            { id:"account", title:"Расчетный счет" }
                         ]}
                         placeholder="Выберите способ оплаты"
                     />
@@ -140,7 +138,7 @@ export function StepOrderDetails({
                         variant="secondary"
                         className="h-12 px-6"
                     >
-                        {isApplyingPromo ? "..." : "Применить"}
+                        {isApplyingPromo ?"..." :"Применить"}
                     </Button>
                 </div>
                 {details.appliedPromo && (
@@ -150,7 +148,7 @@ export function StepOrderDetails({
                             <span>
                                 {details.appliedPromo.discountType === 'percentage' ? `-${details.appliedPromo.value}%` :
                                     details.appliedPromo.discountType === 'fixed' ? `-${details.appliedPromo.value} ${currencySymbol}` :
-                                        details.appliedPromo.discountType === 'free_shipping' ? "БЕСПЛ. ДОСТАВКА" : "ПОДАРОК"}
+                                        details.appliedPromo.discountType === 'free_shipping' ?"БЕСПЛ. ДОСТАВКА" :"ПОДАРОК"}
                             </span>
                         </p>
                         {details.appliedPromo.message && (

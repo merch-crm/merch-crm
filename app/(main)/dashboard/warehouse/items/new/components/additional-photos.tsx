@@ -1,6 +1,6 @@
-import { Plus, RefreshCcw, Trash2 } from "lucide-react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import { Plus, RefreshCcw, Trash2 } from"lucide-react";
+import Image from"next/image";
+import { Button } from"@/components/ui/button";
 
 interface AdditionalPhotosProps {
     previews: string[] | undefined;

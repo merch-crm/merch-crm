@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { updateStorageLocation } from "@/app/(main)/dashboard/warehouse/storage-actions";
-import { StorageLocation, StorageLocationItem } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
+import { useState, useEffect } from"react";
+import { useRouter } from"next/navigation";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { updateStorageLocation } from"@/app/(main)/dashboard/warehouse/storage-actions";
+import { StorageLocation, StorageLocationItem } from"@/app/(main)/dashboard/warehouse/storage-locations-tab";
 
 interface UseEditLocationLogicProps {
     location: StorageLocation;
@@ -22,12 +22,12 @@ export function useEditLocationLogic({ location }: UseEditLocationLogicProps) {
 
     const [form, setForm] = useState({
         name: location.name,
-        description: location.description || "",
-        address: location.address || "",
-        responsibleUserId: location.responsibleUserId || "",
+        description: location.description ||"",
+        address: location.address ||"",
+        responsibleUserId: location.responsibleUserId ||"",
         isDefault: !!location.isDefault,
         isActive: location.isActive ?? true,
-        type: location.type || "warehouse" as "warehouse" | "production" | "office"
+        type: location.type ||"warehouse" as"warehouse" |"production" |"office"
     });
 
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -39,12 +39,12 @@ export function useEditLocationLogic({ location }: UseEditLocationLogicProps) {
             setUi(prev => ({ ...prev, prevId: location.id, currentPage: 1, transferItem: null }));
             setForm({
                 name: location.name,
-                description: location.description || "",
-                address: location.address || "",
-                responsibleUserId: location.responsibleUserId || "",
+                description: location.description ||"",
+                address: location.address ||"",
+                responsibleUserId: location.responsibleUserId ||"",
                 isDefault: !!location.isDefault,
                 isActive: location.isActive ?? true,
-                type: location.type || "warehouse"
+                type: location.type ||"warehouse"
             });
             setLocalItems(location.items || []);
             setFieldErrors({});
@@ -61,21 +61,21 @@ export function useEditLocationLogic({ location }: UseEditLocationLogicProps) {
         formData.append("type", (updates.type as string) ?? form.type);
 
         if (updates.isDefault !== undefined) {
-            if (updates.isDefault) formData.append("isDefault", "on");
+            if (updates.isDefault) formData.append("isDefault","on");
         } else if (form.isDefault) {
-            formData.append("isDefault", "on");
+            formData.append("isDefault","on");
         }
 
         if (updates.isActive !== undefined) {
-            if (updates.isActive) formData.append("isActive", "on");
+            if (updates.isActive) formData.append("isActive","on");
         } else if (form.isActive) {
-            formData.append("isActive", "on");
+            formData.append("isActive","on");
         }
 
         const res = await updateStorageLocation(location.id, formData);
 
         if (!res?.success) {
-            toast(res.error, "error");
+            toast(res.error,"error");
             playSound("notification_error");
         }
 
@@ -88,7 +88,7 @@ export function useEditLocationLogic({ location }: UseEditLocationLogicProps) {
     };
 
     const clearFieldError = (key: string) => {
-        setFieldErrors(prev => ({ ...prev, [key]: "" }));
+        setFieldErrors(prev => ({ ...prev, [key]:"" }));
     };
 
     return {

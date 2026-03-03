@@ -1,8 +1,8 @@
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Edit3, ToggleLeft, ToggleRight, Trash2, Calendar, Percent, Coins, Truck, Gift, Banknote } from "lucide-react";
-import { formatDate } from "@/lib/formatters";
-import { Promocode } from "../types";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { Edit3, ToggleLeft, ToggleRight, Trash2, Calendar, Percent, Coins, Truck, Gift, Banknote } from"lucide-react";
+import { formatDate } from"@/lib/formatters";
+import { Promocode } from"../types";
 
 interface PromocodeCardProps {
     promo: Promocode;
@@ -15,9 +15,8 @@ interface PromocodeCardProps {
 export function PromocodeCard({ promo, currencySymbol, onEdit, onToggle, onDelete }: PromocodeCardProps) {
     return (
         <div
-            className={cn(
-                "group crm-card !p-5 !rounded-[12px] hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative overflow-hidden flex flex-col justify-between",
-                !promo.isActive && "opacity-75"
+            className={cn("group crm-card !p-5 !rounded-[12px] hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 relative overflow-hidden flex flex-col justify-between",
+                !promo.isActive &&"opacity-75"
             )}
         >
             {/* High-end decorative background */}
@@ -26,13 +25,12 @@ export function PromocodeCard({ promo, currencySymbol, onEdit, onToggle, onDelet
             <div>
                 <div className="flex items-start justify-between mb-4 relative z-10">
                     <div className="flex items-center gap-2">
-                        <div className={cn(
-                            "px-2.5 py-1 rounded-full text-xs font-bold border",
+                        <div className={cn("px-2.5 py-1 rounded-full text-xs font-bold border",
                             promo.isActive
-                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                                : "bg-slate-50 text-slate-400 border-slate-200"
+                                ?"bg-emerald-50 text-emerald-600 border-emerald-100"
+                                :"bg-slate-50 text-slate-400 border-slate-200"
                         )}>
-                            {promo.isActive ? "● Активен" : "○ Пауза"}
+                            {promo.isActive ?"● Активен" :"○ Пауза"}
                         </div>
                     </div>
                     <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -67,7 +65,7 @@ export function PromocodeCard({ promo, currencySymbol, onEdit, onToggle, onDelet
                     <div className="text-xs font-bold text-slate-400 mb-1">Название / Код</div>
                     <div className="mb-4">
                         <div className="text-base font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-1">
-                            {promo.name || "Без названия"}
+                            {promo.name ||"Без названия"}
                         </div>
                         <div className="text-xs font-black text-slate-400">
                             {promo.code}
@@ -80,13 +78,13 @@ export function PromocodeCard({ promo, currencySymbol, onEdit, onToggle, onDelet
                             <div className="text-lg font-bold text-primary">
                                 {promo.discountType === 'percentage' ? `${promo.value}%` :
                                     promo.discountType === 'fixed' ? `${promo.value} ${currencySymbol}` :
-                                        promo.discountType === 'free_shipping' ? `0 ${currencySymbol}` : "GIFT"}
+                                        promo.discountType === 'free_shipping' ? `0 ${currencySymbol}` :"GIFT"}
                             </div>
                         </div>
                         <div>
                             <div className="text-xs font-bold text-slate-300 mb-1">Лимит</div>
                             <div className="text-lg font-bold text-slate-900">
-                                {promo.usageCount}<span className="text-slate-200"> / </span><span className="text-slate-400">{promo.usageLimit || "∞"}</span>
+                                {promo.usageCount}<span className="text-slate-200"> / </span><span className="text-slate-400">{promo.usageLimit ||"∞"}</span>
                             </div>
                         </div>
                     </div>
@@ -109,25 +107,24 @@ export function PromocodeCard({ promo, currencySymbol, onEdit, onToggle, onDelet
                     <Calendar className="w-3.5 h-3.5 opacity-60" />
                     <span className="text-xs font-bold">
                         {promo.expiresAt
-                            ? formatDate(promo.expiresAt, "dd.MM.yyyy")
-                            : "Бессрочно"
+                            ? formatDate(promo.expiresAt,"dd.MM.yyyy")
+                            :"Бессрочно"
                         }
                     </span>
                 </div>
-                <div className={cn(
-                    "px-2 py-0.5 rounded text-xs font-bold",
-                    promo.discountType === 'percentage' ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                        promo.discountType === 'fixed' ? "bg-blue-50 text-blue-600 border-blue-100" :
-                            promo.discountType === 'gift' ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-amber-50 text-amber-600 border-amber-100"
+                <div className={cn("px-2 py-0.5 rounded text-xs font-bold",
+                    promo.discountType === 'percentage' ?"bg-emerald-50 text-emerald-600 border-emerald-100" :
+                        promo.discountType === 'fixed' ?"bg-blue-50 text-blue-600 border-blue-100" :
+                            promo.discountType === 'gift' ?"bg-rose-50 text-rose-600 border-rose-100" :"bg-amber-50 text-amber-600 border-amber-100"
                 )}>
                     <div className="flex items-center gap-1">
                         {promo.discountType === 'percentage' && <Percent className="w-2.5 h-2.5" />}
                         {promo.discountType === 'fixed' && <Coins className="w-2.5 h-2.5" />}
                         {promo.discountType === 'free_shipping' && <Truck className="w-2.5 h-2.5" />}
                         {promo.discountType === 'gift' && <Gift className="w-2.5 h-2.5" />}
-                        {promo.discountType === 'percentage' ? "Процент" :
-                            promo.discountType === 'fixed' ? "Фикс. сумма" :
-                                promo.discountType === 'gift' ? "Подарок" : "Доставка"}
+                        {promo.discountType === 'percentage' ?"Процент" :
+                            promo.discountType === 'fixed' ?"Фикс. сумма" :
+                                promo.discountType === 'gift' ?"Подарок" :"Доставка"}
                     </div>
                 </div>
             </div>

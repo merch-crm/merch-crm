@@ -1,13 +1,13 @@
 "use client";
 
-import { Plus, Shapes, Ruler, Palette, Box, Hash, Layers, Maximize, Tag, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Select } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { Category } from "./types";
-import { useAddAttributeType } from "./hooks/use-add-attribute-type";
+import { Plus, Shapes, Ruler, Palette, Box, Hash, Layers, Maximize, Tag, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Select } from"@/components/ui/select";
+import { cn } from"@/lib/utils";
+import { Category } from"./types";
+import { useAddAttributeType } from"./hooks/use-add-attribute-type";
 
 interface AddAttributeTypeDialogProps {
     categories: Category[];
@@ -27,27 +27,27 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
         handleCreate
     } = useAddAttributeType({ categories });
 
-    const activeCategoryName = activeCategoryId === "uncategorized"
-        ? "Без категории"
-        : (categories.find(c => c.id === activeCategoryId)?.name || "Категория");
+    const activeCategoryName = activeCategoryId ==="uncategorized"
+        ?"Без категории"
+        : (categories.find(c => c.id === activeCategoryId)?.name ||"Категория");
 
     const dataTypes = [
-        { id: "text", title: "Общая", icon: Shapes },
-        { id: "unit", title: "Единица измерения", icon: Ruler },
-        { id: "color", title: "Цвет", icon: Palette },
-        { id: "dimensions", title: "Габариты", icon: Box },
-        { id: "quantity", title: "Количество", icon: Hash },
+        { id:"text", title:"Общая", icon: Shapes },
+        { id:"unit", title:"Единица измерения", icon: Ruler },
+        { id:"color", title:"Цвет", icon: Palette },
+        { id:"dimensions", title:"Габариты", icon: Box },
+        { id:"quantity", title:"Количество", icon: Hash },
 
-        { id: "composition", title: "Состав", icon: Component },
-        { id: "material", title: "Материал", icon: Layers },
-        { id: "size", title: "Размер", icon: Maximize },
-        { id: "brand", title: "Бренд", icon: Tag },
-        { id: "country", title: "Страна", icon: Globe },
-        { id: "density", title: "Плотность", icon: Waves },
-        { id: "weight", title: "Вес", icon: Weight },
-        { id: "volume", title: "Объем", icon: Droplets },
-        { id: "package", title: "Упаковка", icon: Package },
-        { id: "consumable", title: "Расходники", icon: Wrench },
+        { id:"composition", title:"Состав", icon: Component },
+        { id:"material", title:"Материал", icon: Layers },
+        { id:"size", title:"Размер", icon: Maximize },
+        { id:"brand", title:"Бренд", icon: Tag },
+        { id:"country", title:"Страна", icon: Globe },
+        { id:"density", title:"Плотность", icon: Waves },
+        { id:"weight", title:"Вес", icon: Weight },
+        { id:"volume", title:"Объем", icon: Droplets },
+        { id:"package", title:"Упаковка", icon: Package },
+        { id:"consumable", title:"Расходники", icon: Wrench },
     ] as const;
 
     return (
@@ -55,8 +55,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
             <Button
                 type="button"
                 onClick={handleOpen}
-                className={cn(
-                    "h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5",
+                className={cn("h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5",
                     className
                 )}
             >
@@ -108,9 +107,9 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                 options={
                                     [
                                         ...rootCategories
-                                            .filter(c => c.name.toLowerCase() !== "без категории")
+                                            .filter(c => c.name.toLowerCase() !=="без категории")
                                             .map(c => ({ id: c.id, title: c.name })),
-                                        { id: "uncategorized", title: "Без категории" }
+                                        { id:"uncategorized", title:"Без категории" }
                                     ]
                                 }
                                 placeholder="Выберите категорию"
@@ -132,14 +131,13 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                             key={type.id}
                                             type="button"
                                             onClick={() => setDataType(type.id)}
-                                            className={cn(
-                                                "flex flex-col items-center justify-center p-3 rounded-[var(--radius-inner)] border-2 transition-all gap-2",
+                                            className={cn("flex flex-col items-center justify-center p-3 rounded-[var(--radius-inner)] border-2 transition-all gap-2",
                                                 isSelected
-                                                    ? "bg-primary/5 border-primary text-primary shadow-sm"
-                                                    : "bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100/80 hover:border-slate-200"
+                                                    ?"bg-primary/5 border-primary text-primary shadow-sm"
+                                                    :"bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100/80 hover:border-slate-200"
                                             )}
                                         >
-                                            <Icon className={cn("w-5 h-5", isSelected ? "text-primary" : "text-slate-400")} />
+                                            <Icon className={cn("w-5 h-5", isSelected ?"text-primary" :"text-slate-400")} />
                                             <span className="text-xs font-bold tracking-tight text-center leading-none">
                                                 {type.title}
                                             </span>

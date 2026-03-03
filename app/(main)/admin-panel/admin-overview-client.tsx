@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React from"react";
 import {
     Users,
     ShieldCheck,
@@ -11,14 +11,14 @@ import {
     Plus,
     BarChart3,
     HardDrive
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { formatFileSize } from "@/lib/formatters";
-import { motion } from "framer-motion";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import Image from "next/image";
-import { useIsMobile } from "@/hooks/use-mobile";
+} from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { formatFileSize } from"@/lib/formatters";
+import { motion } from"framer-motion";
+import { AdminPageHeader } from"@/components/admin/admin-page-header";
+import Image from"next/image";
+import { useIsMobile } from"@/hooks/use-mobile";
 
 interface ActiveUser {
     name?: string;
@@ -58,19 +58,19 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
 
     const platformItems = [
         {
-            title: "База данных",
-            subtitle: "PostgreSQL Production",
+            title:"База данных",
+            subtitle:"PostgreSQL Production",
             value: formatFileSize(stats?.database?.size || 0),
             progress: 85,
-            color: "bg-primary",
+            color:"bg-primary",
             icon: <Database className="w-5 h-5" />
         },
         {
-            title: "Хранилище S3",
-            subtitle: "Files & Documents",
+            title:"Хранилище S3",
+            subtitle:"Files & Documents",
             value: formatFileSize(stats?.storage?.size || 0),
             progress: 42,
-            color: "bg-slate-900",
+            color:"bg-slate-900",
             icon: <HardDrive className="w-5 h-5" />
         },
     ];
@@ -102,8 +102,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                         {platformItems.map((item, i) => (
                             <div key={i} className="crm-card group cursor-default">
                                 <div className="flex justify-between items-start mb-8">
-                                    <div className={cn(
-                                        "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-all",
+                                    <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-all",
                                         item.color
                                     )}>
                                         {item.icon}
@@ -212,10 +211,10 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                                 >
                                     <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden shrink-0">
                                         {user.avatar ? (
-                                            <Image src={user.avatar} alt={user.name || "User"} width={48} height={48} className="w-full h-full object-cover" />
+                                            <Image src={user.avatar} alt={user.name ||"User"} width={48} height={48} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-sm font-black text-slate-400">
-                                                {(user.name || "")[0]}
+                                                {(user.name ||"")[0]}
                                             </div>
                                         )}
                                     </div>
@@ -223,7 +222,7 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                                         <h4 className="text-sm font-bold text-slate-900 truncate">{user.name}</h4>
                                         <div className="flex items-center gap-2 mt-1">
                                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                            <p className="text-xs font-bold text-slate-400">{user.role || "Сотрудник"}</p>
+                                            <p className="text-xs font-bold text-slate-400">{user.role ||"Сотрудник"}</p>
                                         </div>
                                     </div>
                                     <div className="text-xs font-bold text-slate-300 group-hover:text-primary transition-colors">
@@ -252,10 +251,10 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
             {/* Row 2: Secondary Metrics (Bento Grid Bottom) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {[
-                    { title: "Пользователей", value: entityStats.find((s: EntityStat) => s.type === "users")?.count || 0, icon: <Users />, color: "text-blue-600 bg-blue-50" },
-                    { title: "Всего заказов", value: entityStats.find((s: EntityStat) => s.type === "orders")?.count || 0, icon: <BarChart3 />, color: "text-emerald-600 bg-emerald-50" },
-                    { title: "Ошибки системы", value: systemErrors.length, icon: <AlertTriangle />, color: "text-rose-600 bg-rose-50" },
-                    { title: "Бэкапов", value: backups?.length || 0, icon: <Clock />, color: "text-amber-600 bg-amber-50" },
+                    { title:"Пользователей", value: entityStats.find((s: EntityStat) => s.type ==="users")?.count || 0, icon: <Users />, color:"text-blue-600 bg-blue-50" },
+                    { title:"Всего заказов", value: entityStats.find((s: EntityStat) => s.type ==="orders")?.count || 0, icon: <BarChart3 />, color:"text-emerald-600 bg-emerald-50" },
+                    { title:"Ошибки системы", value: systemErrors.length, icon: <AlertTriangle />, color:"text-rose-600 bg-rose-50" },
+                    { title:"Бэкапов", value: backups?.length || 0, icon: <Clock />, color:"text-amber-600 bg-amber-50" },
                 ].map((stat, i) => (
                     <div key={i} className="crm-card flex items-center gap-3 group">
                         <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-all", stat.color)}>

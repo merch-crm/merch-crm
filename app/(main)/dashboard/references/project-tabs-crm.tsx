@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React from"react";
+import { motion } from"framer-motion";
 
 const tabs = [
-    { id: "01", label: "Research" },
-    { id: "02", label: "Design approach" },
-    { id: "03", label: "Site map" },
-    { id: "04", label: "Low fidelity frames" },
-    { id: "05", label: "High fidelity frames" },
-    { id: "06", label: "Testing" },
+    { id:"01", label:"Research" },
+    { id:"02", label:"Design approach" },
+    { id:"03", label:"Site map" },
+    { id:"04", label:"Low fidelity frames" },
+    { id:"05", label:"High fidelity frames" },
+    { id:"06", label:"Testing" },
 ];
 
 export default function ProjectTabsCRM() {
@@ -26,7 +26,7 @@ export default function ProjectTabsCRM() {
                         key={tab.id}
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+                        whileHover={{ scale: 1.02, backgroundColor:"rgba(255, 255, 255, 0.08)" }}
                         whileTap={{ scale: 0.98 }}
                         className="group flex items-center gap-3 px-8 py-5 rounded-2xl bg-[#161616] border border-white/5 hover:border-white/10 transition-colors duration-300"
                     >

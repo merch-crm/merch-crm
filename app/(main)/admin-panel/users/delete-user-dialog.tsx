@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { deleteUser } from "../actions/users.actions";;
-import { Loader2, Lock } from "lucide-react";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from"react";
+import { deleteUser } from"../actions/users.actions";;
+import { Loader2, Lock } from"lucide-react";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
-import type { User } from "@/lib/types";
+import type { User } from"@/lib/types";
 
 interface DeleteUserDialogProps {
-    user: Pick<User, "id" | "name" | "isSystem"> | null;
+    user: Pick<User,"id" |"name" |"isSystem"> | null;
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
@@ -106,7 +106,7 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
                         className="flex-1 inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] h-11 font-bold shadow-lg shadow-red-500/10"
                     >
                         {isLoading && <Loader2 className="w-4 h-4 animate-spin mr-1" />}
-                        {isLoading ? "Удаление..." : "Удалить"}
+                        {isLoading ?"Удаление..." :"Удалить"}
                     </Button>
                 </div>
             </div>

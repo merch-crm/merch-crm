@@ -1,10 +1,10 @@
-import { createElement } from "react";
-import Image from "next/image";
-import { CheckCircle2, Pencil, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Category, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { getCategoryIcon, getCategoryCardStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { createElement } from"react";
+import Image from"next/image";
+import { CheckCircle2, Pencil, X } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Category, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon, getCategoryCardStyles } from"@/app/(main)/dashboard/warehouse/category-utils";
 
 interface SummaryHeaderProps {
     formData: ItemFormData;
@@ -35,7 +35,7 @@ export function SummaryHeader({
     onCancelName,
     onKeyDown
 }: SummaryHeaderProps) {
-    const cardStyles = getCategoryCardStyles(category?.color || "#000");
+    const cardStyles = getCategoryCardStyles(category?.color ||"#000");
     const categoryIcon = getCategoryIcon(category);
 
     return (
@@ -119,7 +119,7 @@ export function SummaryHeader({
                             <div className="flex flex-col">
                                 <span className="text-xs font-bold text-slate-700 leading-none mb-1">Артикул:</span>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xl font-mono font-bold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200/50">{formData.sku || "---"}</span>
+                                    <span className="text-xl font-mono font-bold text-slate-900 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200/50">{formData.sku ||"---"}</span>
                                 </div>
                             </div>
 
@@ -130,10 +130,10 @@ export function SummaryHeader({
                                         className="w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 shadow-lg text-white"
                                         style={cardStyles.icon}
                                     >
-                                        {createElement(categoryIcon, { className: "w-5 h-5", "aria-label": category.name })}
+                                        {createElement(categoryIcon, { className:"w-5 h-5","aria-label": category.name })}
                                     </div>
                                     <span className="text-base font-bold text-slate-600">
-                                        {category.name}: {activeSubcategory?.name || "Основная"}
+                                        {category.name}: {activeSubcategory?.name ||"Основная"}
                                     </span>
                                 </div>
                             </div>

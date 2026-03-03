@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { Archive, ArchiveRestore, Trash2, Loader2 } from "lucide-react";
-import { archiveOrder, deleteOrder } from "../actions/core.actions";;
-import { useToast } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Button } from "@/components/ui/button";
+import { useState } from"react";
+import { Archive, ArchiveRestore, Trash2, Loader2 } from"lucide-react";
+import { archiveOrder, deleteOrder } from"../actions/core.actions";;
+import { useToast } from"@/components/ui/toast";
+import { useRouter } from"next/navigation";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { Button } from"@/components/ui/button";
 
 interface OrderActionsProps {
     orderId: string;
@@ -26,13 +26,13 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
         try {
             const res = await archiveOrder(orderId, !isArchived);
             if (res.success) {
-                toast(isArchived ? "Заказ восстановлен" : "Заказ архивирован", "success");
+                toast(isArchived ?"Заказ восстановлен" :"Заказ архивирован","success");
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
             }
         } catch {
-            toast("Ошибка соединения", "error");
+            toast("Ошибка соединения","error");
         } finally {
             setLoading(false);
         }
@@ -43,13 +43,13 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
         try {
             const res = await deleteOrder(orderId);
             if (res.success) {
-                toast("Заказ удален", "success");
+                toast("Заказ удален","success");
                 router.push("/dashboard/orders");
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
             }
         } catch {
-            toast("Ошибка соединения", "error");
+            toast("Ошибка соединения","error");
         } finally {
             setLoading(false);
             setShowDeleteDialog(false);
@@ -66,7 +66,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                     onClick={handleArchive}
                     disabled={loading}
                     className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95 p-0 sm:p-auto"
-                    title={isArchived ? "Восстановить" : "В архив"}
+                    title={isArchived ?"Восстановить" :"В архив"}
                 >
                     {loading ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -75,7 +75,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
                     ) : (
                         <Archive className="w-4 h-4" />
                     )}
-                    <span className="hidden sm:inline">{isArchived ? "Восстановить" : "В архив"}</span>
+                    <span className="hidden sm:inline">{isArchived ?"Восстановить" :"В архив"}</span>
                 </Button>
             )}
 

@@ -1,9 +1,9 @@
-import { getPromocodes } from "./actions";
-import { getSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { PromocodesClient, Promocode } from "./promocodes-client";
+import { getPromocodes } from"./actions";
+import { getSession } from"@/lib/auth";
+import { redirect } from"next/navigation";
+import { PromocodesClient, Promocode } from"./promocodes-client";
 
-export const dynamic = "force-dynamic";
+export const dynamic ="force-dynamic";
 
 export default async function PromocodesPage() {
     const session = await getSession();

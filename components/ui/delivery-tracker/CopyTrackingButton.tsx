@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { CheckCircle, Copy } from "lucide-react";
+import * as React from"react";
+import { cn } from"@/lib/utils";
+import { CheckCircle, Copy } from"lucide-react";
 
 export function CopyTrackingButton({ tracking, className }: { tracking: string; className?: string }) {
     const [copied, setCopied] = React.useState(false);
@@ -17,8 +17,7 @@ export function CopyTrackingButton({ tracking, className }: { tracking: string; 
         <button
             type="button"
             onClick={handleCopy}
-            className={cn(
-                "p-1.5 rounded-md hover:bg-slate-100 transition-colors",
+            className={cn("p-1.5 rounded-md hover:bg-slate-100 transition-colors",
                 className
             )}
             title="Копировать трек-номер"

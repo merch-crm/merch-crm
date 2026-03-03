@@ -1,16 +1,16 @@
-import { OrdersTable } from "./orders-table";
-import { OrdersWidgets } from "./orders-widgets";
-import { OrdersToolbar } from "./orders-toolbar";
-import { getOrders, getOrderStats } from "./actions/core.actions";;
-import type { Order } from "@/lib/types";
-import { startOfDay, endOfDay, subDays } from "date-fns";
-import { Pagination } from "@/components/ui/pagination";
-import { getSession } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { PageContainer } from "@/components/ui/page-container";
-import { PageHeader } from "@/components/layout/page-header";
+import { OrdersTable } from"./orders-table";
+import { OrdersWidgets } from"./orders-widgets";
+import { OrdersToolbar } from"./orders-toolbar";
+import { getOrders, getOrderStats } from"./actions/core.actions";;
+import type { Order } from"@/lib/types";
+import { startOfDay, endOfDay, subDays } from"date-fns";
+import { Pagination } from"@/components/ui/pagination";
+import { getSession } from"@/lib/auth";
+import { db } from"@/lib/db";
+import { users } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { PageContainer } from"@/components/ui/page-container";
+import { PageHeader } from"@/components/layout/page-header";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -18,12 +18,12 @@ export default async function OrdersPage({
     searchParams: Promise<{ range?: string; from?: string; to?: string; page?: string; archived?: string; search?: string }>;
 }) {
     const searchParams = await searchParamsPromise;
-    const range = searchParams.range || "all";
+    const range = searchParams.range ||"all";
     const fromParam = searchParams.from;
     const toParam = searchParams.to;
     const page = Number(searchParams.page) || 1;
-    const showArchived = searchParams.archived === "true";
-    const search = searchParams.search || "";
+    const showArchived = searchParams.archived ==="true";
+    const search = searchParams.search ||"";
 
     let from: Date | undefined;
     let to: Date | undefined;
@@ -33,16 +33,16 @@ export default async function OrdersPage({
     if (fromParam && toParam) {
         from = startOfDay(new Date(fromParam));
         to = endOfDay(new Date(toParam));
-    } else if (range === "today") {
+    } else if (range ==="today") {
         from = startOfDay(now);
         to = endOfDay(now);
-    } else if (range === "yesterday") {
+    } else if (range ==="yesterday") {
         from = startOfDay(subDays(now, 1));
         to = endOfDay(subDays(now, 1));
-    } else if (range === "7d") {
+    } else if (range ==="7d") {
         from = startOfDay(subDays(now, 6));
         to = endOfDay(now);
-    } else if (range === "30d") {
+    } else if (range ==="30d") {
         from = startOfDay(subDays(now, 29));
         to = endOfDay(now);
     }
@@ -59,8 +59,8 @@ export default async function OrdersPage({
     }) : null;
 
     const showFinancials =
-        user?.role?.name === "Администратор" ||
-        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
+        user?.role?.name ==="Администратор" ||
+        ["Руководство","Отдел продаж"].includes(user?.department?.name ||"");
 
     const statsRes = await getOrderStats(from, to);
     const stats = statsRes.success && statsRes.data ? statsRes.data : { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
@@ -84,7 +84,7 @@ export default async function OrdersPage({
                 <OrdersTable
                     orders={allOrders}
                     error={error}
-                    isAdmin={user?.role?.name === "Администратор"}
+                    isAdmin={user?.role?.name ==="Администратор"}
                     showFinancials={showFinancials}
                     showArchived={showArchived}
                 />

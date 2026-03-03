@@ -1,11 +1,11 @@
-import React from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Settings, LayoutGrid, BookOpen, Calendar, Bell, ChevronRight, GraduationCap, X as XIcon, LogOut } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { UserProfile } from "../types";
-import { ProfileView } from "../hooks/useProfile";
+import React from"react";
+import Image from"next/image";
+import { useRouter } from"next/navigation";
+import { Settings, LayoutGrid, BookOpen, Calendar, Bell, ChevronRight, GraduationCap, X as XIcon, LogOut } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { UserProfile } from"../types";
+import { ProfileView } from"../hooks/useProfile";
 
 interface ProfileSidebarProps {
     user: UserProfile;
@@ -27,18 +27,17 @@ export function ProfileSidebar({
     const router = useRouter();
 
     const navItems: Array<{ id: ProfileView; label: string; icon: React.ReactNode }> = [
-        { id: "profile", label: "Главная", icon: <LayoutGrid /> },
-        { id: "statistics", label: "Статистика", icon: <BookOpen /> },
-        { id: "schedule", label: "Расписание", icon: <Calendar /> },
-        { id: "notifications", label: "Уведомления", icon: <Bell /> },
-        { id: "settings", label: "Настройки", icon: <Settings /> },
+        { id:"profile", label:"Главная", icon: <LayoutGrid /> },
+        { id:"statistics", label:"Статистика", icon: <BookOpen /> },
+        { id:"schedule", label:"Расписание", icon: <Calendar /> },
+        { id:"notifications", label:"Уведомления", icon: <Bell /> },
+        { id:"settings", label:"Настройки", icon: <Settings /> },
     ];
 
     return (
         <>
-            <aside className={cn(
-                "fixed inset-y-0 left-0 z-[60] w-[280px] bg-[#0F172A] text-white p-6 flex flex-col transition-all duration-300 md:relative md:translate-x-0",
-                isMobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full md:translate-x-0"
+            <aside className={cn("fixed inset-y-0 left-0 z-[60] w-[280px] bg-[#0F172A] text-white p-6 flex flex-col transition-all duration-300 md:relative md:translate-x-0",
+                isMobileMenuOpen ?"translate-x-0 shadow-2xl" :"-translate-x-full md:translate-x-0"
             )}>
                 <div className="flex items-center justify-between mb-10 pl-2">
                     <div
@@ -72,11 +71,10 @@ export function ProfileSidebar({
                             key={item.id}
                             variant="ghost"
                             onClick={() => handleNavClick(item.id)}
-                            className={cn(
-                                "w-full flex items-center justify-start gap-3 px-4 py-6 rounded-xl text-sm font-bold transition-all group relative overflow-hidden",
+                            className={cn("w-full flex items-center justify-start gap-3 px-4 py-6 rounded-xl text-sm font-bold transition-all group relative overflow-hidden",
                                 view === item.id
-                                    ? "bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary-hover"
-                                    : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                    ?"bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary-hover"
+                                    :"text-slate-400 hover:bg-white/5 hover:text-white"
                             )}
                         >
                             {/* Hover Effect */}

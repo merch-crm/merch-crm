@@ -1,26 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import StatusBadgeInteractive from "./status-badge-interactive";
-import PriorityBadgeInteractive from "./priority-badge-interactive";
-import { BulkActionsPanel } from "./bulk-actions-panel";
-import { Zap, Archive, ArchiveRestore, PackageOpen, ChevronRight, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { updateOrderField, archiveOrder as toggleOrderArchived } from "./actions/core.actions";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/toast";
-import { GlassEmptyState } from "@/components/ui/glass-empty-state";
-import { exportToCSV } from "@/lib/export-utils";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { useBranding } from "@/components/branding-provider";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from"react";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import StatusBadgeInteractive from"./status-badge-interactive";
+import PriorityBadgeInteractive from"./priority-badge-interactive";
+import { BulkActionsPanel } from"./bulk-actions-panel";
+import { Zap, Archive, ArchiveRestore, PackageOpen, ChevronRight, ArrowRight } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { updateOrderField, archiveOrder as toggleOrderArchived } from"./actions/core.actions";
+import { useRouter } from"next/navigation";
+import { useToast } from"@/components/ui/toast";
+import { GlassEmptyState } from"@/components/ui/glass-empty-state";
+import { exportToCSV } from"@/lib/export-utils";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
+import { useBranding } from"@/components/branding-provider";
+import { Button } from"@/components/ui/button";
+import { Checkbox } from"@/components/ui/checkbox";
 
-import type { Order } from "@/lib/types/order";
-import type { ClientSummary } from "@/lib/types/client";
+import type { Order } from"@/lib/types/order";
+import type { ClientSummary } from"@/lib/types/client";
 export type { Order };
 
 interface OrdersTableProps {
@@ -41,10 +41,10 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
     const handleUpdateField = async (orderId: string, field: string, value: string | number | boolean) => {
         const res = await updateOrderField(orderId, field, value);
         if (!res.success) {
-            toast(res.error, "error");
+            toast(res.error,"error");
             playSound("notification_error");
         } else {
-            toast("Заказ обновлен", "success");
+            toast("Заказ обновлен","success");
             playSound("notification_success");
         }
     };
@@ -59,27 +59,27 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
 
     const handleExport = () => {
         const selectedOrders = orders?.filter(o => selectedIds.includes(o.id)) || [];
-        exportToCSV(selectedOrders, "orders_export", [
-            { header: "ID", key: "id" },
-            { header: "Дата", key: (o: Order) => new Date(o.createdAt) },
-            { header: "Клиент", key: (o: Order) => (typeof o.client === 'object' && o.client && 'displayName' in o.client) ? (o.client as ClientSummary).displayName : (o.client?.name || "—") },
-            { header: "Сумма", key: "totalAmount" },
-            { header: "Статус", key: "status" },
-            { header: "Приоритет", key: "priority" },
-            { header: "Срочно", key: (o: Order) => o.isUrgent ? "Да" : "Нет" },
-            { header: "Создал", key: (o: Order) => o.creator?.name || "Система" },
+        exportToCSV(selectedOrders,"orders_export", [
+            { header:"ID", key:"id" },
+            { header:"Дата", key: (o: Order) => new Date(o.createdAt) },
+            { header:"Клиент", key: (o: Order) => (typeof o.client === 'object' && o.client && 'displayName' in o.client) ? (o.client as ClientSummary).displayName : (o.client?.name ||"—") },
+            { header:"Сумма", key:"totalAmount" },
+            { header:"Статус", key:"status" },
+            { header:"Приоритет", key:"priority" },
+            { header:"Срочно", key: (o: Order) => o.isUrgent ?"Да" :"Нет" },
+            { header:"Создал", key: (o: Order) => o.creator?.name ||"Система" },
             {
-                header: "Роль", key: (o: Order) => {
-                    if (!o.creator) return "Система";
+                header:"Роль", key: (o: Order) => {
+                    if (!o.creator) return"Система";
                     const role = o.creator.role;
                     if (typeof role === 'object' && role !== null && 'name' in role) {
                         return (role as { name: string }).name;
                     }
-                    return role ? String(role) : "Оператор";
+                    return role ? String(role) :"Оператор";
                 }
             }
         ]);
-        toast("Экспорт завершен", "success");
+        toast("Экспорт завершен","success");
         playSound("notification_success");
     };
 
@@ -123,7 +123,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                 {orders?.map((order) => {
                                     const clientName = (typeof order.client === 'object' && order.client && 'displayName' in order.client)
                                         ? (order.client as ClientSummary).displayName
-                                        : (order.client?.name || "—");
+                                        : (order.client?.name ||"—");
                                     return (
                                         <tr
                                             key={order.id}
@@ -136,9 +136,8 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                             }}
                                             tabIndex={0}
                                             role="link"
-                                            className={cn(
-                                                "crm-tr group hover:bg-white/80 transition-all cursor-pointer outline-none focus-visible:bg-slate-50 focus-visible:ring-2 focus-visible:ring-primary/20",
-                                                selectedIds.includes(order.id) && "crm-tr-selected"
+                                            className={cn("crm-tr group hover:bg-white/80 transition-all cursor-pointer outline-none focus-visible:bg-slate-50 focus-visible:ring-2 focus-visible:ring-primary/20",
+                                                selectedIds.includes(order.id) &&"crm-tr-selected"
                                             )}
                                         >
                                             <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
@@ -151,11 +150,11 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                             </td>
                                             <td className="crm-td">
                                                 <div className="text-sm font-bold text-slate-900 mb-0.5">ORD-{order.id.slice(0, 6)}</div>
-                                                <div className="text-xs font-medium text-slate-400">{format(new Date(order.createdAt), "dd MMM HH:mm", { locale: ru })}</div>
+                                                <div className="text-xs font-medium text-slate-400">{format(new Date(order.createdAt),"dd MMM HH:mm", { locale: ru })}</div>
                                             </td>
                                             <td className="crm-td">
                                                 <div className="text-sm font-bold text-slate-900 mb-0.5">{clientName}</div>
-                                                <div className="text-xs font-medium text-slate-400">Отв: {order.creator?.name || "Система"}</div>
+                                                <div className="text-xs font-medium text-slate-400">Отв: {order.creator?.name ||"Система"}</div>
                                             </td>
                                             {showFinancials && (
                                                 <td className="crm-td crm-td-number">
@@ -172,25 +171,24 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                         size="icon"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            handleUpdateField(order.id, "isUrgent", !order.isUrgent);
+                                                            handleUpdateField(order.id,"isUrgent", !order.isUrgent);
                                                         }}
-                                                        className={cn(
-                                                            "w-8 h-8 rounded-2xl transition-all",
+                                                        className={cn("w-8 h-8 rounded-2xl transition-all",
                                                             order.isUrgent
-                                                                ? "bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
-                                                                : "bg-slate-50 text-slate-400 hover:text-slate-600"
+                                                                ?"bg-rose-50 text-rose-600 shadow-sm ring-1 ring-rose-200"
+                                                                :"bg-slate-50 text-slate-400 hover:text-slate-600"
                                                         )}
-                                                        title={order.isUrgent ? "Срочно" : "Обычный"}
-                                                        aria-label={order.isUrgent ? "Удалить метку срочности" : "Сделать срочным"}
+                                                        title={order.isUrgent ?"Срочно" :"Обычный"}
+                                                        aria-label={order.isUrgent ?"Удалить метку срочности" :"Сделать срочным"}
                                                     >
-                                                        <Zap className={cn("w-4 h-4", order.isUrgent && "fill-rose-600")} />
+                                                        <Zap className={cn("w-4 h-4", order.isUrgent &&"fill-rose-600")} />
                                                     </Button>
-                                                    <StatusBadgeInteractive orderId={order.id} status={order.status ?? "new"} />
+                                                    <StatusBadgeInteractive orderId={order.id} status={order.status ??"new"} />
                                                 </div>
                                             </td>
                                             <td className="crm-td">
                                                 <div className="flex items-center gap-1">
-                                                    <PriorityBadgeInteractive orderId={order.id} priority={order.priority ?? "medium"} />
+                                                    <PriorityBadgeInteractive orderId={order.id} priority={order.priority ??"medium"} />
                                                     {isAdmin && (
                                                         <Button
                                                             type="button"
@@ -200,14 +198,14 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                                                 e.stopPropagation();
                                                                 const res = await toggleOrderArchived(order.id, !showArchived);
                                                                 if (res.success) {
-                                                                    toast(showArchived ? "Заказ восстановлен" : "Заказ архивирован", "success");
+                                                                    toast(showArchived ?"Заказ восстановлен" :"Заказ архивирован","success");
                                                                     playSound("notification_success");
                                                                     router.refresh();
                                                                 }
                                                             }}
                                                             className="w-8 h-8 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-2xl transition-all"
-                                                            title={showArchived ? "Восстановить" : "Архивировать"}
-                                                            aria-label={showArchived ? "Восстановить заказ" : "Архивировать заказ"}
+                                                            title={showArchived ?"Восстановить" :"Архивировать"}
+                                                            aria-label={showArchived ?"Восстановить заказ" :"Архивировать заказ"}
                                                         >
                                                             {showArchived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
                                                         </Button>
@@ -243,13 +241,12 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                 renderCard={(order) => {
                     const clientName = (typeof order.client === 'object' && order.client && 'displayName' in order.client)
                         ? (order.client as ClientSummary).displayName
-                        : (order.client?.name || "—");
+                        : (order.client?.name ||"—");
                     return (
                         <div
                             key={order.id}
-                            className={cn(
-                                "group relative bg-white border-b border-slate-100 p-4 transition-all duration-300 active:bg-slate-50 outline-none focus-within:bg-slate-50",
-                                selectedIds.includes(order.id) ? "crm-tr-selected" : "bg-white"
+                            className={cn("group relative bg-white border-b border-slate-100 p-4 transition-all duration-300 active:bg-slate-50 outline-none focus-within:bg-slate-50",
+                                selectedIds.includes(order.id) ?"crm-tr-selected" :"bg-white"
                             )}
                             role="button"
                             tabIndex={0}
@@ -285,9 +282,9 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                             {clientName}
                                         </div>
                                         <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                                            <span className="truncate">Отв: {order.creator?.name || "Система"}</span>
+                                            <span className="truncate">Отв: {order.creator?.name ||"Система"}</span>
                                             <span className="text-slate-200">•</span>
-                                            <span>{format(new Date(order.createdAt), "dd MMM HH:mm", { locale: ru })}</span>
+                                            <span>{format(new Date(order.createdAt),"dd MMM HH:mm", { locale: ru })}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -299,7 +296,7 @@ export function OrdersTable({ orders, error, isAdmin, showFinancials, showArchiv
                                         </div>
                                     )}
                                     <div className="flex items-center gap-2">
-                                        <StatusBadgeInteractive orderId={order.id} status={order.status ?? "new"} />
+                                        <StatusBadgeInteractive orderId={order.id} status={order.status ??"new"} />
                                         <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-primary transition-colors" />
                                     </div>
                                 </div>

@@ -85,7 +85,7 @@ describe('ClientSchema', () => {
         }
     })
 
-    it('ignoreDuplicates принимает строку "true"', () => {
+    it('ignoreDuplicates принимает строку"true"', () => {
         const result = ClientSchema.safeParse({ ...validClient, ignoreDuplicates: 'true' })
         expect(result.success).toBe(true)
         if (result.success) {

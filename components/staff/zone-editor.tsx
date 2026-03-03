@@ -329,7 +329,7 @@ export function ZoneEditor({
             title="Настройка зоны детекции"
             description="Выделите область рабочего места на кадре (прямоугольник, круг или многоугольник)"
         >
-            <div className="space-y-4 py-2">
+            <div className="space-y-3 py-2">
                 <div className="flex items-center justify-between bg-slate-100 p-1.5 rounded-2xl">
                     <div className="flex items-center gap-1">
                         <ToolButton icon={MousePointer} active={tool === 'select'} onClick={() => setTool('select')} label="Курсор" />
@@ -342,7 +342,7 @@ export function ZoneEditor({
 
                     <div className="flex items-center gap-2 pr-2">
                         <button onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomOut className="w-4 h-4 text-slate-500" /></button>
-                        <span className="text-[10px] font-bold text-slate-600 w-8 text-center">{Math.round(zoom * 100)}%</span>
+                        <span className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-600 w-8 text-center">{Math.round(zoom * 100)}%</span>
                         <button onClick={() => setZoom(z => Math.min(4, z + 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomIn className="w-4 h-4 text-slate-500" /></button>
                     </div>
                 </div>
@@ -352,11 +352,10 @@ export function ZoneEditor({
                         ref={canvasRef}
                         width={canvasSize.width}
                         height={canvasSize.height}
-                        className={cn(
-                            "w-full h-full",
-                            tool === 'pan' && "cursor-grab",
-                            isPanning && "cursor-grabbing",
-                            (tool === 'rect' || tool === 'polygon' || tool === 'circle') && "cursor-crosshair"
+                        className={cn("w-full h-full",
+                            tool === 'pan' &&"cursor-grab",
+                            isPanning &&"cursor-grabbing",
+                            (tool === 'rect' || tool === 'polygon' || tool === 'circle') &&"cursor-crosshair"
                         )}
                         onMouseDown={handleMouseDown}
                         onMouseMove={handleMouseMove}
@@ -375,7 +374,7 @@ export function ZoneEditor({
                     </div>
 
                     {!imageLoaded && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-4">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 gap-3">
                             <div className="w-12 h-12 border-4 border-slate-700 border-t-blue-500 rounded-full animate-spin" />
                             <p className="text-sm font-medium">Загрузка кадра...</p>
                         </div>
@@ -405,13 +404,12 @@ function ToolButton({ icon: Icon, active, onClick, label }: { icon: React.Elemen
     return (
         <button
             onClick={onClick}
-            className={cn(
-                "flex flex-col items-center justify-center p-2 rounded-xl transition-all w-12",
-                active ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
+            className={cn("flex flex-col items-center justify-center p-2 rounded-xl transition-all w-12",
+                active ?"bg-white text-blue-600 shadow-sm" :"text-slate-500 hover:text-slate-900 hover:bg-white/50"
             )}
         >
             <Icon className="w-4 h-4" />
-            <span className="text-[8px] font-bold mt-1 uppercase tracking-tighter">{label}</span>
+            <span className="text-[8px] font-bold mt-1  tracking-tighter">{label}</span>
         </button>
     )
 }

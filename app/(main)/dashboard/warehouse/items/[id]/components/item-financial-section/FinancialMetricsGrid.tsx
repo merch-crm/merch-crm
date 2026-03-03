@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { Tag, Warehouse } from "lucide-react";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { FinancialMetricCard } from "./FinancialMetricCard";
+import React from"react";
+import { Tag, Warehouse } from"lucide-react";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { FinancialMetricCard } from"./FinancialMetricCard";
 
 interface FinancialMetricsGridProps {
     item: InventoryItem;
@@ -43,7 +43,7 @@ export function FinancialMetricsGrid({
                 currencySymbol={currencySymbol}
                 isEditing={isEditing}
                 editValue={editData.costPrice}
-                onEditChange={(val) => setEditData(prev => ({ ...prev, costPrice: val === "" ? 0 : parseFloat(val) }))}
+                onEditChange={(val) => setEditData(prev => ({ ...prev, costPrice: val ==="" ? 0 : parseFloat(val) }))}
                 onDoubleClick={handleStartEdit}
             />
 
@@ -57,7 +57,7 @@ export function FinancialMetricsGrid({
                 currencySymbol={currencySymbol}
                 isEditing={isEditing}
                 editValue={editData.sellingPrice}
-                onEditChange={(val) => setEditData(prev => ({ ...prev, sellingPrice: val === "" ? 0 : parseFloat(val) }))}
+                onEditChange={(val) => setEditData(prev => ({ ...prev, sellingPrice: val ==="" ? 0 : parseFloat(val) }))}
                 onDoubleClick={handleStartEdit}
             />
 

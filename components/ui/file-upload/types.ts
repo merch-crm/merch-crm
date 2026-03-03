@@ -2,7 +2,7 @@ export interface UploadedFile {
     id: string;
     file: File;
     progress: number;
-    status: "pending" | "uploading" | "success" | "error";
+    status:"pending" |"uploading" |"success" |"error";
     error?: string;
     preview?: string;
 }
@@ -35,7 +35,7 @@ export interface ImageUploadProps {
     disabled?: boolean;
     placeholder?: string;
     className?: string;
-    size?: "sm" | "md" | "lg";
+    size?:"sm" |"md" |"lg";
 }
 
 export interface ImageGalleryUploadProps {

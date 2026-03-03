@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     LayoutGrid,
     BookOpen,
@@ -13,8 +13,8 @@ import {
     Users,
     Compass,
 
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function EduplexDashboardCRM() {
     return (
@@ -30,22 +30,21 @@ export default function EduplexDashboardCRM() {
 
                 <nav className="flex-1 space-y-2">
                     {[
-                        { label: "Dashboard", icon: <LayoutGrid />, active: true },
-                        { label: "Courses", icon: <BookOpen /> },
-                        { label: "Community", icon: <Users /> },
-                        { label: "Discover", icon: <Compass /> },
-                        { label: "Schedule", icon: <CalendarIcon /> },
+                        { label:"Dashboard", icon: <LayoutGrid />, active: true },
+                        { label:"Courses", icon: <BookOpen /> },
+                        { label:"Community", icon: <Users /> },
+                        { label:"Discover", icon: <Compass /> },
+                        { label:"Schedule", icon: <CalendarIcon /> },
                     ].map((item) => (
                         <button type="button"
                             key={item.label}
-                            className={cn(
-                                "w-full flex items-center gap-3 px-4 py-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group",
+                            className={cn("w-full flex items-center gap-3 px-4 py-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group",
                                 item.active
-                                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                    : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                    ?"bg-primary text-white shadow-lg shadow-primary/20"
+                                    :"text-slate-400 hover:bg-white/5 hover:text-white"
                             )}
                         >
-                            {React.cloneElement(item.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5" })}
+                            {React.cloneElement(item.icon as React.ReactElement<{ className?: string }>, { className:"w-5 h-5" })}
                             <span>{item.label}</span>
                             {item.active && <ChevronRight className="ml-auto w-4 h-4" />}
                         </button>
@@ -99,12 +98,12 @@ export default function EduplexDashboardCRM() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {[
-                                { title: "UI/UX Advanced Masterclass", mentor: "Sarah J.", time: "12h 30m", progress: 65, color: "bg-primary" },
-                                { title: "3D Animation Basics", mentor: "Mike R.", time: "8h 45m", progress: 20, color: "bg-slate-900" },
+                                { title:"UI/UX Advanced Masterclass", mentor:"Sarah J.", time:"12h 30m", progress: 65, color:"bg-primary" },
+                                { title:"3D Animation Basics", mentor:"Mike R.", time:"8h 45m", progress: 20, color:"bg-slate-900" },
                             ].map((course, i) => (
                                 <div key={i} className="crm-card p-6 flex flex-col justify-between group">
                                     <div className="flex justify-between items-start mb-6">
-                                        <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-all", course.color === "bg-primary" ? "bg-primary shadow-primary/20" : "bg-slate-900 shadow-slate-900/10")}>
+                                        <div className={cn("w-12 h-12 rounded-[var(--radius-inner)] flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-all", course.color ==="bg-primary" ?"bg-primary shadow-primary/20" :"bg-slate-900 shadow-slate-900/10")}>
                                             <Compass className="w-5 h-5" />
                                         </div>
                                         <button type="button" className="w-10 h-10 flex items-center justify-center text-slate-300 hover:text-slate-900">
@@ -115,7 +114,7 @@ export default function EduplexDashboardCRM() {
                                         <h4 className="font-bold text-slate-900 mb-1">{course.title}</h4>
                                         <p className="text-xs font-bold text-slate-400  mb-6">Mentor: {course.mentor}</p>
                                         <div className="space-y-3">
-                                            <div className="flex justify-between text-xs font-bold ">
+                                            <div className="flex justify-between text-xs font-bold">
                                                 <span className="text-slate-400">Progress</span>
                                                 <span className="text-primary">{course.progress}%</span>
                                             </div>
@@ -173,9 +172,9 @@ export default function EduplexDashboardCRM() {
                             <h3 className="text-lg font-bold px-2">Daily Schedule</h3>
                             <div className="space-y-3">
                                 {[
-                                    { time: "09:00 AM", subject: "Math Advanced", room: "L-12", color: "bg-primary" },
-                                    { time: "11:30 AM", subject: "Design Theory", room: "S-5", color: "bg-slate-900" },
-                                    { time: "02:00 PM", subject: "Physics Prep", room: "M-4", color: "bg-slate-400" },
+                                    { time:"09:00 AM", subject:"Math Advanced", room:"L-12", color:"bg-primary" },
+                                    { time:"11:30 AM", subject:"Design Theory", room:"S-5", color:"bg-slate-900" },
+                                    { time:"02:00 PM", subject:"Physics Prep", room:"M-4", color:"bg-slate-400" },
                                 ].map((task, i) => (
                                     <div key={i} className="crm-card p-6 flex gap-3 hover:translate-x-1 transition-transform">
                                         <div className="flex flex-col items-center justify-center shrink-0 border-r border-slate-200 pr-6 gap-1">
@@ -185,10 +184,10 @@ export default function EduplexDashboardCRM() {
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between mb-2">
                                                 <h4 className="text-sm font-bold text-slate-900">{task.subject}</h4>
-                                                <span className="text-xs font-bold text-slate-400 ">{task.room}</span>
+                                                <span className="text-xs font-bold text-slate-400">{task.room}</span>
                                             </div>
                                             <div className="h-1 w-full bg-slate-50 rounded-full overflow-hidden">
-                                                <div className={cn("h-full rounded-full", task.color)} style={{ width: "40%" }} />
+                                                <div className={cn("h-full rounded-full", task.color)} style={{ width:"40%" }} />
                                             </div>
                                         </div>
                                     </div>
@@ -196,7 +195,7 @@ export default function EduplexDashboardCRM() {
                             </div>
                             <button type="button" className="w-full h-14 border-2 border-dashed border-slate-200 rounded-[var(--radius-outer)] flex items-center justify-center gap-2 text-slate-300 hover:border-primary/20 hover:text-primary hover:bg-primary/5 transition-all group">
                                 <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
-                                <span className="text-xs font-bold ">Add Event</span>
+                                <span className="text-xs font-bold">Add Event</span>
                             </button>
                         </div>
                     </div>

@@ -1,9 +1,9 @@
 "use client";
 
-import { DepartmentsTable } from "./departments-table";
-import { AddDepartmentDialog } from "./add-department-dialog";
-import { useState } from "react";
-import { Building2 } from "lucide-react";
+import { DepartmentsTable } from"./departments-table";
+import { AddDepartmentDialog } from"./add-department-dialog";
+import { useState } from"react";
+import { Building2 } from"lucide-react";
 
 export default function AdminDepartmentsPage() {
     // We need to trigger a refresh in the table when a new department is added

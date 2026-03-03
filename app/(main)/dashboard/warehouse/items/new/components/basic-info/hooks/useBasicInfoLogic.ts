@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { ICONS, getIconNameFromName } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { useEffect } from"react";
+import { Category, InventoryAttribute, AttributeType, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { ICONS, getIconNameFromName } from"@/app/(main)/dashboard/warehouse/category-utils";
 
 interface UseBasicInfoLogicProps {
     category: Category;
@@ -82,7 +82,7 @@ export function useBasicInfoLogic({
             if (shouldShowInSku('size', formData.sizeCode)) skuParts.push(formData.sizeCode!);
 
             categoryAttributes.forEach((type: AttributeType) => {
-                if (["brand", "quality", "material", "size", "color"].includes(type.slug)) return;
+                if (["brand","quality","material","size","color"].includes(type.slug)) return;
                 const code = formData.attributes?.[type.slug];
                 if (code && shouldShowInSku(type.slug, code)) {
                     skuParts.push(code);
@@ -95,31 +95,31 @@ export function useBasicInfoLogic({
                 updateFormData({ sku: generatedSku });
             }
 
-            const targetGender = activeCat?.gender || "masculine";
+            const targetGender = activeCat?.gender ||"masculine";
 
             const iconName = activeCat?.icon || (activeCat?.name ? getIconNameFromName(activeCat.name) : null);
             const iconLabel = iconName ? ICONS.find(i => i.name === iconName)?.label : null;
 
             const getSingularName = (name: string) => {
                 const n = name.toLowerCase();
-                if (n.includes("футболк")) return "Футболка";
-                if (n.includes("худи")) return "Худи";
-                if (n.includes("лонгслив")) return "Лонгслив";
-                if (n.includes("свитшот")) return "Свитшот";
-                if (n.includes("толстовк")) return "Толстовка";
-                if (n.includes("куртк")) return "Куртка";
-                if (n.includes("бомбер")) return "Бомбер";
-                if (n.includes("шорт")) return "Шорты";
-                if (n.includes("штан") || n.includes("брюк")) return "Штаны";
-                if (n.includes("кепк")) return "Кепка";
-                if (n.includes("шапк")) return "Шапка";
-                if (n.includes("поло")) return "Поло";
+                if (n.includes("футболк")) return"Футболка";
+                if (n.includes("худи")) return"Худи";
+                if (n.includes("лонгслив")) return"Лонгслив";
+                if (n.includes("свитшот")) return"Свитшот";
+                if (n.includes("толстовк")) return"Толстовка";
+                if (n.includes("куртк")) return"Куртка";
+                if (n.includes("бомбер")) return"Бомбер";
+                if (n.includes("шорт")) return"Шорты";
+                if (n.includes("штан") || n.includes("брюк")) return"Штаны";
+                if (n.includes("кепк")) return"Кепка";
+                if (n.includes("шапк")) return"Шапка";
+                if (n.includes("поло")) return"Поло";
                 return name;
             };
 
             const baseName = activeCat?.showInName !== false
-                ? (activeCat?.singularName || iconLabel || (activeCat?.name ? getSingularName(activeCat.name) : ""))
-                : "";
+                ? (activeCat?.singularName || iconLabel || (activeCat?.name ? getSingularName(activeCat.name) :""))
+                :"";
 
             const getAttrName = (type: string, code?: string) => {
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
@@ -138,8 +138,8 @@ export function useBasicInfoLogic({
                 const typedMeta = meta as { showInName?: boolean; fem?: string; neut?: string };
 
                 if (typedMeta?.showInName === false) return null;
-                if (targetGender === "feminine" && typedMeta?.fem) return typedMeta.fem;
-                if (targetGender === "neuter" && typedMeta?.neut) return typedMeta.neut;
+                if (targetGender ==="feminine" && typedMeta?.fem) return typedMeta.fem;
+                if (targetGender ==="neuter" && typedMeta?.neut) return typedMeta.neut;
 
                 return attr.name;
             };
@@ -160,7 +160,7 @@ export function useBasicInfoLogic({
             ].filter(Boolean);
 
             categoryAttributes.forEach((type: AttributeType) => {
-                if (["brand", "quality", "material", "size", "color"].includes(type.slug)) return;
+                if (["brand","quality","material","size","color"].includes(type.slug)) return;
                 const code = formData.attributes?.[type.slug];
                 if (code) {
                     const name = getAttrName(type.slug, code);
@@ -168,7 +168,7 @@ export function useBasicInfoLogic({
                 }
             });
 
-            const generatedName = nameParts.join(" ");
+            const generatedName = nameParts.join("");
 
             if (generatedName && generatedName !== formData.itemName) {
                 updateFormData({ itemName: generatedName });

@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { updateDepartment, getRolesByDepartment } from "../../actions/departments.actions";
-import { getRoles, updateRoleDepartment } from "../../actions/roles.actions";
+import { useState, useEffect, useCallback } from"react";
+import { updateDepartment, getRolesByDepartment } from"../../actions/departments.actions";
+import { getRoles, updateRoleDepartment } from"../../actions/roles.actions";
 
 export interface Role {
     id: string;
@@ -19,10 +19,10 @@ export function useDepartmentSettings(
     onSuccess: () => void
 ) {
     const [state, setState] = useState({
-        activeTab: "general",
+        activeTab:"general",
         loading: false,
         error: null as string | null,
-        selectedColor: department?.color || "indigo",
+        selectedColor: department?.color ||"indigo",
         departmentRoles: [] as Role[],
         allRoles: [] as Role[],
         rolesLoading: false,
@@ -54,14 +54,14 @@ export function useDepartmentSettings(
             });
         } catch (err) {
             console.error("Error fetching roles:", err);
-            updateState({ error: "Ошибка при загрузке ролей" });
+            updateState({ error:"Ошибка при загрузке ролей" });
         } finally {
             updateState({ rolesLoading: false });
         }
     }, [department, updateState]);
 
     useEffect(() => {
-        if (isOpen && department && state.activeTab === "roles") {
+        if (isOpen && department && state.activeTab ==="roles") {
             fetchRoles();
         }
     }, [isOpen, department, state.activeTab, fetchRoles]);

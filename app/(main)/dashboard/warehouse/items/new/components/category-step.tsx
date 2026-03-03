@@ -1,8 +1,8 @@
-import { LayoutGrid } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { CategorySelector } from "./category-selector";
-import { StepFooter } from "./step-footer";
-import { Category, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { LayoutGrid } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { CategorySelector } from"./category-selector";
+import { StepFooter } from"./step-footer";
+import { Category, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
 
 interface CategoryStepProps {
     topLevelCategories: Category[];
@@ -49,11 +49,10 @@ export function CategoryStep({
             <div className="flex-1 flex flex-col min-h-0">
 
                 {/* Top-level categories */}
-                <div className={cn(
-                    "transition-all duration-700 ease-in-out min-h-0 flex flex-col",
+                <div className={cn("transition-all duration-700 ease-in-out min-h-0 flex flex-col",
                     selectedCategory
-                        ? "flex-1 mb-3"
-                        : "flex-1 mb-2 sm:mb-4"
+                        ?"flex-1 mb-3"
+                        :"flex-1 mb-2 sm:mb-4"
                 )}>
                     <CategorySelector
                         categories={topLevelCategories}

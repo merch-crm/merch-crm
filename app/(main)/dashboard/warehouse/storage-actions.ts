@@ -1,26 +1,26 @@
 "use server";
 
-import { z } from "zod";
+import { z } from"zod";
 
-import { revalidatePath } from "next/cache";
-import { eq, and, sql, ne, inArray, type InferSelectModel } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { revalidatePath } from"next/cache";
+import { eq, and, sql, ne, inArray, type InferSelectModel } from"drizzle-orm";
+import { db } from"@/lib/db";
 import {
     storageLocations,
     inventoryStocks,
     inventoryTransactions,
     inventoryTransfers,
     users,
-} from "@/lib/schema";
-import { invalidateCache } from "@/lib/redis";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
-import { comparePassword } from "@/lib/password";
-import { StorageLocationSchema } from "./validation";
+} from"@/lib/schema";
+import { invalidateCache } from"@/lib/redis";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { getSession } from"@/lib/auth";
+import { comparePassword } from"@/lib/password";
+import { StorageLocationSchema } from"./validation";
 
 
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult } from"@/lib/types";
 
 /**
  * Get all storage locations
@@ -76,10 +76,10 @@ export async function getStorageLocations(): Promise<ActionResult<StorageLocatio
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/storage-actions",
-            method: "getStorageLocations"
+            path:"/dashboard/warehouse/storage-actions",
+            method:"getStorageLocations"
         });
-        return { success: false, error: "Не удалось загрузить места хранения" };
+        return { success: false, error:"Не удалось загрузить места хранения" };
     }
 }
 
@@ -88,8 +88,8 @@ export async function getStorageLocations(): Promise<ActionResult<StorageLocatio
  */
 export async function addStorageLocation(formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство","Склад"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     const validation = StorageLocationSchema.safeParse(Object.fromEntries(formData));
@@ -124,10 +124,10 @@ export async function addStorageLocation(formData: FormData): Promise<ActionResu
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/storage-actions",
-            method: "addStorageLocation",
+            path:"/dashboard/warehouse/storage-actions",
+            method:"addStorageLocation",
         });
-        return { success: false, error: "Не удалось создать место хранения" };
+        return { success: false, error:"Не удалось создать место хранения" };
     }
 }
 
@@ -137,11 +137,11 @@ export async function addStorageLocation(formData: FormData): Promise<ActionResu
 export async function updateStorageLocation(id: string, formData: FormData): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID места хранения" };
+        return { success: false, error:"Некорректный ID места хранения" };
     }
 
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const validation = StorageLocationSchema.safeParse(Object.fromEntries(formData));
     if (!validation.success) {
@@ -167,18 +167,18 @@ export async function updateStorageLocation(id: string, formData: FormData): Pro
             isActive,
         }).where(eq(storageLocations.id, id));
 
-        await logAction("Обновление склада", "storage_location", id, { name, isDefault, isActive });
+        await logAction("Обновление склада","storage_location", id, { name, isDefault, isActive });
         invalidateCache("warehouse:locations");
         revalidatePath("/dashboard/warehouse");
         return { success: true };
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/storage-actions",
-            method: "updateStorageLocation",
+            path:"/dashboard/warehouse/storage-actions",
+            method:"updateStorageLocation",
             details: { id }
         });
-        return { success: false, error: "Не удалось обновить место хранения" };
+        return { success: false, error:"Не удалось обновить место хранения" };
     }
 }
 
@@ -188,12 +188,12 @@ export async function updateStorageLocation(id: string, formData: FormData): Pro
 export async function deleteStorageLocation(id: string, password?: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID места хранения" };
+        return { success: false, error:"Некорректный ID места хранения" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для удаления места хранения" };
+    if (!session || !["Администратор","Руководство","Склад"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав для удаления места хранения" };
     }
 
     try {
@@ -201,19 +201,19 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
             where: eq(storageLocations.id, id)
         });
 
-        if (!location) return { success: false, error: "Место хранения не найдено" };
+        if (!location) return { success: false, error:"Место хранения не найдено" };
 
         if (location.isSystem) {
-            if (session.roleName !== "Администратор") {
-                return { success: false, error: "Только администратор может удалять системные места хранения" };
+            if (session.roleName !=="Администратор") {
+                return { success: false, error:"Только администратор может удалять системные места хранения" };
             }
             if (!password) {
-                return { success: false, error: "Для удаления системного места хранения требуется пароль от вашей учетной записи" };
+                return { success: false, error:"Для удаления системного места хранения требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { success: false, error: "Неверный пароль" };
+                return { success: false, error:"Неверный пароль" };
             }
         }
 
@@ -226,7 +226,7 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
         });
 
         if (activeStocks.length > 0) {
-            return { success: false, error: "Нельзя удалить склад, на котором числятся товары" };
+            return { success: false, error:"Нельзя удалить склад, на котором числятся товары" };
         }
 
         await db.transaction(async (tx) => {
@@ -250,7 +250,7 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
 
             await tx.delete(storageLocations).where(eq(storageLocations.id, id));
 
-            await logAction("Удаление склада", "storage_location", id, { id, isSystem: location.isSystem });
+            await logAction("Удаление склада","storage_location", id, { id, isSystem: location.isSystem });
         });
 
         invalidateCache("warehouse:locations");
@@ -259,11 +259,11 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/storage-actions",
-            method: "deleteStorageLocation",
+            path:"/dashboard/warehouse/storage-actions",
+            method:"deleteStorageLocation",
             details: { id }
         });
-        return { success: false, error: "Не удалось удалить место хранения" };
+        return { success: false, error:"Не удалось удалить место хранения" };
     }
 }
 
@@ -272,8 +272,8 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
  */
 export async function updateStorageLocationsOrder(items: unknown[]): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     const validation = z.array(z.object({
@@ -282,7 +282,7 @@ export async function updateStorageLocationsOrder(items: unknown[]): Promise<Act
     })).safeParse(items);
 
     if (!validation.success) {
-        return { success: false, error: "Неверный формат данных" };
+        return { success: false, error:"Неверный формат данных" };
     }
 
     const validatedItems = validation.data;
@@ -301,20 +301,20 @@ export async function updateStorageLocationsOrder(items: unknown[]): Promise<Act
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/storage-actions",
-            method: "updateStorageLocationsOrder",
+            path:"/dashboard/warehouse/storage-actions",
+            method:"updateStorageLocationsOrder",
             details: { itemsCount: items?.length }
         });
-        return { success: false, error: "Не удалось обновить порядок мест хранения" };
+        return { success: false, error:"Не удалось обновить порядок мест хранения" };
     }
 }
 
 export async function seedStorageLocations(): Promise<ActionResult> {
     const locations = [
-        { name: "Производство", address: "Пушкина 71" },
-        { name: "Стас", address: "Роз 355а" },
-        { name: "Леня", address: "Доваторцев 67" },
-        { name: "Денис", address: "Тухачевского 26/1" }
+        { name:"Производство", address:"Пушкина 71" },
+        { name:"Стас", address:"Роз 355а" },
+        { name:"Леня", address:"Доваторцев 67" },
+        { name:"Денис", address:"Тухачевского 26/1" }
     ];
 
     try {
@@ -331,7 +331,7 @@ export async function seedStorageLocations(): Promise<ActionResult> {
                 toInsert.map(loc => ({
                     name: loc.name,
                     address: loc.address,
-                    type: "warehouse" as const,
+                    type:"warehouse" as const,
                     isDefault: false,
                     isSystem: false,
                     isActive: true
@@ -342,9 +342,9 @@ export async function seedStorageLocations(): Promise<ActionResult> {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/storage-actions",
-            method: "seedStorageLocations"
+            path:"/dashboard/warehouse/storage-actions",
+            method:"seedStorageLocations"
         });
-        return { success: false, error: "Failed to seed" };
+        return { success: false, error:"Failed to seed" };
     }
 }

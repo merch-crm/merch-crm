@@ -1,21 +1,21 @@
 "use server";
 
-import { z } from "zod";
-import { eq, asc, inArray, and, isNull, type InferSelectModel } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { z } from"zod";
+import { eq, asc, inArray, and, isNull, type InferSelectModel } from"drizzle-orm";
+import { db } from"@/lib/db";
 import {
     inventoryAttributes,
     inventoryAttributeTypes,
     inventoryItemAttributes,
     inventoryTransactions,
     users
-} from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
-import { comparePassword } from "@/lib/password";
-import { refreshWarehouse } from "../../warehouse-shared.actions";
-import { AttributeTypeSchema } from "../../validation";
-import { type ActionResult } from "@/lib/types";
+} from"@/lib/schema";
+import { logError } from"@/lib/error-logger";
+import { getSession } from"@/lib/auth";
+import { comparePassword } from"@/lib/password";
+import { refreshWarehouse } from"../../warehouse-shared.actions";
+import { AttributeTypeSchema } from"../../validation";
+import { type ActionResult } from"@/lib/types";
 
 export type AttributeType = InferSelectModel<typeof inventoryAttributeTypes>;
 
@@ -31,10 +31,10 @@ export async function getInventoryAttributeTypes(): Promise<ActionResult<Attribu
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "getInventoryAttributeTypes"
+            path:"/dashboard/warehouse/attributes/actions/type.actions",
+            method:"getInventoryAttributeTypes"
         });
-        return { success: false, error: "Failed to fetch attribute types" };
+        return { success: false, error:"Failed to fetch attribute types" };
     }
 }
 
@@ -45,8 +45,8 @@ export async function createInventoryAttributeType(
     rawInput: unknown
 ): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     const validation = AttributeTypeSchema.safeParse(rawInput);
@@ -58,7 +58,7 @@ export async function createInventoryAttributeType(
     const categoryId = validation.data.category;
 
     try {
-        const baseSlug = slug.toLowerCase().replace(/[^a-z0-9_]/g, "_");
+        const baseSlug = slug.toLowerCase().replace(/[^a-z0-9_]/g,"_");
         const resolvedCategoryId = categoryId || null;
 
         // --- EXPLICIT DUPLICATE CHECK ---
@@ -115,8 +115,8 @@ export async function createInventoryAttributeType(
             });
 
             // Populate default values for specific data types
-            if (dataType === "unit") {
-                const defaultUnits = ["мм", "см", "м"];
+            if (dataType ==="unit") {
+                const defaultUnits = ["мм","см","м"];
                 for (const unit of defaultUnits) {
                     await tx.insert(inventoryAttributes).values({
                         type: cleanSlug,
@@ -124,8 +124,8 @@ export async function createInventoryAttributeType(
                         value: unit,
                     });
                 }
-            } else if (dataType === "quantity") {
-                const defaultQuants = ["шт", "пар", "компл", "уп", "рул", "л", "м"];
+            } else if (dataType ==="quantity") {
+                const defaultQuants = ["шт","пар","компл","уп","рул","л","м"];
                 for (const q of defaultQuants) {
                     await tx.insert(inventoryAttributes).values({
                         type: cleanSlug,
@@ -133,8 +133,8 @@ export async function createInventoryAttributeType(
                         value: q,
                     });
                 }
-            } else if (dataType === "weight") {
-                const defaultWeights = ["г", "кг"];
+            } else if (dataType ==="weight") {
+                const defaultWeights = ["г","кг"];
                 for (const w of defaultWeights) {
                     await tx.insert(inventoryAttributes).values({
                         type: cleanSlug,
@@ -142,8 +142,8 @@ export async function createInventoryAttributeType(
                         value: w,
                     });
                 }
-            } else if (dataType === "volume") {
-                const defaultVolumes = ["мл", "л"];
+            } else if (dataType ==="volume") {
+                const defaultVolumes = ["мл","л"];
                 for (const v of defaultVolumes) {
                     await tx.insert(inventoryAttributes).values({
                         type: cleanSlug,
@@ -151,8 +151,8 @@ export async function createInventoryAttributeType(
                         value: v,
                     });
                 }
-            } else if (dataType === "size") {
-                const defaultSizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+            } else if (dataType ==="size") {
+                const defaultSizes = ["XS","S","M","L","XL","XXL","XXXL"];
                 for (const size of defaultSizes) {
                     await tx.insert(inventoryAttributes).values({
                         type: cleanSlug,
@@ -163,7 +163,7 @@ export async function createInventoryAttributeType(
             }
 
             await tx.insert(inventoryTransactions).values({
-                type: "attribute_change",
+                type:"attribute_change",
                 reason: `Создан тип атрибута: ${name} (${cleanSlug})`,
                 createdBy: session.id,
             });
@@ -174,19 +174,19 @@ export async function createInventoryAttributeType(
     } catch (error: unknown) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "createInventoryAttributeType",
+            path:"/dashboard/warehouse/attributes/actions/type.actions",
+            method:"createInventoryAttributeType",
             details: { name, slug }
         });
 
         // Surface real DB errors for debugging; unique-violation code 23505
         const err = error as { code?: string; message?: string };
-        const isUniqueViolation = err?.code === "23505" || err?.message?.includes("unique");
+        const isUniqueViolation = err?.code ==="23505" || err?.message?.includes("unique");
 
         return {
             success: false, error: isUniqueViolation
-                ? "Характеристика с таким названием уже существует в этой категории"
-                : (err?.message || "Ошибка создания характеристики")
+                ?"Характеристика с таким названием уже существует в этой категории"
+                : (err?.message ||"Ошибка создания характеристики")
         };
     }
 }
@@ -197,31 +197,31 @@ export async function createInventoryAttributeType(
 export async function deleteInventoryAttributeType(id: string, password?: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID типа атрибута" };
+        return { success: false, error:"Некорректный ID типа атрибута" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     try {
         const [type] = await db.select().from(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id)).limit(1);
-        if (!type) return { success: false, error: "Тип не найден" };
+        if (!type) return { success: false, error:"Тип не найден" };
 
-        const isAdmin = session.roleName === "Администратор";
+        const isAdmin = session.roleName ==="Администратор";
 
         if (type.isSystem) {
             if (!isAdmin) {
-                return { success: false, error: "Системные разделы может удалять только Администратор" };
+                return { success: false, error:"Системные разделы может удалять только Администратор" };
             }
             if (!password) {
-                return { success: false, error: "Для удаления системного раздела требуется пароль от вашей учетной записи" };
+                return { success: false, error:"Для удаления системного раздела требуется пароль от вашей учетной записи" };
             }
 
             const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
             if (!user || !(await comparePassword(password, user.passwordHash))) {
-                return { success: false, error: "Неверный пароль" };
+                return { success: false, error:"Неверный пароль" };
             }
         }
 
@@ -247,7 +247,7 @@ export async function deleteInventoryAttributeType(id: string, password?: string
         await db.delete(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
 
         await db.insert(inventoryTransactions).values({
-            type: "attribute_change",
+            type:"attribute_change",
             reason: `Удален тип атрибута: ${type.name}${childAttrs.length > 0 ? ` (вместе с ${childAttrs.length} значениями)` : ''}`,
             createdBy: session.id,
         });
@@ -257,11 +257,11 @@ export async function deleteInventoryAttributeType(id: string, password?: string
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "deleteInventoryAttributeType",
+            path:"/dashboard/warehouse/attributes/actions/type.actions",
+            method:"deleteInventoryAttributeType",
             details: { id }
         });
-        return { success: false, error: "Не удалось удалить раздел" };
+        return { success: false, error:"Не удалось удалить раздел" };
     }
 }
 
@@ -274,12 +274,12 @@ export async function updateInventoryAttributeType(
 ): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID типа атрибута" };
+        return { success: false, error:"Некорректный ID типа атрибута" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     const validation = AttributeTypeSchema.safeParse(rawInput);
@@ -296,7 +296,7 @@ export async function updateInventoryAttributeType(
             .where(eq(inventoryAttributeTypes.id, id));
 
         await db.insert(inventoryTransactions).values({
-            type: "attribute_change",
+            type:"attribute_change",
             reason: `Изменен тип атрибута: ${name}`,
             createdBy: session.id,
         });
@@ -306,11 +306,11 @@ export async function updateInventoryAttributeType(
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "updateInventoryAttributeType",
+            path:"/dashboard/warehouse/attributes/actions/type.actions",
+            method:"updateInventoryAttributeType",
             details: { id }
         });
-        return { success: false, error: "Не удалось обновить раздел" };
+        return { success: false, error:"Не удалось обновить раздел" };
     }
 }
 
@@ -321,8 +321,8 @@ export async function reorderInventoryAttributeTypes(
     updates: { id: string; sortOrder: number }[]
 ): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     try {
@@ -339,9 +339,9 @@ export async function reorderInventoryAttributeTypes(
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "reorderInventoryAttributeTypes"
+            path:"/dashboard/warehouse/attributes/actions/type.actions",
+            method:"reorderInventoryAttributeTypes"
         });
-        return { success: false, error: "Не удалось сохранить порядок" };
+        return { success: false, error:"Не удалось сохранить порядок" };
     }
 }

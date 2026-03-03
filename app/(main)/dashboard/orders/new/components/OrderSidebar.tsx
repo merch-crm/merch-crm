@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { ArrowLeft, Check, LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import React from"react";
+import { ArrowLeft, Check, LucideIcon } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
 
 interface Step {
     id: number;
@@ -49,20 +49,18 @@ export function OrderSidebar({
                         <button
                             type="button"
                             onClick={() => onStepClick(s.id)}
-                            className={cn(
-                                "relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-3 group",
-                                currentStep === s.id ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:bg-muted active:scale-[0.98]"
+                            className={cn("relative w-full text-left p-4 rounded-[var(--radius)] transition-all duration-300 flex items-center gap-3 group",
+                                currentStep === s.id ?"bg-primary text-primary-foreground shadow-lg shadow-primary/20" :"text-muted-foreground hover:bg-muted active:scale-[0.98]"
                             )}
                         >
-                            <div className={cn(
-                                "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
-                                currentStep === s.id ? "bg-white/10 border-white/20" : currentStep > s.id ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-muted border-border"
+                            <div className={cn("w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
+                                currentStep === s.id ?"bg-white/10 border-white/20" : currentStep > s.id ?"bg-emerald-50 border-emerald-100 text-emerald-500" :"bg-muted border-border"
                             )}>
                                 {currentStep > s.id ? <Check className="w-5 h-5" /> : <s.icon className="w-5 h-5" />}
                             </div>
                             <div className="min-w-0">
-                                <div className={cn("text-xs font-bold leading-none mb-1", currentStep === s.id ? "text-primary-foreground" : "text-foreground")}>{s.title}</div>
-                                <div className={cn("text-xs font-bold truncate", currentStep === s.id ? "text-primary-foreground/60" : "text-muted-foreground")}>{s.desc}</div>
+                                <div className={cn("text-xs font-bold leading-none mb-1", currentStep === s.id ?"text-primary-foreground" :"text-foreground")}>{s.title}</div>
+                                <div className={cn("text-xs font-bold truncate", currentStep === s.id ?"text-primary-foreground/60" :"text-muted-foreground")}>{s.desc}</div>
                             </div>
                         </button>
                     </Button>
@@ -71,7 +69,7 @@ export function OrderSidebar({
 
             <div className="h-[80px] border-t border-border bg-card px-7 flex items-center">
                 <div className="text-xs font-bold text-muted-foreground truncate">
-                    {selectedClientName || "Клиент не выбран"}
+                    {selectedClientName ||"Клиент не выбран"}
                 </div>
             </div>
         </aside>

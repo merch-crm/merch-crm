@@ -1,21 +1,21 @@
 "use server";
 
-import { z } from "zod";
-import { eq, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
-import { type AnyPgColumn } from "drizzle-orm/pg-core";
-import { db } from "@/lib/db";
+import { z } from"zod";
+import { eq, type InferSelectModel, type InferInsertModel } from"drizzle-orm";
+import { type AnyPgColumn } from"drizzle-orm/pg-core";
+import { db } from"@/lib/db";
 import {
     inventoryAttributes,
     inventoryItems,
     inventoryTransactions,
-} from "@/lib/schema";
-import { invalidateCache } from "@/lib/redis";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
-import { refreshWarehouse } from "../../warehouse-shared.actions";
-import { AttributeSchema } from "../../validation";
-import { type ActionResult } from "@/lib/types";
+} from"@/lib/schema";
+import { invalidateCache } from"@/lib/redis";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { getSession } from"@/lib/auth";
+import { refreshWarehouse } from"../../warehouse-shared.actions";
+import { AttributeSchema } from"../../validation";
+import { type ActionResult } from"@/lib/types";
 
 export type InventoryAttribute = InferSelectModel<typeof inventoryAttributes>;
 
@@ -32,10 +32,10 @@ export async function getInventoryAttributes(): Promise<ActionResult<InventoryAt
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "getInventoryAttributes"
+            path:"/dashboard/warehouse/attributes/actions/attribute.actions",
+            method:"getInventoryAttributes"
         });
-        return { success: false, error: "Не удалось загрузить атрибуты" };
+        return { success: false, error:"Не удалось загрузить атрибуты" };
     }
 }
 
@@ -46,8 +46,8 @@ export async function createInventoryAttribute(
     rawInput: unknown
 ): Promise<ActionResult<InventoryAttribute>> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     const validation = AttributeSchema.safeParse(rawInput);
@@ -67,12 +67,12 @@ export async function createInventoryAttribute(
             }).returning();
 
             await tx.insert(inventoryTransactions).values({
-                type: "attribute_change",
+                type:"attribute_change",
                 reason: `Добавлен атрибут: ${name} (${value}) в раздел ${type}`,
                 createdBy: session.id,
             });
 
-            await logAction("Создан атрибут", "inventory_attribute", newAttr.id, { name: newAttr.name }, tx);
+            await logAction("Создан атрибут","inventory_attribute", newAttr.id, { name: newAttr.name }, tx);
             return newAttr;
         });
 
@@ -83,11 +83,11 @@ export async function createInventoryAttribute(
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "createInventoryAttribute",
+            path:"/dashboard/warehouse/attributes/actions/attribute.actions",
+            method:"createInventoryAttribute",
             details: { type, name, value, meta }
         });
-        return { success: false, error: "Не удалось создать атрибут" };
+        return { success: false, error:"Не удалось создать атрибут" };
     }
 }
 
@@ -100,12 +100,12 @@ export async function updateInventoryAttribute(
 ): Promise<ActionResult<InventoryAttribute>> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID атрибута" };
+        return { success: false, error:"Некорректный ID атрибута" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     const validation = AttributeSchema.safeParse(rawInput);
@@ -117,7 +117,7 @@ export async function updateInventoryAttribute(
 
     try {
         const [oldAttr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id)).limit(1);
-        if (!oldAttr) return { success: false, error: "Атрибут не найден" };
+        if (!oldAttr) return { success: false, error:"Атрибут не найден" };
 
         const attribute = await db.transaction(async (tx) => {
             const [updatedAttr] = await tx.update(inventoryAttributes)
@@ -165,12 +165,12 @@ export async function updateInventoryAttribute(
             }
 
             await tx.insert(inventoryTransactions).values({
-                type: "attribute_change",
+                type:"attribute_change",
                 reason: `Изменен атрибут: ${name} (${value})`,
                 createdBy: session.id,
             });
 
-            await logAction("Обновлен атрибут", "inventory_attribute", id, { name, value }, tx);
+            await logAction("Обновлен атрибут","inventory_attribute", id, { name, value }, tx);
             return updatedAttr;
         });
 
@@ -181,11 +181,11 @@ export async function updateInventoryAttribute(
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "updateInventoryAttribute",
+            path:"/dashboard/warehouse/attributes/actions/attribute.actions",
+            method:"updateInventoryAttribute",
             details: { id, name, value, meta }
         });
-        return { success: false, error: "Не удалось обновить атрибут" };
+        return { success: false, error:"Не удалось обновить атрибут" };
     }
 }
 
@@ -195,17 +195,17 @@ export async function updateInventoryAttribute(
 export async function deleteInventoryAttribute(id: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID атрибута" };
+        return { success: false, error:"Некорректный ID атрибута" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     try {
         const [attr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id)).limit(1);
-        if (!attr) return { success: false, error: "Атрибут не найден" };
+        if (!attr) return { success: false, error:"Атрибут не найден" };
 
         const typeToColumn: Record<string, AnyPgColumn> = {
             'color': inventoryItems.attributeCode,
@@ -225,19 +225,19 @@ export async function deleteInventoryAttribute(id: string): Promise<ActionResult
                 .limit(1);
 
             if (usage) {
-                return { success: false, error: "Этот атрибут используется в товарах и не может быть удален" };
+                return { success: false, error:"Этот атрибут используется в товарах и не может быть удален" };
             }
         }
 
         await db.delete(inventoryAttributes).where(eq(inventoryAttributes.id, id));
 
         await db.insert(inventoryTransactions).values({
-            type: "attribute_change",
+            type:"attribute_change",
             reason: `Удален атрибут: ${attr.name} (${attr.value})`,
             createdBy: session.id,
         });
 
-        await logAction("Удален атрибут", "inventory_attribute", id);
+        await logAction("Удален атрибут","inventory_attribute", id);
         invalidateCache("warehouse:attributes");
         refreshWarehouse();
 
@@ -245,10 +245,10 @@ export async function deleteInventoryAttribute(id: string): Promise<ActionResult
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "deleteInventoryAttribute",
+            path:"/dashboard/warehouse/attributes/actions/attribute.actions",
+            method:"deleteInventoryAttribute",
             details: { id }
         });
-        return { success: false, error: "Не удалось удалить атрибут" };
+        return { success: false, error:"Не удалось удалить атрибут" };
     }
 }

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useRef, createElement } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Building2, Sparkles, Search, Upload, Plus, Save, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { ALL_ICONS_MAP, createSvgIcon } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { IconGroup, IconItem } from "./types";
+import { useState, useRef, createElement } from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { X, Building2, Sparkles, Search, Upload, Plus, Save, Trash2 } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from"@/components/ui/popover";
+import { cn } from"@/lib/utils";
+import { ALL_ICONS_MAP, createSvgIcon } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { IconGroup, IconItem } from"./types";
 
 interface CategoryDialogProps {
     isOpen: boolean;
@@ -19,7 +19,7 @@ interface CategoryDialogProps {
     onDelete: (id: string) => void;
     isSaving: boolean;
     isExisting: boolean;
-    toast: (msg: string, type: "success" | "error" | "warning" | "info") => void;
+    toast: (msg: string, type:"success" |"error" |"warning" |"info") => void;
 }
 
 const LIBRARY_ICONS_LIMIT = 50;
@@ -49,7 +49,7 @@ export function CategoryDialog({
         if (!file) return;
 
         if (!file.name.endsWith('.svg')) {
-            toast("Пожалуйста, выберите SVG файл", "warning");
+            toast("Пожалуйста, выберите SVG файл","warning");
             return;
         }
 
@@ -69,12 +69,12 @@ export function CategoryDialog({
             });
         };
         reader.readAsText(file);
-        e.target.value = "";
+        e.target.value ="";
     };
 
     const handleAddIconFromLibrary = (name: string, Icon: React.ComponentType<{ className?: string }>) => {
         if (category.icons.some(i => i.name === name)) {
-            toast("Эта иконка уже есть в категории", "info");
+            toast("Эта иконка уже есть в категории","info");
             return;
         }
 
@@ -114,7 +114,7 @@ export function CategoryDialog({
                                     <EditGroupIcon className="w-5 h-5 text-primary" />
                                 </div>
                                 <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
-                                    <Sparkles className="w-4 h-4 text-primary" /> {isExisting ? "Редактировать категорию" : "Новая категория"}
+                                    <Sparkles className="w-4 h-4 text-primary" /> {isExisting ?"Редактировать категорию" :"Новая категория"}
                                 </div>
                             </div>
                             <Button
@@ -150,7 +150,7 @@ export function CategoryDialog({
                                         <PopoverTrigger asChild>
                                             <button type="button" className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center hover:bg-white hover:border-primary/50 transition-all shadow-sm group">
                                                 {createElement(category.groupIcon || Sparkles, {
-                                                    className: "w-5 h-5 text-slate-400 group-hover:text-primary"
+                                                    className:"w-5 h-5 text-slate-400 group-hover:text-primary"
                                                 })}
                                             </button>
                                         </PopoverTrigger>
@@ -177,9 +177,8 @@ export function CategoryDialog({
                                                                 onChange({ ...category, groupIcon: Icon });
                                                                 setIconPickerSearch("");
                                                             }}
-                                                            className={cn(
-                                                                "w-10 h-10 rounded-lg flex items-center justify-center hover:bg-primary/5 hover:text-primary transition-colors",
-                                                                category.groupIcon === Icon ? "bg-primary text-white hover:bg-primary hover:text-white" : "text-slate-400"
+                                                            className={cn("w-10 h-10 rounded-lg flex items-center justify-center hover:bg-primary/5 hover:text-primary transition-colors",
+                                                                category.groupIcon === Icon ?"bg-primary text-white hover:bg-primary hover:text-white" :"text-slate-400"
                                                             )}
                                                             title={name}
                                                         >
@@ -268,7 +267,7 @@ export function CategoryDialog({
                                                 key={`edit-group-icon-${icon.name}`}
                                                 className="aspect-square rounded-lg flex items-center justify-center bg-white border border-slate-200 shadow-sm relative group/edit-icon"
                                             >
-                                                {createElement(icon.icon, { className: "w-5 h-5 text-slate-600" })}
+                                                {createElement(icon.icon, { className:"w-5 h-5 text-slate-600" })}
 
                                                 <button type="button"
                                                     onClick={() => {
@@ -326,7 +325,7 @@ export function CategoryDialog({
                                     ) : (
                                         <Save className="w-4 h-4 mr-2" />
                                     )}
-                                    {isSaving ? "Сохранение..." : (isExisting ? "Сохранить" : "Создать категорию")}
+                                    {isSaving ?"Сохранение..." : (isExisting ?"Сохранить" :"Создать категорию")}
                                 </Button>
                             </div>
                         </div>

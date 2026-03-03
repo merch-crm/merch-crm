@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
-import { formatPrice } from "./utils";
-import { PrintDetailsProps } from "./types";
-import { PRINT_METHOD_CONFIG } from "./constants";
+import * as React from"react";
+import { cn } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
+import { formatPrice } from"./utils";
+import { PrintDetailsProps } from"./types";
+import { PRINT_METHOD_CONFIG } from"./constants";
 
 export function PrintDetails({
     method,
@@ -15,7 +15,7 @@ export function PrintDetails({
     pricePerUnit,
     setupPrice = 0,
     quantity,
-    currency = "₽",
+    currency ="₽",
     className,
 }: PrintDetailsProps) {
     const config = PRINT_METHOD_CONFIG[method];

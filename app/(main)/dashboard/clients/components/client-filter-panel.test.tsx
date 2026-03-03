@@ -1,7 +1,7 @@
 import { render, screen, within, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ClientFilterPanel, ClientUiState } from './client-filter-panel' // Need to export ClientUiState from component if not already
-import { ClientFilters } from "../actions";
+import { ClientFilters } from"../actions";
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
 
 // Mock Select to simplify
@@ -182,12 +182,12 @@ describe('ClientFilterPanel', () => {
         expect(setFiltersMock).toHaveBeenCalledWith({
             page: 1,
             limit: 50,
-            search: "",
-            sortBy: "alphabet",
-            period: "all",
-            orderCount: "any",
-            region: "all",
-            status: "all",
+            search:"",
+            sortBy:"alphabet",
+            period:"all",
+            orderCount:"any",
+            region:"all",
+            status:"all",
             showArchived: false
         })
     })

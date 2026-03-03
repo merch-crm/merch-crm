@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback, memo } from "react";
-import { Folder, FileText, ChevronRight, ChevronDown, Plus, Search } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useState, useMemo, useCallback, memo } from"react";
+import { Folder, FileText, ChevronRight, ChevronDown, Plus, Search } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
 
 interface WikiFolder {
     id: string;
@@ -36,7 +36,7 @@ const PageItem = memo(({
 }) => (
     <div
         role="button"
-        aria-current={isActive ? "page" : undefined}
+        aria-current={isActive ?"page" : undefined}
         tabIndex={0}
         onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -44,18 +44,17 @@ const PageItem = memo(({
                 onSelect(page.id);
             }
         }}
-        className={cn(
-            "flex items-center gap-2 px-2 py-1.5 rounded-[8px] hover:bg-slate-50 transition-all cursor-pointer ml-8 group outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-            isActive && "bg-primary/5 text-primary shadow-sm"
+        className={cn("flex items-center gap-2 px-2 py-1.5 rounded-[8px] hover:bg-slate-50 transition-all cursor-pointer ml-8 group outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+            isActive &&"bg-primary/5 text-primary shadow-sm"
         )}
         onClick={() => onSelect(page.id)}
     >
-        <FileText className={cn("w-3.5 h-3.5 shrink-0", isActive ? "text-primary" : "text-slate-400")} aria-hidden="true" />
+        <FileText className={cn("w-3.5 h-3.5 shrink-0", isActive ?"text-primary" :"text-slate-400")} aria-hidden="true" />
         <span className="text-sm font-semibold truncate">{page.title}</span>
     </div>
 ));
 
-PageItem.displayName = "PageItem";
+PageItem.displayName ="PageItem";
 
 const FolderItem = memo(({
     folder,
@@ -86,9 +85,8 @@ const FolderItem = memo(({
                     onToggle(folder.id);
                 }
             }}
-            className={cn(
-                "group flex items-center gap-2 px-2 py-1.5 rounded-[8px] hover:bg-slate-50 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-                depth > 0 && "ml-4"
+            className={cn("group flex items-center gap-2 px-2 py-1.5 rounded-[8px] hover:bg-slate-50 transition-all cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+                depth > 0 &&"ml-4"
             )}
             onClick={() => onToggle(folder.id)}
         >
@@ -111,7 +109,7 @@ const FolderItem = memo(({
     </div>
 ));
 
-FolderItem.displayName = "FolderItem";
+FolderItem.displayName ="FolderItem";
 
 export const WikiSidebar = memo(({
     folders = [],
@@ -254,4 +252,4 @@ export const WikiSidebar = memo(({
     );
 });
 
-WikiSidebar.displayName = "WikiSidebar";
+WikiSidebar.displayName ="WikiSidebar";

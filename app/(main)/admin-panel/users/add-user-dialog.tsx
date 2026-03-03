@@ -1,16 +1,16 @@
 "use client";
 
 
-import { Plus, User, Mail, Lock, Shield, Building, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Plus, User, Mail, Lock, Shield, Building, Loader2 } from"lucide-react";
+import { Button } from"@/components/ui/button";
 
-import { IconSelect } from "@/components/ui/icon-select";
-import { IconInput } from "@/components/ui/icon-input";
-import { cn } from "@/lib/utils";
+import { IconSelect } from"@/components/ui/icon-select";
+import { IconInput } from"@/components/ui/icon-input";
+import { cn } from"@/lib/utils";
 
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { useAddUser } from "./hooks/use-add-user";
+import { useIsMobile } from"@/hooks/use-mobile";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { useAddUser } from"./hooks/use-add-user";
 
 export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
     const { state, updateState, handleRoleChange, handleSubmit } = useAddUser(onSuccess);
@@ -22,14 +22,13 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
         <>
             <Button
                 onClick={() => updateState({ isOpen: true })}
-                size={isMobile ? "default" : "lg"}
-                className={cn(
-                    "rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
-                    isMobile ? "w-11 h-11 p-0" : ""
+                size={isMobile ?"default" :"lg"}
+                className={cn("rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
+                    isMobile ?"w-11 h-11 p-0" :""
                 )}
                 title="Пригласить сотрудника"
             >
-                <Plus className={cn("h-5 w-5", !isMobile && "mr-2")} />
+                <Plus className={cn("h-5 w-5", !isMobile &&"mr-2")} />
                 <span className="hidden sm:inline">Пригласить сотрудника</span>
             </Button>
 
@@ -104,14 +103,14 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                                     name="departmentId"
                                     value={state.selectedDeptId}
                                     options={[
-                                        { id: "", title: "Все отделы" },
+                                        { id:"", title:"Все отделы" },
                                         ...state.departments.map(dept => ({ id: dept.id, title: dept.name }))
                                     ]}
                                     placeholder="Выбрать отдел"
                                     className="h-11"
                                     onChange={(val) => updateState({ selectedDeptId: val })}
                                 />
-                                <input type="hidden" name="department" value={state.departments.find(d => d.id === state.selectedDeptId)?.name || ""} />
+                                <input type="hidden" name="department" value={state.departments.find(d => d.id === state.selectedDeptId)?.name ||""} />
                             </div>
                         </div>
 
@@ -122,7 +121,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
                                 className="w-full justify-center rounded-[var(--radius-inner)] h-11 font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-2"
                             >
                                 {state.loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                                {state.loading ? "Создание..." : "Создать сотрудника"}
+                                {state.loading ?"Создание..." :"Создать сотрудника"}
                             </Button>
                         </div>
                     </form>

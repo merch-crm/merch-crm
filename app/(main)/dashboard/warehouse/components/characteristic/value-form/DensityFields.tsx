@@ -1,7 +1,7 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from "react";
-import { Input } from "@/components/ui/input";
-import { type ValueFormState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import React, { type Dispatch, type SetStateAction } from"react";
+import { Input } from"@/components/ui/input";
+import { type ValueFormState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
 
 interface DensityFieldsProps {
     valueForm: ValueFormState;
@@ -24,8 +24,8 @@ export function DensityFields({
                         setValueForm(prev => ({
                             ...prev,
                             fullName: val,
-                            name: val ? `${val} г/м²` : "",
-                            code: prev.isCodeManuallyEdited ? prev.code : (val ? `${val.replace(/-/g, '_')}GSM` : "")
+                            name: val ? `${val} г/м²` :"",
+                            code: prev.isCodeManuallyEdited ? prev.code : (val ? `${val.replace(/-/g, '_')}GSM` :"")
                         }));
                     }}
                     placeholder="0"

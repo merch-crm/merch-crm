@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Select } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { motion } from "framer-motion";
-import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { CLOTHING_COLORS } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { StepFooter } from "./step-footer";
-import { Button } from "@/components/ui/button";
+import { useEffect } from"react";
+import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Select } from"@/components/ui/select";
+import { Input } from"@/components/ui/input";
+import { motion } from"framer-motion";
+import { Category, InventoryAttribute, AttributeType, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { CLOTHING_COLORS } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { StepFooter } from"./step-footer";
+import { Button } from"@/components/ui/button";
 
 interface PackagingBasicInfoStepProps {
     category: Category;
@@ -58,17 +58,17 @@ export function PackagingBasicInfoStep({
         const subCat = subCategories.find(s => s.id === formData.subcategoryId);
         const subCatName = subCat?.name || category.name;
 
-        const length = formData.depth || ""; // Длина
-        const width = formData.width || "";  // Ширина
-        const height = formData.height || ""; // Высота
+        const length = formData.depth ||""; // Длина
+        const width = formData.width ||"";  // Ширина
+        const height = formData.height ||""; // Высота
 
-        let dimensions = "";
+        let dimensions ="";
         if (length && width && height) {
             dimensions = `${length}x${width}x${height}`;
         }
 
-        const colorName = CLOTHING_COLORS.find(c => c.code === formData.attributeCode)?.name || "";
-        const materialName = materials.find(m => m.id === formData.materialCode)?.name || "";
+        const colorName = CLOTHING_COLORS.find(c => c.code === formData.attributeCode)?.name ||"";
+        const materialName = materials.find(m => m.id === formData.materialCode)?.name ||"";
 
         // Format: [Подкатегория] [Д]x[Ш]x[В] [Цвет] [Материал]
         // E.g. Коробка 300x200x100 Крафт Гофрокартон
@@ -79,7 +79,7 @@ export function PackagingBasicInfoStep({
             materialName
         ].filter(Boolean);
 
-        const generatedName = nameParts.join(" ");
+        const generatedName = nameParts.join("");
 
         // SKU Generation
         // PKG-{SUB}-{DIM}-{COLOR}
@@ -87,7 +87,7 @@ export function PackagingBasicInfoStep({
         const subPrefix = subCat?.prefix || subCatName.substring(0, 3).toUpperCase();
 
         // Color code
-        const colorCode = formData.attributeCode || "UNI";
+        const colorCode = formData.attributeCode ||"UNI";
 
         let generatedSku = `PKG-${subPrefix}`;
         if (dimensions) generatedSku += `-${dimensions}`;
@@ -128,7 +128,7 @@ export function PackagingBasicInfoStep({
         placeholder: string,
         icon?: React.ReactNode,
         suffix?: string,
-        type: "text" | "number" = "text",
+        type:"text" |"number" ="text",
         className?: string
     ) => (
         <div className={cn("space-y-1.5", className)}>
@@ -139,7 +139,7 @@ export function PackagingBasicInfoStep({
             <div className="relative">
                 <Input
                     type={type}
-                    value={value || ""}
+                    value={value ||""}
                     onChange={(e) => updateFormData({ [field]: e.target.value })}
                     placeholder={placeholder}
                     className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white transition-all font-bold text-sm text-slate-900 shadow-sm placeholder:text-slate-300 placeholder:font-medium shadow-none"
@@ -196,24 +196,22 @@ export function PackagingBasicInfoStep({
                                 <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-[14px]">
                                     <Button
                                         variant="ghost"
-                                        onClick={() => updateFormData({ packagingType: "individual" })}
-                                        className={cn(
-                                            "h-9 flex-1 rounded-[10px] text-xs font-bold transition-all shadow-none",
-                                            formData.packagingType === "individual" || !formData.packagingType
-                                                ? "bg-white text-slate-900 shadow hover:bg-white"
-                                                : "text-slate-500 hover:text-slate-700 hover:bg-transparent"
+                                        onClick={() => updateFormData({ packagingType:"individual" })}
+                                        className={cn("h-9 flex-1 rounded-[10px] text-xs font-bold transition-all shadow-none",
+                                            formData.packagingType ==="individual" || !formData.packagingType
+                                                ?"bg-white text-slate-900 shadow hover:bg-white"
+                                                :"text-slate-500 hover:text-slate-700 hover:bg-transparent"
                                         )}
                                     >
                                         Индивидуальная
                                     </Button>
                                     <Button
                                         variant="ghost"
-                                        onClick={() => updateFormData({ packagingType: "transport" })}
-                                        className={cn(
-                                            "h-9 flex-1 rounded-[10px] text-xs font-bold transition-all shadow-none",
-                                            formData.packagingType === "transport"
-                                                ? "bg-white text-slate-900 shadow hover:bg-white"
-                                                : "text-slate-500 hover:text-slate-700 hover:bg-transparent"
+                                        onClick={() => updateFormData({ packagingType:"transport" })}
+                                        className={cn("h-9 flex-1 rounded-[10px] text-xs font-bold transition-all shadow-none",
+                                            formData.packagingType ==="transport"
+                                                ?"bg-white text-slate-900 shadow hover:bg-white"
+                                                :"text-slate-500 hover:text-slate-700 hover:bg-transparent"
                                         )}
                                     >
                                         Транспортная
@@ -227,7 +225,7 @@ export function PackagingBasicInfoStep({
                                     label=""
                                     placeholder="Выберите бренд"
                                     options={brands.map(b => ({ id: b.id, title: b.name }))}
-                                    value={formData.brandCode || ""}
+                                    value={formData.brandCode ||""}
                                     onChange={(val) => updateFormData({ brandCode: val })}
                                 />
                             </div>
@@ -244,25 +242,25 @@ export function PackagingBasicInfoStep({
                         <div className="grid grid-cols-12 gap-3">
                             {/* Dimensions */}
                             <div className="col-span-12 md:col-span-7 grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-[20px] border border-slate-200/60">
-                                {renderInput("Длина", formData.depth, "depth", "300", <Ruler className="w-3 h-3" />, "мм", "number")}
-                                {renderInput("Ширина", formData.width, "width", "200", <Ruler className="w-3 h-3 rotate-90" />, "мм", "number")}
-                                {renderInput("Высота", formData.height, "height", "100", <Box className="w-3 h-3" />, "мм", "number")}
+                                {renderInput("Длина", formData.depth,"depth","300", <Ruler className="w-3 h-3" />,"мм","number")}
+                                {renderInput("Ширина", formData.width,"width","200", <Ruler className="w-3 h-3 rotate-90" />,"мм","number")}
+                                {renderInput("Высота", formData.height,"height","100", <Box className="w-3 h-3" />,"мм","number")}
                             </div>
 
                             {/* Additional Specs */}
                             <div className="col-span-12 md:col-span-5 space-y-3">
-                                {renderInput("Вес (1 шт)", formData.weight as string, "weight", "50", <Scale className="w-3 h-3" />, "гр", "number")}
+                                {renderInput("Вес (1 шт)", formData.weight as string,"weight","50", <Scale className="w-3 h-3" />,"гр","number")}
 
                                 <div className="space-y-1.5">
                                     <label className="text-sm font-bold text-slate-700 ml-1">Размер (поиск)</label>
                                     <Select
                                         options={[
-                                            { id: "S", title: "S - Маленький" },
-                                            { id: "M", title: "M - Средний" },
-                                            { id: "L", title: "L - Большой" },
-                                            { id: "XL", title: "XL - Очень большой" },
+                                            { id:"S", title:"S - Маленький" },
+                                            { id:"M", title:"M - Средний" },
+                                            { id:"L", title:"L - Большой" },
+                                            { id:"XL", title:"XL - Очень большой" },
                                         ]}
-                                        value={formData.sizeCode || ""}
+                                        value={formData.sizeCode ||""}
                                         onChange={(val) => updateFormData({ sizeCode: val })}
                                         placeholder="Не выбрано"
                                     />
@@ -277,7 +275,7 @@ export function PackagingBasicInfoStep({
                                     label=""
                                     placeholder="Выберите материал"
                                     options={materials.map(m => ({ id: m.id, title: m.name }))}
-                                    value={formData.materialCode || ""}
+                                    value={formData.materialCode ||""}
                                     onChange={(val) => updateFormData({ materialCode: val })}
                                 />
                             </div>
@@ -292,14 +290,13 @@ export function PackagingBasicInfoStep({
                                                 key={c.code}
                                                 variant="ghost"
                                                 onClick={() => updateFormData({ attributeCode: c.code })}
-                                                className={cn(
-                                                    "w-6 h-6 p-0 rounded-full shadow-sm ring-1 ring-black/5 transition-all relative flex items-center justify-center min-w-0 h-6",
-                                                    isActive ? "scale-110 ring-2 ring-primary ring-offset-2 hover:bg-transparent" : "hover:bg-transparent"
+                                                className={cn("w-6 h-6 p-0 rounded-full shadow-sm ring-1 ring-black/5 transition-all relative flex items-center justify-center min-w-0 h-6",
+                                                    isActive ?"scale-110 ring-2 ring-primary ring-offset-2 hover:bg-transparent" :"hover:bg-transparent"
                                                 )}
                                                 style={{ backgroundColor: c.hex }}
                                                 title={c.name}
                                             >
-                                                {isActive && <Check className={cn("w-3 h-3", c.code === "WHT" ? "text-slate-900" : "text-white")} strokeWidth={4} />}
+                                                {isActive && <Check className={cn("w-3 h-3", c.code ==="WHT" ?"text-slate-900" :"text-white")} strokeWidth={4} />}
                                             </Button>
                                         );
                                     })}
@@ -310,9 +307,8 @@ export function PackagingBasicInfoStep({
                         {/* Features Checkboxes */}
                         <div className="grid grid-cols-2 gap-3 pt-2">
                             <label className="flex items-center gap-3 p-3 rounded-[14px] border border-slate-200 cursor-pointer hover:bg-slate-50 transition-all group">
-                                <div className={cn(
-                                    "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
-                                    formData.features?.includes("glued_valve") ? "bg-primary border-primary" : "border-slate-300 bg-white group-hover:border-primary/50"
+                                <div className={cn("w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
+                                    formData.features?.includes("glued_valve") ?"bg-primary border-primary" :"border-slate-300 bg-white group-hover:border-primary/50"
                                 )}>
                                     {formData.features?.includes("glued_valve") && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                                 </div>
@@ -322,17 +318,16 @@ export function PackagingBasicInfoStep({
                                     checked={formData.features?.includes("glued_valve") || false}
                                     onChange={(e) => {
                                         const feats = formData.features || [];
-                                        if (e.target.checked) updateFormData({ features: [...feats, "glued_valve"] });
-                                        else updateFormData({ features: feats.filter((f: string) => f !== "glued_valve") });
+                                        if (e.target.checked) updateFormData({ features: [...feats,"glued_valve"] });
+                                        else updateFormData({ features: feats.filter((f: string) => f !=="glued_valve") });
                                     }}
                                 />
                                 <span className="text-sm font-bold text-slate-700">Клеевой клапан</span>
                             </label>
 
                             <label className="flex items-center gap-3 p-3 rounded-[14px] border border-slate-200 cursor-pointer hover:bg-slate-50 transition-all group">
-                                <div className={cn(
-                                    "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
-                                    formData.features?.includes("tear_tape") ? "bg-primary border-primary" : "border-slate-300 bg-white group-hover:border-primary/50"
+                                <div className={cn("w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors",
+                                    formData.features?.includes("tear_tape") ?"bg-primary border-primary" :"border-slate-300 bg-white group-hover:border-primary/50"
                                 )}>
                                     {formData.features?.includes("tear_tape") && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
                                 </div>
@@ -342,8 +337,8 @@ export function PackagingBasicInfoStep({
                                     checked={formData.features?.includes("tear_tape") || false}
                                     onChange={(e) => {
                                         const feats = formData.features || [];
-                                        if (e.target.checked) updateFormData({ features: [...feats, "tear_tape"] });
-                                        else updateFormData({ features: feats.filter((f: string) => f !== "tear_tape") });
+                                        if (e.target.checked) updateFormData({ features: [...feats,"tear_tape"] });
+                                        else updateFormData({ features: feats.filter((f: string) => f !=="tear_tape") });
                                     }}
                                 />
                                 <span className="text-sm font-bold text-slate-700">Отрывная лента</span>
@@ -359,7 +354,7 @@ export function PackagingBasicInfoStep({
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {renderInput("Поставщик", formData.supplierName, "supplierName", "Название компании")}
+                            {renderInput("Поставщик", formData.supplierName,"supplierName","Название компании")}
 
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-1">
@@ -367,14 +362,14 @@ export function PackagingBasicInfoStep({
                                     Ссылка на поставщика
                                 </label>
                                 <Input
-                                    value={formData.supplierLink || ""}
+                                    value={formData.supplierLink ||""}
                                     onChange={(e) => updateFormData({ supplierLink: e.target.value })}
                                     placeholder="https://..."
                                     className="w-full h-11 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-slate-400 transition-all font-bold text-sm text-slate-900 shadow-sm text-blue-600 underline-offset-2 placeholder:text-slate-300 placeholder:no-underline shadow-none"
                                 />
                             </div>
 
-                            {renderInput("Мин. партия", formData.minBatch, "minBatch", "100", <SlidersHorizontal className="w-3 h-3" />, "шт", "number")}
+                            {renderInput("Мин. партия", formData.minBatch,"minBatch","100", <SlidersHorizontal className="w-3 h-3" />,"шт","number")}
 
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Ед. измерения</label>
@@ -382,7 +377,7 @@ export function PackagingBasicInfoStep({
                                     label=""
                                     placeholder=""
                                     options={measurementUnits.map(u => ({ id: u.id, title: u.name }))}
-                                    value={formData.unit || "шт."}
+                                    value={formData.unit ||"шт."}
                                     onChange={(val) => updateFormData({ unit: val })}
                                 />
                             </div>
@@ -396,8 +391,8 @@ export function PackagingBasicInfoStep({
                             <span className="text-xs font-bold text-slate-400 bg-white px-2 py-0.5 rounded shadow-sm border border-slate-200">Авто-генерация</span>
                         </div>
                         <div>
-                            <div className="text-lg font-black text-slate-900 leading-tight mb-1">{formData.itemName || "—"}</div>
-                            <div className="text-xs font-mono font-bold text-slate-500">{formData.sku || "—"}</div>
+                            <div className="text-lg font-black text-slate-900 leading-tight mb-1">{formData.itemName ||"—"}</div>
+                            <div className="text-xs font-mono font-bold text-slate-500">{formData.sku ||"—"}</div>
                         </div>
                     </div>
 
@@ -409,7 +404,7 @@ export function PackagingBasicInfoStep({
                     onBack={onBack}
                     onNext={() => {
                         // Basic validation
-                        if (!formData.packagingType) updateFormData({ packagingType: "individual" }); // Default
+                        if (!formData.packagingType) updateFormData({ packagingType:"individual" }); // Default
                         onNext();
                     }}
                     validationError={validationError}

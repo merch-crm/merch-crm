@@ -1,11 +1,11 @@
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { Ticket, X, Calendar } from "lucide-react";
-import { formatDate } from "@/lib/formatters";
-import { Promocode } from "../types";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { Ticket, X, Calendar } from"lucide-react";
+import { formatDate } from"@/lib/formatters";
+import { Promocode } from"../types";
 
 interface FormState {
     name: string;
@@ -54,7 +54,7 @@ export function PromocodeFormModal({
                         </div>
                         <div>
                             <h2 className="text-xl sm:text-2xl font-bold text-slate-900  leading-tight">
-                                {editingPromo ? "Редактировать" : "Новый промокод"}
+                                {editingPromo ?"Редактировать" :"Новый промокод"}
                             </h2>
                             <p className="text-slate-400 text-xs font-bold mt-0.5">
                                 Параметры промокода
@@ -104,10 +104,10 @@ export function PromocodeFormModal({
                                 <input type="hidden" name="discountType" value={form.discountType} />
                                 <Select
                                     options={[
-                                        { id: "percentage", title: "Процент %" },
-                                        { id: "fixed", title: `Фикс. сумма ${currencySymbol}` },
-                                        { id: "free_shipping", title: "Беспл. доставка" },
-                                        { id: "gift", title: "Подарок" }
+                                        { id:"percentage", title:"Процент %" },
+                                        { id:"fixed", title: `Фикс. сумма ${currencySymbol}` },
+                                        { id:"free_shipping", title:"Беспл. доставка" },
+                                        { id:"gift", title:"Подарок" }
                                     ]}
                                     value={form.discountType}
                                     onChange={(val) => setForm(prev => ({ ...prev, discountType: val }))}
@@ -133,7 +133,7 @@ export function PromocodeFormModal({
                                 <Input
                                     name="minOrderAmount"
                                     type="number"
-                                    defaultValue={editingPromo?.minOrderAmount || "0"}
+                                    defaultValue={editingPromo?.minOrderAmount ||"0"}
                                     className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12"
                                     placeholder="0"
                                 />
@@ -144,7 +144,7 @@ export function PromocodeFormModal({
                             <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Комментарий (внутренний)</label>
                             <textarea
                                 name="adminComment"
-                                defaultValue={editingPromo?.adminComment || ""}
+                                defaultValue={editingPromo?.adminComment ||""}
                                 rows={2}
                                 className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300"
                                 placeholder="Например: Выдан блогеру @ivanov за рекламу"
@@ -157,7 +157,7 @@ export function PromocodeFormModal({
                                 <Input
                                     name="usageLimit"
                                     type="number"
-                                    defaultValue={editingPromo?.usageLimit || ""}
+                                    defaultValue={editingPromo?.usageLimit ||""}
                                     className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12"
                                     placeholder="Безлимитно"
                                 />
@@ -168,7 +168,7 @@ export function PromocodeFormModal({
                                     <Input
                                         name="expiresAt"
                                         type="date"
-                                        defaultValue={editingPromo?.expiresAt ? formatDate(editingPromo.expiresAt, "yyyy-MM-dd") : ""}
+                                        defaultValue={editingPromo?.expiresAt ? formatDate(editingPromo.expiresAt,"yyyy-MM-dd") :""}
                                         className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none h-12"
                                     />
                                     <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none" />
@@ -185,7 +185,7 @@ export function PromocodeFormModal({
                         disabled={isLoading}
                         className="w-full btn-dark text-white py-8 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none h-16"
                     >
-                        {editingPromo ? "Сохранить изменения" : "Создать промокод"}
+                        {editingPromo ?"Сохранить изменения" :"Создать промокод"}
                     </SubmitButton>
                 </div>
             </div>

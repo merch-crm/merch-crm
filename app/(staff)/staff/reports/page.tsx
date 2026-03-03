@@ -34,10 +34,10 @@ export default async function ReportsPage() {
 
 function ReportsSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse p-6">
+        <div className="space-y-3 animate-pulse p-6">
             <div className="h-8 w-48 bg-slate-200 rounded-lg mb-8" />
             <div className="h-12 w-64 bg-slate-200 rounded-xl mb-6" />
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-8">
                 {[...Array(4)].map((_, i) => (
                     <div key={i} className="h-24 bg-slate-200 rounded-2xl" />
                 ))}

@@ -1,8 +1,8 @@
-import React from "react";
-import Link from "next/link";
-import { TrendingUp, Clock, Package } from "lucide-react";
-import { cn, formatUnit } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
+import React from"react";
+import Link from"next/link";
+import { TrendingUp, Clock, Package } from"lucide-react";
+import { cn, formatUnit } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
 
 interface TopSoldItem {
     id: string;
@@ -62,12 +62,10 @@ export const InventoryAnalytics = React.memo(({
                                         href={`/dashboard/warehouse/items/${item.id}`}
                                         className="group flex items-center gap-3 p-2.5 rounded-[10px] hover:bg-slate-50 transition-colors"
                                     >
-                                        <span className={cn(
-                                            "w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0",
-                                            idx === 0 ? "bg-amber-100 text-amber-600" :
-                                                idx === 1 ? "bg-slate-100 text-slate-500" :
-                                                    idx === 2 ? "bg-orange-100 text-orange-600" :
-                                                        "bg-slate-50 text-slate-400"
+                                        <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-black shrink-0",
+                                            idx === 0 ?"bg-amber-100 text-amber-600" :
+                                                idx === 1 ?"bg-slate-100 text-slate-500" :
+                                                    idx === 2 ?"bg-orange-100 text-orange-600" :"bg-slate-50 text-slate-400"
                                         )}>{idx + 1}</span>
                                         <span className="flex-1 text-sm font-semibold text-slate-800 truncate group-hover:text-emerald-600 transition-colors">{item.name}</span>
                                         <span className="text-sm font-black text-emerald-600 tabular-nums shrink-0">
@@ -88,18 +86,16 @@ export const InventoryAnalytics = React.memo(({
                 aria-label="Товары без движения более 30 дней"
             >
                 <div className="flex items-center gap-3">
-                    <div className={cn(
-                        "w-10 h-10 rounded-[12px] flex items-center justify-center shadow-lg text-white shrink-0",
+                    <div className={cn("w-10 h-10 rounded-[12px] flex items-center justify-center shadow-lg text-white shrink-0",
                         stagnantItems.length > 0
-                            ? "bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/25"
-                            : "bg-gradient-to-br from-slate-400 to-slate-500 shadow-slate-500/25"
+                            ?"bg-gradient-to-br from-amber-500 to-orange-500 shadow-amber-500/25"
+                            :"bg-gradient-to-br from-slate-400 to-slate-500 shadow-slate-500/25"
                     )}>
                         <Clock className="w-5 h-5 stroke-[2.5]" aria-hidden="true" />
                     </div>
                     <div>
-                        <h4 className={cn(
-                            "text-[15px] font-bold leading-tight",
-                            stagnantItems.length > 0 ? "text-amber-600" : "text-slate-900"
+                        <h4 className={cn("text-[15px] font-bold leading-tight",
+                            stagnantItems.length > 0 ?"text-amber-600" :"text-slate-900"
                         )}>Без движения 30+ дней</h4>
                         <p className="text-xs font-medium text-slate-500 mt-0.5">
                             {stagnantItems.length > 0
@@ -140,14 +136,12 @@ export const InventoryAnalytics = React.memo(({
                                             </div>
                                         </div>
                                         <div className="shrink-0 text-right">
-                                            <span className={cn(
-                                                "text-xs font-black tabular-nums",
-                                                daysSince === null ? "text-slate-400" :
-                                                    daysSince > 90 ? "text-rose-500" :
-                                                        daysSince > 60 ? "text-orange-500" :
-                                                            "text-amber-500"
+                                            <span className={cn("text-xs font-black tabular-nums",
+                                                daysSince === null ?"text-slate-400" :
+                                                    daysSince > 90 ?"text-rose-500" :
+                                                        daysSince > 60 ?"text-orange-500" :"text-amber-500"
                                             )}>
-                                                {daysSince === null ? 'никогда' : `${daysSince} ${pluralize(daysSince, "день", "дня", "дней")}`}
+                                                {daysSince === null ? 'никогда' : `${daysSince} ${pluralize(daysSince,"день","дня","дней")}`}
                                             </span>
                                         </div>
                                     </Link>
@@ -161,4 +155,4 @@ export const InventoryAnalytics = React.memo(({
     );
 });
 
-InventoryAnalytics.displayName = "InventoryAnalytics";
+InventoryAnalytics.displayName ="InventoryAnalytics";

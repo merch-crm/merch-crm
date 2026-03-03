@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { ErrorView } from "@/components/ui/error-view"
+import { ErrorView } from"@/components/ui/error-view"
 
 export default function ProductionError({
     error,
@@ -17,7 +17,7 @@ export default function ProductionError({
     return (
         <ErrorView
             title="Ошибка загрузки производства"
-            message={error.message || "Произошла непредвиденная ошибка"}
+            message={error.message ||"Произошла непредвиденная ошибка"}
             onReset={() => reset()}
         />
     )

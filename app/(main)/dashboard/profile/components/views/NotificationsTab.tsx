@@ -1,6 +1,6 @@
-import React from "react";
-import { CheckCircle2, Clock } from "lucide-react";
-import { ActivityItem } from "../../types";
+import React from"react";
+import { CheckCircle2, Clock } from"lucide-react";
+import { ActivityItem } from"../../types";
 
 interface NotificationsTabProps {
     activities: ActivityItem[];

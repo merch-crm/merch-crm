@@ -1,31 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { DateRange } from "react-day-picker";
-import { Calendar } from "@/components/ui/calendar";
+import { useState } from"react";
+import { Calendar as CalendarIcon, ChevronDown } from"lucide-react";
+import { useRouter, useSearchParams } from"next/navigation";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn } from"@/lib/utils";
+import { DateRange } from"react-day-picker";
+import { Calendar } from"@/components/ui/calendar";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+} from"@/components/ui/popover";
+import { Button } from"@/components/ui/button";
 
 const ranges = [
-    { label: "День", value: "today" },
-    { label: "Неделя", value: "7d" },
-    { label: "Месяц", value: "30d" },
-    { label: "Год", value: "365d" },
+    { label:"День", value:"today" },
+    { label:"Неделя", value:"7d" },
+    { label:"Месяц", value:"30d" },
+    { label:"Год", value:"365d" },
 ];
 
 export function FinanceDateFilter() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentRange = searchParams.get("range") || "30d"; // Default to Month
+    const currentRange = searchParams.get("range") ||"30d"; // Default to Month
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");
 
@@ -48,18 +48,18 @@ export function FinanceDateFilter() {
     const handleApplyCustomRange = () => {
         if (dateRange?.from) {
             const params = new URLSearchParams(searchParams.toString());
-            const fromStr = format(dateRange.from, "yyyy-MM-dd", { locale: ru });
-            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd", { locale: ru }) : fromStr;
+            const fromStr = format(dateRange.from,"yyyy-MM-dd", { locale: ru });
+            const toStr = dateRange.to ? format(dateRange.to,"yyyy-MM-dd", { locale: ru }) : fromStr;
 
             params.set("from", fromStr);
             params.set("to", toStr);
-            params.set("range", "custom");
+            params.set("range","custom");
             router.push(`?${params.toString()}`);
             setIsPopoverOpen(false);
         }
     };
 
-    const isCustom = currentRange === "custom";
+    const isCustom = currentRange ==="custom";
 
     return (
         <div className="flex flex-wrap items-center gap-2">
@@ -69,11 +69,10 @@ export function FinanceDateFilter() {
                         key={range.value}
                         variant="ghost"
                         onClick={() => handleRangeChange(range.value)}
-                        className={cn(
-                            "px-4 py-2 h-auto text-sm font-bold rounded-2xl transition-all",
+                        className={cn("px-4 py-2 h-auto text-sm font-bold rounded-2xl transition-all",
                             currentRange === range.value && !isCustom
-                                ? "bg-white text-slate-900 shadow-sm hover:bg-white"
-                                : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                                ?"bg-white text-slate-900 shadow-sm hover:bg-white"
+                                :"text-slate-500 hover:text-slate-700 hover:bg-white/50"
                         )}
                     >
                         {range.label}
@@ -82,11 +81,10 @@ export function FinanceDateFilter() {
                 <Button
                     variant="ghost"
                     onClick={() => handleRangeChange("all")}
-                    className={cn(
-                        "px-4 py-2 h-auto text-sm font-bold rounded-2xl transition-all",
-                        currentRange === "all" && !isCustom
-                            ? "bg-white text-slate-900 shadow-sm hover:bg-white"
-                            : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                    className={cn("px-4 py-2 h-auto text-sm font-bold rounded-2xl transition-all",
+                        currentRange ==="all" && !isCustom
+                            ?"bg-white text-slate-900 shadow-sm hover:bg-white"
+                            :"text-slate-500 hover:text-slate-700 hover:bg-white/50"
                     )}
                 >
                     Все время
@@ -98,14 +96,13 @@ export function FinanceDateFilter() {
                     <PopoverTrigger asChild>
                         <Button
                             variant="outline"
-                            className={cn(
-                                "flex items-center gap-2 px-6 py-2.5 h-auto text-sm font-bold rounded-2xl transition-all border border-slate-200 shadow-sm",
+                            className={cn("flex items-center gap-2 px-6 py-2.5 h-auto text-sm font-bold rounded-2xl transition-all border border-slate-200 shadow-sm",
                                 isCustom
-                                    ? "bg-white text-slate-900 hover:bg-white"
-                                    : "bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                                    ?"bg-white text-slate-900 hover:bg-white"
+                                    :"bg-white text-slate-500 hover:text-slate-700 hover:bg-slate-50"
                             )}
                         >
-                            <CalendarIcon className={cn("w-4 h-4", isCustom ? "text-primary" : "text-slate-400")} />
+                            <CalendarIcon className={cn("w-4 h-4", isCustom ?"text-primary" :"text-slate-400")} />
                             <span>Выбрать период</span>
                             <ChevronDown className="w-4 h-4 opacity-50" />
                         </Button>
@@ -128,11 +125,11 @@ export function FinanceDateFilter() {
                                     {dateRange?.from ? (
                                         <>
                                             Выбрано: <span className="text-slate-900 font-bold">
-                                                {format(dateRange.from, "d MMM", { locale: ru })}
-                                                {dateRange.to && ` - ${format(dateRange.to, "d MMM", { locale: ru })}`}
+                                                {format(dateRange.from,"d MMM", { locale: ru })}
+                                                {dateRange.to && ` - ${format(dateRange.to,"d MMM", { locale: ru })}`}
                                             </span>
                                         </>
-                                    ) : "Выберите даты"}
+                                    ) :"Выберите даты"}
                                 </div>
                                 <Button
                                     size="sm"
@@ -150,17 +147,17 @@ export function FinanceDateFilter() {
                 {(fromParam && toParam) ? (
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-200 animate-in fade-in slide-in-from-left-2 duration-300">
                         <span className="text-slate-600 font-bold text-sm">
-                            {format(new Date(fromParam), "d MMMM", { locale: ru })}
-                            {fromParam !== toParam && ` — ${format(new Date(toParam), "d MMMM", { locale: ru })}`}
+                            {format(new Date(fromParam),"d MMMM", { locale: ru })}
+                            {fromParam !== toParam && ` — ${format(new Date(toParam),"d MMMM", { locale: ru })}`}
                         </span>
                     </div>
-                ) : currentRange !== "all" && (
+                ) : currentRange !=="all" && (
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-50 rounded-2xl border border-slate-200 animate-in fade-in slide-in-from-left-2 duration-300">
                         <span className="text-slate-400 font-bold text-xs">
-                            {currentRange === "today" && "За сегодня"}
-                            {currentRange === "7d" && "За последние 7 дней"}
-                            {currentRange === "30d" && "За последние 30 дней"}
-                            {currentRange === "365d" && "За последний год"}
+                            {currentRange ==="today" &&"За сегодня"}
+                            {currentRange ==="7d" &&"За последние 7 дней"}
+                            {currentRange ==="30d" &&"За последние 30 дней"}
+                            {currentRange ==="365d" &&"За последний год"}
                         </span>
                     </div>
                 )}

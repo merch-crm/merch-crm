@@ -6,15 +6,15 @@ import {
     Printer,
     FileDown,
     Archive
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { useToast } from "@/components/ui/toast";
-import { type TabletTab } from "../hooks/useItemDetailController";
+} from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { useToast } from"@/components/ui/toast";
+import { type TabletTab } from"../hooks/useItemDetailController";
 
 interface ItemMobileActionsProps {
-    setAdjustType: (type: "in" | "out" | "set" | null) => void;
+    setAdjustType: (type:"in" |"out" |"set" | null) => void;
     setShowTransfer: (show: boolean) => void;
     setShowLabelDialog: (show: boolean) => void;
     handleDownload: () => void;
@@ -72,9 +72,8 @@ export function ItemMobileActions({
                 variant="outline"
                 size="icon"
                 onClick={() => setShowLabelDialog(true)}
-                className={cn(
-                    "group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground order-last md:hidden",
-                    tabletTab !== 'characteristic' && "hidden"
+                className={cn("group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-violet-500 hover:bg-violet-500 hover:text-white hover:shadow-xl hover:shadow-violet-500/20 transition-all text-muted-foreground order-last md:hidden",
+                    tabletTab !== 'characteristic' &&"hidden"
                 )}
                 title="Печать этикетки"
                 aria-label="Печать этикетки"
@@ -86,9 +85,8 @@ export function ItemMobileActions({
                 variant="outline"
                 size="icon"
                 onClick={handleDownload}
-                className={cn(
-                    "group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground order-last md:hidden",
-                    tabletTab !== 'characteristic' && "hidden"
+                className={cn("group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-emerald-500 hover:bg-emerald-500 hover:text-white hover:shadow-xl hover:shadow-emerald-500/20 transition-all text-muted-foreground order-last md:hidden",
+                    tabletTab !== 'characteristic' &&"hidden"
                 )}
                 title="Экспорт PDF"
                 aria-label="Экспорт в PDF"
@@ -101,14 +99,13 @@ export function ItemMobileActions({
                 size="icon"
                 onClick={() => {
                     if (item.quantity > 0) {
-                        toast("Нельзя архивировать товар с остатком > 0", "error");
+                        toast("Нельзя архивировать товар с остатком > 0","error");
                         return;
                     }
                     setShowArchiveReason(true);
                 }}
-                className={cn(
-                    "group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground order-last md:hidden",
-                    tabletTab !== 'characteristic' && "hidden"
+                className={cn("group aspect-square h-auto flex flex-col items-center justify-center bg-card rounded-3xl border border-border shadow-sm hover:border-rose-500 hover:bg-rose-500 hover:text-white hover:shadow-xl hover:shadow-rose-500/20 transition-all text-muted-foreground order-last md:hidden",
+                    tabletTab !== 'characteristic' &&"hidden"
                 )}
                 title="Архивировать"
                 aria-label="В архив"

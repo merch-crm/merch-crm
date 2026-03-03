@@ -212,7 +212,7 @@ export async function syncXiaomiDevices(accountId: string) {
                     streamUrl,
                     status: 'offline',
                     isEnabled: true,
-                    confidenceThreshold: "0.6"
+                    confidenceThreshold:"0.6"
                 })
                 addedCount++
             }

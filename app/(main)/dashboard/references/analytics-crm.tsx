@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     Search,
     SlidersHorizontal,
@@ -11,9 +11,9 @@ import {
     ArrowUpRight,
     MoreHorizontal,
     Apple
-} from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { motion } from"framer-motion";
+import { cn } from"@/lib/utils";
 
 export default function AnalyticsCRM() {
     return (
@@ -64,7 +64,7 @@ export default function AnalyticsCRM() {
                                     <circle cx="100" cy="100" r="80" fill="none" stroke="#a78bfa" strokeWidth="20" strokeDasharray="125 502" strokeDashoffset="-251" strokeLinecap="round" />
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                    <div className="text-sm font-bold text-white/60 ">All expenses</div>
+                                    <div className="text-sm font-bold text-white/60">All expenses</div>
                                     <div className="text-3xl font-bold">$5120<span className="text-lg">.00</span></div>
                                 </div>
                             </div>
@@ -111,14 +111,14 @@ export default function AnalyticsCRM() {
                 <div className="lg:col-span-4 glass-panel p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-xl font-bold">Transfers to people</h3>
-                        <button type="button" className="text-xs font-bold text-slate-400 hover:text-slate-900 ">See all</button>
+                        <button type="button" className="text-xs font-bold text-slate-400 hover:text-slate-900">See all</button>
                     </div>
 
                     <div className="space-y-3">
                         {[
-                            { name: "Robert Fox", amount: "$1,300.00", percent: 68 },
-                            { name: "Kathryn Murphy", amount: "$800.00", percent: 32 },
-                            { name: "Darlene Robertson", amount: "$450.00", percent: 15 },
+                            { name:"Robert Fox", amount:"$1,300.00", percent: 68 },
+                            { name:"Kathryn Murphy", amount:"$800.00", percent: 32 },
+                            { name:"Darlene Robertson", amount:"$450.00", percent: 15 },
                         ].map((person, idx) => (
                             <div key={idx}>
                                 <div className="flex items-center justify-between mb-2">
@@ -159,8 +159,8 @@ export default function AnalyticsCRM() {
                     {/* Transactions */}
                     <div className="space-y-3">
                         {[
-                            { icon: "🍔", name: "Nike Store", category: "Purchase", amount: "-$54.90", color: "bg-slate-900" },
-                            { icon: "🎮", name: "PlayStation Network", category: "Purchase", amount: "-$28.66", color: "bg-slate-400" },
+                            { icon:"🍔", name:"Nike Store", category:"Purchase", amount:"-$54.90", color:"bg-slate-900" },
+                            { icon:"🎮", name:"PlayStation Network", category:"Purchase", amount:"-$28.66", color:"bg-slate-400" },
                         ].map((tx, idx) => (
                             <div key={idx} className="flex items-center justify-between p-3 rounded-[var(--radius-inner)] hover:bg-slate-50/50 transition-colors">
                                 <div className="flex items-center gap-3">
@@ -210,7 +210,7 @@ export default function AnalyticsCRM() {
                                 animate: {
                                     pathLength: 1,
                                     opacity: 1,
-                                    transition: { duration: 2, ease: "easeInOut" }
+                                    transition: { duration: 2, ease:"easeInOut" }
                                 }
                             }}
                         />
@@ -252,9 +252,9 @@ export default function AnalyticsCRM() {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
-                            { flag: "🇺🇸", code: "USD", name: "US Dollar", amount: "96.00", percent: "+0.8%" },
-                            { flag: "🇪🇺", code: "EUR", name: "Euro", amount: "103.00", percent: "+1.2%" },
-                            { flag: "🇬🇧", code: "GBP", name: "British Pound", amount: "120.00", percent: "-0.3%" },
+                            { flag:"🇺🇸", code:"USD", name:"US Dollar", amount:"96.00", percent:"+0.8%" },
+                            { flag:"🇪🇺", code:"EUR", name:"Euro", amount:"103.00", percent:"+1.2%" },
+                            { flag:"🇬🇧", code:"GBP", name:"British Pound", amount:"120.00", percent:"-0.3%" },
                         ].map((currency, idx) => (
                             <div key={idx} className="bg-slate-50/50 rounded-[var(--radius-inner)] p-4 border border-white/60 hover:bg-slate-100/50 transition-colors">
                                 <div className="flex items-center gap-3 mb-3">
@@ -266,7 +266,7 @@ export default function AnalyticsCRM() {
                                 </div>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-2xl font-bold">$ {currency.amount}</span>
-                                    <span className={cn("text-xs font-bold", currency.percent.startsWith('+') ? "text-green-500" : "text-rose-500")}>
+                                    <span className={cn("text-xs font-bold", currency.percent.startsWith('+') ?"text-green-500" :"text-rose-500")}>
                                         {currency.percent}
                                     </span>
                                 </div>

@@ -210,7 +210,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
     const employeesWithoutFacesFiltered = employees.filter(e => !e.hasFace)
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="space-y-3 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Сотрудники</h1>
@@ -221,7 +221,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
             </div>
 
             {/* Верхняя панель статистики */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <StatSummaryCard
                     title="С биометрией"
                     count={employees.filter(e => e.hasFace).length}
@@ -248,11 +248,11 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                     <CardHeader className="bg-rose-50 border-b border-rose-100 p-4">
                         <div className="flex items-center gap-2 text-rose-700">
                             <AlertCircle className="w-5 h-5" />
-                            <h2 className="font-bold uppercase tracking-wider text-xs">Требуется регистрация ({employeesWithoutFacesFiltered.length})</h2>
+                            <h2 className="font-bold  tracking-wider text-xs">Требуется регистрация ({employeesWithoutFacesFiltered.length})</h2>
                         </div>
                     </CardHeader>
                     <CardBody className="p-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                             {employeesWithoutFacesFiltered.map((employee) => (
                                 <div
                                     key={employee.id}
@@ -266,14 +266,14 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                         </div>
                                         <div className="truncate">
                                             <p className="font-bold text-slate-900 truncate text-sm">{employee.name}</p>
-                                            <p className="text-[10px] text-slate-400 font-medium truncate">{employee.email}</p>
+                                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium truncate">{employee.email}</p>
                                         </div>
                                     </div>
                                     {isAdmin && (
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-[10px] font-bold uppercase tracking-widest px-3"
+                                            className="rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-[11px] leading-tight text-neutral-500 font-bold   px-3"
                                             onClick={() => {
                                                 setSelectedEmployee(employee)
                                                 setAddFaceModalOpen(true)
@@ -291,17 +291,16 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
             )}
 
             {/* Список всех сотрудников */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {employees.map((employee) => (
                     <Card
                         key={employee.id}
-                        className={cn(
-                            "crm-card border-none shadow-sm transition-all hover:shadow-md overflow-hidden bg-white",
-                            !employee.hasFace && "opacity-80"
+                        className={cn("crm-card border-none shadow-sm transition-all hover:shadow-md overflow-hidden bg-white",
+                            !employee.hasFace &&"opacity-80"
                         )}
                     >
                         <CardBody className="p-6">
-                            <div className="flex items-center gap-4 mb-6">
+                            <div className="flex items-center gap-3 mb-6">
                                 <div className="relative">
                                     {employee.avatarUrl ? (
                                         <Image
@@ -333,9 +332,9 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                             {/* Галерея лиц */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Биометрия</h3>
+                                    <h3 className="text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Биометрия</h3>
                                     {employee.hasFace && (
-                                        <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Активна</span>
+                                        <span className="text-[11px] leading-tight text-neutral-500 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Активна</span>
                                     )}
                                 </div>
 
@@ -343,9 +342,8 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                     {employee.faces.map((face) => (
                                         <div
                                             key={face.id}
-                                            className={cn(
-                                                "relative group",
-                                                face.isPrimary ? "ring-2 ring-indigo-500 ring-offset-2 rounded-xl" : "p-0.5"
+                                            className={cn("relative group",
+                                                face.isPrimary ?"ring-2 ring-indigo-500 ring-offset-2 rounded-xl" :"p-0.5"
                                             )}
                                         >
                                             {face.photoUrl ? (
@@ -420,7 +418,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                 title="Регистрация биометрии"
                 description={selectedEmployee?.name || 'Новое лицо'}
             >
-                <div className="space-y-6 py-6 px-4">
+                <div className="space-y-3 py-6 px-4">
                     {!isCapturing && !capturedImage && (
                         <div className="flex flex-col items-center py-8 bg-slate-50 rounded-3xl border border-dashed border-slate-200">
                             <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg mb-6 border-4 border-slate-50">
@@ -434,7 +432,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                             </p>
                             <Button
                                 onClick={startCamera}
-                                className="rounded-2xl px-8 h-12 font-bold uppercase tracking-widest text-xs shadow-lg shadow-indigo-100"
+                                className="rounded-2xl px-8 h-12 font-bold   text-xs shadow-lg shadow-indigo-100"
                             >
                                 Начать захват
                             </Button>
@@ -455,7 +453,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                 <div className="w-2/3 h-2/3 border-2 border-white/30 rounded-full border-dashed ring-[400px] ring-black/40" />
                             </div>
 
-                            <div className="absolute bottom-6 inset-x-0 flex gap-4 justify-center">
+                            <div className="absolute bottom-6 inset-x-0 flex gap-3 justify-center">
                                 <Button
                                     variant="secondary"
                                     className="rounded-xl h-12 w-12 p-0 bg-white/10 backdrop-blur-md border-white/20 text-white hover:bg-white/20"
@@ -464,7 +462,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                     <X className="w-5 h-5" />
                                 </Button>
                                 <Button
-                                    className="rounded-2xl h-12 px-8 bg-white text-indigo-900 hover:bg-indigo-50 font-bold uppercase tracking-widest text-[10px]"
+                                    className="rounded-2xl h-12 px-8 bg-white text-indigo-900 hover:bg-indigo-50 font-bold   text-[11px] leading-tight text-neutral-500"
                                     onClick={capturePhoto}
                                 >
                                     <Camera className="w-4 h-4 mr-2" />
@@ -475,7 +473,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                     )}
 
                     {capturedImage && (
-                        <div className="space-y-6">
+                        <div className="space-y-3">
                             <div className="relative overflow-hidden rounded-3xl aspect-square max-w-sm mx-auto shadow-xl ring-4 ring-emerald-500/10">
                                 <Image
                                     src={capturedImage}
@@ -491,10 +489,10 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                 </div>
                             </div>
 
-                            <div className="flex gap-4">
+                            <div className="flex gap-3">
                                 <Button
                                     variant="outline"
-                                    className="flex-1 rounded-2xl h-14 border-slate-200 text-slate-500 font-bold uppercase tracking-widest text-[10px]"
+                                    className="flex-1 rounded-2xl h-14 border-slate-200 text-slate-500 font-bold   text-[11px] leading-tight text-neutral-500"
                                     onClick={() => {
                                         setCapturedImage(null)
                                         startCamera()
@@ -503,7 +501,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                     Переснять
                                 </Button>
                                 <SubmitButton
-                                    className="flex-1 rounded-2xl h-14 bg-indigo-600 hover:bg-indigo-700 font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100"
+                                    className="flex-1 rounded-2xl h-14 bg-indigo-600 hover:bg-indigo-700 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
                                     onClick={handleAddFace}
                                     isLoading={isPending}
                                 >
@@ -542,13 +540,13 @@ function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, c
 
     return (
         <Card className="crm-card border-none shadow-sm bg-white overflow-hidden">
-            <CardBody className="p-5 flex items-center gap-5">
+            <CardBody className="p-5 flex items-center gap-3">
                 <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center ring-4", config.bg, config.text, config.ring)}>
                     <Icon className="w-7 h-7" />
                 </div>
                 <div>
                     <p className="text-3xl font-bold text-slate-900 leading-none">{count}</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{title}</p>
+                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400   mt-2">{title}</p>
                 </div>
             </CardBody>
         </Card>

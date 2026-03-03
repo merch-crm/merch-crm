@@ -1,16 +1,16 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { formatPrice, formatPercent } from "./utils";
-import { PriceComparisonProps } from "./types";
+import * as React from"react";
+import { cn } from"@/lib/utils";
+import { formatPrice, formatPercent } from"./utils";
+import { PriceComparisonProps } from"./types";
 
 export function PriceComparison({
     quantities,
     calculatePrice,
     currentQuantity,
     onSelectQuantity,
-    currency = "₽",
+    currency ="₽",
     className,
 }: PriceComparisonProps) {
     const prices = quantities.map((qty) => ({
@@ -41,11 +41,10 @@ export function PriceComparison({
                             type="button"
                             onClick={() => onSelectQuantity?.(price.quantity)}
                             disabled={!onSelectQuantity}
-                            className={cn(
-                                "p-4 text-center transition-colors relative",
-                                isSelected && "bg-primary/5",
-                                onSelectQuantity && "hover:bg-slate-50",
-                                !onSelectQuantity && "cursor-default"
+                            className={cn("p-4 text-center transition-colors relative",
+                                isSelected &&"bg-primary/5",
+                                onSelectQuantity &&"hover:bg-slate-50",
+                                !onSelectQuantity &&"cursor-default"
                             )}
                         >
                             {isBest && (

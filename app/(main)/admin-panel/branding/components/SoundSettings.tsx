@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, Upload, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, MessageCircle, ListTodo, Cpu, Printer, ScanLine, MousePointer2, Stars } from "lucide-react";
-import { SOUND_CATEGORIES, playSound, SoundType } from "@/lib/sounds";
-import { BrandingSettings, BrandingUiState } from "../hooks/useBrandingForm";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { motion, AnimatePresence } from"framer-motion";
+import { Volume2, VolumeX, Upload, RefreshCw, ShoppingBag, Users, Warehouse, Banknote, MessageCircle, ListTodo, Cpu, Printer, ScanLine, MousePointer2, Stars } from"lucide-react";
+import { SOUND_CATEGORIES, playSound, SoundType } from"@/lib/sounds";
+import { BrandingSettings, BrandingUiState } from"../hooks/useBrandingForm";
 
 interface SoundSettingsProps {
     formData: BrandingSettings;
     setFormData: React.Dispatch<React.SetStateAction<BrandingSettings>>;
     ui: BrandingUiState;
     setUi: React.Dispatch<React.SetStateAction<BrandingUiState>>;
-    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "favicon" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => Promise<void>;
+    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type:"logo" |"favicon" |"background" |"print_logo" |"sound" |"crm_background" |"email_logo", soundKey?: string) => Promise<void>;
 }
 
 export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUpload }: SoundSettingsProps) {
@@ -39,10 +39,10 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                     };
 
                     const shortLabels: Record<string, string> = {
-                        chat: "Чат",
-                        processes: "Процессы",
-                        printing: "Печать",
-                        notifications: "Уведомления"
+                        chat:"Чат",
+                        processes:"Процессы",
+                        printing:"Печать",
+                        notifications:"Уведомления"
                     };
 
                     const label = shortLabels[key] || category.label;
@@ -53,16 +53,14 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                             key={key}
                             type="button"
                             onClick={() => setUi(prev => ({ ...prev, activeSoundTab: key }))}
-                            className={cn(
-                                "w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-sm transition-all group",
+                            className={cn("w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-bold text-sm transition-all group",
                                 isActive
-                                    ? "bg-white text-primary shadow-sm ring-1 ring-slate-200"
-                                    : "text-slate-500 hover:bg-white/50 hover:text-slate-900"
+                                    ?"bg-white text-primary shadow-sm ring-1 ring-slate-200"
+                                    :"text-slate-500 hover:bg-white/50 hover:text-slate-900"
                             )}
                         >
-                            <span className={cn(
-                                "p-1.5 rounded-lg transition-colors shrink-0",
-                                isActive ? "bg-primary text-white" : "bg-slate-200/50 text-slate-400 group-hover:bg-slate-200"
+                            <span className={cn("p-1.5 rounded-lg transition-colors shrink-0",
+                                isActive ?"bg-primary text-white" :"bg-slate-200/50 text-slate-400 group-hover:bg-slate-200"
                             )}>
                                 {getIcon(key)}
                             </span>
@@ -106,67 +104,67 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                             {SOUND_CATEGORIES[ui.activeSoundTab as keyof typeof SOUND_CATEGORIES].sounds.map((soundType) => {
                                 const soundInfo: Record<string, { title: string, desc: string }> = {
                                     // Уведомления и Чат
-                                    notification: { title: "Общее уведомление", desc: "Стандартный сигнал о новом системном событии" },
-                                    notification_success: { title: "Успех", desc: "Подтверждение успешного завершения операции" },
-                                    notification_warning: { title: "Предупреждение", desc: "Внимание на потенциальную проблему или вопрос" },
-                                    notification_error: { title: "Ошибка", desc: "Уведомление о сбое или неверном действии" },
-                                    message_sent: { title: "Сообщение отправлено", desc: "Подтверждение ухода вашего сообщения" },
-                                    message_received: { title: "Новое сообщение", desc: "Входящее сообщение в чате или комментарий" },
+                                    notification: { title:"Общее уведомление", desc:"Стандартный сигнал о новом системном событии" },
+                                    notification_success: { title:"Успех", desc:"Подтверждение успешного завершения операции" },
+                                    notification_warning: { title:"Предупреждение", desc:"Внимание на потенциальную проблему или вопрос" },
+                                    notification_error: { title:"Ошибка", desc:"Уведомление о сбое или неверном действии" },
+                                    message_sent: { title:"Сообщение отправлено", desc:"Подтверждение ухода вашего сообщения" },
+                                    message_received: { title:"Новое сообщение", desc:"Входящее сообщение в чате или комментарий" },
 
                                     // Заказы
-                                    order_created: { title: "Новый заказ", desc: "Воспроизводится при поступлении нового заказа в систему" },
-                                    order_completed: { title: "Заказ выполнен", desc: "Когда заказ переходит в финальный статус" },
-                                    order_cancelled: { title: "Заказ отменен", desc: "При отмене или удалении активного заказа" },
-                                    order_status_changed: { title: "Смена статуса", desc: "Любое изменение этапа работы над заказом" },
+                                    order_created: { title:"Новый заказ", desc:"Воспроизводится при поступлении нового заказа в систему" },
+                                    order_completed: { title:"Заказ выполнен", desc:"Когда заказ переходит в финальный статус" },
+                                    order_cancelled: { title:"Заказ отменен", desc:"При отмене или удалении активного заказа" },
+                                    order_status_changed: { title:"Смена статуса", desc:"Любое изменение этапа работы над заказом" },
 
                                     // Склад
-                                    item_created: { title: "Новый товар", desc: "При добавлении новой позиции в каталог склада" },
-                                    item_updated: { title: "Обновление остатков", desc: "При изменении количества или данных товара" },
-                                    stock_low: { title: "Мало товара", desc: "Когда остаток опускается ниже минимального порога" },
-                                    stock_replenished: { title: "Пополнение", desc: "При успешном оприходовании новой партии" },
+                                    item_created: { title:"Новый товар", desc:"При добавлении новой позиции в каталог склада" },
+                                    item_updated: { title:"Обновление остатков", desc:"При изменении количества или данных товара" },
+                                    stock_low: { title:"Мало товара", desc:"Когда остаток опускается ниже минимального порога" },
+                                    stock_replenished: { title:"Пополнение", desc:"При успешном оприходовании новой партии" },
 
                                     // Задачи
-                                    task_created: { title: "Новая задача", desc: "При назначении задачи вам или вашей команде" },
-                                    task_completed: { title: "Задача выполнена", desc: "Когда ответственный помечает задачу как готовую" },
-                                    task_reminder: { title: "Напоминание о дедлайне", desc: "Воспроизводится за 24 часа до наступления срока" },
-                                    task_deleted: { title: "Задача удалена", desc: "Подтверждение удаления задачи из списка" },
-                                    task_overdue: { title: "Дедлайн просрочен", desc: "Критическое уведомление о пропуске срока" },
+                                    task_created: { title:"Новая задача", desc:"При назначении задачи вам или вашей команде" },
+                                    task_completed: { title:"Задача выполнена", desc:"Когда ответственный помечает задачу как готовую" },
+                                    task_reminder: { title:"Напоминание о дедлайне", desc:"Воспроизводится за 24 часа до наступления срока" },
+                                    task_deleted: { title:"Задача удалена", desc:"Подтверждение удаления задачи из списка" },
+                                    task_overdue: { title:"Дедлайн просрочен", desc:"Критическое уведомление о пропуске срока" },
 
                                     // Процессы
-                                    process_started: { title: "Процесс запущен", desc: "Начало экспорта, импорта или генерации отчета" },
-                                    process_completed: { title: "Процесс завершен", desc: "Успешное окончание фоновой операции" },
-                                    process_failed: { title: "Сбой процесса", desc: "Если экспорт или импорт прервался с ошибкой" },
+                                    process_started: { title:"Процесс запущен", desc:"Начало экспорта, импорта или генерации отчета" },
+                                    process_completed: { title:"Процесс завершен", desc:"Успешное окончание фоновой операции" },
+                                    process_failed: { title:"Сбой процесса", desc:"Если экспорт или импорт прервался с ошибкой" },
 
                                     // Печать
-                                    print_started: { title: "Отправка на печать", desc: "Когда документ уходит в очередь принтера" },
-                                    document_generated: { title: "Файл готов", desc: "PDF или Excel документ успешно сформирован" },
+                                    print_started: { title:"Отправка на печать", desc:"Когда документ уходит в очередь принтера" },
+                                    document_generated: { title:"Файл готов", desc:"PDF или Excel документ успешно сформирован" },
 
                                     // Сканнер
-                                    scan_success: { title: "Успешный скан", desc: "Штрих-код распознан и найден в базе" },
-                                    scan_error: { title: "Ошибка сканера", desc: "Код не распознан или товар не найден" },
+                                    scan_success: { title:"Успешный скан", desc:"Штрих-код распознан и найден в базе" },
+                                    scan_error: { title:"Ошибка сканера", desc:"Код не распознан или товар не найден" },
 
                                     // Финансы
-                                    payment_received: { title: "Оплата получена", desc: "При фиксации входящего платежа от клиента" },
-                                    expense_added: { title: "Расход зафиксирован", desc: "При добавлении новой траты в систему" },
+                                    payment_received: { title:"Оплата получена", desc:"При фиксации входящего платежа от клиента" },
+                                    expense_added: { title:"Расход зафиксирован", desc:"При добавлении новой траты в систему" },
 
                                     // Интерфейс
-                                    click: { title: "Клик по кнопке", desc: "Мягкий отклик при нажатии на интерактивные элементы" },
-                                    toggle: { title: "Переключатель", desc: "Звук при включении/выключении функций" },
-                                    modal_open: { title: "Открытие окна", desc: "Появление модального или диалогового окна" },
-                                    modal_close: { title: "Закрытие окна", desc: "Сворачивание или закрытие диалога" },
-                                    tab_switch: { title: "Смена вкладки", desc: "Переход между разделами интерфейса" },
+                                    click: { title:"Клик по кнопке", desc:"Мягкий отклик при нажатии на интерактивные элементы" },
+                                    toggle: { title:"Переключатель", desc:"Звук при включении/выключении функций" },
+                                    modal_open: { title:"Открытие окна", desc:"Появление модального или диалогового окна" },
+                                    modal_close: { title:"Закрытие окна", desc:"Сворачивание или закрытие диалога" },
+                                    tab_switch: { title:"Смена вкладки", desc:"Переход между разделами интерфейса" },
 
                                     // Клиенты
-                                    client_created: { title: "Новый клиент", desc: "При регистрации нового контрагента в базе" },
-                                    client_updated: { title: "Данные обновлены", desc: "При редактировании карточки существующего клиента" },
-                                    client_deleted: { title: "Клиент удален", desc: "Подтверждение удаления контрагента из базы" },
+                                    client_created: { title:"Новый клиент", desc:"При регистрации нового контрагента в базе" },
+                                    client_updated: { title:"Данные обновлены", desc:"При редактировании карточки существующего клиента" },
+                                    client_deleted: { title:"Клиент удален", desc:"Подтверждение удаления контрагента из базы" },
 
                                     // Специальные
-                                    achievement: { title: "Достижение", desc: "Специальная награда или выполнение плана" },
-                                    level_up: { title: "Новый уровень", desc: "Повышение статуса сотрудника в системе" },
+                                    achievement: { title:"Достижение", desc:"Специальная награда или выполнение плана" },
+                                    level_up: { title:"Новый уровень", desc:"Повышение статуса сотрудника в системе" },
                                 };
 
-                                const info = soundInfo[soundType] || { title: soundType, desc: "Системное событие" };
+                                const info = soundInfo[soundType] || { title: soundType, desc:"Системное событие" };
                                 const config = formData.soundConfig?.[soundType] || { enabled: true, vibration: true, customUrl: null };
                                 const isCustom = !!config.customUrl;
                                 const isModified = !config.enabled || !config.vibration || isCustom;
@@ -195,16 +193,14 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                 return (
                                     <div
                                         key={soundType}
-                                        className={cn(
-                                            "group relative flex items-center justify-between p-4 rounded-2xl border transition-all",
-                                            config.enabled ? "bg-white border-slate-100 shadow-sm hover:shadow-md hover:border-primary/20" : "bg-slate-50 border-slate-100 opacity-75"
+                                        className={cn("group relative flex items-center justify-between p-4 rounded-2xl border transition-all",
+                                            config.enabled ?"bg-white border-slate-100 shadow-sm hover:shadow-md hover:border-primary/20" :"bg-slate-50 border-slate-100 opacity-75"
                                         )}
                                     >
                                         <div className="flex items-center gap-3">
                                             <div role="button" tabIndex={0}
-                                                className={cn(
-                                                    "w-10 h-10 rounded-xl flex items-center justify-center transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-                                                    config.enabled ? "bg-primary/10 text-primary" : "bg-slate-200 text-slate-400"
+                                                className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+                                                    config.enabled ?"bg-primary/10 text-primary" :"bg-slate-200 text-slate-400"
                                                 )}
                                                 onClick={toggleSoundEnabled}
                                                 onKeyDown={(e) => {
@@ -212,12 +208,12 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                                         toggleSoundEnabled();
                                                     }
                                                 }}
-                                                title={config.enabled ? "Выключить звук" : "Включить звук"}
+                                                title={config.enabled ?"Выключить звук" :"Включить звук"}
                                             >
                                                 {config.enabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 opacity-60" />}
                                             </div>
                                             <div>
-                                                <h4 className={cn("font-bold text-[14px]", config.enabled ? "text-slate-900" : "text-slate-500 line-through")}>
+                                                <h4 className={cn("font-bold text-[14px]", config.enabled ?"text-slate-900" :"text-slate-500 line-through")}>
                                                     {info.title}
                                                 </h4>
                                                 <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">{info.desc}</p>
@@ -236,14 +232,12 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                                             toggleVibration();
                                                         }
                                                     }}
-                                                    className={cn(
-                                                        "w-12 h-7 rounded-full relative cursor-pointer transition-all duration-300 ease-in-out shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-                                                        config.vibration ? "bg-primary" : "bg-slate-200 hover:bg-slate-300"
+                                                    className={cn("w-12 h-7 rounded-full relative cursor-pointer transition-all duration-300 ease-in-out shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+                                                        config.vibration ?"bg-primary" :"bg-slate-200 hover:bg-slate-300"
                                                     )}
                                                 >
-                                                    <div className={cn(
-                                                        "absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-sm",
-                                                        config.vibration ? "translate-x-5" : "translate-x-0"
+                                                    <div className={cn("absolute top-0.5 left-0.5 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-sm",
+                                                        config.vibration ?"translate-x-5" :"translate-x-0"
                                                     )} />
                                                 </div>
                                             </div>
@@ -256,14 +250,14 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                                 id={`upload-${soundType}`}
                                                 className="hidden"
                                                 accept="audio/*"
-                                                onChange={(e) => handleFileUpload(e, "sound", soundType as string)}
+                                                onChange={(e) => handleFileUpload(e,"sound", soundType as string)}
                                             />
 
                                             <Button
                                                 type="button"
                                                 variant="ghost"
                                                 size="sm"
-                                                className={cn("h-10 w-10 hover:text-slate-900", isCustom ? "text-primary font-bold" : "text-slate-400")}
+                                                className={cn("h-10 w-10 hover:text-slate-900", isCustom ?"text-primary font-bold" :"text-slate-400")}
                                                 title="Заменить звук"
                                                 onClick={() => document.getElementById(`upload-${soundType}`)?.click()}
                                             >
@@ -275,9 +269,8 @@ export function SoundSettings({ formData, setFormData, ui, setUi, handleFileUplo
                                                 type="button"
                                                 variant="ghost"
                                                 size="sm"
-                                                className={cn(
-                                                    "h-10 w-10 transition-colors",
-                                                    isModified ? "text-slate-400 hover:text-rose-500" : "text-slate-200 cursor-not-allowed"
+                                                className={cn("h-10 w-10 transition-colors",
+                                                    isModified ?"text-slate-400 hover:text-rose-500" :"text-slate-200 cursor-not-allowed"
                                                 )}
                                                 disabled={!isModified}
                                                 title="Восстановить по умолчанию"

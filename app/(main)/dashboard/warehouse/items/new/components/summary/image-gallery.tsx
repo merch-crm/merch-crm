@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { Package } from "lucide-react";
-import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import Image from"next/image";
+import { Package } from"lucide-react";
+import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ImageGalleryProps {
     formData: ItemFormData;
@@ -24,7 +24,7 @@ export function ImageGallery({ formData }: ImageGalleryProps) {
                         <Package className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900 ">Галерея</h3>
+                        <h3 className="text-lg font-bold text-slate-900">Галерея</h3>
                         <p className="text-xs font-bold text-slate-700">Визуальные материалы</p>
                     </div>
                 </div>

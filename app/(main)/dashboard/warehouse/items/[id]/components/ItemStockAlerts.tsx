@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React from"react";
 import {
     Bell,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { Input } from "@/components/ui/input";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { Input } from"@/components/ui/input";
 
 interface ItemStockAlertsProps {
     item: InventoryItem;
@@ -26,8 +26,7 @@ export const ItemStockAlerts = React.memo(({
     className
 }: ItemStockAlertsProps) => {
     return (
-        <div className={cn(
-            "crm-card rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50",
+        <div className={cn("crm-card rounded-3xl p-6 relative group/alerts overflow-hidden bg-white/50",
             className
         )}>
             <div className="flex items-center gap-3 mb-8 relative z-10">
@@ -37,9 +36,8 @@ export const ItemStockAlerts = React.memo(({
                 <h3 className="text-xl font-bold text-foreground leading-none">Оповещения</h3>
             </div>
 
-            <div className={cn(
-                "grid gap-3 relative z-10",
-                isEditing ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1" // Adjusted for flexible usage
+            <div className={cn("grid gap-3 relative z-10",
+                isEditing ?"grid-cols-1" :"grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-1" // Adjusted for flexible usage
             )}>
                 {/* Min Stock Widget */}
                 <div className="relative p-4 rounded-2xl bg-muted/20 border border-border transition-all hover:bg-amber-500/10 hover:border-amber-500/30 group/card">
@@ -170,4 +168,4 @@ export const ItemStockAlerts = React.memo(({
     );
 });
 
-ItemStockAlerts.displayName = "ItemStockAlerts";
+ItemStockAlerts.displayName ="ItemStockAlerts";

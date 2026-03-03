@@ -1,8 +1,8 @@
 "use client";
 
-import { createElement } from "react";
-import { LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { createElement } from"react";
+import { LucideIcon } from"lucide-react";
+import { cn } from"@/lib/utils";
 
 interface GlassEmptyStateProps {
     icon: LucideIcon;
@@ -24,7 +24,7 @@ export function GlassEmptyState({ icon, title, description, className }: GlassEm
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/30 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
 
                     {createElement(icon, {
-                        className: "w-10 h-10 text-primary/60 dark:text-primary/40 drop-shadow-sm"
+                        className:"w-10 h-10 text-primary/60 dark:text-primary/40 drop-shadow-sm"
                     })}
                 </div>
             </div>

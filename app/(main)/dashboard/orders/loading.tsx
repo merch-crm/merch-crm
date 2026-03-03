@@ -1,4 +1,4 @@
-import { SkeletonStats, SkeletonTable, SkeletonPageHeader } from "@/components/ui/skeleton";
+import { SkeletonStats, SkeletonTable, SkeletonPageHeader } from"@/components/ui/skeleton";
 
 export default function OrdersLoading() {
     return (

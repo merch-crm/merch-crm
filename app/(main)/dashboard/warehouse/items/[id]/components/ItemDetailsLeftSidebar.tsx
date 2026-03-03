@@ -1,9 +1,9 @@
-import { useItemDetail } from "../context/ItemDetailContext";
-import { ItemImagePreview } from "./ItemImagePreview";
-import { ItemImageCropper } from "./ItemImageCropper";
-import { ItemMobileInfo } from "./ItemMobileInfo";
-import { ItemMobileActions } from "./ItemMobileActions";
-import { ItemMobileTabs } from "./ItemMobileTabs";
+import { useItemDetail } from"../context/ItemDetailContext";
+import { ItemImagePreview } from"./ItemImagePreview";
+import { ItemImageCropper } from"./ItemImageCropper";
+import { ItemMobileInfo } from"./ItemMobileInfo";
+import { ItemMobileActions } from"./ItemMobileActions";
+import { ItemMobileTabs } from"./ItemMobileTabs";
 
 export function ItemDetailsLeftSidebar() {
     const {

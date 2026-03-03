@@ -1,15 +1,15 @@
-import { getInventoryCategories, getOrphanedItemStats } from "../category-actions";
-import { sortCategories } from "../category-utils";
-import { getSession } from "../warehouse-stats-actions";;
-import { InventoryClient } from "../inventory-client";
-import { Suspense } from "react";
-import { PageContainer } from "@/components/ui/page-container";
+import { getInventoryCategories, getOrphanedItemStats } from"../category-actions";
+import { sortCategories } from"../category-utils";
+import { getSession } from"../warehouse-stats-actions";;
+import { InventoryClient } from"../inventory-client";
+import { Suspense } from"react";
+import { PageContainer } from"@/components/ui/page-container";
 
 export const metadata = {
-    title: "Склад | Категории",
+    title:"Склад | Категории",
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic ="force-dynamic";
 
 
 
@@ -59,8 +59,8 @@ export default async function WarehouseCategoriesPage() {
     );
 }
 
-import { Category } from "../types";
-import { Session } from "@/lib/auth";
+import { Category } from"../types";
+import { Session } from"@/lib/auth";
 
 async function InventoryListContainer({ session }: { session: Session | null }) {
     const [categoriesResult, orphanedResult] = await Promise.all([
@@ -77,14 +77,14 @@ async function InventoryListContainer({ session }: { session: Session | null }) 
 
     if (orphanedCount > 0) {
         categories.push({
-            id: "orphaned",
-            name: "Без категории",
+            id:"orphaned",
+            name:"Без категории",
             itemCount: orphanedCount,
             totalQuantity: orphanedCount,
             totalCost: orphanedTotalCost,
-            description: "Позиции без привязки к категории",
-            color: "slate",
-            icon: "box",
+            description:"Позиции без привязки к категории",
+            color:"slate",
+            icon:"box",
             isSystem: true,
             sortOrder: 0 // Rely on DESIRED_ORDER names if manual order not set
         });

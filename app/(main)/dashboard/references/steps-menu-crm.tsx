@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState } from"react";
 import {
     Check,
     ChevronLeft,
@@ -9,17 +9,17 @@ import {
     Box,
     FileText,
     MousePointer2
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function StepsMenuCRM() {
     const [activeStep, setActiveStep] = useState(2);
 
     const steps = [
-        { id: 1, title: "Тип позиции", sub: "Категория и вид", icon: <Settings /> },
-        { id: 2, title: "Описание", sub: "Характеристики", icon: <FileText /> },
-        { id: 3, title: "Галерея", sub: "Фото и медиа", icon: <ImageIcon /> },
-        { id: 4, title: "Склад", sub: "Остатки и хранение", icon: <Box /> },
+        { id: 1, title:"Тип позиции", sub:"Категория и вид", icon: <Settings /> },
+        { id: 2, title:"Описание", sub:"Характеристики", icon: <FileText /> },
+        { id: 3, title:"Галерея", sub:"Фото и медиа", icon: <ImageIcon /> },
+        { id: 4, title:"Склад", sub:"Остатки и хранение", icon: <Box /> },
     ];
 
     return (
@@ -52,11 +52,10 @@ export default function StepsMenuCRM() {
                                     <button type="button"
                                         key={step.id}
                                         onClick={() => setActiveStep(step.id)}
-                                        className={cn(
-                                            "w-full text-left relative transition-all duration-500 rounded-[var(--radius)] group overflow-hidden border transition-shadow",
+                                        className={cn("w-full text-left relative transition-all duration-500 rounded-[var(--radius)] group overflow-hidden border transition-shadow",
                                             isActive
-                                                ? "bg-[#f4f4f5]/80 backdrop-blur-2xl shadow-xl shadow-[#00d685]/10 border-slate-200 ring-1 ring-[#00d685]/10"
-                                                : "hover:bg-slate-50 border-transparent"
+                                                ?"bg-[#f4f4f5]/80 backdrop-blur-2xl shadow-xl shadow-[#00d685]/10 border-slate-200 ring-1 ring-[#00d685]/10"
+                                                :"hover:bg-slate-50 border-transparent"
                                         )}
                                     >
                                         {/* PHOTO 2 EFFECT: Glowing lateral bar (Matched to green checkmark color #00d685) */}
@@ -69,33 +68,29 @@ export default function StepsMenuCRM() {
                                             <div className="absolute -left-10 top-0 bottom-0 w-32 bg-[#00d685]/10 blur-[30px] rounded-full pointer-events-none" />
                                         )}
 
-                                        <div className={cn(
-                                            "flex items-center gap-3 p-5 transition-all relative z-10",
-                                            isActive ? "translate-x-1" : "translate-x-0"
+                                        <div className={cn("flex items-center gap-3 p-5 transition-all relative z-10",
+                                            isActive ?"translate-x-1" :"translate-x-0"
                                         )}>
                                             {/* Step Indicator */}
-                                            <div className={cn(
-                                                "w-11 h-11 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-500 font-bold text-sm",
+                                            <div className={cn("w-11 h-11 rounded-full flex items-center justify-center shrink-0 border-2 transition-all duration-500 font-bold text-sm",
                                                 isCompleted
-                                                    ? "bg-[#00d685] border-[#00d685] text-white shadow-[0_0_15px_rgba(0,214,133,0.3)]"
+                                                    ?"bg-[#00d685] border-[#00d685] text-white shadow-[0_0_15px_rgba(0,214,133,0.3)]"
                                                     : isActive
-                                                        ? "bg-[#00d685]/10 border-[#00d685]/30 text-[#00d685]"
-                                                        : "bg-white border-slate-200 text-slate-300"
+                                                        ?"bg-[#00d685]/10 border-[#00d685]/30 text-[#00d685]"
+                                                        :"bg-white border-slate-200 text-slate-300"
                                             )}>
                                                 {isCompleted ? <Check className="w-5 h-5 stroke-[3px]" /> : step.id}
                                             </div>
 
                                             {/* Labels */}
                                             <div className="flex flex-col">
-                                                <span className={cn(
-                                                    "text-sm font-bold  transition-colors",
-                                                    isActive ? "text-slate-900" : "text-slate-900"
+                                                <span className={cn("text-sm font-bold  transition-colors",
+                                                    isActive ?"text-slate-900" :"text-slate-900"
                                                 )}>
                                                     {step.title}
                                                 </span>
-                                                <span className={cn(
-                                                    "text-xs font-bold  mt-1",
-                                                    isActive ? "text-[#00d685]" : "text-slate-400"
+                                                <span className={cn("text-xs font-bold  mt-1",
+                                                    isActive ?"text-[#00d685]" :"text-slate-400"
                                                 )}>
                                                     {step.sub}
                                                 </span>

@@ -8,15 +8,15 @@ import {
     Check,
     Tag,
     Banknote
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Category, StorageLocation, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { Select } from "@/components/ui/select";
-import { useBranding } from "@/components/branding-provider";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { AddStorageLocationDialog } from "@/app/(main)/dashboard/warehouse/add-storage-location-dialog";
-import { StepFooter } from "./step-footer";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Category, StorageLocation, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { Select } from"@/components/ui/select";
+import { useBranding } from"@/components/branding-provider";
+import { Input } from"@/components/ui/input";
+import { Button } from"@/components/ui/button";
+import { AddStorageLocationDialog } from"@/app/(main)/dashboard/warehouse/add-storage-location-dialog";
+import { StepFooter } from"./step-footer";
 
 interface StockStepProps {
     category: Category;
@@ -47,7 +47,7 @@ export function StockStep({
         const value = formData[field];
         if (typeof value !== 'string' && typeof value !== 'number') return;
 
-        const current = parseInt(value.toString() || "0") || 0;
+        const current = parseInt(value.toString() ||"0") || 0;
         updateFormData({ [field]: Math.max(0, current + delta).toString() });
     };
 
@@ -80,10 +80,10 @@ export function StockStep({
                                         <div className="flex items-baseline gap-1">
                                             <Input
                                                 type="number"
-                                                value={formData.quantity || "0"}
+                                                value={formData.quantity ||"0"}
                                                 onChange={(e) => updateFormData({ quantity: e.target.value })}
                                                 className="text-4xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-auto shadow-none"
-                                                style={{ width: `${Math.max(1, (formData.quantity || "0").toString().length) * 22}px`, minWidth: '40px' }}
+                                                style={{ width: `${Math.max(1, (formData.quantity ||"0").toString().length) * 22}px`, minWidth: '40px' }}
                                             />
                                             <span className="text-sm font-black text-primary tracking-[0.15em] mb-1.5 shrink-0">
                                                 {formData.unit}
@@ -137,7 +137,7 @@ export function StockStep({
                                         <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
                                             <Input
                                                 type="number"
-                                                value={formData.costPrice || "0"}
+                                                value={formData.costPrice ||"0"}
                                                 onChange={(e) => updateFormData({ costPrice: e.target.value })}
                                                 className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
                                             />
@@ -157,7 +157,7 @@ export function StockStep({
                                         <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
                                             <Input
                                                 type="number"
-                                                value={formData.sellingPrice || "0"}
+                                                value={formData.sellingPrice ||"0"}
                                                 onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
                                                 className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
                                             />
@@ -184,7 +184,7 @@ export function StockStep({
                                             <div className="text-[28px] font-black text-slate-900 flex items-center gap-2 bg-slate-50 rounded-xl px-4 py-2 border border-slate-100/50 w-full">
                                                 <Input
                                                     type="number"
-                                                    value={formData.lowStockThreshold || "10"}
+                                                    value={formData.lowStockThreshold ||"10"}
                                                     onChange={(e) => updateFormData({ lowStockThreshold: e.target.value })}
                                                     className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-[28px] font-black"
                                                 />
@@ -198,7 +198,7 @@ export function StockStep({
                                             <div className="text-[28px] font-black text-slate-900 flex items-center gap-2 bg-slate-50 rounded-xl px-4 py-2 border border-slate-100/50 w-full">
                                                 <Input
                                                     type="number"
-                                                    value={formData.criticalStockThreshold || "0"}
+                                                    value={formData.criticalStockThreshold ||"0"}
                                                     onChange={(e) => updateFormData({ criticalStockThreshold: e.target.value })}
                                                     className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-[28px] font-black"
                                                 />
@@ -219,7 +219,7 @@ export function StockStep({
 
                                 <Select
                                     options={(users || []).map(u => ({ id: u.id, title: u.name }))}
-                                    value={(formData.responsibleUserId as string) || ""}
+                                    value={(formData.responsibleUserId as string) ||""}
                                     onChange={(val) => updateFormData({ responsibleUserId: val })}
                                     placeholder="Выберите сотрудника..."
                                     className="w-full"
@@ -249,23 +249,21 @@ export function StockStep({
                                                     type="button"
                                                     variant="ghost"
                                                     onClick={() => updateFormData({ storageLocationId: loc.id })}
-                                                    className={cn(
-                                                        "p-3.5 rounded-[20px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
+                                                    className={cn("p-3.5 rounded-[20px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
                                                         formData.storageLocationId === loc.id
-                                                            ? "bg-primary border-primary text-white shadow-md shadow-black/10 hover:bg-primary hover:text-white"
-                                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:shadow-md hover:bg-white"
+                                                            ?"bg-primary border-primary text-white shadow-md shadow-black/10 hover:bg-primary hover:text-white"
+                                                            :"bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:shadow-md hover:bg-white"
                                                     )}
                                                 >
                                                     <div className="flex items-center gap-3 truncate relative z-10 w-full">
-                                                        <div className={cn(
-                                                            "w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 transition-all duration-300",
-                                                            formData.storageLocationId === loc.id ? "bg-white/10" : "bg-slate-100 border border-slate-200/50"
+                                                        <div className={cn("w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 transition-all duration-300",
+                                                            formData.storageLocationId === loc.id ?"bg-white/10" :"bg-slate-100 border border-slate-200/50"
                                                         )}>
-                                                            <Warehouse className={cn("w-5 h-5", formData.storageLocationId === loc.id ? "text-white" : "text-slate-400")} />
+                                                            <Warehouse className={cn("w-5 h-5", formData.storageLocationId === loc.id ?"text-white" :"text-slate-400")} />
                                                         </div>
                                                         <div className="truncate text-left flex-1">
                                                             <div className="font-bold text-sm leading-tight truncate px-0.5">{loc.name}</div>
-                                                            <div className={cn("text-xs font-black mt-0.5 opacity-60 px-0.5", formData.storageLocationId === loc.id ? "text-white/80" : "text-slate-700")}>
+                                                            <div className={cn("text-xs font-black mt-0.5 opacity-60 px-0.5", formData.storageLocationId === loc.id ?"text-white/80" :"text-slate-700")}>
                                                                 Склад активен
                                                             </div>
                                                         </div>

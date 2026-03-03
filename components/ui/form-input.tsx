@@ -1,6 +1,6 @@
-import React, { forwardRef } from "react";
-import { Input, InputProps } from "./input";
-import { cn } from "@/lib/utils";
+import React, { forwardRef } from"react";
+import { Input, InputProps } from"./input";
+import { cn } from"@/lib/utils";
 
 interface FormInputProps extends InputProps {
     label: string;
@@ -19,14 +19,13 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                     htmlFor={inputId}
                     className="text-sm font-bold text-slate-700 ml-1"
                 >
-                    {label} {required && "*"}
+                    {label} {required &&"*"}
                 </label>
                 <Input
                     id={inputId}
                     ref={ref}
-                    className={cn(
-                        "w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none",
-                        error && "border-rose-500 focus:border-rose-500",
+                    className={cn("w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none",
+                        error &&"border-rose-500 focus:border-rose-500",
                         className
                     )}
                     {...props}
@@ -38,4 +37,4 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         );
     }
 );
-FormInput.displayName = "FormInput";
+FormInput.displayName ="FormInput";

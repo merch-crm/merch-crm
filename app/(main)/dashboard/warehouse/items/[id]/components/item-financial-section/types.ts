@@ -1,15 +1,15 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { LucideIcon } from"lucide-react";
 
 export type Timeframe = 'month' | 'quarter' | 'half-year' | 'year' | 'all';
 
 export const PERIODS = [
-    { label: "Месяц", value: "month" },
-    { label: "3 месяца", value: "quarter" },
-    { label: "Полгода", value: "half-year" },
-    { label: "Год", value: "year" },
-    { label: "Все время", value: "all" },
+    { label:"Месяц", value:"month" },
+    { label:"3 месяца", value:"quarter" },
+    { label:"Полгода", value:"half-year" },
+    { label:"Год", value:"year" },
+    { label:"Все время", value:"all" },
 ] as const;
 
 export interface FinancialMetricCardProps {

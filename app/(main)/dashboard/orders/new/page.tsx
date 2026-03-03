@@ -1,13 +1,13 @@
-import { getInventoryForSelect } from "../actions/core.actions";;
-import { CreateOrderPageClient } from "./page-client";
-import { getSession } from "@/lib/auth";
+import { getInventoryForSelect } from"../actions/core.actions";;
+import { CreateOrderPageClient } from"./page-client";
+import { getSession } from"@/lib/auth";
 
 export const metadata = {
-    title: "Новый заказ | CRM",
-    description: "Оформление нового заказа в системе",
+    title:"Новый заказ | CRM",
+    description:"Оформление нового заказа в системе",
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic ="force-dynamic";
 
 export default async function NewOrderPage() {
     const inventoryRes = await getInventoryForSelect();

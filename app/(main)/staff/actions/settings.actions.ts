@@ -1,14 +1,14 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { presenceSettings } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { UpdateSettingSchema, PresenceSettingsSchema } from "../validation";
+import { db } from"@/lib/db";
+import { presenceSettings } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { eq } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { UpdateSettingSchema, PresenceSettingsSchema } from"../validation";
 
 // ============================================
 // ACTIONS
@@ -19,7 +19,7 @@ export async function getPresenceSettings() {
     try {
         await requireAdmin(session);
 
-        const settings = await db.query.presenceSettings.findMany();
+        const settings = await db.query.presenceSettings.findMany({ limit: 500 });
 
         // Преобразуем в объект
         const result: Record<string, unknown> = {};
@@ -31,10 +31,10 @@ export async function getPresenceSettings() {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/settings",
-            method: "getPresenceSettings",
+            path:"/staff/settings",
+            method:"getPresenceSettings",
         });
-        return { success: false, error: "Не удалось загрузить настройки" };
+        return { success: false, error:"Не удалось загрузить настройки" };
     }
 }
 
@@ -60,17 +60,17 @@ export async function updatePresenceSetting(formData: FormData) {
             })
             .where(eq(presenceSettings.key, key));
 
-        await logAction("Изменена настройка присутствия", "presence_settings", key, { value });
+        await logAction("Изменена настройка присутствия","presence_settings", key, { value });
         revalidatePath("/staff/settings");
 
         return { success: true };
     } catch (error) {
         await logError({
             error,
-            path: "/staff/settings/update",
-            method: "updatePresenceSetting",
+            path:"/staff/settings/update",
+            method:"updatePresenceSetting",
         });
-        return { success: false, error: "Не удалось сохранить настройку" };
+        return { success: false, error:"Не удалось сохранить настройку" };
     }
 }
 
@@ -110,16 +110,16 @@ export async function updateAllPresenceSettings(formData: FormData) {
             }
         });
 
-        await logAction("Обновлены настройки присутствия", "presence_settings", "all", validated.data);
+        await logAction("Обновлены настройки присутствия","presence_settings","all", validated.data);
         revalidatePath("/staff/settings");
 
         return { success: true };
     } catch (error) {
         await logError({
             error,
-            path: "/staff/settings/update-all",
-            method: "updateAllPresenceSettings",
+            path:"/staff/settings/update-all",
+            method:"updateAllPresenceSettings",
         });
-        return { success: false, error: "Не удалось сохранить настройки" };
+        return { success: false, error:"Не удалось сохранить настройки" };
     }
 }

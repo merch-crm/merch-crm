@@ -1,10 +1,10 @@
-import { getUsers } from "../actions/users.actions";;
-import { Users } from "lucide-react";
-import { UsersTable } from "./users-table";
-import { Pagination } from "@/components/ui/pagination";
-import { AddUserDialog } from "./add-user-dialog";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import type { User } from "@/lib/types";
+import { getUsers } from"../actions/users.actions";;
+import { Users } from"lucide-react";
+import { UsersTable } from"./users-table";
+import { Pagination } from"@/components/ui/pagination";
+import { AddUserDialog } from"./add-user-dialog";
+import { AdminPageHeader } from"@/components/admin/admin-page-header";
+import type { User } from"@/lib/types";
 
 export default async function AdminUsersPage({
     searchParams: searchParamsPromise,
@@ -13,7 +13,7 @@ export default async function AdminUsersPage({
 }) {
     const searchParams = await searchParamsPromise;
     const page = Number(searchParams.page) || 1;
-    const search = searchParams.search || "";
+    const search = searchParams.search ||"";
     const limit = 10;
 
     const res = await getUsers(page, limit, search);

@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     Plus,
     ChevronDown,
@@ -11,8 +11,8 @@ import {
     Briefcase,
     PenTool,
     Code,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function TwistyCRM() {
     return (
@@ -73,13 +73,13 @@ export default function TwistyCRM() {
                         {/* Chart Area */}
                         <div className="h-48 flex items-end justify-between gap-2 px-4 mb-4">
                             {[
-                                { day: "S", h: "30%" },
-                                { day: "M", h: "45%" },
-                                { day: "T", h: "60%", active: true, val: "$2,567" },
-                                { day: "W", h: "50%" },
-                                { day: "T", h: "55%" },
-                                { day: "F", h: "65%" },
-                                { day: "S", h: "40%" },
+                                { day:"S", h:"30%" },
+                                { day:"M", h:"45%" },
+                                { day:"T", h:"60%", active: true, val:"$2,567" },
+                                { day:"W", h:"50%" },
+                                { day:"T", h:"55%" },
+                                { day:"F", h:"65%" },
+                                { day:"S", h:"40%" },
                             ].map((item, idx) => (
                                 <div key={idx} className="flex flex-col items-center gap-3 w-full group cursor-pointer">
                                     <div className="relative w-full flex justify-center h-40 items-end">
@@ -88,9 +88,8 @@ export default function TwistyCRM() {
 
                                         {/* Dot */}
                                         <div
-                                            className={cn(
-                                                "w-2.5 h-2.5 rounded-full transition-all duration-300 z-10 mb-[calc(100%-5px)]",
-                                                item.active ? "bg-[#5d00ff] scale-125" : "bg-slate-300 group-hover:bg-[#5d00ff]"
+                                            className={cn("w-2.5 h-2.5 rounded-full transition-all duration-300 z-10 mb-[calc(100%-5px)]",
+                                                item.active ?"bg-[#5d00ff] scale-125" :"bg-slate-300 group-hover:bg-[#5d00ff]"
                                             )}
                                             style={{ marginBottom: item.h }}
                                         />
@@ -108,9 +107,8 @@ export default function TwistyCRM() {
                                         )}
                                     </div>
 
-                                    <span className={cn(
-                                        "w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold z-10 transition-colors",
-                                        item.active ? "bg-[#5d00ff] text-white" : "text-slate-400 bg-slate-50 group-hover:text-[#5d00ff]"
+                                    <span className={cn("w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold z-10 transition-colors",
+                                        item.active ?"bg-[#5d00ff] text-white" :"text-slate-400 bg-slate-50 group-hover:text-[#5d00ff]"
                                     )}>{item.day}</span>
                                 </div>
                             ))}
@@ -132,8 +130,8 @@ export default function TwistyCRM() {
                             </div>
                             <div className="space-y-3">
                                 {[
-                                    { name: "Randy Gouse", role: "Cybersecurity specialist", tag: "Senior", bg: "bg-[#5d00ff]" },
-                                    { name: "Giana Schleifer", role: "UX/UI Designer", tag: "Middle", bg: "bg-blue-400" },
+                                    { name:"Randy Gouse", role:"Cybersecurity specialist", tag:"Senior", bg:"bg-[#5d00ff]" },
+                                    { name:"Giana Schleifer", role:"UX/UI Designer", tag:"Middle", bg:"bg-blue-400" },
                                 ].map((user, idx) => (
                                     <div key={idx} className="flex items-center justify-between p-1">
                                         <div className="flex items-center gap-3">

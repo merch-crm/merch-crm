@@ -1,11 +1,11 @@
-import React from "react";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { QRCodeSVG } from "qrcode.react";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { useBranding } from "@/components/branding-provider";
-import { PaperSize, LabelUiState, LabelContentSettings, LabelDimensions, ResolvedParam } from "./hooks/useLabelPrinterLogic";
+import React from"react";
+import { X } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { QRCodeSVG } from"qrcode.react";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { useBranding } from"@/components/branding-provider";
+import { PaperSize, LabelUiState, LabelContentSettings, LabelDimensions, ResolvedParam } from"./hooks/useLabelPrinterLogic";
 
 interface LabelPrinterPreviewProps {
     item: InventoryItem;
@@ -89,9 +89,8 @@ export function LabelPrinterPreview({
                     style={previewStyle}
                 >
                     {/* Row 1: Header */}
-                    <div className={cn(
-                        "flex flex-col min-h-0",
-                        (uiState.layoutStyle === 'minimal' || uiState.alignment === 'center') ? "items-center text-center" : "items-start text-left"
+                    <div className={cn("flex flex-col min-h-0",
+                        (uiState.layoutStyle === 'minimal' || uiState.alignment === 'center') ?"items-center text-center" :"items-start text-left"
                     )}>
                         {contentSettings.showCategory && item.category?.name && uiState.layoutStyle !== 'minimal' && (
                             <div style={{ fontSize: `${7 * scale}px` }} className="font-black text-slate-400 leading-none mb-0.5">
@@ -115,16 +114,14 @@ export function LabelPrinterPreview({
 
                     {/* Row 2: Content (flexible area) */}
                     {uiState.layoutStyle !== 'minimal' && (
-                        <div className={cn(
-                            "flex-1 min-h-0 overflow-hidden py-1 flex flex-col justify-center",
-                            uiState.alignment === 'center' ? "items-center" : "items-start"
+                        <div className={cn("flex-1 min-h-0 overflow-hidden py-1 flex flex-col justify-center",
+                            uiState.alignment === 'center' ?"items-center" :"items-start"
                         )}>
                             {uiState.layoutStyle === 'inline' ? (
                                 <div
                                     style={{ fontSize: `${9 * scale * finalAttrScale}px` }}
-                                    className={cn(
-                                        "flex flex-wrap gap-x-2 gap-y-0.5 font-bold text-slate-700 leading-tight",
-                                        uiState.alignment === 'center' ? "justify-center" : "justify-start"
+                                    className={cn("flex flex-wrap gap-x-2 gap-y-0.5 font-bold text-slate-700 leading-tight",
+                                        uiState.alignment === 'center' ?"justify-center" :"justify-start"
                                     )}
                                 >
                                     {visibleParams.map((param, i) => (
@@ -136,15 +133,13 @@ export function LabelPrinterPreview({
                                     ))}
                                 </div>
                             ) : (
-                                <div className={cn(
-                                    "grid gap-x-3 gap-y-0.5",
-                                    useTwoColumns ? "grid-cols-2" : "grid-cols-1",
-                                    uiState.alignment === 'center' ? "justify-items-center" : "justify-items-start"
+                                <div className={cn("grid gap-x-3 gap-y-0.5",
+                                    useTwoColumns ?"grid-cols-2" :"grid-cols-1",
+                                    uiState.alignment === 'center' ?"justify-items-center" :"justify-items-start"
                                 )}>
                                     {visibleParams.map((param) => (
-                                        <div key={param.slug} style={{ fontSize: `${(currentH > currentW ? (dimensions.paperSize === '75x120' ? 9 : 11) : 9) * scale * finalAttrScale}px` }} className={cn(
-                                            "flex gap-1.5 font-bold text-slate-700 leading-tight",
-                                            uiState.alignment === 'center' ? "justify-center text-center" : "justify-start text-left"
+                                        <div key={param.slug} style={{ fontSize: `${(currentH > currentW ? (dimensions.paperSize === '75x120' ? 9 : 11) : 9) * scale * finalAttrScale}px` }} className={cn("flex gap-1.5 font-bold text-slate-700 leading-tight",
+                                            uiState.alignment === 'center' ?"justify-center text-center" :"justify-start text-left"
                                         )}>
                                             {uiState.layoutStyle !== 'side-by-side' && <span className="text-slate-400 font-medium shrink-0">{param.label}:</span>}
                                             <span className="break-words" style={{ hyphens: 'auto' } as React.CSSProperties}>{param.value}</span>
@@ -156,9 +151,8 @@ export function LabelPrinterPreview({
                             {hasComposition && (
                                 <div
                                     style={{ fontSize: `${(currentH > currentW ? (dimensions.paperSize === '75x120' ? 9 : 10) : 8.5) * scale * finalAttrScale}px`, paddingBottom: `${0.5 * scale}mm` }}
-                                    className={cn(
-                                        "font-bold text-slate-700 leading-tight border-b border-slate-200 mt-1 w-full break-words",
-                                        uiState.alignment === 'center' ? "text-center" : "text-left"
+                                    className={cn("font-bold text-slate-700 leading-tight border-b border-slate-200 mt-1 w-full break-words",
+                                        uiState.alignment === 'center' ?"text-center" :"text-left"
                                     )}
                                 >
                                     <span className="text-slate-400 font-medium">Состав: </span>
@@ -170,9 +164,8 @@ export function LabelPrinterPreview({
                             {contentSettings.customText && (
                                 <div
                                     style={{ fontSize: `${8 * scale * finalAttrScale}px`, paddingTop: `${0.5 * scale}mm` }}
-                                    className={cn(
-                                        "font-black text-black border-t border-slate-200 mt-0.5 w-full break-words",
-                                        uiState.alignment === 'center' ? "text-center" : "text-left"
+                                    className={cn("font-black text-black border-t border-slate-200 mt-0.5 w-full break-words",
+                                        uiState.alignment === 'center' ?"text-center" :"text-left"
                                     )}
                                 >
                                     {contentSettings.customText}
@@ -182,10 +175,9 @@ export function LabelPrinterPreview({
                     )}
 
                     {/* Row 3: Footer */}
-                    <div className={cn(
-                        "pt-1.5 border-t border-slate-200 flex gap-2 shrink-0",
-                        (uiState.layoutStyle === 'side-by-side' || uiState.layoutStyle === 'inline' || heightNum <= 60 || dimensions.paperSize === '75x120') ? "flex-row justify-between items-end w-full px-1" : "flex-col items-center",
-                        uiState.layoutStyle === 'minimal' && "flex-1 justify-center items-center border-none pt-2"
+                    <div className={cn("pt-1.5 border-t border-slate-200 flex gap-2 shrink-0",
+                        (uiState.layoutStyle === 'side-by-side' || uiState.layoutStyle === 'inline' || heightNum <= 60 || dimensions.paperSize === '75x120') ?"flex-row justify-between items-end w-full px-1" :"flex-col items-center",
+                        uiState.layoutStyle === 'minimal' &&"flex-1 justify-center items-center border-none pt-2"
                     )}>
                         {contentSettings.showPrice && item.sellingPrice !== null && uiState.layoutStyle !== 'minimal' && (
                             <div style={{ fontSize: `${(dimensions.paperSize === 'a4' || dimensions.paperSize === '75x120' ? 24 : (currentH > currentW ? 19 : (dimensions.paperSize === '58x60' ? 14 : 16))) * scale * finalPriceScale}px` }} className="font-black text-black leading-none">

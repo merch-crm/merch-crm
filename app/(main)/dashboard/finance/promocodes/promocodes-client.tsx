@@ -1,17 +1,17 @@
 "use client";
 
-import { useBranding } from "@/components/branding-provider";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { usePromocodes } from "./hooks/usePromocodes";
-import { Promocode } from "./types";
-import { PromocodesHeader } from "./components/PromocodesHeader";
-import { PromocodesFilters } from "./components/PromocodesFilters";
-import { PromocodesGrid } from "./components/PromocodesGrid";
-import { PromocodeFormModal } from "./components/PromocodeFormModal";
-import { PromocodeBulkModal } from "./components/PromocodeBulkModal";
+import { useBranding } from"@/components/branding-provider";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { usePromocodes } from"./hooks/usePromocodes";
+import { Promocode } from"./types";
+import { PromocodesHeader } from"./components/PromocodesHeader";
+import { PromocodesFilters } from"./components/PromocodesFilters";
+import { PromocodesGrid } from"./components/PromocodesGrid";
+import { PromocodeFormModal } from"./components/PromocodeFormModal";
+import { PromocodeBulkModal } from"./components/PromocodeBulkModal";
 
 export function PromocodesClient({ initialData }: { initialData: Promocode[] }) {
-    const { currencySymbol = "₽" } = useBranding();
+    const { currencySymbol ="₽" } = useBranding();
     const {
         data,
         ui,
@@ -87,4 +87,4 @@ export function PromocodesClient({ initialData }: { initialData: Promocode[] }) 
 }
 
 // Re-export type to avoid breaking imports in other files
-export type { Promocode } from "./types";
+export type { Promocode } from"./types";

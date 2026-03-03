@@ -1,5 +1,5 @@
-import { type LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { type LucideIcon } from"lucide-react";
+import { cn } from"@/lib/utils";
 
 interface SegmentedControlOption<T extends string> {
     value: T;
@@ -18,11 +18,11 @@ interface SegmentedControlProps<T extends string> {
 
 /**
  * Reusable segmented control (pill-switcher) component.
- * Replaces duplicated "B2C / B2B", "Пользователю / Отделу" toggle groups.
+ * Replaces duplicated"B2C / B2B","Пользователю / Отделу" toggle groups.
  *
  * Usage:
  * <SegmentedControl
- *   options={[{ value: "b2c", label: "Физлицо" }, { value: "b2b", label: "Юрлицо" }]}
+ *   options={[{ value:"b2c", label:"Физлицо" }, { value:"b2b", label:"Юрлицо" }]}
  *   value={clientType}
  *   onChange={setClientType}
  * />
@@ -32,7 +32,7 @@ export function SegmentedControl<T extends string>({
     value,
     onChange,
     className,
-    bgClassName = "bg-slate-100",
+    bgClassName ="bg-slate-100",
 }: SegmentedControlProps<T>) {
     return (
         <div className={cn("grid p-1 rounded-2xl", bgClassName, className)}
@@ -45,11 +45,10 @@ export function SegmentedControl<T extends string>({
                         key={opt.value}
                         type="button"
                         onClick={() => onChange(opt.value)}
-                        className={cn(
-                            "px-4 py-2.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2",
+                        className={cn("px-4 py-2.5 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2",
                             isActive
-                                ? "bg-white text-primary shadow-sm"
-                                : "text-slate-500 hover:text-slate-700"
+                                ?"bg-white text-primary shadow-sm"
+                                :"text-slate-500 hover:text-slate-700"
                         )}
                     >
                         {Icon && <Icon className="w-4 h-4" />}

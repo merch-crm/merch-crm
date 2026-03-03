@@ -1,16 +1,16 @@
 "use client";
 
-import { memo } from "react";
-import { Eye, Pencil, ChevronDown, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Select } from "@/components/ui/select";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { cn } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
-import { useRouter } from "next/navigation";
-import type { ClientSummary } from "@/lib/types";
-import { ClientFilters } from "../actions";;
+import { memo } from"react";
+import { Eye, Pencil, ChevronDown, ChevronRight } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Checkbox } from"@/components/ui/checkbox";
+import { Select } from"@/components/ui/select";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
+import { cn } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
+import { useRouter } from"next/navigation";
+import type { ClientSummary } from"@/lib/types";
+import { ClientFilters } from"../actions";;
 
 interface ClientTableProps {
     clients: ClientSummary[];
@@ -51,7 +51,7 @@ export const ClientTable = memo(function ClientTable({
         <div className="flex flex-col">
             <span className="text-sm font-medium text-slate-700">{`${client.lastName} ${client.firstName}`}</span>
             <span className="text-xs text-slate-400 font-medium truncate max-w-[150px]">
-                {client.company || "Частное лицо"}
+                {client.company ||"Частное лицо"}
             </span>
             {client.acquisitionSource && (
                 <span className="text-[11px] font-bold text-indigo-500 mt-1">
@@ -63,10 +63,10 @@ export const ClientTable = memo(function ClientTable({
 
     const renderContacts = (client: ClientSummary) => (
         <div className="flex flex-col">
-            <span className="text-sm font-medium text-slate-700 truncate max-w-[180px]">{client.email || "—"}</span>
+            <span className="text-sm font-medium text-slate-700 truncate max-w-[180px]">{client.email ||"—"}</span>
             <span className="text-xs text-slate-400 font-medium">
-                {["Печатник", "Дизайнер"].includes(userRoleName || "")
-                    ? "HIDDEN"
+                {["Печатник","Дизайнер"].includes(userRoleName ||"")
+                    ?"HIDDEN"
                     : client.phone}
             </span>
         </div>
@@ -121,10 +121,10 @@ export const ClientTable = memo(function ClientTable({
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
                                                 e.preventDefault();
-                                                setFilters(prev => ({ ...prev, sortBy: "alphabet" }));
+                                                setFilters(prev => ({ ...prev, sortBy:"alphabet" }));
                                             }
                                         }}
-                                        onClick={() => setFilters(prev => ({ ...prev, sortBy: "alphabet" }))}
+                                        onClick={() => setFilters(prev => ({ ...prev, sortBy:"alphabet" }))}
                                     >
                                         Клиент
                                     </th>
@@ -137,14 +137,14 @@ export const ClientTable = memo(function ClientTable({
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
                                                 e.preventDefault();
-                                                setFilters(prev => ({ ...prev, sortBy: "order_count" }));
+                                                setFilters(prev => ({ ...prev, sortBy:"order_count" }));
                                             }
                                         }}
-                                        onClick={() => setFilters(prev => ({ ...prev, sortBy: "order_count" }))}
+                                        onClick={() => setFilters(prev => ({ ...prev, sortBy:"order_count" }))}
                                     >
                                         <div className="flex items-center gap-1.5">
                                             Заказы
-                                            <ChevronDown className={cn("h-3 w-3 transition-all", filters.sortBy === "order_count" ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100")} />
+                                            <ChevronDown className={cn("h-3 w-3 transition-all", filters.sortBy ==="order_count" ?"text-primary opacity-100" :"opacity-0 group-hover:opacity-100")} />
                                         </div>
                                     </th>
                                     <th
@@ -154,14 +154,14 @@ export const ClientTable = memo(function ClientTable({
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter' || e.key === ' ') {
                                                 e.preventDefault();
-                                                setFilters(prev => ({ ...prev, sortBy: "last_order" }));
+                                                setFilters(prev => ({ ...prev, sortBy:"last_order" }));
                                             }
                                         }}
-                                        onClick={() => setFilters(prev => ({ ...prev, sortBy: "last_order" }))}
+                                        onClick={() => setFilters(prev => ({ ...prev, sortBy:"last_order" }))}
                                     >
                                         <div className="flex items-center gap-1.5">
                                             Активность
-                                            <ChevronDown className={cn("h-3 w-3 transition-all", filters.sortBy === "last_order" ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100")} />
+                                            <ChevronDown className={cn("h-3 w-3 transition-all", filters.sortBy ==="last_order" ?"text-primary opacity-100" :"opacity-0 group-hover:opacity-100")} />
                                         </div>
                                     </th>
                                     {showFinancials && (
@@ -172,14 +172,14 @@ export const ClientTable = memo(function ClientTable({
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter' || e.key === ' ') {
                                                     e.preventDefault();
-                                                    setFilters(prev => ({ ...prev, sortBy: "revenue" }));
+                                                    setFilters(prev => ({ ...prev, sortBy:"revenue" }));
                                                 }
                                             }}
-                                            onClick={() => setFilters(prev => ({ ...prev, sortBy: "revenue" }))}
+                                            onClick={() => setFilters(prev => ({ ...prev, sortBy:"revenue" }))}
                                         >
                                             <div className="flex items-center justify-end gap-1.5">
                                                 LTV
-                                                <ChevronDown className={cn("h-3 w-3 transition-all", filters.sortBy === "revenue" ? "text-primary opacity-100" : "opacity-0 group-hover:opacity-100")} />
+                                                <ChevronDown className={cn("h-3 w-3 transition-all", filters.sortBy ==="revenue" ?"text-primary opacity-100" :"opacity-0 group-hover:opacity-100")} />
                                             </div>
                                         </th>
                                     )}
@@ -200,9 +200,8 @@ export const ClientTable = memo(function ClientTable({
                                         tabIndex={0}
                                         role="link"
                                         aria-label={`Просмотреть клиента ${client.lastName} ${client.firstName}`}
-                                        className={cn(
-                                            "crm-tr-clickable focus:outline-none focus:bg-slate-50",
-                                            selectedIds.includes(client.id) && "crm-tr-selected"
+                                        className={cn("crm-tr-clickable focus:outline-none focus:bg-slate-50",
+                                            selectedIds.includes(client.id) &&"crm-tr-selected"
                                         )}
                                     >
                                         <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
@@ -215,10 +214,10 @@ export const ClientTable = memo(function ClientTable({
                                         <td className="crm-td">{renderContacts(client)}</td>
                                         <td className="crm-td" onClick={(e) => e.stopPropagation()}>
                                             <Select
-                                                value={client.managerId || ""}
-                                                onChange={(val: string) => onUpdateField(client.id, "managerId", val)}
+                                                value={client.managerId ||""}
+                                                onChange={(val: string) => onUpdateField(client.id,"managerId", val)}
                                                 options={[
-                                                    { id: "", title: "Общий" },
+                                                    { id:"", title:"Общий" },
                                                     ...managers.map(m => ({ id: m.id, title: m.name }))
                                                 ]}
                                                 className="w-[140px]"
@@ -278,9 +277,8 @@ export const ClientTable = memo(function ClientTable({
                             }
                         }}
                         aria-label={`Просмотреть клиента ${client.lastName} ${client.firstName}`}
-                        className={cn(
-                            "group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50 focus:outline-none focus:bg-slate-50",
-                            selectedIds.includes(client.id) ? "crm-tr-selected" : "bg-white"
+                        className={cn("group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50 focus:outline-none focus:bg-slate-50",
+                            selectedIds.includes(client.id) ?"crm-tr-selected" :"bg-white"
                         )}
                     >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -297,7 +295,7 @@ export const ClientTable = memo(function ClientTable({
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
-                                    <span className="truncate">{client.company || "Частное лицо"}</span>
+                                    <span className="truncate">{client.company ||"Частное лицо"}</span>
                                     <span className="text-slate-200">•</span>
                                     <span className="bg-slate-50 px-1.5 py-0.5 rounded-[4px] shrink-0">
                                         {client.totalOrders || 0} {pluralize(client.totalOrders || 0, 'зак.', 'зак.', 'зак.')}

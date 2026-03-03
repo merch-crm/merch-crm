@@ -1,8 +1,8 @@
-import { DesignWidgets } from "./design-widgets";
-import { DesignQueue } from "./design-queue";
-import { getDesignStats, getDesignOrders } from "./actions";
-import { PageContainer } from "@/components/ui/page-container";
-import { PageHeader } from "@/components/layout/page-header";
+import { DesignWidgets } from"./design-widgets";
+import { DesignQueue } from"./design-queue";
+import { getDesignStats, getDesignOrders } from"./actions";
+import { PageContainer } from"@/components/ui/page-container";
+import { PageHeader } from"@/components/layout/page-header";
 
 export default async function DesignPage() {
     const statsRes = await getDesignStats();

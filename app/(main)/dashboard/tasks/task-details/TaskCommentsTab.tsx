@@ -1,8 +1,8 @@
 "use client";
 
-import NextImage from "next/image";
-import { formatDateTime } from "@/lib/formatters";
-import { Task } from "../types";
+import NextImage from"next/image";
+import { formatDateTime } from"@/lib/formatters";
+import { Task } from"../types";
 
 interface TaskCommentsTabProps {
     task: Task;
@@ -61,7 +61,7 @@ export function TaskCommentsTab({
                         <div className="flex-1 space-y-1">
                             <div className="flex items-center gap-2">
                                 <span className="text-xs font-bold text-slate-900">{comment.user.name}</span>
-                                <span className="text-xs font-bold text-slate-400">{formatDateTime(comment.createdAt, "HH:mm, dd.MM.yyyy")}</span>
+                                <span className="text-xs font-bold text-slate-400">{formatDateTime(comment.createdAt,"HH:mm, dd.MM.yyyy")}</span>
                             </div>
                             <div className="p-4 bg-slate-50 rounded-2xl rounded-tl-none">
                                 <p className="text-sm font-medium text-slate-600 leading-relaxed">

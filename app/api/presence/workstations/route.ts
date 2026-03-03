@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
         }
 
         const data = await db.query.workstations.findMany({
+        limit: 500,
             where: eq(workstations.isActive, true)
         })
 

@@ -1,13 +1,13 @@
-import { useState, useCallback, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { pluralize } from "@/lib/pluralize";
-import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
-import { deleteInventoryItems, archiveInventoryItems } from "@/app/(main)/dashboard/warehouse/bulk-actions";
-import { getInventoryCategories, deleteInventoryCategory } from "@/app/(main)/dashboard/warehouse/category-actions";
-import { getItemStocks } from "@/app/(main)/dashboard/warehouse/stock-actions";
-import type { Category, InventoryItem, InventoryFilters } from "@/app/(main)/dashboard/warehouse/types";
+import { useState, useCallback, useEffect } from"react";
+import { useRouter, useSearchParams } from"next/navigation";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { pluralize } from"@/lib/pluralize";
+import { useBreadcrumbs } from"@/components/layout/breadcrumbs-context";
+import { deleteInventoryItems, archiveInventoryItems } from"@/app/(main)/dashboard/warehouse/bulk-actions";
+import { getInventoryCategories, deleteInventoryCategory } from"@/app/(main)/dashboard/warehouse/category-actions";
+import { getItemStocks } from"@/app/(main)/dashboard/warehouse/stock-actions";
+import type { Category, InventoryItem, InventoryFilters } from"@/app/(main)/dashboard/warehouse/types";
 
 export function useCategoryDetail(
     category: Category,
@@ -32,9 +32,9 @@ export function useCategoryDetail(
     });
 
     const [filters, setFilters] = useState({
-        search: searchParams.get("search") || "",
-        status: (searchParams.get("status") as InventoryFilters["status"]) || "all",
-        storage: searchParams.get("storage") || "all"
+        search: searchParams.get("search") ||"",
+        status: (searchParams.get("status") as InventoryFilters["status"]) ||"all",
+        storage: searchParams.get("storage") ||"all"
     });
 
     const [dialogs, setDialogs] = useState({
@@ -58,7 +58,7 @@ export function useCategoryDetail(
     }, [initialSubCategories]);
 
     useEffect(() => {
-        const trail = [{ label: "Склад", href: "/dashboard/warehouse" }];
+        const trail = [{ label:"Склад", href:"/dashboard/warehouse" }];
         if (parentCategory) {
             trail.push({ label: parentCategory.name, href: `/dashboard/warehouse/categories/${parentCategory.id}` });
         }
@@ -70,17 +70,17 @@ export function useCategoryDetail(
     const updateUrl = useCallback((params: Record<string, string | null>) => {
         const url = new URL(window.location.href);
         Object.entries(params).forEach(([key, value]) => {
-            if (value && value !== "all") url.searchParams.set(key, value);
+            if (value && value !=="all") url.searchParams.set(key, value);
             else url.searchParams.delete(key);
         });
         if (!params.page && (params.search !== undefined || params.status !== undefined || params.storage !== undefined)) {
-            url.searchParams.set("page", "1");
+            url.searchParams.set("page","1");
         }
         router.push(url.pathname + url.search, { scroll: false });
     }, [router]);
 
     useEffect(() => {
-        if (filters.search !== (searchParams.get("search") || "")) {
+        if (filters.search !== (searchParams.get("search") ||"")) {
             updateUrl({ search: filters.search });
         }
     }, [filters.search, updateUrl, searchParams]);
@@ -133,16 +133,16 @@ export function useCategoryDetail(
         try {
             const res = await deleteInventoryItems(ids);
             if (res?.success) {
-                toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`,"success");
                 playSound("client_deleted");
                 setUi(prev => ({ ...prev, selectedIds: prev.selectedIds.filter(id => !ids.includes(id)) }));
                 router.refresh();
             } else {
-                toast(res?.error || "Ошибка при удалении", "error");
+                toast(res?.error ||"Ошибка при удалении","error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
         } finally {
             setUi(prev => ({ ...prev, isDeleting: false }));
             setDialogs(prev => ({ ...prev, delete: { ...prev.delete, ids: [] } }));
@@ -152,19 +152,19 @@ export function useCategoryDetail(
     const handleArchiveItems = async (reason: string) => {
         setUi(prev => ({ ...prev, isDeleting: true }));
         try {
-            const res = await archiveInventoryItems(ui.selectedIds, reason || "Массовая архивация");
+            const res = await archiveInventoryItems(ui.selectedIds, reason ||"Массовая архивация");
             if (res?.success) {
-                toast("Архивировано: " + ui.selectedIds.length + " " + pluralize(ui.selectedIds.length, 'позиция', 'позиции', 'позиций'), "success");
+                toast("Архивировано:" + ui.selectedIds.length +"" + pluralize(ui.selectedIds.length, 'позиция', 'позиции', 'позиций'),"success");
                 playSound("notification_success");
                 setUi(prev => ({ ...prev, selectedIds: prev.selectedIds.filter(id => !ui.selectedIds.includes(id)) }));
                 setDialogs(prev => ({ ...prev, massActions: { ...prev.massActions, showArchiveReason: false } }));
                 router.refresh();
             } else {
-                toast(res?.error || "Ошибка при архивации", "error");
+                toast(res?.error ||"Ошибка при архивации","error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
         } finally {
             setUi(prev => ({ ...prev, isDeleting: false }));
         }
@@ -175,15 +175,15 @@ export function useCategoryDetail(
         try {
             const res = await deleteInventoryCategory(id);
             if (res?.success) {
-                toast("Категория удалена", "success");
+                toast("Категория удалена","success");
                 playSound("client_deleted");
                 router.refresh();
             } else {
-                toast(res?.error || "Ошибка при удалении", "error");
+                toast(res?.error ||"Ошибка при удалении","error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
         } finally {
             setUi(prev => ({ ...prev, isDeleting: false }));
             setDialogs(prev => ({ ...prev, delete: { ...prev.delete, category: null } }));

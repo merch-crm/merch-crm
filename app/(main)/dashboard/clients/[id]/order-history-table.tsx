@@ -1,12 +1,12 @@
 "use client";
 
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import Link from "next/link";
-import { Package, ChevronRight } from "lucide-react";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import Link from"next/link";
+import { Package, ChevronRight } from"lucide-react";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
 
-import type { Order, ClientProfileOrder } from "@/lib/types";
+import type { Order, ClientProfileOrder } from"@/lib/types";
 
 interface OrderHistoryTableProps {
     orders: (Order | ClientProfileOrder)[];
@@ -61,11 +61,11 @@ export function OrderHistoryTable({ orders, currencySymbol }: OrderHistoryTableP
                                                 ORD-{orderNum?.split('-')[2] || order.id.slice(0, 6)}
                                             </td>
                                             <td className="crm-td text-slate-500 font-medium">
-                                                {format(new Date(order.createdAt), "d MMM yyyy", { locale: ru })}
+                                                {format(new Date(order.createdAt),"d MMM yyyy", { locale: ru })}
                                             </td>
                                             <td className="crm-td">
                                                 <span className={`px-2.5 py-1 rounded-full border text-xs font-bold ${statusColors[order.status || ''] || 'bg-slate-50 text-slate-400 border-slate-100'}`}>
-                                                    {order.status || "—"}
+                                                    {order.status ||"—"}
                                                 </span>
                                             </td>
                                             <td className="crm-td crm-td-number font-black text-slate-900">
@@ -93,12 +93,12 @@ export function OrderHistoryTable({ orders, currencySymbol }: OrderHistoryTableP
                                         <p className="text-sm font-bold text-slate-900">
                                             ORD-{orderNum?.split('-')[2] || order.id.slice(0, 6)}
                                         </p>
-                                        <p className="text-xs font-bold text-slate-400 ">
-                                            {format(new Date(order.createdAt), "d MMMM yyyy", { locale: ru })}
+                                        <p className="text-xs font-bold text-slate-400">
+                                            {format(new Date(order.createdAt),"d MMMM yyyy", { locale: ru })}
                                         </p>
                                     </div>
                                     <div className="px-2 py-1 rounded-md bg-slate-50 text-xs font-bold text-slate-500 border border-slate-100">
-                                        {order.status || "—"}
+                                        {order.status ||"—"}
                                     </div>
                                 </div>
                                 <div className="flex justify-between items-center">

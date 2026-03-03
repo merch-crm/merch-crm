@@ -1,16 +1,16 @@
 "use client";
 
-import React from "react";
+import React from"react";
 import {
     ShoppingBag,
     ChevronRight,
     User,
     Calendar,
-} from "lucide-react";
-import { ActiveOrderItem } from "@/app/(main)/dashboard/warehouse/types";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import Link from "next/link";
+} from"lucide-react";
+import { ActiveOrderItem } from"@/app/(main)/dashboard/warehouse/types";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import Link from"next/link";
 
 interface ItemActiveOrdersSectionProps {
     orders: ActiveOrderItem[];
@@ -33,7 +33,7 @@ export function ItemActiveOrdersSection({ orders = [] }: ItemActiveOrdersSection
 
                 const clientName = item.order.client
                     ? `${item.order.client.firstName} ${item.order.client.lastName}`.trim()
-                    : "Частное лицо";
+                    :"Частное лицо";
 
                 return (
                     <Link
@@ -77,7 +77,7 @@ export function ItemActiveOrdersSection({ orders = [] }: ItemActiveOrdersSection
                                 <span>
                                     {(() => {
                                         const d = new Date(item.order.createdAt);
-                                        return isNaN(d.getTime()) ? "—" : format(d, "dd MMM yyyy", { locale: ru });
+                                        return isNaN(d.getTime()) ?"—" : format(d,"dd MMM yyyy", { locale: ru });
                                     })()}
                                 </span>
                             </div>

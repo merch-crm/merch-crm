@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { ArrowUpRight, Wrench, Fuel, Link as LinkIcon, Disc } from "lucide-react";
+import React from"react";
+import Image from"next/image";
+import { motion } from"framer-motion";
+import { ArrowUpRight, Wrench, Fuel, Link as LinkIcon, Disc } from"lucide-react";
 
 export default function BikeHealthCard() {
     return (
-        <section className="space-y-12 py-12 flex flex-col items-center">
+        <section className="space-y-3 py-12 flex flex-col items-center">
             <div className="flex items-center gap-3 self-start px-2 mb-[-2rem]">
                 <div className="h-8 w-1 bg-[#d4fb4e] rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Vehicle Health Monitor</h2>
@@ -17,7 +17,7 @@ export default function BikeHealthCard() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+                transition={{ duration: 0.6, ease:"easeOut" }}
                 className="relative w-full max-w-[420px] aspect-[4/5] rounded-[3rem] overflow-hidden group select-none"
             >
                 {/* Background - Dark Olive/Grey Tone */}
@@ -31,7 +31,7 @@ export default function BikeHealthCard() {
 
                     {/* Header */}
                     <div className="flex justify-between items-start">
-                        <h3 className="text-white text-2xl font-medium ">Bike Health Summary</h3>
+                        <h3 className="text-white text-2xl font-medium">Bike Health Summary</h3>
                         <div className="w-12 h-12 rounded-full bg-[#3a3c36] flex items-center justify-center border border-white/5 cursor-pointer hover:bg-[#464842] transition-colors">
                             <ArrowUpRight className="text-[#d4fb4e] w-6 h-6" />
                         </div>
@@ -60,7 +60,7 @@ export default function BikeHealthCard() {
 
                     {/* Bike Model Name */}
                     <div className="text-center mb-8">
-                        <h2 className="text-white/90 text-2xl font-medium ">KTM 450 SX-F</h2>
+                        <h2 className="text-white/90 text-2xl font-medium">KTM 450 SX-F</h2>
                     </div>
 
                     {/* Stats Grid */}

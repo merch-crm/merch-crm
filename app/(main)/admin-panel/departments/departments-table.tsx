@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import { getDepartments, deleteDepartment } from "../actions/departments.actions";;
-import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+import { useEffect, useState, useCallback } from"react";
+import { getDepartments, deleteDepartment } from"../actions/departments.actions";;
+import { Building, Trash2, Users, Crown, ShoppingBag, Cog, Palette, LucideIcon, Settings2 } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { useToast } from"@/components/ui/toast";
 
-import { DeleteDepartmentDialog } from "./delete-department-dialog";
-import { DepartmentSettingsDialog } from "./department-settings-dialog";
+import { DeleteDepartmentDialog } from"./delete-department-dialog";
+import { DepartmentSettingsDialog } from"./department-settings-dialog";
 
 interface Department {
     id: string;
@@ -19,14 +19,14 @@ interface Department {
 }
 
 const COLOR_MAP: Record<string, { bg: string; text: string; border: string; gradient: string; iconBg: string; iconColor: string }> = {
-    indigo: { bg: "bg-primary/5", text: "text-primary", border: "border-primary/20", gradient: "from-primary/5 to-primary/10", iconBg: "bg-primary/10", iconColor: "text-primary" },
-    purple: { bg: "bg-purple-50", text: "text-purple-600", border: "border-purple-100", gradient: "from-purple-50/50 to-purple-100/30", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
-    rose: { bg: "bg-rose-50", text: "text-rose-600", border: "border-rose-100", gradient: "from-rose-50/50 to-rose-100/30", iconBg: "bg-rose-100", iconColor: "text-rose-600" },
-    orange: { bg: "bg-orange-50", text: "text-orange-600", border: "border-orange-100", gradient: "from-orange-50/50 to-orange-100/30", iconBg: "bg-orange-100", iconColor: "text-orange-600" },
-    amber: { bg: "bg-amber-50", text: "text-amber-600", border: "border-amber-100", gradient: "from-amber-50/50 to-amber-100/30", iconBg: "bg-amber-100", iconColor: "text-amber-600" },
-    emerald: { bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-100", gradient: "from-emerald-50/50 to-emerald-100/30", iconBg: "bg-emerald-100", iconColor: "text-emerald-600" },
-    sky: { bg: "bg-sky-50", text: "text-sky-600", border: "border-sky-100", gradient: "from-sky-50/50 to-sky-100/30", iconBg: "bg-sky-100", iconColor: "text-sky-600" },
-    slate: { bg: "bg-slate-50", text: "text-slate-600", border: "border-slate-200", gradient: "from-slate-50/50 to-slate-100/30", iconBg: "bg-slate-100", iconColor: "text-slate-600" },
+    indigo: { bg:"bg-primary/5", text:"text-primary", border:"border-primary/20", gradient:"from-primary/5 to-primary/10", iconBg:"bg-primary/10", iconColor:"text-primary" },
+    purple: { bg:"bg-purple-50", text:"text-purple-600", border:"border-purple-100", gradient:"from-purple-50/50 to-purple-100/30", iconBg:"bg-purple-100", iconColor:"text-purple-600" },
+    rose: { bg:"bg-rose-50", text:"text-rose-600", border:"border-rose-100", gradient:"from-rose-50/50 to-rose-100/30", iconBg:"bg-rose-100", iconColor:"text-rose-600" },
+    orange: { bg:"bg-orange-50", text:"text-orange-600", border:"border-orange-100", gradient:"from-orange-50/50 to-orange-100/30", iconBg:"bg-orange-100", iconColor:"text-orange-600" },
+    amber: { bg:"bg-amber-50", text:"text-amber-600", border:"border-amber-100", gradient:"from-amber-50/50 to-amber-100/30", iconBg:"bg-amber-100", iconColor:"text-amber-600" },
+    emerald: { bg:"bg-emerald-50", text:"text-emerald-600", border:"border-emerald-100", gradient:"from-emerald-50/50 to-emerald-100/30", iconBg:"bg-emerald-100", iconColor:"text-emerald-600" },
+    sky: { bg:"bg-sky-50", text:"text-sky-600", border:"border-sky-100", gradient:"from-sky-50/50 to-sky-100/30", iconBg:"bg-sky-100", iconColor:"text-sky-600" },
+    slate: { bg:"bg-slate-50", text:"text-slate-600", border:"border-slate-200", gradient:"from-slate-50/50 to-slate-100/30", iconBg:"bg-slate-100", iconColor:"text-slate-600" },
 };
 
 export function DepartmentsTable() {
@@ -64,9 +64,9 @@ export function DepartmentsTable() {
     const handleDeleteConfirm = async (id: string, password?: string) => {
         const res = await deleteDepartment(id, password);
         if (res.error) {
-            toast(res.error, "error");
+            toast(res.error,"error");
         } else {
-            toast("Отдел успешно удален", "success");
+            toast("Отдел успешно удален","success");
             fetchDepartments();
         }
         setDeleteDialogOpen(false);
@@ -74,15 +74,11 @@ export function DepartmentsTable() {
     };
 
     const getDepartmentConfig = (deptName: string, deptColor: string | null) => {
-        const icons: Record<string, LucideIcon> = {
-            "Руководство": Crown,
-            "Отдел продаж": ShoppingBag,
-            "Производство": Cog,
-            "Дизайн": Palette,
+        const icons: Record<string, LucideIcon> = {"Руководство": Crown,"Отдел продаж": ShoppingBag,"Производство": Cog,"Дизайн": Palette,
         };
 
         const Icon = icons[deptName] || Building;
-        const colorConfig = COLOR_MAP[deptColor || "indigo"] || COLOR_MAP.indigo;
+        const colorConfig = COLOR_MAP[deptColor ||"indigo"] || COLOR_MAP.indigo;
 
         return { Icon, ...colorConfig };
     };
@@ -144,12 +140,12 @@ export function DepartmentsTable() {
 
                                 <div className="flex-1">
                                     <p className="text-[13px] text-slate-500 line-clamp-2 leading-relaxed h-[40px]">
-                                        {dept.description || "Административное управление основной деятельностью компании"}
+                                        {dept.description ||"Административное управление основной деятельностью компании"}
                                     </p>
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-200/60 flex items-center justify-between mt-auto">
-                                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400 ">
+                                    <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
                                         <Users className="w-3.5 h-3.5" />
                                         <span>Сотрудники</span>
                                     </div>

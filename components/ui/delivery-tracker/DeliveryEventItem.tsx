@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { DeliveryEvent } from "./types";
-import { STATUS_CONFIG } from "./constants";
+import * as React from"react";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { MapPin } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { DeliveryEvent } from"./types";
+import { STATUS_CONFIG } from"./constants";
 
 interface DeliveryEventItemProps {
     event: DeliveryEvent;
@@ -26,10 +26,9 @@ export function DeliveryEventItem({ event, isFirst, isLast }: DeliveryEventItemP
 
             {/* Иконка */}
             <div
-                className={cn(
-                    "relative z-10 w-6 h-6 rounded-full flex items-center justify-center shrink-0",
-                    isFirst ? eventStatusConfig.bgColor : "bg-slate-100",
-                    isFirst ? eventStatusConfig.color : "text-slate-400"
+                className={cn("relative z-10 w-6 h-6 rounded-full flex items-center justify-center shrink-0",
+                    isFirst ? eventStatusConfig.bgColor :"bg-slate-100",
+                    isFirst ? eventStatusConfig.color :"text-slate-400"
                 )}
             >
                 <span className="scale-75">{eventStatusConfig.icon}</span>
@@ -38,11 +37,11 @@ export function DeliveryEventItem({ event, isFirst, isLast }: DeliveryEventItemP
             {/* Контент */}
             <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                    <p className={cn("text-sm font-medium", isFirst ? "text-slate-900" : "text-slate-600")}>
+                    <p className={cn("text-sm font-medium", isFirst ?"text-slate-900" :"text-slate-600")}>
                         {event.title}
                     </p>
                     <time className="text-xs text-slate-400 whitespace-nowrap">
-                        {format(event.timestamp, "d MMM, HH:mm", { locale: ru })}
+                        {format(event.timestamp,"d MMM, HH:mm", { locale: ru })}
                     </time>
                 </div>
                 {event.location && (

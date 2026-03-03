@@ -1,14 +1,14 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { systemSettings } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import fs from "fs";
-import { logError } from "@/lib/error-logger";
-import { StorageQuotaSettingsSchema } from "./validation";
+import { db } from"@/lib/db";
+import { systemSettings } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { eq } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import fs from"fs";
+import { logError } from"@/lib/error-logger";
+import { StorageQuotaSettingsSchema } from"./validation";
 
 export interface StorageQuotaSettings {
     maxS3Size: number;
@@ -40,7 +40,7 @@ export async function getStorageQuotaSettings() {
         await requireAdmin(session);
 
         const record = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key, "storage_config")
+            where: eq(systemSettings.key,"storage_config")
         });
 
         if (!record) return { success: true, data: DEFAULT_SETTINGS };
@@ -48,10 +48,10 @@ export async function getStorageQuotaSettings() {
     } catch (e) {
         await logError({
             error: e,
-            path: "/admin-panel/storage",
-            method: "getStorageQuotaSettings"
+            path:"/admin-panel/storage",
+            method:"getStorageQuotaSettings"
         });
-        return { success: false, error: e instanceof Error ? e.message : "Ошибка получения настроек" };
+        return { success: false, error: e instanceof Error ? e.message :"Ошибка получения настроек" };
     }
 }
 
@@ -67,7 +67,7 @@ export async function updateStorageQuotaSettings(settings: StorageQuotaSettings)
         const validSettings = validated.data;
 
         await db.insert(systemSettings).values({
-            key: "storage_config",
+            key:"storage_config",
             value: validSettings,
             updatedAt: new Date()
         }).onConflictDoUpdate({
@@ -80,11 +80,11 @@ export async function updateStorageQuotaSettings(settings: StorageQuotaSettings)
     } catch (e) {
         await logError({
             error: e,
-            path: "/admin-panel/storage",
-            method: "updateStorageQuotaSettings",
+            path:"/admin-panel/storage",
+            method:"updateStorageQuotaSettings",
             details: { settings }
         });
-        return { success: false, error: e instanceof Error ? e.message : "Ошибка сохранения настроек" };
+        return { success: false, error: e instanceof Error ? e.message :"Ошибка сохранения настроек" };
     }
 }
 
@@ -142,9 +142,9 @@ export async function checkStorageQuotas() {
     } catch (e) {
         await logError({
             error: e,
-            path: "/admin-panel/storage",
-            method: "checkStorageQuotas"
+            path:"/admin-panel/storage",
+            method:"checkStorageQuotas"
         });
-        return { success: false, error: e instanceof Error ? e.message : "Ошибка проверки квот" };
+        return { success: false, error: e instanceof Error ? e.message :"Ошибка проверки квот" };
     }
 }

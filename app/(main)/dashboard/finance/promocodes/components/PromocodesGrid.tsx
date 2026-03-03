@@ -1,6 +1,6 @@
-import { Promocode } from "../types";
-import { PromocodeCard } from "./PromocodeCard";
-import { Ticket } from "lucide-react";
+import { Promocode } from"../types";
+import { PromocodeCard } from"./PromocodeCard";
+import { Ticket } from"lucide-react";
 
 interface PromocodesGridProps {
     data: Promocode[];

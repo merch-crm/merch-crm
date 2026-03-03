@@ -1,16 +1,16 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React from"react";
+import Image from"next/image";
 import {
     ResponsiveModal
-} from "@/components/ui/responsive-modal";
+} from"@/components/ui/responsive-modal";
 
-import { Printer } from "lucide-react";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { Button } from "@/components/ui/button";
-import { escapeHtml } from "@/lib/utils";
-import { useToast } from "@/components/ui/toast";
+import { Printer } from"lucide-react";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { Button } from"@/components/ui/button";
+import { escapeHtml } from"@/lib/utils";
+import { useToast } from"@/components/ui/toast";
 
 interface ItemLabelDialogProps {
     item: InventoryItem;
@@ -24,7 +24,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
-            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.", "error");
+            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.","error");
             return;
         }
 
@@ -168,10 +168,10 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                             <div className="flex-1 space-y-1.5">
                                 <div className="space-y-0.5">
                                     <div className="text-xs font-bold text-muted-foreground">Артикул</div>
-                                    <div className="text-[13px] font-black text-foreground tabular-nums leading-none">{item.sku || "—"}</div>
+                                    <div className="text-[13px] font-black text-foreground tabular-nums leading-none">{item.sku ||"—"}</div>
                                 </div>
                                 <div className="inline-block px-1.5 py-0.5 bg-primary/5 text-primary text-xs font-bold rounded-md border border-primary/20">
-                                    {item.category?.name || "Без категории"}
+                                    {item.category?.name ||"Без категории"}
                                 </div>
                             </div>
                         </div>

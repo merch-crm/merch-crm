@@ -1,6 +1,6 @@
-import { Banknote, Tag, Sparkles } from "lucide-react";
-import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { useBranding } from "@/components/branding-provider";
+import { Banknote, Tag, Sparkles } from"lucide-react";
+import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { useBranding } from"@/components/branding-provider";
 
 interface FinanceCardProps {
     formData: ItemFormData;
@@ -9,8 +9,8 @@ interface FinanceCardProps {
 export function FinanceCard({ formData }: FinanceCardProps) {
     const { currencySymbol } = useBranding();
 
-    const sellingPrice = parseFloat(formData.sellingPrice || "0");
-    const costPrice = parseFloat(formData.costPrice || "0");
+    const sellingPrice = parseFloat(formData.sellingPrice ||"0");
+    const costPrice = parseFloat(formData.costPrice ||"0");
     const profit = Math.max(0, sellingPrice - costPrice);
     const margin = Math.round((profit / (costPrice || 1)) * 100);
 
@@ -21,7 +21,7 @@ export function FinanceCard({ formData }: FinanceCardProps) {
                     <Banknote className="w-5 h-5" />
                 </div>
                 <div>
-                    <h3 className="text-lg font-bold text-slate-900 ">Финансы</h3>
+                    <h3 className="text-lg font-bold text-slate-900">Финансы</h3>
                     <p className="text-xs font-bold text-slate-700">Цены и маржин</p>
                 </div>
             </div>

@@ -1,10 +1,10 @@
-import React from "react";
-import { CheckCircle2, CreditCard, ChevronRight, Plus, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { RoleBadge } from "@/components/ui/role-badge";
-import { Button } from "@/components/ui/button";
-import { StatisticsData, Task } from "../../types";
-import { ProfileView } from "../../hooks/useProfile";
+import React from"react";
+import { CheckCircle2, CreditCard, ChevronRight, Plus, Clock } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { RoleBadge } from"@/components/ui/role-badge";
+import { Button } from"@/components/ui/button";
+import { StatisticsData, Task } from"../../types";
+import { ProfileView } from"../../hooks/useProfile";
 
 interface OverviewTabProps {
     statsData: StatisticsData | null;
@@ -42,31 +42,30 @@ export function OverviewTab({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {[
                         {
-                            title: "Выполнено заказов",
+                            title:"Выполнено заказов",
                             value: statsData?.totalOrders || 0,
-                            subtitle: "За все время",
+                            subtitle:"За все время",
                             progress: 75,
-                            color: "bg-primary",
-                            textColor: "text-primary",
+                            color:"bg-primary",
+                            textColor:"text-primary",
                             icon: <CheckCircle2 />
                         },
                         {
-                            title: "Личная выручка",
+                            title:"Личная выручка",
                             value: `${(statsData?.totalRevenue || 0).toLocaleString()} ${currencySymbol}`,
-                            subtitle: "Принесено компании",
+                            subtitle:"Принесено компании",
                             progress: 45,
-                            color: "bg-slate-900",
-                            textColor: "text-slate-900",
+                            color:"bg-slate-900",
+                            textColor:"text-slate-900",
                             icon: <CreditCard />
                         },
                     ].map((stat, i) => (
                         <div key={i} className="group crm-card  !rounded-3xl hover:shadow-xl hover:shadow-primary/5 transition-all cursor-default">
                             <div className="flex justify-between items-start mb-8">
-                                <div className={cn(
-                                    "w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110",
-                                    stat.color === "bg-primary" ? "bg-primary shadow-primary/20" : "bg-slate-900 shadow-slate-900/10"
+                                <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:scale-110",
+                                    stat.color ==="bg-primary" ?"bg-primary shadow-primary/20" :"bg-slate-900 shadow-slate-900/10"
                                 )}>
-                                    {React.cloneElement(stat.icon as React.ReactElement<{ className?: string }>, { className: "w-7 h-7" })}
+                                    {React.cloneElement(stat.icon as React.ReactElement<{ className?: string }>, { className:"w-7 h-7" })}
                                 </div>
                             </div>
                             <div>
@@ -122,7 +121,7 @@ export function OverviewTab({
                                     </div>
                                 </div>
                                 <span className="text-xs font-bold text-slate-400">
-                                    {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"][i]}
+                                    {["Пн","Вт","Ср","Чт","Пт","Сб","Вс"][i]}
                                 </span>
                             </div>
                         ))}
@@ -163,17 +162,15 @@ export function OverviewTab({
                                     <span className="text-xs font-bold text-slate-400 group-hover:text-slate-600">{task.time}</span>
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h4 className={cn("text-sm font-bold text-slate-900 line-clamp-2 leading-snug mb-2", task.completed && "line-through text-slate-400")}>
+                                    <h4 className={cn("text-sm font-bold text-slate-900 line-clamp-2 leading-snug mb-2", task.completed &&"line-through text-slate-400")}>
                                         {task.text}
                                     </h4>
                                     <div className="flex items-center gap-2">
-                                        <span className={cn(
-                                            "text-xs font-bold px-2 py-1 rounded-md",
-                                            task.priority === "Высокий" ? "bg-red-50 text-red-600" :
-                                                task.priority === "Средний" ? "bg-amber-50 text-amber-600" :
-                                                    "bg-blue-50 text-blue-600"
+                                        <span className={cn("text-xs font-bold px-2 py-1 rounded-md",
+                                            task.priority ==="Высокий" ?"bg-red-50 text-red-600" :
+                                                task.priority ==="Средний" ?"bg-amber-50 text-amber-600" :"bg-blue-50 text-blue-600"
                                         )}>
-                                            {task.priority || "Обычный"}
+                                            {task.priority ||"Обычный"}
                                         </span>
                                     </div>
                                 </div>

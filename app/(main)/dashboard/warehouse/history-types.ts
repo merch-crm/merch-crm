@@ -1,6 +1,6 @@
 export interface Transaction {
     id: string;
-    type: "in" | "out" | "transfer" | "attribute_change" | "archive" | "restore" | "stock_in" | "stock_out" | "adjustment";
+    type:"in" |"out" |"transfer" |"attribute_change" |"archive" |"restore" |"stock_in" |"stock_out" |"adjustment";
     changeAmount: number;
     reason: string | null;
     createdAt: Date;

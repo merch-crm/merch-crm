@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { systemSettings, users, clients, orders, notifications, roles } from "@/lib/schema";
-import { eq, sql, type InferInsertModel } from "drizzle-orm";
-import { z } from "zod";
+import { db } from"@/lib/db";
+import { systemSettings, users, clients, orders, notifications, roles } from"@/lib/schema";
+import { eq, sql, type InferInsertModel } from"drizzle-orm";
+import { z } from"zod";
 
 const checkSchema = z.void();
 
@@ -11,7 +11,7 @@ export async function checkAndRunNotifications() {
     checkSchema.parse(undefined); // Validation check
 
     try {
-        const SETTING_KEY = "last_notification_check";
+        const SETTING_KEY ="last_notification_check";
         const now = new Date();
 
         // 1. Check last run time
@@ -54,9 +54,9 @@ export async function checkAndRunNotifications() {
 
                     const notifs = allUsers.map(u => ({
                         userId: u.id,
-                        title: "День рождения!",
+                        title:"День рождения!",
                         message: message,
-                        type: "info" as const,
+                        type:"info" as const,
                         isRead: false
                     }));
 
@@ -97,9 +97,9 @@ export async function checkAndRunNotifications() {
                 targetUserIds.forEach(uid => {
                     allNotificationsToInsert.push({
                         userId: uid,
-                        title: "Потерянный клиент",
+                        title:"Потерянный клиент",
                         message: message,
-                        type: "warning" as const,
+                        type:"warning" as const,
                         isRead: false
                     });
                 });

@@ -1,14 +1,14 @@
 "use client";
 
-import { Building, Loader2, Shield, Trash2, Plus, Key, Save } from "lucide-react";
-import { useDepartmentSettings } from "./hooks/use-department-settings";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { DEPARTMENT_COLORS, getDepartmentColorHex } from "@/lib/constants";
-import { IconInput } from "@/components/ui/icon-input";
+import { Building, Loader2, Shield, Trash2, Plus, Key, Save } from"lucide-react";
+import { useDepartmentSettings } from"./hooks/use-department-settings";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from"@/components/ui/tabs";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Textarea } from"@/components/ui/textarea";
+import { cn } from"@/lib/utils";
+import { DEPARTMENT_COLORS, getDepartmentColorHex } from"@/lib/constants";
+import { IconInput } from"@/components/ui/icon-input";
 
 interface DepartmentSettingsDialogProps {
     department: { id: string; name: string; description: string | null; color: string | null } | null;
@@ -47,7 +47,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                     <label className="text-sm font-bold text-slate-700 ml-1">Описание деятельности</label>
                     <Textarea
                         name="description"
-                        defaultValue={department.description || ""}
+                        defaultValue={department.description ||""}
                         rows={3}
                         placeholder="Опишите, чем занимается этот отдел..."
                         className="block w-full rounded-xl border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-3 transition-all resize-none leading-relaxed"
@@ -62,8 +62,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                 key={color.value}
                                 type="button"
                                 onClick={() => updateState({ selectedColor: color.value })}
-                                className={cn(
-                                    "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110",
+                                className={cn("w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110",
                                     state.selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100'
                                 )}
                                 style={{ backgroundColor: getDepartmentColorHex(color.value) }}
@@ -83,7 +82,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                     className="w-full h-12 rounded-xl font-bold text-white shadow-xl transition-all active:scale-[0.98]"
                 >
                     {state.loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
-                    {state.loading ? "Сохранение..." : <><Save className="w-5 h-5 mr-2" /> Сохранить изменения</>}
+                    {state.loading ?"Сохранение..." : <><Save className="w-5 h-5 mr-2" /> Сохранить изменения</>}
                 </Button>
             </div>
         </div>
@@ -179,7 +178,7 @@ export function DepartmentSettingsDialog({ department, isOpen, onClose, onSucces
                                     <div className="flex items-center gap-1.5">
                                         <Building className="w-3 h-3 text-slate-300" />
                                         <span className="text-xs text-slate-400 font-bold">
-                                            {role.department ? role.department.name : "Без отдела"}
+                                            {role.department ? role.department.name :"Без отдела"}
                                         </span>
                                     </div>
                                 </div>

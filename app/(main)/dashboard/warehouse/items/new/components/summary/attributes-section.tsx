@@ -1,6 +1,6 @@
-import { LayoutGrid, Tag, Ruler, CheckCircle2, Shirt, Scale, Box, Package, ExternalLink } from "lucide-react";
-import { formatUnit } from "@/lib/utils";
-import { ItemFormData, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
+import { LayoutGrid, Tag, Ruler, CheckCircle2, Shirt, Scale, Box, Package, ExternalLink } from"lucide-react";
+import { formatUnit } from"@/lib/utils";
+import { ItemFormData, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
 
 interface AttributesSectionProps {
     formData: ItemFormData;
@@ -16,10 +16,7 @@ export function AttributesSection({
     selectedColorHex,
     getAttrName
 }: AttributesSectionProps) {
-    const predefinedAttributesKeys = [
-        "Бренд", "Цвет", "Размер", "Качество", "Материал",
-        "width", "height", "depth", "packagingType",
-        "supplierName", "supplierLink", "minBatch", "weight", "features"
+    const predefinedAttributesKeys = ["Бренд","Цвет","Размер","Качество","Материал","width","height","depth","packagingType","supplierName","supplierLink","minBatch","weight","features"
     ];
 
     const hasCustomAttributes = formData.attributes && Object.keys(formData.attributes).some(k => !predefinedAttributesKeys.includes(k));
@@ -32,7 +29,7 @@ export function AttributesSection({
                         <LayoutGrid className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900 ">Характеристики</h3>
+                        <h3 className="text-lg font-bold text-slate-900">Характеристики</h3>
                         <p className="text-xs font-bold text-slate-700">Атрибуты позиции</p>
                     </div>
                 </div>
@@ -41,28 +38,28 @@ export function AttributesSection({
             <div className="p-4 sm:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-3">
                     {[
-                        { label: "Бренд", value: getAttrName("brand", formData.brandCode), icon: Tag },
-                        { label: "Цвет", value: selectedColorName, icon: () => <div className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
-                        { label: "Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
-                        { label: "Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
-                        { label: "Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
-                        { label: "Ед. изм.", value: formatUnit(formData.unit), icon: Scale },
+                        { label:"Бренд", value: getAttrName("brand", formData.brandCode), icon: Tag },
+                        { label:"Цвет", value: selectedColorName, icon: () => <div className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
+                        { label:"Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
+                        { label:"Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
+                        { label:"Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
+                        { label:"Ед. изм.", value: formatUnit(formData.unit), icon: Scale },
                         // Packaging specific
                         {
-                            label: "Габариты",
+                            label:"Габариты",
                             value: (formData.width && formData.height && formData.depth)
                                 ? `${formData.depth}x${formData.width}x${formData.height}`
                                 : null,
                             icon: Box
                         },
                         {
-                            label: "Вес (1 шт)",
+                            label:"Вес (1 шт)",
                             value: formData.weight ? `${formData.weight} гр` : null,
                             icon: Scale
                         },
                         {
-                            label: "Тип упаковки",
-                            value: formData.packagingType ? (formData.packagingType === "transport" ? "Транспортная" : "Индивидуальная") : null,
+                            label:"Тип упаковки",
+                            value: formData.packagingType ? (formData.packagingType ==="transport" ?"Транспортная" :"Индивидуальная") : null,
                             icon: Package
                         }
                     ].filter(i => i.value).map((item, idx) => {
@@ -75,7 +72,7 @@ export function AttributesSection({
                                     </div>
                                     <span className="text-xs font-black text-slate-700">{item.label}</span>
                                 </div>
-                                <span className="text-sm font-bold text-slate-900 ">{item.value}</span>
+                                <span className="text-sm font-bold text-slate-900">{item.value}</span>
                             </div>
                         )
                     })}
@@ -140,7 +137,7 @@ export function AttributesSection({
                                 .map(([key, val]) => (
                                     <div key={key} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-200/50 flex items-center gap-3 shadow-sm group hover:border-slate-300 transition-all">
                                         <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-slate-900 transition-colors" />
-                                        <span className="text-[11px] font-bold text-slate-700 ">{key}:</span>
+                                        <span className="text-[11px] font-bold text-slate-700">{key}:</span>
                                         <span className="text-sm font-bold text-slate-900">{String(val)}</span>
                                     </div>
                                 ))}

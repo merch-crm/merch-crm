@@ -1,9 +1,9 @@
-import { useItemDetail } from "../context/ItemDetailContext";
-import { ItemActionButtons } from "./ItemActionButtons";
-import { ItemStockAlerts } from "./ItemStockAlerts";
-import { ItemFinancialSection } from "./ItemFinancialSection";
-import { ItemPlacementWrapper } from "./ItemPlacementWrapper";
-import { cn } from "@/lib/utils";
+import { useItemDetail } from"../context/ItemDetailContext";
+import { ItemActionButtons } from"./ItemActionButtons";
+import { ItemStockAlerts } from"./ItemStockAlerts";
+import { ItemFinancialSection } from"./ItemFinancialSection";
+import { ItemPlacementWrapper } from"./ItemPlacementWrapper";
+import { cn } from"@/lib/utils";
 
 export function ItemDetailsRightSidebar() {
     const {

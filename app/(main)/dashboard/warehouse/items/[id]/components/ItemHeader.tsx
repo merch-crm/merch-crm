@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from"react";
 
-import { Edit3, Save, Trash2, X, RefreshCcw, ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Edit3, Save, Trash2, X, RefreshCcw, ArrowLeft } from"lucide-react";
+import { Button } from"@/components/ui/button";
 import { useRouter }
-    from "next/navigation";
-import { InventoryItem, Category } from "@/app/(main)/dashboard/warehouse/types";
-import { cn } from "@/lib/utils";
+    from"next/navigation";
+import { InventoryItem, Category } from"@/app/(main)/dashboard/warehouse/types";
+import { cn } from"@/lib/utils";
 
 interface ItemHeaderProps {
     item: InventoryItem;
@@ -45,9 +45,8 @@ export const ItemHeader = React.memo(({
     }, [isEditing, editName]);
 
     return (
-        <div className={cn(
-            "space-y-1 w-full",
-            item.isArchived && "opacity-80"
+        <div className={cn("space-y-1 w-full",
+            item.isArchived &&"opacity-80"
         )}>
             {/* Status Banner for Archive */}
             {item.isArchived && (
@@ -57,7 +56,7 @@ export const ItemHeader = React.memo(({
                             <Trash2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-destructive leading-none mb-1 ">Архив товара</p>
+                            <p className="text-sm font-bold text-destructive leading-none mb-1">Архив товара</p>
                             <p className="text-[11px] font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
                         </div>
                     </div>
@@ -82,7 +81,7 @@ export const ItemHeader = React.memo(({
                                     value={editName}
                                     onChange={e => onEditNameChange(e.target.value)}
                                     aria-label="Название товара"
-                                    className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden "
+                                    className="text-2xl md:text-4xl font-bold text-foreground bg-transparent outline-none w-full border-b-2 border-primary/30 focus:border-primary transition-colors pb-1 placeholder:text-muted-foreground/30 resize-none overflow-hidden"
                                     placeholder="Название…"
                                     rows={1}
                                 />
@@ -113,25 +112,25 @@ export const ItemHeader = React.memo(({
 
                                         const forceSingular = (name: string, metadataSingular?: string | null) => {
                                             if (metadataSingular && metadataSingular.toLowerCase() !== name.toLowerCase()) return metadataSingular;
-                                            if (!name) return "";
+                                            if (!name) return"";
                                             const n = name.toLowerCase();
-                                            if (n.includes("футболк")) return "Футболка";
-                                            if (n.includes("худи")) return "Худи";
-                                            if (n.includes("лонгслив")) return "Лонгслив";
-                                            if (n.includes("свитшот")) return "Свитшот";
-                                            if (n.includes("толстовк")) return "Толстовка";
-                                            if (n.includes("куртк")) return "Куртка";
-                                            if (n.includes("бомбер")) return "Бомбер";
-                                            if (n.includes("шорт")) return "Шорты";
-                                            if (n.includes("штан") || n.includes("брюк")) return "Штаны";
-                                            if (n.includes("кепк")) return "Кепка";
-                                            if (n.includes("шапк")) return "Шапка";
-                                            if (n.includes("поло")) return "Поло";
-                                            if (n.endsWith("ки")) return name.slice(0, -2) + "ка";
+                                            if (n.includes("футболк")) return"Футболка";
+                                            if (n.includes("худи")) return"Худи";
+                                            if (n.includes("лонгслив")) return"Лонгслив";
+                                            if (n.includes("свитшот")) return"Свитшот";
+                                            if (n.includes("толстовк")) return"Толстовка";
+                                            if (n.includes("куртк")) return"Куртка";
+                                            if (n.includes("бомбер")) return"Бомбер";
+                                            if (n.includes("шорт")) return"Шорты";
+                                            if (n.includes("штан") || n.includes("брюк")) return"Штаны";
+                                            if (n.includes("кепк")) return"Кепка";
+                                            if (n.includes("шапк")) return"Шапка";
+                                            if (n.includes("поло")) return"Поло";
+                                            if (n.endsWith("ки")) return name.slice(0, -2) +"ка";
                                             return name;
                                         };
 
-                                        const singularName = cat?.singularName || (cat?.name ? forceSingular(cat.name) : "");
+                                        const singularName = cat?.singularName || (cat?.name ? forceSingular(cat.name) :"");
 
                                         if (singularName) {
                                             const pluralOptions = [cat?.name, cat?.pluralName].filter(Boolean) as string[];
@@ -145,8 +144,8 @@ export const ItemHeader = React.memo(({
 
                                             // Fallback for common plurals if not in metadata
                                             const lowerName = item.name.toLowerCase();
-                                            if (lowerName.startsWith("футболки ")) return "Футболка " + item.name.substring(9);
-                                            if (lowerName.startsWith("худи ")) return "Худи " + item.name.substring(5);
+                                            if (lowerName.startsWith("футболки")) return"Футболка" + item.name.substring(9);
+                                            if (lowerName.startsWith("худи")) return"Худи" + item.name.substring(5);
                                         }
                                         return item.name;
                                     })()}
@@ -189,7 +188,7 @@ export const ItemHeader = React.memo(({
                                     ) : (
                                         <div className="flex items-center justify-center gap-2">
                                             <Save className="w-4 h-4" />
-                                            <span className="hidden sm:inline">{isAnyUploading ? "Загрузка…" : "Сохранить"}</span>
+                                            <span className="hidden sm:inline">{isAnyUploading ?"Загрузка…" :"Сохранить"}</span>
                                         </div>
                                     )}
                                 </Button>
@@ -215,4 +214,4 @@ export const ItemHeader = React.memo(({
     );
 });
 
-ItemHeader.displayName = "ItemHeader";
+ItemHeader.displayName ="ItemHeader";

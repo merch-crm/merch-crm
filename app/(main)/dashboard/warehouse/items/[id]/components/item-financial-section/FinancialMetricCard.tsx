@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
+import React from"react";
+import { cn } from"@/lib/utils";
+import { Input } from"@/components/ui/input";
 
-import { FinancialMetricCardProps } from "./types";
+import { FinancialMetricCardProps } from"./types";
 
 export function FinancialMetricCard({
     label,
@@ -20,18 +20,16 @@ export function FinancialMetricCard({
     onDoubleClick,
     className
 }: FinancialMetricCardProps) {
-    const isLucideIcon = typeof Icon !== "string";
+    const isLucideIcon = typeof Icon !=="string";
 
     return (
-        <div className={cn(
-            "group p-4 rounded-2xl bg-muted/20 border border-border transition-all duration-300 hover:bg-card hover:border-border/80 flex items-center gap-3 text-left h-full",
+        <div className={cn("group p-4 rounded-2xl bg-muted/20 border border-border transition-all duration-300 hover:bg-card hover:border-border/80 flex items-center gap-3 text-left h-full",
             className
         )}>
-            <div className={cn(
-                "w-11 h-11 rounded-3xl flex items-center justify-center shrink-0 relative overflow-hidden shadow-sm border",
+            <div className={cn("w-11 h-11 rounded-3xl flex items-center justify-center shrink-0 relative overflow-hidden shadow-sm border",
                 bgColor,
                 iconColor,
-                bgColor.replace("bg-", "border-").concat("/50")
+                bgColor.replace("bg-","border-").concat("/50")
             )}>
                 <div className="absolute inset-0 bg-white/40" />
                 {isLucideIcon ? (
@@ -48,16 +46,16 @@ export function FinancialMetricCard({
                     <div className="flex items-center gap-1">
                         <Input
                             type="number"
-                            value={editValue ?? ""}
+                            value={editValue ??""}
                             onChange={(e) => onEditChange?.(e.target.value)}
                             aria-label={label}
                             className="text-lg font-black text-foreground bg-transparent border-none p-1 w-full focus-visible:ring-0 shadow-none rounded-lg h-auto"
                         />
                     </div>
                 ) : (
-                    <div className={cn(onDoubleClick && "cursor-pointer")} onDoubleClick={onDoubleClick}>
+                    <div className={cn(onDoubleClick &&"cursor-pointer")} onDoubleClick={onDoubleClick}>
                         <p className="text-lg font-black text-foreground  group-hover:text-foreground/80 transition-colors">
-                            {typeof value === "number" ? Math.round(value).toLocaleString('ru-RU') : value} {currencySymbol}
+                            {typeof value ==="number" ? Math.round(value).toLocaleString('ru-RU') : value} {currencySymbol}
                         </p>
                         {secondaryValue && (
                             <span className="text-xs text-muted-foreground block -mt-0.5">

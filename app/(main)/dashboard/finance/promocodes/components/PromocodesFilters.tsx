@@ -1,5 +1,5 @@
-import { Filter } from "lucide-react";
-import { Select } from "@/components/ui/select";
+import { Filter } from"lucide-react";
+import { Select } from"@/components/ui/select";
 
 interface FiltersType {
     status: string;
@@ -24,9 +24,9 @@ export function PromocodesFilters({ filters, setFilters, filteredCount, currency
             <div className="w-[180px]">
                 <Select
                     options={[
-                        { id: "all", title: "Все статусы" },
-                        { id: "active", title: "Только активные" },
-                        { id: "paused", title: "На паузе" }
+                        { id:"all", title:"Все статусы" },
+                        { id:"active", title:"Только активные" },
+                        { id:"paused", title:"На паузе" }
                     ]}
                     value={filters.status}
                     onChange={(val) => setFilters({ ...filters, status: val })}
@@ -37,11 +37,11 @@ export function PromocodesFilters({ filters, setFilters, filteredCount, currency
             <div className="w-[200px]">
                 <Select
                     options={[
-                        { id: "all", title: "Все типы скидок" },
-                        { id: "percentage", title: "Процент %" },
-                        { id: "fixed", title: `Фикс. сумма ${currencySymbol}` },
-                        { id: "free_shipping", title: "Беспл. доставка" },
-                        { id: "gift", title: "Подарок" }
+                        { id:"all", title:"Все типы скидок" },
+                        { id:"percentage", title:"Процент %" },
+                        { id:"fixed", title: `Фикс. сумма ${currencySymbol}` },
+                        { id:"free_shipping", title:"Беспл. доставка" },
+                        { id:"gift", title:"Подарок" }
                     ]}
                     value={filters.type}
                     onChange={(val) => setFilters({ ...filters, type: val })}

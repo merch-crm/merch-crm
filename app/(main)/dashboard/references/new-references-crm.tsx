@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState } from"react";
+import Image from"next/image";
 import {
     Plus,
     ChevronLeft,
@@ -45,10 +45,10 @@ import {
     Power,
     PlusCircle,
     MoreHorizontal
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import InvoiceDashboard from "./invoice-dashboard";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { motion, AnimatePresence } from"framer-motion";
+import InvoiceDashboard from"./invoice-dashboard";
 import {
     format,
     addMonths,
@@ -62,8 +62,8 @@ import {
     eachDayOfInterval,
     isWithinInterval,
     getDate,
-} from "date-fns";
-import { ru } from "date-fns/locale";
+} from"date-fns";
+import { ru } from"date-fns/locale";
 
 /* --- 1. LOGISTICS BUBBLES --- */
 const FlightBubbles = () => {
@@ -78,7 +78,7 @@ const FlightBubbles = () => {
             >
                 <div className="flex items-center gap-3 px-7 py-4 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-black">
                     <span className="text-[16px] font-semibold">Смена аэропорта</span>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold ">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold">
                         <span>IST</span>
                         <ChevronRight className="w-2.5 h-2.5 opacity-30 mx-0.5" />
                         <span>SAW</span>
@@ -92,9 +92,9 @@ const FlightBubbles = () => {
 
             <div className="flex flex-wrap gap-3 justify-center w-full">
                 {[
-                    { label: "Пересадка в KIV", time: "1ч 30м", variant: "dark" },
-                    { label: "Турецкие авиалинии", time: "3ч 45м", variant: "light" },
-                    { label: "Турецкие авиалинии", time: "3ч 45м", variant: "dark" }
+                    { label:"Пересадка в KIV", time:"1ч 30м", variant:"dark" },
+                    { label:"Турецкие авиалинии", time:"3ч 45м", variant:"light" },
+                    { label:"Турецкие авиалинии", time:"3ч 45м", variant:"dark" }
                 ].map((item, i) => (
                     <motion.div
                         key={i}
@@ -105,17 +105,15 @@ const FlightBubbles = () => {
                         whileHover={{ y: -5, scale: 1.02 }}
                         className="relative cursor-pointer"
                     >
-                        <div className={cn(
-                            "flex items-center gap-3 px-7 py-4 rounded-full shadow-xl transition-shadow",
-                            item.variant === "dark" ? "bg-black text-white shadow-black/10" : "bg-white text-black shadow-black/5"
+                        <div className={cn("flex items-center gap-3 px-7 py-4 rounded-full shadow-xl transition-shadow",
+                            item.variant ==="dark" ?"bg-black text-white shadow-black/10" :"bg-white text-black shadow-black/5"
                         )}>
                             <span className="text-[16px] font-semibold">{item.label}</span>
-                            <div className={cn(
-                                "px-3.5 py-1.5 rounded-xl text-[13px] font-bold",
-                                item.variant === "dark" ? "bg-white text-black" : "bg-black text-white"
+                            <div className={cn("px-3.5 py-1.5 rounded-xl text-[13px] font-bold",
+                                item.variant ==="dark" ?"bg-white text-black" :"bg-black text-white"
                             )}>{item.time}</div>
                         </div>
-                        <svg className={cn("absolute -bottom-2.5 left-1/2 -translate-x-1/2", item.variant === "dark" ? "text-black" : "text-white")} width="20" height="12" viewBox="0 0 20 12" fill="currentColor">
+                        <svg className={cn("absolute -bottom-2.5 left-1/2 -translate-x-1/2", item.variant ==="dark" ?"text-black" :"text-white")} width="20" height="12" viewBox="0 0 20 12" fill="currentColor">
                             <path d="M10 12L0 0H20L10 12Z" />
                         </svg>
                     </motion.div>
@@ -145,7 +143,7 @@ const DeliveryTracking = () => {
 
                     <motion.div
                         initial={{ width: 0 }}
-                        whileInView={{ width: "50%" }}
+                        whileInView={{ width:"50%" }}
                         viewport={{ once: true }}
                         transition={{ duration: 2, ease: [0.34, 1.56, 0.64, 1] }}
                         className="absolute left-[50px] h-4 bg-[#BFFF07] rounded-full top-1/2 -translate-y-1/2 z-0 shadow-[0_0_20px_rgba(191,255,7,0.3)]"
@@ -154,7 +152,7 @@ const DeliveryTracking = () => {
                     <motion.div
                         initial={{ scale: 0 }}
                         whileInView={{ scale: 1 }}
-                        transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+                        transition={{ delay: 0.4, type:"spring", stiffness: 200 }}
                         className="relative z-10 w-14 h-14 rounded-full bg-[#BFFF07] flex items-center justify-center text-black shadow-lg"
                     >
                         <Package className="w-7 h-7" />
@@ -164,7 +162,7 @@ const DeliveryTracking = () => {
                         <motion.div
                             initial={{ scale: 0 }}
                             whileInView={{ scale: 1 }}
-                            transition={{ delay: 0.9, type: "spring", stiffness: 200 }}
+                            transition={{ delay: 0.9, type:"spring", stiffness: 200 }}
                             className="w-14 h-14 rounded-full bg-[#BFFF07] flex items-center justify-center text-black shadow-lg shadow-[#BFFF07]/40 relative"
                         >
                             <Truck className="w-7 h-7" />
@@ -207,7 +205,7 @@ const TaskelloCard = () => {
                     <div className="h-[45%] bg-gradient-to-br from-[#FF4E00] via-[#FF2A00] to-[#C90000] relative">
                         <motion.div
                             animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.1, 1] }}
-                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{ duration: 4, repeat: Infinity, ease:"easeInOut" }}
                             className="absolute top-0 right-0 w-32 h-32 bg-white/20 blur-[40px] rounded-full"
                         />
                         <div className="absolute top-10 right-10 text-right">
@@ -377,9 +375,9 @@ const QuickSettings = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                     {modules.map((m, i) => (
-                        <motion.button key={i} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={cn("aspect-square rounded-[40px] flex flex-col items-center justify-center transition-all duration-300 relative overflow-hidden", m.active ? "bg-white text-black shadow-lg" : "bg-black/20 text-white/40 hover:bg-black/30")}>
+                        <motion.button key={i} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={cn("aspect-square rounded-[40px] flex flex-col items-center justify-center transition-all duration-300 relative overflow-hidden", m.active ?"bg-white text-black shadow-lg" :"bg-black/20 text-white/40 hover:bg-black/30")}>
                             <div className="absolute top-5 right-5 flex gap-1">
-                                <div className={cn("w-1.5 h-1.5 rounded-full", m.active ? "bg-black" : "bg-white/20")} />
+                                <div className={cn("w-1.5 h-1.5 rounded-full", m.active ?"bg-black" :"bg-white/20")} />
                             </div>
                             {m.icon}
                         </motion.button>
@@ -411,17 +409,17 @@ const DarkSchedule = () => {
                 </div>
                 <div className="space-y-3">
                     {[
-                        { d: "Пн", n: "20", t: "На сегодня ничего не запланировано", active: false },
-                        { d: "Вт", n: "21", t: "Встреча по онбордингу проекта", sub: "09:15 - 10:15", active: true },
-                        { d: "Вт", n: "21", t: "Ужин с клиентом", sub: "18:30 - 20:00", active: true },
-                        { d: "Сб", n: "25", t: "Кофе", sub: "14:30 - 15:30", active: false }
+                        { d:"Пн", n:"20", t:"На сегодня ничего не запланировано", active: false },
+                        { d:"Вт", n:"21", t:"Встреча по онбордингу проекта", sub:"09:15 - 10:15", active: true },
+                        { d:"Вт", n:"21", t:"Ужин с клиентом", sub:"18:30 - 20:00", active: true },
+                        { d:"Сб", n:"25", t:"Кофе", sub:"14:30 - 15:30", active: false }
                     ].map((item, i) => (
                         <motion.div key={i} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} whileHover={{ scale: 1.03, x: 5 }} className="flex gap-3 cursor-pointer group">
                             <div className="w-10 pt-1.5 flex flex-col items-center">
                                 <span className="text-[11px] font-bold text-[#444] group-hover:text-[#666] transition-colors">{item.d}</span>
                                 <span className="text-[20px] font-semibold text-white">{item.n}</span>
                             </div>
-                            <div className={cn("flex-1 px-6 py-5 rounded-[22px] transition-all", item.active ? "bg-[#7C3AED] text-white shadow-xl shadow-[#7C3AED]/20" : "bg-[#181818] text-[#666] group-hover:bg-[#202020]")}>
+                            <div className={cn("flex-1 px-6 py-5 rounded-[22px] transition-all", item.active ?"bg-[#7C3AED] text-white shadow-xl shadow-[#7C3AED]/20" :"bg-[#181818] text-[#666] group-hover:bg-[#202020]")}>
                                 <h4 className="text-[14px] font-bold leading-tight">{item.t}</h4>
                                 {item.sub && <p className="text-[12px] opacity-70 mt-1 font-medium">{item.sub}</p>}
                             </div>
@@ -436,7 +434,7 @@ const DarkSchedule = () => {
 /* --- 8. CALENDAR WIDGETS --- */
 const CalendarWidgets = () => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date(2021, 11, 28));
-    const daysArr = ["П", "В", "С", "Ч", "П", "С", "В"];
+    const daysArr = ["П","В","С","Ч","П","С","В"];
     const getDaysInMonth = (date: Date) => {
         const start = startOfWeek(startOfMonth(date), { weekStartsOn: 1 });
         const end = endOfWeek(endOfMonth(date), { weekStartsOn: 1 });
@@ -449,14 +447,14 @@ const CalendarWidgets = () => {
                     <div className="flex justify-between items-start mb-6">
                         <motion.div layout>
                             <div className="text-[36px] font-bold text-black leading-noneer">{selectedDate ? getDate(selectedDate) : getDate(new Date())}</div>
-                            <div className="text-[18px] font-medium text-slate-300">{selectedDate ? format(selectedDate, "MMMM", { locale: ru }) : "Дата"}</div>
+                            <div className="text-[18px] font-medium text-slate-300">{selectedDate ? format(selectedDate,"MMMM", { locale: ru }) :"Дата"}</div>
                         </motion.div>
                     </div>
                     <div className="grid grid-cols-7 gap-y-3 text-center">
                         {daysArr.map((d, i) => <div key={i} className="text-[12px] font-black text-slate-200">{d}</div>)}
                         {getDaysInMonth(new Date(2021, 11, 1)).map((date, i) => (
                             <div key={i} className="flex items-center justify-center">
-                                <motion.div onClick={() => setSelectedDate(date)} className={cn("w-7 h-7 text-[14px] font-bold cursor-pointer flex items-center justify-center", isSameDay(date, selectedDate!) ? "bg-[#FF3B30] text-white rounded-[8px] shadow-lg shadow-[#FF3B30]/30" : (isSameMonth(date, new Date(2021, 11, 1)) ? "text-slate-800" : "text-slate-100"))}>
+                                <motion.div onClick={() => setSelectedDate(date)} className={cn("w-7 h-7 text-[14px] font-bold cursor-pointer flex items-center justify-center", isSameDay(date, selectedDate!) ?"bg-[#FF3B30] text-white rounded-[8px] shadow-lg shadow-[#FF3B30]/30" : (isSameMonth(date, new Date(2021, 11, 1)) ?"text-slate-800" :"text-slate-100"))}>
                                     {getDate(date)}
                                 </motion.div>
                             </div>
@@ -475,26 +473,26 @@ const ModernDropdown = () => {
 
     const options = [
         {
-            id: "public",
-            title: "Public",
-            desc: "Shared with everyone across all workspaces.",
+            id:"public",
+            title:"Public",
+            desc:"Shared with everyone across all workspaces.",
             icon: <Globe className="w-5 h-5" />,
-            color: "text-slate-400"
+            color:"text-slate-400"
         },
         {
-            id: "workspace",
-            title: "Limited to Workspace",
-            desc: "Shared with everyone in your workspace team.",
+            id:"workspace",
+            title:"Limited to Workspace",
+            desc:"Shared with everyone in your workspace team.",
             icon: <Zap className="w-5 h-5" />,
-            color: "text-blue-500",
+            color:"text-blue-500",
             active: true
         },
         {
-            id: "private",
-            title: "Private",
-            desc: "Visible only to you.",
+            id:"private",
+            title:"Private",
+            desc:"Visible only to you.",
             icon: <Lock className="w-5 h-5" />,
-            color: "text-slate-400"
+            color:"text-slate-400"
         }
     ];
 
@@ -509,7 +507,7 @@ const ModernDropdown = () => {
                         className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-4 flex items-center justify-between shadow-sm hover:shadow-md transition-all group"
                     >
                         <span className="text-[15px] font-medium text-slate-500">Select option</span>
-                        <ChevronDown className={cn("w-4 h-4 text-blue-600 transition-transform duration-300", isOpen && "rotate-180")} />
+                        <ChevronDown className={cn("w-4 h-4 text-blue-600 transition-transform duration-300", isOpen &&"rotate-180")} />
                     </button>
 
                     <AnimatePresence>
@@ -528,27 +526,23 @@ const ModernDropdown = () => {
                                                 setSelected(option.id);
                                                 setIsOpen(false);
                                             }}
-                                            className={cn(
-                                                "flex items-start gap-3 p-4 rounded-2xl transition-all text-left group/item",
-                                                option.active ? "bg-blue-50/50" : "hover:bg-slate-50"
+                                            className={cn("flex items-start gap-3 p-4 rounded-2xl transition-all text-left group/item",
+                                                option.active ?"bg-blue-50/50" :"hover:bg-slate-50"
                                             )}
                                         >
-                                            <div className={cn(
-                                                "mt-0.5 transition-colors",
-                                                option.active ? "text-blue-600" : "text-slate-300 group-hover/item:text-slate-400"
+                                            <div className={cn("mt-0.5 transition-colors",
+                                                option.active ?"text-blue-600" :"text-slate-300 group-hover/item:text-slate-400"
                                             )}>
                                                 {option.icon}
                                             </div>
                                             <div className="flex flex-col gap-0.5">
-                                                <span className={cn(
-                                                    "text-[15px] font-bold leading-none",
-                                                    option.active ? "text-blue-700" : "text-slate-900"
+                                                <span className={cn("text-[15px] font-bold leading-none",
+                                                    option.active ?"text-blue-700" :"text-slate-900"
                                                 )}>
                                                     {option.title}
                                                 </span>
-                                                <p className={cn(
-                                                    "text-[13px] font-medium leading-tight",
-                                                    option.active ? "text-blue-600/60" : "text-slate-400"
+                                                <p className={cn("text-[13px] font-medium leading-tight",
+                                                    option.active ?"text-blue-600/60" :"text-slate-400"
                                                 )}>
                                                     {option.desc}
                                                 </p>
@@ -615,14 +609,14 @@ const AIChatCards = () => {
 
 const PaginationCRM = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const pages = [1, 2, 3, "...", 10];
+    const pages = [1, 2, 3,"...", 10];
     return (
         <div className="p-6 md:p-24 rounded-[40px] bg-[#EBEBEB] flex flex-col gap-3 items-center justify-center overflow-hidden">
             <div className="flex items-center bg-[#D9D9D9]/50 p-1 rounded-[20px] shadow-inner">
                 <motion.button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="flex items-center gap-1.5 px-6 py-3.5 rounded-[16px] bg-white text-black font-bold text-[15px] shadow-sm hover:bg-white/90 mr-1"><ChevronLeft className="w-4 h-4" />Пред</motion.button>
                 <div className="flex items-center px-2 gap-1.5">
                     {pages.map((p, i) => (
-                        <motion.button key={i} onClick={() => typeof p === "number" && setCurrentPage(p)} className={cn("w-11 h-11 rounded-[14px] flex items-center justify-center text-[16px] font-bold transition-all", p === currentPage ? "bg-[#1A1A1A] text-white shadow-xl" : (p === "..." ? "text-black/30 cursor-default" : "text-black hover:bg-black/5"))}>{p}</motion.button>
+                        <motion.button key={i} onClick={() => typeof p ==="number" && setCurrentPage(p)} className={cn("w-11 h-11 rounded-[14px] flex items-center justify-center text-[16px] font-bold transition-all", p === currentPage ?"bg-[#1A1A1A] text-white shadow-xl" : (p ==="..." ?"text-black/30 cursor-default" :"text-black hover:bg-black/5"))}>{p}</motion.button>
                     ))}
                 </div>
                 <motion.button onClick={() => setCurrentPage(p => Math.min(10, p + 1))} className="flex items-center gap-1.5 px-6 py-3.5 rounded-[16px] bg-white text-black font-bold text-[15px] shadow-sm hover:bg-white/90 ml-1">След<ChevronRight className="w-4 h-4" /></motion.button>
@@ -646,7 +640,7 @@ const PWAPrompt = () => {
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                transition={{ type:"spring", stiffness: 260, damping: 20 }}
                 className="relative group w-full max-w-[420px]"
             >
                 <div className="bg-[#BFFF07] rounded-[32px] p-6 pr-12 shadow-[0_20px_50px_rgba(191,255,7,0.15)] relative">
@@ -664,7 +658,7 @@ const PWAPrompt = () => {
                                 transition={{
                                     duration: 2,
                                     repeat: Infinity,
-                                    ease: "easeInOut"
+                                    ease:"easeInOut"
                                 }}
                                 className="absolute -bottom-1 -right-1"
                             >
@@ -716,22 +710,22 @@ const JobActionsGrid = () => {
             {/* Floating dots */}
             <motion.div
                 animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 4, repeat: Infinity, ease:"easeInOut" }}
                 className="absolute top-5 left-5 w-1 h-1 rounded-full bg-black opacity-40"
             />
             <motion.div
                 animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                transition={{ duration: 5, repeat: Infinity, ease:"easeInOut", delay: 1 }}
                 className="absolute bottom-10 right-10 w-1 h-1 rounded-full bg-black opacity-40"
             />
             <motion.div
                 animate={{ x: [0, -7.5, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                transition={{ duration: 6, repeat: Infinity, ease:"easeInOut", delay: 0.5 }}
                 className="absolute top-1/2 right-5 w-1 h-1 rounded-full bg-black opacity-40"
             />
             <motion.div
                 animate={{ x: [0, 7.5, 0] }}
-                transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                transition={{ duration: 5.5, repeat: Infinity, ease:"easeInOut", delay: 2 }}
                 className="absolute bottom-5 left-10 w-1 h-1 rounded-full bg-black opacity-40"
             />
 
@@ -774,10 +768,8 @@ const JobActionsGrid = () => {
                                             whileInView={{ scale: 1 }}
                                             viewport={{ once: true }}
                                             transition={{ delay: index * 0.05 + dot * 0.03 }}
-                                            className={cn(
-                                                "w-1.5 h-1.5 rounded-full transition-all duration-300",
-                                                action.dots,
-                                                "group-hover:scale-110"
+                                            className={cn("w-1.5 h-1.5 rounded-full transition-all duration-300",
+                                                action.dots,"group-hover:scale-110"
                                             )}
                                         />
                                     ))}
@@ -833,7 +825,7 @@ const WeatherWidget = () => {
                     <div className="flex items-center gap-1">
                         <div className="flex gap-0.5">
                             {[1, 2, 3, 4, 5].map((i) => (
-                                <div key={i} className={cn("w-1 h-1 rounded-full", i <= 3 ? "bg-white" : "bg-white/30")} />
+                                <div key={i} className={cn("w-1 h-1 rounded-full", i <= 3 ?"bg-white" :"bg-white/30")} />
                             ))}
                         </div>
                         <span className="ml-1.5 font-semibold">GS</span>
@@ -865,12 +857,12 @@ const WeatherWidget = () => {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{
                                 opacity: [1, 0.8, 1, 0.9, 1],
-                                filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"]
+                                filter: ["brightness(1)","brightness(1.5)","brightness(1)"]
                             }}
                             transition={{
                                 duration: 2,
                                 repeat: Infinity,
-                                ease: "easeInOut"
+                                ease:"easeInOut"
                             }}
                             className="absolute top-[45%] left-[50%] -translate-x-1/2 w-40 h-64 z-10 origin-top"
                             style={{ transform: 'translateX(-20px)' }}
@@ -894,7 +886,7 @@ const WeatherWidget = () => {
                         {/* Cloud Composition */}
                         <motion.div
                             animate={{ y: [0, -5, 0] }}
-                            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                            transition={{ duration: 6, repeat: Infinity, ease:"easeInOut" }}
                             className="relative z-20"
                         >
                             {/* Inner Glow (Simulating lightning inside cloud) */}
@@ -1037,14 +1029,14 @@ const SmartHomeDashboard = () => {
 
                     <div className="space-y-3">
                         {[
-                            { icon: Fan, label: "Air Conditioner", units: "2 unit", power: "18kWh", active: true },
-                            { icon: Router, label: "Wi-Fi Router", units: "1 unit", power: "8kWh", active: false },
-                            { icon: Tv, label: "Smart TV", units: "2 unit", power: "12kWh", active: false },
-                            { icon: Droplets, label: "Humidifier", units: "1 unit", power: "2kWh", active: false },
+                            { icon: Fan, label:"Air Conditioner", units:"2 unit", power:"18kWh", active: true },
+                            { icon: Router, label:"Wi-Fi Router", units:"1 unit", power:"8kWh", active: false },
+                            { icon: Tv, label:"Smart TV", units:"2 unit", power:"12kWh", active: false },
+                            { icon: Droplets, label:"Humidifier", units:"1 unit", power:"2kWh", active: false },
                         ].map((item, i) => (
-                            <div key={i} className={cn("flex items-center justify-between p-4 rounded-3xl cursor-pointer transition-all hover:scale-[1.02]", item.active ? "bg-slate-50" : "hover:bg-slate-50")}>
+                            <div key={i} className={cn("flex items-center justify-between p-4 rounded-3xl cursor-pointer transition-all hover:scale-[1.02]", item.active ?"bg-slate-50" :"hover:bg-slate-50")}>
                                 <div className="flex items-center gap-3">
-                                    <div className={cn("w-12 h-12 rounded-[20px] flex items-center justify-center", item.active ? "bg-white shadow-sm text-slate-800" : "bg-white border border-slate-200 text-slate-400")}>
+                                    <div className={cn("w-12 h-12 rounded-[20px] flex items-center justify-center", item.active ?"bg-white shadow-sm text-slate-800" :"bg-white border border-slate-200 text-slate-400")}>
                                         <item.icon className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -1295,20 +1287,18 @@ const DateRangePickers = () => {
                             <div key={i} className="relative h-10 flex items-center justify-center">
                                 {/* Range Background Strip */}
                                 {isSelected(day, selectedRange1) && (
-                                    <div className={cn(
-                                        "absolute top-1 bottom-1 bg-[#F0F6FF]",
-                                        start && "left-1 rounded-l-full",
-                                        end && "right-1 rounded-r-full",
-                                        range && "left-0 right-0",
-                                        !range && !start && !end && "left-0 right-0" // Fallback
+                                    <div className={cn("absolute top-1 bottom-1 bg-[#F0F6FF]",
+                                        start &&"left-1 rounded-l-full",
+                                        end &&"right-1 rounded-r-full",
+                                        range &&"left-0 right-0",
+                                        !range && !start && !end &&"left-0 right-0" // Fallback
                                     )} style={{ left: start ? '4px' : '0', right: end ? '4px' : '0' }} />
                                 )}
 
                                 <button type="button"
                                     onClick={() => handleDateClick(day, setSelectedRange1, selectedRange1)}
-                                    className={cn(
-                                        "relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all z-10",
-                                        selected ? "bg-[#0062FF] text-white shadow-lg shadow-[#0062FF]/40" : isCurrentMonth ? "text-slate-700 hover:bg-slate-50" : "text-slate-300",
+                                    className={cn("relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all z-10",
+                                        selected ?"bg-[#0062FF] text-white shadow-lg shadow-[#0062FF]/40" : isCurrentMonth ?"text-slate-700 hover:bg-slate-50" :"text-slate-300",
 
                                     )}
                                 >
@@ -1370,19 +1360,17 @@ const DateRangePickers = () => {
                             <div key={i} className="relative h-10 flex items-center justify-center">
                                 {/* Range Background Strip */}
                                 {isSelected(day, selectedRange2) && (
-                                    <div className={cn(
-                                        "absolute top-1 bottom-1 bg-[#F4EFFD]",
-                                        start && "left-1 rounded-l-full",
-                                        end && "right-1 rounded-r-full",
-                                        range && "left-0 right-0",
+                                    <div className={cn("absolute top-1 bottom-1 bg-[#F4EFFD]",
+                                        start &&"left-1 rounded-l-full",
+                                        end &&"right-1 rounded-r-full",
+                                        range &&"left-0 right-0",
                                     )} style={{ left: start ? '4px' : '0', right: end ? '4px' : '0' }} />
                                 )}
 
                                 <button type="button"
                                     onClick={() => handleDateClick(day, setSelectedRange2, selectedRange2)}
-                                    className={cn(
-                                        "relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all z-10",
-                                        selected ? "bg-[#7B2CBF] text-white shadow-lg shadow-[#7B2CBF]/40" : isCurrentMonth ? "text-slate-700 hover:bg-slate-50" : "text-slate-300",
+                                    className={cn("relative w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all z-10",
+                                        selected ?"bg-[#7B2CBF] text-white shadow-lg shadow-[#7B2CBF]/40" : isCurrentMonth ?"text-slate-700 hover:bg-slate-50" :"text-slate-300",
                                     )}
                                 >
                                     {format(day, 'd', { locale: ru })}
@@ -1412,48 +1400,37 @@ const DateRangePickers = () => {
 const PricingPlans = () => {
     const plans = [
         {
-            name: "Стартовый",
-            price: "$0",
-            period: "/мес",
-            description: "Идеально для небольших команд",
-            buttonText: "Начать работу",
-            features: [
-                "3 Проекта",
-                "AI Анализ кандидатов",
-                "AI Рекрутер"
+            name:"Стартовый",
+            price:"$0",
+            period:"/мес",
+            description:"Идеально для небольших команд",
+            buttonText:"Начать работу",
+            features: ["3 Проекта","AI Анализ кандидатов","AI Рекрутер"
             ],
-            bgClass: "bg-slate-100",
-            badgeClass: "bg-white text-black"
+            bgClass:"bg-slate-100",
+            badgeClass:"bg-white text-black"
         },
         {
-            name: "ПРОФЕССИОНАЛ",
-            price: "$99",
-            period: "/мес",
-            description: "Идеально для растущих команд",
-            buttonText: "Начать работу",
-            features: [
-                "Безлимит проектов",
-                "AI Анализ кандидатов",
-                "AI Рекрутер",
-                "Гарантия возврата"
+            name:"ПРОФЕССИОНАЛ",
+            price:"$99",
+            period:"/мес",
+            description:"Идеально для растущих команд",
+            buttonText:"Начать работу",
+            features: ["Безлимит проектов","AI Анализ кандидатов","AI Рекрутер","Гарантия возврата"
             ],
-            bgClass: "bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-100",
-            badgeClass: "bg-white/80 backdrop-blur text-indigo-900 border border-white/50"
+            bgClass:"bg-gradient-to-br from-indigo-50 via-blue-50 to-indigo-100",
+            badgeClass:"bg-white/80 backdrop-blur text-indigo-900 border border-white/50"
         },
         {
-            name: "КОРПОРАТИВНЫЙ",
-            price: "Индив.",
-            period: "",
-            description: "Для крупных организаций",
-            buttonText: "Связаться с нами",
-            features: [
-                "Безлимит проектов",
-                "AI Анализ кандидатов",
-                "Кастомные тесты навыков",
-                "Персональный AI Рекрутер"
+            name:"КОРПОРАТИВНЫЙ",
+            price:"Индив.",
+            period:"",
+            description:"Для крупных организаций",
+            buttonText:"Связаться с нами",
+            features: ["Безлимит проектов","AI Анализ кандидатов","Кастомные тесты навыков","Персональный AI Рекрутер"
             ],
-            bgClass: "bg-slate-100",
-            badgeClass: "bg-white text-black"
+            bgClass:"bg-slate-100",
+            badgeClass:"bg-white text-black"
         }
     ];
 
@@ -1514,19 +1491,19 @@ export default function NewReferencesCRM() {
     const [activeTab, setActiveTab] = useState("all");
 
     const categories = [
-        { id: "all", name: "Все", icon: <LayoutGrid className="w-4 h-4" /> },
-        { id: "logistics", name: "Логистика", icon: <TruckIcon className="w-4 h-4" /> },
-        { id: "cards", name: "Карточки", icon: <CreditCard className="w-4 h-4" /> },
-        { id: "widgets", name: "Виджеты", icon: <Layers className="w-4 h-4" /> },
-        { id: "calendar", name: "Календари", icon: <Calendar className="w-4 h-4" /> },
-        { id: "ui", name: "Интерфейс", icon: <MousePointer2 className="w-4 h-4" /> },
-        { id: "dropdowns", name: "Выпадающие списки", icon: <ChevronDown className="w-4 h-4" /> },
-        { id: "ai", name: "Искусственный интеллект", icon: <Sparkles className="w-4 h-4" /> },
+        { id:"all", name:"Все", icon: <LayoutGrid className="w-4 h-4" /> },
+        { id:"logistics", name:"Логистика", icon: <TruckIcon className="w-4 h-4" /> },
+        { id:"cards", name:"Карточки", icon: <CreditCard className="w-4 h-4" /> },
+        { id:"widgets", name:"Виджеты", icon: <Layers className="w-4 h-4" /> },
+        { id:"calendar", name:"Календари", icon: <Calendar className="w-4 h-4" /> },
+        { id:"ui", name:"Интерфейс", icon: <MousePointer2 className="w-4 h-4" /> },
+        { id:"dropdowns", name:"Выпадающие списки", icon: <ChevronDown className="w-4 h-4" /> },
+        { id:"ai", name:"Искусственный интеллект", icon: <Sparkles className="w-4 h-4" /> },
     ];
 
     const renderContent = () => {
         switch (activeTab) {
-            case "logistics":
+            case"logistics":
                 return (
                     <div className="space-y-24">
                         <section className="space-y-3">
@@ -1539,7 +1516,7 @@ export default function NewReferencesCRM() {
                         </section>
                     </div>
                 );
-            case "ai":
+            case"ai":
                 return (
                     <div className="space-y-24">
                         <section className="space-y-3">
@@ -1548,7 +1525,7 @@ export default function NewReferencesCRM() {
                         </section>
                     </div>
                 );
-            case "cards":
+            case"cards":
                 return (
                     <div className="space-y-24">
                         <section className="space-y-3">
@@ -1565,7 +1542,7 @@ export default function NewReferencesCRM() {
                         </section>
                     </div>
                 );
-            case "widgets":
+            case"widgets":
                 return (
                     <div className="space-y-24">
                         <section className="space-y-3">
@@ -1582,7 +1559,7 @@ export default function NewReferencesCRM() {
                         </section>
                     </div>
                 );
-            case "calendar":
+            case"calendar":
                 return (
                     <div className="space-y-24">
                         <section className="space-y-3">
@@ -1599,7 +1576,7 @@ export default function NewReferencesCRM() {
                         </section>
                     </div>
                 );
-            case "ui":
+            case"ui":
                 return (
                     <div className="space-y-24">
                         <section className="space-y-3">
@@ -1616,7 +1593,7 @@ export default function NewReferencesCRM() {
                         </section>
                     </div>
                 );
-            case "dropdowns":
+            case"dropdowns":
                 return (
                     <div className="space-y-38">
                         <section className="space-y-3">
@@ -1628,7 +1605,7 @@ export default function NewReferencesCRM() {
             default:
                 return (
                     <div className="space-y-34">
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <TruckIcon className="w-8 h-8 text-blue-500" />
                                 <div>
@@ -1642,7 +1619,7 @@ export default function NewReferencesCRM() {
                             </div>
                         </section>
 
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <CreditCard className="w-8 h-8 text-orange-500" />
                                 <div>
@@ -1656,7 +1633,7 @@ export default function NewReferencesCRM() {
                             </div>
                         </section>
 
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <Layers className="w-8 h-8 text-purple-500" />
                                 <div>
@@ -1671,7 +1648,7 @@ export default function NewReferencesCRM() {
                             </div>
                         </section>
 
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <Calendar className="w-8 h-8 text-red-500" />
                                 <div>
@@ -1686,7 +1663,7 @@ export default function NewReferencesCRM() {
                             </div>
                         </section>
 
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <MousePointer2 className="w-8 h-8 text-green-500" />
                                 <div>
@@ -1703,7 +1680,7 @@ export default function NewReferencesCRM() {
                             </div>
                         </section>
 
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <ChevronDown className="w-8 h-8 text-blue-500" />
                                 <div>
@@ -1716,7 +1693,7 @@ export default function NewReferencesCRM() {
                             </div>
                         </section>
 
-                        <section className="space-y-12">
+                        <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <Sparkles className="w-8 h-8 text-purple-600" />
                                 <div>
@@ -1732,7 +1709,7 @@ export default function NewReferencesCRM() {
     };
 
     return (
-        <section className="max-w-[1600px] mx-auto px-6 py-12 space-y-12">
+        <section className="max-w-[1600px] mx-auto px-6 py-12 space-y-3">
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-3">
                 <div className="space-y-2">
                     <span className="text-blue-600 font-black tracking-[0.3em] text-xs">Reference Hub</span>
@@ -1745,11 +1722,10 @@ export default function NewReferencesCRM() {
                         <button type="button"
                             key={cat.id}
                             onClick={() => setActiveTab(cat.id)}
-                            className={cn(
-                                "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap",
+                            className={cn("flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all whitespace-nowrap",
                                 activeTab === cat.id
-                                    ? "bg-white text-black shadow-md"
-                                    : "text-slate-400 hover:text-slate-600"
+                                    ?"bg-white text-black shadow-md"
+                                    :"text-slate-400 hover:text-slate-600"
                             )}
                         >
                             {cat.icon}

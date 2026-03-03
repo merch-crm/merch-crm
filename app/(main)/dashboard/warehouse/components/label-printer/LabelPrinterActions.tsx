@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
-import { Printer, Download, Minus, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PrinterConfig } from "./label-printer-types";
+import React from"react";
+import { Printer, Download, Minus, Plus } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { PrinterConfig } from"./label-printer-types";
 
 interface LabelPrinterActionsProps {
     config: PrinterConfig;

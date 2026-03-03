@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React from"react";
 import {
     History,
     Search,
@@ -16,15 +16,15 @@ import {
     User,
     Calendar,
     Building2
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { motion, AnimatePresence } from "framer-motion";
-import { Pagination } from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { motion, AnimatePresence } from"framer-motion";
+import { Pagination } from"@/components/ui/pagination";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
 interface ItemHistorySectionProps {
     history: ItemHistoryTransaction[];
@@ -60,7 +60,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     const renderEmpty = () => (
         <div className="table-empty py-16">
             <History />
-            <p>{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
+            <p>{searchQuery || filterType ?"Ничего не найдено" :"Операций не найдено"}</p>
         </div>
     );
 
@@ -116,19 +116,18 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                 <tr key={tx.id || idx} className="crm-tr-clickable group">
                                     <td className="crm-td">
                                         <div className="flex items-center gap-3">
-                                            <div className={cn(
-                                                "w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shadow-sm transition-transform",
-                                                tx.type === "transfer"
-                                                    ? "bg-primary/5 text-primary border border-primary/20"
-                                                    : tx.type === "attribute_change"
-                                                        ? "bg-amber-50 text-amber-600 border border-amber-100"
-                                                        : tx.type === "archive"
-                                                            ? "bg-rose-50 text-rose-600 border border-rose-100"
-                                                            : tx.type === "restore"
-                                                                ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                            <div className={cn("w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shadow-sm transition-transform",
+                                                tx.type ==="transfer"
+                                                    ?"bg-primary/5 text-primary border border-primary/20"
+                                                    : tx.type ==="attribute_change"
+                                                        ?"bg-amber-50 text-amber-600 border border-amber-100"
+                                                        : tx.type ==="archive"
+                                                            ?"bg-rose-50 text-rose-600 border border-rose-100"
+                                                            : tx.type ==="restore"
+                                                                ?"bg-emerald-50 text-emerald-600 border border-emerald-100"
                                                                 : tx.type === 'in'
-                                                                    ? "bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                    : "bg-rose-50 text-rose-600 border border-rose-100"
+                                                                    ?"bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                                    :"bg-rose-50 text-rose-600 border border-rose-100"
                                             )}>
                                                 {tx.type === 'in' && <ArrowDownCircle className="w-5 h-5" />}
                                                 {tx.type === 'out' && <ArrowUpCircle className="w-5 h-5" />}
@@ -138,25 +137,24 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                                 {tx.type === 'restore' && <Package className="w-4 h-4" />}
                                             </div>
                                             <span className="hidden lg:inline text-[13px] font-bold text-foreground">
-                                                {tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещение" : "Обновление"}
+                                                {tx.type ==="in" ?"Приход" : tx.type ==="out" ?"Расход" : tx.type ==="transfer" ?"Перемещение" :"Обновление"}
                                             </span>
                                         </div>
                                     </td>
                                     <td className="crm-td">
-                                        <span className={cn(
-                                            "text-[13px] font-bold",
-                                            isPositive ? "text-emerald-600" : "text-rose-600"
+                                        <span className={cn("text-[13px] font-bold",
+                                            isPositive ?"text-emerald-600" :"text-rose-600"
                                         )}>
-                                            {isPositive ? "+" : ""}{tx.changeAmount}
+                                            {isPositive ?"+" :""}{tx.changeAmount}
                                         </span>
                                     </td>
                                     <td className="crm-td">
-                                        <span className="text-[13px] font-bold text-muted-foreground">{tx.storageLocation?.name || "—"}</span>
+                                        <span className="text-[13px] font-bold text-muted-foreground">{tx.storageLocation?.name ||"—"}</span>
                                     </td>
                                     <td className="crm-td min-w-[120px] max-w-[240px]">
                                         <div className="text-[12px] font-bold text-muted-foreground leading-snug">
                                             {(() => {
-                                                const transferMatch = tx.reason?.match(/(?:Перемещение|Получено) со склада "(.+)" на "(.+)"(?:\. Причина: (.+))?/);
+                                                const transferMatch = tx.reason?.match(/(?:Перемещение|Получено) со склада"(.+)" на"(.+)"(?:\. Причина: (.+))?/);
 
                                                 if (transferMatch) {
                                                     const from = transferMatch[1];
@@ -172,13 +170,13 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                                         </div>
                                                     );
                                                 }
-                                                return tx.reason || "—";
+                                                return tx.reason ||"—";
                                             })()}
                                         </div>
                                     </td>
                                     <td className="crm-td">
                                         <span className="text-[13px] font-bold text-muted-foreground">
-                                            {tx.creator?.name || "Система"}
+                                            {tx.creator?.name ||"Система"}
                                         </span>
                                     </td>
                                     <td className="crm-td text-right">
@@ -187,8 +185,8 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                             if (isNaN(d.getTime())) return <span className="text-xs font-bold text-muted-foreground/30">—</span>;
                                             return (
                                                 <div className="flex flex-col items-end">
-                                                    <span className="text-[12px] font-bold text-foreground">{format(d, "dd.MM.yy", { locale: ru })}</span>
-                                                    <span className="text-xs font-bold text-muted-foreground">{format(d, "HH:mm", { locale: ru })}</span>
+                                                    <span className="text-[12px] font-bold text-foreground">{format(d,"dd.MM.yy", { locale: ru })}</span>
+                                                    <span className="text-xs font-bold text-muted-foreground">{format(d,"HH:mm", { locale: ru })}</span>
                                                 </div>
                                             );
                                         })()}
@@ -210,7 +208,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     return (
         <div className="space-y-3 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             {/* Header / Controls - Photo 2 Style */}
-            <div className="crm-filter-tray-light p-1.5 ">
+            <div className="crm-filter-tray-light p-1.5">
                 {/* Search Input Box */}
                 <div className="relative flex-1">
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
@@ -257,20 +255,19 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                                     setFilterType(btn.id);
                                     setCurrentPage(1);
                                 }}
-                                className={cn(
-                                    "crm-filter-tab",
-                                    isActive && "active"
+                                className={cn("crm-filter-tab",
+                                    isActive &&"active"
                                 )}
                             >
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeItemHistoryTab"
                                         className="absolute inset-0 bg-primary rounded-[10px] z-0"
-                                        transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                                     />
                                 )}
                                 <div className="relative z-10 flex items-center justify-center gap-2">
-                                    <btn.icon className={cn("w-3.5 h-3.5", isActive ? "text-white" : "text-muted-foreground")} />
+                                    <btn.icon className={cn("w-3.5 h-3.5", isActive ?"text-white" :"text-muted-foreground")} />
                                     <span className="hidden sm:inline">{btn.label}</span>
                                 </div>
                             </Button>
@@ -310,7 +307,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
             {history.map((tx, idx) => {
                 const isPositive = tx.changeAmount > 0;
                 const isExpanded = expandedId === (tx.id || String(idx));
-                const typeLabel = tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещ." : "Обновл.";
+                const typeLabel = tx.type ==="in" ?"Приход" : tx.type ==="out" ?"Расход" : tx.type ==="transfer" ?"Перемещ." :"Обновл.";
 
                 return (
                     <div key={tx.id || idx} className="bg-card">
@@ -320,13 +317,11 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setExpandedId(isExpanded ? null : (tx.id || String(idx)))}
                         >
                             {/* Type Indicator */}
-                            <div className={cn(
-                                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                                tx.type === 'in' ? "bg-emerald-50" : tx.type === 'out' ? "bg-rose-50" : "bg-primary/10"
+                            <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+                                tx.type === 'in' ?"bg-emerald-50" : tx.type === 'out' ?"bg-rose-50" :"bg-primary/10"
                             )}>
-                                <div className={cn(
-                                    "w-2 h-2 rounded-full",
-                                    tx.type === 'in' ? "bg-emerald-500" : tx.type === 'out' ? "bg-rose-500" : "bg-primary"
+                                <div className={cn("w-2 h-2 rounded-full",
+                                    tx.type === 'in' ?"bg-emerald-500" : tx.type === 'out' ?"bg-rose-500" :"bg-primary"
                                 )} />
                             </div>
 
@@ -334,18 +329,17 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center justify-between">
                                     <span className="font-bold text-sm text-foreground">{typeLabel}</span>
-                                    <span className={cn(
-                                        "font-bold text-sm tabular-nums",
-                                        isPositive ? "text-emerald-600" : "text-rose-600"
+                                    <span className={cn("font-bold text-sm tabular-nums",
+                                        isPositive ?"text-emerald-600" :"text-rose-600"
                                     )}>
-                                        {isPositive ? "+" : ""}{tx.changeAmount}
+                                        {isPositive ?"+" :""}{tx.changeAmount}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                     <span className="text-xs font-bold text-muted-foreground">
                                         {(() => {
                                             const d = new Date(tx.createdAt);
-                                            return isNaN(d.getTime()) ? "—" : format(d, "d MMM, HH:mm", { locale: ru });
+                                            return isNaN(d.getTime()) ?"—" : format(d,"d MMM, HH:mm", { locale: ru });
                                         })()}
                                     </span>
                                     {tx.storageLocation?.name && (
@@ -365,7 +359,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                             {isExpanded && (
                                 <motion.div
                                     initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
+                                    animate={{ height:"auto", opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                     className="overflow-hidden"
@@ -375,7 +369,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                             {/* Author */}
                                             <div className="flex items-center justify-between border-b border-border/60 pb-2">
                                                 <span className="text-xs font-bold text-muted-foreground">Автор</span>
-                                                <span className="text-xs font-bold text-foreground">{tx.creator?.name || "Система"}</span>
+                                                <span className="text-xs font-bold text-foreground">{tx.creator?.name ||"Система"}</span>
                                             </div>
 
                                             {/* Reason */}

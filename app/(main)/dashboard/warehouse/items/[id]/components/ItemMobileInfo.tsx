@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { cn } from"@/lib/utils";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ItemMobileInfoProps {
     item: InventoryItem;
@@ -22,7 +22,7 @@ export function ItemMobileInfo({
                 <div className="mb-1 sm:mb-4 pb-1 sm:pb-4 border-b border-border">
                     <h3 className="text-[11px] font-bold text-muted-foreground mb-0.5">Артикул:</h3>
                     <p className="text-[14px] sm:text-[16px] font-black text-foreground leading-tight break-all cursor-text select-all" onDoubleClick={handleStartEdit}>
-                        {item.sku || "—"}
+                        {item.sku ||"—"}
                     </p>
                 </div>
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-2 sm:gap-3">
@@ -36,13 +36,12 @@ export function ItemMobileInfo({
                         </div>
 
                         <div className="flex flex-wrap gap-1 sm:gap-2">
-                            <div className={cn(
-                                "inline-flex items-center px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-xs sm:text-xs font-bold border shrink-0",
-                                item.quantity === 0 ? "bg-rose-50 text-rose-600 border-rose-100" :
-                                    (item.quantity <= (item.criticalStockThreshold ?? 0) ? "bg-rose-50 text-rose-600 border-rose-100" : "bg-emerald-50 text-emerald-600 border-emerald-100")
+                            <div className={cn("inline-flex items-center px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-xs sm:text-xs font-bold border shrink-0",
+                                item.quantity === 0 ?"bg-rose-50 text-rose-600 border-rose-100" :
+                                    (item.quantity <= (item.criticalStockThreshold ?? 0) ?"bg-rose-50 text-rose-600 border-rose-100" :"bg-emerald-50 text-emerald-600 border-emerald-100")
                             )}>
-                                {item.quantity === 0 ? "Нет" :
-                                    (item.quantity <= (item.criticalStockThreshold ?? 0) ? "Критично" : "В наличии")}
+                                {item.quantity === 0 ?"Нет" :
+                                    (item.quantity <= (item.criticalStockThreshold ?? 0) ?"Критично" :"В наличии")}
                             </div>
                             <div className="px-1.5 py-0.5 sm:px-3 sm:py-1.5 rounded-3xl text-xs sm:text-xs font-bold border bg-amber-50/50 text-amber-600 border-amber-100 shrink-0">
                                 Резерв: {reservedQuantity}

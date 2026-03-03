@@ -1,37 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Plus, Shield, Loader2, Building, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { IconInput } from "@/components/ui/icon-input";
-import { IconSelect } from "@/components/ui/icon-select";
-import { createRole } from "../actions/roles.actions";
-import { getDepartments } from "../actions/departments.actions";
-import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { RoleColorPicker } from "@/components/ui/role-color-picker";
+import { useEffect, useState } from"react";
+import { Plus, Shield, Loader2, Building, Check } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { IconInput } from"@/components/ui/icon-input";
+import { IconSelect } from"@/components/ui/icon-select";
+import { createRole } from"../actions/roles.actions";
+import { getDepartments } from"../actions/departments.actions";
+import { cn } from"@/lib/utils";
+import { useIsMobile } from"@/hooks/use-mobile";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { RoleColorPicker } from"@/components/ui/role-color-picker";
 
 interface AddRoleDialogProps {
     onSuccess: () => void;
 }
 
 const SECTIONS = [
-    { id: "clients", label: "Клиенты" },
-    { id: "orders", label: "Заказы" },
-    { id: "inventory", label: "Склад" },
-    { id: "tasks", label: "Задачи" },
-    { id: "users", label: "Сотрудники" },
-    { id: "roles", label: "Роли" },
-    { id: "finance", label: "Финансы" },
-    { id: "settings", label: "Настройки" },
+    { id:"clients", label:"Клиенты" },
+    { id:"orders", label:"Заказы" },
+    { id:"inventory", label:"Склад" },
+    { id:"tasks", label:"Задачи" },
+    { id:"users", label:"Сотрудники" },
+    { id:"roles", label:"Роли" },
+    { id:"finance", label:"Финансы" },
+    { id:"settings", label:"Настройки" },
 ];
 
 const ACTIONS = [
-    { id: "view", label: "Просмотр" },
-    { id: "create", label: "Создание" },
-    { id: "edit", label: "Редактирование" },
-    { id: "delete", label: "Удаление" },
+    { id:"view", label:"Просмотр" },
+    { id:"create", label:"Создание" },
+    { id:"edit", label:"Редактирование" },
+    { id:"delete", label:"Удаление" },
 ];
 
 export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
@@ -95,11 +95,10 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleToggle(sectionId, actionId)}
-                    className={cn(
-                        "w-6 h-6 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90 p-0 hover:bg-transparent",
+                    className={cn("w-6 h-6 rounded-md border flex items-center justify-center transition-all mx-auto active:scale-90 p-0 hover:bg-transparent",
                         isChecked
-                            ? "bg-primary border-primary text-white shadow-sm hover:text-white"
-                            : "bg-white border-slate-200 hover:border-primary/40"
+                            ?"bg-primary border-primary text-white shadow-sm hover:text-white"
+                            :"bg-white border-slate-200 hover:border-primary/40"
                     )}
                 >
                     {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
@@ -112,16 +111,14 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                 type="button"
                 variant="ghost"
                 onClick={() => handleToggle(sectionId, actionId)}
-                className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all h-auto",
+                className={cn("flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all h-auto",
                     isChecked
-                        ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
-                        : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
+                        ?"bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                        :"bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
                 )}
             >
-                <div className={cn(
-                    "w-4 h-4 rounded border flex items-center justify-center transition-all",
-                    isChecked ? "bg-primary border-primary text-white" : "bg-white border-slate-300"
+                <div className={cn("w-4 h-4 rounded border flex items-center justify-center transition-all",
+                    isChecked ?"bg-primary border-primary text-white" :"bg-white border-slate-300"
                 )}>
                     {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
                 </div>
@@ -135,14 +132,13 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
             <Button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                size={isMobile ? "default" : "lg"}
-                className={cn(
-                    "rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
-                    isMobile ? "w-11 h-11 p-0" : ""
+                size={isMobile ?"default" :"lg"}
+                className={cn("rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
+                    isMobile ?"w-11 h-11 p-0" :""
                 )}
                 title="Добавить роль"
             >
-                <Plus className={cn("h-5 w-5", !isMobile && "mr-2")} />
+                <Plus className={cn("h-5 w-5", !isMobile &&"mr-2")} />
                 <span className="hidden sm:inline">Добавить роль</span>
             </Button>
 
@@ -187,7 +183,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                     name="departmentId"
                                     value={selectedDepartmentId}
                                     options={[
-                                        { id: "none", title: "Общая роль (без отдела)" },
+                                        { id:"none", title:"Общая роль (без отдела)" },
                                         ...departments.map(dept => ({ id: dept.id, title: dept.name }))
                                     ]}
                                     placeholder="Выбрать отдел"
@@ -272,7 +268,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
                                 className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98] h-11"
                             >
                                 {loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
-                                {loading ? "Создание..." : "Создать роль"}
+                                {loading ?"Создание..." :"Создать роль"}
                             </Button>
                         </div>
                     </form>

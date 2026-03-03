@@ -1,24 +1,24 @@
-import { notFound } from "next/navigation";
-import NextImage from "next/image";
-import { getOrderById } from "../actions/core.actions";;
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
-import { formatDate, formatDateTime } from "@/lib/formatters";
-import StatusSelect from "./status-select";
-import PrioritySelect from "./priority-select";
-import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Clock, XCircle, Wallet, Receipt } from "lucide-react";
-import Link from "next/link";
-import OrderAttachments from "./order-attachments";
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
-import { RefundDialog } from "./refund-dialog";
+import { notFound } from"next/navigation";
+import NextImage from"next/image";
+import { getOrderById } from"../actions/core.actions";;
+import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { formatDate, formatDateTime } from"@/lib/formatters";
+import StatusSelect from"./status-select";
+import PrioritySelect from"./priority-select";
+import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Clock, XCircle, Wallet, Receipt } from"lucide-react";
+import Link from"next/link";
+import OrderAttachments from"./order-attachments";
+import { db } from"@/lib/db";
+import { users } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { getSession } from"@/lib/auth";
+import { RefundDialog } from"./refund-dialog";
 
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import OrderActions from "./order-actions";
-import { AddPaymentDialog } from "./add-payment-dialog";
-import { OrderItemsTable } from "./order-items-table";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import OrderActions from"./order-actions";
+import { AddPaymentDialog } from"./add-payment-dialog";
+import { OrderItemsTable } from"./order-items-table";
 
 
 
@@ -44,7 +44,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     const client = order.client;
 
     const branding = await getBrandingSettings();
-    const currencySymbol = branding?.currencySymbol || "₽";
+    const currencySymbol = branding?.currencySymbol ||"₽";
 
     const session = await getSession();
     const user = session ? await db.query.users.findFirst({
@@ -53,11 +53,11 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
     }) : null;
 
     const showFinancials =
-        user?.role?.name === "Администратор" ||
-        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
+        user?.role?.name ==="Администратор" ||
+        ["Руководство","Отдел продаж"].includes(user?.department?.name ||"");
 
-    const canDelete = user?.role?.name === "Администратор" || user?.department?.name === "Руководство";
-    const canArchive = canDelete || ["Отдел продаж"].includes(user?.department?.name || "");
+    const canDelete = user?.role?.name ==="Администратор" || user?.department?.name ==="Руководство";
+    const canArchive = canDelete || ["Отдел продаж"].includes(user?.department?.name ||"");
 
     return (
         <div className="space-y-3">
@@ -73,7 +73,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                         <h1 className="text-xl sm:text-2xl font-bold text-slate-900 truncate">Заказ #{order.id.slice(0, 8)}</h1>
                         <span className="hidden sm:inline px-2 py-1 rounded bg-slate-100 text-slate-500 text-xs font-bold shrink-0">Internal ID</span>
                         <p className="text-slate-500 text-xs sm:text-sm mt-0.5 truncate">
-                            {formatDateTime(order.createdAt, "d MMMM yyyy, HH:mm")}
+                            {formatDateTime(order.createdAt,"d MMMM yyyy, HH:mm")}
                         </p>
                     </div>
                 </div>
@@ -129,7 +129,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                 {/* Sidebar: Client & Info */}
                 <div className="space-y-3">
                     {/* Client Card */}
-                    <div className="crm-card ">
+                    <div className="crm-card">
                         <div className="flex items-center justify-between mb-6">
                             <h3 className="font-bold text-slate-900 flex items-center">
                                 <User className="w-5 h-5 mr-3 text-primary" />
@@ -144,12 +144,12 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                             <div>
                                 <div className="text-xl font-bold text-slate-900 mb-1">{client.name}</div>
                                 {client.company && (
-                                    <div className="text-sm font-bold text-primary ">{client.company}</div>
+                                    <div className="text-sm font-bold text-primary">{client.company}</div>
                                 )}
                             </div>
 
                             <div className="space-y-3 pt-4 border-t border-slate-200">
-                                {["Печатник", "Дизайнер"].includes(user?.role?.name || "") ? (
+                                {["Печатник","Дизайнер"].includes(user?.role?.name ||"") ? (
                                     <div className="flex items-center text-sm font-medium text-slate-400 cursor-not-allowed">
                                         <Phone className="w-4 h-4 mr-3 text-slate-300" />
                                         HIDDEN
@@ -184,7 +184,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                 <div className="text-sm font-bold text-slate-700 ml-1">Адрес доставки</div>
                                 <div className="flex items-start text-sm text-slate-600">
                                     <MapPin className="w-4 h-4 mr-3 text-slate-300 shrink-0" />
-                                    {client.address || "Адрес не указан"}
+                                    {client.address ||"Адрес не указан"}
                                 </div>
                             </div>
                         </div>
@@ -192,7 +192,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
 
                     {/* Financial Block (Visible to Admin/Sales) */}
                     {showFinancials && (
-                        <div className="crm-card ">
+                        <div className="crm-card">
                             <h3 className="font-bold text-slate-900 flex items-center mb-6">
                                 <Wallet className="w-5 h-5 mr-3 text-primary" />
                                 Финансы
@@ -228,7 +228,7 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                     </span>
                                 </div>
                                 <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
-                                    <span className="text-sm font-bold text-slate-900 ">Остаток:</span>
+                                    <span className="text-sm font-bold text-slate-900">Остаток:</span>
                                     <span className="text-xl font-bold text-rose-600">
                                         {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)).toFixed(2)} {currencySymbol}
                                     </span>
@@ -251,10 +251,10 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
                                         {order.payments.map((p: OrderPayment) => (
                                             <div key={p.id} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 border border-slate-200">
                                                 <div className="min-w-0">
-                                                    <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ? "Предоплата" : "Платеж")}</div>
-                                                    <div className="text-xs text-slate-400">{formatDateTime(p.createdAt, "dd.MM.yy HH:mm")} • {p.method}</div>
+                                                    <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ?"Предоплата" :"Платеж")}</div>
+                                                    <div className="text-xs text-slate-400">{formatDateTime(p.createdAt,"dd.MM.yy HH:mm")} • {p.method}</div>
                                                 </div>
-                                                <div className={cn("text-xs font-bold shrink-0 ml-2", Number(p.amount) < 0 ? "text-rose-600" : "text-slate-900")}>
+                                                <div className={cn("text-xs font-bold shrink-0 ml-2", Number(p.amount) < 0 ?"text-rose-600" :"text-slate-900")}>
                                                     {p.amount} {currencySymbol}
                                                 </div>
                                             </div>

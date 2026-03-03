@@ -6,21 +6,21 @@ import {
     InventoryAttribute,
     AttributeType,
     StorageLocation,
-} from "../../types";
-import { Session } from "@/lib/auth";
-import { ResponsiveDetailLayout } from "@/components/ui/responsive-detail-layout";
-import { ItemHeader } from "./components/ItemHeader";
-import { ItemEditingBar } from "./components/ItemEditingBar";
-import { ItemDialogs } from "./components/ItemDialogs";
-import { ItemOfflineOverlay } from "./components/ItemOfflineOverlay";
-import { ItemGalleryOverlay } from "./components/ItemGalleryOverlay";
+} from"../../types";
+import { Session } from"@/lib/auth";
+import { ResponsiveDetailLayout } from"@/components/ui/responsive-detail-layout";
+import { ItemHeader } from"./components/ItemHeader";
+import { ItemEditingBar } from"./components/ItemEditingBar";
+import { ItemDialogs } from"./components/ItemDialogs";
+import { ItemOfflineOverlay } from"./components/ItemOfflineOverlay";
+import { ItemGalleryOverlay } from"./components/ItemGalleryOverlay";
 
 // New aggregate components
-import { ItemDetailsMainContent } from "./components/ItemDetailsMainContent";
-import { ItemDetailsLeftSidebar } from "./components/ItemDetailsLeftSidebar";
-import { ItemDetailsRightSidebar } from "./components/ItemDetailsRightSidebar";
+import { ItemDetailsMainContent } from"./components/ItemDetailsMainContent";
+import { ItemDetailsLeftSidebar } from"./components/ItemDetailsLeftSidebar";
+import { ItemDetailsRightSidebar } from"./components/ItemDetailsRightSidebar";
 
-import { ItemDetailProvider, useItemDetail } from "./context/ItemDetailContext";
+import { ItemDetailProvider, useItemDetail } from"./context/ItemDetailContext";
 
 interface ItemDetailClientProps {
     item: InventoryItem;
@@ -71,7 +71,7 @@ function ItemDetailContent() {
                         isEditing={isEditing}
                         isSaving={isSaving}
                         isAnyUploading={isAnyUploading}
-                        editName={editData.name || ""}
+                        editName={editData.name ||""}
                         onEditNameChange={(name) => setEditData(prev => ({ ...prev, name }))}
                         onCancel={() => {
                             if (hasChanges) {

@@ -1,22 +1,22 @@
 "use client";
 
-import * as React from "react";
-import { Box, Minus, Paintbrush, Percent, Plus, Truck } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
-import { formatPrice } from "./utils";
-import { TYPE_COLORS } from "./constants";
-import { PriceRow } from "./PriceRow";
-import { ProductPriceCalculatorProps } from "./types";
+import * as React from"react";
+import { Box, Minus, Paintbrush, Percent, Plus, Truck } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
+import { formatPrice } from"./utils";
+import { TYPE_COLORS } from"./constants";
+import { PriceRow } from"./PriceRow";
+import { ProductPriceCalculatorProps } from"./types";
 
 export function ProductPriceCalculator({
     blankPrice,
-    blankName = "Бланк",
+    blankName ="Бланк",
     quantity,
     printOptions = [],
     discount,
     shipping,
-    currency = "₽",
+    currency ="₽",
     onQuantityChange,
     className,
 }: ProductPriceCalculatorProps) {
@@ -34,7 +34,7 @@ export function ProductPriceCalculator({
     let discountAmount = 0;
     if (discount) {
         discountAmount =
-            discount.type === "percent" ? subtotal * (discount.value / 100) : discount.value;
+            discount.type ==="percent" ? subtotal * (discount.value / 100) : discount.value;
     }
 
     const shippingAmount = shipping || 0;
@@ -101,7 +101,7 @@ export function ProductPriceCalculator({
                         label={opt.name}
                         amount={opt.total}
                         currency={currency}
-                        quantityInfo={`${quantity} × ${formatPrice(opt.pricePerUnit, currency)}${opt.setupPrice && opt.setupPrice > 0 ? ` + приладка ${formatPrice(opt.setupPrice, currency)}` : ""}${opt.colors ? ` • ${opt.colors} ${pluralize(opt.colors, 'цвет', 'цвета', 'цветов')}` : ""}${opt.positions ? ` • ${opt.positions} ${pluralize(opt.positions, 'позиция', 'позиции', 'позиций')}` : ""}`}
+                        quantityInfo={`${quantity} × ${formatPrice(opt.pricePerUnit, currency)}${opt.setupPrice && opt.setupPrice > 0 ? ` + приладка ${formatPrice(opt.setupPrice, currency)}` :""}${opt.colors ? ` • ${opt.colors} ${pluralize(opt.colors, 'цвет', 'цвета', 'цветов')}` :""}${opt.positions ? ` • ${opt.positions} ${pluralize(opt.positions, 'позиция', 'позиции', 'позиций')}` :""}`}
                     />
                 ))}
 
@@ -110,12 +110,12 @@ export function ProductPriceCalculator({
                     <PriceRow
                         icon={<Percent className="w-4 h-4" />}
                         colorClasses={TYPE_COLORS.discount}
-                        label={discount.label || "Скидка"}
+                        label={discount.label ||"Скидка"}
                         amount={discountAmount}
                         currency={currency}
                         isNegative={true}
                         highlighted={true}
-                        description={discount.type === "percent" ? `${discount.value}%` : undefined}
+                        description={discount.type ==="percent" ? `${discount.value}%` : undefined}
                     />
                 )}
 

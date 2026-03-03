@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { InventoryItem, ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
-import { Timeframe } from "./types";
+import { useMemo } from"react";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { InventoryItem, ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
+import { Timeframe } from"./types";
 
 interface UseItemFinancialsProps {
     item: InventoryItem;
@@ -97,7 +97,7 @@ export function useItemFinancials({ item, history, timeframe }: UseItemFinancial
         filteredPoints.push({
             date: new Date(),
             costs: [currentPrice],
-            label: "Тек.",
+            label:"Тек.",
             avg: currentPrice,
             hasData: currentPrice > 0,
             lastDate: new Date()

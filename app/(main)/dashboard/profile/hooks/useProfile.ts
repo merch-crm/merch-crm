@@ -1,9 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { getUserStatistics, getUserSchedule } from "../actions";
-import { UserProfile, StatisticsData, ScheduleTask } from "../types";
+import { useState, useCallback, useEffect } from"react";
+import { useRouter, useSearchParams } from"next/navigation";
+import { getUserStatistics, getUserSchedule } from"../actions";
+import { UserProfile, StatisticsData, ScheduleTask } from"../types";
 
-export type ProfileView = "profile" | "settings" | "statistics" | "schedule" | "notifications";
+export type ProfileView ="profile" |"settings" |"statistics" |"schedule" |"notifications";
 
 export function useProfile(user: UserProfile) {
     const router = useRouter();
@@ -11,9 +11,9 @@ export function useProfile(user: UserProfile) {
 
     // Mapping URL param to internal view state
     const tabParam = searchParams.get("p");
-    const view = (tabParam && ["settings", "statistics", "schedule", "notifications"].includes(tabParam))
+    const view = (tabParam && ["settings","statistics","schedule","notifications"].includes(tabParam))
         ? tabParam as ProfileView
-        : "profile";
+        :"profile";
 
     const [statsData, setStatsData] = useState<StatisticsData | null>(null);
     const [scheduleData, setScheduleData] = useState<ScheduleTask[]>([]);
@@ -46,14 +46,14 @@ export function useProfile(user: UserProfile) {
     }, []);
 
     useEffect(() => {
-        if ((view === "statistics" || view === "profile") && !statsData) {
+        if ((view ==="statistics" || view ==="profile") && !statsData) {
             const timer = setTimeout(() => fetchStats(), 0);
             return () => clearTimeout(timer);
         }
     }, [view, statsData, fetchStats]);
 
     useEffect(() => {
-        if (view === "schedule" && scheduleData.length === 0) {
+        if (view ==="schedule" && scheduleData.length === 0) {
             const timer = setTimeout(() => fetchSchedule(), 0);
             return () => clearTimeout(timer);
         }
@@ -67,12 +67,12 @@ export function useProfile(user: UserProfile) {
     };
 
     const getDepartmentName = () => {
-        if (!user.department) return "Общий отдел";
+        if (!user.department) return"Общий отдел";
         return user.department.name;
     };
 
     const getRoleName = () => {
-        if (!user.role) return "Сотрудник";
+        if (!user.role) return"Сотрудник";
         return user.role.name;
     };
 

@@ -1,12 +1,12 @@
-import { ItemTabletView } from "./ItemTabletView";
-import { ItemTabsSwitcher } from "./ItemTabsSwitcher";
-import { ItemCharacteristicSection } from "./ItemCharacteristicSection";
-import { ItemFinancialSection } from "./ItemFinancialSection";
-import { ItemMediaSection } from "./ItemMediaSection";
-import { ItemActiveOrdersWrapper } from "./ItemActiveOrdersWrapper";
-import { ItemHistoryWrapper } from "./ItemHistoryWrapper";
-import { cn } from "@/lib/utils";
-import { useItemDetail } from "../context/ItemDetailContext";
+import { ItemTabletView } from"./ItemTabletView";
+import { ItemTabsSwitcher } from"./ItemTabsSwitcher";
+import { ItemCharacteristicSection } from"./ItemCharacteristicSection";
+import { ItemFinancialSection } from"./ItemFinancialSection";
+import { ItemMediaSection } from"./ItemMediaSection";
+import { ItemActiveOrdersWrapper } from"./ItemActiveOrdersWrapper";
+import { ItemHistoryWrapper } from"./ItemHistoryWrapper";
+import { cn } from"@/lib/utils";
+import { useItemDetail } from"../context/ItemDetailContext";
 
 export function ItemDetailsMainContent() {
     const {
@@ -64,19 +64,16 @@ export function ItemDetailsMainContent() {
                 setEditData={setEditData}
                 handleStartEdit={handleStartEdit}
                 user={user}
-                className={cn(
-                    "md:col-span-2 xl:hidden",
-                    tabletTab === 'cost' ? "flex" : "hidden"
+                className={cn("md:col-span-2 xl:hidden",
+                    tabletTab === 'cost' ?"flex" :"hidden"
                 )}
                 timeframe={timeframe}
                 setTimeframe={setTimeframe}
             />
 
             <div className={
-                cn(
-                    "md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-6 flex flex-col",
-                    tabletTab === 'characteristic' ? "flex" : "hidden",
-                    "xl:flex"
+                cn("md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-6 flex flex-col",
+                    tabletTab === 'characteristic' ?"flex" :"hidden","xl:flex"
                 )}>
                 <ItemMediaSection
                     item={item}

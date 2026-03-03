@@ -1,8 +1,8 @@
-import React from "react";
-import Link from "next/link";
-import { AlertTriangle, PackageCheck, Package, ArrowUpRight } from "lucide-react";
-import { cn, formatUnit } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
+import React from"react";
+import Link from"next/link";
+import { AlertTriangle, PackageCheck, Package, ArrowUpRight } from"lucide-react";
+import { cn, formatUnit } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
 
 interface CriticalItem {
     id: string;
@@ -18,20 +18,18 @@ interface StockAlertsProps {
 export const StockAlerts = React.memo(({ criticalItems }: StockAlertsProps) => {
     return (
         <div
-            className={cn(
-                "col-span-12 md:col-span-6 lg:col-span-7 crm-card flex flex-col shadow-sm hover:shadow-md transition-shadow duration-300 bg-white h-full",
-                criticalItems.length > 0 ? "ring-1 ring-rose-500/10" : ""
+            className={cn("col-span-12 md:col-span-6 lg:col-span-7 crm-card flex flex-col shadow-sm hover:shadow-md transition-shadow duration-300 bg-white h-full",
+                criticalItems.length > 0 ?"ring-1 ring-rose-500/10" :""
             )}
             role="region"
             aria-label="Товары, требующие пополнения"
         >
             {/* Header */}
             <div className="flex items-center gap-3 bg-white relative z-10">
-                <div className={cn(
-                    "w-10 h-10 rounded-[12px] flex items-center justify-center shadow-lg text-white shrink-0",
+                <div className={cn("w-10 h-10 rounded-[12px] flex items-center justify-center shadow-lg text-white shrink-0",
                     criticalItems.length > 0
-                        ? "bg-gradient-to-br from-rose-500 to-pink-500 shadow-rose-500/25"
-                        : "bg-gradient-to-br from-emerald-500 to-teal-500 shadow-emerald-500/25"
+                        ?"bg-gradient-to-br from-rose-500 to-pink-500 shadow-rose-500/25"
+                        :"bg-gradient-to-br from-emerald-500 to-teal-500 shadow-emerald-500/25"
                 )}>
                     {criticalItems.length > 0 ? (
                         <AlertTriangle className="w-5 h-5 stroke-[2.5]" aria-hidden="true" />
@@ -40,11 +38,10 @@ export const StockAlerts = React.memo(({ criticalItems }: StockAlertsProps) => {
                     )}
                 </div>
                 <div>
-                    <h4 className={cn(
-                        "text-[17px] font-bold leading-tight mb-0.5",
-                        criticalItems.length > 0 ? "text-rose-600" : "text-emerald-700"
+                    <h4 className={cn("text-[17px] font-bold leading-tight mb-0.5",
+                        criticalItems.length > 0 ?"text-rose-600" :"text-emerald-700"
                     )}>
-                        {criticalItems.length > 0 ? "Требуют пополнения" : "Запасы в норме"}
+                        {criticalItems.length > 0 ?"Требуют пополнения" :"Запасы в норме"}
                     </h4>
                     <p className="text-xs font-medium text-slate-500 mt-0.5">
                         {criticalItems.length > 0
@@ -100,4 +97,4 @@ export const StockAlerts = React.memo(({ criticalItems }: StockAlertsProps) => {
     );
 });
 
-StockAlerts.displayName = "StockAlerts";
+StockAlerts.displayName ="StockAlerts";

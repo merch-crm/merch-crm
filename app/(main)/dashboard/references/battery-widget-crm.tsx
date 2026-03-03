@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React from"react";
+import { motion } from"framer-motion";
 
 export const BatteryWidget = ({ charge = 52 }: { charge?: number }) => {
     // Exact lightning bolt from reference - very wide, chunky shape
     // The bolt goes: top-left corner → bottom-left → middle-left → bottom-right → top-right → middle-right → back to start
-    const boltPath = "M 50 5 L 8 88 L 45 88 L 30 145 L 92 60 L 55 60 Z";
+    const boltPath ="M 50 5 L 8 88 L 45 88 L 30 145 L 92 60 L 55 60 Z";
 
     return (
         <div className="flex items-center justify-center">
             <motion.div
                 initial={{ opacity: 0, scale: 0.96 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+                transition={{ duration: 0.6, ease:"easeOut" }}
                 className="relative w-full max-w-[340px] aspect-square bg-[#1c1c1e] rounded-[4.5rem] shadow-[0_50px_100px_-30px_rgba(0,0,0,0.7)] overflow-hidden mx-auto"
             >
                 {/* Text Layer - Highest z-index */}
@@ -82,7 +82,7 @@ export const BatteryWidget = ({ charge = 52 }: { charge?: number }) => {
                                 initial={{ y: 150 }}
                                 animate={{ y: 150 - (charge * 1.48) }}
                                 transition={{
-                                    type: "spring",
+                                    type:"spring",
                                     stiffness: 35,
                                     damping: 20,
                                     mass: 1

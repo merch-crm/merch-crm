@@ -160,7 +160,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
             if (result.success) {
                 toast.success(`Статус: ${result.data?.status}`)
                 setCameras(prev => prev.map(c =>
-                    c.id === cameraId ? { ...c, status: result.data?.status as "online" | "offline" | "error" | "connecting" } : c
+                    c.id === cameraId ? { ...c, status: result.data?.status as"online" |"offline" |"error" |"connecting" } : c
                 ))
             } else {
                 toast.error(result.error || 'Ошибка подключения')
@@ -208,7 +208,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
     ]
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
+        <div className="space-y-3 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Камеры</h1>
@@ -250,13 +250,13 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             )}
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                             {accounts.map((account) => (
                                 <div
                                     key={account.id}
                                     className="flex items-center justify-between p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all"
                                 >
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3">
                                         <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center border border-orange-100">
                                             <Smartphone className="w-6 h-6 text-orange-600" />
                                         </div>
@@ -279,9 +279,8 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 onClick={() => handleSyncDevices(account.id)}
                                                 disabled={isPending}
                                             >
-                                                <RefreshCw className={cn(
-                                                    "w-4 h-4 mr-2",
-                                                    isPending && "animate-spin"
+                                                <RefreshCw className={cn("w-4 h-4 mr-2",
+                                                    isPending &&"animate-spin"
                                                 )} />
                                                 Опубликовать
                                             </Button>
@@ -320,37 +319,34 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             <p className="text-sm text-slate-500 mt-1">Опубликуйте устройства из аккаунта Mi Home</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                             {cameras.map((camera) => {
                                 const status = statusConfig[camera.status]
 
                                 return (
                                     <div
                                         key={camera.id}
-                                        className={cn(
-                                            "p-5 rounded-3xl border transition-all shadow-sm",
+                                        className={cn("p-5 rounded-3xl border transition-all shadow-sm",
                                             camera.isEnabled
-                                                ? "bg-white border-slate-100"
-                                                : "bg-slate-50 border-slate-200 opacity-60"
+                                                ?"bg-white border-slate-100"
+                                                :"bg-slate-50 border-slate-200 opacity-60"
                                         )}
                                     >
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={cn(
-                                                    "w-12 h-12 rounded-2xl flex items-center justify-center border",
-                                                    camera.isEnabled ? "bg-slate-50 border-slate-100" : "bg-slate-100 border-slate-200"
+                                                <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border",
+                                                    camera.isEnabled ?"bg-slate-50 border-slate-100" :"bg-slate-100 border-slate-200"
                                                 )}>
                                                     <Video className="w-6 h-6 text-slate-600" />
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-slate-900 leading-tight">{camera.name}</p>
-                                                    <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 mt-1">
+                                                    <p className="text-[11px] leading-tight text-neutral-500  tracking-wider font-bold text-slate-400 mt-1">
                                                         {camera.model || 'Xiaomi Camera'}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className={cn(
-                                                "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+                                            <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider",
                                                 status.color
                                             )}>
                                                 <div className={cn("w-1.5 h-1.5 rounded-full", status.color.split(' ')[0].replace('text-', 'bg-'))} />
@@ -368,7 +364,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                     <span className="text-xs">Локация не указана</span>
                                                 </div>
                                             )}
-                                            <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
+                                            <div className="flex items-center gap-2 text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">
                                                 <span>DID: {camera.deviceId}</span>
                                                 {camera.localIp && (
                                                     <>
@@ -382,7 +378,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                         {camera.errorMessage && (
                                             <div className="mb-4 p-2 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-2">
                                                 <AlertCircle className="w-3.5 h-3.5 text-rose-500 mt-0.5 flex-shrink-0" />
-                                                <p className="text-[10px] text-rose-600 font-medium leading-normal">
+                                                <p className="text-[11px] leading-tight text-neutral-500 text-rose-600 font-medium leading-normal">
                                                     {camera.errorMessage}
                                                 </p>
                                             </div>
@@ -393,7 +389,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[10px] font-bold uppercase tracking-wider"
+                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider"
                                                     onClick={() => handleTestConnection(camera.id)}
                                                     disabled={isPending}
                                                 >
@@ -403,7 +399,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[10px] font-bold uppercase tracking-wider"
+                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider"
                                                     onClick={() => {
                                                         setSelectedCamera(camera)
                                                         setSettingsModalOpen(true)
@@ -415,9 +411,8 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className={cn(
-                                                        "rounded-xl h-9 text-[10px] font-bold uppercase tracking-wider group",
-                                                        camera.isEnabled ? "hover:bg-rose-50 text-slate-500 hover:text-rose-600" : "hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
+                                                    className={cn("rounded-xl h-9 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider group",
+                                                        camera.isEnabled ?"hover:bg-rose-50 text-slate-500 hover:text-rose-600" :"hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
                                                     )}
                                                     onClick={() => handleToggleCamera(camera.id, !camera.isEnabled)}
                                                 >
@@ -450,9 +445,9 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 title="Вход в Mi Home"
                 description="Введите данные вашего аккаунта Xiaomi"
             >
-                <div className="space-y-6 py-6 px-4">
+                <div className="space-y-3 py-6 px-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        <label className="text-sm font-bold text-slate-900  tracking-wider">
                             Email или номер телефона
                         </label>
                         <Input
@@ -465,7 +460,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        <label className="text-sm font-bold text-slate-900  tracking-wider">
                             Пароль
                         </label>
                         <div className="relative">
@@ -487,7 +482,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                        <label className="text-sm font-bold text-slate-900  tracking-wider">
                             Регион сервера
                         </label>
                         <Select
@@ -497,7 +492,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             placeholder="Выберите регион"
                             triggerClassName="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
                         />
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-2 px-1">
+                        <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tight mt-2 px-1">
                             Выберите регион, который указан в вашем приложении Mi Home
                         </p>
                     </div>
@@ -511,16 +506,16 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         </p>
                     </div>
 
-                    <div className="flex gap-4 pt-4">
+                    <div className="flex gap-3 pt-4">
                         <Button
                             variant="outline"
-                            className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold uppercase tracking-widest text-[10px]"
+                            className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-[11px] leading-tight text-neutral-500"
                             onClick={() => setLoginModalOpen(false)}
                         >
                             Отмена
                         </Button>
                         <SubmitButton
-                            className="flex-1 rounded-2xl h-12 font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-slate-200"
+                            className="flex-1 rounded-2xl h-12 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-slate-200"
                             onClick={handleXiaomiLogin}
                             isLoading={isPending}
                         >
@@ -539,9 +534,9 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 description={selectedCamera?.name || ''}
             >
                 {selectedCamera && (
-                    <div className="space-y-6 py-6 px-4">
+                    <div className="space-y-3 py-6 px-4">
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                            <label className="text-sm font-bold text-slate-900  tracking-wider">
                                 Название устройства
                             </label>
                             <Input
@@ -554,7 +549,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                            <label className="text-sm font-bold text-slate-900  tracking-wider">
                                 Расположение (локация)
                             </label>
                             <Input
@@ -569,7 +564,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
 
                         <div className="space-y-2">
                             <div className="flex items-center justify-between mb-2">
-                                <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">
+                                <label className="text-sm font-bold text-slate-900  tracking-wider">
                                     Порог уверенности ИИ
                                 </label>
                                 <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold">
@@ -587,22 +582,22 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                 )}
                                 className="w-full h-2 bg-indigo-100 rounded-full appearance-none cursor-pointer accent-indigo-600"
                             />
-                            <p className="text-[10px] text-slate-400 font-medium leading-relaxed mt-2 p-1">
+                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium leading-relaxed mt-2 p-1">
                                 Минимальная уверенность для распознавания лица.
                                 Рекомендуется 60-70%. Выше = точнее, но чаще пропуски.
                             </p>
                         </div>
 
-                        <div className="flex gap-4 pt-4">
+                        <div className="flex gap-3 pt-4">
                             <Button
                                 variant="outline"
-                                className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold uppercase tracking-widest text-[10px]"
+                                className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-[11px] leading-tight text-neutral-500"
                                 onClick={() => setSettingsModalOpen(false)}
                             >
                                 Отмена
                             </Button>
                             <SubmitButton
-                                className="flex-1 rounded-2xl h-12 font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100"
+                                className="flex-1 rounded-2xl h-12 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
                                 onClick={handleUpdateCamera}
                                 isLoading={isPending}
                             >

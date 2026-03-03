@@ -1,28 +1,28 @@
 "use client";
 
-import { useState, useEffect, createElement } from "react";
+import { useState, useEffect, createElement } from"react";
 import {
     Search, Upload, Plus, X,
     Sparkles, Pencil, Trash2
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+} from"lucide-react";
+import { Button } from"@/components/ui/button";
 
-import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
-import { ICON_GROUPS as INITIAL_ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { updateIconGroups } from "./actions";
-import { useToast } from "@/components/ui/toast";
+import { cn } from"@/lib/utils";
+import { motion, AnimatePresence } from"framer-motion";
+import { ICON_GROUPS as INITIAL_ICON_GROUPS, SerializedIconGroup } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { updateIconGroups } from"./actions";
+import { useToast } from"@/components/ui/toast";
 import {
     pluralize,
     prepareGroupsForSave,
     serializeIconGroups,
     hydrateIconGroups,
     createSvgIcon
-} from "./components/icon-manager/utils";
+} from"./components/icon-manager/utils";
 
 
 
-import { IconGroup, IconItem, CategoryDialog, UploadIconModal, DeleteConfirmation } from "./components/icon-manager";
+import { IconGroup, IconItem, CategoryDialog, UploadIconModal, DeleteConfirmation } from"./components/icon-manager";
 
 export function IconManager({ initialData }: { initialData?: SerializedIconGroup[] }) {
     const [uiState, setUiState] = useState({
@@ -46,7 +46,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                 const group = g as Partial<IconGroup> & { name?: string };
                 return {
                     id: group.id || group.name?.toLowerCase().replace(/\s+/g, '-') || `cat-${idx}`,
-                    label: group.label || group.name || "Без названия",
+                    label: group.label || group.name ||"Без названия",
                     groupIcon: group.groupIcon || Sparkles,
                     icons: group.icons || []
                 };
@@ -75,7 +75,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
         if (!uiState.editingCategory) return;
 
         if (!uiState.editingCategory.label.trim()) {
-            toast("Пожалуйста, введите название категории", "warning");
+            toast("Пожалуйста, введите название категории","warning");
             return;
         }
 
@@ -94,16 +94,16 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
         try {
             const serializedData = serializeIconGroups(prepareGroupsForSave(updatedGroups)).map(g => ({
                 ...g,
-                groupIconName: g.group_icon || "box" // Ensure compatibility with existing actions
+                groupIconName: g.group_icon ||"box" // Ensure compatibility with existing actions
             } as typeof g & { groupIconName: string }));
 
             const result = await updateIconGroups(serializedData);
             if (result.error) {
-                toast(`Ошибка при сохранении: ${result.error}`, "error");
+                toast(`Ошибка при сохранении: ${result.error}`,"error");
             }
         } catch (error) {
             console.error("Failed to save icon groups:", error);
-            toast(error instanceof Error ? error.message : "Неизвестная ошибка при сохранении", "error");
+            toast(error instanceof Error ? error.message :"Неизвестная ошибка при сохранении","error");
         } finally {
             setUiState(prev => ({ ...prev, isSaving: false, editingCategory: null }));
         }
@@ -125,16 +125,16 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
         try {
             const serializedData = serializeIconGroups(prepareGroupsForSave(updatedGroups)).map(g => ({
                 ...g,
-                groupIconName: g.group_icon || "box" // Ensure compatibility with existing actions
+                groupIconName: g.group_icon ||"box" // Ensure compatibility with existing actions
             } as typeof g & { groupIconName: string }));
 
             const result = await updateIconGroups(serializedData);
             if (result.error) {
-                toast(`Ошибка при сохранении: ${result.error}`, "error");
+                toast(`Ошибка при сохранении: ${result.error}`,"error");
             }
         } catch (error) {
             console.error("Failed to save icon groups:", error);
-            toast(error instanceof Error ? error.message : "Неизвестная ошибка при сохранении", "error");
+            toast(error instanceof Error ? error.message :"Неизвестная ошибка при сохранении","error");
         } finally {
             setUiState(prev => ({ ...prev, isSaving: false, categoryToDelete: null, editingCategory: null }));
         }
@@ -144,7 +144,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
         const newId = `cat-${Date.now()}`;
         const newCategory: IconGroup = {
             id: newId,
-            label: "",
+            label:"",
             groupIcon: Sparkles,
             icons: []
         };
@@ -188,7 +188,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
             }
 
             setUiState(prev => ({ ...prev, showUploadModal: false }));
-            toast("Иконка успешно загружена", "success");
+            toast("Иконка успешно загружена","success");
         };
         reader.readAsText(file);
     };
@@ -254,7 +254,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                                             <div className="flex items-center gap-2 min-w-0">
                                                 <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center shadow-sm shrink-0">
                                                     {createElement(GroupIcon, {
-                                                        className: "w-3.5 h-3.5 text-primary",
+                                                        className:"w-3.5 h-3.5 text-primary",
                                                     })}
                                                 </div>
                                                 <div className="min-w-0">
@@ -309,16 +309,14 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                                                                         selectedIcon: isSelected ? null : item.name
                                                                     }))
                                                                 }
-                                                                className={cn(
-                                                                    "w-full aspect-square rounded-[8px] flex items-center justify-center transition-all bg-white border border-slate-100 hover:border-primary/50 hover:shadow hover:text-primary active:scale-95",
-                                                                    isSelected &&
-                                                                    "bg-primary border-primary text-white hover:bg-primary hover:text-white shadow-md shadow-primary/20"
+                                                                className={cn("w-full aspect-square rounded-[8px] flex items-center justify-center transition-all bg-white border border-slate-100 hover:border-primary/50 hover:shadow hover:text-primary active:scale-95",
+                                                                    isSelected &&"bg-primary border-primary text-white hover:bg-primary hover:text-white shadow-md shadow-primary/20"
                                                                 )}
                                                                 title={item.label}
                                                                 aria-label={item.label}
                                                             >
                                                                 {createElement(Icon, {
-                                                                    className: "w-6 h-6",
+                                                                    className:"w-6 h-6",
                                                                 })}
                                                             </button>
                                                         </div>
@@ -377,7 +375,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
                             <div className="crm-card flex items-center gap-3 !shadow-2xl !border-2 !border-primary/20 !bg-white/95 backdrop-blur-xl">
                                 <div className="w-12 h-12 rounded-[12px] bg-primary flex items-center justify-center shrink-0">
                                     {iconItem?.icon && createElement(iconItem.icon, {
-                                        className: "w-6 h-6 text-white",
+                                        className:"w-6 h-6 text-white",
                                     })}
                                 </div>
                                 <div className="min-w-0 flex-1">

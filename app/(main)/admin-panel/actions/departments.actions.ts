@@ -1,15 +1,15 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { departments, roles, users } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { comparePassword } from "@/lib/password";
-import { eq, asc, inArray } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { CreateDepartmentSchema, UpdateDepartmentSchema } from "../validation";
+import { db } from"@/lib/db";
+import { departments, roles, users } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { comparePassword } from"@/lib/password";
+import { eq, asc, inArray } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { CreateDepartmentSchema, UpdateDepartmentSchema } from"../validation";
 
 // Department Actions
 export async function getDepartments() {
@@ -24,10 +24,10 @@ export async function getDepartments() {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/departments",
-            method: "getDepartments"
+            path:"/admin-panel/departments",
+            method:"getDepartments"
         });
-        return { success: false, error: "Не удалось загрузить отделы" };
+        return { success: false, error:"Не удалось загрузить отделы" };
     }
 }
 
@@ -57,16 +57,16 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
             return dept;
         });
 
-        await logAction("Создание отдела", "department", newDept.id, { name: newDept.name });
+        await logAction("Создание отдела","department", newDept.id, { name: newDept.name });
         revalidatePath("/admin-panel/departments");
         return { success: true, data: newDept };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/departments/create",
-            method: "createDepartment"
+            path:"/admin-panel/departments/create",
+            method:"createDepartment"
         });
-        return { success: false, error: "Не удалось создать отдел" };
+        return { success: false, error:"Не удалось создать отдел" };
     }
 }
 
@@ -99,16 +99,16 @@ export async function updateDepartment(deptId: string, formData: FormData, roleI
             return dept;
         });
 
-        await logAction("Обновление отдела", "department", deptId, validated.data);
+        await logAction("Обновление отдела","department", deptId, validated.data);
         revalidatePath("/admin-panel/departments");
         return { success: true, data: updatedDept };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/departments/update",
-            method: "updateDepartment"
+            path:"/admin-panel/departments/update",
+            method:"updateDepartment"
         });
-        return { success: false, error: "Не удалось обновить отдел" };
+        return { success: false, error:"Не удалось обновить отдел" };
     }
 }
 
@@ -119,7 +119,7 @@ export async function deleteDepartment(deptId: string, password?: string) {
 
         if (password) {
             const isMatch = await comparePassword(password, currentUser.passwordHash);
-            if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
+            if (!isMatch) return { success: false, error:"Неверный пароль администратора" };
         }
 
         // check if users belong to this department
@@ -128,20 +128,20 @@ export async function deleteDepartment(deptId: string, password?: string) {
         });
 
         if (usersInDept) {
-            return { success: false, error: "Нельзя удалить отдел, в котором есть пользователи" };
+            return { success: false, error:"Нельзя удалить отдел, в котором есть пользователи" };
         }
 
         await db.delete(departments).where(eq(departments.id, deptId));
-        await logAction("Удаление отдела", "department", deptId);
+        await logAction("Удаление отдела","department", deptId);
         revalidatePath("/admin-panel/departments");
         return { success: true };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/departments/delete",
-            method: "deleteDepartment"
+            path:"/admin-panel/departments/delete",
+            method:"deleteDepartment"
         });
-        return { success: false, error: "Не удалось удалить отдел" };
+        return { success: false, error:"Не удалось удалить отдел" };
     }
 }
 
@@ -156,6 +156,6 @@ export async function getRolesByDepartment(departmentId: string) {
         });
         return { success: true, data: rolesInDept };
     } catch {
-        return { success: false, error: "Не удалось загрузить роли отдела" };
+        return { success: false, error:"Не удалось загрузить роли отдела" };
     }
 }

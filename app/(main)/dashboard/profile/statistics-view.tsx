@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from"framer-motion";
 import {
     TrendingUp,
     CheckCircle2,
@@ -9,9 +9,9 @@ import {
     Package,
     Zap,
     Sparkles
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useBranding } from "@/components/branding-provider";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { useBranding } from"@/components/branding-provider";
 
 interface StatisticsViewProps {
     data: {
@@ -30,63 +30,63 @@ export function StatisticsView({ data }: StatisticsViewProps) {
 
     const stats = [
         {
-            title: "Всего заказов",
+            title:"Всего заказов",
             value: data.totalOrders,
-            description: "За все время",
+            description:"За все время",
             icon: Package,
-            color: "text-blue-500",
-            bg: "bg-blue-50",
-            trend: "+12%"
+            color:"text-blue-500",
+            bg:"bg-blue-50",
+            trend:"+12%"
         },
         {
-            title: "Заказов за месяц",
+            title:"Заказов за месяц",
             value: data.monthlyOrders,
-            description: "В текущем месяце",
+            description:"В текущем месяце",
             icon: TrendingUp,
-            color: "text-primary",
-            bg: "bg-primary/5",
-            trend: "+5%"
+            color:"text-primary",
+            bg:"bg-primary/5",
+            trend:"+5%"
         },
         {
-            title: "Активность",
+            title:"Активность",
             value: data.totalActivity,
-            description: "Действий в системе",
+            description:"Действий в системе",
             icon: ActivityIcon,
-            color: "text-emerald-500",
-            bg: "bg-emerald-50",
-            trend: "High"
+            color:"text-emerald-500",
+            bg:"bg-emerald-50",
+            trend:"High"
         },
         {
-            title: "Выручка (создано)",
+            title:"Выручка (создано)",
             value: `${data.totalRevenue.toLocaleString()} ${currencySymbol}`,
-            description: "От ваших заказов",
+            description:"От ваших заказов",
             icon: () => <span className="text-xl font-black">{currencySymbol}</span>,
-            color: "text-amber-500",
-            bg: "bg-amber-50",
-            trend: "+8%"
+            color:"text-amber-500",
+            bg:"bg-amber-50",
+            trend:"+8%"
         }
     ];
 
     const getStatusLabel = (status: string) => {
         const labels: Record<string, string> = {
-            new: "Новые",
-            in_progress: "В работе",
-            review: "Проверка",
-            done: "Завершено",
-            archived: "Архив"
+            new:"Новые",
+            in_progress:"В работе",
+            review:"Проверка",
+            done:"Завершено",
+            archived:"Архив"
         };
         return labels[status] || status;
     };
 
     const getStatusColor = (status: string) => {
         const colors: Record<string, string> = {
-            new: "bg-blue-500",
-            in_progress: "bg-primary",
-            review: "bg-amber-500",
-            done: "bg-emerald-500",
-            archived: "bg-slate-400"
+            new:"bg-blue-500",
+            in_progress:"bg-primary",
+            review:"bg-amber-500",
+            done:"bg-emerald-500",
+            archived:"bg-slate-400"
         };
-        return colors[status] || "bg-slate-400";
+        return colors[status] ||"bg-slate-400";
     };
 
     return (
@@ -108,7 +108,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                             <div className={cn("p-4 rounded-2xl shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:bg-white group-hover:text-slate-900", stat.bg)}>
                                 {(() => {
                                     const StatIcon = stat.icon;
-                                    return <StatIcon className={cn("w-6 h-6", stat.color, "group-hover:text-slate-900")} />;
+                                    return <StatIcon className={cn("w-6 h-6", stat.color,"group-hover:text-slate-900")} />;
                                 })()}
                             </div>
                             <div className="px-3 py-1 rounded-lg bg-slate-50 text-xs font-black text-slate-400 border border-slate-200 group-hover:bg-white/10 group-hover:text-primary group-hover:border-transparent transition-all">
@@ -166,7 +166,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                                             <motion.div
                                                 initial={{ width: 0 }}
                                                 animate={{ width: `${percentage}%` }}
-                                                transition={{ duration: 1, delay: 0.6 + i * 0.1, ease: "circOut" }}
+                                                transition={{ duration: 1, delay: 0.6 + i * 0.1, ease:"circOut" }}
                                                 className={cn("h-full rounded-full shadow-sm", getStatusColor(item.status))}
                                             />
                                         </div>
@@ -224,7 +224,7 @@ export function StatisticsView({ data }: StatisticsViewProps) {
                                     strokeDasharray={552.9}
                                     initial={{ strokeDashoffset: 552.9 }}
                                     animate={{ strokeDashoffset: 552.9 * (1 - (data.efficiency || 0) / 100) }}
-                                    transition={{ duration: 1.5, delay: 0.8, ease: "circOut" }}
+                                    transition={{ duration: 1.5, delay: 0.8, ease:"circOut" }}
                                     className="text-primary shadow-lg"
                                     strokeLinecap="round"
                                 />

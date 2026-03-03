@@ -42,7 +42,7 @@ describe('Pagination', () => {
         expect(mockPush).toHaveBeenCalledWith('/test-path?page=3');
     });
 
-    it('disables "Prev" on first page and "Next" on last page', () => {
+    it('disables"Prev" on first page and"Next" on last page', () => {
         const { rerender } = render(<Pagination currentPage={1} totalItems={20} pageSize={10} />);
         expect(screen.getByText('Пред')).toBeDisabled();
         expect(screen.getByText('След')).not.toBeDisabled();

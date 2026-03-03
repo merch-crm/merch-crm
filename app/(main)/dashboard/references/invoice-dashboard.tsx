@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React from"react";
+import Image from"next/image";
 import {
     Plus,
     ChevronLeft,
@@ -15,28 +15,28 @@ import {
     LayoutGrid,
     Calendar,
     Bell
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 const InvoiceDashboard = () => {
 
     const invoiceItems = [
-        { id: 1, name: "iPhone 14 Pro", price: 850, qty: 20, store: "Store 2", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-1inch-deeppurple?wid=200&hei=200&fmt=jpeg" },
-        { id: 2, name: "iPhone 14", price: 700, qty: 20, store: "Store 2", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-14-finish-select-202209-6-1inch-blue?wid=200&hei=200&fmt=jpeg" },
-        { id: 3, name: "MacBook Pro 13", price: 1600, qty: 10, store: "Store 2", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp-spacegray-select-202206?wid=200&hei=200&fmt=jpeg" },
-        { id: 4, name: "MacBook Air M1", price: 1100, qty: 20, store: "Store 1", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mba-spacegray-select-202402?wid=200&hei=200&fmt=jpeg" },
-        { id: 5, name: "iMac 27\"", price: 1300, qty: 20, store: "Store 1", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/imac-24-blue-selection-hero-202310?wid=200&hei=200&fmt=jpeg" },
-        { id: 6, name: "iPhone 15", price: 800, qty: 15, store: "Store 2", image: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-pink?wid=200&hei=200&fmt=jpeg" },
+        { id: 1, name:"iPhone 14 Pro", price: 850, qty: 20, store:"Store 2", image:"https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-14-pro-finish-select-202209-6-1inch-deeppurple?wid=200&hei=200&fmt=jpeg" },
+        { id: 2, name:"iPhone 14", price: 700, qty: 20, store:"Store 2", image:"https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-14-finish-select-202209-6-1inch-blue?wid=200&hei=200&fmt=jpeg" },
+        { id: 3, name:"MacBook Pro 13", price: 1600, qty: 10, store:"Store 2", image:"https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mbp-spacegray-select-202206?wid=200&hei=200&fmt=jpeg" },
+        { id: 4, name:"MacBook Air M1", price: 1100, qty: 20, store:"Store 1", image:"https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/mba-spacegray-select-202402?wid=200&hei=200&fmt=jpeg" },
+        { id: 5, name:"iMac 27\"", price: 1300, qty: 20, store:"Store 1", image:"https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/imac-24-blue-selection-hero-202310?wid=200&hei=200&fmt=jpeg" },
+        { id: 6, name:"iPhone 15", price: 800, qty: 15, store:"Store 2", image:"https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-15-finish-select-202309-6-1inch-pink?wid=200&hei=200&fmt=jpeg" },
     ];
 
     const activities = [
-        { date: "12 Feb", time: "at 11 pm", title: "Send Payment Reminder", person: "Jessi Johnson", action: "sent a payment reminder", color: "bg-[#e5d5ff]", personImg: "https://randomuser.me/api/portraits/women/44.jpg" },
-        { date: "13 Feb", time: "at 12 pm", title: "Call about the contract", person: "Brian Carpenter", action: "Google meets", color: "bg-[#fff7aa]", personImg: "https://randomuser.me/api/portraits/men/32.jpg" },
+        { date:"12 Feb", time:"at 11 pm", title:"Send Payment Reminder", person:"Jessi Johnson", action:"sent a payment reminder", color:"bg-[#e5d5ff]", personImg:"https://randomuser.me/api/portraits/women/44.jpg" },
+        { date:"13 Feb", time:"at 12 pm", title:"Call about the contract", person:"Brian Carpenter", action:"Google meets", color:"bg-[#fff7aa]", personImg:"https://randomuser.me/api/portraits/men/32.jpg" },
     ];
 
     return (
         <div className="rounded-[48px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] border-4 border-white/50 relative p-1 pb-0 flex flex-col font-sans max-w-[1500px] min-w-[1240px] mx-auto"
-            style={{ background: "linear-gradient(135deg, #cdeee2 0%, #f7f6ff 40%, #f6ecff 70%, #d4e7f7 100%)" }}>
+            style={{ background:"linear-gradient(135deg, #cdeee2 0%, #f7f6ff 40%, #f6ecff 70%, #d4e7f7 100%)" }}>
 
             {/* Top Navigation Bar */}
             <div className="px-10 py-8 flex items-center justify-between">
@@ -52,7 +52,7 @@ const InvoiceDashboard = () => {
                         </button>
                     </div>
 
-                    <h1 className="text-[24px] font-medium text-black/30 ">Invoice</h1>
+                    <h1 className="text-[24px] font-medium text-black/30">Invoice</h1>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -90,7 +90,7 @@ const InvoiceDashboard = () => {
                         <div className="flex items-baseline">
                             <span className="text-[100px] font-bold text-black leading-none tracking-[-0.04em]">$</span>
                             <span className="text-[100px] font-bold text-black leading-none tracking-[-0.04em] ml-2">68,575</span>
-                            <span className="text-[48px] font-medium text-black/25 leading-none ">.00</span>
+                            <span className="text-[48px] font-medium text-black/25 leading-none">.00</span>
                         </div>
                     </div>
 
@@ -110,7 +110,7 @@ const InvoiceDashboard = () => {
                                 <div className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center">
                                     <span className="text-[11px] font-bold text-black/40">#</span>
                                 </div>
-                                <span className="text-[19px] font-bold text-black ">INV-4905</span>
+                                <span className="text-[19px] font-bold text-black">INV-4905</span>
                             </div>
                         </div>
                         <div className="space-y-1.5">
@@ -146,7 +146,7 @@ const InvoiceDashboard = () => {
                     {/* Days Outstanding Dotted Bar */}
                     <div className="flex-1 h-[72px] bg-white/30 backdrop-blur-md rounded-[26px] overflow-hidden flex items-center px-5 gap-3">
                         <div className="flex-1 h-3 flex gap-3 items-center"
-                            style={{ background: "repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 1.5px, transparent 1.5px, transparent 4px)" }}>
+                            style={{ background:"repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 1.5px, transparent 1.5px, transparent 4px)" }}>
                             <div className="h-full bg-black/10 w-[45%]" />
                         </div>
                         <div className="flex items-center gap-3 whitespace-nowrap">
@@ -178,7 +178,7 @@ const InvoiceDashboard = () => {
 
                         {/* Inactive Tabs as Pill Capsules */}
                         <div className="flex items-center gap-3 mb-6 ml-14">
-                            {["Details", "Docs", "Notes"].map((tab) => (
+                            {["Details","Docs","Notes"].map((tab) => (
                                 <button type="button" key={tab} className="px-11 py-5.5 bg-[#b9e5da] hover:bg-[#a6dbce] transition-all rounded-[32px] text-[20px] font-bold text-[#448074]">
                                     {tab}
                                 </button>
@@ -217,7 +217,7 @@ const InvoiceDashboard = () => {
                                         </div>
                                         <div className="text-right">
                                             <h4 className="text-[19px] font-black text-black leading-tight mb-1.5">{item.name}</h4>
-                                            <p className="text-[15px] font-bold text-black/30 ">$ {item.price}</p>
+                                            <p className="text-[15px] font-bold text-black/30">$ {item.price}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-end justify-between">
@@ -255,10 +255,10 @@ const InvoiceDashboard = () => {
                         </div>
 
                         {/* Redesigned Liquid Activity Section */}
-                        <div className="space-y-12">
+                        <div className="space-y-3">
                             <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-baseline gap-3">
-                                    <span className="text-[64px] font-bold text-black leading-none ">12</span>
+                                    <span className="text-[64px] font-bold text-black leading-none">12</span>
                                     <span className="text-[18px] font-bold text-black/15">Activities</span>
                                 </div>
                                 <div className="flex -space-x-3">
@@ -270,7 +270,7 @@ const InvoiceDashboard = () => {
                                 </div>
                             </div>
 
-                            <div className="space-y-14 pt-4">
+                            <div className="space-y-3 pt-4">
                                 {activities.map((act, i) => (
                                     <div key={i} className="relative group cursor-pointer pl-6">
                                         {/* Organic Fluid Protrusion (The Icon Tab) */}

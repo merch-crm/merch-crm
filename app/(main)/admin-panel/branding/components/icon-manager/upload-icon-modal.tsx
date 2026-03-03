@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Upload, X, AlertCircle, Plus, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useState } from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { Upload, X, AlertCircle, Plus, Sparkles } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
 
 interface UploadIconModalProps {
     isOpen: boolean;
@@ -65,11 +65,10 @@ export function UploadIconModal({ isOpen, onClose, onUpload }: UploadIconModalPr
 
                         <label
                             htmlFor="svg-upload-modal-standalone"
-                            className={cn(
-                                "border-2 border-dashed rounded-[20px] p-6 text-center transition-all cursor-pointer group bg-slate-50/50 hover:bg-white active:scale-[0.98] block",
+                            className={cn("border-2 border-dashed rounded-[20px] p-6 text-center transition-all cursor-pointer group bg-slate-50/50 hover:bg-white active:scale-[0.98] block",
                                 uploadedFile
-                                    ? "border-primary/50 bg-primary/5"
-                                    : "border-slate-200 hover:border-primary/50"
+                                    ?"border-primary/50 bg-primary/5"
+                                    :"border-slate-200 hover:border-primary/50"
                             )}
                         >
                             <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-100 mx-auto mb-5 flex items-center justify-center group-hover:shadow-md transition-all">

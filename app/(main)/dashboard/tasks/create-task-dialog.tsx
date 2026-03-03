@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition } from"react";
+import { useRouter } from"next/navigation";
 import {
     Type,
     AlignLeft,
@@ -10,15 +10,15 @@ import {
     Calendar,
     Loader2,
     PlusCircle
-} from "lucide-react";
-import { createTask } from "./actions";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Select } from "@/components/ui/select";
-import { IconInput } from "@/components/ui/icon-input";
-import { SegmentedControl } from "@/components/ui/segmented-control";
+} from"lucide-react";
+import { createTask } from"./actions";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Select } from"@/components/ui/select";
+import { IconInput } from"@/components/ui/icon-input";
+import { SegmentedControl } from"@/components/ui/segmented-control";
 
-import { User, Order } from "@/lib/types";
+import { User, Order } from"@/lib/types";
 
 interface Department {
     id: string;
@@ -37,15 +37,15 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
         isOpen: false,
         loading: false,
         error: null as string | null,
-        assignmentType: "user" as "user" | "department"
+        assignmentType:"user" as"user" |"department"
     });
 
     const [formState, setFormState] = useState({
-        taskType: "other",
-        priority: "normal",
-        orderId: "",
-        assigneeUserId: "",
-        assigneeDepartmentId: ""
+        taskType:"other",
+        priority:"normal",
+        orderId:"",
+        assigneeUserId:"",
+        assigneeDepartmentId:""
     });
 
     const [, startTransition] = useTransition();
@@ -62,7 +62,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
             if (!res.success) {
                 setUiState(prev => ({
                     ...prev,
-                    error: res.error || "Не удалось создать задачу",
+                    error: res.error ||"Не удалось создать задачу",
                     loading: false
                 }));
                 playSound("notification_error");
@@ -71,18 +71,18 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                 setUiState(prev => ({ ...prev, isOpen: false, loading: false }));
                 // Reset form state optionally, but dialog close usually sufficient
                 setFormState({
-                    taskType: "other",
-                    priority: "normal",
-                    orderId: "",
-                    assigneeUserId: "",
-                    assigneeDepartmentId: ""
+                    taskType:"other",
+                    priority:"normal",
+                    orderId:"",
+                    assigneeUserId:"",
+                    assigneeDepartmentId:""
                 });
                 router.refresh();
             }
         });
     }
 
-    const toggleAssignmentType = (type: "user" | "department") => {
+    const toggleAssignmentType = (type:"user" |"department") => {
         setUiState(prev => ({ ...prev, assignmentType: type }));
     };
 
@@ -141,11 +141,11 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 onChange={(val) => setFormState(prev => ({ ...prev, taskType: val }))}
                                 placeholder="Выберите тип"
                                 options={[
-                                    { id: "design", title: "Дизайн" },
-                                    { id: "production", title: "Производство" },
-                                    { id: "acquisition", title: "Закупка" },
-                                    { id: "delivery", title: "Доставка" },
-                                    { id: "other", title: "Прочее" },
+                                    { id:"design", title:"Дизайн" },
+                                    { id:"production", title:"Производство" },
+                                    { id:"acquisition", title:"Закупка" },
+                                    { id:"delivery", title:"Доставка" },
+                                    { id:"other", title:"Прочее" },
                                 ]}
                                 compact
                             />
@@ -160,9 +160,9 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 onChange={(val) => setFormState(prev => ({ ...prev, priority: val }))}
                                 placeholder="Выберите приоритет"
                                 options={[
-                                    { id: "low", title: "Низкий" },
-                                    { id: "normal", title: "Обычный" },
-                                    { id: "high", title: "Высокий" },
+                                    { id:"low", title:"Низкий" },
+                                    { id:"normal", title:"Обычный" },
+                                    { id:"high", title:"Высокий" },
                                 ]}
                                 compact
                             />
@@ -179,10 +179,10 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 onChange={(val) => setFormState(prev => ({ ...prev, orderId: val }))}
                                 placeholder="Без привязки"
                                 options={[
-                                    { id: "", title: "Без привязки" },
+                                    { id:"", title:"Без привязки" },
                                     ...(orders || []).map(o => ({
                                         id: o.id,
-                                        title: `№${o.orderNumber}${o.client?.name ? ` - ${o.client.name}` : ""}`,
+                                        title: `№${o.orderNumber}${o.client?.name ? ` - ${o.client.name}` :""}`,
                                     })),
                                 ]}
                                 compact
@@ -208,22 +208,22 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                         {/* Toggle Buttons */}
                         <SegmentedControl
                             options={[
-                                { value: "user", label: "Пользователю", icon: UserIcon },
-                                { value: "department", label: "Отделу", icon: Users },
+                                { value:"user", label:"Пользователю", icon: UserIcon },
+                                { value:"department", label:"Отделу", icon: Users },
                             ]}
                             value={uiState.assignmentType}
-                            onChange={(val) => toggleAssignmentType(val as "user" | "department")}
+                            onChange={(val) => toggleAssignmentType(val as"user" |"department")}
                         />
 
                         {/* Conditional Select */}
-                        {uiState.assignmentType === "user" ? (
+                        {uiState.assignmentType ==="user" ? (
                             <Select
                                 name="assignedToUserId"
                                 value={formState.assigneeUserId}
                                 onChange={(val) => setFormState(prev => ({ ...prev, assigneeUserId: val }))}
                                 placeholder="Выберите сотрудника"
                                 options={[
-                                    { id: "", title: "Выберите сотрудника" },
+                                    { id:"", title:"Выберите сотрудника" },
                                     ...(users || []).map(u => ({
                                         id: u.id,
                                         title: u.name,
@@ -238,7 +238,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                                 onChange={(val) => setFormState(prev => ({ ...prev, assigneeDepartmentId: val }))}
                                 placeholder="Выберите отдел"
                                 options={[
-                                    { id: "", title: "Выберите отдел" },
+                                    { id:"", title:"Выберите отдел" },
                                     ...(departments || []).map(d => ({
                                         id: d.id,
                                         title: d.name,
@@ -260,7 +260,7 @@ export function CreateTaskDialog({ users, departments, orders }: CreateTaskDialo
                             className="w-full py-4 btn-dark text-white rounded-[var(--radius-inner)] font-bold shadow-xl shadow-slate-900/10 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                         >
                             {uiState.loading ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
-                            {uiState.loading ? "СОЗДАНИЕ..." : "СОЗДАТЬ ЗАДАЧУ"}
+                            {uiState.loading ?"СОЗДАНИЕ..." :"СОЗДАТЬ ЗАДАЧУ"}
                         </button>
                     </div>
                 </form>

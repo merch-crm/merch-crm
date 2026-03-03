@@ -30,9 +30,9 @@ export default async function SettingsPage() {
 
 function SettingsSkeleton() {
     return (
-        <div className="space-y-6 animate-pulse p-6">
+        <div className="space-y-3 animate-pulse p-6">
             <div className="h-8 w-48 bg-slate-200 rounded-lg mb-8" />
-            <div className="space-y-4">
+            <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
                     <div key={i} className="h-64 bg-slate-200 rounded-2xl" />
                 ))}

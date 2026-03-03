@@ -1,18 +1,18 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { orders, payments, expenses, inventoryTransactions } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { and, gte, lte, sql, eq, desc, type SQL } from "drizzle-orm";
-import { subDays } from "date-fns";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { ActionResult } from "@/lib/types";
-import { CreateExpenseSchema } from "./validation";
-import { z } from "zod";
+import { db } from"@/lib/db";
+import { orders, payments, expenses, inventoryTransactions } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { and, gte, lte, sql, eq, desc, type SQL } from"drizzle-orm";
+import { subDays } from"date-fns";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { ActionResult } from"@/lib/types";
+import { CreateExpenseSchema } from"./validation";
+import { z } from"zod";
 export type CreateExpenseData = z.infer<typeof CreateExpenseSchema>;
-import { validatePromocode as validatePromoLib } from "@/lib/promocodes";
-import { revalidatePath } from "next/cache";
+import { validatePromocode as validatePromoLib } from"@/lib/promocodes";
+import { revalidatePath } from"next/cache";
 
 export interface FinancialStats {
     summary: {
@@ -70,10 +70,10 @@ export interface FundStats {
 
 export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionResult<FinancialStats>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
-    if (!["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Доступ запрещен" };
+    if (!["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Доступ запрещен" };
     }
 
     try {
@@ -119,7 +119,7 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
                 totalCOGSCost: sql<number>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount}) * ${inventoryTransactions.costPrice}), 0)`
             }).from(inventoryTransactions)
                 .where(and(
-                    eq(inventoryTransactions.type, "out"),
+                    eq(inventoryTransactions.type,"out"),
                     from ? gte(inventoryTransactions.createdAt, from) : undefined,
                     to ? lte(inventoryTransactions.createdAt, to) : undefined
                 ))
@@ -151,7 +151,7 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
             })),
             recentTransactions: recentOrders.map((o) => ({
                 id: o.id,
-                clientName: o.client ? ([o.client.lastName, o.client.firstName].filter(Boolean).join(' ') || o.client.name || "Unnamed") : "Unnamed",
+                clientName: o.client ? ([o.client.lastName, o.client.firstName].filter(Boolean).join(' ') || o.client.name ||"Unnamed") :"Unnamed",
                 amount: Number(o.totalAmount || 0),
                 date: o.createdAt,
                 status: o.status,
@@ -163,22 +163,22 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance",
-            method: "getFinancialStats"
+            path:"/dashboard/finance",
+            method:"getFinancialStats"
         });
-        return { success: false, error: "Не удалось загрузить financial статистика" };
+        return { success: false, error:"Не удалось загрузить financial статистика" };
     }
 }
 
 export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResult<SalaryStats>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
         if (to) whereClause.push(lte(orders.createdAt, to));
-        const finalWhere = and(...whereClause, eq(orders.status, "done"));
+        const finalWhere = and(...whereClause, eq(orders.status,"done"));
 
         const allUsers = await db.query.users.findMany({
             with: {
@@ -207,8 +207,8 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
             return {
                 id: user.id,
                 name: user.name,
-                role: user.role?.name || "Сотрудник",
-                department: user.department?.name || "Общий",
+                role: user.role?.name ||"Сотрудник",
+                department: user.department?.name ||"Общий",
                 baseSalary,
                 bonus,
                 total: baseSalary + bonus,
@@ -228,16 +228,16 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance/salary",
-            method: "getSalaryStats"
+            path:"/dashboard/finance/salary",
+            method:"getSalaryStats"
         });
-        return { success: false, error: "Не удалось загрузить salary статистика" };
+        return { success: false, error:"Не удалось загрузить salary статистика" };
     }
 }
 
 export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResult<FundStats>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const whereClause: (SQL | undefined)[] = [];
@@ -256,11 +256,11 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
         const totalRevenue = Number(stats[0]?.totalRevenue || 0);
 
         const fundDefinitions = [
-            { name: "Операционный фонд", percentage: 40, color: "bg-blue-500", icon: "Activity" },
-            { name: "Фонд оплаты труда", percentage: 30, color: "bg-primary", icon: "Users" },
-            { name: "Фонд развития", percentage: 15, color: "bg-emerald-500", icon: "TrendingUp" },
-            { name: "Резервный фонд", percentage: 10, color: "bg-amber-500", icon: "ShieldCheck" },
-            { name: "Маркетинг", percentage: 5, color: "bg-rose-500", icon: "Megaphone" },
+            { name:"Операционный фонд", percentage: 40, color:"bg-blue-500", icon:"Activity" },
+            { name:"Фонд оплаты труда", percentage: 30, color:"bg-primary", icon:"Users" },
+            { name:"Фонд развития", percentage: 15, color:"bg-emerald-500", icon:"TrendingUp" },
+            { name:"Резервный фонд", percentage: 10, color:"bg-amber-500", icon:"ShieldCheck" },
+            { name:"Маркетинг", percentage: 5, color:"bg-rose-500", icon:"Megaphone" },
         ];
 
         const funds = fundDefinitions.map((f: typeof fundDefinitions[number]) => ({
@@ -278,22 +278,22 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance/funds",
-            method: "getFundsStats"
+            path:"/dashboard/finance/funds",
+            method:"getFundsStats"
         });
-        return { success: false, error: "Не удалось загрузить funds статистика" };
+        return { success: false, error:"Не удалось загрузить funds статистика" };
     }
 }
 
 export async function validatePromocode(code: string, totalAmount: number = 0, cartItems: Array<{ inventoryId?: string; price: number; quantity: number; category?: string }> = []) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const result = await validatePromoLib(code, totalAmount, cartItems);
 
         if (!result.isValid) {
-            return { success: false, error: result.error || "Промокод невалиден" };
+            return { success: false, error: result.error ||"Промокод невалиден" };
         }
 
         return {
@@ -307,17 +307,17 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance/promocode",
-            method: "validatePromocode",
+            path:"/dashboard/finance/promocode",
+            method:"validatePromocode",
             details: { code, totalAmount }
         });
-        return { success: false, error: "Ошибка при валидации промокода" };
+        return { success: false, error:"Ошибка при валидации промокода" };
     }
 }
 
 export async function getFinanceTransactions(type: 'payment' | 'expense', from?: Date, to?: Date): Promise<ActionResult<(typeof payments.$inferSelect | typeof expenses.$inferSelect)[]>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         if (type === 'payment') {
@@ -347,17 +347,17 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance/transactions",
-            method: "getFinanceTransactions",
+            path:"/dashboard/finance/transactions",
+            method:"getFinanceTransactions",
             details: { type }
         });
-        return { success: false, error: "Ошибка при получении транзакций" };
+        return { success: false, error:"Ошибка при получении транзакций" };
     }
 }
 
 export async function createExpense(data: unknown): Promise<ActionResult<typeof expenses.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const validation = CreateExpenseSchema.safeParse(data);
     if (!validation.success) {
@@ -369,16 +369,14 @@ export async function createExpense(data: unknown): Promise<ActionResult<typeof 
     try {
         const newExpense = await db.transaction(async (tx) => {
             const [expense] = await tx.insert(expenses).values({
-                category: category as "rent" | "salary" | "purchase" | "tax" | "other",
+                category: category as"rent" |"salary" |"purchase" |"tax" |"other",
                 amount: String(amount),
                 description: description,
                 date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
                 createdBy: session.id
             }).returning();
 
-            await logAction(
-                "Создан расход",
-                "expense",
+            await logAction("Создан расход","expense",
                 expense.id,
                 { category, amount, description },
                 tx
@@ -392,11 +390,11 @@ export async function createExpense(data: unknown): Promise<ActionResult<typeof 
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance",
-            method: "createExpense",
+            path:"/dashboard/finance",
+            method:"createExpense",
             details: { category, amount }
         });
-        return { success: false, error: "Ошибка при создании расхода" };
+        return { success: false, error:"Ошибка при создании расхода" };
     }
 }
 
@@ -409,7 +407,7 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
     margin: number;
 }>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const fromDate = from || subDays(new Date(), 30);
@@ -463,9 +461,9 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/finance/report",
-            method: "getPLReport"
+            path:"/dashboard/finance/report",
+            method:"getPLReport"
         });
-        return { success: false, error: "Ошибка при формировании P&L отчета" };
+        return { success: false, error:"Ошибка при формировании P&L отчета" };
     }
 }

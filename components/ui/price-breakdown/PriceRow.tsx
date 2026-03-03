@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "./utils";
-import { PriceRowProps } from "./types";
+import * as React from"react";
+import { ChevronDown } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { formatPrice } from"./utils";
+import { PriceRowProps } from"./types";
 
 export function PriceRow({
     icon,
@@ -20,15 +20,14 @@ export function PriceRow({
     showDetails,
     quantityInfo
 }: PriceRowProps) {
-    const Component = onClick ? "button" : "div";
+    const Component = onClick ?"button" :"div";
 
     return (
         <Component
-            type={onClick ? "button" : undefined}
-            className={cn(
-                "w-full text-left p-4 flex items-center gap-3 border-none outline-none focus-visible:ring-2 focus-visible:ring-primary/20 bg-transparent",
-                highlighted && "bg-amber-50",
-                onClick && "cursor-pointer hover:bg-slate-50 transition-colors"
+            type={onClick ?"button" : undefined}
+            className={cn("w-full text-left p-4 flex items-center gap-3 border-none outline-none focus-visible:ring-2 focus-visible:ring-primary/20 bg-transparent",
+                highlighted &&"bg-amber-50",
+                onClick &&"cursor-pointer hover:bg-slate-50 transition-colors"
             )}
             onClick={onClick}
             onKeyDown={onClick ? (e) => {
@@ -47,9 +46,8 @@ export function PriceRow({
                     <p className="text-sm font-medium text-slate-900">{label}</p>
                     {hasDetails && (
                         <ChevronDown
-                            className={cn(
-                                "w-4 h-4 text-slate-400 transition-transform",
-                                showDetails && "rotate-180"
+                            className={cn("w-4 h-4 text-slate-400 transition-transform",
+                                showDetails &&"rotate-180"
                             )}
                         />
                     )}
@@ -59,8 +57,8 @@ export function PriceRow({
             </div>
 
             <div className="text-right shrink-0">
-                <p className={cn("text-sm font-bold", isNegative ? "text-emerald-600" : "text-slate-900")}>
-                    {isNegative && "−"}
+                <p className={cn("text-sm font-bold", isNegative ?"text-emerald-600" :"text-slate-900")}>
+                    {isNegative &&"−"}
                     {formatPrice(Math.abs(amount), currency)}
                 </p>
             </div>

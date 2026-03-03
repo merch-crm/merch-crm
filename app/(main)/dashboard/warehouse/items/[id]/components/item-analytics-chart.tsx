@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { format, subDays, addDays } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn, formatUnit } from "@/lib/utils";
+import React, { useState } from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { format, subDays, addDays } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn, formatUnit } from"@/lib/utils";
 
 // Define the shape of analytics data expected
 interface AnalyticsData {
@@ -52,7 +52,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
 
     const generatePath = (data: number[] = []) => {
         const safeData = Array.isArray(data) ? data : [];
-        if (safeData.length === 0) return "";
+        if (safeData.length === 0) return"";
         const points = safeData.map((val, i) => ({
             x: paddingX + (i / (safeData.length - 1)) * (forecastSplitX - paddingX),
             y: (height - paddingBottom) - ((val || 0) / (maxVal * 1.02 || 1)) * (height - paddingTop - paddingBottom)
@@ -66,7 +66,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
             const cp2x = curr.x - (curr.x - prev.x) / 2.5;
             const cp2y = curr.y;
             return `${acc} C ${cp1x},${cp1y} ${cp2x},${cp2y} ${curr.x},${curr.y}`;
-        }, "");
+        },"");
     };
 
     const lines = (chartLines || []).map(line => ({
@@ -93,10 +93,10 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                     {line.growth !== 0 && (
                                         <span className={cn("text-xs font-bold flex items-center gap-0.5",
                                             line.invert
-                                                ? (line.growth > 0 ? "text-rose-500" : "text-emerald-500")
-                                                : (line.growth > 0 ? "text-emerald-500" : "text-rose-500")
+                                                ? (line.growth > 0 ?"text-rose-500" :"text-emerald-500")
+                                                : (line.growth > 0 ?"text-emerald-500" :"text-rose-500")
                                         )}>
-                                            {line.growth > 0 ? "↑" : "↓"} {Math.abs(line.growth)}%
+                                            {line.growth > 0 ?"↑" :"↓"} {Math.abs(line.growth)}%
                                         </span>
                                     )}
                                 </div>
@@ -179,7 +179,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                     const x = paddingX + (i / 3) * (forecastSplitX - paddingX);
                                     labels.push(
                                         <text key={`hist-${i}`} x={x} y={height - 5} textAnchor="middle" className="text-[7px] font-bold fill-muted-foreground opacity-60">
-                                            {format(date, "d MMM", { locale: ru })}
+                                            {format(date,"d MMM", { locale: ru })}
                                         </text>
                                     );
                                 }
@@ -191,7 +191,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                 const futureDate = addDays(new Date(), 10);
                                 labels.push(
                                     <text key="future" x={width - paddingX} y={height - 5} textAnchor="end" className="text-[7px] font-bold fill-muted-foreground opacity-40">
-                                        {format(futureDate, "d MMM", { locale: ru })}
+                                        {format(futureDate,"d MMM", { locale: ru })}
                                     </text>
                                 );
                                 return labels;
@@ -215,7 +215,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                                 d={path}
                                                 fill="none"
                                                 stroke={line.color}
-                                                strokeWidth={line.id === 'orders' ? "4" : "3"}
+                                                strokeWidth={line.id === 'orders' ?"4" :"3"}
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
                                                 initial={{ pathLength: 0, opacity: 0 }}
@@ -224,7 +224,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                                     duration: 2,
                                                     ease: [0.16, 1, 0.3, 1]
                                                 }}
-                                                className={line.id === 'orders' ? "drop-shadow-[0_0_12px_rgba(93,0,255,0.2)]" : ""}
+                                                className={line.id === 'orders' ?"drop-shadow-[0_0_12px_rgba(93,0,255,0.2)]" :""}
                                             />
 
                                             {(() => {
@@ -253,7 +253,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                                         d={forecastPath}
                                                         fill="none"
                                                         stroke={line.color}
-                                                        strokeWidth={line.id === 'orders' ? "3" : "2"}
+                                                        strokeWidth={line.id === 'orders' ?"3" :"2"}
                                                         strokeLinecap="round"
                                                         strokeLinejoin="round"
                                                         strokeDasharray="5 3"
@@ -287,16 +287,15 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                                         <motion.circle
                                                             cx={x}
                                                             cy={y}
-                                                            r={i === (safeData.length - 1) ? "4" : "3.5"}
+                                                            r={i === (safeData.length - 1) ?"4" :"3.5"}
                                                             fill="white"
                                                             stroke={line.color}
                                                             strokeWidth="2.5"
                                                             initial={i === ((line.data || []).length - 1) ? { scale: 0 } : false}
                                                             animate={i === ((line.data || []).length - 1) ? { scale: 1 } : {}}
                                                             transition={{ delay: 2, duration: 0.4 }}
-                                                            className={cn(
-                                                                "transition-all duration-200 shadow-sm",
-                                                                i === ((line.data || []).length - 1) ? "opacity-100" : "opacity-0 group-hover/dot:opacity-100 group-hover/dot:scale-110"
+                                                            className={cn("transition-all duration-200 shadow-sm",
+                                                                i === ((line.data || []).length - 1) ?"opacity-100" :"opacity-0 group-hover/dot:opacity-100 group-hover/dot:scale-110"
                                                             )}
                                                         />
                                                     </g>
@@ -332,9 +331,8 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                     top: hoveredData.y < 80 ? hoveredData.y + 15 : hoveredData.y - 65
                                 }}
                             >
-                                <div className={cn(
-                                    "relative bg-foreground/95 backdrop-blur-xl border border-background/10 px-3 py-1.5 rounded-lg shadow-xl min-w-[80px] flex flex-col items-center",
-                                    hoveredData.y < 80 ? "mt-2" : "mb-2"
+                                <div className={cn("relative bg-foreground/95 backdrop-blur-xl border border-background/10 px-3 py-1.5 rounded-lg shadow-xl min-w-[80px] flex flex-col items-center",
+                                    hoveredData.y < 80 ?"mt-2" :"mb-2"
                                 )}>
                                     <span className="text-xs font-black text-background/50 block mb-0.5 whitespace-nowrap">
                                         {format(hoveredData.date, 'dd MMMM', { locale: ru })}
@@ -343,11 +341,10 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                         <span className="text-lg font-black text-background">{hoveredData.value}</span>
                                         <span className="text-xs font-bold text-white/50">{formatUnit(unit)}</span>
                                     </div>
-                                    <div className={cn(
-                                        "absolute left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-foreground/95 border-background/10 rotate-45",
+                                    <div className={cn("absolute left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-foreground/95 border-background/10 rotate-45",
                                         hoveredData.y < 80
-                                            ? "-top-1.25 border-l border-t"
-                                            : "-bottom-1.25 border-r border-b"
+                                            ?"-top-1.25 border-l border-t"
+                                            :"-bottom-1.25 border-r border-b"
                                     )} />
                                 </div>
                             </motion.div>

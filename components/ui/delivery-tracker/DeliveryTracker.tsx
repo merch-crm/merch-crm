@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { format, formatDistanceToNow } from "date-fns";
-import { ru } from "date-fns/locale";
+import * as React from"react";
+import { format, formatDistanceToNow } from"date-fns";
+import { ru } from"date-fns/locale";
 import {
     Truck,
     Check,
@@ -11,12 +11,12 @@ import {
     ChevronDown,
     ChevronUp,
     ExternalLink,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { DeliveryTrackerProps } from "./types";
-import { PROVIDER_CONFIG, STATUS_CONFIG, PROGRESS_STEPS } from "./constants";
-import { CopyTrackingButton } from "./CopyTrackingButton";
-import { DeliveryEventItem } from "./DeliveryEventItem";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { DeliveryTrackerProps } from"./types";
+import { PROVIDER_CONFIG, STATUS_CONFIG, PROGRESS_STEPS } from"./constants";
+import { CopyTrackingButton } from"./CopyTrackingButton";
+import { DeliveryEventItem } from"./DeliveryEventItem";
 
 export function DeliveryTracker({
     delivery,
@@ -74,14 +74,13 @@ export function DeliveryTracker({
                 </div>
 
                 {/* Прогресс-бар */}
-                {currentStepIndex >= 0 && delivery.status !== "returned" && delivery.status !== "lost" && (
+                {currentStepIndex >= 0 && delivery.status !=="returned" && delivery.status !=="lost" && (
                     <div className="mt-4 flex items-center gap-1">
                         {PROGRESS_STEPS.map((step, index) => (
                             <div
                                 key={step}
-                                className={cn(
-                                    "flex-1 h-1.5 rounded-full transition-colors",
-                                    index <= currentStepIndex ? "bg-emerald-500" : "bg-slate-200"
+                                className={cn("flex-1 h-1.5 rounded-full transition-colors",
+                                    index <= currentStepIndex ?"bg-emerald-500" :"bg-slate-200"
                                 )}
                             />
                         ))}
@@ -122,7 +121,7 @@ export function DeliveryTracker({
                         <div className="flex items-center gap-1.5">
                             <Calendar className="w-4 h-4 text-slate-400" />
                             <span className="text-sm font-bold text-slate-900">
-                                {format(delivery.estimatedDelivery, "d MMMM", { locale: ru })}
+                                {format(delivery.estimatedDelivery,"d MMMM", { locale: ru })}
                             </span>
                         </div>
                     </div>
@@ -133,7 +132,7 @@ export function DeliveryTracker({
                         <div className="flex items-center gap-1.5">
                             <Check className="w-4 h-4 text-emerald-500" />
                             <span className="text-sm font-bold text-emerald-600">
-                                {format(delivery.actualDelivery, "d MMMM, HH:mm", { locale: ru })}
+                                {format(delivery.actualDelivery,"d MMMM, HH:mm", { locale: ru })}
                             </span>
                         </div>
                     </div>
@@ -165,7 +164,7 @@ export function DeliveryTracker({
                             disabled={isLoading}
                             className="p-1.5 rounded-md hover:bg-slate-100 transition-colors disabled:opacity-50"
                         >
-                            <RefreshCw className={cn("w-4 h-4 text-slate-400", isLoading && "animate-spin")} />
+                            <RefreshCw className={cn("w-4 h-4 text-slate-400", isLoading &&"animate-spin")} />
                         </button>
                     )}
                 </div>
@@ -207,7 +206,7 @@ export function DeliveryTracker({
             {delivery.lastUpdate && (
                 <div className="px-4 py-3 bg-slate-50 border-t border-slate-100">
                     <p className="text-xs text-slate-500">
-                        Обновлено{" "}
+                        Обновлено{""}
                         <span className="font-medium">
                             {formatDistanceToNow(delivery.lastUpdate, { addSuffix: true, locale: ru })}
                         </span>

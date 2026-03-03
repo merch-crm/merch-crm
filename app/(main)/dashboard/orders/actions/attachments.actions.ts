@@ -1,25 +1,25 @@
 "use server";
 
-import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
-import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { OrderIdSchema } from "../validation";
-import { ActionResult } from "@/lib/types";
+import { db } from"@/lib/db";
+import * as schema from"@/lib/schema";
+import { revalidatePath } from"next/cache";
+import { getSession } from"@/lib/auth";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { OrderIdSchema } from"../validation";
+import { ActionResult } from"@/lib/types";
 
 const { orderAttachments } = schema;
 
 export async function uploadOrderFile(orderId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const validatedId = OrderIdSchema.safeParse({ orderId });
     if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
 
     const file = formData.get("file") as File;
-    if (!file) return { success: false, error: "Файл не предоставлен" };
+    if (!file) return { success: false, error:"Файл не предоставлен" };
 
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -38,7 +38,7 @@ export async function uploadOrderFile(orderId: string, formData: FormData): Prom
                 createdBy: session.id,
             });
 
-            await logAction("Загружен файл заказа", "s3_storage", orderId, {
+            await logAction("Загружен файл заказа","s3_storage", orderId, {
                 fileName: file.name,
                 fileKey: key,
                 orderId
@@ -52,9 +52,9 @@ export async function uploadOrderFile(orderId: string, formData: FormData): Prom
         await logError({
             error,
             path: `/dashboard/orders/${orderId}`,
-            method: "uploadOrderFile",
+            method:"uploadOrderFile",
             details: { orderId, fileName: file.name }
         });
-        return { success: false, error: "Не удалось загрузить файл" };
+        return { success: false, error:"Не удалось загрузить файл" };
     }
 }

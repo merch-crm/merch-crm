@@ -1,13 +1,13 @@
-import { getNotificationSettingsAction } from "../actions/notifications.actions";
-import { NotificationSettings } from "../actions";;
-import { NotificationsClient } from "@/app/(main)/admin-panel/notifications/notifications-client";
+import { getNotificationSettingsAction } from"../actions/notifications.actions";
+import { NotificationSettings } from"../actions";;
+import { NotificationsClient } from"@/app/(main)/admin-panel/notifications/notifications-client";
 
 export default async function AdminNotificationsPage() {
     const { data: settings } = await getNotificationSettingsAction();
 
     const defaultSettings: NotificationSettings = {
         system: { enabled: true, browserPush: false },
-        telegram: { enabled: false, botToken: "", chatId: "", notifyOnNewOrder: true, notifyOnLowStock: true, notifyOnSystemError: true },
+        telegram: { enabled: false, botToken:"", chatId:"", notifyOnNewOrder: true, notifyOnLowStock: true, notifyOnSystemError: true },
         events: { new_order: true, order_status_change: true, stock_low: true, task_assigned: true }
     };
 

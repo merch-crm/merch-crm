@@ -1,10 +1,10 @@
-import React from "react";
-import Image from "next/image";
-import { Search, Bell, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { UserProfile } from "../types";
-import { ProfileView } from "../hooks/useProfile";
+import React from"react";
+import Image from"next/image";
+import { Search, Bell, Menu } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { UserProfile } from"../types";
+import { ProfileView } from"../hooks/useProfile";
 
 interface ProfileHeaderProps {
     user: UserProfile;
@@ -34,11 +34,11 @@ export function ProfileHeader({
                 </div>
                 <div className="md:block">
                     <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900">
-                        {view === "profile" && "Обзор профиля"}
-                        {view === "settings" && "Настройки аккаунта"}
-                        {view === "statistics" && "Аналитика и KPI"}
-                        {view === "schedule" && "Рабочее расписание"}
-                        {view === "notifications" && "Центр уведомлений"}
+                        {view ==="profile" &&"Обзор профиля"}
+                        {view ==="settings" &&"Настройки аккаунта"}
+                        {view ==="statistics" &&"Аналитика и KPI"}
+                        {view ==="schedule" &&"Рабочее расписание"}
+                        {view ==="notifications" &&"Центр уведомлений"}
                     </h1>
                 </div>
                 <div className="md:hidden">

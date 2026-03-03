@@ -1,18 +1,18 @@
 "use client";
 
-import React from "react";
-import { Banknote, TrendingUp } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useBranding } from "@/components/branding-provider";
-import { InventoryItem, ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
-import { Session } from "@/lib/auth";
+import React from"react";
+import { Banknote, TrendingUp } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { useBranding } from"@/components/branding-provider";
+import { InventoryItem, ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
+import { Session } from"@/lib/auth";
 
-import { useItemFinancials } from "./useItemFinancials";
-import { Timeframe } from "./types";
-import { FinancialMetricsGrid } from "./FinancialMetricsGrid";
-import { PriceAnalyticsSummary } from "./PriceAnalyticsSummary";
-import { PriceHistoryChart } from "./PriceHistoryChart";
-import { TimeframeTabs } from "./TimeframeTabs";
+import { useItemFinancials } from"./useItemFinancials";
+import { Timeframe } from"./types";
+import { FinancialMetricsGrid } from"./FinancialMetricsGrid";
+import { PriceAnalyticsSummary } from"./PriceAnalyticsSummary";
+import { PriceHistoryChart } from"./PriceHistoryChart";
+import { TimeframeTabs } from"./TimeframeTabs";
 
 interface ItemFinancialSectionProps {
     item: InventoryItem;
@@ -50,8 +50,7 @@ export const ItemFinancialSection = React.memo(({
     if (user?.roleName === 'Менеджер') return null;
 
     return (
-        <div className={cn(
-            "crm-card rounded-3xl p-6 transition-all bg-card relative overflow-hidden flex flex-col gap-3 shadow-sm hover:shadow-md duration-500",
+        <div className={cn("crm-card rounded-3xl p-6 transition-all bg-card relative overflow-hidden flex flex-col gap-3 shadow-sm hover:shadow-md duration-500",
             className
         )}>
             {/* Main Header */}
@@ -117,4 +116,4 @@ export const ItemFinancialSection = React.memo(({
     );
 });
 
-ItemFinancialSection.displayName = "ItemFinancialSection";
+ItemFinancialSection.displayName ="ItemFinancialSection";

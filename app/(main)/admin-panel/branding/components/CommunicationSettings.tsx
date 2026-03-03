@@ -1,15 +1,15 @@
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ColorPicker } from "@/components/ui/color-picker";
-import { Loader2, Upload, Mail, Printer } from "lucide-react";
-import { BrandingSettings, BrandingUiState } from "../hooks/useBrandingForm";
+import Image from"next/image";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { ColorPicker } from"@/components/ui/color-picker";
+import { Loader2, Upload, Mail, Printer } from"lucide-react";
+import { BrandingSettings, BrandingUiState } from"../hooks/useBrandingForm";
 
 interface CommunicationSettingsProps {
     formData: BrandingSettings;
     setFormData: React.Dispatch<React.SetStateAction<BrandingSettings>>;
     ui: BrandingUiState;
-    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "favicon" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => Promise<void>;
+    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type:"logo" |"favicon" |"background" |"print_logo" |"sound" |"crm_background" |"email_logo", soundKey?: string) => Promise<void>;
 }
 
 export function CommunicationSettings({ formData, setFormData, ui, handleFileUpload }: CommunicationSettingsProps) {
@@ -38,7 +38,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                     )}
                                 </div>
                                 <div className="flex-1">
-                                    <input type="file" id="email-l-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "email_logo")} />
+                                    <input type="file" id="email-l-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e,"email_logo")} />
                                     <Button type="button" variant="outline" className="h-9 px-4 bg-white font-bold" onClick={() => document.getElementById("email-l-u")?.click()} disabled={ui.uploads.emailLogo}>
                                         {ui.uploads.emailLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-3.5 h-3.5 mr-2" />} Загрузить
                                     </Button>
@@ -50,12 +50,12 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                         <div className="grid grid-cols-2 gap-3">
                             <ColorPicker
                                 label="Цвет кнопок и ссылок"
-                                color={formData.emailPrimaryColor || "#5d00ff"}
+                                color={formData.emailPrimaryColor ||"#5d00ff"}
                                 onChange={(c) => setFormData(prev => ({ ...prev, emailPrimaryColor: c }))}
                             />
                             <ColorPicker
                                 label="Цвет текста на кнопках"
-                                color={formData.emailContrastColor || "#ffffff"}
+                                color={formData.emailContrastColor ||"#ffffff"}
                                 onChange={(c) => setFormData(prev => ({ ...prev, emailContrastColor: c }))}
                             />
                         </div>
@@ -65,7 +65,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                 Подпись (Signature)
                             </label>
                             <Input
-                                value={formData.emailSignature || ""}
+                                value={formData.emailSignature ||""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, emailSignature: e.target.value }))}
                                 placeholder="Управляйте вашим мерчем эффективно"
                                 className="h-11 rounded-xl"
@@ -77,7 +77,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                 Футер письма (Footer)
                             </label>
                             <textarea
-                                value={formData.emailFooter || ""}
+                                value={formData.emailFooter ||""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, emailFooter: e.target.value }))}
                                 placeholder="С уважением, команда MerchCRM"
                                 className="w-full h-24 p-4 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium"
@@ -96,7 +96,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                         Telegram (Username)
                                     </label>
                                     <Input
-                                        value={formData.socialTelegram || ""}
+                                        value={formData.socialTelegram ||""}
                                         onChange={(e) => setFormData(prev => ({ ...prev, socialTelegram: e.target.value }))}
                                         placeholder="@username"
                                         className="h-11 rounded-xl"
@@ -107,7 +107,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                         WhatsApp (Номер)
                                     </label>
                                     <Input
-                                        value={formData.socialWhatsapp || ""}
+                                        value={formData.socialWhatsapp ||""}
                                         onChange={(e) => setFormData(prev => ({ ...prev, socialWhatsapp: e.target.value }))}
                                         placeholder="+79991234567"
                                         className="h-11 rounded-xl"
@@ -120,7 +120,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                         Веб-сайт (URL)
                                     </label>
                                     <Input
-                                        value={formData.socialWebsite || ""}
+                                        value={formData.socialWebsite ||""}
                                         onChange={(e) => setFormData(prev => ({ ...prev, socialWebsite: e.target.value }))}
                                         placeholder="https://company.com"
                                         className="h-11 rounded-xl"
@@ -136,7 +136,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden scale-90 origin-top">
                                 <div className="p-6 border-b border-slate-100 flex justify-center">
                                     <Image
-                                        src={formData.emailLogoUrl || formData.logoUrl || "/logo.png"}
+                                        src={formData.emailLogoUrl || formData.logoUrl ||"/logo.png"}
                                         className="h-8 w-auto object-contain"
                                         alt="Brand"
                                         width={120}
@@ -148,15 +148,15 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                     <div className="h-4 w-full bg-slate-100 rounded-full" />
                                     <div className="h-4 w-1/2 bg-slate-100 rounded-full" />
                                     <div className="pt-4 flex justify-center">
-                                        <div className="px-6 py-2.5 rounded-xl font-bold text-sm shadow-md" style={{ backgroundColor: formData.emailPrimaryColor || "#5d00ff", color: formData.emailContrastColor || "#ffffff" }}>
+                                        <div className="px-6 py-2.5 rounded-xl font-bold text-sm shadow-md" style={{ backgroundColor: formData.emailPrimaryColor ||"#5d00ff", color: formData.emailContrastColor ||"#ffffff" }}>
                                             Действие
                                         </div>
                                     </div>
                                 </div>
                                 <div className="p-6 bg-slate-50 text-center space-y-1 border-t border-slate-100">
-                                    <p className="text-xs font-bold text-slate-900">{formData.emailSignature || "Подпись компании"}</p>
+                                    <p className="text-xs font-bold text-slate-900">{formData.emailSignature ||"Подпись компании"}</p>
                                     <p className="text-xs text-slate-400 max-w-[200px] mx-auto leading-tight">
-                                        {formData.emailFooter || "Футер с контактными данными"}
+                                        {formData.emailFooter ||"Футер с контактными данными"}
                                     </p>
                                 </div>
                             </div>
@@ -187,7 +187,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                 )}
                             </div>
                             <div className="flex-1 space-y-2">
-                                <input type="file" id="print-u-unified" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "print_logo")} />
+                                <input type="file" id="print-u-unified" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e,"print_logo")} />
                                 <Button type="button" variant="outline" className="h-10 px-6 bg-white font-bold shadow-sm" onClick={() => document.getElementById("print-u-unified")?.click()} disabled={ui.uploads.printLogo}>
                                     {ui.uploads.printLogo ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />} Загрузить логотип
                                 </Button>
@@ -203,7 +203,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                         <div className="bg-white p-6 border border-slate-200 shadow-sm rounded-sm w-full max-w-[280px] aspect-[1/1.41] space-y-3">
                             <div className="flex justify-between items-start">
                                 <Image
-                                    src={formData.printLogoUrl || formData.logoUrl || "/logo.png"}
+                                    src={formData.printLogoUrl || formData.logoUrl ||"/logo.png"}
                                     className="h-10 w-auto object-contain grayscale opacity-80"
                                     alt="Print Logo"
                                     width={120}

@@ -1,11 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
-import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
-import { forceSingular } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { findItemBySKU } from "@/app/(main)/dashboard/warehouse/actions";
-import type { InventoryItem, Category, DialogState } from "@/app/(main)/dashboard/warehouse/types";
+import { useState, useEffect, useCallback } from"react";
+import type { AppRouterInstance } from"next/dist/shared/lib/app-router-context.shared-runtime";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { useBreadcrumbs } from"@/components/layout/breadcrumbs-context";
+import { forceSingular } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { findItemBySKU } from"@/app/(main)/dashboard/warehouse/actions";
+import type { InventoryItem, Category, DialogState } from"@/app/(main)/dashboard/warehouse/types";
 
 export type TabletTab = 'characteristic' | 'placement' | 'cost' | 'history';
 
@@ -30,7 +30,7 @@ export function useItemDetailController(
     const [pendingExitAction, setPendingExitAction] = useState<(() => void) | null>(null);
     const [tabletTab, setTabletTab] = useState<TabletTab>("characteristic");
     const [timeframe, setTimeframe] = useState<'month' | 'quarter' | 'half-year' | 'year' | 'all'>('month');
-    const [adjustType, setAdjustType] = useState<"in" | "out" | "set" | null>(null);
+    const [adjustType, setAdjustType] = useState<"in" |"out" |"set" | null>(null);
     const [isOnline, setIsOnline] = useState(true);
 
     useEffect(() => {
@@ -66,13 +66,13 @@ export function useItemDetailController(
         const handleKeyDown = (e: KeyboardEvent) => {
             if (!isMainImageZoomed) return;
 
-            if (e.key === "ArrowLeft") {
+            if (e.key ==="ArrowLeft") {
                 e.preventDefault();
                 setCurrentGalleryIndex((prev: number) => (prev - 1 + allGalleryImagesLength) % allGalleryImagesLength);
-            } else if (e.key === "ArrowRight") {
+            } else if (e.key ==="ArrowRight") {
                 e.preventDefault();
                 setCurrentGalleryIndex((prev: number) => (prev + 1) % allGalleryImagesLength);
-            } else if (e.key === "Escape") {
+            } else if (e.key ==="Escape") {
                 e.preventDefault();
                 setIsMainImageZoomed(false);
             }
@@ -80,14 +80,14 @@ export function useItemDetailController(
 
         if (isMainImageZoomed) {
             window.addEventListener("keydown", handleKeyDown);
-            document.body.style.overflow = "hidden";
+            document.body.style.overflow ="hidden";
         } else {
-            document.body.style.overflow = "unset";
+            document.body.style.overflow ="unset";
         }
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            document.body.style.overflow = "unset";
+            document.body.style.overflow ="unset";
         };
     }, [isMainImageZoomed, allGalleryImagesLength, setCurrentGalleryIndex, setIsMainImageZoomed]);
 
@@ -103,29 +103,29 @@ export function useItemDetailController(
     useEffect(() => {
         if (!item) return;
 
-        const trail = [{ label: "Склад", href: "/dashboard/warehouse" }];
+        const trail = [{ label:"Склад", href:"/dashboard/warehouse" }];
         const cat = item.category as (Category & { parent?: { id: string; name: string; singularName?: string | null } }) | null;
 
         if (cat) {
             if (cat.parent) {
                 const parentCat = cat.parent;
                 trail.push({
-                    label: forceSingular(parentCat.name || "", parentCat.singularName),
+                    label: forceSingular(parentCat.name ||"", parentCat.singularName),
                     href: `/dashboard/warehouse/${parentCat.id}`
                 });
             }
             trail.push({
-                label: forceSingular(cat.name || "", cat.singularName),
+                label: forceSingular(cat.name ||"", cat.singularName),
                 href: `/dashboard/warehouse/${cat.id}`
             });
         } else {
-            trail.push({ label: "Без категории", href: "/dashboard/warehouse/orphaned" });
+            trail.push({ label:"Без категории", href:"/dashboard/warehouse/orphaned" });
         }
 
         trail.push({
             label: (() => {
                 const c = item.category as Extract<InventoryItem['category'], { singularName?: string | null }>;
-                const singularName = c?.singularName || (c?.name ? forceSingular(c.name) : "");
+                const singularName = c?.singularName || (c?.name ? forceSingular(c.name) :"");
                 if (singularName) {
                     const pluralOptions = [c?.name, c?.pluralName].filter(Boolean) as string[];
                     const sortedPlurals = pluralOptions.sort((a, b) => b.length - a.length);
@@ -137,8 +137,8 @@ export function useItemDetailController(
                     }
 
                     const lowerName = item.name.toLowerCase();
-                    if (lowerName.startsWith("футболки ")) return "Футболка " + item.name.substring(9);
-                    if (lowerName.startsWith("худи ")) return "Худи " + item.name.substring(5);
+                    if (lowerName.startsWith("футболки")) return"Футболка" + item.name.substring(9);
+                    if (lowerName.startsWith("худи")) return"Худи" + item.name.substring(5);
                 }
                 return item.name;
             })(),
@@ -152,24 +152,24 @@ export function useItemDetailController(
     const handleScan = useCallback(async (decodedText: string) => {
         if (isEditing) {
             setEditData(prev => ({ ...prev, sku: decodedText }));
-            toast(`SKU обновлен: ${decodedText}`, "success");
+            toast(`SKU обновлен: ${decodedText}`,"success");
             playSound("scan_success");
             setDialogs(prev => ({ ...prev, scanner: false }));
         } else {
             if (decodedText === item.sku || decodedText === item.id) {
-                toast("Товар подтвержден (SKU совпадает)", "success");
+                toast("Товар подтвержден (SKU совпадает)","success");
                 playSound("scan_success");
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
                 setDialogs(prev => ({ ...prev, scanner: false }));
             } else {
-                toast(`Поиск SKU: ${decodedText}...`, "info");
+                toast(`Поиск SKU: ${decodedText}...`,"info");
                 const foundId = await findItemBySKU(decodedText);
                 if (foundId) {
-                    toast("Товар найден, переходим...", "success");
+                    toast("Товар найден, переходим...","success");
                     playSound("scan_success");
                     router.push(`/dashboard/warehouse/items/${foundId}`);
                 } else {
-                    toast(`Товар с SKU ${decodedText} не найден`, "error");
+                    toast(`Товар с SKU ${decodedText} не найден`,"error");
                     playSound("scan_error");
                 }
                 setDialogs(prev => ({ ...prev, scanner: false }));

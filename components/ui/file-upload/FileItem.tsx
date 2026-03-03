@@ -1,23 +1,22 @@
-import * as React from "react";
-import Image from "next/image";
-import { X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatFileSize } from "@/lib/formatters";
-import { FileItemProps } from "./types";
-import { getFileIcon } from "./utils";
+import * as React from"react";
+import Image from"next/image";
+import { X, CheckCircle, AlertCircle, Loader2 } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { formatFileSize } from"@/lib/formatters";
+import { FileItemProps } from"./types";
+import { getFileIcon } from"./utils";
 
 export function FileItem({ uploadedFile, onRemove }: FileItemProps) {
     const { file, progress, status, error, preview } = uploadedFile;
 
     return (
         <div
-            className={cn(
-                "flex items-center gap-3 p-3 rounded-lg border transition-colors",
-                status === "error"
-                    ? "border-rose-200 bg-rose-50"
-                    : status === "success"
-                        ? "border-slate-200 bg-white"
-                        : "border-slate-200 bg-slate-50"
+            className={cn("flex items-center gap-3 p-3 rounded-lg border transition-colors",
+                status ==="error"
+                    ?"border-rose-200 bg-rose-50"
+                    : status ==="success"
+                        ?"border-slate-200 bg-white"
+                        :"border-slate-200 bg-slate-50"
             )}
         >
             {/* Превью или иконка */}
@@ -40,13 +39,13 @@ export function FileItem({ uploadedFile, onRemove }: FileItemProps) {
                 <p className="text-sm font-medium text-slate-900 truncate">{file.name}</p>
                 <div className="flex items-center gap-2 mt-0.5">
                     <span className="text-xs text-slate-500">{formatFileSize(file.size)}</span>
-                    {status === "error" && error && (
+                    {status ==="error" && error && (
                         <span className="text-xs text-rose-500">{error}</span>
                     )}
                 </div>
 
                 {/* Прогресс-бар */}
-                {status === "uploading" && (
+                {status ==="uploading" && (
                     <div className="mt-2 h-1.5 bg-slate-200 rounded-full overflow-hidden">
                         <div
                             className="h-full bg-primary rounded-full transition-all duration-300"
@@ -58,16 +57,16 @@ export function FileItem({ uploadedFile, onRemove }: FileItemProps) {
 
             {/* Статус / Действия */}
             <div className="shrink-0">
-                {status === "uploading" && (
+                {status ==="uploading" && (
                     <Loader2 className="w-5 h-5 text-primary animate-spin" />
                 )}
-                {status === "success" && (
+                {status ==="success" && (
                     <CheckCircle className="w-5 h-5 text-emerald-500" />
                 )}
-                {status === "error" && (
+                {status ==="error" && (
                     <AlertCircle className="w-5 h-5 text-rose-500" />
                 )}
-                {(status === "success" || status === "error") && (
+                {(status ==="success" || status ==="error") && (
                     <button
                         type="button"
                         onClick={onRemove}

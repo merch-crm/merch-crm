@@ -1,9 +1,9 @@
-import { type InferSelectModel } from "drizzle-orm";
+import { type InferSelectModel } from"drizzle-orm";
 import {
     inventoryAttributes,
     inventoryCategories,
     inventoryAttributeTypes
-} from "@/lib/schema";
+} from"@/lib/schema";
 
 type Attribute = InferSelectModel<typeof inventoryAttributes>;
 type Category = InferSelectModel<typeof inventoryCategories>;
@@ -27,7 +27,7 @@ export interface SKUGenParams {
  * Generates an item name based on its attributes and category gender.
  */
 export function generateItemName({ item, category, allAttributes, customTypes }: SKUGenParams): string {
-    const targetGender = category.gender || "masculine";
+    const targetGender = category.gender ||"masculine";
 
     const getAttrName = (type: string, code: string | null) => {
         if (!code) return null;
@@ -38,8 +38,8 @@ export function generateItemName({ item, category, allAttributes, customTypes }:
 
         if (attr) {
             const meta = attr.meta as { fem?: string; neut?: string } | null;
-            if (targetGender === "feminine" && meta?.fem) return meta.fem;
-            if (targetGender === "neuter" && meta?.neut) return meta.neut;
+            if (targetGender ==="feminine" && meta?.fem) return meta.fem;
+            if (targetGender ==="neuter" && meta?.neut) return meta.neut;
             return attr.name;
         }
         return code;
@@ -64,7 +64,7 @@ export function generateItemName({ item, category, allAttributes, customTypes }:
         if (name) nameParts.push(name);
     });
 
-    return nameParts.join(" ");
+    return nameParts.join("");
 }
 
 /**

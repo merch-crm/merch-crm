@@ -1,6 +1,6 @@
-import { useState } from "react";
-import type { ClientSummary as Client } from "@/lib/types";
-import { ClientFilters } from "../actions";
+import { useState } from"react";
+import type { ClientSummary as Client } from"@/lib/types";
+import { ClientFilters } from"../actions";
 
 export interface ClientUiState {
     showFilters: boolean;
@@ -22,12 +22,12 @@ export function useClientsState() {
     const [filters, setFilters] = useState<ClientFilters>(() => ({
         page: 1,
         limit: 50,
-        search: "",
-        sortBy: "alphabet",
-        period: "all",
-        orderCount: "any",
-        region: "all",
-        status: "all",
+        search:"",
+        sortBy:"alphabet",
+        period:"all",
+        orderCount:"any",
+        region:"all",
+        status:"all",
         showArchived: false
     }));
 

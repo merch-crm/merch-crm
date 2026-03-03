@@ -1,8 +1,8 @@
-import { getSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { getWikiFolders, getWikiPages } from "./actions";
-import { WikiClient } from "./wiki-client";
-import { PageHeader } from "@/components/layout/page-header";
+import { getSession } from"@/lib/auth";
+import { redirect } from"next/navigation";
+import { getWikiFolders, getWikiPages } from"./actions";
+import { WikiClient } from"./wiki-client";
+import { PageHeader } from"@/components/layout/page-header";
 
 export default async function KnowledgeBasePage() {
     const session = await getSession();
@@ -25,7 +25,7 @@ export default async function KnowledgeBasePage() {
             <WikiClient
                 initialFolders={folders}
                 initialPages={pages}
-                userRole={session.roleName || "Пользователь"}
+                userRole={session.roleName ||"Пользователь"}
             />
         </div>
     );

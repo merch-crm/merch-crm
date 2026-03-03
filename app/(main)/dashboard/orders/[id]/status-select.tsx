@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from"react";
 import {
     ChevronDown,
     Sparkles,
@@ -10,20 +10,20 @@ import {
     Truck,
     XCircle,
     MessageSquare
-} from "lucide-react";
-import { updateOrderStatus } from "../actions/status.actions";;
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
+} from"lucide-react";
+import { updateOrderStatus } from"../actions/status.actions";;
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
 
 const statuses = [
-    { id: "new", label: "Новый", icon: Sparkles, color: "text-blue-500", bgColor: "bg-blue-500", lightBg: "bg-blue-50" },
-    { id: "design", label: "Дизайн", icon: Paintbrush, color: "text-purple-500", bgColor: "bg-purple-500", lightBg: "bg-purple-50" },
-    { id: "production", label: "Производство", icon: Settings2, color: "text-amber-500", bgColor: "bg-amber-500", lightBg: "bg-amber-50" },
-    { id: "done", label: "Готов", icon: CheckCircle2, color: "text-emerald-500", bgColor: "bg-emerald-500", lightBg: "bg-emerald-50" },
-    { id: "shipped", label: "Отправлен", icon: Truck, color: "text-slate-600", bgColor: "bg-slate-600", lightBg: "bg-slate-100" },
-    { id: "cancelled", label: "Отменен", icon: XCircle, color: "text-rose-500", bgColor: "bg-rose-500", lightBg: "bg-rose-50" },
+    { id:"new", label:"Новый", icon: Sparkles, color:"text-blue-500", bgColor:"bg-blue-500", lightBg:"bg-blue-50" },
+    { id:"design", label:"Дизайн", icon: Paintbrush, color:"text-purple-500", bgColor:"bg-purple-500", lightBg:"bg-purple-50" },
+    { id:"production", label:"Производство", icon: Settings2, color:"text-amber-500", bgColor:"bg-amber-500", lightBg:"bg-amber-50" },
+    { id:"done", label:"Готов", icon: CheckCircle2, color:"text-emerald-500", bgColor:"bg-emerald-500", lightBg:"bg-emerald-50" },
+    { id:"shipped", label:"Отправлен", icon: Truck, color:"text-slate-600", bgColor:"bg-slate-600", lightBg:"bg-slate-100" },
+    { id:"cancelled", label:"Отменен", icon: XCircle, color:"text-rose-500", bgColor:"bg-rose-500", lightBg:"bg-rose-50" },
 ];
 
 export default function StatusSelect({ orderId, currentStatus }: { orderId: string, currentStatus: string }) {
@@ -53,7 +53,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
             return;
         }
 
-        if (newStatusId === "cancelled" && !reason) {
+        if (newStatusId ==="cancelled" && !reason) {
             setShowCancelDialog(true);
             setIsOpen(false);
             return;
@@ -67,16 +67,16 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
         try {
             const res = await updateOrderStatus(orderId, newStatusId, reason);
             if (!res.success) {
-                toast(res.error, "error");
+                toast(res.error,"error");
                 playSound("notification_error");
                 setStatusId(currentStatus); // Rollback local state
             } else {
-                toast(`Статус заказа успешно изменен на «${statuses.find(s => s.id === newStatusId)?.label}»`, "success", { mutation: true });
+                toast(`Статус заказа успешно изменен на «${statuses.find(s => s.id === newStatusId)?.label}»`,"success", { mutation: true });
 
                 // Play appropriate sound based on new status
-                if (newStatusId === "done" || newStatusId === "shipped") {
+                if (newStatusId ==="done" || newStatusId ==="shipped") {
                     playSound("order_completed");
-                } else if (newStatusId === "cancelled") {
+                } else if (newStatusId ==="cancelled") {
                     playSound("order_cancelled");
                 } else {
                     playSound("order_status_changed");
@@ -84,7 +84,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
             }
         } catch (error) {
             console.error("Failed to update status", error);
-            toast("Ошибка соединения с сервером", "error");
+            toast("Ошибка соединения с сервером","error");
             playSound("notification_error");
             setStatusId(currentStatus);
         } finally {
@@ -183,7 +183,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
                             onClick={() => handleStatusChange("cancelled", cancelReason)}
                             className="h-11 w-full md:w-auto md:px-8 text-white rounded-2xl text-xs font-bold shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none p-0"
                         >
-                            {loading ? "Отмена..." : "Отменить заказ"}
+                            {loading ?"Отмена..." :"Отменить заказ"}
                         </Button>
                     </div>
                 </div>

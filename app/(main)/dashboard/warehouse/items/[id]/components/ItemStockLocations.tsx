@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { cn } from "@/lib/utils";
+import React from"react";
+import { cn } from"@/lib/utils";
 
 interface StockEntry {
     quantity: number;
@@ -18,9 +18,8 @@ export const ItemStockLocations = React.memo(({ stocks }: ItemStockLocationsProp
     const sortedStocks = [...stocks].sort((a, b) => b.quantity - a.quantity);
 
     return (
-        <div className={cn(
-            "grid grid-cols-1 md:grid-cols-3 xl:grid-cols-2 gap-3 pr-1 p-1 pb-4",
-            sortedStocks.length > 5 && "max-h-[460px] overflow-y-auto custom-scrollbar"
+        <div className={cn("grid grid-cols-1 md:grid-cols-3 xl:grid-cols-2 gap-3 pr-1 p-1 pb-4",
+            sortedStocks.length > 5 &&"max-h-[460px] overflow-y-auto custom-scrollbar"
         )}>
             {sortedStocks.map((s, idx) => {
                 const isMain = idx === 0;
@@ -30,18 +29,16 @@ export const ItemStockLocations = React.memo(({ stocks }: ItemStockLocationsProp
                 return (
                     <div
                         key={idx}
-                        className={cn(
-                            "min-h-[100px] md:min-h-[110px] group p-4 md:p-5 rounded-2xl transition-all flex flex-col justify-between border",
-                            isFullWidth && "md:col-span-1 xl:col-span-2",
+                        className={cn("min-h-[100px] md:min-h-[110px] group p-4 md:p-5 rounded-2xl transition-all flex flex-col justify-between border",
+                            isFullWidth &&"md:col-span-1 xl:col-span-2",
                             isMain
-                                ? "bg-emerald-50/30 border-emerald-200"
-                                : "bg-muted/30 border-border hover:shadow-crm-md"
+                                ?"bg-emerald-50/30 border-emerald-200"
+                                :"bg-muted/30 border-border hover:shadow-crm-md"
                         )}
                     >
                         <div className="flex flex-col gap-1">
-                            <span className={cn(
-                                "text-[14px] md:text-[15px] font-bold transition-colors truncate",
-                                isMain ? "text-foreground" : "text-muted-foreground"
+                            <span className={cn("text-[14px] md:text-[15px] font-bold transition-colors truncate",
+                                isMain ?"text-foreground" :"text-muted-foreground"
                             )}>
                                 {s.storageLocation?.name}
                             </span>
@@ -60,7 +57,7 @@ export const ItemStockLocations = React.memo(({ stocks }: ItemStockLocationsProp
                             )}
 
                             <span className="text-xs md:text-[11px] font-bold text-muted-foreground whitespace-nowrap">
-                                {isMain ? "Основной объём" : "Доп. склад"}
+                                {isMain ?"Основной объём" :"Доп. склад"}
                             </span>
                         </div>
                     </div>
@@ -70,4 +67,4 @@ export const ItemStockLocations = React.memo(({ stocks }: ItemStockLocationsProp
     );
 });
 
-ItemStockLocations.displayName = "ItemStockLocations";
+ItemStockLocations.displayName ="ItemStockLocations";

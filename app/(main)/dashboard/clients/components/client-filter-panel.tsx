@@ -1,12 +1,12 @@
 "use client";
 
-import { memo } from "react";
-import { Search, SlidersHorizontal, RotateCcw, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { ClientFilters } from "../actions";;
+import { memo } from"react";
+import { Search, SlidersHorizontal, RotateCcw, X } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Select } from"@/components/ui/select";
+import { motion, AnimatePresence } from"framer-motion";
+import { cn } from"@/lib/utils";
+import { ClientFilters } from"../actions";;
 
 export interface ClientUiState {
     showFilters: boolean;
@@ -44,7 +44,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                         placeholder="Поиск клиентов..."
                         value={filters.search}
                         onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                        onKeyDown={(e) => e.key === 'Enter' && onAddToHistory(filters.search || "")}
+                        onKeyDown={(e) => e.key === 'Enter' && onAddToHistory(filters.search ||"")}
                         onFocus={() => setUiState(prev => ({ ...prev, showHistory: true }))}
                         className="w-full h-12 pl-11 pr-4 bg-white border-2 border-slate-100 rounded-2xl text-sm font-medium focus:border-primary/20 focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-400"
                     />
@@ -106,14 +106,13 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                         type="button"
                         variant="secondary"
                         onClick={() => setUiState(prev => ({ ...prev, showFilters: !prev.showFilters }))}
-                        className={cn(
-                            "h-12 px-6 rounded-2xl gap-2 font-bold transition-all active:scale-95",
-                            uiState.showFilters ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-white text-slate-600 hover:bg-slate-50 border-2 border-slate-100"
+                        className={cn("h-12 px-6 rounded-2xl gap-2 font-bold transition-all active:scale-95",
+                            uiState.showFilters ?"bg-slate-900 text-white hover:bg-slate-800" :"bg-white text-slate-600 hover:bg-slate-50 border-2 border-slate-100"
                         )}
                     >
                         <SlidersHorizontal className="h-4 w-4" />
                         Фильтры
-                        {(filters.period !== "all" || filters.orderCount !== "any" || filters.region !== "all" || filters.status !== "all" || filters.showArchived) && (
+                        {(filters.period !=="all" || filters.orderCount !=="any" || filters.region !=="all" || filters.status !=="all" || filters.showArchived) && (
                             <span className="ml-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-[11px] ring-2 ring-white">
                                 !
                             </span>
@@ -126,7 +125,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                 {uiState.showFilters && (
                     <motion.div
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
+                        animate={{ height:"auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                     >
@@ -137,13 +136,13 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                         Период
                                     </label>
                                     <Select
-                                        value={filters.period || "all"}
+                                        value={filters.period ||"all"}
                                         onChange={(val: string) => setFilters(prev => ({ ...prev, period: val as ClientFilters['period'] }))}
                                         options={[
-                                            { id: "all", title: "Весь период" },
-                                            { id: "month", title: "За месяц" },
-                                            { id: "quarter", title: "За квартал" },
-                                            { id: "year", title: "За год" },
+                                            { id:"all", title:"Весь период" },
+                                            { id:"month", title:"За месяц" },
+                                            { id:"quarter", title:"За квартал" },
+                                            { id:"year", title:"За год" },
                                         ]}
                                     />
                                 </div>
@@ -153,13 +152,13 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                         Кол-во заказов
                                     </label>
                                     <Select
-                                        value={filters.orderCount || "any"}
+                                        value={filters.orderCount ||"any"}
                                         onChange={(val: string) => setFilters(prev => ({ ...prev, orderCount: val as ClientFilters['orderCount'] }))}
                                         options={[
-                                            { id: "any", title: "Любое количество" },
-                                            { id: "0", title: "Новые (0)" },
-                                            { id: "1-5", title: "Постоянные (1-5)" },
-                                            { id: "5+", title: "VIP (5+)" },
+                                            { id:"any", title:"Любое количество" },
+                                            { id:"0", title:"Новые (0)" },
+                                            { id:"1-5", title:"Постоянные (1-5)" },
+                                            { id:"5+", title:"VIP (5+)" },
                                         ]}
                                     />
                                 </div>
@@ -169,10 +168,10 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                         Регион
                                     </label>
                                     <Select
-                                        value={filters.region || "all"}
+                                        value={filters.region ||"all"}
                                         onChange={(val: string) => setFilters(prev => ({ ...prev, region: val }))}
                                         options={[
-                                            { id: "all", title: "Все города" },
+                                            { id:"all", title:"Все города" },
                                             ...regions.map(r => ({ id: r, title: r }))
                                         ]}
                                     />
@@ -183,11 +182,11 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                         Статус
                                     </label>
                                     <Select
-                                        value={filters.status || "all"}
+                                        value={filters.status ||"all"}
                                         onChange={(val: string) => setFilters(prev => ({ ...prev, status: val as ClientFilters['status'] }))}
                                         options={[
-                                            { id: "all", title: "Все статусы" },
-                                            { id: "lost", title: "Потерянные" }
+                                            { id:"all", title:"Все статусы" },
+                                            { id:"lost", title:"Потерянные" }
                                         ]}
                                     />
                                 </div>
@@ -199,13 +198,11 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                         onClick={() => setFilters(prev => ({ ...prev, showArchived: !prev.showArchived }))}
                                         className="flex items-center gap-2 group cursor-pointer"
                                     >
-                                        <div className={cn(
-                                            "w-10 h-6 rounded-full transition-colors relative",
-                                            filters.showArchived ? "bg-slate-900" : "bg-slate-200"
+                                        <div className={cn("w-10 h-6 rounded-full transition-colors relative",
+                                            filters.showArchived ?"bg-slate-900" :"bg-slate-200"
                                         )}>
-                                            <div className={cn(
-                                                "absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm",
-                                                filters.showArchived ? "left-5" : "left-1"
+                                            <div className={cn("absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm",
+                                                filters.showArchived ?"left-5" :"left-1"
                                             )} />
                                         </div>
                                         <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Показать архив</span>
@@ -218,12 +215,12 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                     onClick={() => setFilters({
                                         page: 1,
                                         limit: 50,
-                                        search: "",
-                                        sortBy: "alphabet",
-                                        period: "all",
-                                        orderCount: "any",
-                                        region: "all",
-                                        status: "all",
+                                        search:"",
+                                        sortBy:"alphabet",
+                                        period:"all",
+                                        orderCount:"any",
+                                        region:"all",
+                                        status:"all",
                                         showArchived: false
                                     })}
                                     className="h-10 px-5 rounded-xl text-xs font-bold text-slate-400 hover:text-rose-500 hover:bg-rose-50"
@@ -237,30 +234,30 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
             </AnimatePresence>
 
             {/* Active Filters Chips */}
-            {(filters.period !== "all" || filters.orderCount !== "any" || filters.region !== "all" || filters.status !== "all" || filters.showArchived) && (
+            {(filters.period !=="all" || filters.orderCount !=="any" || filters.region !=="all" || filters.status !=="all" || filters.showArchived) && (
                 <div className="flex flex-wrap gap-2 px-1">
-                    {filters.period !== "all" && (
+                    {filters.period !=="all" && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
                             Период: {filters.period}
-                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, period: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
+                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, period:"all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
-                    {filters.orderCount !== "any" && (
+                    {filters.orderCount !=="any" && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
                             Заказов: {filters.orderCount}
-                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, orderCount: "any" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
+                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, orderCount:"any" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
-                    {filters.region !== "all" && (
+                    {filters.region !=="all" && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
                             Город: {filters.region}
-                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, region: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
+                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, region:"all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
-                    {filters.status !== "all" && (
+                    {filters.status !=="all" && (
                         <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
                             Статус: потерянный
-                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, status: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
+                            <button type="button" onClick={() => setFilters(prev => ({ ...prev, status:"all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
                     {filters.showArchived && (

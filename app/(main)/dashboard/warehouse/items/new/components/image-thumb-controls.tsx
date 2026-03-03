@@ -1,7 +1,7 @@
-import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { cn } from "@/lib/utils";
+import { RotateCcw } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Slider } from"@/components/ui/slider";
+import { cn } from"@/lib/utils";
 
 interface ImageThumbControlsProps {
     disabled: boolean;
@@ -26,9 +26,8 @@ export function ImageThumbControls({
 }: ImageThumbControlsProps) {
     return (
         <div
-            className={cn(
-                "mt-1 pb-0 pt-2 transition-all duration-500",
-                disabled && "opacity-40 pointer-events-none grayscale"
+            className={cn("mt-1 pb-0 pt-2 transition-all duration-500",
+                disabled &&"opacity-40 pointer-events-none grayscale"
             )}
             style={{ width: containerDims ? containerDims.w : '100%' }}
         >
@@ -38,7 +37,7 @@ export function ImageThumbControls({
                     <div className="flex-1 space-y-2 relative pt-2">
                         <div className="flex justify-between items-center text-[13px] font-bold text-slate-700 absolute top-[-9px] w-full">
                             <span>Масштаб</span>
-                            <span className={cn("transition-colors", !disabled ? "text-primary" : "text-slate-700")}>
+                            <span className={cn("transition-colors", !disabled ?"text-primary" :"text-slate-700")}>
                                 {Math.round(zoom * 100)}%
                             </span>
                         </div>
@@ -76,7 +75,7 @@ export function ImageThumbControls({
                                 min={-Math.max(1, maxBounds.x)}
                                 max={Math.max(1, maxBounds.x)}
                                 step={1}
-                                className={cn("mt-2", maxBounds.x <= 0 && "opacity-50")}
+                                className={cn("mt-2", maxBounds.x <= 0 &&"opacity-50")}
                             />
                         </div>
 
@@ -91,7 +90,7 @@ export function ImageThumbControls({
                                 min={-Math.max(1, maxBounds.y)}
                                 max={Math.max(1, maxBounds.y)}
                                 step={1}
-                                className={cn("mt-2", maxBounds.y <= 0 && "opacity-50")}
+                                className={cn("mt-2", maxBounds.y <= 0 &&"opacity-50")}
                             />
                         </div>
                     </div>

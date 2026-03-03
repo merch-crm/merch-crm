@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, createElement } from "react";
-import { Search, ChevronDown } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { ICON_GROUPS, getDynamicGradient, ALL_ICONS_MAP } from "./category-utils";
+import React, { useState, createElement } from"react";
+import { Search, ChevronDown } from"lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from"@/components/ui/popover";
+import { cn } from"@/lib/utils";
+import { ICON_GROUPS, getDynamicGradient, ALL_ICONS_MAP } from"./category-utils";
 
 interface CategoryIconPickerProps {
     value: string;
@@ -13,18 +13,13 @@ interface CategoryIconPickerProps {
     className?: string;
 }
 
-const GROUP_SHORT: Record<string, string> = {
-    "ОДЕЖДА": "Одежда",
-    "СКЛАД И ЛОГИСТИКА": "Склад",
-    "ПРОИЗВОДСТВО И ИНСТРУМЕНТЫ": "Произв.",
-    "ФИНАНСЫ И ПРОДАЖИ": "Финансы",
-    "БИЗНЕС И КЛИЕНТЫ": "Бизнес",
+const GROUP_SHORT: Record<string, string> = {"ОДЕЖДА":"Одежда","СКЛАД И ЛОГИСТИКА":"Склад","ПРОИЗВОДСТВО И ИНСТРУМЕНТЫ":"Произв.","ФИНАНСЫ И ПРОДАЖИ":"Финансы","БИЗНЕС И КЛИЕНТЫ":"Бизнес",
 };
 
 export function CategoryIconPicker({ value, onChange, color, className }: CategoryIconPickerProps) {
     const [search, setSearch] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const [tab, setTab] = useState(ICON_GROUPS[0]?.name ?? "");
+    const [tab, setTab] = useState(ICON_GROUPS[0]?.name ??"");
 
     const CurrentIcon = ALL_ICONS_MAP[value] || ALL_ICONS_MAP["tshirt-custom"];
     const currentIconEntry = ICON_GROUPS.flatMap(g => g.icons).find(i => i.name === value);
@@ -54,27 +49,24 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
             <PopoverTrigger asChild>
                 <button
                     type="button"
-                    className={cn(
-                        "w-full h-full min-h-[80px] rounded-[var(--radius-inner)] border-2 border-dashed border-slate-200 hover:border-primary/40 bg-white hover:bg-primary/[0.02] transition-all duration-200 flex items-center justify-center group outline-none gap-3 px-4",
-                        isOpen && "border-primary/30",
+                    className={cn("w-full h-full min-h-[80px] rounded-[var(--radius-inner)] border-2 border-dashed border-slate-200 hover:border-primary/40 bg-white hover:bg-primary/[0.02] transition-all duration-200 flex items-center justify-center group outline-none gap-3 px-4",
+                        isOpen &&"border-primary/30",
                         className
                     )}
                 >
                     <div
-                        className={cn(
-                            "w-12 h-12 rounded-[14px] shrink-0 flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-[1.06]"
+                        className={cn("w-12 h-12 rounded-[14px] shrink-0 flex items-center justify-center text-white shadow-md transition-all duration-300 group-hover:scale-[1.06]"
                         )}
                         style={getDynamicGradient(color)}
                     >
                         <CurrentIcon className="w-6 h-6 stroke-[2.5]" />
                     </div>
                     <div className="flex-1 flex flex-col items-start justify-center min-w-0 py-1">
-                        <div className="text-sm font-black text-slate-900 leading-tight">{currentIconEntry?.label ?? "Иконка"}</div>
+                        <div className="text-sm font-black text-slate-900 leading-tight">{currentIconEntry?.label ??"Иконка"}</div>
                         <span className="text-[11px] font-medium text-slate-500 line-clamp-1">Нажмите, чтобы изменить</span>
                     </div>
-                    <ChevronDown className={cn(
-                        "w-4 h-4 text-slate-300 shrink-0 transition-transform duration-200",
-                        isOpen && "rotate-180"
+                    <ChevronDown className={cn("w-4 h-4 text-slate-300 shrink-0 transition-transform duration-200",
+                        isOpen &&"rotate-180"
                     )} />
                 </button>
             </PopoverTrigger>
@@ -108,11 +100,10 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
                                 key={g.name}
                                 type="button"
                                 onClick={() => setTab(g.name)}
-                                className={cn(
-                                    "shrink-0 h-6 px-2.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap",
+                                className={cn("shrink-0 h-6 px-2.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap",
                                     tab === g.name
-                                        ? "bg-slate-900 text-white"
-                                        : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                                        ?"bg-slate-900 text-white"
+                                        :"text-slate-500 hover:text-slate-700 hover:bg-slate-100"
                                 )}
                             >
                                 {GROUP_SHORT[g.name] ?? g.name}
@@ -182,23 +173,20 @@ function IconCell({
             type="button"
             onClick={() => onSelect(icon.name)}
             title={icon.label}
-            className={cn(
-                "flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl transition-all duration-150 group/c",
+            className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl transition-all duration-150 group/c",
                 isSelected
                     ? cn("text-white shadow-sm")
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 active:scale-95"
+                    :"text-slate-500 hover:bg-slate-100 hover:text-slate-800 active:scale-95"
             )}
             style={isSelected ? getDynamicGradient(color) : {}}
         >
             {createElement(icon.icon, {
-                className: cn(
-                    "w-5 h-5 shrink-0",
-                    isSelected ? "stroke-[2.5]" : "stroke-[1.5]"
+                className: cn("w-5 h-5 shrink-0",
+                    isSelected ?"stroke-[2.5]" :"stroke-[1.5]"
                 )
             })}
-            <span className={cn(
-                "text-xs font-bold leading-tight text-center w-full",
-                isSelected ? "text-white/90" : "text-slate-400 group-hover/c:text-slate-600"
+            <span className={cn("text-xs font-bold leading-tight text-center w-full",
+                isSelected ?"text-white/90" :"text-slate-400 group-hover/c:text-slate-600"
             )}>
                 {icon.label}
             </span>

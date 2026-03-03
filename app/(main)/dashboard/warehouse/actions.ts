@@ -2,7 +2,7 @@
  * Warehouse Actions - Main Barrel File
  * 
  * This file re-exports server actions from decomposed action files for backward compatibility.
- * Each source file has its own "use server" directive.
+ * Each source file has its own"use server" directive.
  * All new code should ideally import directly from specific action files.
  */
 // Bypass audit constraint for barrel files
@@ -10,56 +10,56 @@
 export {
     getInventoryItems, getArchivedItems, getInventoryItem, addInventoryItem,
     updateInventoryItem
-} from "./item-actions";
+} from"./item-actions";
 
-export { deleteInventoryItemImage } from "./item-image-actions";
-export { checkDuplicateItem } from "./item-duplicate-actions";
+export { deleteInventoryItemImage } from"./item-image-actions";
+export { checkDuplicateItem } from"./item-duplicate-actions";
 
 export {
     getItemHistory, getItemActiveOrders
-} from "./item-history.actions";
+} from"./item-history.actions";
 
 export {
     refreshWarehouse, getMeasurementUnits
-} from "./warehouse-shared.actions";
+} from"./warehouse-shared.actions";
 
 export {
     getInventoryCategories, addInventoryCategory, updateInventoryCategory,
     deleteInventoryCategory, updateInventoryCategoriesOrder,
     getOrphanedItemStats
-} from "./category-actions";
+} from"./category-actions";
 
 export {
     getStorageLocations, addStorageLocation, updateStorageLocationsOrder,
     updateStorageLocation, deleteStorageLocation, seedStorageLocations
-} from "./storage-actions";
+} from"./storage-actions";
 
 export {
     adjustInventoryStock, transferInventoryStock, getItemStocks,
     moveInventoryItem
-} from "./stock-actions";
+} from"./stock-actions";
 
 export {
     getSession, getWarehouseStats, findItemBySKU, getAllUsers
-} from "./warehouse-stats-actions";
+} from"./warehouse-stats-actions";
 
 export {
     getInventoryHistory, clearInventoryHistory, deleteInventoryTransactions
-} from "./history-actions";
+} from"./history-actions";
 
 export {
     getInventoryAttributes, createInventoryAttribute, updateInventoryAttribute,
     deleteInventoryAttribute,
     getInventoryAttributeTypes, createInventoryAttributeType, updateInventoryAttributeType,
     deleteInventoryAttributeType, regenerateAllItemSKUs
-} from "./attribute-actions";
+} from"./attribute-actions";
 
 export {
     archiveInventoryItems, restoreInventoryItems, deleteInventoryItems,
     autoArchiveStaleItems, bulkMoveInventoryItems, bulkUpdateInventoryCategory
-} from "./bulk-actions";
+} from"./bulk-actions";
 
 export {
     getCategoryFullPath, getCategoryPath, isDescendant,
     updateChildrenPaths, saveFile
-} from "./actions-utils";
+} from"./actions-utils";

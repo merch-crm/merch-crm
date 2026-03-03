@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ReactNode } from"react";
+import { cn } from"@/lib/utils";
+import { ChevronLeft, ChevronRight } from"lucide-react";
+import { Button } from"@/components/ui/button";
 
 interface StepFooterProps {
     onBack: () => void;
@@ -23,7 +23,7 @@ interface StepFooterProps {
 export function StepFooter({
     onBack,
     onNext,
-    nextLabel = "Далее",
+    nextLabel ="Далее",
     isNextDisabled = false,
     isSubmitting = false,
     validationError,

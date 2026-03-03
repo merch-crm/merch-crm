@@ -1,21 +1,21 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from "react";
-import { Trash2, Loader2, AlertCircle, Check, X, Pencil } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ColorPicker } from "@/components/ui/color-picker";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
-import { AttributeType } from "../../types";
-import { type ValueFormState, type TypeFormState, type DeleteDialogState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import React, { type Dispatch, type SetStateAction } from"react";
+import { Trash2, Loader2, AlertCircle, Check, X, Pencil } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { ColorPicker } from"@/components/ui/color-picker";
+import { Switch } from"@/components/ui/switch";
+import { cn } from"@/lib/utils";
+import { AttributeType } from"../../types";
+import { type ValueFormState, type TypeFormState, type DeleteDialogState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
 
 // Sub-components
-import { DimensionsFields } from "./value-form/DimensionsFields";
-import { DensityFields } from "./value-form/DensityFields";
-import { ConsumableFields } from "./value-form/ConsumableFields";
-import { StandardFields } from "./value-form/StandardFields";
-import { CompositionEditor } from "./value-form/CompositionEditor";
-import { OversizeToggle } from "./value-form/OversizeToggle";
+import { DimensionsFields } from"./value-form/DimensionsFields";
+import { DensityFields } from"./value-form/DensityFields";
+import { ConsumableFields } from"./value-form/ConsumableFields";
+import { StandardFields } from"./value-form/StandardFields";
+import { CompositionEditor } from"./value-form/CompositionEditor";
+import { OversizeToggle } from"./value-form/OversizeToggle";
 
 interface ValueFormProps {
     valueForm: ValueFormState;
@@ -37,28 +37,28 @@ export function ValueForm({
     setTypeForm
 }: ValueFormProps) {
     const targetType = attributeTypes.find(t => t.slug === valueForm.targetTypeSlug);
-    const isDimensions = targetType?.dataType === "dimensions";
-    const isCompositionType = targetType?.dataType === "composition";
-    const isDensity = targetType?.dataType === "density";
-    const isConsumable = targetType?.dataType === "consumable";
+    const isDimensions = targetType?.dataType ==="dimensions";
+    const isCompositionType = targetType?.dataType ==="composition";
+    const isDensity = targetType?.dataType ==="density";
+    const isConsumable = targetType?.dataType ==="consumable";
     const showCompositionEditor = !!(isCompositionType || typeForm.hasComposition || isConsumable);
-    const isColorType = targetType?.dataType === "color";
+    const isColorType = targetType?.dataType ==="color";
     const showColorPicker = !!(isColorType || typeForm.hasColor);
-    const hasUnits = !!(targetType?.dataType === "unit" || targetType?.hasUnits || typeForm.hasUnits || targetType?.hasComposition);
-    const showShortName = targetType?.dataType === "text" || (hasUnits && !typeForm.hasComposition);
+    const hasUnits = !!(targetType?.dataType ==="unit" || targetType?.hasUnits || typeForm.hasUnits || targetType?.hasComposition);
+    const showShortName = targetType?.dataType ==="text" || (hasUnits && !typeForm.hasComposition);
     const hideNames = !!(isDimensions || isCompositionType || isDensity);
 
     const getPlaceholders = () => {
         const type = targetType?.dataType;
-        if (type === "color") return { full: "Напр: Синий", short: "", code: "BLU" };
-        if (type === "unit") return { full: "Напр: миллиметр", short: "Напр: мм", code: "MM" };
-        if (type === "material") return { full: "Напр: Пленка", short: "", code: "PLN" };
-        if (type === "size") return { full: "Напр: XL", short: "", code: "XL" };
-        if (type === "brand") return { full: "Напр: Авангард", short: "", code: "AVG" };
-        if (type === "country") return { full: "Напр: Россия", short: "", code: "RUS" };
-        if (type === "package") return { full: "Напр: Коробка", short: "", code: "BOX" };
-        if (type === "density") return { full: "0", short: "", code: "GSM" };
-        return { full: "Напр: Значение", short: "Напр: Зн", code: "VAL" };
+        if (type ==="color") return { full:"Напр: Синий", short:"", code:"BLU" };
+        if (type ==="unit") return { full:"Напр: миллиметр", short:"Напр: мм", code:"MM" };
+        if (type ==="material") return { full:"Напр: Пленка", short:"", code:"PLN" };
+        if (type ==="size") return { full:"Напр: XL", short:"", code:"XL" };
+        if (type ==="brand") return { full:"Напр: Авангард", short:"", code:"AVG" };
+        if (type ==="country") return { full:"Напр: Россия", short:"", code:"RUS" };
+        if (type ==="package") return { full:"Напр: Коробка", short:"", code:"BOX" };
+        if (type ==="density") return { full:"0", short:"", code:"GSM" };
+        return { full:"Напр: Значение", short:"Напр: Зн", code:"VAL" };
     };
 
     const placeholders = getPlaceholders();
@@ -68,9 +68,8 @@ export function ValueForm({
         : (valueForm.isSaving || !valueForm.name.trim() || !valueForm.code.trim());
 
     return (
-        <div className={cn(
-            "flex flex-col bg-white w-full md:w-5/12 p-0 md:overflow-hidden shrink-0 relative h-full",
-            !valueForm.isOpen && "hidden md:flex"
+        <div className={cn("flex flex-col bg-white w-full md:w-5/12 p-0 md:overflow-hidden shrink-0 relative h-full",
+            !valueForm.isOpen &&"hidden md:flex"
         )}>
             {valueForm.isOpen ? (
                 <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden">
@@ -78,7 +77,7 @@ export function ValueForm({
                     <div className="flex items-start justify-between gap-3 p-6 pb-3">
                         <div>
                             <h3 className="text-xl font-bold text-slate-900 leading-tight">
-                                {valueForm.editingAttribute ? "Редактирование значения" : "Новое значение"}
+                                {valueForm.editingAttribute ?"Редактирование значения" :"Новое значение"}
                             </h3>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
@@ -154,7 +153,7 @@ export function ValueForm({
                                 <CompositionEditor valueForm={valueForm} setValueForm={setValueForm} />
                             )}
 
-                            {targetType?.dataType === "size" && (
+                            {targetType?.dataType ==="size" && (
                                 <OversizeToggle valueForm={valueForm} setValueForm={setValueForm} />
                             )}
 
@@ -191,9 +190,8 @@ export function ValueForm({
                                             setValueForm((prev: ValueFormState) => ({ ...prev, code: val, isCodeManuallyEdited: true }));
                                         }}
                                         placeholder={placeholders.code}
-                                        className={cn(
-                                            "w-full h-11 px-4 rounded-xl bg-white border border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 placeholder:font-medium font-bold text-sm text-slate-900 shadow-sm",
-                                            isDimensions && "bg-slate-50 cursor-not-allowed text-slate-500"
+                                        className={cn("w-full h-11 px-4 rounded-xl bg-white border border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 placeholder:font-medium font-bold text-sm text-slate-900 shadow-sm",
+                                            isDimensions &&"bg-slate-50 cursor-not-allowed text-slate-500"
                                         )}
                                         required
                                     />

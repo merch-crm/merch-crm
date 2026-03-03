@@ -5,4 +5,4 @@
  * This maintains backward compatibility.
  */
 
-export * from "./time-tracker/index";
+export * from"./time-tracker/index";

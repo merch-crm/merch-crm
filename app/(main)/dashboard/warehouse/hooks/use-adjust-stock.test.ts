@@ -46,11 +46,11 @@ describe('useAdjustStock', () => {
         expect(result.current.costPrice).toBe("100");
     });
 
-    it('sets initial amount to item quantity when type is "set"', () => {
+    it('sets initial amount to item quantity when type is"set"', () => {
         const { result } = renderHook(() => useAdjustStock({
             item: mockItem,
             locations: mockLocations,
-            initialType: "set",
+            initialType:"set",
             onClose: mockOnClose
         }));
 
@@ -98,7 +98,7 @@ describe('useAdjustStock', () => {
         const { result } = renderHook(() => useAdjustStock({
             item: mockItem,
             locations: mockLocations,
-            initialType: "set",
+            initialType:"set",
             onClose: mockOnClose
         }));
 

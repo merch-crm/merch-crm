@@ -1,6 +1,6 @@
 "use client";
 
-import { useBranding } from "@/components/branding-provider";
+import { useBranding } from"@/components/branding-provider";
 
 interface PLReport {
     totalRevenue: number;
@@ -31,15 +31,15 @@ export function PLClient({ plReport }: PLClientProps) {
                 {/* COGS */}
                 <div className="crm-card shadow-lg group hover:border-rose-100 transition-colors">
                     <p className="text-slate-400 text-xs font-black mb-4">Себестоимость (COGS)</p>
-                    <div className="text-4xl font-black text-rose-500 ">-{plReport.totalCOGS.toLocaleString('ru-RU')} <span className="text-lg opacity-50">{currencySymbol}</span></div>
-                    <div className="text-xs font-bold text-rose-400/70 mt-4 ">Расходы на производство</div>
+                    <div className="text-4xl font-black text-rose-500">-{plReport.totalCOGS.toLocaleString('ru-RU')} <span className="text-lg opacity-50">{currencySymbol}</span></div>
+                    <div className="text-xs font-bold text-rose-400/70 mt-4">Расходы на производство</div>
                 </div>
 
                 {/* OPEX */}
                 <div className="crm-card shadow-lg group hover:border-rose-200 transition-colors">
                     <p className="text-slate-400 text-xs font-black mb-4">Опер. расходы</p>
-                    <div className="text-4xl font-black text-rose-600 ">-{plReport.totalOverhead.toLocaleString('ru-RU')} <span className="text-lg opacity-50">{currencySymbol}</span></div>
-                    <div className="text-xs font-bold text-rose-500/70 mt-4 ">Аренда, налоги и др.</div>
+                    <div className="text-4xl font-black text-rose-600">-{plReport.totalOverhead.toLocaleString('ru-RU')} <span className="text-lg opacity-50">{currencySymbol}</span></div>
+                    <div className="text-xs font-bold text-rose-500/70 mt-4">Аренда, налоги и др.</div>
                 </div>
 
                 {/* Net Profit */}

@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from"zod";
 
 export const BrandingSettingsSchema = z.object({
-    companyName: z.string().min(1, "Название компании обязательно"),
+    companyName: z.string().min(1,"Название компании обязательно"),
     logoUrl: z.string().nullable().optional(),
-    primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Некорректный формат цвета"),
+    primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,"Некорректный формат цвета"),
     faviconUrl: z.string().nullable().optional(),
     radiusOuter: z.number().min(0).max(100),
     radiusInner: z.number().min(0).max(100),

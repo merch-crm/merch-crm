@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     Check,
     Plus,
@@ -11,8 +11,8 @@ import {
     CreditCard,
     Clock,
     ArrowUpRight
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function InvoiceDashboardCRM() {
     return (
@@ -111,9 +111,9 @@ export default function InvoiceDashboardCRM() {
                                 </thead>
                                 <tbody className="crm-tbody">
                                     {[
-                                        { name: "Premium Hoodie", qty: 240, price: "$45.00", tax: "10%", total: "$10,800.00" },
-                                        { name: "Sticker Pack", qty: 1200, price: "$0.50", tax: "0%", total: "$600.00" },
-                                        { name: "Custom Cap", qty: 45, price: "$12.00", tax: "5%", total: "$540.00" },
+                                        { name:"Premium Hoodie", qty: 240, price:"$45.00", tax:"10%", total:"$10,800.00" },
+                                        { name:"Sticker Pack", qty: 1200, price:"$0.50", tax:"0%", total:"$600.00" },
+                                        { name:"Custom Cap", qty: 45, price:"$12.00", tax:"5%", total:"$540.00" },
                                     ].map((row, idx) => (
                                         <tr key={idx} className="crm-tr">
                                             <td className="crm-td">
@@ -137,9 +137,9 @@ export default function InvoiceDashboardCRM() {
                         {/* Mobile Cards */}
                         <div className="md:hidden divide-y divide-slate-100">
                             {[
-                                { name: "Premium Hoodie", qty: 240, price: "$45.00", tax: "10%", total: "$10,800.00" },
-                                { name: "Sticker Pack", qty: 1200, price: "$0.50", tax: "0%", total: "$600.00" },
-                                { name: "Custom Cap", qty: 45, price: "$12.00", tax: "5%", total: "$540.00" },
+                                { name:"Premium Hoodie", qty: 240, price:"$45.00", tax:"10%", total:"$10,800.00" },
+                                { name:"Sticker Pack", qty: 1200, price:"$0.50", tax:"0%", total:"$600.00" },
+                                { name:"Custom Cap", qty: 45, price:"$12.00", tax:"5%", total:"$540.00" },
                             ].map((row, idx) => (
                                 <div key={idx} className="p-4 active:bg-slate-50 transition-colors">
                                     <div className="flex items-center justify-between mb-2">
@@ -168,12 +168,12 @@ export default function InvoiceDashboardCRM() {
                         <h3 className="font-bold text-lg mb-6">Payment Progress</h3>
                         <div className="space-y-3">
                             {[
-                                { label: "Design Fee", val: 100, color: "bg-primary" },
-                                { label: "Production", val: 65, color: "bg-primary/60" },
-                                { label: "Shipping", val: 30, color: "bg-slate-300" },
+                                { label:"Design Fee", val: 100, color:"bg-primary" },
+                                { label:"Production", val: 65, color:"bg-primary/60" },
+                                { label:"Shipping", val: 30, color:"bg-slate-300" },
                             ].map((item, idx) => (
                                 <div key={idx} className="space-y-2">
-                                    <div className="flex justify-between text-xs font-bold ">
+                                    <div className="flex justify-between text-xs font-bold">
                                         <span className="text-slate-500">{item.label}</span>
                                         <span className="text-primary">{item.val}%</span>
                                     </div>
@@ -189,9 +189,9 @@ export default function InvoiceDashboardCRM() {
                         <h3 className="font-bold text-lg mb-6">Recent Activity</h3>
                         <div className="space-y-3">
                             {[
-                                { user: "Leo M.", action: "Invoiced updated", time: "2h ago", icon: <Clock className="w-3 h-3" /> },
-                                { user: "System", action: "Payment received", time: "5h ago", icon: <Check className="w-3 h-3" /> },
-                                { user: "Design Dept", action: "File attached", time: "1d ago", icon: <Plus className="w-3 h-3" /> },
+                                { user:"Leo M.", action:"Invoiced updated", time:"2h ago", icon: <Clock className="w-3 h-3" /> },
+                                { user:"System", action:"Payment received", time:"5h ago", icon: <Check className="w-3 h-3" /> },
+                                { user:"Design Dept", action:"File attached", time:"1d ago", icon: <Plus className="w-3 h-3" /> },
                             ].map((item, idx) => (
                                 <div key={idx} className="flex gap-3 relative">
                                     {idx !== 2 && <div className="absolute left-5 top-10 bottom-0 w-px bg-slate-100" />}

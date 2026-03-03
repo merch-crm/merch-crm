@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState } from"react";
 import {
     Bell,
     Send,
@@ -18,17 +18,17 @@ import {
     UserCheck,
     Loader2,
     type LucideIcon
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { updateNotificationSettingsAction } from "../actions/notifications.actions";
-import { NotificationSettings } from "../actions";;
-import { useToast } from "@/components/ui/toast";
-import { AdminPageHeader } from "@/components/admin/admin-page-header";
-import { playSound } from "@/lib/sounds";
-import { SwitchRow } from "@/components/ui/switch-row";
-import { Switch } from "@/components/ui/switch";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { updateNotificationSettingsAction } from"../actions/notifications.actions";
+import { NotificationSettings } from"../actions";;
+import { useToast } from"@/components/ui/toast";
+import { AdminPageHeader } from"@/components/admin/admin-page-header";
+import { playSound } from"@/lib/sounds";
+import { SwitchRow } from"@/components/ui/switch-row";
+import { Switch } from"@/components/ui/switch";
 
 // --- Constants ---
 
@@ -36,8 +36,8 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
     system: { enabled: true, browserPush: false },
     telegram: {
         enabled: false,
-        botToken: "",
-        chatId: "",
+        botToken:"",
+        chatId:"",
         notifyOnNewOrder: true,
         notifyOnLowStock: true,
         notifyOnSystemError: true
@@ -55,14 +55,14 @@ const DEFAULT_NOTIFICATION_SETTINGS: NotificationSettings = {
 };
 
 const EVENT_CONFIG: { key: string; label: string; icon: LucideIcon; color: string }[] = [
-    { key: "new_order", label: "Новый заказ", icon: ShoppingBag, color: "bg-emerald-50 text-emerald-600" },
-    { key: "order_status_change", label: "Смена статуса", icon: CheckCircle2, color: "bg-blue-50 text-blue-600" },
-    { key: "stock_low", label: "Мало остатков", icon: Boxes, color: "bg-orange-50 text-orange-600" },
-    { key: "task_assigned", label: "Новая задача", icon: UserCheck, color: "bg-purple-50 text-purple-600" },
-    { key: "system_error", label: "Ошибки системы", icon: ShieldAlert, color: "bg-rose-50 text-rose-600" },
-    { key: "big_payment", label: "Крупный платеж", icon: Zap, color: "bg-amber-50 text-amber-600" },
-    { key: "client_update", label: "Изменение клиента", icon: Info, color: "bg-indigo-50 text-indigo-600" },
-    { key: "security_alert", label: "Безопасность", icon: AlertTriangle, color: "bg-red-50 text-red-600" },
+    { key:"new_order", label:"Новый заказ", icon: ShoppingBag, color:"bg-emerald-50 text-emerald-600" },
+    { key:"order_status_change", label:"Смена статуса", icon: CheckCircle2, color:"bg-blue-50 text-blue-600" },
+    { key:"stock_low", label:"Мало остатков", icon: Boxes, color:"bg-orange-50 text-orange-600" },
+    { key:"task_assigned", label:"Новая задача", icon: UserCheck, color:"bg-purple-50 text-purple-600" },
+    { key:"system_error", label:"Ошибки системы", icon: ShieldAlert, color:"bg-rose-50 text-rose-600" },
+    { key:"big_payment", label:"Крупный платеж", icon: Zap, color:"bg-amber-50 text-amber-600" },
+    { key:"client_update", label:"Изменение клиента", icon: Info, color:"bg-indigo-50 text-indigo-600" },
+    { key:"security_alert", label:"Безопасность", icon: AlertTriangle, color:"bg-red-50 text-red-600" },
 ];
 
 // --- Component ---
@@ -83,15 +83,15 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
         try {
             const res = await updateNotificationSettingsAction(settings);
             if (res.success) {
-                toast("Настройки уведомлений сохранены", "success");
+                toast("Настройки уведомлений сохранены","success");
                 playSound("notification_success");
             } else {
-                toast(res.error || "Ошибка при сохранении", "error");
+                toast(res.error ||"Ошибка при сохранении","error");
                 playSound("notification_error");
             }
         } catch (error) {
             console.error("Failed to save notification settings:", error);
-            toast("Не удалось сохранить настройки", "error");
+            toast("Не удалось сохранить настройки","error");
             playSound("notification_error");
         } finally {
             setLoading(false);
@@ -101,10 +101,10 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
     const toggleNested = (section: keyof NotificationSettings, key: string) => {
         setSettings((prev) => {
             const sectionData = prev[section];
-            if (typeof sectionData !== "object" || sectionData === null) return prev;
+            if (typeof sectionData !=="object" || sectionData === null) return prev;
 
             const currentValue = (sectionData as Record<string, unknown>)[key];
-            if (typeof currentValue !== "boolean") return prev;
+            if (typeof currentValue !=="boolean") return prev;
 
             return {
                 ...prev,
@@ -169,14 +169,14 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                             title="Показывать в колокольчике CRM"
                             description=""
                             checked={settings.system.enabled}
-                            onCheckedChange={() => toggleNested("system", "enabled")}
+                            onCheckedChange={() => toggleNested("system","enabled")}
                         />
                         <SwitchRow
                             icon={Smartphone}
                             title="Всплывающие окна рабочего стола"
                             description=""
                             checked={settings.system.browserPush}
-                            onCheckedChange={() => toggleNested("system", "browserPush")}
+                            onCheckedChange={() => toggleNested("system","browserPush")}
                         />
                     </div>
                 </div>
@@ -194,18 +194,18 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                         </div>
                         <Switch
                             checked={settings.telegram.enabled}
-                            onCheckedChange={() => toggleNested("telegram", "enabled")}
+                            onCheckedChange={() => toggleNested("telegram","enabled")}
                             className="ml-auto"
                         />
                     </div>
 
-                    <div className={cn("space-y-3 relative z-10 transition-all", !settings.telegram.enabled && "opacity-40 pointer-events-none grayscale")}>
+                    <div className={cn("space-y-3 relative z-10 transition-all", !settings.telegram.enabled &&"opacity-40 pointer-events-none grayscale")}>
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-400 ml-1">Токен бота (API Token)</label>
                             <Input
                                 type="password"
                                 value={settings.telegram.botToken}
-                                onChange={(e) => updateValue("telegram", "botToken", e.target.value)}
+                                onChange={(e) => updateValue("telegram","botToken", e.target.value)}
                                 placeholder="123456789:ABCDEF..."
                                 className="w-full bg-slate-800 border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
                             />
@@ -215,7 +215,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                             <Input
                                 type="text"
                                 value={settings.telegram.chatId}
-                                onChange={(e) => updateValue("telegram", "chatId", e.target.value)}
+                                onChange={(e) => updateValue("telegram","chatId", e.target.value)}
                                 placeholder="-100123456789"
                                 className="w-full bg-slate-800 border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
                             />
@@ -248,12 +248,11 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                 type="button"
                                 onClick={() => toggleNested("events", item.key)}
                                 aria-pressed={enabled}
-                                aria-label={`${item.label}: ${enabled ? "активно" : "выключено"}`}
-                                className={cn(
-                                    "p-6 rounded-3xl border transition-all cursor-pointer group hover:shadow-lg text-left",
+                                aria-label={`${item.label}: ${enabled ?"активно" :"выключено"}`}
+                                className={cn("p-6 rounded-3xl border transition-all cursor-pointer group hover:shadow-lg text-left",
                                     enabled
-                                        ? "bg-white border-slate-200 shadow-sm"
-                                        : "bg-slate-50/50 border-transparent grayscale opacity-60"
+                                        ?"bg-white border-slate-200 shadow-sm"
+                                        :"bg-slate-50/50 border-transparent grayscale opacity-60"
                                 )}
                             >
                                 <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110", item.color)}>
@@ -261,7 +260,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
                                 </div>
                                 <h4 className="font-bold text-slate-900 text-sm mb-1">{item.label}</h4>
                                 <p className="text-xs font-bold text-slate-700 group-hover:text-primary transition-colors">
-                                    {enabled ? "Активно" : "Выключено"}
+                                    {enabled ?"Активно" :"Выключено"}
                                 </p>
                             </button>
                         );

@@ -1,24 +1,24 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { hashPassword, comparePassword } from "@/lib/password";
-import { eq, asc, sql, or, ilike } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { db } from"@/lib/db";
+import { users } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { hashPassword, comparePassword } from"@/lib/password";
+import { eq, asc, sql, or, ilike } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
 import {
     CreateUserSchema,
     UpdateUserSchema
-} from "../validation";
+} from"../validation";
 
 // User Actions
 export async function getCurrentUserAction() {
     try {
         const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
+        if (!session) return { success: false, error:"Не авторизован" };
 
         const currentUser = await db.query.users.findFirst({
             where: eq(users.id, session.id),
@@ -32,14 +32,14 @@ export async function getCurrentUserAction() {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/current-user",
-            method: "getCurrentUserAction"
+            path:"/admin-panel/current-user",
+            method:"getCurrentUserAction"
         });
-        return { success: false, error: "Не удалось загрузить текущего пользователя" };
+        return { success: false, error:"Не удалось загрузить текущего пользователя" };
     }
 }
 
-export async function getUsers(page = 1, limit = 20, search = "") {
+export async function getUsers(page = 1, limit = 20, search ="") {
     const session = await getSession();
     try {
         await requireAdmin(session);
@@ -87,10 +87,10 @@ export async function getUsers(page = 1, limit = 20, search = "") {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/users",
-            method: "getUsers"
+            path:"/admin-panel/users",
+            method:"getUsers"
         });
-        return { success: false, error: "Не удалось загрузить список пользователей" };
+        return { success: false, error:"Не удалось загрузить список пользователей" };
     }
 }
 
@@ -115,16 +115,16 @@ export async function createUser(formData: FormData) {
             departmentId: validated.data.departmentId || null,
         }).returning();
 
-        await logAction("Создание пользователя", "user", newUser.id, { email: newUser.email });
+        await logAction("Создание пользователя","user", newUser.id, { email: newUser.email });
         revalidatePath("/admin-panel/users");
         return { success: true, data: newUser };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/users/create",
-            method: "createUser"
+            path:"/admin-panel/users/create",
+            method:"createUser"
         });
-        return { success: false, error: "Не удалось создать пользователя" };
+        return { success: false, error:"Не удалось создать пользователя" };
     }
 }
 
@@ -140,7 +140,7 @@ export async function updateUser(userId: string, formData: FormData) {
         }
 
         const updateData: Record<string, unknown> = { ...validated.data };
-        if (updateData.departmentId === "") updateData.departmentId = null;
+        if (updateData.departmentId ==="") updateData.departmentId = null;
 
         const [updatedUser] = await db.update(users)
             .set({
@@ -150,16 +150,16 @@ export async function updateUser(userId: string, formData: FormData) {
             .where(eq(users.id, userId))
             .returning();
 
-        await logAction("Обновление пользователя", "user", userId, updateData);
+        await logAction("Обновление пользователя","user", userId, updateData);
         revalidatePath("/admin-panel/users");
         return { success: true, data: updatedUser };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/users/update",
-            method: "updateUser"
+            path:"/admin-panel/users/update",
+            method:"updateUser"
         });
-        return { success: false, error: "DEBUG: " + (error instanceof Error ? error.message : "Неизвестная ошибка") };
+        return { success: false, error:"DEBUG:" + (error instanceof Error ? error.message :"Неизвестная ошибка") };
     }
 }
 
@@ -168,26 +168,26 @@ export async function deleteUser(userId: string, password?: string) {
     try {
         const currentUser = await requireAdmin(session);
         if (session?.id === userId) {
-            return { success: false, error: "Нельзя удалить самого себя" };
+            return { success: false, error:"Нельзя удалить самого себя" };
         }
 
         const targetUser = await db.query.users.findFirst({ where: eq(users.id, userId) });
         if (targetUser?.isSystem || password) {
-            if (!password) return { success: false, error: "Для этого действия требуется пароль" };
+            if (!password) return { success: false, error:"Для этого действия требуется пароль" };
             const isMatch = await comparePassword(password, currentUser.passwordHash);
-            if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
+            if (!isMatch) return { success: false, error:"Неверный пароль администратора" };
         }
 
         await db.delete(users).where(eq(users.id, userId));
-        await logAction("Удаление пользователя", "user", userId);
+        await logAction("Удаление пользователя","user", userId);
         revalidatePath("/admin-panel/users");
         return { success: true };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/users/delete",
-            method: "deleteUser"
+            path:"/admin-panel/users/delete",
+            method:"deleteUser"
         });
-        return { success: false, error: "Не удалось удалить пользователя" };
+        return { success: false, error:"Не удалось удалить пользователя" };
     }
 }

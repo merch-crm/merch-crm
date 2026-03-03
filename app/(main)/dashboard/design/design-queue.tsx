@@ -1,11 +1,11 @@
 "use client";
 
-import { FileText, User, Calendar, Package } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { pluralize } from "@/lib/pluralize";
+import { FileText, User, Calendar, Package } from"lucide-react";
+import { cn } from"@/lib/utils";
+import Link from"next/link";
+import { pluralize } from"@/lib/pluralize";
 
-import { Order } from "@/lib/types";
+import { Order } from"@/lib/types";
 
 interface DesignQueueProps {
     orders: Order[];
@@ -34,16 +34,15 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                     </div>
                 ) : (
                     orders?.map((order) => {
-                        const isUrgent = order.priority === "high" || order.priority === "urgent";
+                        const isUrgent = order.priority ==="high" || order.priority ==="urgent";
                         const totalItems = order.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
                         return (
                             <Link
                                 key={order.id}
                                 href={`/dashboard/orders/${order.id}`}
-                                className={cn(
-                                    "block bg-white rounded-[var(--radius)] p-5 border transition-all hover:shadow-md group",
-                                    isUrgent ? "border-rose-200 bg-rose-50/30" : "border-slate-200"
+                                className={cn("block bg-white rounded-[var(--radius)] p-5 border transition-all hover:shadow-md group",
+                                    isUrgent ?"border-rose-200 bg-rose-50/30" :"border-slate-200"
                                 )}
                             >
                                 <div className="flex items-start justify-between mb-3">
@@ -53,7 +52,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                                 {order.orderNumber}
                                             </span>
                                             {isUrgent && (
-                                                <div className="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-full text-xs font-bold ">
+                                                <div className="px-2 py-0.5 bg-rose-100 text-rose-600 rounded-full text-xs font-bold">
                                                     Срочно
                                                 </div>
                                             )}
@@ -61,7 +60,7 @@ export function DesignQueue({ orders }: DesignQueueProps) {
                                         <div className="flex items-center gap-2 text-sm">
                                             <User className="w-4 h-4 text-slate-400" />
                                             <span className="font-bold text-slate-900">
-                                                {order.client?.name || "Без имени"}
+                                                {order.client?.name ||"Без имени"}
                                             </span>
                                         </div>
                                     </div>

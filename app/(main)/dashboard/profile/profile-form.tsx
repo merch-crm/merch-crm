@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { updateProfile } from "./actions";
-import { Loader2, CheckCircle2, AlertCircle, Camera } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { cn } from "@/lib/utils";
-import { UserProfile } from "./types";
+import { useState } from"react";
+import { updateProfile } from"./actions";
+import { Loader2, CheckCircle2, AlertCircle, Camera } from"lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from"@/components/ui/avatar";
+import { Label } from"@/components/ui/label";
+import { Input } from"@/components/ui/input";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { cn } from"@/lib/utils";
+import { UserProfile } from"./types";
 
 export function ProfileForm({ user }: { user: UserProfile }) {
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState({ type: "", text: "" });
+    const [message, setMessage] = useState({ type:"", text:"" });
     const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar || null);
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
@@ -22,7 +22,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
         if (!file) return;
 
         setUploading(true);
-        setMessage({ type: "", text: "" });
+        setMessage({ type:"", text:"" });
 
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -48,17 +48,16 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                                         quality -= 0.1;
                                         compress();
                                     } else {
-                                        const processedFile = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+                                        const processedFile = new File([blob],"avatar.jpg", { type:"image/jpeg" });
                                         setAvatarFile(processedFile);
                                         setAvatarPreview(URL.createObjectURL(blob));
                                         setUploading(false);
                                     }
                                 } else {
                                     setUploading(false);
-                                    setMessage({ type: "error", text: "Ошибка при обработке изображения." });
+                                    setMessage({ type:"error", text:"Ошибка при обработке изображения." });
                                 }
-                            },
-                            "image/jpeg",
+                            },"image/jpeg",
                             quality
                         );
                     };
@@ -79,12 +78,12 @@ export function ProfileForm({ user }: { user: UserProfile }) {
         const name = formData.get("name") as string;
 
         if (!name || name.trim().length < 2) {
-            setMessage({ type: "error", text: "ФИО должно содержать минимум 2 символа" });
+            setMessage({ type:"error", text:"ФИО должно содержать минимум 2 символа" });
             return;
         }
 
         setLoading(true);
-        setMessage({ type: "", text: "" });
+        setMessage({ type:"", text:"" });
 
         if (avatarFile) {
             formData.set("avatar", avatarFile);
@@ -93,14 +92,14 @@ export function ProfileForm({ user }: { user: UserProfile }) {
         const result = await updateProfile(formData);
 
         if (result.error) {
-            setMessage({ type: "error", text: result.error });
+            setMessage({ type:"error", text: result.error });
         } else {
-            setMessage({ type: "success", text: "Профиль успешно обновлен!" });
+            setMessage({ type:"success", text:"Профиль успешно обновлен!" });
         }
         setLoading(false);
     }
 
-    const deptName = user.department?.name || "Общий отдел";
+    const deptName = user.department?.name ||"Общий отдел";
 
     return (
         <form onSubmit={handleSubmit} className="space-y-3">
@@ -111,7 +110,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                         <Avatar className="h-full w-full">
                             <AvatarImage src={avatarPreview || undefined} alt="Avatar" className="object-cover" />
                             <AvatarFallback className="bg-slate-100 text-slate-400 text-3xl font-black">
-                                {user.name.split(" ").map((n) => n[0]).join("")}
+                                {user.name.split("").map((n) => n[0]).join("")}
                             </AvatarFallback>
                         </Avatar>
                         {uploading && (
@@ -168,7 +167,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     <Label className="text-xs font-black text-slate-400 ml-1">Телефон</Label>
                     <Input
                         name="phone"
-                        defaultValue={user.phone || ""}
+                        defaultValue={user.phone ||""}
                         className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300"
                         placeholder="+7 (___) ___-__-__"
                     />
@@ -178,7 +177,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     <Label className="text-xs font-black text-slate-400 ml-1">Telegram</Label>
                     <Input
                         name="telegram"
-                        defaultValue={user.telegram || ""}
+                        defaultValue={user.telegram ||""}
                         className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300"
                         placeholder="@username"
                     />
@@ -188,7 +187,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     <Label className="text-xs font-black text-slate-400 ml-1">Instagram</Label>
                     <Input
                         name="instagram"
-                        defaultValue={user.instagram || ""}
+                        defaultValue={user.instagram ||""}
                         className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300"
                         placeholder="username"
                     />
@@ -198,7 +197,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
                     <Label className="text-xs font-black text-slate-400 ml-1">Social Max</Label>
                     <Input
                         name="socialMax"
-                        defaultValue={user.socialMax || ""}
+                        defaultValue={user.socialMax ||""}
                         className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300"
                         placeholder="ID"
                     />
@@ -224,11 +223,10 @@ export function ProfileForm({ user }: { user: UserProfile }) {
             </div>
 
             {message.text && (
-                <div className={cn(
-                    "p-5 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300",
-                    message.type === "success" ? "bg-emerald-50 text-emerald-800 border border-emerald-100" : "bg-rose-50 text-rose-800 border border-rose-100"
+                <div className={cn("p-5 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300",
+                    message.type ==="success" ?"bg-emerald-50 text-emerald-800 border border-emerald-100" :"bg-rose-50 text-rose-800 border border-rose-100"
                 )}>
-                    {message.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}
+                    {message.type ==="success" ? <CheckCircle2 className="w-5 h-5 text-emerald-500" /> : <AlertCircle className="w-5 h-5 text-rose-500" />}
                     <span className="text-sm font-black">{message.text}</span>
                 </div>
             )}

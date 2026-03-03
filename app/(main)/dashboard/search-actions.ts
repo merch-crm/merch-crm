@@ -1,20 +1,20 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { orders, clients, inventoryItems, users, tasks, promocodes, wikiPages, storageLocations, expenses, inventoryCategories } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { ilike, or, desc } from "drizzle-orm";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
-import { logError } from "@/lib/error-logger";
-import { z } from "zod";
+import { db } from"@/lib/db";
+import { orders, clients, inventoryItems, users, tasks, promocodes, wikiPages, storageLocations, expenses, inventoryCategories } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { ilike, or, desc } from"drizzle-orm";
+import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { logError } from"@/lib/error-logger";
+import { z } from"zod";
 
-const SearchQuerySchema = z.string().min(2, "Минимум 2 символа для поиска").max(100);
+const SearchQuerySchema = z.string().min(2,"Минимум 2 символа для поиска").max(100);
 
-import { ActionResult } from "@/lib/types";
+import { ActionResult } from"@/lib/types";
 
 export interface SearchResult {
     id: string;
-    type: "order" | "client" | "item" | "user" | "task" | "promocode" | "wiki" | "page" | "location" | "expense" | "category";
+    type:"order" |"client" |"item" |"user" |"task" |"promocode" |"wiki" |"page" |"location" |"expense" |"category";
     title: string;
     subtitle?: string;
     href: string;
@@ -29,14 +29,14 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
     if (!session) return { success: true, data: [] };
 
     const dep = session.departmentName;
-    const isAdmin = dep === "Руководство";
-    const isSales = dep === "Отдел продаж";
-    const isProd = dep === "Производство";
-    const isDesign = dep === "Дизайн";
+    const isAdmin = dep ==="Руководство";
+    const isSales = dep ==="Отдел продаж";
+    const isProd = dep ==="Производство";
+    const isDesign = dep ==="Дизайн";
 
     try {
         const branding = await getBrandingSettings();
-        const currencySymbol = branding?.currencySymbol || "₽";
+        const currencySymbol = branding?.currencySymbol ||"₽";
         const searchTerm = `%${query}%`;
 
         // Define permissions
@@ -147,19 +147,19 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
         ]);
 
         const navigationPages = [
-            { title: "Заказы", href: "/dashboard/orders", keywords: ["заказы", "продажи"], deps: ["Руководство", "Отдел продаж", "Производство"] },
-            { title: "Клиенты", href: "/dashboard/clients", keywords: ["клиенты", "заказчики", "база"], deps: ["Руководство", "Отдел продаж"] },
-            { title: "Склад", href: "/dashboard/warehouse", keywords: ["склад", "остатки", "товары", "инвентарь"], deps: ["Руководство", "Отдел продаж", "Производство", "Дизайн"] },
-            { title: "Промокоды", href: "/dashboard/finance/promocodes", keywords: ["промокоды", "скидки", "акции"], deps: ["Руководство", "Отдел продаж"] },
-            { title: "Финансы", href: "/dashboard/finance", keywords: ["финансы", "деньги", "касса", "отчеты"], deps: ["Руководство"] },
-            { title: "Сотрудники", href: "/admin-panel/users", keywords: ["сотрудники", "пользователи", "права", "админ"], deps: ["Руководство"] },
-            { title: "Задачи", href: "/dashboard/tasks", keywords: ["задачи", "дела", "план"], deps: [] }, // Everyone
-            { title: "Дизайн", href: "/dashboard/design", keywords: ["дизайн", "макеты"], deps: ["Руководство", "Дизайн"] },
-            { title: "Производство", href: "/dashboard/production", keywords: ["производство", "печать", "вышивка"], deps: ["Руководство", "Производство"] },
-            { title: "Админ-панель", href: "/admin-panel", keywords: ["админ", "панель", "управление", "settings"], deps: ["Руководство"] },
-            { title: "Брендинг", href: "/admin-panel/branding", keywords: ["логотип", "цвета", "админ", "настройки"], deps: ["Руководство"] },
-            { title: "Безопасность", href: "/admin-panel/security", keywords: ["логи", "входы", "админ", "безопасность"], deps: ["Руководство"] },
-            { title: "Референсы", href: "/dashboard/references", keywords: ["референсы", "дизайн", "showcase", "примеры"], deps: ["Руководство"] },
+            { title:"Заказы", href:"/dashboard/orders", keywords: ["заказы","продажи"], deps: ["Руководство","Отдел продаж","Производство"] },
+            { title:"Клиенты", href:"/dashboard/clients", keywords: ["клиенты","заказчики","база"], deps: ["Руководство","Отдел продаж"] },
+            { title:"Склад", href:"/dashboard/warehouse", keywords: ["склад","остатки","товары","инвентарь"], deps: ["Руководство","Отдел продаж","Производство","Дизайн"] },
+            { title:"Промокоды", href:"/dashboard/finance/promocodes", keywords: ["промокоды","скидки","акции"], deps: ["Руководство","Отдел продаж"] },
+            { title:"Финансы", href:"/dashboard/finance", keywords: ["финансы","деньги","касса","отчеты"], deps: ["Руководство"] },
+            { title:"Сотрудники", href:"/admin-panel/users", keywords: ["сотрудники","пользователи","права","админ"], deps: ["Руководство"] },
+            { title:"Задачи", href:"/dashboard/tasks", keywords: ["задачи","дела","план"], deps: [] }, // Everyone
+            { title:"Дизайн", href:"/dashboard/design", keywords: ["дизайн","макеты"], deps: ["Руководство","Дизайн"] },
+            { title:"Производство", href:"/dashboard/production", keywords: ["производство","печать","вышивка"], deps: ["Руководство","Производство"] },
+            { title:"Админ-панель", href:"/admin-panel", keywords: ["админ","панель","управление","settings"], deps: ["Руководство"] },
+            { title:"Брендинг", href:"/admin-panel/branding", keywords: ["логотип","цвета","админ","настройки"], deps: ["Руководство"] },
+            { title:"Безопасность", href:"/admin-panel/security", keywords: ["логи","входы","админ","безопасность"], deps: ["Руководство"] },
+            { title:"Референсы", href:"/dashboard/references", keywords: ["референсы","дизайн","showcase","примеры"], deps: ["Руководство"] },
         ].filter(page => {
             const matchesQuery = page.title.toLowerCase().includes(query.toLowerCase()) ||
                 page.keywords.some(k => k.toLowerCase().includes(query.toLowerCase()));
@@ -170,15 +170,15 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
         const results: SearchResult[] = [
             ...foundOrders.map(o => ({
                 id: o.id,
-                type: "order" as const,
+                type:"order" as const,
                 title: `Заказ #${o.orderNumber}`,
-                subtitle: o.client ? `${o.client.lastName} ${o.client.firstName}` : "Без клиента",
+                subtitle: o.client ? `${o.client.lastName} ${o.client.firstName}` :"Без клиента",
                 href: `/dashboard/orders/${o.id}`,
                 status: o.status
             })),
             ...foundClients.map(c => ({
                 id: c.id,
-                type: "client" as const,
+                type:"client" as const,
                 title: `${c.lastName} ${c.firstName}`,
                 subtitle: c.company || c.phone,
                 href: `/dashboard/clients?id=${c.id}`, // Client profiles often open in drawers on lists
@@ -186,67 +186,67 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
             })),
             ...foundItems.map(i => ({
                 id: i.id,
-                type: "item" as const,
+                type:"item" as const,
                 title: i.name,
-                subtitle: i.sku || "Без артикула",
+                subtitle: i.sku ||"Без артикула",
                 href: `/dashboard/warehouse/items?id=${i.id}`,
                 status: `${i.quantity} шт.`
             })),
             ...foundUsers.map(u => ({
                 id: u.id,
-                type: "user" as const,
+                type:"user" as const,
                 title: u.name,
                 subtitle: u.email,
                 href: `/admin-panel/users?id=${u.id}`
             })),
             ...foundTasks.map(t => ({
                 id: t.id,
-                type: "task" as const,
+                type:"task" as const,
                 title: t.title,
                 subtitle: t.status,
                 href: `/dashboard/tasks?id=${t.id}`
             })),
             ...foundPromocodes.map(p => ({
                 id: p.id,
-                type: "promocode" as const,
+                type:"promocode" as const,
                 title: p.code,
                 subtitle: `${p.discountType === 'percentage' ? p.value + '%' : p.value + currencySymbol} скидка`,
                 href: `/dashboard/finance/promocodes?id=${p.id}`,
-                status: p.isActive ? "Активен" : "Неактивен"
+                status: p.isActive ?"Активен" :"Неактивен"
             })),
             ...foundWiki.map(w => ({
                 id: w.id,
-                type: "wiki" as const,
+                type:"wiki" as const,
                 title: w.title,
-                subtitle: "Статья в базе знаний",
+                subtitle:"Статья в базе знаний",
                 href: `/dashboard/knowledge-base?pageId=${w.id}`
             })),
             ...foundLocations.map(l => ({
                 id: l.id,
-                type: "location" as const,
+                type:"location" as const,
                 title: l.name,
                 subtitle: l.address || undefined,
                 href: `/dashboard/warehouse?tab=locations&id=${l.id}`
             })),
             ...foundExpenses.map(e => ({
                 id: e.id,
-                type: "expense" as const,
-                title: e.description || "Расход без описания",
+                type:"expense" as const,
+                title: e.description ||"Расход без описания",
                 subtitle: `${e.amount}${currencySymbol} - ${e.category}`,
                 href: `/dashboard/finance?id=${e.id}`
             })),
             ...foundCategories.map(c => ({
                 id: c.id,
-                type: "category" as const,
+                type:"category" as const,
                 title: c.name,
-                subtitle: "Категория склада",
+                subtitle:"Категория склада",
                 href: `/dashboard/warehouse?categoryId=${c.id}`
             })),
             ...navigationPages.map(p => ({
                 id: p.href,
-                type: "page" as const,
+                type:"page" as const,
                 title: p.title,
-                subtitle: "Раздел меню",
+                subtitle:"Раздел меню",
                 href: p.href
             }))
         ];
@@ -255,10 +255,10 @@ export async function globalSearch(query: string): Promise<ActionResult<SearchRe
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/search",
-            method: "globalSearch",
+            path:"/dashboard/search",
+            method:"globalSearch",
             details: { query }
         });
-        return { success: false, error: "Не удалось выполнить поиск" };
+        return { success: false, error:"Не удалось выполнить поиск" };
     }
 }

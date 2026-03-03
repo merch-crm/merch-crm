@@ -1,12 +1,12 @@
-import { getArchivedItems } from "../item-actions";;
-import { ArchiveTable } from "../archive-table";
-import { InventoryItem } from "../types";
+import { getArchivedItems } from"../item-actions";;
+import { ArchiveTable } from"../archive-table";
+import { InventoryItem } from"../types";
 
 export const metadata = {
-    title: "Склад | Архив",
+    title:"Склад | Архив",
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic ="force-dynamic";
 
 export default async function ArchivePage({
     searchParams
@@ -18,7 +18,7 @@ export default async function ArchivePage({
         page: Number(params.page) || 1,
         limit: 20,
         search: params.search,
-        sortBy: params.sortBy || "archivedAt"
+        sortBy: params.sortBy ||"archivedAt"
     });
 
     const items = res.success && res.data ? res.data.items : [];

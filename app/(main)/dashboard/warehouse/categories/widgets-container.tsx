@@ -1,5 +1,5 @@
-import { getWarehouseStats } from "../warehouse-stats-actions";;
-import { WarehouseWidgets } from "../warehouse-widgets";
+import { getWarehouseStats } from"../warehouse-stats-actions";;
+import { WarehouseWidgets } from"../warehouse-widgets";
 
 export async function WarehouseWidgetsContainer() {
     const res = await getWarehouseStats();

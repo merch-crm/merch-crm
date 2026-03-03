@@ -1,7 +1,7 @@
-import { differenceInHours } from "date-fns";
+import { differenceInHours } from"date-fns";
 
 export const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat("ru-RU").format(price) + " ₽";
+    return new Intl.NumberFormat("ru-RU").format(price) +" ₽";
 };
 
 export const getDeadlineUrgency = (deadline: Date): { isOverdue: boolean; isUrgent: boolean; isSoon: boolean } => {

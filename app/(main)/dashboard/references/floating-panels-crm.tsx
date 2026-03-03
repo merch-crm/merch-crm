@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React from"react";
+import { motion } from"framer-motion";
 import {
     X,
     Image as ImageIcon,
@@ -18,21 +18,21 @@ import {
     AlignLeft,
     CalendarPlus,
     Mic
-} from "lucide-react";
+} from"lucide-react";
 
-const PanelContainer = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
+const PanelContainer = ({ children, className ="" }: { children: React.ReactNode, className?: string }) => (
     <motion.div
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.5, ease:"easeOut" }}
         className={`bg-white rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex items-center px-2 py-2 ${className}`}
     >
         {children}
     </motion.div>
 );
 
-const IconButton = ({ icon: Icon, active = false, className = "", blue = false }: { icon: React.ElementType, active?: boolean, className?: string, blue?: boolean }) => (
+const IconButton = ({ icon: Icon, active = false, className ="", blue = false }: { icon: React.ElementType, active?: boolean, className?: string, blue?: boolean }) => (
     <button type="button" className={`p-2.5 rounded-full transition-colors flex items-center justify-center ${active ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'} ${blue ? '!bg-[#3b5bdb] !text-white hover:!bg-[#3b5bdb]/90' : ''} ${className}`}>
         <Icon size={20} strokeWidth={2} />
     </button>
@@ -42,7 +42,7 @@ const Divider = () => <div className="w-[1px] h-6 bg-slate-100 mx-2" />;
 
 export default function FloatingPanelsCRM() {
     return (
-        <section className="space-y-12 py-12 bg-[#f8f9fa] rounded-[var(--radius-outer)] items-center flex flex-col justify-center">
+        <section className="space-y-3 py-12 bg-[#f8f9fa] rounded-[var(--radius-outer)] items-center flex flex-col justify-center">
             <div className="flex items-center gap-3 self-start px-12 mb-[-2rem]">
                 <div className="h-8 w-1 bg-[#3b5bdb] rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Floating Action Panels</h2>
@@ -116,7 +116,7 @@ export default function FloatingPanelsCRM() {
                                 key={i}
                                 initial={{ height: 4 }}
                                 animate={{ height }}
-                                transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse", delay: i * 0.05 }}
+                                transition={{ duration: 0.5, repeat: Infinity, repeatType:"reverse", delay: i * 0.05 }}
                                 className="w-1 bg-[#3b5bdb] rounded-full opacity-80"
                                 style={{ height: `${height}px` }}
                             />

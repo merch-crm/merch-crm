@@ -1,7 +1,7 @@
 "use client";
 
-import { AlertCircle, RefreshCcw, Home } from "lucide-react";
-import Link from "next/link";
+import { AlertCircle, RefreshCcw, Home } from"lucide-react";
+import Link from"next/link";
 
 interface ErrorViewProps {
     title?: string;
@@ -11,8 +11,8 @@ interface ErrorViewProps {
 }
 
 export function ErrorView({
-    title = "Произошла ошибка",
-    message = "Произошла непредвиденная ошибка",
+    title ="Произошла ошибка",
+    message ="Произошла непредвиденная ошибка",
     onReset,
     icon,
 }: ErrorViewProps) {

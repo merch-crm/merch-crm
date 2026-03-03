@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { Truck } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { DeliveryBadgeProps } from "./types";
-import { PROVIDER_CONFIG, STATUS_CONFIG } from "./constants";
+import * as React from"react";
+import { Truck } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { DeliveryBadgeProps } from"./types";
+import { PROVIDER_CONFIG, STATUS_CONFIG } from"./constants";
 
 export function DeliveryBadge({ provider, tracking, status, className }: DeliveryBadgeProps) {
     const providerConfig = PROVIDER_CONFIG[provider];
     const statusConfig = STATUS_CONFIG[status];
 
     // Хак для получения более темного цвета - точки статуса
-    const dotColorClass = statusConfig.color.replace("text-", "bg-").replace("600", "500");
+    const dotColorClass = statusConfig.color.replace("text-","bg-").replace("600","500");
 
     return (
         <div className={cn("inline-flex items-center gap-2", className)}>

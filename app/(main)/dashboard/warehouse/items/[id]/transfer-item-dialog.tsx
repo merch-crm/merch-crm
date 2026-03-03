@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle } from "lucide-react";
-import { transferInventoryStock } from "../../stock-actions";
-import { StorageLocation } from "../../types";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { cn, formatUnit } from "@/lib/utils";
-import { LocationSelect } from "../../location-select";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/ui/submit-button";
+import React, { useState, useMemo, useEffect } from"react";
+import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle } from"lucide-react";
+import { transferInventoryStock } from"../../stock-actions";
+import { StorageLocation } from"../../types";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { cn, formatUnit } from"@/lib/utils";
+import { LocationSelect } from"../../location-select";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { SubmitButton } from"@/components/ui/submit-button";
 
 interface ItemStock {
     storageLocationId: string;
@@ -43,8 +43,8 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
     // Create a map for easy quantity lookup
     const stockMap = useMemo(() => new Map(itemStocks.map(s => [s.storageLocationId, s.quantity])), [itemStocks]);
 
-    // Only allow "From" locations where item exists
-    // Only allow "From" locations where item exists
+    // Only allow"From" locations where item exists
+    // Only allow"From" locations where item exists
     const availableFromLocations = useMemo(() => locations.filter(loc => (stockMap.get(loc.id) || 0) > 0), [locations, stockMap]);
 
     // Auto-cap amount if source location changes or availability updates
@@ -54,7 +54,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
             if (amount > available) {
                 setAmount(available);
                 if (available > 0) {
-                    toast(`Количество скорректировано: макс. ${available}`, "info");
+                    toast(`Количество скорректировано: макс. ${available}`,"info");
                 }
             } else if (amount <= 0 && available > 0) {
                 setAmount(1);
@@ -64,11 +64,11 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
 
     const handleIncrement = () => {
         if (!fromLocationId) {
-            toast("Выберите склад-источник", "info");
+            toast("Выберите склад-источник","info");
             return;
         }
         if (amount >= fromStock) {
-            toast(`На складе всего ${fromStock} ${formatUnit(item.unit)}`, "warning");
+            toast(`На складе всего ${fromStock} ${formatUnit(item.unit)}`,"warning");
             return;
         }
         setAmount(prev => prev + 1);
@@ -96,11 +96,11 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
         try {
             const res = await transferInventoryStock(item.id, fromLocationId, toLocationId, amount, reason);
             if (res.success) {
-                toast("Перемещение выполнено успешно", "success");
+                toast("Перемещение выполнено успешно","success");
                 playSound("stock_replenished");
                 onClose();
             } else {
-                setError(res.error || "Ошибка при перемещении");
+                setError(res.error ||"Ошибка при перемещении");
                 playSound("notification_error");
             }
         } catch {
@@ -113,8 +113,8 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
 
     if (!item) return null;
 
-    const fromLocationName = locations.find(l => l.id === fromLocationId)?.name || "Источник";
-    const toLocationName = locations.find(l => l.id === toLocationId)?.name || "Получатель";
+    const fromLocationName = locations.find(l => l.id === fromLocationId)?.name ||"Источник";
+    const toLocationName = locations.find(l => l.id === toLocationId)?.name ||"Получатель";
     const fromStock = stockMap.get(fromLocationId) || 0;
     const toStock = stockMap.get(toLocationId) || 0;
 
@@ -129,7 +129,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h2>
                             <p className="text-[11px] font-bold text-slate-700 mt-0.5">
-                                Объект: <span className="text-slate-900 font-bold ">{item.name}</span>
+                                Объект: <span className="text-slate-900 font-bold">{item.name}</span>
                             </p>
                         </div>
                     </div>
@@ -165,8 +165,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         </div>
 
                         {/* 2. Transaction Preview Bento Block */}
-                        <div className={cn(
-                            "rounded-2xl p-6 relative overflow-hidden group transition-all duration-500 shadow-crm-xl bg-gradient-to-br from-indigo-50/50 via-white to-primary/10 shadow-primary/10 border border-primary/20"
+                        <div className={cn("rounded-2xl p-6 relative overflow-hidden group transition-all duration-500 shadow-crm-xl bg-gradient-to-br from-indigo-50/50 via-white to-primary/10 shadow-primary/10 border border-primary/20"
                         )}>
                             {/* Decorative Background Elements: Dynamic Package Pattern */}
                             <div className="absolute inset-0 opacity-[0.05] pointer-events-none overflow-hidden select-none">
@@ -188,7 +187,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         </span>
                                     </div>
                                     <div className="flex items-baseline gap-2 pl-1">
-                                        <span className="text-4xl font-black text-slate-900 tabular-nums ">{fromStock}</span>
+                                        <span className="text-4xl font-black text-slate-900 tabular-nums">{fromStock}</span>
                                         <span className="text-xs font-bold text-slate-400">{formatUnit(item.unit)}</span>
                                     </div>
                                 </div>
@@ -244,7 +243,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                                 const val = Number(e.target.value);
                                                 if (val > fromStock) {
                                                     setAmount(fromStock);
-                                                    toast(`Максимально доступно: ${fromStock}`, "warning");
+                                                    toast(`Максимально доступно: ${fromStock}`,"warning");
                                                 } else {
                                                     setAmount(val);
                                                 }
@@ -276,7 +275,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                         variant="ghost"
                                         onClick={() => {
                                             setAmount(fromStock);
-                                            toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`, "info");
+                                            toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`,"info");
                                         }}
                                         className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
                                     >

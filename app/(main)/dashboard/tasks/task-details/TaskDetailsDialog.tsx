@@ -1,11 +1,11 @@
 "use client";
 
-import { useTransition, useRef, useState } from "react";
-import { useToast } from "@/components/ui/toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { playSound } from "@/lib/sounds";
-import { compressImage } from "@/lib/image-processing";
+import { useTransition, useRef, useState } from"react";
+import { useToast } from"@/components/ui/toast";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { playSound } from"@/lib/sounds";
+import { compressImage } from"@/lib/image-processing";
 import {
     toggleTaskStatus,
     deleteTask,
@@ -14,16 +14,16 @@ import {
     addTaskChecklistItem,
     toggleChecklistItem,
     deleteChecklistItem
-} from "../actions";
-import { Task } from "../types";
+} from"../actions";
+import { Task } from"../types";
 
-import { TaskHeader } from "./TaskHeader";
-import { TaskTabs, TabId } from "./TaskTabs";
-import { TaskDetailsTab } from "./TaskDetailsTab";
-import { TaskChecklistTab } from "./TaskChecklistTab";
-import { TaskCommentsTab } from "./TaskCommentsTab";
-import { TaskHistoryTab } from "./TaskHistoryTab";
-import { TaskActions } from "./TaskActions";
+import { TaskHeader } from"./TaskHeader";
+import { TaskTabs, TabId } from"./TaskTabs";
+import { TaskDetailsTab } from"./TaskDetailsTab";
+import { TaskChecklistTab } from"./TaskChecklistTab";
+import { TaskCommentsTab } from"./TaskCommentsTab";
+import { TaskHistoryTab } from"./TaskHistoryTab";
+import { TaskActions } from"./TaskActions";
 
 interface TaskDetailsDialogProps {
     task: Task;
@@ -43,12 +43,12 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         startTransition(async () => {
             const res = await toggleTaskStatus(task.id, task.status);
             if (res.success) {
-                toast(task.status === "done" ? "Задача возвращена в работу" : "Задача выполнена", "success");
-                if (task.status !== "done") playSound("task_completed");
+                toast(task.status ==="done" ?"Задача возвращена в работу" :"Задача выполнена","success");
+                if (task.status !=="done") playSound("task_completed");
                 else playSound("notification_success");
                 onClose();
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         });
@@ -58,11 +58,11 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         startTransition(async () => {
             const res = await deleteTask(task.id);
             if (res.success) {
-                toast("Задача удалена", "success");
+                toast("Задача удалена","success");
                 playSound("notification_success");
                 onClose();
             } else {
-                toast(res.error || "Ошибка при удалении", "error");
+                toast(res.error ||"Ошибка при удалении","error");
                 playSound("notification_error");
             }
         });
@@ -75,7 +75,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         let fileToUpload = file;
 
         if (file.type.startsWith("image/")) {
-            toast("Сжимаем изображение...", "info");
+            toast("Сжимаем изображение...","info");
             try {
                 const result = await compressImage(file, { maxWidth: 1920, maxSizeMB: 1 });
                 fileToUpload = result.file;
@@ -90,10 +90,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         startTransition(async () => {
             const res = await uploadTaskFile(task.id, formData);
             if (!res.success) {
-                toast(res.error || "Ошибка загрузки", "error");
+                toast(res.error ||"Ошибка загрузки","error");
                 playSound("notification_error");
             } else {
-                toast("Файл загружен", "success");
+                toast("Файл загружен","success");
                 playSound("notification_success");
             }
         });
@@ -105,10 +105,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             const res = await addTaskComment(task.id, newComment.trim());
             if (res.success) {
                 setNewComment("");
-                toast("Комментарий добавлен", "success");
+                toast("Комментарий добавлен","success");
                 playSound("notification_success");
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         });
@@ -120,10 +120,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
             const res = await addTaskChecklistItem(task.id, newChecklistItem.trim());
             if (res.success) {
                 setNewChecklistItem("");
-                toast("Пункт добавлен", "success");
+                toast("Пункт добавлен","success");
                 playSound("notification_success");
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         });
@@ -133,7 +133,7 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         startTransition(async () => {
             const res = await toggleChecklistItem(id, completed);
             if (!res.success) {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         });
@@ -143,10 +143,10 @@ export function TaskDetailsDialog({ task, onClose }: TaskDetailsDialogProps) {
         startTransition(async () => {
             const res = await deleteChecklistItem(id);
             if (!res.success) {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             } else {
-                toast("Пункт удален", "success");
+                toast("Пункт удален","success");
                 playSound("notification_success");
             }
         });

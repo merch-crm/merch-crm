@@ -1,14 +1,14 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { cameras } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { eq, desc } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { UpdateCameraSchema } from "../validation";
+import { db } from"@/lib/db";
+import { cameras } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { eq, desc } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { UpdateCameraSchema } from"../validation";
 
 // ============================================
 // ACTIONS
@@ -37,10 +37,10 @@ export async function getCameras() {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/cameras",
-            method: "getCameras",
+            path:"/staff/cameras",
+            method:"getCameras",
         });
-        return { success: false, error: "Не удалось загрузить камеры" };
+        return { success: false, error:"Не удалось загрузить камеры" };
     }
 }
 
@@ -64,17 +64,17 @@ export async function getCamera(cameraId: string) {
         });
 
         if (!camera) {
-            return { success: false, error: "Камера не найдена" };
+            return { success: false, error:"Камера не найдена" };
         }
 
         return { success: true, data: camera };
     } catch (error) {
         await logError({
             error,
-            path: "/staff/cameras",
-            method: "getCamera",
+            path:"/staff/cameras",
+            method:"getCamera",
         });
-        return { success: false, error: "Не удалось загрузить камеру" };
+        return { success: false, error:"Не удалось загрузить камеру" };
     }
 }
 
@@ -99,20 +99,20 @@ export async function updateCamera(cameraId: string, formData: FormData) {
             .returning();
 
         if (!updated) {
-            return { success: false, error: "Камера не найдена" };
+            return { success: false, error:"Камера не найдена" };
         }
 
-        await logAction("Обновлена камера", "camera", cameraId, validated.data);
+        await logAction("Обновлена камера","camera", cameraId, validated.data);
         revalidatePath("/staff/cameras");
 
         return { success: true, data: updated };
     } catch (error) {
         await logError({
             error,
-            path: "/staff/cameras/update",
-            method: "updateCamera",
+            path:"/staff/cameras/update",
+            method:"updateCamera",
         });
-        return { success: false, error: "Не удалось обновить камеру" };
+        return { success: false, error:"Не удалось обновить камеру" };
     }
 }
 
@@ -130,12 +130,11 @@ export async function toggleCamera(cameraId: string, isEnabled: boolean) {
             .returning();
 
         if (!updated) {
-            return { success: false, error: "Камера не найдена" };
+            return { success: false, error:"Камера не найдена" };
         }
 
         await logAction(
-            isEnabled ? "Камера включена" : "Камера отключена",
-            "camera",
+            isEnabled ?"Камера включена" :"Камера отключена","camera",
             cameraId
         );
         revalidatePath("/staff/cameras");
@@ -144,10 +143,10 @@ export async function toggleCamera(cameraId: string, isEnabled: boolean) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/cameras/toggle",
-            method: "toggleCamera",
+            path:"/staff/cameras/toggle",
+            method:"toggleCamera",
         });
-        return { success: false, error: "Не удалось изменить статус камеры" };
+        return { success: false, error:"Не удалось изменить статус камеры" };
     }
 }
 
@@ -161,12 +160,12 @@ export async function deleteCamera(cameraId: string) {
         });
 
         if (!camera) {
-            return { success: false, error: "Камера не найдена" };
+            return { success: false, error:"Камера не найдена" };
         }
 
         await db.delete(cameras).where(eq(cameras.id, cameraId));
 
-        await logAction("Удалена камера", "camera", cameraId, {
+        await logAction("Удалена камера","camera", cameraId, {
             name: camera.name,
             deviceId: camera.deviceId,
         });
@@ -176,10 +175,10 @@ export async function deleteCamera(cameraId: string) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/cameras/delete",
-            method: "deleteCamera",
+            path:"/staff/cameras/delete",
+            method:"deleteCamera",
         });
-        return { success: false, error: "Не удалось удалить камеру" };
+        return { success: false, error:"Не удалось удалить камеру" };
     }
 }
 
@@ -196,30 +195,30 @@ export async function testCameraConnection(cameraId: string) {
         });
 
         if (!camera || !camera.xiaomiAccount) {
-            return { success: false, error: "Камера не найдена" };
+            return { success: false, error:"Камера не найдена" };
         }
 
-        // Обновляем статус на "connecting"
+        // Обновляем статус на"connecting"
         await db.update(cameras)
-            .set({ status: "connecting", updatedAt: new Date() })
+            .set({ status:"connecting", updatedAt: new Date() })
             .where(eq(cameras.id, cameraId));
 
-        const go2rtcUrl = process.env.GO2RTC_URL || "http://localhost:1984";
+        const go2rtcUrl = process.env.GO2RTC_URL ||"http://localhost:1984";
 
         // Проверяем доступность потока
         const response = await fetch(`${go2rtcUrl}/api/streams`, {
-            method: "GET",
+            method:"GET",
         });
 
         if (!response.ok) {
             await db.update(cameras)
                 .set({
-                    status: "error",
-                    errorMessage: "go2rtc недоступен",
+                    status:"error",
+                    errorMessage:"go2rtc недоступен",
                     updatedAt: new Date(),
                 })
                 .where(eq(cameras.id, cameraId));
-            return { success: false, error: "go2rtc сервер недоступен" };
+            return { success: false, error:"go2rtc сервер недоступен" };
         }
 
         const streams = await response.json();
@@ -228,7 +227,7 @@ export async function testCameraConnection(cameraId: string) {
 
         await db.update(cameras)
             .set({
-                status: isOnline ? "online" : "offline",
+                status: isOnline ?"online" :"offline",
                 lastOnlineAt: isOnline ? new Date() : undefined,
                 errorMessage: null,
                 updatedAt: new Date(),
@@ -247,17 +246,17 @@ export async function testCameraConnection(cameraId: string) {
     } catch (error) {
         await db.update(cameras)
             .set({
-                status: "error",
-                errorMessage: error instanceof Error ? error.message : "Неизвестная ошибка",
+                status:"error",
+                errorMessage: error instanceof Error ? error.message :"Неизвестная ошибка",
                 updatedAt: new Date(),
             })
             .where(eq(cameras.id, cameraId));
 
         await logError({
             error,
-            path: "/staff/cameras/test",
-            method: "testCameraConnection",
+            path:"/staff/cameras/test",
+            method:"testCameraConnection",
         });
-        return { success: false, error: "Ошибка при проверке подключения" };
+        return { success: false, error:"Ошибка при проверке подключения" };
     }
 }

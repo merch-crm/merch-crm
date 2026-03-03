@@ -1,16 +1,16 @@
 "use client";
 
-import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
-import { StepFooter } from "./step-footer";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from"@/app/(main)/dashboard/warehouse/types";
+import { StepFooter } from"./step-footer";
+import { useIsMobile } from"@/hooks/use-mobile";
 
-import { useSummaryLogic } from "./summary/hooks/useSummaryLogic";
-import { SummaryHeader } from "./summary/summary-header";
-import { AttributesSection } from "./summary/attributes-section";
-import { ImageGallery } from "./summary/image-gallery";
-import { StorageCard } from "./summary/storage-card";
-import { FinanceCard } from "./summary/finance-card";
-import { MobileEditSheet } from "./summary/mobile-edit-sheet";
+import { useSummaryLogic } from"./summary/hooks/useSummaryLogic";
+import { SummaryHeader } from"./summary/summary-header";
+import { AttributesSection } from"./summary/attributes-section";
+import { ImageGallery } from"./summary/image-gallery";
+import { StorageCard } from"./summary/storage-card";
+import { FinanceCard } from"./summary/finance-card";
+import { MobileEditSheet } from"./summary/mobile-edit-sheet";
 
 interface SummaryStepProps {
     category: Category;
@@ -54,7 +54,7 @@ export function SummaryStep({
                         accentColor={logic.accentColor}
                         isMobile={isMobile}
                         isEditingName={logic.isEditingName}
-                        tempName={logic.tempName || ""}
+                        tempName={logic.tempName ||""}
                         onEditClick={() => logic.setIsEditingName(true)}
                         onNameChange={logic.setTempName}
                         onSaveName={logic.handleSaveName}
@@ -103,7 +103,7 @@ export function SummaryStep({
             {/* Mobile Name Edit Sheet */}
             <MobileEditSheet
                 isOpen={logic.isEditingName && isMobile}
-                tempName={logic.tempName || ""}
+                tempName={logic.tempName ||""}
                 onClose={() => logic.setIsEditingName(false)}
                 onNameChange={logic.setTempName}
                 onSaveName={logic.handleSaveName}

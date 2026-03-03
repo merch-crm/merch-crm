@@ -1,8 +1,8 @@
-import { ProductionWidgets } from "./production-widgets";
-import { ProductionBoard } from "./production-board";
-import { getProductionStats, getProductionItems } from "./actions";
-import { PageContainer } from "@/components/ui/page-container";
-import { PageHeader } from "@/components/layout/page-header";
+import { ProductionWidgets } from"./production-widgets";
+import { ProductionBoard } from"./production-board";
+import { getProductionStats, getProductionItems } from"./actions";
+import { PageContainer } from"@/components/ui/page-container";
+import { PageHeader } from"@/components/layout/page-header";
 
 export default async function ProductionPage() {
     const statsRes = await getProductionStats();

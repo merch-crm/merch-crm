@@ -1,4 +1,4 @@
-export * from "@/lib/types";
+export * from"@/lib/types";
 
 export interface AttributeMeta {
     fullName?: string;

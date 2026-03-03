@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useMemo, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React, { createContext, useContext, useMemo, useCallback } from"react";
+import { useRouter } from"next/navigation";
 import {
     InventoryItem,
     Category,
@@ -13,18 +13,18 @@ import {
     ItemHistoryTransaction,
     DialogState,
     ThumbnailSettings
-} from "@/app/(main)/dashboard/warehouse/types";
-import { formatUnit } from "@/lib/utils";
+} from"@/app/(main)/dashboard/warehouse/types";
+import { formatUnit } from"@/lib/utils";
 
-import { useItemDetailData } from "../hooks/useItemDetailData";
-import { useItemDialogs } from "../hooks/useItemDialogs";
-import { useItemThumbnail } from "../hooks/useItemThumbnail";
-import { useItemGallery } from "../hooks/useItemGallery";
-import { useItemImages } from "../hooks/useItemImages";
-import { useItemDetailController, TabletTab } from "../hooks/useItemDetailController";
-import { useItemOperations } from "../hooks/useItemOperations";
-import { Session } from "@/lib/auth";
-import { type UploadState } from "../components/ItemMediaSection";
+import { useItemDetailData } from"../hooks/useItemDetailData";
+import { useItemDialogs } from"../hooks/useItemDialogs";
+import { useItemThumbnail } from"../hooks/useItemThumbnail";
+import { useItemGallery } from"../hooks/useItemGallery";
+import { useItemImages } from"../hooks/useItemImages";
+import { useItemDetailController, TabletTab } from"../hooks/useItemDetailController";
+import { useItemOperations } from"../hooks/useItemOperations";
+import { Session } from"@/lib/auth";
+import { type UploadState } from"../components/ItemMediaSection";
 
 interface ItemDetailContextType {
     // Data
@@ -47,10 +47,10 @@ interface ItemDetailContextType {
     setDialogs: React.Dispatch<React.SetStateAction<DialogState>>;
     tabletTab: TabletTab;
     setTabletTab: (tab: TabletTab) => void;
-    timeframe: "all" | "month" | "quarter" | "half-year" | "year";
-    setTimeframe: (t: "all" | "month" | "quarter" | "half-year" | "year") => void;
-    adjustType: "in" | "out" | "set" | null;
-    setAdjustType: (type: "in" | "out" | "set" | null) => void;
+    timeframe:"all" |"month" |"quarter" |"half-year" |"year";
+    setTimeframe: (t:"all" |"month" |"quarter" |"half-year" |"year") => void;
+    adjustType:"in" |"out" |"set" | null;
+    setAdjustType: (type:"in" |"out" |"set" | null) => void;
     isMounted: boolean;
     isOnline: boolean;
 
@@ -72,9 +72,9 @@ interface ItemDetailContextType {
     openGallery: (src: string) => void;
     uploads: { states: Record<string, UploadState> };
     isAnyUploading: boolean;
-    handleImageUpdate: (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => void;
-    handleImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
-    handleSetMain: (type: "front" | "back" | "side" | "details", index?: number) => void;
+    handleImageUpdate: (file: File | null, type:"front" |"back" |"side" |"details", index?: number) => void;
+    handleImageRemove: (type:"front" |"back" |"side" |"details", index?: number) => void;
+    handleSetMain: (type:"front" |"back" |"side" |"details", index?: number) => void;
 
     // Actions
     fetchData: () => Promise<void>;

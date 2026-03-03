@@ -1,30 +1,30 @@
 "use client";
 
-import React from "react";
-import StepsMenuCRM from "./steps-menu-crm";
-import CardsCRM from "./cards-crm";
-import AnalyticsCRM from "./analytics-crm";
-import TwistyCRM from "./twisty-crm";
-import InvoiceDashboardCRM from "./invoice-dashboard-crm";
-import SmartHomeDashboardCRM from "./smart-home-dashboard-crm";
-import AquaflowLandingCRM from "./aquaflow-landing-crm";
-import UiComponentsShowcaseCRM from "./ui-components-showcase-crm";
-import EduplexDashboardCRM from "./eduplex-dashboard-crm";
-import FocusFlowDashboardCRM from "./focus-flow-dashboard-crm";
-import NewReferencesCRM from "./new-references-crm";
-import ChargingWidgetCRM from "./charging-widget-crm";
-import BatteryWidgetCRM from "./battery-widget-crm";
-import FileManagerCRM from "./file-manager-crm";
-import DashboardWidgetsCRM from "./dashboard-widgets-crm";
-import FloatingPanelsCRM from "./floating-panels-crm";
-import BikeHealthCard from "./bike-health-card";
-import ChargingNotificationPanelsCRM from "./charging-notification-panels-crm";
-import ProjectTabsCRM from "./project-tabs-crm";
-import SoftUiPanelsCRM from "./soft-ui-panels-crm";
-import TooltipShowcaseCRM from "./tooltip-showcase-crm";
-import SidebarNavigationCRM from "./sidebar-navigation-crm";
-import FileUploadShowcaseCRM from "./file-upload-showcase-crm";
-import IconsShowcaseCRM from "./icons-showcase-crm";
+import React from"react";
+import StepsMenuCRM from"./steps-menu-crm";
+import CardsCRM from"./cards-crm";
+import AnalyticsCRM from"./analytics-crm";
+import TwistyCRM from"./twisty-crm";
+import InvoiceDashboardCRM from"./invoice-dashboard-crm";
+import SmartHomeDashboardCRM from"./smart-home-dashboard-crm";
+import AquaflowLandingCRM from"./aquaflow-landing-crm";
+import UiComponentsShowcaseCRM from"./ui-components-showcase-crm";
+import EduplexDashboardCRM from"./eduplex-dashboard-crm";
+import FocusFlowDashboardCRM from"./focus-flow-dashboard-crm";
+import NewReferencesCRM from"./new-references-crm";
+import ChargingWidgetCRM from"./charging-widget-crm";
+import BatteryWidgetCRM from"./battery-widget-crm";
+import FileManagerCRM from"./file-manager-crm";
+import DashboardWidgetsCRM from"./dashboard-widgets-crm";
+import FloatingPanelsCRM from"./floating-panels-crm";
+import BikeHealthCard from"./bike-health-card";
+import ChargingNotificationPanelsCRM from"./charging-notification-panels-crm";
+import ProjectTabsCRM from"./project-tabs-crm";
+import SoftUiPanelsCRM from"./soft-ui-panels-crm";
+import TooltipShowcaseCRM from"./tooltip-showcase-crm";
+import SidebarNavigationCRM from"./sidebar-navigation-crm";
+import FileUploadShowcaseCRM from"./file-upload-showcase-crm";
+import IconsShowcaseCRM from"./icons-showcase-crm";
 
 export default function DesignShowcasePage() {
     return (

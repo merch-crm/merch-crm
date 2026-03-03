@@ -1,14 +1,14 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import Image from "next/image";
-import { User, Package, Phone, Truck, MapPin, Copy, Printer, Edit, Timer, AlertTriangle, CheckCircle } from "lucide-react";
-import { OrderStatus } from "@/lib/types";
-import { OrderData, STATUS_CONFIG, PRIORITY_CONFIG } from "./types";
-import { formatPrice, getDeadlineUrgency } from "./utils";
+import * as React from"react";
+import { cn } from"@/lib/utils";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import Image from"next/image";
+import { User, Package, Phone, Truck, MapPin, Copy, Printer, Edit, Timer, AlertTriangle, CheckCircle } from"lucide-react";
+import { OrderStatus } from"@/lib/types";
+import { OrderData, STATUS_CONFIG, PRIORITY_CONFIG } from"./types";
+import { formatPrice, getDeadlineUrgency } from"./utils";
 
 export interface OrderQueueCardDetailedProps {
     order: OrderData;
@@ -40,7 +40,7 @@ export function OrderQueueCardDetailed({
                 <div className="flex items-start justify-between gap-3">
                     <div>
                         <div className="flex items-center gap-2">
-                            {order.priority !== "normal" && (
+                            {order.priority !=="normal" && (
                                 <div className={cn(priorityConfig.color)}>{priorityConfig.icon}</div>
                             )}
                             <h3 className="text-lg font-bold text-slate-900">Заказ #{order.number}</h3>
@@ -51,7 +51,7 @@ export function OrderQueueCardDetailed({
                             )}
                         </div>
                         <p className="text-sm text-slate-500 mt-1">
-                            от {format(order.createdAt, "d MMMM yyyy, HH:mm", { locale: ru })}
+                            от {format(order.createdAt,"d MMMM yyyy, HH:mm", { locale: ru })}
                         </p>
                     </div>
 
@@ -101,29 +101,26 @@ export function OrderQueueCardDetailed({
 
                     {order.deadline && (
                         <div
-                            className={cn(
-                                "px-3 py-1.5 rounded-lg flex items-center gap-1.5",
-                                deadlineUrgency?.isOverdue && "bg-rose-100",
-                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue && "bg-orange-100",
-                                deadlineUrgency?.isSoon && "bg-amber-100",
-                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon && "bg-slate-100"
+                            className={cn("px-3 py-1.5 rounded-lg flex items-center gap-1.5",
+                                deadlineUrgency?.isOverdue &&"bg-rose-100",
+                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"bg-orange-100",
+                                deadlineUrgency?.isSoon &&"bg-amber-100",
+                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"bg-slate-100"
                             )}
                         >
-                            <Timer className={cn(
-                                "w-4 h-4",
-                                deadlineUrgency?.isOverdue && "text-rose-600",
-                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue && "text-orange-600",
-                                deadlineUrgency?.isSoon && "text-amber-600",
-                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon && "text-slate-600"
+                            <Timer className={cn("w-4 h-4",
+                                deadlineUrgency?.isOverdue &&"text-rose-600",
+                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"text-orange-600",
+                                deadlineUrgency?.isSoon &&"text-amber-600",
+                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"text-slate-600"
                             )} />
-                            <span className={cn(
-                                "text-sm font-medium",
-                                deadlineUrgency?.isOverdue && "text-rose-700",
-                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue && "text-orange-700",
-                                deadlineUrgency?.isSoon && "text-amber-700",
-                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon && "text-slate-700"
+                            <span className={cn("text-sm font-medium",
+                                deadlineUrgency?.isOverdue &&"text-rose-700",
+                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"text-orange-700",
+                                deadlineUrgency?.isSoon &&"text-amber-700",
+                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"text-slate-700"
                             )}>
-                                {format(order.deadline, "d MMM, HH:mm", { locale: ru })}
+                                {format(order.deadline,"d MMM, HH:mm", { locale: ru })}
                             </span>
                         </div>
                     )}
@@ -248,16 +245,15 @@ export function OrderQueueCardDetailed({
                     <>
                         <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-2">
                             <div
-                                className={cn(
-                                    "h-full rounded-full transition-all",
-                                    isPaid ? "bg-emerald-500" : "bg-amber-500"
+                                className={cn("h-full rounded-full transition-all",
+                                    isPaid ?"bg-emerald-500" :"bg-amber-500"
                                 )}
                                 style={{ width: `${Math.min(paidPercent, 100)}%` }}
                             />
                         </div>
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-slate-500">
-                                {isPaid ? "Оплачено полностью" : `Оплачено ${formatPrice(order.paidAmount)}`}
+                                {isPaid ?"Оплачено полностью" : `Оплачено ${formatPrice(order.paidAmount)}`}
                             </span>
                             {isPaid ? (
                                 <CheckCircle className="w-4 h-4 text-emerald-500" />

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { type InventoryItem, type DialogState } from "@/lib/types";
+import { useState } from"react";
+import { type InventoryItem, type DialogState } from"@/lib/types";
 
 export function useItemDialogs() {
     const [dialogs, setDialogs] = useState<DialogState>({

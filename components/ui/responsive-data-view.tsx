@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React from"react";
 
 
 interface ResponsiveDataViewProps<T> {
@@ -19,8 +19,8 @@ export function ResponsiveDataView<T>({
     data = [],
     renderTable,
     renderCard,
-    mobileGridClassName = "grid grid-cols-1 md:grid-cols-2 gap-3 md:hidden",
-    desktopClassName = "hidden md:block"
+    mobileGridClassName ="grid grid-cols-1 md:grid-cols-2 gap-3 md:hidden",
+    desktopClassName ="hidden md:block"
 }: ResponsiveDataViewProps<T>) {
     if (!data || !Array.isArray(data)) return null;
 

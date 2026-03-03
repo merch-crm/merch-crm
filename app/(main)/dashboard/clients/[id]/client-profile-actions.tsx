@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Edit2, Archive, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { EditClientDialog } from "../edit-client-dialog";
-import { toggleClientArchived } from "../actions/core.actions";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { useRouter } from "next/navigation";
-import { ClientProfile } from "@/lib/types";
+import { useState } from"react";
+import { Edit2, Archive, Loader2 } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { EditClientDialog } from"../edit-client-dialog";
+import { toggleClientArchived } from"../actions/core.actions";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { useRouter } from"next/navigation";
+import { ClientProfile } from"@/lib/types";
 
 interface ClientProfileActionsProps {
     client: ClientProfile;
@@ -25,11 +25,11 @@ export function ClientProfileActions({ client }: ClientProfileActionsProps) {
         const res = await toggleClientArchived(client.id, !client.isArchived);
         setIsArchiving(false);
         if (res.success) {
-            toast(client.isArchived ? "Клиент восстановлен" : "Клиент отправлен в архив", "success");
-            playSound(client.isArchived ? "client_updated" : "client_deleted");
+            toast(client.isArchived ?"Клиент восстановлен" :"Клиент отправлен в архив","success");
+            playSound(client.isArchived ?"client_updated" :"client_deleted");
             router.refresh();
         } else {
-            toast(res.error || "Ошибка", "error");
+            toast(res.error ||"Ошибка","error");
             playSound("notification_error");
         }
     };

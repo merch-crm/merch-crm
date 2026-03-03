@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { cn } from "@/lib/utils";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import * as React from"react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from"@/components/ui/dialog";
+import { cn } from"@/lib/utils";
+import { BottomSheet } from"@/components/ui/bottom-sheet";
+import { useMediaQuery } from"@/hooks/use-media-query";
 
 interface ResponsiveModalProps {
     isOpen: boolean;
@@ -43,10 +43,10 @@ export function ResponsiveModal({
         return (
             <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
                 <DialogContent className={cn("p-0 overflow-hidden flex flex-col sm:max-w-[800px]", className)} hideClose={shouldHideClose}>
-                    <DialogHeader className={showVisualTitle ? "px-6 py-4 border-b border-border shrink-0" : "sr-only"}>
-                        <DialogTitle className="text-xl font-bold">{title || "Modal"}</DialogTitle>
-                        <DialogDescription className={cn("text-[11px] font-medium text-muted-foreground mt-0.5", (!description && showVisualTitle) && "sr-only")}>
-                            {description || `Dialog for ${title || "action"}`}
+                    <DialogHeader className={showVisualTitle ?"px-6 py-4 border-b border-border shrink-0" :"sr-only"}>
+                        <DialogTitle className="text-xl font-bold">{title ||"Modal"}</DialogTitle>
+                        <DialogDescription className={cn("text-[11px] font-medium text-muted-foreground mt-0.5", (!description && showVisualTitle) &&"sr-only")}>
+                            {description || `Dialog for ${title ||"action"}`}
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">

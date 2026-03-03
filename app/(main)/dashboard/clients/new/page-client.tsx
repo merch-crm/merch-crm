@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from"react";
+import { useRouter } from"next/navigation";
 import {
     ArrowLeft,
     Check,
@@ -9,16 +9,16 @@ import {
     Phone,
     MessageSquare,
     RotateCcw
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { addClient } from "../actions/core.actions";;
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { SegmentedControl } from "@/components/ui/segmented-control";
-import { FormInput } from "@/components/ui/form-input";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { addClient } from"../actions/core.actions";;
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { Button } from"@/components/ui/button";
+import { Select } from"@/components/ui/select";
+import { Checkbox } from"@/components/ui/checkbox";
+import { SegmentedControl } from"@/components/ui/segmented-control";
+import { FormInput } from"@/components/ui/form-input";
 
 interface NewClientPageClientProps {
     managers: { id: string; name: string }[];
@@ -30,84 +30,84 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     const [logicState, setLogicState] = useState({
         step: 0,
         loading: false,
-        clientType: "b2c" as "b2c" | "b2b",
-        validationError: "",
+        clientType:"b2c" as"b2c" |"b2b",
+        validationError:"",
         duplicates: [] as { id: string; firstName: string; lastName: string; phone: string }[],
         ignoreDuplicates: false
     });
 
     const [formData, setFormData] = useState({
-        lastName: "",
-        firstName: "",
-        patronymic: "",
-        company: "",
-        phone: "",
-        email: "",
-        telegram: "",
-        instagram: "",
-        socialLink: "",
-        managerId: "",
-        city: "",
-        address: "",
-        comments: "",
-        acquisitionSource: ""
+        lastName:"",
+        firstName:"",
+        patronymic:"",
+        company:"",
+        phone:"",
+        email:"",
+        telegram:"",
+        instagram:"",
+        socialLink:"",
+        managerId:"",
+        city:"",
+        address:"",
+        comments:"",
+        acquisitionSource:""
     });
 
     const updateFormData = (updates: Partial<typeof formData>) => {
         setFormData(prev => ({ ...prev, ...updates }));
-        if (logicState.validationError) setLogicState(prev => ({ ...prev, validationError: "" }));
+        if (logicState.validationError) setLogicState(prev => ({ ...prev, validationError:"" }));
     };
 
     const handleReset = () => {
         setLogicState({
             step: 0,
             loading: false,
-            clientType: "b2c",
-            validationError: "",
+            clientType:"b2c",
+            validationError:"",
             duplicates: [],
             ignoreDuplicates: false
         });
         setFormData({
-            lastName: "",
-            firstName: "",
-            patronymic: "",
-            company: "",
-            phone: "",
-            email: "",
-            telegram: "",
-            instagram: "",
-            socialLink: "",
-            managerId: "",
-            city: "",
-            address: "",
-            comments: "",
-            acquisitionSource: ""
+            lastName:"",
+            firstName:"",
+            patronymic:"",
+            company:"",
+            phone:"",
+            email:"",
+            telegram:"",
+            instagram:"",
+            socialLink:"",
+            managerId:"",
+            city:"",
+            address:"",
+            comments:"",
+            acquisitionSource:""
         });
-        toast("Форма сброшена", "info");
+        toast("Форма сброшена","info");
     };
 
     const validateStep = (s: number) => {
         if (s === 0) {
             if (!formData.lastName) {
-                setLogicState(prev => ({ ...prev, validationError: "Введите фамилию" }));
+                setLogicState(prev => ({ ...prev, validationError:"Введите фамилию" }));
                 return false;
             }
             if (!formData.firstName) {
-                setLogicState(prev => ({ ...prev, validationError: "Введите имя" }));
+                setLogicState(prev => ({ ...prev, validationError:"Введите имя" }));
                 return false;
             }
-            if (logicState.clientType === "b2b" && !formData.company) {
-                setLogicState(prev => ({ ...prev, validationError: "Введите название компании" }));
+            if (logicState.clientType ==="b2b" && !formData.company) {
+                setLogicState(prev => ({ ...prev, validationError:"Введите название компании" }));
                 return false;
             }
         }
         if (s === 1) {
             if (!formData.phone) {
-                setLogicState(prev => ({ ...prev, validationError: "Введите номер телефона" }));
+                setLogicState(prev => ({ ...prev, validationError:"Введите номер телефона" }));
                 return false;
             }
         }
-        setLogicState(prev => ({ ...prev, validationError: "" }));
+        setLogicState(prev => ({ ...prev, validationError:"" }));
         return true;
     };
 
@@ -134,28 +134,28 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
             data.append(key, value);
         });
         data.append("clientType", logicState.clientType);
-        if (logicState.ignoreDuplicates) data.append("ignoreDuplicates", "true");
+        if (logicState.ignoreDuplicates) data.append("ignoreDuplicates","true");
 
         const res = await addClient(data);
         setLogicState(prev => ({ ...prev, loading: false }));
 
         if (!res.success) {
-            toast(res.error, "error");
+            toast(res.error,"error");
             playSound("notification_error");
         } else if (res.data?.duplicates) {
             setLogicState(prev => ({
                 ...prev,
                 duplicates: (res.data?.duplicates || []).map(d => ({
                     id: d.id,
-                    firstName: d.firstName || "",
-                    lastName: d.lastName || "",
+                    firstName: d.firstName ||"",
+                    lastName: d.lastName ||"",
                     phone: d.phone
                 }))
             }));
-            toast("Найдены похожие клиенты", "warning");
+            toast("Найдены похожие клиенты","warning");
             playSound("notification_warning");
         } else {
-            toast("Клиент успешно добавлен", "success");
+            toast("Клиент успешно добавлен","success");
             playSound("client_created");
             router.push("/dashboard/clients");
             router.refresh();
@@ -163,9 +163,9 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
     };
 
     const steps = [
-        { id: 0, title: "Основное", desc: "Тип и имя", icon: User },
-        { id: 1, title: "Контакты", desc: "Связь с клиентом", icon: Phone },
-        { id: 2, title: "Дополнительно", desc: "Детали и менеджер", icon: MessageSquare }
+        { id: 0, title:"Основное", desc:"Тип и имя", icon: User },
+        { id: 1, title:"Контакты", desc:"Связь с клиентом", icon: Phone },
+        { id: 2, title:"Дополнительно", desc:"Детали и менеджер", icon: MessageSquare }
     ];
 
     return (
@@ -205,18 +205,16 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         setLogicState(prev => ({
                                             ...prev,
                                             step: s.id,
-                                            validationError: ""
+                                            validationError:""
                                         }));
                                     }
                                 }}
-                                className={cn(
-                                    "relative w-full justify-start p-4 h-auto rounded-[var(--radius)] transition-all duration-300 flex items-center gap-3 group",
-                                    isActive ? "bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary" : "text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
+                                className={cn("relative w-full justify-start p-4 h-auto rounded-[var(--radius)] transition-all duration-300 flex items-center gap-3 group",
+                                    isActive ?"bg-primary text-white shadow-lg shadow-primary/20 hover:bg-primary" :"text-slate-400 hover:bg-slate-50 active:scale-[0.98]"
                                 )}
                             >
-                                <div className={cn(
-                                    "w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
-                                    isActive ? "bg-white/10 border-white/20" : isCompleted ? "bg-emerald-50 border-emerald-100 text-emerald-500" : "bg-slate-50 border-slate-200"
+                                <div className={cn("w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
+                                    isActive ?"bg-white/10 border-white/20" : isCompleted ?"bg-emerald-50 border-emerald-100 text-emerald-500" :"bg-slate-50 border-slate-200"
                                 )}>
                                     {isCompleted ? (
                                         <Check className="w-5 h-5" />
@@ -225,10 +223,10 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     )}
                                 </div>
                                 <div className="min-w-0 text-left">
-                                    <div className={cn("text-xs font-bold leading-none mb-1", isActive ? "text-white" : "text-slate-900")}>
+                                    <div className={cn("text-xs font-bold leading-none mb-1", isActive ?"text-white" :"text-slate-900")}>
                                         {s.title}
                                     </div>
-                                    <div className={cn("text-xs font-bold truncate", isActive ? "text-white/60" : "text-slate-400")}>
+                                    <div className={cn("text-xs font-bold truncate", isActive ?"text-white/60" :"text-slate-400")}>
                                         {s.desc}
                                     </div>
                                 </div>
@@ -271,11 +269,11 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     <span className="text-sm font-bold text-slate-700 ml-1">Тип клиента</span>
                                     <SegmentedControl
                                         options={[
-                                            { value: "b2c", label: "Физическое лицо" },
-                                            { value: "b2b", label: "Юридическое лицо" },
+                                            { value:"b2c", label:"Физическое лицо" },
+                                            { value:"b2b", label:"Юридическое лицо" },
                                         ]}
                                         value={logicState.clientType}
-                                        onChange={(val) => setLogicState(prev => ({ ...prev, clientType: val as "b2c" | "b2b" }))}
+                                        onChange={(val) => setLogicState(prev => ({ ...prev, clientType: val as"b2c" |"b2b" }))}
                                         bgClassName="bg-slate-50"
                                     />
                                 </div>
@@ -305,7 +303,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                         onChange={(e) => updateFormData({ patronymic: e.target.value })}
                                     />
                                     <FormInput
-                                        label={`Компания ${logicState.clientType === "b2b" ? "*" : ""}`.trim()}
+                                        label={`Компания ${logicState.clientType ==="b2b" ?"*" :""}`.trim()}
                                         type="text"
                                         value={formData.company}
                                         onChange={(e) => updateFormData({ company: e.target.value })}
@@ -366,7 +364,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             value={formData.managerId}
                                             onChange={(val) => updateFormData({ managerId: val })}
                                             options={[
-                                                { id: "", title: "Не назначен" },
+                                                { id:"", title:"Не назначен" },
                                                 ...managers.map(m => ({ id: m.id, title: m.name }))
                                             ]}
                                             className="w-full"
@@ -388,12 +386,12 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                             value={formData.acquisitionSource}
                                             onChange={(val) => updateFormData({ acquisitionSource: val })}
                                             options={[
-                                                { id: "", title: "Не указано" },
-                                                { id: "instagram", title: "Instagram" },
-                                                { id: "telegram", title: "Telegram" },
-                                                { id: "recommendation", title: "Рекомендация" },
-                                                { id: "ads", title: "Реклама" },
-                                                { id: "other", title: "Другое" },
+                                                { id:"", title:"Не указано" },
+                                                { id:"instagram", title:"Instagram" },
+                                                { id:"telegram", title:"Telegram" },
+                                                { id:"recommendation", title:"Рекомендация" },
+                                                { id:"ads", title:"Реклама" },
+                                                { id:"other", title:"Другое" },
                                             ]}
                                             className="w-full"
                                             triggerClassName="h-12 bg-slate-50 border-slate-200 border-0"
@@ -429,7 +427,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                                     <div className="text-xs font-bold text-slate-700">
                                                         {dup.lastName} {dup.firstName} ({dup.phone})
                                                     </div>
-                                                    <a href={`/dashboard/clients?id=${dup.id}`} target="_blank" className="text-xs font-bold text-slate-900 ">Открыть</a>
+                                                    <a href={`/dashboard/clients?id=${dup.id}`} target="_blank" className="text-xs font-bold text-slate-900">Открыть</a>
                                                 </div>
                                             ))}
                                         </div>
@@ -480,7 +478,7 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
                                     disabled={logicState.loading}
                                     className="px-8 py-3 h-auto btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none"
                                 >
-                                    {logicState.loading ? "Создание..." : "Создать клиента"}
+                                    {logicState.loading ?"Создание..." :"Создать клиента"}
                                 </Button>
                             )}
                         </div>

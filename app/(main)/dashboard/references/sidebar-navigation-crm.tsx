@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from"react";
+import Image from"next/image";
+import { motion, AnimatePresence } from"framer-motion";
 import {
     LayoutDashboard,
     Users,
@@ -15,7 +15,7 @@ import {
     ChevronDown,
     Plus,
     MoreVertical
-} from "lucide-react";
+} from"lucide-react";
 
 interface MenuItem {
     id: string;
@@ -29,29 +29,29 @@ interface MenuItem {
 }
 
 const menuData: MenuItem[] = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "audience", label: "Audience", icon: Users },
-    { id: "posts", label: "Posts", icon: FileText, badge: 8, badgeColor: "bg-emerald-100 text-emerald-600" },
+    { id:"dashboard", label:"Dashboard", icon: LayoutDashboard },
+    { id:"audience", label:"Audience", icon: Users },
+    { id:"posts", label:"Posts", icon: FileText, badge: 8, badgeColor:"bg-emerald-100 text-emerald-600" },
     {
-        id: "schedules",
-        label: "Schedules",
+        id:"schedules",
+        label:"Schedules",
         icon: Calendar,
         badge: 3,
-        badgeColor: "bg-orange-100 text-orange-600"
+        badgeColor:"bg-orange-100 text-orange-600"
     },
     {
-        id: "income",
-        label: "Income",
+        id:"income",
+        label:"Income",
         icon: PieChart,
         isOpen: true,
         subItems: [
-            { id: "earnings", label: "Earnings" },
-            { id: "refunds", label: "Refunds", active: true },
-            { id: "declines", label: "Declines" },
-            { id: "payouts", label: "Payouts" },
+            { id:"earnings", label:"Earnings" },
+            { id:"refunds", label:"Refunds", active: true },
+            { id:"declines", label:"Declines" },
+            { id:"payouts", label:"Payouts" },
         ]
     },
-    { id: "promote", label: "Promote", icon: Megaphone },
+    { id:"promote", label:"Promote", icon: Megaphone },
 ];
 
 const SidebarItem = ({
@@ -79,7 +79,7 @@ const SidebarItem = ({
                     `}
                 >
                     <div className="flex items-center gap-3">
-                        <item.icon size={20} strokeWidth={2} className={isActive ? "text-slate-900" : "text-slate-400"} />
+                        <item.icon size={20} strokeWidth={2} className={isActive ?"text-slate-900" :"text-slate-400"} />
                         <span className="font-medium text-[15px]">{item.label}</span>
                     </div>
 
@@ -89,7 +89,7 @@ const SidebarItem = ({
                                 {item.badge}
                             </span>
                         )}
-                        {item.id === "schedules" && (
+                        {item.id ==="schedules" && (
                             <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-200">
                                 <Plus size={12} />
                             </div>
@@ -108,7 +108,7 @@ const SidebarItem = ({
                     {item.subItems && item.isOpen && (
                         <motion.div
                             initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
+                            animate={{ height:"auto", opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                         >

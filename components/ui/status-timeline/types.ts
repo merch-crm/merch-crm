@@ -1,21 +1,21 @@
-import * as React from "react";
+import * as React from"react";
 
 export type StatusType =
-    | "created"
-    | "confirmed"
-    | "paid"
-    | "processing"
-    | "packed"
-    | "shipped"
-    | "in_transit"
-    | "delivered"
-    | "completed"
-    | "cancelled"
-    | "refunded"
-    | "on_hold"
-    | "custom";
+    |"created"
+    |"confirmed"
+    |"paid"
+    |"processing"
+    |"packed"
+    |"shipped"
+    |"in_transit"
+    |"delivered"
+    |"completed"
+    |"cancelled"
+    |"refunded"
+    |"on_hold"
+    |"custom";
 
-export type StatusState = "completed" | "current" | "pending" | "error";
+export type StatusState ="completed" |"current" |"pending" |"error";
 
 export interface StatusEvent {
     id: string;
@@ -60,6 +60,6 @@ export interface StatusTimelineGroupedProps {
 export interface StatusBadgeProps {
     status: StatusType;
     label?: string;
-    size?: "sm" | "md";
+    size?:"sm" |"md";
     className?: string;
 }

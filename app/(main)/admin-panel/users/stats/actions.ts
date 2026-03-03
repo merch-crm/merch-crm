@@ -1,17 +1,17 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { orders, tasks, users } from "@/lib/schema";
-import { eq, sql } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
-import { logError } from "@/lib/error-logger";
-import { z } from "zod";
+import { db } from"@/lib/db";
+import { orders, tasks, users } from"@/lib/schema";
+import { eq, sql } from"drizzle-orm";
+import { getSession } from"@/lib/auth";
+import { logError } from"@/lib/error-logger";
+import { z } from"zod";
 
 const UserIdSchema = z.string().uuid("Некорректный ID пользователя");
 
 export async function getUserStats(userId: string) {
     const session = await getSession();
-    if (!session) return { error: "Не авторизован" };
+    if (!session) return { error:"Не авторизован" };
 
     const validated = UserIdSchema.safeParse(userId);
     if (!validated.success) {
@@ -25,7 +25,7 @@ export async function getUserStats(userId: string) {
             with: { role: true, department: true }
         });
 
-        if (!user) return { error: "пользователь not found" };
+        if (!user) return { error:"пользователь not found" };
 
         // Helper to get start of current month
         const startOfMonth = new Date();
@@ -63,7 +63,7 @@ export async function getUserStats(userId: string) {
             data: {
                 user: {
                     name: user.name,
-                    role: user.role?.name || "N/A",
+                    role: user.role?.name ||"N/A",
                     avatar: user.avatar
                 },
                 orders: {
@@ -83,10 +83,10 @@ export async function getUserStats(userId: string) {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/users/stats",
-            method: "getUserStats",
+            path:"/admin-panel/users/stats",
+            method:"getUserStats",
             details: { userId }
         });
-        return { error: "Не удалось загрузить статистику" };
+        return { error:"Не удалось загрузить статистику" };
     }
 }

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { compressImage } from "@/lib/image-processing";
-import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { useState, useRef, useEffect, useMemo, useCallback } from"react";
+import { compressImage } from"@/lib/image-processing";
+import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
 
 export interface UploadState {
     uploading: boolean;
@@ -106,7 +106,7 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         try {
             return await compressImage(file, {
                 maxSizeMB: 1,
-                type: "image/webp",
+                type:"image/webp",
                 maxWidth: 1920,
                 maxHeight: 1920
             });
@@ -250,23 +250,23 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         // Handlers
         handleMainImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             handleMainImageChange(e.target.files?.[0] || null);
-            e.target.value = "";
+            e.target.value ="";
         },
         handleBackImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             handleBackImageChange(e.target.files?.[0] || null);
-            e.target.value = "";
+            e.target.value ="";
         },
         handleSideImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             handleSideImageChange(e.target.files?.[0] || null);
-            e.target.value = "";
+            e.target.value ="";
         },
         handleDetailImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             handleDetailImageChange(e.target.files);
-            e.target.value = "";
+            e.target.value ="";
         },
         handleDetailImageReplace: (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
             handleDetailImageReplace(index, e.target.files?.[0] || null);
-            e.target.value = "";
+            e.target.value ="";
         },
 
         // Removers

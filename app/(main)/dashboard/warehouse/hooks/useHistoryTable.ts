@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { Transaction } from "../history-types";
-import { deleteInventoryTransactions } from "../history-actions";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { sentence } from "@/lib/pluralize";
+import { useState, useMemo, useEffect } from"react";
+import { Transaction } from"../history-types";
+import { deleteInventoryTransactions } from"../history-actions";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { sentence } from"@/lib/pluralize";
 
-export type FilterType = "all" | "in" | "out" | "transfer" | "other";
+export type FilterType ="all" |"in" |"out" |"transfer" |"other";
 
 interface UseHistoryTableProps {
     transactions: Transaction[];
@@ -36,19 +36,19 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
     // Filter Logic
     const filteredTransactions = useMemo(() => {
         return transactions.filter(t => {
-            const matchesFilter = activeFilter === "all"
+            const matchesFilter = activeFilter ==="all"
                 ? true
-                : activeFilter === "other"
-                    ? ["archive", "restore", "attribute_change", "adjustment", "stock_in", "stock_out"].includes(t.type)
+                : activeFilter ==="other"
+                    ? ["archive","restore","attribute_change","adjustment","stock_in","stock_out"].includes(t.type)
                     : t.type === activeFilter;
 
             const search = searchQuery.toLowerCase();
             const matchesSearch =
                 t.id.toLowerCase().includes(search) ||
-                (t.item?.name?.toLowerCase() || "").includes(search) ||
-                (t.item?.sku?.toLowerCase() || "").includes(search) ||
-                (t.reason?.toLowerCase() || "").includes(search) ||
-                (t.creator?.name?.toLowerCase() || "").includes(search);
+                (t.item?.name?.toLowerCase() ||"").includes(search) ||
+                (t.item?.sku?.toLowerCase() ||"").includes(search) ||
+                (t.reason?.toLowerCase() ||"").includes(search) ||
+                (t.creator?.name?.toLowerCase() ||"").includes(search);
 
             return matchesFilter && matchesSearch;
         });
@@ -86,7 +86,7 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
         try {
             const res = await deleteInventoryTransactions(selectedIds);
             if (res.success) {
-                toast(sentence(selectedIds.length, 'f', { one: 'Запись удалена', many: 'Записи удалены' }, { one: 'запись', few: 'записи', many: 'записей' }), "success");
+                toast(sentence(selectedIds.length, 'f', { one: 'Запись удалена', many: 'Записи удалены' }, { one: 'запись', few: 'записи', many: 'записей' }),"success");
                 playSound("notification_success");
                 setSelectedIds([]);
                 setIsDeleteDialogOpen(false);
@@ -97,7 +97,7 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
                 // However, the original component didn't explicitly call router.refresh() inside `confirmDeleteItems`. 
                 // It seems `deleteInventoryTransactions` is a server action that revalidates path.
             } else {
-                toast(res.error || "Ошибка при удалении", "error");
+                toast(res.error ||"Ошибка при удалении","error");
                 playSound("notification_error");
             }
         } finally {
@@ -143,9 +143,9 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
                 // Simulate a small delay for better UX
                 const promise = new Promise(resolve => setTimeout(resolve, 300));
                 playSound("notification_success");
-                toast("Подготовка данных для экспорта...", "info");
+                toast("Подготовка данных для экспорта...","info");
                 await promise;
-                toast("Экспорт будет доступен в следующем обновлении", "warning");
+                toast("Экспорт будет доступен в следующем обновлении","warning");
             }
         }
     };

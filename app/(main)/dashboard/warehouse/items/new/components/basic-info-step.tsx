@@ -1,18 +1,18 @@
 "use client";
 
-import { createElement } from "react";
-import Link from "next/link";
-import { ClipboardList, Settings2, Package, Ruler, Wrench, Printer, Shirt, Scissors, AlignLeft } from "lucide-react";
-import { StepFooter } from "./step-footer";
-import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-selector";
-import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { getCategoryIcon, getCategoryCardStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { Input } from "@/components/ui/input";
-import { UnitSelect } from "@/components/ui/unit-select";
-import { Select } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { createElement } from"react";
+import Link from"next/link";
+import { ClipboardList, Settings2, Package, Ruler, Wrench, Printer, Shirt, Scissors, AlignLeft } from"lucide-react";
+import { StepFooter } from"./step-footer";
+import { AttributeSelector } from"@/app/(main)/dashboard/warehouse/attribute-selector";
+import { Category, InventoryAttribute, AttributeType, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon, getCategoryCardStyles } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { Input } from"@/components/ui/input";
+import { UnitSelect } from"@/components/ui/unit-select";
+import { Select } from"@/components/ui/select";
+import { cn } from"@/lib/utils";
 
-import { useBasicInfoLogic } from "./basic-info/hooks/useBasicInfoLogic";
+import { useBasicInfoLogic } from"./basic-info/hooks/useBasicInfoLogic";
 
 interface MeasurementUnit {
     id: string;
@@ -64,7 +64,7 @@ export function BasicInfoStep({
     const displayCategory = activeSubCategory || category;
 
     const handleAttributeChange = (slug: string, name: string, code: string) => {
-        if (["brand", "quality", "material", "size", "color"].includes(slug)) {
+        if (["brand","quality","material","size","color"].includes(slug)) {
             // These have explicit state fields and duplicate into `attributes` for the final payload
             const currentAttrs = formData.attributes || {};
             // Resolve the label for the static dictionary
@@ -103,7 +103,7 @@ export function BasicInfoStep({
                                 <ClipboardList className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-slate-900 ">Основная информация</h2>
+                                <h2 className="text-xl font-bold text-slate-900">Основная информация</h2>
                                 <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Заполните ключевые характеристики вашей позиции</p>
                             </div>
                         </div>
@@ -114,11 +114,11 @@ export function BasicInfoStep({
                                     className="w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center shadow-sm shrink-0 text-white"
                                     style={getCategoryCardStyles(displayCategory.color).icon}
                                 >
-                                    {createElement(getCategoryIcon(displayCategory), { className: "w-4 h-4 xl:w-5 xl:h-5" })}
+                                    {createElement(getCategoryIcon(displayCategory), { className:"w-4 h-4 xl:w-5 xl:h-5" })}
                                 </div>
                                 <div className="text-left">
                                     <div className="text-xs xl:text-xs font-bold text-slate-700 leading-none mb-0.5 xl:mb-1">{category.name}</div>
-                                    <div className="text-xs xl:text-sm font-bold text-slate-900 leading-none">{activeSubCategory ? activeSubCategory.name : "Общая"}</div>
+                                    <div className="text-xs xl:text-sm font-bold text-slate-900 leading-none">{activeSubCategory ? activeSubCategory.name :"Общая"}</div>
                                 </div>
                             </div>
 
@@ -186,7 +186,7 @@ export function BasicInfoStep({
                                                 </label>
                                                 <UnitSelect
                                                     name="unit"
-                                                    value={isPackaging ? "шт." : (formData.unit || "шт.")}
+                                                    value={isPackaging ?"шт." : (formData.unit ||"шт.")}
                                                     onChange={(val) => updateFormData({ unit: val })}
                                                     options={measurementUnits.map(u => ({ id: u.id, name: u.name.toUpperCase() }))}
                                                     disabled={isPackaging}
@@ -206,11 +206,11 @@ export function BasicInfoStep({
                                         {categoryAttributes.map((attr) => {
                                             const isFullWidth = attr.dataType === 'color';
                                             return (
-                                                <div key={attr.id} className={cn(isFullWidth && "md:col-span-2")}>
+                                                <div key={attr.id} className={cn(isFullWidth &&"md:col-span-2")}>
                                                     <AttributeSelector
                                                         type={attr.slug}
                                                         label={attr.name}
-                                                        value={(getCodeForSlug(attr.slug) as string) || ""}
+                                                        value={(getCodeForSlug(attr.slug) as string) ||""}
                                                         onChange={(name, code) => handleAttributeChange(attr.slug, name, code)}
                                                         categoryId={category.id}
                                                     />
@@ -245,7 +245,7 @@ export function BasicInfoStep({
                                                         <div className="relative">
                                                             <Input
                                                                 type="number"
-                                                                value={(formData[dim as keyof ItemFormData] as string) || ""}
+                                                                value={(formData[dim as keyof ItemFormData] as string) ||""}
                                                                 onChange={(e) => updateFormData({ [dim]: e.target.value })}
                                                                 className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-100 bg-slate-50/50 text-xs font-bold focus-visible:border-slate-300 transition-all shadow-none"
                                                                 placeholder="0"
@@ -262,11 +262,11 @@ export function BasicInfoStep({
                                                 <label className="text-[13px] font-bold text-slate-500 ml-1">Область применения</label>
                                                 <Select
                                                     options={[
-                                                        { id: "printing", title: "Печатный цех", icon: <Printer className="w-4 h-4 opacity-50" /> },
-                                                        { id: "embroidery", title: "Вышивальный цех", icon: <Shirt className="w-4 h-4 opacity-50" /> },
-                                                        { id: "sewing", title: "Швейный цех", icon: <Scissors className="w-4 h-4 opacity-50" /> },
+                                                        { id:"printing", title:"Печатный цех", icon: <Printer className="w-4 h-4 opacity-50" /> },
+                                                        { id:"embroidery", title:"Вышивальный цех", icon: <Shirt className="w-4 h-4 opacity-50" /> },
+                                                        { id:"sewing", title:"Швейный цех", icon: <Scissors className="w-4 h-4 opacity-50" /> },
                                                     ]}
-                                                    value={formData.department || ""}
+                                                    value={formData.department ||""}
                                                     onChange={(val) => updateFormData({ department: val })}
                                                     placeholder="Выберите отдел..."
                                                     className="h-12 rounded-2xl border-slate-100 bg-slate-50/50"
@@ -290,10 +290,10 @@ export function BasicInfoStep({
                                 </div>
 
                                 <textarea
-                                    value={formData.description || ""}
+                                    value={formData.description ||""}
                                     onChange={(e) => updateFormData({ description: e.target.value })}
                                     className="w-full p-5 min-h-[140px] rounded-2xl border border-slate-100 bg-slate-50/50 text-slate-900 font-medium text-sm focus:border-slate-300 transition-all outline-none resize-none shadow-none hover:bg-slate-50 overflow-y-auto custom-scrollbar"
-                                    placeholder={isClothing ? "Особенности кроя, советы по уходу..." : "Особенности материала, советы по использованию..."}
+                                    placeholder={isClothing ?"Особенности кроя, советы по уходу..." :"Особенности материала, советы по использованию..."}
                                 />
                             </div>
                         </div>

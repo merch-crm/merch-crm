@@ -1,11 +1,11 @@
-import React from "react";
-import { RecentTransactionsClient } from "./recent-transactions";
-import { RecentTransaction } from "./warehouse-stats-actions";
-import { StatsOverview } from "./components/StatsOverview";
-import { StockAlerts } from "./components/StockAlerts";
-import { FinancialBento } from "./components/FinancialBento";
-import { ActivityTrend } from "./components/ActivityTrend";
-import { InventoryAnalytics } from "./components/InventoryAnalytics";
+import React from"react";
+import { RecentTransactionsClient } from"./recent-transactions";
+import { RecentTransaction } from"./warehouse-stats-actions";
+import { StatsOverview } from"./components/StatsOverview";
+import { StockAlerts } from"./components/StockAlerts";
+import { FinancialBento } from"./components/FinancialBento";
+import { ActivityTrend } from"./components/ActivityTrend";
+import { InventoryAnalytics } from"./components/InventoryAnalytics";
 
 interface WarehouseWidgetsProps {
     stats: {

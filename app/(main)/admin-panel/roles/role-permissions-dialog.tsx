@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { updateRolePermissions, updateRole, deleteRole } from "../actions/roles.actions";
-import { getDepartments } from "../actions/departments.actions";
-import { Loader2, Save, Shield, Building, Trash2, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { DeleteRoleDialog } from "./delete-role-dialog";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { useToast } from "@/components/ui/toast";
+import { useEffect, useState } from"react";
+import { updateRolePermissions, updateRole, deleteRole } from"../actions/roles.actions";
+import { getDepartments } from"../actions/departments.actions";
+import { Loader2, Save, Shield, Building, Trash2, Check } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { DeleteRoleDialog } from"./delete-role-dialog";
+import { useIsMobile } from"@/hooks/use-mobile";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { useToast } from"@/components/ui/toast";
 
-import type { RoleDetail, DepartmentDetail } from "@/lib/types";
+import type { RoleDetail, DepartmentDetail } from"@/lib/types";
 
 interface RolePermissionsDialogProps {
     role: RoleDetail | null;
@@ -22,21 +22,21 @@ interface RolePermissionsDialogProps {
 }
 
 const SECTIONS = [
-    { id: "clients", label: "Клиенты" },
-    { id: "orders", label: "Заказы" },
-    { id: "inventory", label: "Склад" },
-    { id: "tasks", label: "Задачи" },
-    { id: "users", label: "Сотрудники" },
-    { id: "roles", label: "Роли" },
-    { id: "finance", label: "Финансы" },
-    { id: "settings", label: "Настройки" },
+    { id:"clients", label:"Клиенты" },
+    { id:"orders", label:"Заказы" },
+    { id:"inventory", label:"Склад" },
+    { id:"tasks", label:"Задачи" },
+    { id:"users", label:"Сотрудники" },
+    { id:"roles", label:"Роли" },
+    { id:"finance", label:"Финансы" },
+    { id:"settings", label:"Настройки" },
 ];
 
 const ACTIONS = [
-    { id: "view", label: "Просмотр" },
-    { id: "create", label: "Создание" },
-    { id: "edit", label: "Редактирование" },
-    { id: "delete", label: "Удаление" },
+    { id:"view", label:"Просмотр" },
+    { id:"create", label:"Создание" },
+    { id:"edit", label:"Редактирование" },
+    { id:"delete", label:"Удаление" },
 ];
 
 export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissionsDialogProps) {
@@ -59,8 +59,8 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     useEffect(() => {
         if (role) {
             setPermissions(role.permissions || {});
-            setRoleName(role.name || "");
-            setDepartmentId(role.departmentId || "");
+            setRoleName(role.name ||"");
+            setDepartmentId(role.departmentId ||"");
         } else {
             setPermissions({});
             setRoleName("");
@@ -93,15 +93,15 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
         try {
             const res = await deleteRole(role.id);
             if (res.error) {
-                toast(res.error, "error");
+                toast(res.error,"error");
                 setLoading(false);
             } else {
-                toast("Роль успешно удалена", "success");
+                toast("Роль успешно удалена","success");
                 setShowDeleteConfirm(false);
                 onClose();
             }
         } catch {
-            toast("Произошла ошибка при удалении", "error");
+            toast("Произошла ошибка при удалении","error");
             setLoading(false);
         }
     };
@@ -117,7 +117,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
             const roleUpdateRes = await updateRole(role.id, formData);
 
             if (!roleUpdateRes.success) {
-                toast(roleUpdateRes.error || "Ошибка при обновлении параметров роли", "error");
+                toast(roleUpdateRes.error ||"Ошибка при обновлении параметров роли","error");
                 setLoading(false);
                 return;
             }
@@ -126,13 +126,13 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
             const permsUpdateRes = await updateRolePermissions(role.id, permissions);
 
             if (!permsUpdateRes.success) {
-                toast(permsUpdateRes.error || "Ошибка при обновлении прав доступа", "error");
+                toast(permsUpdateRes.error ||"Ошибка при обновлении прав доступа","error");
             } else {
-                toast("Роль успешно обновлена", "success");
+                toast("Роль успешно обновлена","success");
                 onClose();
             }
         } catch {
-            toast("Произошла непредвиденная ошибка", "error");
+            toast("Произошла непредвиденная ошибка","error");
         } finally {
             setLoading(false);
         }
@@ -161,14 +161,14 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                     <div className="relative">
                         <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
                         <Select
-                            value={departmentId || "none"}
+                            value={departmentId ||"none"}
                             options={[
-                                { id: "none", title: "Без отдела" },
+                                { id:"none", title:"Без отдела" },
                                 ...departments.map(dept => ({ id: dept.id, title: dept.name }))
                             ]}
                             placeholder="Выбрать отдел"
                             className="pl-10 h-11"
-                            onChange={(val) => setDepartmentId(val === "none" ? "" : val)}
+                            onChange={(val) => setDepartmentId(val ==="none" ?"" : val)}
                         />
                     </div>
                 </div>
@@ -190,16 +190,14 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                                 key={action.id}
                                                 variant="ghost"
                                                 onClick={() => handleToggle(section.id, action.id)}
-                                                className={cn(
-                                                    "flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all h-auto",
+                                                className={cn("flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold border transition-all h-auto",
                                                     isChecked
-                                                        ? "bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
-                                                        : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
+                                                        ?"bg-primary/10 border-primary/20 text-primary hover:bg-primary/20"
+                                                        :"bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
                                                 )}
                                             >
-                                                <div className={cn(
-                                                    "w-4 h-4 rounded border flex items-center justify-center transition-all",
-                                                    isChecked ? "bg-primary border-primary text-white" : "bg-white border-slate-300"
+                                                <div className={cn("w-4 h-4 rounded border flex items-center justify-center transition-all",
+                                                    isChecked ?"bg-primary border-primary text-white" :"bg-white border-slate-300"
                                                 )}>
                                                     {isChecked && <Check className="w-3 h-3 stroke-[4px]" />}
                                                 </div>
@@ -236,11 +234,10 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
                                                         variant="ghost"
                                                         size="icon"
                                                         onClick={() => handleToggle(section.id, action.id)}
-                                                        className={cn(
-                                                            "w-6 h-6 rounded border flex items-center justify-center transition-all mx-auto p-0 hover:bg-transparent",
+                                                        className={cn("w-6 h-6 rounded border flex items-center justify-center transition-all mx-auto p-0 hover:bg-transparent",
                                                             isChecked
-                                                                ? "bg-primary border-primary text-white hover:text-white"
-                                                                : "bg-white border-slate-300 hover:border-primary/40"
+                                                                ?"bg-primary border-primary text-white hover:text-white"
+                                                                :"bg-white border-slate-300 hover:border-primary/40"
                                                         )}
                                                     >
                                                         {isChecked && <Check className="w-3.5 h-3.5 stroke-[4px]" />}
@@ -260,7 +257,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
 
     const ActionsContent = (
         <div className="flex items-center justify-between gap-3 w-full">
-            {role && role.name !== "Администратор" && (
+            {role && role.name !=="Администратор" && (
                 <Button
                     variant="ghost"
                     onClick={handleDelete}

@@ -1,13 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import NextImage from "next/image";
-import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { QRCodeSVG } from "qrcode.react";
-import { PrinterConfig, DisplayOptions, ResolvedParam } from "./label-printer-types";
-import { InventoryItem, BrandingSettings } from "../../types";
-import { getSizeDimensions, getScales } from "./label-printer-utils";
+import React, { useEffect, useState } from"react";
+import NextImage from"next/image";
+import { X } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { QRCodeSVG } from"qrcode.react";
+import { PrinterConfig, DisplayOptions, ResolvedParam } from"./label-printer-types";
+import { InventoryItem, BrandingSettings } from"../../types";
+import { getSizeDimensions, getScales } from"./label-printer-utils";
 
 interface LabelPrinterPreviewProps {
     config: PrinterConfig;
@@ -110,7 +110,7 @@ export function LabelPrinterPreview({
 
             <div ref={setRefNode} className="absolute inset-0 flex items-center justify-center overflow-hidden p-6">
                 <div id="label-preview-content" className="bg-white rounded-[var(--radius-inner)] shadow-2xl relative flex-shrink-0" style={previewStyle}>
-                    <div className={cn("flex flex-col min-h-0", (config.layoutStyle === 'minimal' || config.alignment === 'center') ? "items-center text-center" : "items-start text-left")}>
+                    <div className={cn("flex flex-col min-h-0", (config.layoutStyle === 'minimal' || config.alignment === 'center') ?"items-center text-center" :"items-start text-left")}>
                         {displayOptions.category && item.category?.name && config.layoutStyle !== 'minimal' && (
                             <div style={{ fontSize: `${7 * scale}px` }} className="font-bold text-slate-400 leading-none mb-0.5">
                                 {item.category.name}
@@ -138,23 +138,23 @@ export function LabelPrinterPreview({
 
                     {config.layoutStyle !== 'minimal' && (
                         <div className="flex-1 min-h-0 overflow-hidden py-1 flex flex-col justify-center" style={{ alignItems: config.alignment === 'center' ? 'center' : 'flex-start' }}>
-                            <div className={cn("grid gap-x-3 gap-y-0.5", useTwoColumns ? "grid-cols-2" : "grid-cols-1", config.alignment === 'center' ? "justify-items-center" : "justify-items-start")}>
+                            <div className={cn("grid gap-x-3 gap-y-0.5", useTwoColumns ?"grid-cols-2" :"grid-cols-1", config.alignment === 'center' ?"justify-items-center" :"justify-items-start")}>
                                 {visibleParams.map((param) => (
-                                    <div key={param.slug} style={{ fontSize: `${9 * scale * attrScale}px` }} className={cn("flex gap-1.5 font-bold text-slate-700 leading-tight", config.alignment === 'center' ? "justify-center text-center" : "justify-start text-left")}>
+                                    <div key={param.slug} style={{ fontSize: `${9 * scale * attrScale}px` }} className={cn("flex gap-1.5 font-bold text-slate-700 leading-tight", config.alignment === 'center' ?"justify-center text-center" :"justify-start text-left")}>
                                         <span className="text-slate-400 font-medium shrink-0">{param.label}:</span>
                                         <span className="break-words">{param.value}</span>
                                     </div>
                                 ))}
                             </div>
                             {config.customText && (
-                                <div style={{ fontSize: `${8 * scale * attrScale}px` }} className={cn("font-bold text-black border-t border-slate-200 mt-1 w-full break-words", config.alignment === 'center' ? "text-center" : "text-left")}>
+                                <div style={{ fontSize: `${8 * scale * attrScale}px` }} className={cn("font-bold text-black border-t border-slate-200 mt-1 w-full break-words", config.alignment === 'center' ?"text-center" :"text-left")}>
                                     {config.customText}
                                 </div>
                             )}
                         </div>
                     )}
 
-                    <div className={cn("pt-1.5 border-t border-slate-200 flex gap-2 shrink-0", (config.layoutStyle === 'side-by-side' || config.layoutStyle === 'inline' || heightNum <= 60) ? "flex-row justify-between items-end w-full px-1" : "flex-col items-center", config.layoutStyle === 'minimal' && "flex-1 justify-center items-center border-none pt-2")}>
+                    <div className={cn("pt-1.5 border-t border-slate-200 flex gap-2 shrink-0", (config.layoutStyle === 'side-by-side' || config.layoutStyle === 'inline' || heightNum <= 60) ?"flex-row justify-between items-end w-full px-1" :"flex-col items-center", config.layoutStyle === 'minimal' &&"flex-1 justify-center items-center border-none pt-2")}>
                         <div className="flex flex-col gap-0.5 items-start">
                             {displayOptions.sellingPrice && item.sellingPrice !== null && (
                                 <div style={{ fontSize: `${16 * scale * priceScale}px` }} className="font-black text-black leading-none whitespace-nowrap">

@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { Book } from "lucide-react";
+import { useState, useEffect, useCallback } from"react";
+import { Book } from"lucide-react";
 import {
     DndContext,
     closestCenter,
@@ -10,17 +10,17 @@ import {
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
-} from "@dnd-kit/core";
+} from"@dnd-kit/core";
 import {
     SortableContext,
     arrayMove,
     rectSortingStrategy,
-} from "@dnd-kit/sortable";
-import { EmptyState } from "@/components/ui/empty-state";
-import { InventoryAttribute as Attribute, AttributeType } from "../../types";
-import { SortableCharacteristicCard, CharacteristicCardContent } from "./SortableCharacteristicCard";
-import { reorderInventoryAttributeTypes } from "../../attribute-actions";
-import { useToast } from "@/components/ui/toast";
+} from"@dnd-kit/sortable";
+import { EmptyState } from"@/components/ui/empty-state";
+import { InventoryAttribute as Attribute, AttributeType } from"../../types";
+import { SortableCharacteristicCard, CharacteristicCardContent } from"./SortableCharacteristicCard";
+import { reorderInventoryAttributeTypes } from"../../attribute-actions";
+import { useToast } from"@/components/ui/toast";
 
 interface CharacteristicGridProps {
     filteredTypes: AttributeType[];
@@ -83,7 +83,7 @@ export function CharacteristicGrid({
         const updates = reordered.map((t, i) => ({ id: t.id, sortOrder: i }));
         const res = await reorderInventoryAttributeTypes(updates);
         if (!res.success) {
-            toast("Не удалось сохранить порядок", "error");
+            toast("Не удалось сохранить порядок","error");
             setLocalTypes(filteredTypes); // rollback
         }
     }, [localTypes, filteredTypes, toast]);
@@ -117,8 +117,8 @@ export function CharacteristicGrid({
                                         icon={Book}
                                         title="Нет характеристик"
                                         description={
-                                            activeCategoryId === "uncategorized"
-                                                ? "Все характеристики распределены по категориям."
+                                            activeCategoryId ==="uncategorized"
+                                                ?"Все характеристики распределены по категориям."
                                                 : `В категории «${activeCategoryName}» пока нет созданных типов характеристик.`
                                         }
                                     />

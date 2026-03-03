@@ -1,28 +1,28 @@
-import { notFound } from "next/navigation";
-import { getClientDetails } from "../actions/core.actions";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import Link from "next/link";
+import { notFound } from"next/navigation";
+import { getClientDetails } from"../actions/core.actions";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import Link from"next/link";
 import {
     ArrowLeft, Phone, Mail, MapPin, Instagram, Send,
     ShoppingBag, CreditCard, Calendar, Plus,
     History, Wallet, ExternalLink, MessageCircle
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
-import { OrderHistoryTable } from "./order-history-table";
-import { ClientTimeline } from "./client-timeline";
-import { ClientProfileActions } from "./client-profile-actions";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from"@/components/ui/avatar";
+import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { OrderHistoryTable } from"./order-history-table";
+import { ClientTimeline } from"./client-timeline";
+import { ClientProfileActions } from"./client-profile-actions";
+import { Button } from"@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from"@/components/ui/tabs";
+import { Badge } from"@/components/ui/badge";
+import { cn } from"@/lib/utils";
 
 export default async function ClientPage({ params }: { params: { id: string } }) {
     const resolvedParams = await Promise.resolve(params);
     const result = await getClientDetails(resolvedParams.id);
     const branding = await getBrandingSettings();
-    const currencySymbol = branding?.currencySymbol || "₽";
+    const currencySymbol = branding?.currencySymbol ||"₽";
 
     if (!result.success || !result.data) {
         notFound();
@@ -68,7 +68,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                         <div className="relative h-32 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 overflow-hidden">
                             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20" />
                             <div className="absolute top-4 right-4">
-                                <Badge className={balance < 0 ? "bg-rose-500" : "bg-emerald-500"}>
+                                <Badge className={balance < 0 ?"bg-rose-500" :"bg-emerald-500"}>
                                     {balance < 0 ? 'Должник' : 'Активен'}
                                 </Badge>
                             </div>
@@ -82,7 +82,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
 
                             <h2 className="text-xl font-black text-slate-900 text-center">{client.name}</h2>
                             <p className="text-slate-400 text-sm font-bold mt-1 text-center">
-                                {client.company || "Частное лицо"}
+                                {client.company ||"Частное лицо"}
                             </p>
 
                             <div className="w-full mt-8 space-y-3">
@@ -91,7 +91,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                         <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center border border-slate-200 shadow-sm group-hover:scale-110 transition-transform">
                                             <Phone className="w-4 h-4 text-primary" />
                                         </div>
-                                        <span className="text-xs font-black text-slate-600 ">{client.phone}</span>
+                                        <span className="text-xs font-black text-slate-600">{client.phone}</span>
                                     </div>
                                     <ExternalLink className="w-3.5 h-3.5 text-slate-300 group-hover:text-primary transition-colors" />
                                 </div>
@@ -136,7 +136,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                                     <MapPin className="w-5 h-5 text-slate-400" />
                                 </div>
                                 <p className="text-sm font-bold text-slate-900 leading-snug">
-                                    {client.city ? `${client.city}, ` : ''}{client.address || "Адрес не указан"}
+                                    {client.city ? `${client.city}, ` : ''}{client.address ||"Адрес не указан"}
                                 </p>
                             </div>
                         </div>
@@ -152,7 +152,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
 
                         <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
                             <span className="text-xs font-bold text-slate-400">Источник</span>
-                            <Badge variant="outline" className="bg-slate-50 border-slate-200 text-slate-500 font-black">{client.acquisitionSource || "—"}</Badge>
+                            <Badge variant="outline" className="bg-slate-50 border-slate-200 text-slate-500 font-black">{client.acquisitionSource ||"—"}</Badge>
                         </div>
                     </div>
                 </aside>
@@ -165,7 +165,7 @@ export default async function ClientPage({ params }: { params: { id: string } })
                             { label: 'Заказов', value: client.stats?.count || 0, icon: ShoppingBag, color: 'text-blue-500' },
                             { label: 'Сумма', value: `${Math.round(client.stats?.total || 0).toLocaleString()} ${currencySymbol}`, icon: CreditCard, color: 'text-indigo-500' },
                             { label: 'Баланс', value: `${balance.toLocaleString()} ${currencySymbol}`, icon: Wallet, color: balance < 0 ? 'text-rose-500' : 'text-emerald-500' },
-                            { label: 'Партнерство', value: format(new Date(client.createdAt), "MM/yy", { locale: ru }), icon: Calendar, color: 'text-slate-400' }
+                            { label: 'Партнерство', value: format(new Date(client.createdAt),"MM/yy", { locale: ru }), icon: Calendar, color: 'text-slate-400' }
                         ].map((stat, i) => (
                             <div key={i} className="crm-card !p-5 !rounded-3xl border-none shadow-md hover:shadow-lg transition-shadow">
                                 <div className="flex items-center gap-3 mb-2">

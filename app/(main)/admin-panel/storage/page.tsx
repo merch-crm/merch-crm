@@ -1,11 +1,11 @@
-import { StorageManager } from "@/components/admin/storage-manager";
-import { Metadata } from "next";
-import { HardDrive } from "lucide-react";
-import { PageContainer } from "@/components/ui/page-container";
+import { StorageManager } from"@/components/admin/storage-manager";
+import { Metadata } from"next";
+import { HardDrive } from"lucide-react";
+import { PageContainer } from"@/components/ui/page-container";
 
 export const metadata: Metadata = {
-    title: "Управление хранилищем | MerchCRM Admin",
-    description: "Настройка и мониторинг локального и облачного S3 хранилища",
+    title:"Управление хранилищем | MerchCRM Admin",
+    description:"Настройка и мониторинг локального и облачного S3 хранилища",
 };
 
 export default function AdminStoragePage() {

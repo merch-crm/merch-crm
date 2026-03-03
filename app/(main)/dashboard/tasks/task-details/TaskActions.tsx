@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckCircle2, Clock, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Task } from "../types";
+import { CheckCircle2, Clock, Trash2 } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Task } from"../types";
 
 interface TaskActionsProps {
     task: Task;
@@ -12,7 +12,7 @@ interface TaskActionsProps {
 }
 
 export function TaskActions({ task, isPending, onToggleStatus, onDeleteRequest }: TaskActionsProps) {
-    const isDone = task.status === "done";
+    const isDone = task.status ==="done";
 
     return (
         <div className="p-6 pt-0 mt-auto bg-white/80 backdrop-blur-sm safe-area-bottom">
@@ -20,15 +20,14 @@ export function TaskActions({ task, isPending, onToggleStatus, onDeleteRequest }
                 <button type="button"
                     onClick={onToggleStatus}
                     disabled={isPending}
-                    className={cn(
-                        "flex-1 py-4 rounded-2xl font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3",
+                    className={cn("flex-1 py-4 rounded-2xl font-bold shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3",
                         isDone
-                            ? "bg-slate-100 text-slate-600 hover:bg-slate-200 shadow-slate-200/50"
-                            : "bg-primary text-white hover:opacity-90 shadow-primary/30"
+                            ?"bg-slate-100 text-slate-600 hover:bg-slate-200 shadow-slate-200/50"
+                            :"bg-primary text-white hover:opacity-90 shadow-primary/30"
                     )}
                 >
                     {isDone ? <Clock className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
-                    {isDone ? "Вернуть в работу" : "Отметить как выполнено"}
+                    {isDone ?"Вернуть в работу" :"Отметить как выполнено"}
                 </button>
                 <button type="button"
                     onClick={onDeleteRequest}

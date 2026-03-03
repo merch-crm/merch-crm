@@ -1,14 +1,14 @@
 "use client";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { cn } from "@/lib/utils";
+import { useSortable } from"@dnd-kit/sortable";
+import { CSS } from"@dnd-kit/utilities";
+import { cn } from"@/lib/utils";
 import {
     GripVertical, Settings,
     Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize,
     Globe, Weight, Droplets, Package, LucideIcon, Component, Waves, Wrench,
-} from "lucide-react";
-import { type InventoryAttribute as Attribute, type AttributeType, type AttributeMeta } from "../../types";
-import { sortAttributeValues, getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+} from"lucide-react";
+import { type InventoryAttribute as Attribute, type AttributeType, type AttributeMeta } from"../../types";
+import { sortAttributeValues, getColorHex } from"@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 // ─── Icon map ──────────────────────────────────────────────────────────────
 const DATA_TYPE_ICONS: Record<string, LucideIcon> = {
@@ -36,21 +36,20 @@ export function CharacteristicCardContent({
 }) {
     const typeAttributes = sortAttributeValues(
         allAttributes.filter(a => a.type === type.slug),
-        type.dataType || "text"
+        type.dataType ||"text"
     );
-    const TypeIcon = DATA_TYPE_ICONS[type.dataType || ""];
+    const TypeIcon = DATA_TYPE_ICONS[type.dataType ||""];
 
     return (
         <div
             role="button"
             tabIndex={0}
             onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEditType(type); }
+                if (e.key ==="Enter" || e.key ==="") { e.preventDefault(); openEditType(type); }
             }}
             onClick={() => openEditType(type)}
-            className={cn(
-                "crm-card flex flex-col h-full group shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border hover:border-indigo-200 active:scale-[0.99]",
-                isOverlay && "!border-primary shadow-crm-xl"
+            className={cn("crm-card flex flex-col h-full group shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer border hover:border-indigo-200 active:scale-[0.99]",
+                isOverlay &&"!border-primary shadow-crm-xl"
             )}
         >
             {/* Header */}
@@ -82,7 +81,7 @@ export function CharacteristicCardContent({
                             tabIndex={0}
                             {...dragHandleProps}
                             onClick={(e) => (e as React.MouseEvent).stopPropagation()}
-                            onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") e.preventDefault(); }}
+                            onKeyDown={(e) => { if (e.key ==="Enter" || e.key ==="") e.preventDefault(); }}
                             className="w-8 h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 opacity-0 group-hover:opacity-100"
                             aria-label="Перетащить для изменения порядка"
                         >
@@ -110,16 +109,15 @@ export function CharacteristicCardContent({
                             type="button"
                             key={attr.id}
                             onClick={(e) => { e.stopPropagation(); openEditValue(attr); }}
-                            className={cn(
-                                "relative group/val flex items-center gap-2.5 px-4 py-3 bg-slate-50 border border-slate-100 rounded-[14px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-md hover:border-slate-200 cursor-pointer overflow-hidden flex-1 min-w-[140px] min-h-[52px]",
-                                attr.semanticColor && "pl-3"
+                            className={cn("relative group/val flex items-center gap-2.5 px-4 py-3 bg-slate-50 border border-slate-100 rounded-[14px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-md hover:border-slate-200 cursor-pointer overflow-hidden flex-1 min-w-[140px] min-h-[52px]",
+                                attr.semanticColor &&"pl-3"
                             )}
                         >
-                            {type.dataType === "color" || type.slug === "color" ? (
+                            {type.dataType ==="color" || type.slug ==="color" ? (
                                 <span className="w-7 h-7 rounded-full shadow-sm ring-1 ring-black/5 flex-shrink-0"
                                     style={{ backgroundColor: getColorHex(attr.meta) }} />
                             ) : (() => {
-                                const Icon = DATA_TYPE_ICONS[type.dataType || ""];
+                                const Icon = DATA_TYPE_ICONS[type.dataType ||""];
                                 return (
                                     <span className="w-7 h-7 rounded-full flex items-center justify-center bg-white text-primary border border-slate-200 flex-shrink-0 shadow-sm">
                                         {Icon ? <Icon className="w-3.5 h-3.5" /> : <span className="text-[12px] font-bold text-slate-600">{attr.name.substring(0, 1)}</span>}
@@ -129,7 +127,7 @@ export function CharacteristicCardContent({
                             <div className="flex items-center gap-1.5 min-w-0 flex-1 px-1">
                                 <span className="text-[14px] font-bold text-slate-700 break-words group-hover/val:text-indigo-600 transition-colors text-left font-sans">
                                     {(attr.meta as AttributeMeta)?.fullName || attr.name}
-                                    {type.dataType === "density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") && " г/м²"}
+                                    {type.dataType ==="density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") &&" г/м²"}
                                 </span>
                                 {(attr.meta as AttributeMeta)?.isOversize && (
                                     <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[11px] font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none">oversize</span>

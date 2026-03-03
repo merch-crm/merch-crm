@@ -1,5 +1,5 @@
 
-export type TrackerStatus = "idle" | "working" | "break" | "paused";
+export type TrackerStatus ="idle" |"working" |"break" |"paused";
 
 export interface TimeEntry {
     id: string;
@@ -33,7 +33,7 @@ export interface TimeTrackerToggleProps {
     isWorking: boolean;
     startTime?: Date | null;
     onToggle: () => void;
-    size?: "sm" | "md" | "lg";
+    size?:"sm" |"md" |"lg";
     className?: string;
 }
 

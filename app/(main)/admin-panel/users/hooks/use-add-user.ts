@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
-import { createUser } from "../../actions/users.actions";
-import { getRoles } from "../../actions/roles.actions";
-import { getDepartments } from "../../actions/departments.actions";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from"react";
+import { createUser } from"../../actions/users.actions";
+import { getRoles } from"../../actions/roles.actions";
+import { getDepartments } from"../../actions/departments.actions";
+import { useRouter } from"next/navigation";
 
 export function useAddUser(onSuccess?: () => void) {
     const router = useRouter();
@@ -12,8 +12,8 @@ export function useAddUser(onSuccess?: () => void) {
         roles: [] as { id: string, name: string, departmentId: string | null }[],
         departments: [] as { id: string, name: string }[],
         error: null as string | null,
-        selectedRoleId: "",
-        selectedDeptId: ""
+        selectedRoleId:"",
+        selectedDeptId:""
     });
 
     const updateState = useCallback((updates: Partial<typeof state>) => {

@@ -1,21 +1,21 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2, X, Plus, Star, ImagePlus } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { useDraggableScroll } from "@/components/hooks/useDraggableScroll";
-import { useGalleryLightbox } from "@/components/hooks/useGalleryLightbox";
+import React, { useState } from"react";
+import Image from"next/image";
+import { ImageIcon, RefreshCcw, Trash2, ChevronLeft, ChevronRight, Maximize2, X, Plus, Star, ImagePlus } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { useDraggableScroll } from"@/components/hooks/useDraggableScroll";
+import { useGalleryLightbox } from"@/components/hooks/useGalleryLightbox";
 
 interface ItemMediaSectionProps {
     item: InventoryItem;
     isEditing: boolean;
     // For editing
-    onImageChange: (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => void;
-    onImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
-    onSetMain: (type: "front" | "back" | "side" | "details", index?: number) => void;
+    onImageChange: (file: File | null, type:"front" |"back" |"side" |"details", index?: number) => void;
+    onImageRemove: (type:"front" |"back" |"side" |"details", index?: number) => void;
+    onSetMain: (type:"front" |"back" |"side" |"details", index?: number) => void;
     onImageClick?: (index: number) => void;
     uploadStates?: Record<string, UploadState>;
 }
@@ -28,13 +28,13 @@ export interface UploadState {
 
 // Moved outside component for stable reference in useMemo
 function getAllItemImages(item: InventoryItem) {
-    const images: { src: string | null; label: string, type: "front" | "back" | "side" | "details", index?: number }[] = [
-        { src: item.image || null, label: "Основное", type: "front" },
-        { src: item.imageBack || null, label: "Вид сзади", type: "back" },
-        { src: item.imageSide || null, label: "Вид сбоку", type: "side" },
-        { src: (item.imageDetails && item.imageDetails[0]) || null, label: "Деталь 1", type: "details", index: 0 },
-        { src: (item.imageDetails && item.imageDetails[1]) || null, label: "Деталь 2", type: "details", index: 1 },
-        { src: (item.imageDetails && item.imageDetails[2]) || null, label: "Деталь 3", type: "details", index: 2 },
+    const images: { src: string | null; label: string, type:"front" |"back" |"side" |"details", index?: number }[] = [
+        { src: item.image || null, label:"Основное", type:"front" },
+        { src: item.imageBack || null, label:"Вид сзади", type:"back" },
+        { src: item.imageSide || null, label:"Вид сбоку", type:"side" },
+        { src: (item.imageDetails && item.imageDetails[0]) || null, label:"Деталь 1", type:"details", index: 0 },
+        { src: (item.imageDetails && item.imageDetails[1]) || null, label:"Деталь 2", type:"details", index: 1 },
+        { src: (item.imageDetails && item.imageDetails[2]) || null, label:"Деталь 3", type:"details", index: 2 },
     ];
     return images;
 }
@@ -128,9 +128,8 @@ export const ItemMediaSection = React.memo(({
                 <div
                     ref={scrollRef}
                     {...scrollEvents}
-                    className={cn(
-                        "flex overflow-x-auto gap-3 snap-x snap-mandatory no-scrollbar",
-                        isDragging ? "cursor-grabbing select-none snap-none scroll-auto" : "cursor-grab snap-x scroll-smooth"
+                    className={cn("flex overflow-x-auto gap-3 snap-x snap-mandatory no-scrollbar",
+                        isDragging ?"cursor-grabbing select-none snap-none scroll-auto" :"cursor-grab snap-x scroll-smooth"
                     )}
                     style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                 >
@@ -160,11 +159,10 @@ export const ItemMediaSection = React.memo(({
                                     }
                                 }}
                                 aria-label={`Просмотреть ${img.label}`}
-                                className={cn(
-                                    "group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden border transition-all duration-500 bg-muted/30 snap-start",
+                                className={cn("group relative flex-none w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-2xl overflow-hidden border transition-all duration-500 bg-muted/30 snap-start",
                                     img.src
-                                        ? "border-border/60 hover:border-border hover:shadow-2xl hover:shadow-black/5 cursor-pointer"
-                                        : "border-dashed border-border hover:bg-muted/50"
+                                        ?"border-border/60 hover:border-border hover:shadow-2xl hover:shadow-black/5 cursor-pointer"
+                                        :"border-dashed border-border hover:bg-muted/50"
                                 )}
                             >
                                 {img.src ? (
@@ -227,7 +225,7 @@ export const ItemMediaSection = React.memo(({
                                                     </label>
                                                 </Button>
 
-                                                {img.type !== "front" && (
+                                                {img.type !=="front" && (
                                                     <Button
                                                         type="button"
                                                         variant="btn-dark"
@@ -379,12 +377,11 @@ export const ItemMediaSection = React.memo(({
                                     aria-label="Увеличить/уменьшить изображение"
                                 >
                                     <Image
-                                        src={allImages[currentIndex].src || ""}
+                                        src={allImages[currentIndex].src ||""}
                                         alt={allImages[currentIndex].label}
                                         fill
-                                        className={cn(
-                                            "object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
-                                            imageZoomed ? "scale-150 cursor-zoom-out" : "scale-100 cursor-zoom-in"
+                                        className={cn("object-contain rounded-3xl shadow-2xl transition-transform duration-700 ease-out",
+                                            imageZoomed ?"scale-150 cursor-zoom-out" :"scale-100 cursor-zoom-in"
                                         )}
                                         unoptimized
                                     />
@@ -407,9 +404,8 @@ export const ItemMediaSection = React.memo(({
                                 type="button"
                                 variant="ghost"
                                 onClick={(e: React.MouseEvent) => { e.stopPropagation(); setCurrentIndex(i); }}
-                                className={cn(
-                                    "relative w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all duration-300 p-0 min-w-0 flex-shrink-0",
-                                    i === currentIndex ? "border-primary scale-110 shadow-lg shadow-primary/20" : "border-transparent opacity-40 hover:opacity-100"
+                                className={cn("relative w-16 h-16 rounded-2xl overflow-hidden border-2 transition-all duration-300 p-0 min-w-0 flex-shrink-0",
+                                    i === currentIndex ?"border-primary scale-110 shadow-lg shadow-primary/20" :"border-transparent opacity-40 hover:opacity-100"
                                 )}
                             >
                                 {img.src ? (
@@ -428,4 +424,4 @@ export const ItemMediaSection = React.memo(({
     );
 });
 
-ItemMediaSection.displayName = "ItemMediaSection";
+ItemMediaSection.displayName ="ItemMediaSection";

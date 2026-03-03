@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useBranding } from "@/components/branding-provider";
-import { UserProfile, ActivityItem, Task } from "./types";
-import { useProfile } from "./hooks/useProfile";
+import React from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { useBranding } from"@/components/branding-provider";
+import { UserProfile, ActivityItem, Task } from"./types";
+import { useProfile } from"./hooks/useProfile";
 
 // Components
-import { ProfileSidebar } from "./components/ProfileSidebar";
-import { ProfileHeader } from "./components/ProfileHeader";
-import { OverviewTab } from "./components/views/OverviewTab";
-import { SettingsTab } from "./components/views/SettingsTab";
-import { NotificationsTab } from "./components/views/NotificationsTab";
-import { StatisticsView } from "./statistics-view";
-import { ScheduleView } from "./schedule-view";
+import { ProfileSidebar } from"./components/ProfileSidebar";
+import { ProfileHeader } from"./components/ProfileHeader";
+import { OverviewTab } from"./components/views/OverviewTab";
+import { SettingsTab } from"./components/views/SettingsTab";
+import { NotificationsTab } from"./components/views/NotificationsTab";
+import { StatisticsView } from"./statistics-view";
+import { ScheduleView } from"./schedule-view";
 
 interface ProfileClientProps {
     user: UserProfile;
@@ -22,7 +22,7 @@ interface ProfileClientProps {
 }
 
 export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
-    const { currencySymbol = "₽" } = useBranding();
+    const { currencySymbol ="₽" } = useBranding();
 
     const {
         view,
@@ -65,7 +65,7 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                         transition={{ duration: 0.2 }}
                         className="h-full"
                     >
-                        {view === "profile" && (
+                        {view ==="profile" && (
                             <OverviewTab
                                 statsData={statsData}
                                 currencySymbol={currencySymbol}
@@ -76,9 +76,9 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                             />
                         )}
 
-                        {view === "settings" && <SettingsTab user={user} />}
+                        {view ==="settings" && <SettingsTab user={user} />}
 
-                        {view === "statistics" && (
+                        {view ==="statistics" && (
                             <div className="crm-card  !rounded-3xl min-h-[400px]">
                                 {loading && !statsData ? (
                                     <div className="flex items-center justify-center h-40 font-bold text-slate-300">Загрузка данных...</div>
@@ -88,9 +88,9 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
                             </div>
                         )}
 
-                        {view === "notifications" && <NotificationsTab activities={activities} />}
+                        {view ==="notifications" && <NotificationsTab activities={activities} />}
 
-                        {view === "schedule" && (
+                        {view ==="schedule" && (
                             <div className="crm-card  md: !rounded-3xl min-h-[400px]">
                                 {loading && scheduleData.length === 0 ? (
                                     <div className="flex items-center justify-center h-40 font-bold text-slate-300">Загрузка расписания...</div>
@@ -108,4 +108,4 @@ export function ProfileClient({ user, activities, tasks }: ProfileClientProps) {
 
 // Re-export type back for legacy usage (e.g. page.tsx)
 // Not exporting other types to prevent circular dependencies but keeping UserProfile just in case
-export type { UserProfile } from "./types";
+export type { UserProfile } from"./types";

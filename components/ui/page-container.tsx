@@ -1,32 +1,32 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from"@/lib/utils";
 
 interface PageContainerProps {
     children: React.ReactNode;
     className?: string;
     animate?: boolean;
-    spacing?: "none" | "sm" | "md" | "lg";
+    spacing?:"none" |"sm" |"md" |"lg";
 }
 
 const spacingMap = {
-    none: "",
-    sm: "flex flex-col gap-3",
-    md: "flex flex-col gap-3",
-    lg: "flex flex-col gap-3",
+    none:"",
+    sm:"flex flex-col gap-3",
+    md:"flex flex-col gap-3",
+    lg:"flex flex-col gap-3",
 };
 
 export function PageContainer({
     children,
     className,
     animate = true,
-    spacing = "md",
+    spacing ="md",
 }: PageContainerProps) {
     return (
         <div
             className={cn(
                 spacingMap[spacing],
-                animate && "animate-in fade-in slide-in-from-bottom-4 duration-700",
+                animate &&"animate-in fade-in slide-in-from-bottom-4 duration-700",
                 className
             )}
         >

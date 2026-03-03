@@ -19,7 +19,7 @@ export function IconSelect({ startIcon: StartIcon, options, className, container
             )}
             <Select
                 className={cn(
-                    StartIcon && "pl-10",
+                    StartIcon &&"pl-10",
                     className
                 )}
                 options={options}

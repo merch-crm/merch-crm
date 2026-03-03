@@ -1,21 +1,21 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from "react";
-import { Plus, Trash2 } from "lucide-react";
-import { Select, type SelectOption } from "@/components/ui/select";
-import { type ValueFormState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import React, { type Dispatch, type SetStateAction } from"react";
+import { Plus, Trash2 } from"lucide-react";
+import { Select, type SelectOption } from"@/components/ui/select";
+import { type ValueFormState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
 
 const UNIT_OPTIONS: SelectOption[] = [
-    { id: "%", title: "%" },
-    { id: "шт.", title: "шт." },
-    { id: "мм", title: "мм" },
-    { id: "см", title: "см" },
-    { id: "м", title: "м" },
-    { id: "г", title: "г" },
-    { id: "кг", title: "кг" },
-    { id: "мл", title: "мл" },
-    { id: "л", title: "л" },
-    { id: "г/м²", title: "г/м²" },
-    { id: "уп.", title: "уп." },
+    { id:"%", title:"%" },
+    { id:"шт.", title:"шт." },
+    { id:"мм", title:"мм" },
+    { id:"см", title:"см" },
+    { id:"м", title:"м" },
+    { id:"г", title:"г" },
+    { id:"кг", title:"кг" },
+    { id:"мл", title:"мл" },
+    { id:"л", title:"л" },
+    { id:"г/м²", title:"г/м²" },
+    { id:"уп.", title:"уп." },
 ];
 
 interface CompositionEditorProps {
@@ -85,7 +85,7 @@ export function CompositionEditor({
                 type="button"
                 onClick={() => setValueForm(prev => ({
                     ...prev,
-                    compositionItems: [...prev.compositionItems, { name: "", value: "", unit: "%" }]
+                    compositionItems: [...prev.compositionItems, { name:"", value:"", unit:"%" }]
                 }))}
                 className="w-full h-10 flex items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 text-xs font-bold transition-all"
             >

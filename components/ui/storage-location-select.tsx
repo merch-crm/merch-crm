@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { MapPin } from "lucide-react";
-import { Select, SelectOption } from "./select";
+import * as React from"react";
+import { MapPin } from"lucide-react";
+import { Select, SelectOption } from"./select";
 
 interface LocationOption {
     id: string;
@@ -46,7 +46,7 @@ export function StorageLocationSelect({ value, onChange, options, stocks, classN
                 options={safeOptions}
                 value={value}
                 onChange={onChange}
-                placeholder={placeholder || "Выберите склад..."}
+                placeholder={placeholder ||"Выберите склад..."}
                 variant="default"
                 autoLayout
             />

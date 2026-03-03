@@ -1,13 +1,13 @@
 "use client";
 
-import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
-import { EmptyState } from "@/components/ui/empty-state";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { deleteStorageLocation, updateStorageLocationsOrder } from "./storage-actions";
-import { useState, useEffect, memo, useRef } from "react";
-import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from"lucide-react";
+import { EmptyState } from"@/components/ui/empty-state";
+import { cn } from"@/lib/utils";
+import { Input } from"@/components/ui/input";
+import { deleteStorageLocation, updateStorageLocationsOrder } from"./storage-actions";
+import { useState, useEffect, memo, useRef } from"react";
+import { EditStorageLocationDialog } from"./edit-storage-location-dialog";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
 import {
     DndContext,
     closestCenter,
@@ -18,16 +18,16 @@ import {
     DragEndEvent,
     DragStartEvent,
     DragOverlay,
-} from "@dnd-kit/core";
+} from"@dnd-kit/core";
 import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     rectSortingStrategy,
     useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { useToast } from "@/components/ui/toast";
+} from"@dnd-kit/sortable";
+import { CSS } from"@dnd-kit/utilities";
+import { useToast } from"@/components/ui/toast";
 
 
 export interface StorageLocation {
@@ -43,7 +43,7 @@ export interface StorageLocation {
     responsibleUser?: {
         name: string;
     } | null;
-    type: "warehouse" | "production" | "office";
+    type:"warehouse" |"production" |"office";
     items?: StorageLocationItem[];
 }
 
@@ -68,7 +68,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         deleteId: null as string | null,
         deleteName: null as string | null,
         deleteIsSystem: false,
-        deletePassword: "",
+        deletePassword:"",
         isDeleting: false,
         activeId: null as string | null,
         dragLayout: { isWide: false, isExtraWide: false }
@@ -105,7 +105,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             deleteId: id,
             deleteName: name,
             deleteIsSystem: isSystem,
-            deletePassword: ""
+            deletePassword:""
         }));
     };
 
@@ -115,16 +115,16 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         const res = await deleteStorageLocation(uiState.deleteId, uiState.deletePassword);
         setUiState(prev => ({ ...prev, isDeleting: false }));
         if (res.success) {
-            toast("Локация удалена", "success");
+            toast("Локация удалена","success");
         } else {
-            toast(res.error || "Ошибка при удалении", "error");
+            toast(res.error ||"Ошибка при удалении","error");
         }
         setUiState(prev => ({
             ...prev,
             deleteId: null,
             deleteName: null,
             deleteIsSystem: false,
-            deletePassword: ""
+            deletePassword:""
         }));
     };
 
@@ -172,7 +172,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             const result = await updateStorageLocationsOrder(itemsToUpdate);
             if (!result.success) {
                 setDataState(prev => ({ ...prev, localLocations: dataState.localLocations }));
-                toast(result.error || "Не удалось обновить порядок", "error");
+                toast(result.error ||"Не удалось обновить порядок","error");
             }
         }
     };
@@ -198,15 +198,14 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     items={dataState.localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="flex flex-wrap items-stretch justify-center w-full gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
+                    <div className="flex flex-wrap items-stretch justify-center w-full gap-3 sm:gap-3 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
                         {dataState.localLocations.map((loc) => (
                             <div
                                 key={loc.id}
-                                className={cn(
-                                    "transition-all duration-300 flex-grow",
+                                className={cn("transition-all duration-300 flex-grow",
                                     (stableLayouts[loc.id]?.isWide || (uiState.activeId && cardLayoutsRef.current.get(loc.id)?.isWide))
-                                        ? "min-w-[500px] flex-[1_1_600px]"
-                                        : "min-w-[300px] flex-[1_1_21%]"
+                                        ?"min-w-[500px] flex-[1_1_600px]"
+                                        :"min-w-[300px] flex-[1_1_21%]"
                                 )}
                             >
                                 <SortableLocationCard
@@ -313,8 +312,8 @@ const LocationCardContent = memo(({
 
     const grouped = loc.items?.reduce((acc: Record<string, { count: number, name: string }>, item) => {
         if (item.quantity > 0) {
-            const catId = item.categoryId || "other";
-            const catName = item.categoryName || "Прочее";
+            const catId = item.categoryId ||"other";
+            const catName = item.categoryName ||"Прочее";
             if (!acc[catId]) acc[catId] = { count: 0, name: catName };
             acc[catId].count += item.quantity;
         }
@@ -325,15 +324,14 @@ const LocationCardContent = memo(({
     const total = Object.values(grouped).reduce((sum, i) => sum + i.count, 0) || 1;
 
     return (
-        <div className={cn(
-            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[380px] crm-card shadow-sm p-5",
-            !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
-            isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
+        <div className={cn("group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[380px] crm-card shadow-sm p-5",
+            !loc.isActive && loc.isActive !== undefined &&"opacity-60 grayscale-[0.5]",
+            isOverlay ?"!border-primary !shadow-crm-xl z-[100]" :
                 isDefault
-                    ? "!border-primary/20 ring-4 ring-primary/5 shadow-crm-lg"
+                    ?"!border-primary/20 ring-4 ring-primary/5 shadow-crm-lg"
                     : isBrak
-                        ? "!bg-rose-50/30 !border-rose-100"
-                        : ""
+                        ?"!bg-rose-50/30 !border-rose-100"
+                        :""
         )}>
             <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-1 sm:gap-3 min-w-0">
@@ -344,21 +342,18 @@ const LocationCardContent = memo(({
                     >
                         <GripVertical className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                     </div>
-                    <span className={cn(
-                        "text-xs sm:text-xs font-bold px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-[4px] sm:rounded-[6px] border truncate shrink-0",
-                        loc.type === "warehouse" ? "bg-purple-50 text-purple-600 border-purple-100" :
-                            loc.type === "production" ? "bg-orange-50 text-orange-600 border-orange-100" :
-                                loc.type === "office" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                    "bg-slate-50 text-slate-500 border-slate-200"
+                    <span className={cn("text-xs sm:text-xs font-bold px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-[4px] sm:rounded-[6px] border truncate shrink-0",
+                        loc.type ==="warehouse" ?"bg-purple-50 text-purple-600 border-purple-100" :
+                            loc.type ==="production" ?"bg-orange-50 text-orange-600 border-orange-100" :
+                                loc.type ==="office" ?"bg-emerald-50 text-emerald-600 border-emerald-100" :"bg-slate-50 text-slate-500 border-slate-200"
                     )}>
-                        {loc.type === "warehouse" ? "Склад" :
-                            loc.type === "production" ? "Производство" :
-                                loc.type === "office" ? "Офис" : "Склад"}
+                        {loc.type ==="warehouse" ?"Склад" :
+                            loc.type ==="production" ?"Производство" :
+                                loc.type ==="office" ?"Офис" :"Склад"}
                     </span>
                 </div>
-                <div className={cn(
-                    "w-7 h-7 sm:w-12 sm:h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shrink-0",
-                    isDefault ? "bg-primary/10 text-primary" : "bg-slate-50 text-slate-400"
+                <div className={cn("w-7 h-7 sm:w-12 sm:h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shrink-0",
+                    isDefault ?"bg-primary/10 text-primary" :"bg-slate-50 text-slate-400"
                 )}>
                     <MapPin className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
                 </div>
@@ -385,7 +380,7 @@ const LocationCardContent = memo(({
                         {loc.isSystem && <Lock className="w-2 h-2 sm:w-3 sm:h-3 text-slate-300 shrink-0" />}
                     </div>
                     <p className="text-xs sm:text-xs font-bold text-slate-400 truncate">
-                        {loc.address || "Адрес не указан"}
+                        {loc.address ||"Адрес не указан"}
                     </p>
                 </div>
 
@@ -394,8 +389,8 @@ const LocationCardContent = memo(({
                         <div className="flex h-1 rounded-full overflow-hidden bg-slate-50/50 w-full mb-0.5 sm:mb-1">
                             {categoriesList.map((cat, idx) => {
                                 const percent = (cat.count / total) * 100;
-                                const colors = ["bg-primary", "bg-slate-700", "bg-slate-400", "bg-slate-200"];
-                                if (isBrak) colors[0] = "bg-rose-500";
+                                const colors = ["bg-primary","bg-slate-700","bg-slate-400","bg-slate-200"];
+                                if (isBrak) colors[0] ="bg-rose-500";
                                 return (
                                     <div
                                         key={idx}
@@ -426,7 +421,7 @@ const LocationCardContent = memo(({
                             <User className="w-2 sm:w-3 sm:h-3 text-slate-400" />
                         </div>
                         <span className="text-xs sm:text-xs font-bold text-slate-500 truncate">
-                            {loc.responsibleUser?.name || "Нет отв."}
+                            {loc.responsibleUser?.name ||"Нет отв."}
                         </span>
                     </div>
 
@@ -454,7 +449,7 @@ const LocationCardContent = memo(({
     );
 });
 
-LocationCardContent.displayName = "LocationCardContent";
+LocationCardContent.displayName ="LocationCardContent";
 
 const SortableLocationCard = memo(({
     loc,
@@ -519,10 +514,8 @@ const SortableLocationCard = memo(({
             ref={setNodeRef}
             style={style}
             onClick={onClick}
-            className={cn(
-                "group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-all duration-300 h-full",
-                "hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80 cursor-pointer",
-                isDragging ? "shadow-2xl ring-2 ring-primary/20 scale-[1.02] z-50 border-primary/30" : "shadow-sm"
+            className={cn("group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-all duration-300 h-full","hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80 cursor-pointer",
+                isDragging ?"shadow-2xl ring-2 ring-primary/20 scale-[1.02] z-50 border-primary/30" :"shadow-sm"
             )}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
         >
@@ -536,4 +529,4 @@ const SortableLocationCard = memo(({
     );
 });
 
-SortableLocationCard.displayName = "SortableLocationCard";
+SortableLocationCard.displayName ="SortableLocationCard";

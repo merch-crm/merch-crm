@@ -1,21 +1,21 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
-import { Upload, X, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ImageUploadProps } from "./types";
+import * as React from"react";
+import Image from"next/image";
+import { Upload, X, Loader2 } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { ImageUploadProps } from"./types";
 
 export function ImageUpload({
     value,
     onChange,
     onUpload,
-    accept = "image/*",
+    accept ="image/*",
     maxSize = 5 * 1024 * 1024,
     disabled = false,
-    placeholder = "Загрузить фото",
+    placeholder ="Загрузить фото",
     className,
-    size = "md",
+    size ="md",
 }: ImageUploadProps) {
     const [preview, setPreview] = React.useState<string | null>(value || null);
     const [isUploading, setIsUploading] = React.useState(false);
@@ -27,9 +27,9 @@ export function ImageUpload({
     }, [value]);
 
     const sizeClasses = {
-        sm: "w-20 h-20",
-        md: "w-32 h-32",
-        lg: "w-40 h-40",
+        sm:"w-20 h-20",
+        md:"w-32 h-32",
+        lg:"w-40 h-40",
     };
 
     const handleFile = async (file: File) => {
@@ -87,21 +87,20 @@ export function ImageUpload({
                 onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file) handleFile(file);
-                    e.target.value = "";
+                    e.target.value ="";
                 }}
                 className="sr-only"
             />
 
             <div role="button" tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => !disabled && !isUploading && inputRef.current?.click()}
-                className={cn(
-                    "w-full h-full rounded-xl border-2 border-dashed overflow-hidden cursor-pointer transition-all flex items-center justify-center",
+                className={cn("w-full h-full rounded-xl border-2 border-dashed overflow-hidden cursor-pointer transition-all flex items-center justify-center",
                     isDragging
-                        ? "border-primary bg-primary/5"
+                        ?"border-primary bg-primary/5"
                         : preview
-                            ? "border-transparent"
-                            : "border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100",
-                    disabled && "cursor-not-allowed opacity-50"
+                            ?"border-transparent"
+                            :"border-slate-200 hover:border-slate-300 bg-slate-50 hover:bg-slate-100",
+                    disabled &&"cursor-not-allowed opacity-50"
                 )}
             >
                 {preview ? (

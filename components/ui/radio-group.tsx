@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { cn } from "@/lib/utils";
+import * as React from"react";
+import * as RadioGroupPrimitive from"@radix-ui/react-radio-group";
+import { cn } from"@/lib/utils";
 
 const RadioGroupRoot = React.forwardRef<
     React.ElementRef<typeof RadioGroupPrimitive.Root>,
@@ -22,12 +22,7 @@ const RadioGroupItem = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <RadioGroupPrimitive.Item
         ref={ref}
-        className={cn(
-            "aspect-square h-5 w-5 rounded-full border-2 border-slate-300 text-primary",
-            "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2",
-            "disabled:cursor-not-allowed disabled:opacity-50",
-            "data-[state=checked]:border-primary",
-            "transition-colors",
+        className={cn("aspect-square h-5 w-5 rounded-full border-2 border-slate-300 text-primary","focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2","disabled:cursor-not-allowed disabled:opacity-50","data-[state=checked]:border-primary","transition-colors",
             className
         )}
         {...props}
@@ -52,7 +47,7 @@ interface RadioGroupProps {
     value: string;
     onValueChange: (value: string) => void;
     label?: string;
-    orientation?: "horizontal" | "vertical";
+    orientation?:"horizontal" |"vertical";
     className?: string;
 }
 
@@ -61,7 +56,7 @@ function RadioGroup({
     value,
     onValueChange,
     label,
-    orientation = "vertical",
+    orientation ="vertical",
     className,
 }: RadioGroupProps) {
     return (
@@ -73,15 +68,14 @@ function RadioGroup({
                 value={value}
                 onValueChange={onValueChange}
                 className={cn(
-                    orientation === "horizontal" ? "flex flex-wrap gap-3" : "grid gap-3"
+                    orientation ==="horizontal" ?"flex flex-wrap gap-3" :"grid gap-3"
                 )}
             >
                 {options.map((option) => (
                     <label
                         key={option.value}
-                        className={cn(
-                            "flex items-center gap-3 cursor-pointer",
-                            option.disabled && "cursor-not-allowed opacity-50"
+                        className={cn("flex items-center gap-3 cursor-pointer",
+                            option.disabled &&"cursor-not-allowed opacity-50"
                         )}
                     >
                         <RadioGroupItem value={option.value} disabled={option.disabled} />
@@ -121,10 +115,10 @@ function RadioCards({
     className,
 }: RadioCardsProps) {
     const gridCols = {
-        1: "grid-cols-1",
-        2: "grid-cols-1 sm:grid-cols-2",
-        3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-        4: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
+        1:"grid-cols-1",
+        2:"grid-cols-1 sm:grid-cols-2",
+        3:"grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+        4:"grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
     };
 
     return (
@@ -140,12 +134,11 @@ function RadioCards({
                 {options.map((option) => (
                     <label
                         key={option.value}
-                        className={cn(
-                            "relative flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
+                        className={cn("relative flex items-start gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all",
                             value === option.value
-                                ? "border-primary bg-primary/5"
-                                : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
-                            option.disabled && "cursor-not-allowed opacity-50"
+                                ?"border-primary bg-primary/5"
+                                :"border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+                            option.disabled &&"cursor-not-allowed opacity-50"
                         )}
                     >
                         <RadioGroupItem
@@ -176,7 +169,7 @@ interface RadioSegmentsProps {
     options: RadioOption[];
     value: string;
     onValueChange: (value: string) => void;
-    size?: "sm" | "md" | "lg";
+    size?:"sm" |"md" |"lg";
     className?: string;
 }
 
@@ -184,34 +177,32 @@ function RadioSegments({
     options,
     value,
     onValueChange,
-    size = "md",
+    size ="md",
     className,
 }: RadioSegmentsProps) {
     const sizeClasses = {
-        sm: "h-8 text-xs px-3",
-        md: "h-10 text-sm px-4",
-        lg: "h-12 text-sm px-6",
+        sm:"h-8 text-xs px-3",
+        md:"h-10 text-sm px-4",
+        lg:"h-12 text-sm px-6",
     };
 
     return (
         <RadioGroupRoot
             value={value}
             onValueChange={onValueChange}
-            className={cn(
-                "inline-flex rounded-lg bg-slate-100 p-1",
+            className={cn("inline-flex rounded-lg bg-slate-100 p-1",
                 className
             )}
         >
             {options.map((option) => (
                 <label
                     key={option.value}
-                    className={cn(
-                        "relative flex items-center justify-center rounded-md font-bold cursor-pointer transition-all",
+                    className={cn("relative flex items-center justify-center rounded-md font-bold cursor-pointer transition-all",
                         sizeClasses[size],
                         value === option.value
-                            ? "bg-white text-slate-900 shadow-sm"
-                            : "text-slate-500 hover:text-slate-700",
-                        option.disabled && "cursor-not-allowed opacity-50"
+                            ?"bg-white text-slate-900 shadow-sm"
+                            :"text-slate-500 hover:text-slate-700",
+                        option.disabled &&"cursor-not-allowed opacity-50"
                     )}
                 >
                     <RadioGroupPrimitive.Item
@@ -228,8 +219,8 @@ function RadioSegments({
 
 // Радио-карточки (визуально выделенные)
 interface ClientTypeRadioProps {
-    value: "b2b" | "b2c";
-    onValueChange: (value: "b2b" | "b2c") => void;
+    value:"b2b" |"b2c";
+    onValueChange: (value:"b2b" |"b2c") => void;
     className?: string;
 }
 
@@ -237,15 +228,15 @@ function ClientTypeRadio({ value, onValueChange, className }: ClientTypeRadioPro
     return (
         <RadioCards
             value={value}
-            onValueChange={(v) => onValueChange(v as "b2b" | "b2c")}
+            onValueChange={(v) => onValueChange(v as"b2b" |"b2c")}
             label="Тип клиента"
             columns={2}
             className={className}
             options={[
                 {
-                    value: "b2c",
-                    label: "B2C",
-                    description: "Физическое лицо, розничный покупатель",
+                    value:"b2c",
+                    label:"B2C",
+                    description:"Физическое лицо, розничный покупатель",
                     icon: (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -253,9 +244,9 @@ function ClientTypeRadio({ value, onValueChange, className }: ClientTypeRadioPro
                     ),
                 },
                 {
-                    value: "b2b",
-                    label: "B2B",
-                    description: "Юридическое лицо, оптовый клиент",
+                    value:"b2b",
+                    label:"B2B",
+                    description:"Юридическое лицо, оптовый клиент",
                     icon: (
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -302,12 +293,11 @@ function RadioIcons({
                 {options.map((option) => (
                     <label
                         key={option.value}
-                        className={cn(
-                            "flex flex-col items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all min-w-[72px]",
+                        className={cn("flex flex-col items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all min-w-[72px]",
                             value === option.value
-                                ? "border-primary bg-primary/5 text-primary"
-                                : "border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-700",
-                            option.disabled && "cursor-not-allowed opacity-50"
+                                ?"border-primary bg-primary/5 text-primary"
+                                :"border-slate-200 hover:border-slate-300 text-slate-500 hover:text-slate-700",
+                            option.disabled &&"cursor-not-allowed opacity-50"
                         )}
                     >
                         <RadioGroupPrimitive.Item
@@ -359,9 +349,8 @@ function RadioColors({
                 {options.map((option) => (
                     <label
                         key={option.value}
-                        className={cn(
-                            "relative cursor-pointer",
-                            option.disabled && "cursor-not-allowed opacity-50"
+                        className={cn("relative cursor-pointer",
+                            option.disabled &&"cursor-not-allowed opacity-50"
                         )}
                         title={option.label}
                     >
@@ -371,20 +360,18 @@ function RadioColors({
                             className="sr-only peer"
                         />
                         <div
-                            className={cn(
-                                "w-8 h-8 rounded-full border-2 transition-all",
+                            className={cn("w-8 h-8 rounded-full border-2 transition-all",
                                 value === option.value
-                                    ? "border-slate-900 scale-110"
-                                    : "border-transparent hover:scale-105"
+                                    ?"border-slate-900 scale-110"
+                                    :"border-transparent hover:scale-105"
                             )}
                             style={{ backgroundColor: option.color }}
                         />
                         {value === option.value && (
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <svg
-                                    className={cn(
-                                        "w-4 h-4",
-                                        isLightColor(option.color) ? "text-slate-900" : "text-white"
+                                    className={cn("w-4 h-4",
+                                        isLightColor(option.color) ?"text-slate-900" :"text-white"
                                     )}
                                     fill="none"
                                     viewBox="0 0 24 24"

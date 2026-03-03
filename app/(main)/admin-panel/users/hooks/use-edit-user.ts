@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
-import { updateUser } from "../../actions/users.actions";
-import { getRoles } from "../../actions/roles.actions";
-import { getDepartments } from "../../actions/departments.actions";
-import type { User } from "@/lib/types";
+import { useState, useEffect, useCallback } from"react";
+import { updateUser } from"../../actions/users.actions";
+import { getRoles } from"../../actions/roles.actions";
+import { getDepartments } from"../../actions/departments.actions";
+import type { User } from"@/lib/types";
 
-type UserEditInput = Pick<User, "id" | "name" | "email" | "roleId" | "departmentId">;
+type UserEditInput = Pick<User,"id" |"name" |"email" |"roleId" |"departmentId">;
 
 export function useEditUser(
     user: UserEditInput | null,
@@ -18,8 +18,8 @@ export function useEditUser(
         departments: [] as { id: string, name: string }[],
         error: null as string | null,
         showPassword: false,
-        selectedRoleId: user?.roleId || "",
-        selectedDeptId: user?.departmentId || ""
+        selectedRoleId: user?.roleId ||"",
+        selectedDeptId: user?.departmentId ||""
     });
 
     const updateState = useCallback((updates: Partial<typeof state>) => {
@@ -44,8 +44,8 @@ export function useEditUser(
     useEffect(() => {
         if (user && isOpen) {
             updateState({
-                selectedRoleId: user.roleId || "",
-                selectedDeptId: user.departmentId || ""
+                selectedRoleId: user.roleId ||"",
+                selectedDeptId: user.departmentId ||""
             });
         }
     }, [user, isOpen, updateState]);

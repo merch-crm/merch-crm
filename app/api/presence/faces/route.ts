@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
         }
 
         const faces = await db.query.employeeFaces.findMany({
+        limit: 500,
             where: eq(employeeFaces.isActive, true)
         })
 

@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
-import Image from "next/image";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import React, { useEffect } from"react";
+import Image from"next/image";
+import { X, ChevronLeft, ChevronRight } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
 
 interface GalleryImage {
     src: string;
@@ -30,9 +30,9 @@ export const ItemGalleryOverlay = React.memo(({
         if (!isOpen) return;
 
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Escape") onClose();
-            if (e.key === "ArrowLeft") onIndexChange(prev => (typeof prev === 'number' ? (prev - 1 + images.length) % images.length : prev));
-            if (e.key === "ArrowRight") onIndexChange(prev => (typeof prev === 'number' ? (prev + 1) % images.length : prev));
+            if (e.key ==="Escape") onClose();
+            if (e.key ==="ArrowLeft") onIndexChange(prev => (typeof prev === 'number' ? (prev - 1 + images.length) % images.length : prev));
+            if (e.key ==="ArrowRight") onIndexChange(prev => (typeof prev === 'number' ? (prev + 1) % images.length : prev));
         };
 
         window.addEventListener("keydown", handleKeyDown);
@@ -131,11 +131,10 @@ export const ItemGalleryOverlay = React.memo(({
                             e.stopPropagation();
                             onIndexChange(i);
                         }}
-                        className={cn(
-                            "relative w-16 h-16 rounded-3xl overflow-hidden border-2 transition-all duration-300 p-0 shrink-0",
+                        className={cn("relative w-16 h-16 rounded-3xl overflow-hidden border-2 transition-all duration-300 p-0 shrink-0",
                             i === currentIndex
-                                ? "border-primary scale-110 shadow-lg shadow-primary/20"
-                                : "border-transparent opacity-40 hover:opacity-100"
+                                ?"border-primary scale-110 shadow-lg shadow-primary/20"
+                                :"border-transparent opacity-40 hover:opacity-100"
                         )}
                     >
                         <Image src={img.src} alt={`Миниатюра ${i + 1}: ${img.label}`} fill className="object-cover" unoptimized />
@@ -146,4 +145,4 @@ export const ItemGalleryOverlay = React.memo(({
     );
 });
 
-ItemGalleryOverlay.displayName = "ItemGalleryOverlay";
+ItemGalleryOverlay.displayName ="ItemGalleryOverlay";

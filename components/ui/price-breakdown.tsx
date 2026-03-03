@@ -1,1 +1,1 @@
-export * from "./price-breakdown/index";
+export * from"./price-breakdown/index";

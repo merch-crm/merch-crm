@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     ArrowRight,
     ChevronRight,
@@ -10,7 +10,7 @@ import {
     Send,
     ArrowUpRight,
     Sparkles
-} from "lucide-react";
+} from"lucide-react";
 
 export default function AquaflowLandingCRM() {
     return (
@@ -32,7 +32,7 @@ export default function AquaflowLandingCRM() {
                 </div>
 
                 <nav className="hidden md:flex items-center gap-3">
-                    {["Shop", "Our Story", "Sustainability", "Contact"].map((item) => (
+                    {["Shop","Our Story","Sustainability","Contact"].map((item) => (
                         <a key={item} href="#" className="text-xs font-bold  text-slate-400 hover:text-primary transition-colors">
                             {item}
                         </a>
@@ -121,9 +121,9 @@ export default function AquaflowLandingCRM() {
             {/* Partners/Stats Footer */}
             <div className="mt-12 flex flex-wrap items-center justify-between gap-3 pt-8 border-t border-slate-200 relative z-10 px-4">
                 {[
-                    { label: "Used by", val: "10k+", sub: "customers" },
-                    { label: "Rated", val: "4.9/5", sub: "stars" },
-                    { label: "Carbon", val: "0.0kg", sub: "neutral" },
+                    { label:"Used by", val:"10k+", sub:"customers" },
+                    { label:"Rated", val:"4.9/5", sub:"stars" },
+                    { label:"Carbon", val:"0.0kg", sub:"neutral" },
                 ].map((stat, i) => (
                     <div key={i} className="flex items-center gap-3">
                         <div className="text-xs font-bold  text-slate-400">{stat.label}:</div>

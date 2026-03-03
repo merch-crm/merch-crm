@@ -1,21 +1,21 @@
 "use server";
 
-import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
-import { revalidatePath } from "next/cache";
-import { eq, and, gte, sql, desc } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema } from "../validation";
-import { ActionResult } from "@/lib/types";
-import { releaseOrderReservation } from "./utils";
+import { db } from"@/lib/db";
+import * as schema from"@/lib/schema";
+import { revalidatePath } from"next/cache";
+import { eq, and, gte, sql, desc } from"drizzle-orm";
+import { getSession } from"@/lib/auth";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema } from"../validation";
+import { ActionResult } from"@/lib/types";
+import { releaseOrderReservation } from"./utils";
 
 const { orders, inventoryItems, inventoryTransactions, inventoryStocks } = schema;
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const validated = UpdateOrderStatusSchema.safeParse({ orderId, newStatus, reason });
@@ -32,13 +32,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             if (oldStatus === newStatus) return;
 
             // Status transition validation
-            const allowedTransitions: Record<string, string[]> = {
-                "new": ["design", "production", "cancelled"],
-                "design": ["new", "production", "cancelled"],
-                "production": ["done", "cancelled"],
-                "done": ["shipped", "cancelled"],
-                "shipped": ["cancelled"],
-                "cancelled": ["new", "design", "production"]
+            const allowedTransitions: Record<string, string[]> = {"new": ["design","production","cancelled"],"design": ["new","production","cancelled"],"production": ["done","cancelled"],"done": ["shipped","cancelled"],"shipped": ["cancelled"],"cancelled": ["new","design","production"]
             };
 
             const allowed = allowedTransitions[oldStatus as string] || [];
@@ -47,9 +41,9 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             }
 
             // Stock Adjustment Logic
-            const deductionStatuses = ["shipped", "done"];
+            const deductionStatuses = ["shipped","done"];
             const isDeduction = deductionStatuses.includes(newStatus) && !deductionStatuses.includes(oldStatus as string);
-            const isCancellation = (newStatus === "cancelled") && (oldStatus !== "cancelled") && !deductionStatuses.includes(oldStatus as string);
+            const isCancellation = (newStatus ==="cancelled") && (oldStatus !=="cancelled") && !deductionStatuses.includes(oldStatus as string);
 
             for (const item of order.items) {
                 const inventory = (item as typeof item & { inventory: typeof inventoryItems.$inferSelect | null }).inventory;
@@ -80,11 +74,11 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
                         await tx.insert(inventoryTransactions).values({
                             itemId: item.inventoryId,
                             changeAmount: -qty,
-                            type: "out",
+                            type:"out",
                             reason: `Отгрузка: Заказ #${order.orderNumber}`,
                             createdBy: session.id,
                             storageLocationId: bestStock?.storageLocationId || null,
-                            costPrice: inventoryItemData.costPrice || "0",
+                            costPrice: inventoryItemData.costPrice ||"0",
                         });
                     } else if (isCancellation) {
                         await releaseOrderReservation(orderId, tx);
@@ -101,7 +95,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
                 })
                 .where(eq(orders.id, orderId));
 
-            await logAction("Обновлен статус", "order", orderId, { from: oldStatus, to: newStatus }, tx);
+            await logAction("Обновлен статус","order", orderId, { from: oldStatus, to: newStatus }, tx);
 
             const { autoGenerateTasks } = await import("@/lib/automations");
             await autoGenerateTasks(orderId, newStatus as typeof orders.$inferSelect.status, session.id);
@@ -111,27 +105,27 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch (error) {
-        await logError({ error, path: `/dashboard/orders/${orderId}`, method: "updateOrderStatus" });
-        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
+        await logError({ error, path: `/dashboard/orders/${orderId}`, method:"updateOrderStatus" });
+        return { success: false, error: error instanceof Error ? error.message :"Ошибка" };
     }
 }
 
 export async function updateOrderPriority(orderId: string, newPriority: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const validated = UpdateOrderPrioritySchema.safeParse({ priority: newPriority });
-        if (!validated.success) return { success: false, error: "Некорректный приоритет" };
+        if (!validated.success) return { success: false, error:"Некорректный приоритет" };
 
         await db.update(orders).set({ priority: validated.data.priority, updatedAt: new Date() }).where(eq(orders.id, orderId));
-        await logAction("Обновлен приоритет", "order", orderId, { priority: newPriority });
+        await logAction("Обновлен приоритет","order", orderId, { priority: newPriority });
 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch (error) {
-        await logError({ error, path: `/dashboard/orders/${orderId}`, method: "updateOrderPriority" });
-        return { success: false, error: "Ошибка" };
+        await logError({ error, path: `/dashboard/orders/${orderId}`, method:"updateOrderPriority" });
+        return { success: false, error:"Ошибка" };
     }
 }

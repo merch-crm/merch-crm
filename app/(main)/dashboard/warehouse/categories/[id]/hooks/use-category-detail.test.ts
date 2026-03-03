@@ -72,8 +72,8 @@ describe('useCategoryDetail', () => {
     it('sets breadcrumbs on mount', () => {
         renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
         expect(mockSetCustomTrail).toHaveBeenCalledWith([
-            { label: "Склад", href: "/dashboard/warehouse" },
-            { label: "Одежда", href: "/dashboard/warehouse/categories/cat-1" }
+            { label:"Склад", href:"/dashboard/warehouse" },
+            { label:"Одежда", href:"/dashboard/warehouse/categories/cat-1" }
         ]);
     });
 
@@ -111,7 +111,7 @@ describe('useCategoryDetail', () => {
         const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         act(() => {
-            result.current.setFilters(prev => ({ ...prev, search: "test" }));
+            result.current.setFilters(prev => ({ ...prev, search:"test" }));
         });
 
         // Effect runs to update URL

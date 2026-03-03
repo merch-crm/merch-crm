@@ -1,4 +1,4 @@
-import { SkeletonStats, SkeletonTable } from "@/components/ui/skeleton";
+import { SkeletonStats, SkeletonTable } from"@/components/ui/skeleton";
 
 export default function ClientsLoading() {
     return (

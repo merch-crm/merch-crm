@@ -1,7 +1,7 @@
 "use client";
 
-import { Palette, Clock, CheckCircle2, Sparkles } from "lucide-react";
-import { ModernStatCard } from "@/components/ui/stat-card";
+import { Palette, Clock, CheckCircle2, Sparkles } from"lucide-react";
+import { ModernStatCard } from"@/components/ui/stat-card";
 
 interface DesignStatsProps {
     stats: {

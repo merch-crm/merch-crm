@@ -1,8 +1,8 @@
-import { useItemDetail } from "../context/ItemDetailContext";
-import { ItemGeneralInfo } from "./ItemGeneralInfo";
-import { LayoutGrid, Book } from "lucide-react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { useItemDetail } from"../context/ItemDetailContext";
+import { ItemGeneralInfo } from"./ItemGeneralInfo";
+import { LayoutGrid, Book } from"lucide-react";
+import Link from"next/link";
+import { cn } from"@/lib/utils";
 
 export function ItemCharacteristicSection() {
     const {
@@ -22,11 +22,8 @@ export function ItemCharacteristicSection() {
 
     return (
         <div className={
-            cn(
-                "crm-card rounded-3xl p-4 sm:p-6 bg-card/50 h-full",
-                "md:col-span-2 xl:col-span-8 xl:row-span-2",
-                tabletTab === 'characteristic' ? "flex flex-col" : "hidden",
-                "xl:flex xl:flex-col"
+            cn("crm-card rounded-3xl p-4 sm:p-6 bg-card/50 h-full","md:col-span-2 xl:col-span-8 xl:row-span-2",
+                tabletTab === 'characteristic' ?"flex flex-col" :"hidden","xl:flex xl:flex-col"
             )}>
             <div className="flex items-center justify-between gap-3 mb-8">
                 <div className="flex items-center gap-3">

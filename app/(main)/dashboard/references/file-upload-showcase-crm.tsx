@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { CloudUpload, Trash2, X } from "lucide-react";
+import React from"react";
+import { motion } from"framer-motion";
+import { CloudUpload, Trash2, X } from"lucide-react";
 
 export default function FileUploadShowcaseCRM() {
     return (
-        <section className="space-y-12 py-12 flex flex-col items-center bg-[#f2f4f6] rounded-[3rem]">
+        <section className="space-y-3 py-12 flex flex-col items-center bg-[#f2f4f6] rounded-[3rem]">
             <div className="flex items-center gap-3 self-start px-12 mb-[-1rem]">
                 <div className="h-8 w-1 bg-slate-900 rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">File Uploader</h2>
@@ -81,9 +81,9 @@ export default function FileUploadShowcaseCRM() {
                         {/* Progress Bar Container */}
                         <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
                             <motion.div
-                                initial={{ width: "0%" }}
-                                whileInView={{ width: "50%" }}
-                                transition={{ duration: 1.5, ease: "easeInOut" }}
+                                initial={{ width:"0%" }}
+                                whileInView={{ width:"50%" }}
+                                transition={{ duration: 1.5, ease:"easeInOut" }}
                                 className="h-full bg-slate-900 rounded-full"
                             />
                         </div>

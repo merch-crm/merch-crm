@@ -1,14 +1,14 @@
 "use client";
 
-import { Plus, MapPin, Building, RefreshCw, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { cn } from "@/lib/utils";
-import { Select, SelectOption } from "@/components/ui/select";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Input } from "@/components/ui/input";
-import { SwitchRow } from "@/components/ui/switch-row";
-import { useAddStorageLocation } from "./hooks/use-add-storage-location";
+import { Plus, MapPin, Building, RefreshCw, AlertCircle } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { cn } from"@/lib/utils";
+import { Select, SelectOption } from"@/components/ui/select";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Input } from"@/components/ui/input";
+import { SwitchRow } from"@/components/ui/switch-row";
+import { useAddStorageLocation } from"./hooks/use-add-storage-location";
 
 
 interface AddStorageLocationDialogProps {
@@ -39,7 +39,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
     const userOptions: SelectOption[] = (users || []).map((u: { id: string; name: string }) => ({
         id: u.id,
         title: u.name,
-        description: "Сотрудник компании"
+        description:"Сотрудник компании"
     }));
 
     return (
@@ -63,8 +63,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                 <Button
                     type="button"
                     onClick={() => setIsOpen(true)}
-                    className={cn(
-                        "h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
+                    className={cn("h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
                         className
                     )}
                 >
@@ -105,7 +104,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                     >
                         <input type="hidden" name="responsibleUserId" value={responsibleUserId} />
                         <input type="hidden" name="type" value={type} />
-                        <input type="hidden" name="isDefault" value={isDefault ? "on" : ""} />
+                        <input type="hidden" name="isDefault" value={isDefault ?"on" :""} />
 
 
 
@@ -118,11 +117,10 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                     name="name"
                                     placeholder="Центральный склад"
                                     disabled={isPending}
-                                    className={cn(
-                                        "w-full h-12 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm",
+                                    className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm",
                                         fieldErrors.name
-                                            ? "border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5"
-                                            : ""
+                                            ?"border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5"
+                                            :""
                                     )}
                                     onChange={() => clearFieldError("name")}
                                     required
@@ -137,13 +135,13 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Тип</label>
                                 <Select
                                     options={[
-                                        { id: "warehouse", title: "Склад", icon: <Building className="w-4 h-4" /> },
-                                        { id: "production", title: "Производство", icon: <RefreshCw className="w-4 h-4" /> },
-                                        { id: "office", title: "Офис", icon: <Building className="w-4 h-4" /> }
+                                        { id:"warehouse", title:"Склад", icon: <Building className="w-4 h-4" /> },
+                                        { id:"production", title:"Производство", icon: <RefreshCw className="w-4 h-4" /> },
+                                        { id:"office", title:"Офис", icon: <Building className="w-4 h-4" /> }
                                     ]}
                                     value={type}
                                     disabled={isPending}
-                                    onChange={(val) => setType(val as "warehouse" | "production" | "office")}
+                                    onChange={(val) => setType(val as"warehouse" |"production" |"office")}
                                     variant="default"
                                     align="end"
                                     triggerClassName="bg-slate-50"
@@ -161,11 +159,10 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                                     name="address"
                                     placeholder="Ул. Промышленная, д. 15..."
                                     disabled={isPending}
-                                    className={cn(
-                                        "w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm",
+                                    className={cn("w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm",
                                         fieldErrors.address
-                                            ? "border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5"
-                                            : ""
+                                            ?"border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5"
+                                            :""
                                     )}
                                     onChange={() => clearFieldError("address")}
                                     required
@@ -199,9 +196,8 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                             onCheckedChange={setIsDefault}
                             disabled={isPending}
                             variant="primary"
-                            iconClassName={cn(
-                                "transition-all",
-                                isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400"
+                            iconClassName={cn("transition-all",
+                                isDefault ?"bg-primary text-white border-primary shadow-primary/20" :"bg-white text-slate-400"
                             )}
                             onClick={() => !isPending && setIsDefault(!isDefault)}
                         />

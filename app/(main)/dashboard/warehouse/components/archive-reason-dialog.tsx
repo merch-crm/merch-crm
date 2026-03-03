@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Archive, AlertCircle, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useState } from"react";
+import { Archive, AlertCircle, RefreshCw } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
 
 interface ArchiveReasonDialogProps {
     isOpen: boolean;
@@ -59,7 +59,7 @@ export function ArchiveReasonDialog({
             >
                 {isLoading ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
-                ) : "Архивировать"}
+                ) :"Архивировать"}
             </Button>
         </div>
     );
@@ -99,11 +99,10 @@ export function ArchiveReasonDialog({
                                     if (error) setError(false);
                                 }}
                                 placeholder="…"
-                                className={cn(
-                                    "w-full min-h-[140px] p-4 rounded-[var(--radius-inner)] border text-sm font-semibold transition-all outline-none resize-none placeholder:text-slate-300",
+                                className={cn("w-full min-h-[140px] p-4 rounded-[var(--radius-inner)] border text-sm font-semibold transition-all outline-none resize-none placeholder:text-slate-300",
                                     error
-                                        ? "bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
-                                        : "bg-slate-50 border-slate-200 text-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm"
+                                        ?"bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
+                                        :"bg-slate-50 border-slate-200 text-slate-900 focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm"
                                 )}
                             />
                             {error && (

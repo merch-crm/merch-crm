@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { Truck } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { DeliveryTrackerCompactProps } from "./types";
-import { PROVIDER_CONFIG, STATUS_CONFIG } from "./constants";
+import * as React from"react";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { Truck } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { DeliveryTrackerCompactProps } from"./types";
+import { PROVIDER_CONFIG, STATUS_CONFIG } from"./constants";
 
 export function DeliveryTrackerCompact({ delivery, onClick, className }: DeliveryTrackerCompactProps) {
     const providerConfig = PROVIDER_CONFIG[delivery.provider];
@@ -15,9 +15,8 @@ export function DeliveryTrackerCompact({ delivery, onClick, className }: Deliver
     return (
         <div role="button" tabIndex={0}
             onClick={onClick}
-            className={cn(
-                "p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-colors",
-                onClick && "cursor-pointer",
+            className={cn("p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-colors",
+                onClick &&"cursor-pointer",
                 className
             )}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
@@ -51,9 +50,9 @@ export function DeliveryTrackerCompact({ delivery, onClick, className }: Deliver
             )}
 
             {/* Дата */}
-            {delivery.estimatedDelivery && delivery.status !== "delivered" && (
+            {delivery.estimatedDelivery && delivery.status !=="delivered" && (
                 <p className="text-xs text-slate-500 mt-2">
-                    Ожидается {format(delivery.estimatedDelivery, "d MMMM", { locale: ru })}
+                    Ожидается {format(delivery.estimatedDelivery,"d MMMM", { locale: ru })}
                 </p>
             )}
         </div>

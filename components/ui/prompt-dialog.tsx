@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Edit3, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useState } from"react";
+import { Edit3, AlertCircle } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
 
 interface PromptDialogProps {
     isOpen: boolean;
@@ -29,10 +29,10 @@ export function PromptDialog({
     description,
     label,
     placeholder,
-    confirmText = "Подтвердить",
-    cancelText = "Отмена",
+    confirmText ="Подтвердить",
+    cancelText ="Отмена",
     isLoading = false,
-    initialValue = "",
+    initialValue ="",
     inputProps
 }: PromptDialogProps) {
     const [value, setValue] = useState(initialValue);
@@ -65,7 +65,7 @@ export function PromptDialog({
                             <Edit3 className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-900 ">{title}</h3>
+                            <h3 className="text-xl font-black text-slate-900">{title}</h3>
                         </div>
                     </div>
                 </div>
@@ -95,11 +95,10 @@ export function PromptDialog({
                                 if (e.key === 'Enter') handleConfirm();
                             }}
                             placeholder={placeholder}
-                            className={cn(
-                                "w-full h-12 px-5 rounded-2xl border text-sm font-semibold transition-all outline-none placeholder:text-slate-300",
+                            className={cn("w-full h-12 px-5 rounded-2xl border text-sm font-semibold transition-all outline-none placeholder:text-slate-300",
                                 error
-                                    ? "bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
-                                    : "bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
+                                    ?"bg-rose-50 border-rose-200 text-rose-900 focus:border-rose-300"
+                                    :"bg-slate-50 border-slate-200 text-slate-900 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10"
                             )}
                             {...inputProps}
                         />
@@ -126,7 +125,7 @@ export function PromptDialog({
                             disabled={isLoading || !value.trim()}
                             className="flex-[2] h-11 rounded-[var(--radius-inner)] bg-primary shadow-xl shadow-primary/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-50 border-none"
                         >
-                            {isLoading ? "Сохранение..." : confirmText}
+                            {isLoading ?"Сохранение..." : confirmText}
                         </Button>
                     </div>
                 </div>

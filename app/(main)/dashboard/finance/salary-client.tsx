@@ -4,11 +4,11 @@ import {
     Activity,
     Users,
     Briefcase
-} from "lucide-react";
-import { pluralize } from "@/lib/pluralize";
-import { SalaryStats } from "./actions";;
-import { useBranding } from "@/components/branding-provider";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+} from"lucide-react";
+import { pluralize } from"@/lib/pluralize";
+import { SalaryStats } from"./actions";;
+import { useBranding } from"@/components/branding-provider";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
 
 interface SalaryClientProps {
     salaryData: SalaryStats;
@@ -57,7 +57,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
             <div className="space-y-3">
                 {Object.entries(
                     salaryData.employeePayments.reduce((acc, emp) => {
-                        const dept = emp.department || "Общий";
+                        const dept = emp.department ||"Общий";
                         if (!acc[dept]) acc[dept] = [];
                         acc[dept].push(emp);
                         return acc;

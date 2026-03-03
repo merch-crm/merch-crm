@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { refundOrder } from "../actions/financials.actions";;
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Undo2 } from "lucide-react";
-import { useBranding } from "@/components/branding-provider";
+import { useState } from"react";
+import { useRouter } from"next/navigation";
+import { refundOrder } from"../actions/financials.actions";;
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Label } from"@/components/ui/label";
+import { Undo2 } from"lucide-react";
+import { useBranding } from"@/components/branding-provider";
 
 interface RefundDialogProps {
     orderId: string;
@@ -28,12 +28,12 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
 
     const handleRefund = async () => {
         if (!amount || Number(amount) <= 0) {
-            toast("Укажите корректную сумму", "error");
+            toast("Укажите корректную сумму","error");
             playSound("notification_error");
             return;
         }
         if (!reason) {
-            toast("Укажите причину возврата", "error");
+            toast("Укажите причину возврата","error");
             playSound("notification_error");
             return;
         }
@@ -43,12 +43,12 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
         setIsPending(false);
 
         if (res.success) {
-            toast("Возврат оформлен", "success");
+            toast("Возврат оформлен","success");
             playSound("expense_added");
             setIsOpen(false);
             router.refresh();
         } else {
-            toast(res.error || "Ошибка при оформлении возврата", "error");
+            toast(res.error ||"Ошибка при оформлении возврата","error");
             playSound("notification_error");
         }
     };
@@ -118,7 +118,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
                             disabled={isPending}
                             className="h-11 w-full md:w-auto md:px-10 rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-rose-500/20 transition-all active:scale-95"
                         >
-                            {isPending ? "Обработка..." : "Подтвердить возврат"}
+                            {isPending ?"Обработка..." :"Подтвердить возврат"}
                         </Button>
                     </div>
                 </div>

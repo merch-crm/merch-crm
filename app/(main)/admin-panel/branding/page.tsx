@@ -1,6 +1,6 @@
-import { getBrandingSettings, getIconGroups } from "./actions";
-import { BrandingForm } from "./branding-form";
-import { PageContainer } from "@/components/ui/page-container";
+import { getBrandingSettings, getIconGroups } from"./actions";
+import { BrandingForm } from"./branding-form";
+import { PageContainer } from"@/components/ui/page-container";
 
 export default async function BrandingPage() {
     const [settings, iconGroups] = await Promise.all([

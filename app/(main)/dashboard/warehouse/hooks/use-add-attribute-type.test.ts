@@ -87,7 +87,7 @@ describe('useAddAttributeType', () => {
         });
 
         expect(result.current.isOpen).toBe(true);
-        expect(result.current.dataType).toBe('text'); // reset to default "text"
+        expect(result.current.dataType).toBe('text'); // reset to default"text"
         expect(result.current.name).toBe('Общая'); // auto-derived from 'text'
         expect(result.current.hasColor).toBe(false);
         expect(result.current.error).toBeNull();

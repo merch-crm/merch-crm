@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { subDays, isAfter, differenceInCalendarDays } from "date-fns";
-import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
+import { useMemo } from"react";
+import { subDays, isAfter, differenceInCalendarDays } from"date-fns";
+import { ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
 
 interface UseItemAnalyticsProps {
     history: ItemHistoryTransaction[];
@@ -32,7 +32,7 @@ export function useItemAnalytics({ history = [], currentQuantity, lowStockThresh
         (history || []).forEach(tx => {
             const txDate = new Date(tx.createdAt);
             const amount = Math.abs(tx.changeAmount);
-            const reason = (tx.reason || "").toLowerCase();
+            const reason = (tx.reason ||"").toLowerCase();
 
             if (isAfter(txDate, last30Days)) {
                 // Current 30 days

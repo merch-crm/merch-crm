@@ -21,7 +21,7 @@ export function StaffHeader({ session, branding }: StaffHeaderProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
-        <header className="sticky top-0 z-40 flex h-16 items-center gap-4 border-b border-slate-200 bg-white px-4 lg:px-6">
+        <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-slate-200 bg-white px-4 lg:px-6">
             <Button
                 variant="ghost"
                 size="icon"

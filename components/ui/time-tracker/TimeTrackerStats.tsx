@@ -1,8 +1,8 @@
-import * as React from "react";
-import { Clock, CalendarDays, Timer } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatDurationLong } from "./utils";
-import { TimeTrackerStatsProps } from "./types";
+import * as React from"react";
+import { Clock, CalendarDays, Timer } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { formatDurationLong } from"./utils";
+import { TimeTrackerStatsProps } from"./types";
 
 export function TimeTrackerStats({
     periodLabel,

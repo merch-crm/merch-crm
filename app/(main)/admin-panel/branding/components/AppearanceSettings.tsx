@@ -1,16 +1,16 @@
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ColorPicker } from "@/components/ui/color-picker";
-import { Loader2, Upload, X, MousePointer2, Eye, EyeOff, Moon, Sun, Image as LucideImage } from "lucide-react";
-import { BrandingSettings, BrandingUiState } from "../hooks/useBrandingForm";
-import { IconManager } from "../icon-manager";
-import { SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
+import Image from"next/image";
+import { Button } from"@/components/ui/button";
+import { ColorPicker } from"@/components/ui/color-picker";
+import { Loader2, Upload, X, MousePointer2, Eye, EyeOff, Moon, Sun, Image as LucideImage } from"lucide-react";
+import { BrandingSettings, BrandingUiState } from"../hooks/useBrandingForm";
+import { IconManager } from"../icon-manager";
+import { SerializedIconGroup } from"@/app/(main)/dashboard/warehouse/category-utils";
 
 interface AppearanceSettingsProps {
     formData: BrandingSettings;
     setFormData: React.Dispatch<React.SetStateAction<BrandingSettings>>;
     ui: BrandingUiState;
-    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "favicon" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => Promise<void>;
+    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type:"logo" |"favicon" |"background" |"print_logo" |"sound" |"crm_background" |"email_logo", soundKey?: string) => Promise<void>;
     initialIconGroups: SerializedIconGroup[];
 }
 
@@ -34,7 +34,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                             <div>
                                 <ColorPicker
                                     label="Фоновый цвет CRM"
-                                    color={formData.backgroundColor || "#f2f2f2"}
+                                    color={formData.backgroundColor ||"#f2f2f2"}
                                     onChange={(newColor) => setFormData(prev => ({ ...prev, backgroundColor: newColor }))}
                                 />
                                 <p className="text-xs text-slate-400 mt-2">Основной фон страниц</p>
@@ -79,7 +79,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                         id="crm-bg-u"
                                         className="hidden"
                                         accept="image/*"
-                                        onChange={(e) => handleFileUpload(e, "crm_background")}
+                                        onChange={(e) => handleFileUpload(e,"crm_background")}
                                     />
                                     <Button
                                         type="button"
@@ -233,7 +233,7 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                         id="bg-u"
                                         className="hidden"
                                         accept="image/*"
-                                        onChange={(e) => handleFileUpload(e, "background")}
+                                        onChange={(e) => handleFileUpload(e,"background")}
                                     />
                                     <Button
                                         type="button"
@@ -277,9 +277,9 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                     ) : <div className="h-14 w-14 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><LucideImage className="w-6 h-6" /></div>}
                                 </div>
                                 <div className="flex-1">
-                                    <input type="file" id="logo-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "logo")} />
+                                    <input type="file" id="logo-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e,"logo")} />
                                     <Button type="button" variant="outline" className="w-full h-11 px-4 bg-white font-bold rounded-xl border-slate-200" onClick={() => document.getElementById("logo-u")?.click()} disabled={ui.uploads.logo}>
-                                        {ui.uploads.logo ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />} {formData.logoUrl ? "Заменить" : "Загрузить лого"}
+                                        {ui.uploads.logo ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />} {formData.logoUrl ?"Заменить" :"Загрузить лого"}
                                     </Button>
                                 </div>
                             </div>
@@ -306,9 +306,9 @@ export function AppearanceSettings({ formData, setFormData, ui, handleFileUpload
                                     ) : <div className="h-12 w-12 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><LucideImage className="w-5 h-5" /></div>}
                                 </div>
                                 <div className="flex-1">
-                                    <input type="file" id="fav-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "favicon")} />
+                                    <input type="file" id="fav-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e,"favicon")} />
                                     <Button type="button" variant="outline" className="w-full h-11 px-4 bg-white font-bold rounded-xl border-slate-200" onClick={() => document.getElementById("fav-u")?.click()} disabled={ui.uploads.favicon}>
-                                        {ui.uploads.favicon ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />} {formData.faviconUrl ? "Заменить" : "Загрузить иконку"}
+                                        {ui.uploads.favicon ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Upload className="w-4 h-4 mr-2" />} {formData.faviconUrl ?"Заменить" :"Загрузить иконку"}
                                     </Button>
                                 </div>
                             </div>

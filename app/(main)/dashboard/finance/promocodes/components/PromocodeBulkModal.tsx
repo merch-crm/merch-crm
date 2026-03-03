@@ -1,9 +1,9 @@
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { Layers, X, Calendar } from "lucide-react";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { Layers, X, Calendar } from"lucide-react";
 
 interface BulkFormState {
     discountType: string;
@@ -84,10 +84,10 @@ export function PromocodeBulkModal({
                                 <input type="hidden" name="discountType" value={bulk.discountType} />
                                 <Select
                                     options={[
-                                        { id: "percentage", title: "Процент %" },
-                                        { id: "fixed", title: `Фикс. сумма ${currencySymbol}` },
-                                        { id: "free_shipping", title: "Беспл. доставка" },
-                                        { id: "gift", title: "Подарок" }
+                                        { id:"percentage", title:"Процент %" },
+                                        { id:"fixed", title: `Фикс. сумма ${currencySymbol}` },
+                                        { id:"free_shipping", title:"Беспл. доставка" },
+                                        { id:"gift", title:"Подарок" }
                                     ]}
                                     value={bulk.discountType}
                                     onChange={(val) => setBulk(prev => ({ ...prev, discountType: val }))}

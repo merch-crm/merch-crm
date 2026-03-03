@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Check, Zap } from "lucide-react";
+import React from"react";
+import { motion } from"framer-motion";
+import { Check, Zap } from"lucide-react";
 
 export default function ChargingNotificationPanelsCRM() {
     return (
@@ -22,21 +22,21 @@ export default function ChargingNotificationPanelsCRM() {
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 text-gray-200 font-medium">
                             <Zap size={20} className="fill-white text-white" />
-                            <span className="text-xl ">46.2%</span>
+                            <span className="text-xl">46.2%</span>
                         </div>
 
                         <div className="flex items-center gap-2">
                             {/* Animated Spinner */}
                             <motion.div
                                 animate={{ rotate: 360 }}
-                                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                                transition={{ repeat: Infinity, duration: 1, ease:"linear" }}
                                 className="w-5 h-5 border-2 border-[#22c55e] border-t-transparent rounded-full"
                             />
                             <span className="text-lg text-gray-200">Charging</span>
                         </div>
                     </div>
 
-                    <div className="text-gray-400 font-medium ">
+                    <div className="text-gray-400 font-medium">
                         Est. end in <span className="text-gray-200">~25 mins</span>
                     </div>
                 </div>
@@ -44,9 +44,9 @@ export default function ChargingNotificationPanelsCRM() {
                 {/* Progress Bar */}
                 <div className="h-2.5 bg-[#2c2c2e] rounded-full overflow-hidden w-full">
                     <motion.div
-                        initial={{ width: "0%" }}
-                        whileInView={{ width: "46.2%" }}
-                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        initial={{ width:"0%" }}
+                        whileInView={{ width:"46.2%" }}
+                        transition={{ duration: 1.5, ease:"easeOut" }}
                         className="h-full bg-[#00d65f] rounded-full shadow-[0_0_10px_rgba(0,214,95,0.5)]"
                     />
                 </div>
@@ -63,7 +63,7 @@ export default function ChargingNotificationPanelsCRM() {
                     <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 text-gray-200 font-medium">
                             <Zap size={20} className="fill-current text-gray-400" />
-                            <span className="text-xl ">82.6%</span>
+                            <span className="text-xl">82.6%</span>
                         </div>
 
                         <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export default function ChargingNotificationPanelsCRM() {
                         </div>
                     </div>
 
-                    <div className="text-gray-400 font-medium ">
+                    <div className="text-gray-400 font-medium">
                         Charged in <span className="text-gray-200">42 mins</span>
                     </div>
                 </div>

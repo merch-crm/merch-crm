@@ -1,15 +1,15 @@
 "use client";
 
-import { Building, Package, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Building, Package, RefreshCw } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
 
-import { StorageLocation } from "./storage-locations-tab";
-import { useEditLocationLogic } from "./components/storage-location/hooks/useEditLocationLogic";
-import { LocationForm } from "./components/storage-location/location-form";
-import { LocationItemsList } from "./components/storage-location/location-items-list";
-import { QuickTransferModal } from "./components/storage-location/quick-transfer-modal";
+import { StorageLocation } from"./storage-locations-tab";
+import { useEditLocationLogic } from"./components/storage-location/hooks/useEditLocationLogic";
+import { LocationForm } from"./components/storage-location/location-form";
+import { LocationItemsList } from"./components/storage-location/location-items-list";
+import { QuickTransferModal } from"./components/storage-location/quick-transfer-modal";
 
 interface EditStorageLocationDialogProps {
     users: { id: string; name: string }[];
@@ -22,7 +22,7 @@ interface EditStorageLocationDialogProps {
 const ITEMS_PER_PAGE = 7;
 
 export function EditStorageLocationDialog(props: EditStorageLocationDialogProps) {
-    const fallbackLocation = props.locations[0] || { id: "none", name: "" };
+    const fallbackLocation = props.locations[0] || { id:"none", name:"" };
     return <EditStorageLocationInner {...props} location={props.location || (fallbackLocation as StorageLocation)} />;
 }
 
@@ -122,19 +122,16 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                     <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                                         <Package className="w-3.5 h-3.5 text-slate-300 inline-block mr-1.5" />Товары в наличии: {localItems?.length || 0}
                                     </label>
-                                    <div className={cn(
-                                        "flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-sm transition-colors",
-                                        form.isActive ? "bg-emerald-500/10 border-emerald-500/20" : "bg-slate-50 border-slate-200"
+                                    <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full border shadow-sm transition-colors",
+                                        form.isActive ?"bg-emerald-500/10 border-emerald-500/20" :"bg-slate-50 border-slate-200"
                                     )}>
-                                        <div className={cn(
-                                            "w-1.5 h-1.5 rounded-full transition-all",
-                                            form.isActive ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
+                                        <div className={cn("w-1.5 h-1.5 rounded-full transition-all",
+                                            form.isActive ?"bg-emerald-500 animate-pulse" :"bg-slate-400"
                                         )} />
-                                        <span className={cn(
-                                            "text-xs font-bold",
-                                            form.isActive ? "text-emerald-500" : "text-slate-500"
+                                        <span className={cn("text-xs font-bold",
+                                            form.isActive ?"text-emerald-500" :"text-slate-500"
                                         )}>
-                                            {form.isActive ? "Активно" : "Архив"}
+                                            {form.isActive ?"Активно" :"Архив"}
                                         </span>
                                     </div>
                                 </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { differenceInSeconds } from "date-fns";
+import * as React from"react";
+import { differenceInSeconds } from"date-fns";
 
 /**
  * Хук для управления состоянием прошедшего времени в таймере.

@@ -1,19 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { format, isSameMonth, addMonths, subMonths, setMonth, setYear, startOfMonth, endOfMonth } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Calendar } from "lucide-react";
-import { useDateRangePicker, DateRange } from "@/components/hooks/useDateRangePicker";
+import * as React from"react";
+import { format, isSameMonth, addMonths, subMonths, setMonth, setYear, startOfMonth, endOfMonth } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn } from"@/lib/utils";
+import { ChevronLeft, ChevronRight, Calendar } from"lucide-react";
+import { useDateRangePicker, DateRange } from"@/components/hooks/useDateRangePicker";
 
 // Названия месяцев и дней на русском
-const MONTHS = [
-    "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
-    "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+const MONTHS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"
 ];
 
-const WEEKDAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+const WEEKDAYS = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
 
 
 interface DateRangePickerProps {
@@ -49,7 +47,7 @@ function DateRangePickerCalendar({
                         className="w-full h-10 px-4 bg-slate-100 rounded-full text-sm font-bold text-slate-700 flex items-center justify-between hover:bg-slate-200 transition-colors"
                     >
                         {MONTHS[currentMonth.getMonth()]}
-                        <ChevronRight className={cn("w-4 h-4 transition-transform", showMonthSelect && "rotate-90")} />
+                        <ChevronRight className={cn("w-4 h-4 transition-transform", showMonthSelect &&"rotate-90")} />
                     </button>
                     {showMonthSelect && (
                         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 p-2 z-10 grid grid-cols-3 gap-1">
@@ -60,11 +58,10 @@ function DateRangePickerCalendar({
                                         setCurrentMonth(setMonth(currentMonth, index));
                                         setShowMonthSelect(false);
                                     }}
-                                    className={cn(
-                                        "px-2 py-2 text-xs font-medium rounded-lg transition-colors",
+                                    className={cn("px-2 py-2 text-xs font-medium rounded-lg transition-colors",
                                         currentMonth.getMonth() === index
-                                            ? "bg-primary text-white"
-                                            : "hover:bg-slate-100 text-slate-700"
+                                            ?"bg-primary text-white"
+                                            :"hover:bg-slate-100 text-slate-700"
                                     )}
                                 >
                                     {month.slice(0, 3)}
@@ -84,7 +81,7 @@ function DateRangePickerCalendar({
                         className="w-full h-10 px-4 bg-slate-100 rounded-full text-sm font-bold text-slate-700 flex items-center justify-between hover:bg-slate-200 transition-colors"
                     >
                         {currentMonth.getFullYear()}
-                        <ChevronRight className={cn("w-4 h-4 transition-transform", showYearSelect && "rotate-90")} />
+                        <ChevronRight className={cn("w-4 h-4 transition-transform", showYearSelect &&"rotate-90")} />
                     </button>
                     {showYearSelect && (
                         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-slate-100 p-2 z-10 max-h-48 overflow-y-auto">
@@ -95,11 +92,10 @@ function DateRangePickerCalendar({
                                         setCurrentMonth(setYear(currentMonth, year));
                                         setShowYearSelect(false);
                                     }}
-                                    className={cn(
-                                        "w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors text-left",
+                                    className={cn("w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors text-left",
                                         currentMonth.getFullYear() === year
-                                            ? "bg-primary text-white"
-                                            : "hover:bg-slate-100 text-slate-700"
+                                            ?"bg-primary text-white"
+                                            :"hover:bg-slate-100 text-slate-700"
                                     )}
                                 >
                                     {year}
@@ -168,13 +164,12 @@ function DateRangePickerCalendar({
                                 onMouseEnter={() => setHoveredDate(day)}
                                 onMouseLeave={() => setHoveredDate(null)}
                                 disabled={disabled}
-                                className={cn(
-                                    "relative z-10 w-10 h-10 rounded-full text-sm font-medium transition-all",
-                                    !isCurrentMonth && "text-slate-300",
-                                    isCurrentMonth && !isStart && !isEnd && !disabled && "text-slate-700 hover:bg-slate-100",
-                                    (isStart || isEnd) && "bg-primary text-white shadow-lg shadow-primary/25",
-                                    inRange && !isStart && !isEnd && isCurrentMonth && "text-primary font-bold",
-                                    disabled && "cursor-not-allowed opacity-40"
+                                className={cn("relative z-10 w-10 h-10 rounded-full text-sm font-medium transition-all",
+                                    !isCurrentMonth &&"text-slate-300",
+                                    isCurrentMonth && !isStart && !isEnd && !disabled &&"text-slate-700 hover:bg-slate-100",
+                                    (isStart || isEnd) &&"bg-primary text-white shadow-lg shadow-primary/25",
+                                    inRange && !isStart && !isEnd && isCurrentMonth &&"text-primary font-bold",
+                                    disabled &&"cursor-not-allowed opacity-40"
                                 )}
                             >
                                 {day.getDate()}
@@ -198,7 +193,7 @@ interface DateRangePickerInputProps extends DateRangePickerProps {
 function DateRangePicker({
     value,
     onChange,
-    placeholder = "Выберите период",
+    placeholder ="Выберите период",
     label,
     minDate,
     maxDate,
@@ -237,8 +232,8 @@ function DateRangePicker({
 
     const formatRange = () => {
         if (!value.from) return placeholder;
-        if (!value.to) return format(value.from, "d MMM yyyy", { locale: ru });
-        return `${format(value.from, "d MMM", { locale: ru })} — ${format(value.to, "d MMM yyyy", { locale: ru })}`;
+        if (!value.to) return format(value.from,"d MMM yyyy", { locale: ru });
+        return `${format(value.from,"d MMM", { locale: ru })} — ${format(value.to,"d MMM yyyy", { locale: ru })}`;
     };
 
     return (
@@ -253,14 +248,12 @@ function DateRangePicker({
                     setTempValue(value);
                     setIsOpen(!isOpen);
                 }}
-                className={cn(
-                    "w-full h-11 px-4 bg-white border border-slate-200 rounded-md text-sm font-medium text-left flex items-center gap-3 transition-all",
-                    "hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
-                    isOpen && "ring-2 ring-primary/20 border-primary"
+                className={cn("w-full h-11 px-4 bg-white border border-slate-200 rounded-md text-sm font-medium text-left flex items-center gap-3 transition-all","hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                    isOpen &&"ring-2 ring-primary/20 border-primary"
                 )}
             >
                 <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                <span className={cn(!value.from && "text-slate-400")}>
+                <span className={cn(!value.from &&"text-slate-400")}>
                     {formatRange()}
                 </span>
             </button>
@@ -312,14 +305,14 @@ interface DateRangePickerWithPresetsProps extends DateRangePickerInputProps {
 
 const DEFAULT_PRESETS: DateRangePreset[] = [
     {
-        label: "Сегодня",
+        label:"Сегодня",
         getValue: () => {
             const today = new Date();
             return { from: today, to: today };
         },
     },
     {
-        label: "Вчера",
+        label:"Вчера",
         getValue: () => {
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
@@ -327,7 +320,7 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
         },
     },
     {
-        label: "Последние 7 дней",
+        label:"Последние 7 дней",
         getValue: () => {
             const end = new Date();
             const start = new Date();
@@ -336,7 +329,7 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
         },
     },
     {
-        label: "Последние 30 дней",
+        label:"Последние 30 дней",
         getValue: () => {
             const end = new Date();
             const start = new Date();
@@ -345,14 +338,14 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
         },
     },
     {
-        label: "Этот месяц",
+        label:"Этот месяц",
         getValue: () => {
             const now = new Date();
             return { from: startOfMonth(now), to: now };
         },
     },
     {
-        label: "Прошлый месяц",
+        label:"Прошлый месяц",
         getValue: () => {
             const now = new Date();
             const lastMonth = subMonths(now, 1);
@@ -365,7 +358,7 @@ function DateRangePickerWithPresets({
     value,
     onChange,
     presets = DEFAULT_PRESETS,
-    placeholder = "Выберите период",
+    placeholder ="Выберите период",
     label,
     minDate,
     maxDate,
@@ -404,8 +397,8 @@ function DateRangePickerWithPresets({
 
     const formatRange = () => {
         if (!value.from) return placeholder;
-        if (!value.to) return format(value.from, "d MMM yyyy", { locale: ru });
-        return `${format(value.from, "d MMM", { locale: ru })} — ${format(value.to, "d MMM yyyy", { locale: ru })}`;
+        if (!value.to) return format(value.from,"d MMM yyyy", { locale: ru });
+        return `${format(value.from,"d MMM", { locale: ru })} — ${format(value.to,"d MMM yyyy", { locale: ru })}`;
     };
 
     return (
@@ -419,14 +412,12 @@ function DateRangePickerWithPresets({
                     setTempValue(value);
                     setIsOpen(!isOpen);
                 }}
-                className={cn(
-                    "w-full h-11 px-4 bg-white border border-slate-200 rounded-md text-sm font-medium text-left flex items-center gap-3 transition-all",
-                    "hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
-                    isOpen && "ring-2 ring-primary/20 border-primary"
+                className={cn("w-full h-11 px-4 bg-white border border-slate-200 rounded-md text-sm font-medium text-left flex items-center gap-3 transition-all","hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                    isOpen &&"ring-2 ring-primary/20 border-primary"
                 )}
             >
                 <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                <span className={cn(!value.from && "text-slate-400")}>
+                <span className={cn(!value.from &&"text-slate-400")}>
                     {formatRange()}
                 </span>
             </button>

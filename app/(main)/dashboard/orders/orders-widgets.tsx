@@ -1,8 +1,8 @@
 "use client";
 
-import { PlusCircle, Settings, CheckCircle2, TrendingUp, Sparkles, Layers } from "lucide-react";
-import { useBranding } from "@/components/branding-provider";
-import { pluralize } from "@/lib/pluralize";
+import { PlusCircle, Settings, CheckCircle2, TrendingUp, Sparkles, Layers } from"lucide-react";
+import { useBranding } from"@/components/branding-provider";
+import { pluralize } from"@/lib/pluralize";
 
 interface OrderStatsProps {
     stats: {
@@ -30,10 +30,10 @@ export function OrdersWidgets({ stats, showFinancials }: OrderStatsProps) {
                         </div>
                         <div>
                             <h3 className="text-xl font-bold text-white leading-tight">
-                                {showFinancials ? "Выручка за период" : "Всего заказов"}
+                                {showFinancials ?"Выручка за период" :"Всего заказов"}
                             </h3>
                             <p className="text-sm font-medium text-white/50 mt-1">
-                                {showFinancials ? "Общая сумма подтвержденных заказов" : "Общее количество заказов в работе"}
+                                {showFinancials ?"Общая сумма подтвержденных заказов" :"Общее количество заказов в работе"}
                             </p>
                         </div>
                     </div>

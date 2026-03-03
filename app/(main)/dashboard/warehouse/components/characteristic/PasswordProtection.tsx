@@ -1,6 +1,6 @@
 "use client";
-import { Lock } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Lock } from"lucide-react";
+import { Input } from"@/components/ui/input";
 
 interface PasswordProtectionProps {
     password: string;
@@ -13,7 +13,7 @@ export function PasswordProtection({ password, setPassword }: PasswordProtection
             <div className="bg-rose-50 p-4 rounded-[var(--radius-inner)] border border-rose-100 flex flex-col gap-3">
                 <div className="flex items-center gap-2 text-rose-600">
                     <Lock className="w-4 h-4" />
-                    <span className="text-xs font-bold ">Системная защита</span>
+                    <span className="text-xs font-bold">Системная защита</span>
                 </div>
                 <p className="text-xs font-bold text-rose-500/80 leading-relaxed">
                     Это системный раздел. Для подтверждения удаления введите пароль от своей учетной записи.

@@ -1,22 +1,22 @@
 "use client";
 
-import { useBrandingForm } from "./hooks/useBrandingForm";
-import { BrandingTabs } from "./components/BrandingTabs";
-import { GeneralSettings } from "./components/GeneralSettings";
-import { AppearanceSettings } from "./components/AppearanceSettings";
-import { CommunicationSettings } from "./components/CommunicationSettings";
-import { SoundSettings } from "./components/SoundSettings";
-import { BrandingModal } from "./components/BrandingModal";
-import { Button } from "@/components/ui/button";
-import { Palette, Database, Save } from "lucide-react";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { z } from "zod";
-import { useToast } from "@/components/ui/toast";
+import { useBrandingForm } from"./hooks/useBrandingForm";
+import { BrandingTabs } from"./components/BrandingTabs";
+import { GeneralSettings } from"./components/GeneralSettings";
+import { AppearanceSettings } from"./components/AppearanceSettings";
+import { CommunicationSettings } from"./components/CommunicationSettings";
+import { SoundSettings } from"./components/SoundSettings";
+import { BrandingModal } from"./components/BrandingModal";
+import { Button } from"@/components/ui/button";
+import { Palette, Database, Save } from"lucide-react";
+import { Tabs, TabsContent } from"@/components/ui/tabs";
+import { SerializedIconGroup } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { z } from"zod";
+import { useToast } from"@/components/ui/toast";
 
 const BrandingSchema = z.object({
-    companyName: z.string().min(2, "Название компании должно содержать минимум 2 символа"),
-    primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Неверный формат HEX цвета"),
+    companyName: z.string().min(2,"Название компании должно содержать минимум 2 символа"),
+    primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,"Неверный формат HEX цвета"),
 });
 
 interface BrandingSettings {
@@ -71,7 +71,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
         e.preventDefault();
         const result = BrandingSchema.safeParse(formData);
         if (!result.success) {
-            toast(result.error.issues[0].message, "error");
+            toast(result.error.issues[0].message,"error");
             return;
         }
         handleSubmit(e); // Прокидываем ивент в оригинальный хук
@@ -98,7 +98,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
                         className="h-12 rounded-xl px-8 gap-2 font-bold shadow-lg shadow-black/10 hover:shadow-black/20 transition-all active:scale-[0.98]"
                     >
                         {ui.isLoading ? <Database className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
-                        {ui.isLoading ? "Сохранение..." : "Сохранить изменения"}
+                        {ui.isLoading ?"Сохранение..." :"Сохранить изменения"}
                     </Button>
                 </div>
 

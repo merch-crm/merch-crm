@@ -1,7 +1,7 @@
-import React from "react";
-import DOMPurify from "isomorphic-dompurify";
-import { cn } from "@/lib/utils";
-import { ALL_ICONS_MAP, ICON_GROUPS, Box } from "./icons";
+import React from"react";
+import DOMPurify from"isomorphic-dompurify";
+import { cn } from"@/lib/utils";
+import { ALL_ICONS_MAP, ICON_GROUPS, Box } from"./icons";
 
 // Types for icon group serialization
 export interface IconGroupInput {
@@ -23,8 +23,8 @@ export function serializeIconGroups(groups: IconGroupInput[]): SerializedIconGro
         name: group.name,
         // Store groupIcon as string name only if it's a function (component)
         groupIconName: typeof group.groupIcon === 'function' ?
-            Object.keys(ALL_ICONS_MAP).find(key => ALL_ICONS_MAP[key] === group.groupIcon) || "box"
-            : group.groupIconName || "box",
+            Object.keys(ALL_ICONS_MAP).find(key => ALL_ICONS_MAP[key] === group.groupIcon) ||"box"
+            : group.groupIconName ||"box",
         icons: group.icons.map((icon) => ({
             name: icon.name,
             label: icon.label,

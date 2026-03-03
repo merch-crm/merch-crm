@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
-import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { ChevronDown, Plus, Minus } from "lucide-react";
-import { cn } from "@/lib/utils";
+import * as React from"react";
+import * as AccordionPrimitive from"@radix-ui/react-accordion";
+import { ChevronDown, Plus, Minus } from"lucide-react";
+import { cn } from"@/lib/utils";
 
 // Базовые примитивы
 const AccordionRoot = AccordionPrimitive.Root;
@@ -18,7 +18,7 @@ const AccordionItem = React.forwardRef<
         {...props}
     />
 ));
-AccordionItem.displayName = "AccordionItem";
+AccordionItem.displayName ="AccordionItem";
 
 const AccordionTrigger = React.forwardRef<
     React.ElementRef<typeof AccordionPrimitive.Trigger>,
@@ -27,9 +27,7 @@ const AccordionTrigger = React.forwardRef<
     <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger
             ref={ref}
-            className={cn(
-                "flex flex-1 items-center justify-between py-4 text-left text-sm font-bold text-slate-900 transition-all",
-                "hover:text-primary [&[data-state=open]>svg]:rotate-180",
+            className={cn("flex flex-1 items-center justify-between py-4 text-left text-sm font-bold text-slate-900 transition-all","hover:text-primary [&[data-state=open]>svg]:rotate-180",
                 className
             )}
             {...props}
@@ -66,7 +64,7 @@ interface AccordionItemData {
 
 interface AccordionProps {
     items: AccordionItemData[];
-    type?: "single" | "multiple";
+    type?:"single" |"multiple";
     defaultValue?: string | string[];
     collapsible?: boolean;
     className?: string;
@@ -74,14 +72,14 @@ interface AccordionProps {
 
 function Accordion({
     items = [],
-    type = "single",
+    type ="single",
     defaultValue,
     collapsible = true,
     className,
 }: AccordionProps) {
     return (
         <AccordionRoot
-            type={type as "single"}
+            type={type as"single"}
             defaultValue={defaultValue as string}
             collapsible={collapsible}
             className={cn("w-full", className)}
@@ -103,26 +101,26 @@ function Accordion({
 
 // Аккордеон в карточках
 interface AccordionCardsProps extends AccordionProps {
-    gap?: "sm" | "md" | "lg";
+    gap?:"sm" |"md" |"lg";
 }
 
 function AccordionCards({
     items = [],
-    type = "single",
+    type ="single",
     defaultValue,
     collapsible = true,
-    gap = "md",
+    gap ="md",
     className,
 }: AccordionCardsProps) {
     const gapClasses = {
-        sm: "space-y-2",
-        md: "space-y-3",
-        lg: "space-y-3",
+        sm:"space-y-2",
+        md:"space-y-3",
+        lg:"space-y-3",
     };
 
     return (
         <AccordionRoot
-            type={type as "single"}
+            type={type as"single"}
             defaultValue={defaultValue as string}
             collapsible={collapsible}
             className={cn(gapClasses[gap], className)}
@@ -155,14 +153,14 @@ function AccordionCards({
 // Аккордеон с Plus/Minus иконками (стиль FAQ)
 function AccordionFAQ({
     items = [],
-    type = "single",
+    type ="single",
     defaultValue,
     collapsible = true,
     className,
 }: AccordionProps) {
     return (
         <AccordionRoot
-            type={type as "single"}
+            type={type as"single"}
             defaultValue={defaultValue as string}
             collapsible={collapsible}
             className={cn("w-full divide-y divide-slate-200", className)}
@@ -199,20 +197,20 @@ interface AccordionSettingsItemData extends AccordionItemData {
 
 interface AccordionSettingsProps {
     items: AccordionSettingsItemData[];
-    type?: "single" | "multiple";
+    type?:"single" |"multiple";
     defaultValue?: string | string[];
     className?: string;
 }
 
 function AccordionSettings({
     items = [],
-    type = "multiple",
+    type ="multiple",
     defaultValue,
     className,
 }: AccordionSettingsProps) {
     return (
         <AccordionRoot
-            type={type as "multiple"}
+            type={type as"multiple"}
             defaultValue={defaultValue as string[]}
             className={cn("space-y-3", className)}
         >
@@ -255,14 +253,14 @@ function AccordionSettings({
 // Аккордеон с бордером слева (стиль документации)
 function AccordionBordered({
     items = [],
-    type = "single",
+    type ="single",
     defaultValue,
     collapsible = true,
     className,
 }: AccordionProps) {
     return (
         <AccordionRoot
-            type={type as "single"}
+            type={type as"single"}
             defaultValue={defaultValue as string}
             collapsible={collapsible}
             className={cn("space-y-2", className)}
@@ -294,21 +292,21 @@ function AccordionBordered({
 
 // Нумерованный аккордеон (для пошаговых инструкций)
 interface AccordionStepsProps {
-    items: Omit<AccordionItemData, "icon">[];
-    type?: "single" | "multiple";
+    items: Omit<AccordionItemData,"icon">[];
+    type?:"single" |"multiple";
     defaultValue?: string | string[];
     className?: string;
 }
 
 function AccordionSteps({
     items = [],
-    type = "single",
+    type ="single",
     defaultValue,
     className,
 }: AccordionStepsProps) {
     return (
         <AccordionRoot
-            type={type as "single"}
+            type={type as"single"}
             defaultValue={defaultValue as string}
             collapsible
             className={cn("space-y-3", className)}

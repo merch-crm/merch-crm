@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Shield, Loader2, Building } from "lucide-react";
-import { updateRole } from "../actions/roles.actions";
-import { getDepartments } from "../actions/departments.actions";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { IconInput } from "@/components/ui/icon-input";
-import { IconSelect } from "@/components/ui/icon-select";
-import { RoleColorPicker } from "@/components/ui/role-color-picker";
+import { useEffect, useState } from"react";
+import { Shield, Loader2, Building } from"lucide-react";
+import { updateRole } from"../actions/roles.actions";
+import { getDepartments } from"../actions/departments.actions";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { IconInput } from"@/components/ui/icon-input";
+import { IconSelect } from"@/components/ui/icon-select";
+import { RoleColorPicker } from"@/components/ui/role-color-picker";
 
 interface EditRoleDialogProps {
     role: {
@@ -26,7 +26,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [departments, setDepartments] = useState<{ id: string, name: string }[]>([]);
-    const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>(role?.departmentId || "none");
+    const [selectedDepartmentId, setSelectedDepartmentId] = useState<string>(role?.departmentId ||"none");
 
     useEffect(() => {
         if (isOpen) {
@@ -95,9 +95,9 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                         <IconSelect
                             startIcon={Building}
                             name="departmentId"
-                            value={selectedDepartmentId || ""}
+                            value={selectedDepartmentId ||""}
                             options={[
-                                { id: "none", title: "Общая роль (без отдела)" },
+                                { id:"none", title:"Общая роль (без отдела)" },
                                 ...departments.map(dept => ({ id: dept.id, title: dept.name }))
                             ]}
                             className="pl-10 h-11"
@@ -125,7 +125,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
                             className="flex-[2] inline-flex justify-center items-center gap-2 rounded-[var(--radius-inner)] font-bold text-white shadow-lg transition-all active:scale-[0.98] h-12"
                         >
                             {loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
-                            {loading ? "Сохранение..." : "Сохранить изменения"}
+                            {loading ?"Сохранение..." :"Сохранить изменения"}
                         </Button>
                     </div>
                 </form>

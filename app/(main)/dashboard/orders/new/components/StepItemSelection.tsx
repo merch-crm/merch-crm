@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-import { Search, Package, Plus, ShoppingCart } from "lucide-react";
-import { pluralize } from "@/lib/pluralize";
-import { formatUnit } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import React from"react";
+import { Search, Package, Plus, ShoppingCart } from"lucide-react";
+import { pluralize } from"@/lib/pluralize";
+import { formatUnit } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
 interface OrderInventoryItem {
     id: string;
@@ -62,7 +62,7 @@ export function StepItemSelection({
                                     <div className="w-10 h-10 bg-muted rounded-2xl flex items-center justify-center text-muted-foreground font-bold shrink-0"><Package className="w-5 h-5" /></div>
                                     <div className="min-w-0">
                                         <p className="text-sm font-bold text-foreground truncate">{item.name}</p>
-                                        <p className="text-xs text-muted-foreground font-bold">Остаток: {item.quantity} {formatUnit(item.unit || "")}</p>
+                                        <p className="text-xs text-muted-foreground font-bold">Остаток: {item.quantity} {formatUnit(item.unit ||"")}</p>
                                     </div>
                                 </div>
                                 <Plus className="w-4 h-4 text-muted-foreground" />

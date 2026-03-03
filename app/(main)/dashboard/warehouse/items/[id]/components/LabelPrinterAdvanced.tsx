@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
-import { useLabelPrinterLogic } from "./label-printer/hooks/useLabelPrinterLogic";
-import { LabelPrinterSettings } from "./label-printer/label-printer-settings";
-import { LabelPrinterPreview } from "./label-printer/label-printer-preview";
+import React from"react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from"@/components/ui/dialog";
+import { InventoryItem, AttributeType, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
+import { useLabelPrinterLogic } from"./label-printer/hooks/useLabelPrinterLogic";
+import { LabelPrinterSettings } from"./label-printer/label-printer-settings";
+import { LabelPrinterPreview } from"./label-printer/label-printer-preview";
 
 interface LabelPrinterDialogProps {
     isOpen: boolean;

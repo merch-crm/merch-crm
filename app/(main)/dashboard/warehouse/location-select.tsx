@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
-import { MapPin } from "lucide-react";
-import { StorageLocation } from "./storage-locations-tab";
-import { Select, SelectOption } from "@/components/ui/select";
+import { useMemo } from"react";
+import { MapPin } from"lucide-react";
+import { StorageLocation } from"./storage-locations-tab";
+import { Select, SelectOption } from"@/components/ui/select";
 
 interface LocationSelectProps {
     locations: StorageLocation[];
@@ -21,7 +21,7 @@ export function LocationSelect({
     locations,
     value,
     onChange,
-    placeholder = "Выберите склад",
+    placeholder ="Выберите склад",
     disabled,
     excludeId,
     label,

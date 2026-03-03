@@ -1,15 +1,15 @@
-import Link from "next/link";
-import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
-import { ClientsTable } from "./clients-list";
-import { getClientStats } from "./actions/core.actions";;
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
-import { PageHeader } from "@/components/layout/page-header";
+import Link from"next/link";
+import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown } from"lucide-react";
+import { ClientsTable } from"./clients-list";
+import { getClientStats } from"./actions/core.actions";;
+import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { PageHeader } from"@/components/layout/page-header";
 
 
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { db } from"@/lib/db";
+import { users } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { getSession } from"@/lib/auth";
 
 export default async function ClientsPage() {
     const session = await getSession();
@@ -19,8 +19,8 @@ export default async function ClientsPage() {
     }) : null;
 
     const showFinancials =
-        user?.role?.name === "Администратор" ||
-        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
+        user?.role?.name ==="Администратор" ||
+        ["Руководство","Отдел продаж"].includes(user?.department?.name ||"");
 
     const statsRes = await getClientStats();
     const stats = (statsRes.success && statsRes.data) ? statsRes.data : {
@@ -31,42 +31,42 @@ export default async function ClientsPage() {
     };
 
     const branding = await getBrandingSettings();
-    const currencySymbol = branding?.currencySymbol || "₽";
+    const currencySymbol = branding?.currencySymbol ||"₽";
 
     const statCards = [
         {
-            name: "Всего клиентов",
+            name:"Всего клиентов",
             value: stats.totalClients,
             icon: Users,
-            iconColor: "text-blue-500",
-            trend: "+12%",
+            iconColor:"text-blue-500",
+            trend:"+12%",
             isPositive: true,
             visible: true
         },
         {
-            name: "Новых за месяц",
+            name:"Новых за месяц",
             value: stats.newThisMonth,
             icon: UserPlus,
-            iconColor: "text-emerald-500",
-            trend: "+8%",
+            iconColor:"text-emerald-500",
+            trend:"+8%",
             isPositive: true,
             visible: true
         },
         {
-            name: "Средний чек",
+            name:"Средний чек",
             value: `${stats.avgCheck.toLocaleString()} ${currencySymbol}`,
             icon: CreditCard,
-            iconColor: "text-slate-400",
-            trend: "-2%",
+            iconColor:"text-slate-400",
+            trend:"-2%",
             isPositive: false,
             visible: showFinancials
         },
         {
-            name: "Общая выручка",
+            name:"Общая выручка",
             value: `${stats.totalRevenue.toLocaleString()} ${currencySymbol}`,
             icon: BarChart3,
-            iconColor: "text-blue-500",
-            trend: "+18%",
+            iconColor:"text-blue-500",
+            trend:"+18%",
             isPositive: true,
             visible: showFinancials
         },

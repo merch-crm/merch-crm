@@ -1,9 +1,9 @@
 "use client";
 
-import { Printer, FileDown, Archive } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { Printer, FileDown, Archive } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { useToast } from"@/components/ui/toast";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ItemActionButtonsProps {
     item: InventoryItem;
@@ -40,7 +40,7 @@ export function ItemActionButtons({
             <Button
                 onClick={() => {
                     if (item.quantity > 0) {
-                        toast("Нельзя архивировать товар с остатком > 0", "error");
+                        toast("Нельзя архивировать товар с остатком > 0","error");
                         return;
                     }
                     setShowArchiveReason(true);

@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
-import { X, Camera, RefreshCw, Zap, ZapOff, QrCode } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState, useCallback } from"react";
+import { Html5Qrcode, Html5QrcodeScannerState } from"html5-qrcode";
+import { X, Camera, RefreshCw, Zap, ZapOff, QrCode } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
 
 interface QRScannerProps {
     isOpen: boolean;
@@ -17,7 +17,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
     const [isStarting, setIsStarting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [torchOn, setTorchOn] = useState(false);
-    const scannerId = "qr-reader";
+    const scannerId ="qr-reader";
 
     const stopScanner = useCallback(async () => {
         if (scannerRef.current) {
@@ -47,7 +47,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
             };
 
             await scanner.start(
-                { facingMode: "environment" },
+                { facingMode:"environment" },
                 config,
                 (decodedText) => {
                     onResult(decodedText);
@@ -111,7 +111,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             <QrCode className="w-4 h-4 text-primary" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-black text-slate-900 ">Сканер SKU</h3>
+                            <h3 className="text-sm font-black text-slate-900">Сканер SKU</h3>
                             <p className="text-xs font-bold text-slate-400 mt-0.5">Наведите на QR-код</p>
                         </div>
                     </div>
@@ -176,17 +176,16 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                     <Button
                         variant="ghost"
                         onClick={toggleTorch}
-                        className={cn(
-                            "w-11 h-11 flex items-center justify-center rounded-xl transition-all active:scale-90 border shadow-sm p-0 hover:bg-white hover:text-slate-600",
+                        className={cn("w-11 h-11 flex items-center justify-center rounded-xl transition-all active:scale-90 border shadow-sm p-0 hover:bg-white hover:text-slate-600",
                             torchOn
-                                ? "bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/20 hover:bg-amber-100 hover:text-amber-700"
-                                : "bg-white text-slate-400 border-slate-200"
+                                ?"bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/20 hover:bg-amber-100 hover:text-amber-700"
+                                :"bg-white text-slate-400 border-slate-200"
                         )}
                     >
                         {torchOn ? <Zap className="w-5 h-5 fill-current" /> : <ZapOff className="w-5 h-5" />}
                     </Button>
                     <div className="text-right">
-                        <p className="text-xs font-black text-slate-900 ">Система готова</p>
+                        <p className="text-xs font-black text-slate-900">Система готова</p>
                         <p className="text-xs font-bold text-slate-400 mt-0.5">Ожидание кода...</p>
                     </div>
                 </div>

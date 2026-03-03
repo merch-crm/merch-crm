@@ -1,11 +1,10 @@
-import { cn } from "@/lib/utils";
+import { cn } from"@/lib/utils";
 
 // Базовый скелетон
 function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     return (
         <div
-            className={cn(
-                "animate-pulse rounded-md bg-slate-200/60",
+            className={cn("animate-pulse rounded-md bg-slate-200/60",
                 className
             )}
             {...props}
@@ -42,7 +41,7 @@ function SkeletonTableRow({ columns = 5 }: { columns?: number }) {
             </td>
             {Array.from({ length: columns }).map((_, i) => (
                 <td key={i} className="p-4">
-                    <Skeleton className={cn("h-4", i === 0 ? "w-32" : "w-20")} />
+                    <Skeleton className={cn("h-4", i === 0 ?"w-32" :"w-20")} />
                 </td>
             ))}
         </tr>

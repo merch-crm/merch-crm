@@ -1,3 +1,3 @@
 "use client";
 
-export * from "./file-upload/index";
+export * from"./file-upload/index";

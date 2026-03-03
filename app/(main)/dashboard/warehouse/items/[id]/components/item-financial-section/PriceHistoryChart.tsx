@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Timeframe } from "./types";
+import React, { useState, useRef, useEffect } from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { Timeframe } from"./types";
 
 interface PriceHistoryChartProps {
     points: { date: Date; label: string; avg: number }[];
@@ -124,7 +124,7 @@ export function PriceHistoryChart({
                             strokeLinecap="round"
                             initial={{ pathLength: 0 }}
                             animate={{ pathLength: 1 }}
-                            transition={{ duration: 1.5, ease: "easeInOut" }}
+                            transition={{ duration: 1.5, ease:"easeInOut" }}
                         />
 
                         {/* Dots and Labels */}

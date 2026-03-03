@@ -1,14 +1,14 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { employeeFaces, users } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { eq, and, desc } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { CreateFaceSchema, UpdateFaceSchema } from "../validation";
+import { db } from"@/lib/db";
+import { employeeFaces, users } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { eq, and, desc } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { CreateFaceSchema, UpdateFaceSchema } from"../validation";
 
 // ============================================
 // ACTIONS
@@ -46,10 +46,10 @@ export async function getEmployeeFaces() {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/faces",
-            method: "getEmployeeFaces",
+            path:"/staff/faces",
+            method:"getEmployeeFaces",
         });
-        return { success: false, error: "Не удалось загрузить данные лиц" };
+        return { success: false, error:"Не удалось загрузить данные лиц" };
     }
 }
 
@@ -59,6 +59,7 @@ export async function getFacesByUser(userId: string) {
         await requireAdmin(session);
 
         const faces = await db.query.employeeFaces.findMany({
+        limit: 500,
             where: and(
                 eq(employeeFaces.userId, userId),
                 eq(employeeFaces.isActive, true)
@@ -70,10 +71,10 @@ export async function getFacesByUser(userId: string) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/faces",
-            method: "getFacesByUser",
+            path:"/staff/faces",
+            method:"getFacesByUser",
         });
-        return { success: false, error: "Не удалось загрузить данные лиц сотрудника" };
+        return { success: false, error:"Не удалось загрузить данные лиц сотрудника" };
     }
 }
 
@@ -101,7 +102,7 @@ export async function createFace(data: {
         });
 
         if (!user) {
-            return { success: false, error: "Сотрудник не найден" };
+            return { success: false, error:"Сотрудник не найден" };
         }
 
         // Если это основное лицо — снимаем флаг с других
@@ -122,7 +123,7 @@ export async function createFace(data: {
             createdById: session!.id,
         }).returning();
 
-        await logAction("Добавлено лицо сотрудника", "employee_face", newFace.id, {
+        await logAction("Добавлено лицо сотрудника","employee_face", newFace.id, {
             userId,
             userName: user.name,
         });
@@ -133,10 +134,10 @@ export async function createFace(data: {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/faces/create",
-            method: "createFace",
+            path:"/staff/faces/create",
+            method:"createFace",
         });
-        return { success: false, error: "Не удалось сохранить данные лица" };
+        return { success: false, error:"Не удалось сохранить данные лица" };
     }
 }
 
@@ -157,7 +158,7 @@ export async function updateFace(faceId: string, formData: FormData) {
         });
 
         if (!face) {
-            return { success: false, error: "Запись не найдена" };
+            return { success: false, error:"Запись не найдена" };
         }
 
         // Если устанавливаем как основное — снимаем флаг с других
@@ -178,17 +179,17 @@ export async function updateFace(faceId: string, formData: FormData) {
             .where(eq(employeeFaces.id, faceId))
             .returning();
 
-        await logAction("Обновлены данные лица", "employee_face", faceId, validated.data);
+        await logAction("Обновлены данные лица","employee_face", faceId, validated.data);
         revalidatePath("/staff/employees");
 
         return { success: true, data: updated };
     } catch (error) {
         await logError({
             error,
-            path: "/staff/faces/update",
-            method: "updateFace",
+            path:"/staff/faces/update",
+            method:"updateFace",
         });
-        return { success: false, error: "Не удалось обновить данные" };
+        return { success: false, error:"Не удалось обновить данные" };
     }
 }
 
@@ -207,7 +208,7 @@ export async function deleteFace(faceId: string) {
         });
 
         if (!face) {
-            return { success: false, error: "Запись не найдена" };
+            return { success: false, error:"Запись не найдена" };
         }
 
         // Мягкое удаление
@@ -218,7 +219,7 @@ export async function deleteFace(faceId: string) {
             })
             .where(eq(employeeFaces.id, faceId));
 
-        await logAction("Удалены данные лица", "employee_face", faceId, {
+        await logAction("Удалены данные лица","employee_face", faceId, {
             userId: face.userId,
             userName: face.user?.name,
         });
@@ -229,10 +230,10 @@ export async function deleteFace(faceId: string) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/faces/delete",
-            method: "deleteFace",
+            path:"/staff/faces/delete",
+            method:"deleteFace",
         });
-        return { success: false, error: "Не удалось удалить данные" };
+        return { success: false, error:"Не удалось удалить данные" };
     }
 }
 
@@ -282,9 +283,9 @@ export async function getEmployeesWithoutFaces() {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/faces",
-            method: "getEmployeesWithoutFaces",
+            path:"/staff/faces",
+            method:"getEmployeesWithoutFaces",
         });
-        return { success: false, error: "Не удалось загрузить список сотрудников" };
+        return { success: false, error:"Не удалось загрузить список сотрудников" };
     }
 }

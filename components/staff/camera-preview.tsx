@@ -150,7 +150,7 @@ export function CameraPreview({
 
         return () => {
             video.pause()
-            video.src = ""
+            video.src =""
             video.load()
         }
     }, [streamUrl, zones, showLabels])
@@ -204,9 +204,9 @@ export function CameraPreview({
             />
 
             {isLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-sm gap-4 transition-all">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/50 backdrop-blur-sm gap-3 transition-all">
                     <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-                    <span className="text-xs font-bold text-white uppercase tracking-widest opacity-50">Connecting Live</span>
+                    <span className="text-xs font-bold text-white   opacity-50">Connecting Live</span>
                 </div>
             )}
 
@@ -218,7 +218,7 @@ export function CameraPreview({
 
             <div className="absolute bottom-4 left-4 flex gap-2">
                 <div className="bg-red-600 w-2 h-2 rounded-full animate-pulse shadow-lg shadow-red-500/50" />
-                <span className="text-[10px] font-bold text-white uppercase tracking-tighter shadow-sm">Live Feed</span>
+                <span className="text-[11px] leading-tight text-neutral-500 font-bold text-white  tracking-tighter shadow-sm">Live Feed</span>
             </div>
         </div>
     )

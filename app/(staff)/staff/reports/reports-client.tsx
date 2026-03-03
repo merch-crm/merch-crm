@@ -119,8 +119,8 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500 pb-12">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-3 animate-in fade-in duration-500 pb-12">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Отчёты</h1>
                     <p className="text-slate-500 mt-1">
@@ -130,7 +130,7 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
                 <Button
                     onClick={handleExport}
                     disabled={isPending}
-                    className="rounded-2xl h-12 px-6 bg-slate-900 text-white hover:bg-slate-800 font-bold uppercase tracking-widest text-[10px]"
+                    className="rounded-2xl h-12 px-6 bg-slate-900 text-white hover:bg-slate-800 font-bold   text-[11px] leading-tight text-neutral-500"
                 >
                     <Download className="w-4 h-4 mr-2" />
                     Экспорт CSV
@@ -151,7 +151,7 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
                             fetchReport(currentDate)
                         }}
                         className={cn(
-                            'px-6 py-2.5 text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all',
+                            'px-6 py-2.5 text-[11px] leading-tight text-neutral-500 font-bold   rounded-xl transition-all',
                             reportType === item.type
                                 ? 'bg-white text-indigo-600 shadow-sm border border-slate-200'
                                 : 'text-slate-500 hover:text-slate-900 hover:bg-white/50'
@@ -193,7 +193,7 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
             </div>
 
             {/* Контент отчёта */}
-            <div className={cn("transition-opacity duration-300", isPending ? "opacity-30" : "opacity-100")}>
+            <div className={cn("transition-opacity duration-300", isPending ?"opacity-30" :"opacity-100")}>
                 {reportType === 'daily' && dailyReport && (
                     <DailyReportView data={dailyReport} />
                 )}
@@ -212,9 +212,9 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
 
 function DailyReportView({ data }: { data: DailyReport }) {
     return (
-        <div className="space-y-6">
+        <div className="space-y-3">
             {/* Сводка */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <StatCard
                     title="Присутствовали"
                     value={`${data.presentToday}/${data.totalEmployees}`}
@@ -246,7 +246,7 @@ function DailyReportView({ data }: { data: DailyReport }) {
                 <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-6">
                     <div className="flex items-center gap-2">
                         <BarChart3 className="w-5 h-5 text-indigo-500" />
-                        <h2 className="font-bold uppercase tracking-wider text-xs text-slate-900">Детализация по сотрудникам</h2>
+                        <h2 className="font-bold  tracking-wider text-xs text-slate-900">Детализация по сотрудникам</h2>
                     </div>
                 </CardHeader>
                 <CardBody className="p-0">
@@ -260,11 +260,11 @@ function DailyReportView({ data }: { data: DailyReport }) {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-slate-100 bg-slate-50/20">
-                                        <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Сотрудник</th>
-                                        <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Приход</th>
-                                        <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Уход</th>
-                                        <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Время работы</th>
-                                        <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Статус</th>
+                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Сотрудник</th>
+                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Приход</th>
+                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Уход</th>
+                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Время работы</th>
+                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400 text-right">Статус</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -277,7 +277,7 @@ function DailyReportView({ data }: { data: DailyReport }) {
                                                     </div>
                                                     <div className="min-w-0">
                                                         <p className="font-bold text-slate-900 truncate text-sm">{emp.userName}</p>
-                                                        <p className="text-[10px] text-slate-400 font-medium truncate">{emp.email}</p>
+                                                        <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium truncate">{emp.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -301,11 +301,11 @@ function DailyReportView({ data }: { data: DailyReport }) {
                                             </td>
                                             <td className="py-4 px-6 text-right">
                                                 {emp.isLate ? (
-                                                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-rose-50 text-rose-600 rounded-full border border-rose-100">
+                                                    <span className="px-3 py-1 text-[11px] leading-tight text-neutral-500 font-bold   bg-rose-50 text-rose-600 rounded-full border border-rose-100">
                                                         Опоздание
                                                     </span>
                                                 ) : (
-                                                    <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+                                                    <span className="px-3 py-1 text-[11px] leading-tight text-neutral-500 font-bold   bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
                                                         Вовремя
                                                     </span>
                                                 )}
@@ -324,15 +324,15 @@ function DailyReportView({ data }: { data: DailyReport }) {
 
 function WeeklyReportView({ data }: { data: WeeklyReport }) {
     return (
-        <div className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                 {/* График по дням */}
                 <Card className="crm-card border-none shadow-sm bg-white lg:col-span-2">
                     <CardHeader className="p-6">
-                        <h2 className="font-bold uppercase tracking-widest text-xs text-slate-900">Средняя нагрузка по дням</h2>
+                        <h2 className="font-bold   text-xs text-slate-900">Средняя нагрузка по дням</h2>
                     </CardHeader>
                     <CardBody className="p-8">
-                        <div className="flex items-end justify-between gap-4 h-64 overflow-x-auto pb-4">
+                        <div className="flex items-end justify-between gap-3 h-64 overflow-x-auto pb-4">
                             {data.dailyBreakdown.map((day, index: number) => {
                                 const maxHours = 12
                                 const height = (day.avgHours / maxHours) * 100
@@ -346,11 +346,11 @@ function WeeklyReportView({ data }: { data: WeeklyReport }) {
                                             >
                                                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             </div>
-                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] leading-tight text-neutral-500 font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
                                                 {day.avgHours.toFixed(1)}ч
                                             </div>
                                         </div>
-                                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-4">{day.date}</p>
+                                        <p className="text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400 mt-4">{day.date}</p>
                                     </div>
                                 )
                             })}
@@ -359,7 +359,7 @@ function WeeklyReportView({ data }: { data: WeeklyReport }) {
                 </Card>
 
                 {/* Сводка за неделю */}
-                <div className="space-y-4">
+                <div className="space-y-3">
                     <StatSummaryCard title="Опозданий за неделю" count={data.summary.totalLateArrivals} icon={AlertTriangle} color="rose" />
                     <StatSummaryCard title="Среднее часов/день" count={Number(data.summary.avgDailyHours.toFixed(1))} icon={Clock} color="indigo" />
                     <StatSummaryCard title="Присутствие (ср)" count={Number(data.summary.avgDailyPresence.toFixed(1))} icon={Users} color="emerald" />
@@ -369,30 +369,28 @@ function WeeklyReportView({ data }: { data: WeeklyReport }) {
             {/* Рейтинг сотрудников */}
             <Card className="crm-card border-none shadow-sm bg-white overflow-hidden">
                 <CardHeader className="bg-slate-50/50 p-6">
-                    <h2 className="font-bold uppercase tracking-widest text-xs text-slate-900">Рейтинг за период (Топ-10)</h2>
+                    <h2 className="font-bold   text-xs text-slate-900">Рейтинг за период (Топ-10)</h2>
                 </CardHeader>
                 <CardBody className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {data.employees.slice(0, 10).map((emp, index: number) => (
-                            <div key={emp.userId} className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50/30">
-                                <span className={cn(
-                                    "w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black",
-                                    index === 0 ? "bg-amber-100 text-amber-600 shadow-sm" :
-                                        index === 1 ? "bg-slate-200 text-slate-600 shadow-sm" :
-                                            index === 2 ? "bg-orange-100 text-orange-600 shadow-sm" :
-                                                "bg-white text-slate-400 border border-slate-100"
+                            <div key={emp.userId} className="flex items-center gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50/30">
+                                <span className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black",
+                                    index === 0 ?"bg-amber-100 text-amber-600 shadow-sm" :
+                                        index === 1 ?"bg-slate-200 text-slate-600 shadow-sm" :
+                                            index === 2 ?"bg-orange-100 text-orange-600 shadow-sm" :"bg-white text-slate-400 border border-slate-100"
                                 )}>
                                     {index + 1}
                                 </span>
                                 <div className="flex-1 min-w-0">
                                     <p className="font-bold text-slate-900 truncate text-sm">{emp.userName}</p>
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">
+                                    <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold   mt-0.5">
                                         {emp.daysPresent} дн. • {emp.lateCount} опозд.
                                     </p>
                                 </div>
                                 <div className="text-right">
                                     <p className="font-black text-slate-900">{emp.totalHours.toFixed(1)}</p>
-                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest leading-none">часов</p>
+                                    <p className="text-[8px] font-bold text-slate-400   leading-none">часов</p>
                                 </div>
                             </div>
                         ))}
@@ -405,9 +403,9 @@ function WeeklyReportView({ data }: { data: WeeklyReport }) {
 
 function MonthlyReportView({ data }: { data: MonthlyReport }) {
     return (
-        <div className="space-y-6">
+        <div className="space-y-3">
             {/* Сводка за месяц */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <StatCard
                     title="Рабочих дней"
                     value={data.workDays}
@@ -437,19 +435,19 @@ function MonthlyReportView({ data }: { data: MonthlyReport }) {
             {/* Таблица за месяц */}
             <Card className="crm-card border-none shadow-sm overflow-hidden bg-white">
                 <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-6">
-                    <h2 className="font-bold uppercase tracking-widest text-xs text-slate-900">Итоги за {data.monthName}</h2>
+                    <h2 className="font-bold   text-xs text-slate-900">Итоги за {data.monthName}</h2>
                 </CardHeader>
                 <CardBody className="p-0">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-slate-100 bg-slate-50/20">
-                                    <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Сотрудник</th>
-                                    <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Дней</th>
-                                    <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Всего часов</th>
-                                    <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Ср. в день</th>
-                                    <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Опозд.</th>
-                                    <th className="text-left py-4 px-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Ранний уход</th>
+                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Сотрудник</th>
+                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Дней</th>
+                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Всего часов</th>
+                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Ср. в день</th>
+                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Опозд.</th>
+                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400 text-right">Ранний уход</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -457,7 +455,7 @@ function MonthlyReportView({ data }: { data: MonthlyReport }) {
                                     <tr key={emp.userId} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
                                         <td className="py-4 px-6">
                                             <p className="font-bold text-slate-900 text-sm">{emp.userName}</p>
-                                            <p className="text-[10px] text-slate-400 font-medium">{emp.email}</p>
+                                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">{emp.email}</p>
                                         </td>
                                         <td className="py-4 px-6">
                                             <span className="text-sm font-bold text-slate-600">
@@ -515,13 +513,13 @@ function StatCard({
 
     return (
         <Card className="crm-card border-none shadow-sm bg-white overflow-hidden">
-            <CardBody className="p-6 flex items-center gap-5">
+            <CardBody className="p-6 flex items-center gap-3">
                 <div className={cn('w-14 h-14 rounded-2xl flex items-center justify-center ring-4', colors[color])}>
                     <Icon className="w-7 h-7" />
                 </div>
                 <div>
                     <p className="text-2xl font-black text-slate-900 leading-none">{value}</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 leading-none">{title}</p>
+                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400   mt-2 leading-none">{title}</p>
                 </div>
             </CardBody>
         </Card>
@@ -538,13 +536,13 @@ function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, c
 
     return (
         <Card className="crm-card border-none shadow-sm bg-white overflow-hidden h-full">
-            <CardBody className="p-5 flex items-center gap-5">
+            <CardBody className="p-5 flex items-center gap-3">
                 <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center ring-4", config.bg, config.text, config.ring)}>
                     <Icon className="w-7 h-7" />
                 </div>
                 <div>
                     <p className="text-3xl font-black text-slate-900 leading-none">{count}</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">{title}</p>
+                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400   mt-2">{title}</p>
                 </div>
             </CardBody>
         </Card>

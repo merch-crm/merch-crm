@@ -8,11 +8,11 @@ import {
     Download,
     UploadCloud,
     Plus
-} from "lucide-react";
-import { useTransition, useRef } from "react";
-import { uploadOrderFile } from "../actions/attachments.actions";;
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/toast";
+} from"lucide-react";
+import { useTransition, useRef } from"react";
+import { uploadOrderFile } from"../actions/attachments.actions";;
+import { Button } from"@/components/ui/button";
+import { useToast } from"@/components/ui/toast";
 
 interface Attachment {
     id: string;
@@ -42,9 +42,9 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
         startTransition(async () => {
             const res = await uploadOrderFile(orderId, formData);
             if (!res.success) {
-                toast(res.error, "error");
+                toast(res.error,"error");
             } else {
-                toast("Файл успешно загружен", "success");
+                toast("Файл успешно загружен","success");
             }
         });
     };
@@ -56,15 +56,15 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
     };
 
     const formatSize = (bytes: number) => {
-        if (!bytes) return "0 Б";
+        if (!bytes) return"0 Б";
         const k = 1024;
-        const sizes = ["Б", "КБ", "МБ", "ГБ"];
+        const sizes = ["Б","КБ","МБ","ГБ"];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) +"" + sizes[i];
     };
 
     return (
-        <div className="crm-card ">
+        <div className="crm-card">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-slate-900 flex items-center  text-xs">
                     <Paperclip className="w-4 h-4 mr-3 text-primary" />
@@ -97,11 +97,11 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                         className="flex items-center gap-3 p-4 bg-slate-50/50 border border-slate-200 rounded-2xl hover:border-primary/20 hover:bg-white hover:shadow-xl hover:shadow-primary/5 transition-all group"
                     >
                         <div className="h-12 w-12 rounded-2xl bg-white shadow-sm border border-slate-200 flex items-center justify-center shrink-0 group-hover:bg-primary/5 group-hover:border-primary/20 transition-all">
-                            {getFileIcon(file.contentType || "")}
+                            {getFileIcon(file.contentType ||"")}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-slate-900 truncate ">{file.fileName}</p>
-                            <p className="text-xs font-bold text-slate-400 ">{file.fileSize ? formatSize(file.fileSize) : "0 B"}</p>
+                            <p className="text-xs font-bold text-slate-900 truncate">{file.fileName}</p>
+                            <p className="text-xs font-bold text-slate-400">{file.fileSize ? formatSize(file.fileSize) :"0 B"}</p>
                         </div>
                         <Download className="w-4 h-4 text-slate-200 group-hover:text-primary transition-colors shrink-0" />
                     </a>

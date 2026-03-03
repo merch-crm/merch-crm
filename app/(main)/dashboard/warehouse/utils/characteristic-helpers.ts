@@ -1,4 +1,4 @@
-import type { InventoryAttribute as Attribute, AttributeType } from "../types";
+import type { InventoryAttribute as Attribute, AttributeType } from"../types";
 
 export const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'e', 'ж': 'zh',
@@ -8,13 +8,13 @@ export const RUSSIAN_TO_LATIN_MAP: Record<string, string> = {
     ' ': '_'
 };
 
-export const DESIRED_CATEGORY_ORDER = ["Одежда", "Упаковка", "Расходники"];
+export const DESIRED_CATEGORY_ORDER = ["Одежда","Упаковка","Расходники"];
 
 export const getColorHex = (meta: unknown): string => {
     if (typeof meta === 'object' && meta !== null && 'hex' in meta) {
         return (meta as { hex: string }).hex;
     }
-    return "#000000";
+    return"#000000";
 };
 
 export const transliterateToSku = (text: string) => {
@@ -27,23 +27,17 @@ export const transliterateToSku = (text: string) => {
 
 // Normalised unit weights — supports both Cyrillic display values and Latin SKU codes
 const UNIT_WEIGHTS: Record<string, number> = {
-    // Length (Cyrillic display names)
-    "мм": 1, "см": 2, "м": 3,
-    // Length (Latin SKU codes)
-    "mm": 1, "sm": 2, "m": 3,
-    // Weight
-    "г": 1, "кг": 1000,
-    "g": 1, "kg": 1000,
-    // Volume
-    "мл": 1, "л": 1000,
-    "ml": 1, "l": 1000
+    // Length (Cyrillic display names)"мм": 1,"см": 2,"м": 3,
+    // Length (Latin SKU codes)"mm": 1,"sm": 2,"m": 3,
+    // Weight"г": 1,"кг": 1000,"g": 1,"kg": 1000,
+    // Volume"мл": 1,"л": 1000,"ml": 1,"l": 1000
 };
 
-const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"];
+const SIZE_ORDER = ["XXS","XS","S","M","L","XL","XXL","XXXL","4XL","5XL"];
 
 const getSizeRank = (rawSize: string): number => {
     // Strip _OS (Oversize) suffix to rank oversize and normal together
-    const s = rawSize.toUpperCase().replace(/_OS$/, "").trim();
+    const s = rawSize.toUpperCase().replace(/_OS$/,"").trim();
     const exactIndex = SIZE_ORDER.indexOf(s);
     if (exactIndex !== -1) {
         // Oversize variants go just after their base size
@@ -61,7 +55,7 @@ const getSizeRank = (rawSize: string): number => {
 export const sortAttributeValues = (values: Attribute[], dataType: string): Attribute[] => {
     return [...values].sort((a, b) => {
         // 1. Pure numeric types — sort by numeric value, normalising units
-        if (["quantity", "density", "weight", "volume"].includes(dataType)) {
+        if (["quantity","density","weight","volume"].includes(dataType)) {
             const numA = parseFloat(a.value);
             const numB = parseFloat(b.value);
 
@@ -80,14 +74,14 @@ export const sortAttributeValues = (values: Attribute[], dataType: string): Attr
         }
 
         // 2. Unit types (мм → см → м, also handles Latin codes MM → SM → M)
-        if (dataType === "unit") {
+        if (dataType ==="unit") {
             const wA = UNIT_WEIGHTS[a.value.toLowerCase()] ?? 999;
             const wB = UNIT_WEIGHTS[b.value.toLowerCase()] ?? 999;
             if (wA !== wB) return wA - wB;
         }
 
         // 3. Clothing sizes (XS → S → M → S_OS → M_OS…)
-        if (dataType === "size") {
+        if (dataType ==="size") {
             const rankA = getSizeRank(a.value);
             const rankB = getSizeRank(b.value);
             if (rankA !== rankB) return rankA - rankB;
@@ -102,32 +96,32 @@ export const DEFAULT_VALUE_FORM = {
     isOpen: false,
     targetTypeSlug: null as string | null,
     editingAttribute: null as Attribute | null,
-    name: "",
-    code: "",
-    colorHex: "#000000",
-    length: "",
-    width: "",
-    height: "",
-    dimensionUnit: "мм" as "мм" | "см" | "м",
-    fullName: "",
-    shortName: "",
+    name:"",
+    code:"",
+    colorHex:"#000000",
+    length:"",
+    width:"",
+    height:"",
+    dimensionUnit:"мм" as"мм" |"см" |"м",
+    fullName:"",
+    shortName:"",
     isOversize: false,
-    compositionItems: [{ name: "", value: "", unit: "%" }],
-    consumableType: "краска",
-    consumableCustomType: "",
-    consumableValue: "",
-    consumableUnit: "мл",
-    consumableExtra: "",
-    error: "",
+    compositionItems: [{ name:"", value:"", unit:"%" }],
+    consumableType:"краска",
+    consumableCustomType:"",
+    consumableValue:"",
+    consumableUnit:"мл",
+    consumableExtra:"",
+    error:"",
     isSaving: false,
     isCodeManuallyEdited: false
 };
 
 export const DEFAULT_TYPE_FORM = {
     editingType: null as AttributeType | null,
-    name: "",
-    categoryId: "uncategorized",
-    dataType: "text" as AttributeType["dataType"],
+    name:"",
+    categoryId:"uncategorized",
+    dataType:"text" as AttributeType["dataType"],
     isSystem: false,
     showInSku: true,
     showInName: true,
@@ -143,5 +137,5 @@ export const DEFAULT_DELETE_DIALOG = {
     type: null as AttributeType | null,
     isDeleting: false,
     isDeletingType: false,
-    password: ""
+    password:""
 };

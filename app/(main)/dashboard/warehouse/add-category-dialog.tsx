@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, createElement } from "react";
-import { FolderPlus, Check, AlertCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { addInventoryCategory } from "./category-actions";;
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { getIconNameFromName, getCategoryIcon, COLORS, generateCategoryPrefix, getDynamicGradient, getHexColor } from "./category-utils";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { CategoryIconPicker } from "./category-icon-picker";
-import { SwitchRow } from "@/components/ui/switch-row";
+import { useState, createElement } from"react";
+import { FolderPlus, Check, AlertCircle } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { addInventoryCategory } from"./category-actions";;
+import { useRouter } from"next/navigation";
+import { cn } from"@/lib/utils";
+import { getIconNameFromName, getCategoryIcon, COLORS, generateCategoryPrefix, getDynamicGradient, getHexColor } from"./category-utils";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { CategoryIconPicker } from"./category-icon-picker";
+import { SwitchRow } from"@/components/ui/switch-row";
 
 
 interface AddCategoryDialogProps {
@@ -24,22 +24,21 @@ interface AddCategoryDialogProps {
 
 
 
-function CategoryIconPreview({ iconName, color, size = "md" }: { iconName: string, color: string, size?: "sm" | "md" | "lg" }) {
+function CategoryIconPreview({ iconName, color, size ="md" }: { iconName: string, color: string, size?:"sm" |"md" |"lg" }) {
     const sizeClasses = {
-        sm: "w-8 h-8 rounded-[10px]",
-        md: "w-10 h-10 rounded-[12px]",
-        lg: "w-12 h-12 rounded-[14px]"
+        sm:"w-8 h-8 rounded-[10px]",
+        md:"w-10 h-10 rounded-[12px]",
+        lg:"w-12 h-12 rounded-[14px]"
     };
     const iconSizeClasses = {
-        sm: "w-4 h-4",
-        md: "w-5 h-5",
-        lg: "w-6 h-6"
+        sm:"w-4 h-4",
+        md:"w-5 h-5",
+        lg:"w-6 h-6"
     };
 
     return (
         <div
-            className={cn(
-                "flex items-center justify-center shrink-0 transition-all duration-500 text-white",
+            className={cn("flex items-center justify-center shrink-0 transition-all duration-500 text-white",
                 sizeClasses[size]
             )}
             style={getDynamicGradient(color)}
@@ -61,11 +60,10 @@ function ValidatedInput({ label, error, className, ...props }: ValidatedInputPro
         <>
             <label className="text-sm font-bold text-slate-700 block ml-1">{label}</label>
             <Input
-                className={cn(
-                    "h-12 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm",
+                className={cn("h-12 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm",
                     error
-                        ? "border-rose-300 bg-rose-50 text-rose-900"
-                        : "border-slate-200 bg-slate-50",
+                        ?"border-rose-300 bg-rose-50 text-rose-900"
+                        :"border-slate-200 bg-slate-50",
                     className
                 )}
                 {...props}
@@ -77,7 +75,7 @@ function ValidatedInput({ label, error, className, ...props }: ValidatedInputPro
 
 export function AddCategoryDialog({
     parentId,
-    buttonText = "Добавить категорию",
+    buttonText ="Добавить категорию",
     className,
     isOpen: controlledIsOpen,
     onOpenChange
@@ -95,15 +93,15 @@ export function AddCategoryDialog({
     });
 
     const [formState, setFormState] = useState({
-        name: "",
-        prefix: "",
+        name:"",
+        prefix:"",
         prefixManuallyEdited: false,
-        color: "primary",
-        icon: "tshirt-custom",
+        color:"primary",
+        icon:"tshirt-custom",
         iconManuallyEdited: false,
         showInSku: true,
         showInName: true,
-        parentId: parentId || ""
+        parentId: parentId ||""
     });
     const router = useRouter();
 
@@ -114,8 +112,8 @@ export function AddCategoryDialog({
         const prefix = formData.get("prefix") as string;
 
         const newErrors: Record<string, string> = {};
-        if (!name || name.trim().length < 2) newErrors.name = "Введите название";
-        if (!prefix || prefix.trim().length < 2) newErrors.prefix = "Введите артикул";
+        if (!name || name.trim().length < 2) newErrors.name ="Введите название";
+        if (!prefix || prefix.trim().length < 2) newErrors.prefix ="Введите артикул";
 
         if (Object.keys(newErrors).length > 0) {
             setUiState(prev => ({ ...prev, fieldErrors: newErrors }));
@@ -146,15 +144,14 @@ export function AddCategoryDialog({
                 onClick={() => {
                     setFormState(prev => ({
                         ...prev,
-                        name: "",
-                        prefix: "",
+                        name:"",
+                        prefix:"",
                         prefixManuallyEdited: false
                     }));
                     setUiState({ error: null, fieldErrors: {} });
                     setIsOpen(true);
                 }}
-                className={cn(
-                    "h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-primary/20 transition-all active:scale-95",
+                className={cn("h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-primary/20 transition-all active:scale-95",
                     className
                 )}
             >
@@ -165,7 +162,7 @@ export function AddCategoryDialog({
             <ResponsiveModal
                 isOpen={isOpen}
                 onClose={() => setIsOpen(false)}
-                title={parentId ? "Новая подкатегория" : "Новая категория"}
+                title={parentId ?"Новая подкатегория" :"Новая категория"}
                 description="Создание новой категории или подкатегории для товаров в инвентаре"
                 showVisualTitle={false}
                 hideClose={true}
@@ -176,7 +173,7 @@ export function AddCategoryDialog({
                             <CategoryIconPreview iconName={formState.icon} color={formState.color} size="lg" />
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">
-                                    {parentId ? "Подкатегория" : "Новая категория"}
+                                    {parentId ?"Подкатегория" :"Новая категория"}
                                 </h2>
                                 <p className="text-[11px] font-bold text-slate-700 mt-0.5">Настройка параметров раздела</p>
                             </div>
@@ -208,8 +205,8 @@ export function AddCategoryDialog({
                                                 ...prevUi,
                                                 fieldErrors: {
                                                     ...prevUi.fieldErrors,
-                                                    name: "",
-                                                    ...(!formState.prefixManuallyEdited ? { prefix: "" } : {})
+                                                    name:"",
+                                                    ...(!formState.prefixManuallyEdited ? { prefix:"" } : {})
                                                 }
                                             }));
                                         }
@@ -230,7 +227,7 @@ export function AddCategoryDialog({
                                         setFormState(prev => ({ ...prev, prefix: val, prefixManuallyEdited: true }));
                                         if (uiState.fieldErrors.prefix) setUiState(prev => ({
                                             ...prev,
-                                            fieldErrors: { ...prev.fieldErrors, prefix: "" }
+                                            fieldErrors: { ...prev.fieldErrors, prefix:"" }
                                         }));
                                     }}
                                 />
@@ -262,16 +259,15 @@ export function AddCategoryDialog({
                                     <div className="grid grid-cols-10 gap-2 sm:gap-3 px-0.5">
                                         {COLORS.map((color) => {
                                             const colorHex = getHexColor(color.name);
-                                            const normalizedFormColor = (formState.color || "").toLowerCase();
+                                            const normalizedFormColor = (formState.color ||"").toLowerCase();
                                             const isSelected = normalizedFormColor === color.name.toLowerCase() || normalizedFormColor === colorHex.toLowerCase();
                                             return (
                                                 <button
                                                     key={color.name}
                                                     type="button"
                                                     onClick={() => setFormState(prev => ({ ...prev, color: colorHex }))}
-                                                    className={cn(
-                                                        "w-full aspect-square rounded-full flex items-center justify-center transition-all duration-300 relative active:scale-95 p-0 outline-none",
-                                                        !isSelected && "opacity-90 hover:opacity-100 hover:scale-105"
+                                                    className={cn("w-full aspect-square rounded-full flex items-center justify-center transition-all duration-300 relative active:scale-95 p-0 outline-none",
+                                                        !isSelected &&"opacity-90 hover:opacity-100 hover:scale-105"
                                                     )}
                                                     style={{
                                                         backgroundColor: colorHex,

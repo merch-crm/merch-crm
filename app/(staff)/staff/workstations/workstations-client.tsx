@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { createWorkstation, updateWorkstation, deleteWorkstation } from './workstations.actions'
+import { Select } from '@/components/ui/select'
 import { ZoneEditor } from '@/components/staff/zone-editor'
 import { DetectionZone } from '@/lib/schema/presence'
 
@@ -48,6 +49,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
     const [modalOpen, setModalOpen] = useState(false)
     const [editingWorkstation, setEditingWorkstation] = useState<Workstation | null>(null)
     const [zoneEditorOpen, setZoneEditorOpen] = useState(false)
+    const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
     const [form, setForm] = useState({
         name: '',
@@ -120,22 +122,28 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
     }
 
     const handleDelete = async (id: string) => {
-        if (!confirm('Удалить рабочее место?')) return
+        setConfirmDeleteId(id)
+    }
+
+    const handleDeleteConfirmed = async () => {
+        if (!confirmDeleteId) return
 
         startTransition(async () => {
-            const result = await deleteWorkstation(id)
+            const result = await deleteWorkstation(confirmDeleteId)
             if (result.success) {
                 toast.success('Удалено')
-                setWorkstations(prev => prev.filter(w => w.id !== id))
+                setWorkstations(prev => prev.filter(w => w.id !== confirmDeleteId))
+                setConfirmDeleteId(null)
             } else {
                 toast.error(result.error || 'Ошибка')
+                setConfirmDeleteId(null)
             }
         })
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-3 animate-in fade-in duration-500">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-slate-900">Рабочие места</h1>
                     <p className="text-slate-500 mt-1">
@@ -149,13 +157,13 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
             </div>
 
             {/* Список рабочих мест */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {workstations.map((ws) => (
                     <Card key={ws.id} className="group hover:shadow-xl transition-all duration-300 border-none bg-white shadow-md overflow-hidden">
                         <CardBody className="p-0">
-                            <div className="p-6 space-y-4">
+                            <div className="p-6 space-y-3">
                                 <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3">
                                         <div
                                             className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner"
                                             style={{ backgroundColor: `${ws.color}15`, color: ws.color || '#3B82F6' }}
@@ -184,14 +192,14 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                                             {ws.assignedUser?.name || 'Любой сотрудник'}
                                         </span>
                                         {ws.requiresAssignedUser && (
-                                            <span className="ml-auto text-[10px] uppercase tracking-wider font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
+                                            <span className="ml-auto text-[11px] leading-tight text-neutral-500  tracking-wider font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
                                                 Strict
                                             </span>
                                         )}
                                     </div>
 
                                     {ws.zone && (
-                                        <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-green-600 mt-1">
+                                        <div className="flex items-center gap-2 text-[11px] font-bold  tracking-wider text-green-600 mt-1">
                                             <Move className="w-3 h-3" />
                                             Зона детекции настроена
                                         </div>
@@ -201,6 +209,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
 
                             <div className="flex divide-x divide-slate-100 border-t border-slate-100 bg-slate-50/50">
                                 <button
+                                    type="button"
                                     className="flex-1 py-3.5 text-sm font-semibold text-slate-700 hover:bg-white hover:text-blue-600 transition-all flex items-center justify-center gap-2"
                                     onClick={() => openEditModal(ws)}
                                 >
@@ -208,6 +217,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                                     Настроить
                                 </button>
                                 <button
+                                    type="button"
                                     className="px-5 py-3.5 text-slate-400 hover:bg-white hover:text-red-500 transition-all"
                                     onClick={() => handleDelete(ws.id)}
                                 >
@@ -241,8 +251,8 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                 onClose={() => setModalOpen(false)}
                 title={editingWorkstation ? 'Редактировать рабочее место' : 'Новое рабочее место'}
             >
-                <div className="space-y-6 py-4 px-1">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3 py-4 px-1">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                             <Input
@@ -279,33 +289,31 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                         />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">Привязанная камера</label>
-                            <select
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white outline-none ring-offset-white focus:ring-2 focus:ring-blue-500 transition-all"
+                            <Select
                                 value={form.cameraId}
-                                onChange={(e) => setForm(prev => ({ ...prev, cameraId: e.target.value, zone: null }))}
-                            >
-                                <option value="">Не выбрана</option>
-                                {cameras.map((cam) => (
-                                    <option key={cam.id} value={cam.id}>{cam.name}</option>
-                                ))}
-                            </select>
+                                onChange={(value: string) => setForm(prev => ({ ...prev, cameraId: value, zone: null }))}
+                                options={[
+                                    { id: '', title: 'Не выбрана' },
+                                    ...cameras.map(cam => ({ id: cam.id, title: cam.name }))
+                                ]}
+                                triggerClassName="h-12 w-full rounded-xl"
+                            />
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-700 ml-1">Закреплённый сотрудник</label>
-                            <select
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white outline-none ring-offset-white focus:ring-2 focus:ring-blue-500 transition-all font-medium"
-                                value={form.assignedUserId}
-                                onChange={(e) => setForm(prev => ({ ...prev, assignedUserId: e.target.value }))}
-                            >
-                                <option value="">Любой сотрудник</option>
-                                {users.map((user) => (
-                                    <option key={user.id} value={user.id}>{user.name}</option>
-                                ))}
-                            </select>
+                            <Select
+                                value={form.assignedUserId || ''}
+                                onChange={(value: string) => setForm(prev => ({ ...prev, assignedUserId: value }))}
+                                options={[
+                                    { id: '', title: 'Любой сотрудник' },
+                                    ...users.map(user => ({ id: user.id, title: user.name }))
+                                ]}
+                                triggerClassName="h-12 w-full rounded-xl font-medium"
+                            />
                         </div>
                     </div>
 
@@ -355,7 +363,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                         </div>
                     )}
 
-                    <div className="flex gap-4 pt-6 border-t border-slate-100">
+                    <div className="flex gap-3 pt-6 border-t border-slate-100">
                         <Button
                             variant="ghost"
                             className="flex-1 h-12 rounded-xl text-slate-500 font-bold"
@@ -380,7 +388,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                     open={zoneEditorOpen}
                     onOpenChange={setZoneEditorOpen}
                     imageUrl={cameras.find(c => c.id === form.cameraId)?.streamUrl?.replace('/stream.mp4', '/frame.jpeg')}
-                    initialZone={form.zone ? (form.zone as any) : undefined}
+                    initialZone={form.zone ? (form.zone as unknown as any) : undefined}
                     color={form.color}
                     onSave={(zone) => {
                         setForm(prev => ({ ...prev, zone }))
@@ -389,6 +397,18 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                     onCancel={() => setZoneEditorOpen(false)}
                 />
             )}
+
+            {/* Confirm delete modal */}
+            <ResponsiveModal isOpen={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)}>
+                <div className="p-6 flex flex-col gap-4">
+                    <h3 className="text-lg font-bold text-slate-900">Удалить рабочее место?</h3>
+                    <p className="text-sm text-slate-500">Это действие нельзя отменить.</p>
+                    <div className="flex gap-3 justify-end">
+                        <Button type="button" variant="ghost" onClick={() => setConfirmDeleteId(null)}>Отмена</Button>
+                        <Button type="button" variant="destructive" onClick={handleDeleteConfirmed} disabled={isPending}>Удалить</Button>
+                    </div>
+                </div>
+            </ResponsiveModal>
         </div>
     )
 }

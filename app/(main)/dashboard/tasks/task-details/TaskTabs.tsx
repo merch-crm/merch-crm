@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { Task } from "../types";
+import { cn } from"@/lib/utils";
+import { Task } from"../types";
 
 export type TabId = 'details' | 'checklist' | 'comments' | 'history';
 
@@ -25,11 +25,10 @@ export function TaskTabs({ task, activeTab, onTabChange }: TaskTabsProps) {
                 <button type="button"
                     key={tab.id}
                     onClick={() => onTabChange(tab.id)}
-                    className={cn(
-                        "px-4 sm:px-6 py-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap shrink-0",
+                    className={cn("px-4 sm:px-6 py-4 text-sm font-bold transition-all border-b-2 whitespace-nowrap shrink-0",
                         activeTab === tab.id
-                            ? "border-primary text-primary"
-                            : "border-transparent text-slate-400 hover:text-slate-600"
+                            ?"border-primary text-primary"
+                            :"border-transparent text-slate-400 hover:text-slate-600"
                     )}
                 >
                     {tab.label}

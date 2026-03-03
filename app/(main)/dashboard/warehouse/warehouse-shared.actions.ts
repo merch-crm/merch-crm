@@ -1,9 +1,9 @@
 "use server";
 
-import { z } from "zod";
-import { revalidatePath } from "next/cache";
-import { logError } from "@/lib/error-logger";
-import { type ActionResult } from "@/lib/types";
+import { z } from"zod";
+import { revalidatePath } from"next/cache";
+import { logError } from"@/lib/error-logger";
+import { type ActionResult } from"@/lib/types";
 
 // Schema for actions without parameters
 const VoidSchema = z.void();
@@ -14,13 +14,13 @@ const VoidSchema = z.void();
 export async function refreshWarehouse() {
     VoidSchema.parse(undefined);
     try {
-        revalidatePath("/dashboard/warehouse", "layout");
-        revalidatePath("/dashboard/orders", "layout");
+        revalidatePath("/dashboard/warehouse","layout");
+        revalidatePath("/dashboard/orders","layout");
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/warehouse-shared.actions",
-            method: "refreshWarehouse"
+            path:"/dashboard/warehouse/warehouse-shared.actions",
+            method:"refreshWarehouse"
         });
     }
 }
@@ -34,13 +34,13 @@ export async function getMeasurementUnits(): Promise<ActionResult<{ id: string; 
         return {
             success: true,
             data: [
-                { id: "шт.", name: "шт." },
-                { id: "liters", name: "л" },
-                { id: "meters", name: "м" },
-                { id: "kg", name: "кг" }
+                { id:"шт.", name:"шт." },
+                { id:"liters", name:"л" },
+                { id:"meters", name:"м" },
+                { id:"kg", name:"кг" }
             ]
         };
     } catch {
-        return { success: false, error: "Ошибка при получении единиц измерения" };
+        return { success: false, error:"Ошибка при получении единиц измерения" };
     }
 }

@@ -1,14 +1,14 @@
 "use client";
 
 
-import { User, Mail, Lock, Shield, Building, Save, Loader2, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Lock, Shield, Building, Save, Loader2, Eye, EyeOff } from"lucide-react";
 
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
 
-import { IconSelect } from "@/components/ui/icon-select";
-import { IconInput } from "@/components/ui/icon-input";
-import { useEditUser } from "./hooks/use-edit-user";
+import { IconSelect } from"@/components/ui/icon-select";
+import { IconInput } from"@/components/ui/icon-input";
+import { useEditUser } from"./hooks/use-edit-user";
 
 interface EditUserDialogProps {
     user: {
@@ -75,7 +75,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                         <div className="relative">
                             <IconInput
                                 startIcon={Lock}
-                                type={state.showPassword ? "text" : "password"}
+                                type={state.showPassword ?"text" :"password"}
                                 name="password"
                                 placeholder="••••••••"
                                 className="block w-full pr-10 rounded-[18px] border-slate-200 bg-slate-50 text-slate-900 shadow-sm focus:border-primary focus:ring-0 px-3 py-2.5 transition-all placeholder:text-slate-300 h-11"
@@ -112,14 +112,14 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                                 name="departmentId"
                                 value={state.selectedDeptId}
                                 options={[
-                                    { id: "", title: "Все отделы" },
+                                    { id:"", title:"Все отделы" },
                                     ...state.departments.map(dept => ({ id: dept.id, title: dept.name }))
                                 ]}
                                 placeholder="Выбрать отдел"
                                 className="h-11"
                                 onChange={(val) => updateState({ selectedDeptId: val })}
                             />
-                            <input type="hidden" name="department" value={state.departments.find(d => d.id === state.selectedDeptId)?.name || ""} />
+                            <input type="hidden" name="department" value={state.departments.find(d => d.id === state.selectedDeptId)?.name ||""} />
                         </div>
                     </div>
 
@@ -142,7 +142,7 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
                             ) : (
                                 <Save className="w-5 h-5 mr-1" />
                             )}
-                            {state.loading ? "Сохранение..." : "Сохранить изменения"}
+                            {state.loading ?"Сохранение..." :"Сохранить изменения"}
                         </Button>
                     </div>
                 </form>

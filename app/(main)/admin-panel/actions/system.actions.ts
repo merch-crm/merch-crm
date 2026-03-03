@@ -1,20 +1,20 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { systemSettings, auditLogs } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { performDatabaseBackup } from "@/lib/backup";
-import os from "os";
-import fs from "fs";
-import path from "path";
-import { z } from "zod";
+import { db } from"@/lib/db";
+import { systemSettings, auditLogs } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { sql } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { performDatabaseBackup } from"@/lib/backup";
+import os from"os";
+import fs from"fs";
+import path from"path";
+import { z } from"zod";
 
-const SYSTEM_ENTITY_ID = "00000000-0000-0000-0000-000000000000";
+const SYSTEM_ENTITY_ID ="00000000-0000-0000-0000-000000000000";
 
 const withTimeout = <T>(promise: Promise<T>, ms: number): Promise<T> => {
     return Promise.race([
@@ -46,7 +46,7 @@ export async function getSystemStats() {
 
         // Get table counts
         const tableCounts: Record<string, number> = {};
-        const tables = ["users", "roles", "departments", "clients", "orders", "audit_logs", "inventory_items", "tasks"];
+        const tables = ["users","roles","departments","clients","orders","audit_logs","inventory_items","tasks"];
 
         await Promise.all(tables.map(async (table) => {
             const countResult = await db.execute(sql.raw(`SELECT count(*)::int as count FROM ${table}`));
@@ -54,7 +54,7 @@ export async function getSystemStats() {
         }));
 
         // Storage stats
-        const uploadDir = path.join(process.cwd(), "public", "uploads");
+        const uploadDir = path.join(process.cwd(),"public","uploads");
         let storageSize = 0;
         let fileCount = 0;
 
@@ -99,16 +99,16 @@ export async function getSystemStats() {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/system/stats",
-            method: "getSystemStats"
+            path:"/admin-panel/system/stats",
+            method:"getSystemStats"
         });
-        return { success: false, error: "Не удалось получить системные показатели" };
+        return { success: false, error:"Не удалось получить системные показатели" };
     }
 }
 
 export async function checkSystemHealth() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const startDb = Date.now();
@@ -116,51 +116,51 @@ export async function checkSystemHealth() {
         const dbLatency = Date.now() - startDb;
 
         // Check file system
-        const uploadDir = path.join(process.cwd(), "public", "uploads");
+        const uploadDir = path.join(process.cwd(),"public","uploads");
         const fsOk = fs.existsSync(uploadDir);
 
         return {
             success: true,
             data: {
-                database: { status: "ok", latency: dbLatency },
-                storage: { status: fsOk ? "ok" : "error" },
-                api: { status: "ok" },
+                database: { status:"ok", latency: dbLatency },
+                storage: { status: fsOk ?"ok" :"error" },
+                api: { status:"ok" },
                 timestamp: new Date()
             }
         };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/system/health",
-            method: "checkSystemHealth"
+            path:"/admin-panel/system/health",
+            method:"checkSystemHealth"
         });
-        return { success: false, error: "Ошибка при выполнении диагностики" };
+        return { success: false, error:"Ошибка при выполнении диагностики" };
     }
 }
 
 export async function createDatabaseBackup() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
-        const result = await performDatabaseBackup(session.id, "manual");
+        const result = await performDatabaseBackup(session.id,"manual");
         return result;
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/system/backup",
-            method: "createDatabaseBackup"
+            path:"/admin-panel/system/backup",
+            method:"createDatabaseBackup"
         });
-        return { success: false, error: "Не удалось создать резервную копию" };
+        return { success: false, error:"Не удалось создать резервную копию" };
     }
 }
 
 export async function getBackupsList() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
-        const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
+        const backupDir = path.join(process.cwd(),"public","uploads","backups");
         if (!fs.existsSync(backupDir)) return { success: true, data: [] };
 
         const files = await fs.promises.readdir(backupDir);
@@ -183,10 +183,10 @@ export async function getBackupsList() {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/system/backups",
-            method: "getBackupsList"
+            path:"/admin-panel/system/backups",
+            method:"getBackupsList"
         });
-        return { success: false, error: "Не удалось получить список копий" };
+        return { success: false, error:"Не удалось получить список копий" };
     }
 }
 
@@ -194,31 +194,31 @@ export async function deleteBackupAction(fileName: string) {
     const session = await getSession();
     try {
         const currentUser = await requireAdmin(session);
-        const { fileName: validName } = z.object({ fileName: z.string().min(1, "Имя файла обязательно") }).parse({ fileName });
+        const { fileName: validName } = z.object({ fileName: z.string().min(1,"Имя файла обязательно") }).parse({ fileName });
 
-        const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
+        const backupDir = path.join(process.cwd(),"public","uploads","backups");
         const filePath = path.join(backupDir, validName);
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);
-            await logAction(`Удалена резервная копия: ${fileName}`, "system", currentUser.id);
+            await logAction(`Удалена резервная копия: ${fileName}`,"system", currentUser.id);
             return { success: true };
         }
-        return { success: false, error: "Файл не найден" };
+        return { success: false, error:"Файл не найден" };
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/system/backup/delete",
-            method: "deleteBackupAction",
+            path:"/admin-panel/system/backup/delete",
+            method:"deleteBackupAction",
             details: { fileName }
         });
-        return { success: false, error: "Ошибка при удалении" };
+        return { success: false, error:"Ошибка при удалении" };
     }
 }
 
 export async function getSystemSettings() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const settings = await db.select().from(systemSettings).limit(100);
@@ -228,7 +228,7 @@ export async function getSystemSettings() {
         });
         return { success: true, data: settingsMap };
     } catch {
-        return { success: false, error: "Не удалось загрузить настройки" };
+        return { success: false, error:"Не удалось загрузить настройки" };
     }
 }
 
@@ -238,7 +238,7 @@ export async function updateSystemSetting(key: string, value: unknown) {
         await requireAdmin(session);
 
         const { key: validKey, value: validValue } = z.object({
-            key: z.string().min(1, "Ключ настройки обязателен"),
+            key: z.string().min(1,"Ключ настройки обязателен"),
             value: z.unknown()
         }).parse({ key, value });
 
@@ -254,7 +254,7 @@ export async function updateSystemSetting(key: string, value: unknown) {
         revalidatePath("/admin-panel/settings");
         return { success: true };
     } catch {
-        return { success: false, error: "Не удалось обновить настройку" };
+        return { success: false, error:"Не удалось обновить настройку" };
     }
 }
 
@@ -264,15 +264,15 @@ export async function clearRamAction() {
         await requireAdmin(session);
         if (global.gc) {
             global.gc();
-            return { success: true, message: "Сборщик мусора запущен успешно" };
+            return { success: true, message:"Сборщик мусора запущен успешно" };
         } else {
             return {
                 success: false,
-                error: "Сборщик мусора недоступен. Запустите Node.js с флагом --expose-gc"
+                error:"Сборщик мусора недоступен. Запустите Node.js с флагом --expose-gc"
             };
         }
     } catch {
-        return { success: false, error: "Ошибка при очистке памяти" };
+        return { success: false, error:"Ошибка при очистке памяти" };
     }
 }
 
@@ -283,10 +283,10 @@ export async function restartServerAction() {
 
         await db.insert(auditLogs).values({ // audit-ignore: одиночная запись в лог перед перезапуском
             userId: currentUser.id,
-            action: "SERVER_RESTART",
-            entityType: "SYSTEM",
+            action:"SERVER_RESTART",
+            entityType:"SYSTEM",
             entityId: SYSTEM_ENTITY_ID,
-            details: { info: "Перезапуск сервера через панель управления" },
+            details: { info:"Перезапуск сервера через панель управления" },
             createdAt: new Date()
         });
 
@@ -294,8 +294,8 @@ export async function restartServerAction() {
             process.exit(0);
         }, 1000);
 
-        return { success: true, message: "Перезапуск инициирован" };
+        return { success: true, message:"Перезапуск инициирован" };
     } catch {
-        return { success: false, error: "Ошибка при инициализации перезапуска" };
+        return { success: false, error:"Ошибка при инициализации перезапуска" };
     }
 }

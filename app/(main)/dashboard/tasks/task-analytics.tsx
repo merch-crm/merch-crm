@@ -8,12 +8,12 @@ import {
     Target,
     Activity,
     BarChart3
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
-import { Task } from "./types";
+import { Task } from"./types";
 
-import { User } from "@/lib/types";
+import { User } from"@/lib/types";
 
 interface TaskAnalyticsProps {
     tasks: Task[];
@@ -26,10 +26,10 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
 
     // Статистика по статусам
     const statusStats = {
-        new: safeTasks.filter(t => t.status === "new").length,
-        in_progress: safeTasks.filter(t => t.status === "in_progress").length,
-        review: safeTasks.filter(t => t.status === "review").length,
-        done: safeTasks.filter(t => t.status === "done").length,
+        new: safeTasks.filter(t => t.status ==="new").length,
+        in_progress: safeTasks.filter(t => t.status ==="in_progress").length,
+        review: safeTasks.filter(t => t.status ==="review").length,
+        done: safeTasks.filter(t => t.status ==="done").length,
     };
 
     const totalTasks = safeTasks.length;
@@ -37,7 +37,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
 
     // Просроченные задачи
     const overdueTasks = safeTasks.filter(t => {
-        if (!t.dueDate || t.status === "done") return false;
+        if (!t.dueDate || t.status ==="done") return false;
         try {
             return new Date(t.dueDate) < new Date();
         } catch {
@@ -47,16 +47,16 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
 
     // Задачи по приоритетам
     const priorityStats = {
-        high: safeTasks.filter(t => t.priority === "high" && t.status !== "done").length,
-        normal: safeTasks.filter(t => t.priority === "normal" && t.status !== "done").length,
-        low: safeTasks.filter(t => t.priority === "low" && t.status !== "done").length,
+        high: safeTasks.filter(t => t.priority ==="high" && t.status !=="done").length,
+        normal: safeTasks.filter(t => t.priority ==="normal" && t.status !=="done").length,
+        low: safeTasks.filter(t => t.priority ==="low" && t.status !=="done").length,
     };
 
     // Топ исполнителей
     const userTaskCounts = safeUsers.map(user => ({
         ...user,
         total: safeTasks.filter(t => t.assignedToUserId === user.id).length,
-        completed: safeTasks.filter(t => t.assignedToUserId === user.id && t.status === "done").length,
+        completed: safeTasks.filter(t => t.assignedToUserId === user.id && t.status ==="done").length,
     })).filter(u => u.total > 0).sort((a, b) => b.completed - a.completed).slice(0, 5);
 
     // Задачи на этой неделе
@@ -85,7 +85,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </span>
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{totalTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400 ">Задач в системе</p>
+                    <p className="text-sm font-bold text-slate-400">Задач в системе</p>
                 </div>
 
                 <div className="crm-card  !border-emerald-100 shadow-lg shadow-emerald-200/50 hover:shadow-xl transition-all">
@@ -98,7 +98,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </span>
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{statusStats.done}</h3>
-                    <p className="text-sm font-bold text-slate-400 ">Выполнено</p>
+                    <p className="text-sm font-bold text-slate-400">Выполнено</p>
                 </div>
 
                 <div className="crm-card  !border-amber-100 shadow-lg shadow-amber-200/50 hover:shadow-xl transition-all">
@@ -111,7 +111,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </span>
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{thisWeekTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400 ">На этой неделе</p>
+                    <p className="text-sm font-bold text-slate-400">На этой неделе</p>
                 </div>
 
                 <div className="crm-card  !border-rose-100 shadow-lg shadow-rose-200/50 hover:shadow-xl transition-all">
@@ -126,7 +126,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         )}
                     </div>
                     <h3 className="text-4xl font-bold text-slate-900 mb-1">{overdueTasks}</h3>
-                    <p className="text-sm font-bold text-slate-400 ">Просрочено</p>
+                    <p className="text-sm font-bold text-slate-400">Просрочено</p>
                 </div>
             </div>
 
@@ -140,16 +140,16 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">Распределение по статусам</h3>
-                            <p className="text-xs font-bold text-slate-400 ">Текущее состояние</p>
+                            <p className="text-xs font-bold text-slate-400">Текущее состояние</p>
                         </div>
                     </div>
 
                     <div className="space-y-3">
                         {[
-                            { label: "Новые", count: statusStats.new, color: "bg-slate-400", textColor: "text-slate-600" },
-                            { label: "В работе", count: statusStats.in_progress, color: "bg-primary", textColor: "text-primary" },
-                            { label: "На проверке", count: statusStats.review, color: "bg-amber-400", textColor: "text-amber-600" },
-                            { label: "Завершено", count: statusStats.done, color: "bg-emerald-500", textColor: "text-emerald-600" },
+                            { label:"Новые", count: statusStats.new, color:"bg-slate-400", textColor:"text-slate-600" },
+                            { label:"В работе", count: statusStats.in_progress, color:"bg-primary", textColor:"text-primary" },
+                            { label:"На проверке", count: statusStats.review, color:"bg-amber-400", textColor:"text-amber-600" },
+                            { label:"Завершено", count: statusStats.done, color:"bg-emerald-500", textColor:"text-emerald-600" },
                         ].map((stat) => {
                             const percentage = totalTasks > 0 ? (stat.count / totalTasks) * 100 : 0;
                             return (
@@ -178,15 +178,15 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">Активные по приоритетам</h3>
-                            <p className="text-xs font-bold text-slate-400 ">Требуют внимания</p>
+                            <p className="text-xs font-bold text-slate-400">Требуют внимания</p>
                         </div>
                     </div>
 
                     <div className="space-y-3">
                         {[
-                            { label: "Высокий приоритет", count: priorityStats.high, color: "bg-rose-500", bgColor: "bg-rose-50", textColor: "text-rose-600" },
-                            { label: "Обычный приоритет", count: priorityStats.normal, color: "bg-amber-400", bgColor: "bg-amber-50", textColor: "text-amber-600" },
-                            { label: "Низкий приоритет", count: priorityStats.low, color: "bg-slate-300", bgColor: "bg-slate-50", textColor: "text-slate-600" },
+                            { label:"Высокий приоритет", count: priorityStats.high, color:"bg-rose-500", bgColor:"bg-rose-50", textColor:"text-rose-600" },
+                            { label:"Обычный приоритет", count: priorityStats.normal, color:"bg-amber-400", bgColor:"bg-amber-50", textColor:"text-amber-600" },
+                            { label:"Низкий приоритет", count: priorityStats.low, color:"bg-slate-300", bgColor:"bg-slate-50", textColor:"text-slate-600" },
                         ].map((stat) => (
                             <div key={stat.label} className={cn("p-4 rounded-2xl border-2 border-transparent hover:border-slate-200 transition-all", stat.bgColor)}>
                                 <div className="flex items-center justify-between">
@@ -211,7 +211,7 @@ export function TaskAnalytics({ tasks = [], users = [] }: TaskAnalyticsProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-bold text-slate-900">Топ исполнителей</h3>
-                            <p className="text-xs font-bold text-slate-400 ">По количеству выполненных задач</p>
+                            <p className="text-xs font-bold text-slate-400">По количеству выполненных задач</p>
                         </div>
                     </div>
 

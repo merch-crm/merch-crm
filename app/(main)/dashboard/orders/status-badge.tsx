@@ -1,44 +1,44 @@
-import React from "react";
+import React from"react";
 import {
     Sparkles,
     Paintbrush,
     Settings2,
     CheckCircle2,
     Truck
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function StatusBadge({ status }: { status: string }) {
     const config: Record<string, { label: string, icon: React.ElementType, color: string, lightBg: string }> = {
         new: {
-            label: "Новый",
+            label:"Новый",
             icon: Sparkles,
-            color: "text-blue-600",
-            lightBg: "bg-blue-50 border-blue-100"
+            color:"text-blue-600",
+            lightBg:"bg-blue-50 border-blue-100"
         },
         design: {
-            label: "Дизайн",
+            label:"Дизайн",
             icon: Paintbrush,
-            color: "text-purple-600",
-            lightBg: "bg-purple-50 border-purple-100"
+            color:"text-purple-600",
+            lightBg:"bg-purple-50 border-purple-100"
         },
         production: {
-            label: "Производство",
+            label:"Производство",
             icon: Settings2,
-            color: "text-amber-600",
-            lightBg: "bg-amber-50 border-amber-100"
+            color:"text-amber-600",
+            lightBg:"bg-amber-50 border-amber-100"
         },
         done: {
-            label: "Готов",
+            label:"Готов",
             icon: CheckCircle2,
-            color: "text-emerald-600",
-            lightBg: "bg-emerald-50 border-emerald-100"
+            color:"text-emerald-600",
+            lightBg:"bg-emerald-50 border-emerald-100"
         },
         shipped: {
-            label: "Отправлен",
+            label:"Отправлен",
             icon: Truck,
-            color: "text-slate-600",
-            lightBg: "bg-slate-100 border-slate-200"
+            color:"text-slate-600",
+            lightBg:"bg-slate-100 border-slate-200"
         },
     };
 
@@ -47,16 +47,15 @@ export default function StatusBadge({ status }: { status: string }) {
 
     return (
         <div
-            className={cn(
-                "inline-flex items-center gap-1.5 px-2 py-1 rounded-full transition-all",
+            className={cn("inline-flex items-center gap-1.5 px-2 py-1 rounded-full transition-all",
                 item.lightBg,
                 item.color
             )}
             title={item.label}
         >
             <Icon className="w-3.5 h-3.5 sm:hidden" />
-            <div className={cn("hidden sm:block w-1.5 h-1.5 rounded-full animate-pulse", item.color.replace("text-", "bg-"))} />
-            <span className="hidden sm:inline text-[11px] font-bold ">{item.label}</span>
+            <div className={cn("hidden sm:block w-1.5 h-1.5 rounded-full animate-pulse", item.color.replace("text-","bg-"))} />
+            <span className="hidden sm:inline text-[11px] font-bold">{item.label}</span>
         </div>
     );
 }

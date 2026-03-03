@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from"react";
+import { motion } from"framer-motion";
 
 export const ChargingWidget = () => {
     const [charge] = useState(52);
@@ -72,7 +72,7 @@ export const ChargingWidget = () => {
                                 fill="url(#liquidYellow)"
                                 initial={{ y: 150 }}
                                 animate={{ y: 150 - (charge * 1.5) }}
-                                transition={{ type: "spring", stiffness: 35, damping: 20 }}
+                                transition={{ type:"spring", stiffness: 35, damping: 20 }}
                             />
 
                             {/* Surface Wave */}
@@ -85,8 +85,8 @@ export const ChargingWidget = () => {
                                     x: [-60, 0, -60]
                                 }}
                                 transition={{
-                                    y: { type: "spring", stiffness: 35, damping: 20 },
-                                    x: { duration: 6, repeat: Infinity, ease: "easeInOut" }
+                                    y: { type:"spring", stiffness: 35, damping: 20 },
+                                    x: { duration: 6, repeat: Infinity, ease:"easeInOut" }
                                 }}
                             />
                         </g>
@@ -135,7 +135,7 @@ export const ChargingWidget = () => {
 
 export default function ChargingWidgetCRM() {
     return (
-        <section className="space-y-12">
+        <section className="space-y-3">
             <div className="flex items-center gap-3">
                 <div className="h-8 w-1 bg-[#F2F207] rounded-full" />
                 <h2 className="text-3xl font-bold">Smart Charging Interface</h2>

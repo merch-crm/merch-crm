@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import { Search, X, Layers, CheckCircle2, AlertTriangle, XCircle } from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Select } from "@/components/ui/select";
-import { InventoryFilters } from "@/app/(main)/dashboard/warehouse/types";
-import { StorageLocation } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
+import React from"react";
+import { Search, X, Layers, CheckCircle2, AlertTriangle, XCircle } from"lucide-react";
+import { motion } from"framer-motion";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { Select } from"@/components/ui/select";
+import { InventoryFilters } from"@/app/(main)/dashboard/warehouse/types";
+import { StorageLocation } from"@/app/(main)/dashboard/warehouse/storage-locations-tab";
 
 interface CategoryFiltersProps {
     searchQuery: string;
@@ -37,30 +37,25 @@ export const CategoryFilters = React.memo(({
     isMobile
 }: CategoryFiltersProps) => {
     return (
-        <div className={cn(
-            "crm-filter-tray w-full overflow-hidden flex flex-col lg:flex-row items-stretch lg:items-center p-1.5 gap-1 lg:gap-3",
-            (isSearchExpanded && isMobile) ? "gap-0" : ""
+        <div className={cn("crm-filter-tray w-full overflow-hidden flex flex-col lg:flex-row items-stretch lg:items-center p-1.5 gap-1 lg:gap-3",
+            (isSearchExpanded && isMobile) ?"gap-0" :""
         )}>
             {/* Search & Storage Group */}
-            <div className={cn(
-                "flex items-center gap-2",
-                "w-full lg:w-auto lg:flex-1"
+            <div className={cn("flex items-center gap-2","w-full lg:w-auto lg:flex-1"
             )}>
                 {/* Search Field */}
-                <div className={cn(
-                    "relative transition-all duration-300 ease-in-out h-11 flex-1"
+                <div className={cn("relative transition-all duration-300 ease-in-out h-11 flex-1"
                 )}>
                     <div
-                        className={cn(
-                            "absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 transition-colors duration-300",
-                            isSearchExpanded && "text-primary"
+                        className={cn("absolute left-0 top-0 bottom-0 w-11 flex items-center justify-center z-10 transition-colors duration-300",
+                            isSearchExpanded &&"text-primary"
                         )}
                     >
-                        <Search className={cn("w-4 h-4 transition-colors duration-300", isSearchExpanded ? "text-primary" : "text-slate-400")} />
+                        <Search className={cn("w-4 h-4 transition-colors duration-300", isSearchExpanded ?"text-primary" :"text-slate-400")} />
                     </div>
                     <input
                         type="text"
-                        placeholder={isMobile ? "Поиск" : "Поиск по названию или артикулу..."}
+                        placeholder={isMobile ?"Поиск" :"Поиск по названию или артикулу..."}
                         value={searchQuery}
                         onFocus={() => setIsSearchExpanded(true)}
                         onBlur={() => {
@@ -69,9 +64,7 @@ export const CategoryFilters = React.memo(({
                             }
                         }}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className={cn(
-                            "crm-filter-tray-search w-full h-full focus:outline-none min-w-0 transition-all duration-300 rounded-[18px]",
-                            "pl-11 pr-10 bg-white shadow-sm"
+                        className={cn("crm-filter-tray-search w-full h-full focus:outline-none min-w-0 transition-all duration-300 rounded-[18px]","pl-11 pr-10 bg-white shadow-sm"
                         )}
                     />
                     {searchQuery && (
@@ -92,13 +85,11 @@ export const CategoryFilters = React.memo(({
                 </div>
 
                 {/* Storage Select */}
-                <div className={cn(
-                    "transition-all duration-300 ease-in-out bg-white rounded-[18px] shadow-sm",
-                    "w-auto opacity-100 visible flex-1 sm:flex-none min-w-[140px]"
+                <div className={cn("transition-all duration-300 ease-in-out bg-white rounded-[18px] shadow-sm","w-auto opacity-100 visible flex-1 sm:flex-none min-w-[140px]"
                 )}>
                     <Select
                         options={[
-                            { id: "all", title: "Все склады" },
+                            { id:"all", title:"Все склады" },
                             ...storageLocations.map(loc => ({
                                 id: loc.id,
                                 title: loc.name,
@@ -118,14 +109,13 @@ export const CategoryFilters = React.memo(({
             <div className="hidden lg:block w-px h-6 bg-slate-300 mx-1 shrink-0" />
 
             {/* Status Pills Section */}
-            <div className={cn(
-                "flex items-center gap-1.5 p-1 lg:p-0 rounded-full w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
+            <div className={cn("flex items-center gap-1.5 p-1 lg:p-0 rounded-full w-full lg:w-auto shrink-0 transition-all duration-500 ease-in-out lg:mt-0 max-h-20"
             )}>
                 {[
-                    { id: "all", label: "Все", icon: Layers },
-                    { id: "in", label: "В наличии", icon: CheckCircle2, color: "emerald" },
-                    { id: "low", label: "Скоро закончится", icon: AlertTriangle, color: "amber" },
-                    { id: "out", label: "Нет", icon: XCircle, color: "rose" }
+                    { id:"all", label:"Все", icon: Layers },
+                    { id:"in", label:"В наличии", icon: CheckCircle2, color:"emerald" },
+                    { id:"low", label:"Скоро закончится", icon: AlertTriangle, color:"amber" },
+                    { id:"out", label:"Нет", icon: XCircle, color:"rose" }
                 ].map((f) => {
                     const isActive = filterStatus === f.id;
                     const StatusIcon = f.icon;
@@ -135,28 +125,25 @@ export const CategoryFilters = React.memo(({
                             type="button"
                             variant="ghost"
                             onClick={() => setFilterStatus(f.id as InventoryFilters["status"])}
-                            className={cn(
-                                "crm-filter-tab flex-1 lg:flex-none text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0 rounded-[18px]",
-                                isActive && "active"
+                            className={cn("crm-filter-tab flex-1 lg:flex-none text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0 rounded-[18px]",
+                                isActive &&"active"
                             )}
                         >
                             {isActive && (
                                 <motion.div
                                     layoutId="activeItemStatusTab"
-                                    className={cn(
-                                        "absolute inset-0 z-0 rounded-[18px]",
-                                        f.id === "all" ? "bg-primary" :
-                                            f.id === "in" ? "bg-emerald-500" :
-                                                f.id === "low" ? "bg-orange-500" :
-                                                    f.id === "out" ? "bg-rose-500" : "bg-primary"
+                                    className={cn("absolute inset-0 z-0 rounded-[18px]",
+                                        f.id ==="all" ?"bg-primary" :
+                                            f.id ==="in" ?"bg-emerald-500" :
+                                                f.id ==="low" ?"bg-orange-500" :
+                                                    f.id ==="out" ?"bg-rose-500" :"bg-primary"
                                     )}
-                                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                    transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                                 />
                             )}
                             <div className="relative z-10 flex items-center justify-center gap-2">
-                                <StatusIcon className={cn(
-                                    "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
-                                    isActive ? "text-white" : (f.color ? `text-${f.color}-500` : "text-slate-400")
+                                <StatusIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
+                                    isActive ?"text-white" : (f.color ? `text-${f.color}-500` :"text-slate-400")
                                 )} />
                                 <span className="hidden sm:inline whitespace-nowrap">{f.label}</span>
                             </div>
@@ -168,4 +155,4 @@ export const CategoryFilters = React.memo(({
     );
 });
 
-CategoryFilters.displayName = "CategoryFilters";
+CategoryFilters.displayName ="CategoryFilters";

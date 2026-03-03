@@ -1,6 +1,6 @@
-import { type ReactNode, type ComponentType } from "react";
-import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch";
+import { type ReactNode, type ComponentType } from"react";
+import { cn } from"@/lib/utils";
+import { Switch } from"@/components/ui/switch";
 
 export function SwitchWrapper({
     checked,
@@ -17,12 +17,11 @@ export function SwitchWrapper({
     label?: ReactNode,
     icon?: ComponentType<{ className?: string }>,
     description?: string,
-    variant?: "primary" | "success"
+    variant?:"primary" |"success"
 }) {
     return (
-        <div className={cn(
-            "flex items-center justify-between group",
-            disabled && "opacity-50"
+        <div className={cn("flex items-center justify-between group",
+            disabled &&"opacity-50"
         )}>
             <div className="flex flex-col gap-0.5">
                 {label && (

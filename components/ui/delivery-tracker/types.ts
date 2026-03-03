@@ -1,16 +1,16 @@
-export type DeliveryProvider = "cdek" | "russian_post" | "boxberry" | "dpd" | "pek" | "dellin" | "custom";
+export type DeliveryProvider ="cdek" |"russian_post" |"boxberry" |"dpd" |"pek" |"dellin" |"custom";
 
 export type DeliveryStatus =
-    | "created"
-    | "accepted"
-    | "in_transit"
-    | "arrived_at_destination"
-    | "out_for_delivery"
-    | "delivered"
-    | "returned"
-    | "lost"
-    | "customs"
-    | "awaiting_pickup";
+    |"created"
+    |"accepted"
+    |"in_transit"
+    |"arrived_at_destination"
+    |"out_for_delivery"
+    |"delivered"
+    |"returned"
+    |"lost"
+    |"customs"
+    |"awaiting_pickup";
 
 export interface DeliveryEvent {
     id: string;

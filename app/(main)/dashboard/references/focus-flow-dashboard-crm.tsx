@@ -1,6 +1,6 @@
 "use client";
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     LayoutGrid,
     BookOpen,
@@ -14,8 +14,8 @@ import {
     TrendingUp,
 
     Sparkles
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 // CRM-styled FocusFlow component
 export default function FocusFlowDashboardCRM() {
     return (
@@ -31,22 +31,21 @@ export default function FocusFlowDashboardCRM() {
 
                 <nav className="flex-1 space-y-2">
                     {[
-                        { label: "Overview", icon: <LayoutGrid />, active: true },
-                        { label: "My Tasks", icon: <BookOpen />, count: 3 },
-                        { label: "Calendar", icon: <CalendarIcon /> },
-                        { label: "Team", icon: <Users /> },
-                        { label: "Settings", icon: <Settings /> },
+                        { label:"Overview", icon: <LayoutGrid />, active: true },
+                        { label:"My Tasks", icon: <BookOpen />, count: 3 },
+                        { label:"Calendar", icon: <CalendarIcon /> },
+                        { label:"Team", icon: <Users /> },
+                        { label:"Settings", icon: <Settings /> },
                     ].map((item) => (
                         <button type="button"
                             key={item.label}
-                            className={cn(
-                                "w-full flex items-center gap-3 p-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group relative",
+                            className={cn("w-full flex items-center gap-3 p-3 rounded-[var(--radius-inner)] text-sm font-bold transition-all group relative",
                                 item.active
-                                    ? "bg-slate-900 text-white shadow-2xl shadow-slate-900/20"
-                                    : "text-slate-400 hover:bg-slate-50 hover:text-slate-900"
+                                    ?"bg-slate-900 text-white shadow-2xl shadow-slate-900/20"
+                                    :"text-slate-400 hover:bg-slate-50 hover:text-slate-900"
                             )}
                         >
-                            {React.cloneElement(item.icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5 shrink-0" })}
+                            {React.cloneElement(item.icon as React.ReactElement<{ className?: string }>, { className:"w-5 h-5 shrink-0" })}
                             <span className="hidden md:block">{item.label}</span>
                             {item.count && (
                                 <span className="absolute right-3 w-5 h-5 bg-primary rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white shadow-sm">
@@ -73,7 +72,7 @@ export default function FocusFlowDashboardCRM() {
                         </div>
                         <div className="flex-1 overflow-hidden">
                             <div className="text-xs font-bold text-white truncate">L. Molchanov</div>
-                            <div className="text-xs font-bold text-primary ">Admin</div>
+                            <div className="text-xs font-bold text-primary">Admin</div>
                         </div>
                     </div>
                 </div>
@@ -130,7 +129,7 @@ export default function FocusFlowDashboardCRM() {
                                     </defs>
                                 </svg>
                                 <div className="relative z-10 w-full flex justify-between items-end pb-4">
-                                    {["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map(m => (
+                                    {["Jan","Feb","Mar","Apr","May","Jun"].map(m => (
                                         <span key={m} className="text-xs font-bold  text-slate-300">{m}</span>
                                     ))}
                                 </div>
@@ -138,16 +137,16 @@ export default function FocusFlowDashboardCRM() {
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10">
                                 {[
-                                    { label: "Completed", val: "182", unit: "tasks" },
-                                    { label: "Hours", val: "1.2k", unit: "logged" },
-                                    { label: "Revenue", val: "$45k", unit: "mtd" },
-                                    { label: "Active", val: "93%", unit: "score" },
+                                    { label:"Completed", val:"182", unit:"tasks" },
+                                    { label:"Hours", val:"1.2k", unit:"logged" },
+                                    { label:"Revenue", val:"$45k", unit:"mtd" },
+                                    { label:"Active", val:"93%", unit:"score" },
                                 ].map((stat, i) => (
                                     <div key={i} className="space-y-1">
                                         <div className="text-xs font-bold  text-slate-400">{stat.label}</div>
                                         <div className="flex items-baseline gap-1">
                                             <span className="text-2xl font-bold text-slate-900">{stat.val}</span>
-                                            <span className="text-xs font-bold text-primary ">{stat.unit}</span>
+                                            <span className="text-xs font-bold text-primary">{stat.unit}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -157,8 +156,8 @@ export default function FocusFlowDashboardCRM() {
                         {/* Courses / Active Flows List */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {[
-                                { title: "Design Audit Phase", meta: "3 collaborators", color: "bg-primary" },
-                                { title: "Client Handover", meta: "Final stage", color: "bg-slate-900" },
+                                { title:"Design Audit Phase", meta:"3 collaborators", color:"bg-primary" },
+                                { title:"Client Handover", meta:"Final stage", color:"bg-slate-900" },
                             ].map((flow, i) => (
                                 <div key={i} className="crm-card p-6 flex items-center justify-between group cursor-pointer">
                                     <div className="flex items-center gap-3">
@@ -188,7 +187,7 @@ export default function FocusFlowDashboardCRM() {
                                     </svg>
                                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                                         <div className="text-4xl font-bold text-slate-900">576</div>
-                                        <div className="text-xs font-bold text-primary ">Points</div>
+                                        <div className="text-xs font-bold text-primary">Points</div>
                                     </div>
                                 </div>
                                 <div>

@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from"react";
 import {
     ChevronDown,
     Zap,
     Circle
-} from "lucide-react";
-import { updateOrderPriority } from "../actions/status.actions";;
-import { AnimatePresence, motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+} from"lucide-react";
+import { updateOrderPriority } from"../actions/status.actions";;
+import { AnimatePresence, motion } from"framer-motion";
+import { Button } from"@/components/ui/button";
 const priorities = [
-    { id: "normal", label: "Обычный", icon: Circle, color: "text-slate-400", bgColor: "bg-slate-400", lightBg: "bg-slate-50" },
-    { id: "high", label: "Срочный", icon: Zap, color: "text-rose-500", bgColor: "bg-rose-500", lightBg: "bg-rose-50" },
+    { id:"normal", label:"Обычный", icon: Circle, color:"text-slate-400", bgColor:"bg-slate-400", lightBg:"bg-slate-50" },
+    { id:"high", label:"Срочный", icon: Zap, color:"text-rose-500", bgColor:"bg-rose-500", lightBg:"bg-rose-50" },
 ];
 
 export default function PrioritySelect({ orderId, currentPriority }: { orderId: string, currentPriority: string }) {

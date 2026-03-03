@@ -1,12 +1,12 @@
-import { getSession } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import { getTasks } from "./actions";
-import { getUsers } from "../../admin-panel/actions";
-import { TasksClient } from "./tasks-client";
-import type { User, Order } from "@/lib/types";
+import { getSession } from"@/lib/auth";
+import { db } from"@/lib/db";
+import { users } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { redirect } from"next/navigation";
+import { getTasks } from"./actions";
+import { getUsers } from"../../admin-panel/actions";
+import { TasksClient } from"./tasks-client";
+import type { User, Order } from"@/lib/types";
 
 export default async function TasksPage() {
     const session = await getSession();

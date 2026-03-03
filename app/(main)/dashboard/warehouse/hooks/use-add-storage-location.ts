@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { addStorageLocation } from "../storage-actions";
+import { useState } from"react";
+import { addStorageLocation } from"../storage-actions";
 
 interface UseAddStorageLocationProps {
     controlledIsOpen?: boolean;
@@ -13,7 +13,7 @@ export function useAddStorageLocation({ controlledIsOpen, onOpenChange }: UseAdd
     const [error, setError] = useState("");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [responsibleUserId, setResponsibleUserId] = useState("");
-    const [type, setType] = useState<"warehouse" | "production" | "office">("warehouse");
+    const [type, setType] = useState<"warehouse" |"production" |"office">("warehouse");
     const [isDefault, setIsDefault] = useState(false);
     const [isPending, setIsPending] = useState(false);
 
@@ -25,7 +25,7 @@ export function useAddStorageLocation({ controlledIsOpen, onOpenChange }: UseAdd
     };
 
     const clearFieldError = (field: string) => {
-        setFieldErrors(prev => ({ ...prev, [field]: "" }));
+        setFieldErrors(prev => ({ ...prev, [field]:"" }));
     };
 
     async function handleSubmit(formData: FormData) {
@@ -33,8 +33,8 @@ export function useAddStorageLocation({ controlledIsOpen, onOpenChange }: UseAdd
         const address = formData.get("address") as string;
 
         const newErrors: Record<string, string> = {};
-        if (!name || name.trim().length < 2) newErrors.name = "Введите название склада";
-        if (!address || address.trim().length < 5) newErrors.address = "Введите полный адрес";
+        if (!name || name.trim().length < 2) newErrors.name ="Введите название склада";
+        if (!address || address.trim().length < 5) newErrors.address ="Введите полный адрес";
 
         if (Object.keys(newErrors).length > 0) {
             setFieldErrors(newErrors);

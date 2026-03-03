@@ -1,7 +1,7 @@
-import { Plus, RefreshCcw, Trash2 } from "lucide-react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Plus, RefreshCcw, Trash2 } from"lucide-react";
+import Image from"next/image";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
 
 interface CompactDropzoneProps {
     label: React.ReactNode;
@@ -18,9 +18,8 @@ export function CompactDropzone({ label, preview, onChange, onRemove, uploading,
             <div className="mb-2">
                 <label className="text-base font-bold text-slate-900">{label}</label>
             </div>
-            <div className={cn(
-                "relative aspect-square w-full rounded-[var(--radius)] overflow-hidden border-2 border-dashed transition-all group",
-                preview ? "border-slate-200 bg-white shadow-sm ring-1 ring-slate-100" : "border-slate-200 bg-slate-50/50 hover:bg-white"
+            <div className={cn("relative aspect-square w-full rounded-[var(--radius)] overflow-hidden border-2 border-dashed transition-all group",
+                preview ?"border-slate-200 bg-white shadow-sm ring-1 ring-slate-100" :"border-slate-200 bg-slate-50/50 hover:bg-white"
             )}>
                 {uploading ? (
                     <div className="flex flex-col items-center justify-center gap-2 w-full h-full animate-in fade-in duration-300">
@@ -47,7 +46,7 @@ export function CompactDropzone({ label, preview, onChange, onRemove, uploading,
                                 className="flex items-center gap-2 px-6 py-6 rounded-full shadow-xl active:scale-95 h-auto"
                             >
                                 <Trash2 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />
-                                <span className="text-xs font-bold ">Удалить</span>
+                                <span className="text-xs font-bold">Удалить</span>
                             </Button>
                         </div>
                     </>

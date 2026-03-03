@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from "react";
-import { Select, SelectOption } from "./select";
+import * as React from"react";
+import { Select, SelectOption } from"./select";
 
 interface UnitOption {
     id: string;
@@ -18,10 +18,10 @@ interface UnitSelectProps {
 }
 
 const DEFAULT_OPTIONS: UnitOption[] = [
-    { id: "шт.", name: "шт." },
-    { id: "кг", name: "кг" },
-    { id: "м", name: "м" },
-    { id: "л", name: "л" },
+    { id:"шт.", name:"шт." },
+    { id:"кг", name:"кг" },
+    { id:"м", name:"м" },
+    { id:"л", name:"л" },
 ];
 
 export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, className, name, disabled }: UnitSelectProps) {

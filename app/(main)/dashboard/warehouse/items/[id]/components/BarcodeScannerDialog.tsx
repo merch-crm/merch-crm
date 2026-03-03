@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Camera, X } from "lucide-react";
+import React, { useEffect, useRef, useState } from"react";
+import { Html5Qrcode } from"html5-qrcode";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Camera, X } from"lucide-react";
 
 interface BarcodeScannerDialogProps {
     isOpen: boolean;
@@ -42,7 +42,7 @@ export function BarcodeScannerDialog({
             const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
             scanner.start(
-                { facingMode: "environment" },
+                { facingMode:"environment" },
                 config,
                 (decodedText) => {
                     // Success callback

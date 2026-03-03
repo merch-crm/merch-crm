@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CreateOrderPageClient } from './page-client';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { searchClients, createOrder } from "../actions/core.actions";
+import { searchClients, createOrder } from"../actions/core.actions";
 import { validatePromocode } from '../../finance/actions';
 
 // Mocks
@@ -100,7 +100,7 @@ describe('CreateOrderPageClient', () => {
         const addItemBtn = screen.getByText('Футболка').closest('button')!;
         fireEvent.click(addItemBtn);
 
-        // Wait for it to be added to selected items (there will be at least 2 "Футболка" now)
+        // Wait for it to be added to selected items (there will be at least 2"Футболка" now)
         await waitFor(() => expect(screen.getAllByText('Футболка').length).toBeGreaterThanOrEqual(2), { timeout: 5000 });
         fireEvent.click(screen.getByText('Далее'));
 

@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { ArrowUpRight, Apple } from "lucide-react";
+import React from"react";
+import { motion } from"framer-motion";
+import { ArrowUpRight, Apple } from"lucide-react";
 
 // Individual widget components
 const BrandCard = () => (

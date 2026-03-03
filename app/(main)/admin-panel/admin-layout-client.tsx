@@ -1,19 +1,19 @@
 "use client";
 
-import React from "react";
+import React from"react";
 import {
     ShieldAlert,
     Menu,
     Search
-} from "lucide-react";
-import Link from "next/link";
-import { AdminSidebar, AdminUserCard } from "./admin-tabs";
-import { AdminSearch } from "./admin-search";
-import { NotificationCenter } from "@/components/notifications/notification-center";
-import type { Notification, BrandingSettings } from "@/lib/types";
-import { UserNav } from "@/components/layout/user-nav";
-import { Button } from "@/components/ui/button";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
+} from"lucide-react";
+import Link from"next/link";
+import { AdminSidebar, AdminUserCard } from"./admin-tabs";
+import { AdminSearch } from"./admin-search";
+import { NotificationCenter } from"@/components/notifications/notification-center";
+import type { Notification, BrandingSettings } from"@/lib/types";
+import { UserNav } from"@/components/layout/user-nav";
+import { Button } from"@/components/ui/button";
+import { BottomSheet } from"@/components/ui/bottom-sheet";
 
 interface AdminUser {
     id: string;
@@ -60,7 +60,7 @@ export function AdminLayoutClient({
                     </div>
                     <div>
                         <span className="font-bold text-lg leading-none block">Админ-панель</span>
-                        <span className="text-xs text-slate-400 font-bold ">Система</span>
+                        <span className="text-xs text-slate-400 font-bold">Система</span>
                     </div>
                 </Link>
 

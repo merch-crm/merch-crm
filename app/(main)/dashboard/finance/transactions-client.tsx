@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from"react";
+import { useRouter } from"next/navigation";
 import {
     CreditCard,
     ArrowDownRight,
@@ -10,21 +10,21 @@ import {
     Plus,
     X,
     Layers
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { useBranding } from "@/components/branding-provider";
-import { useToast } from "@/components/ui/toast";
-import { createExpense, CreateExpenseData } from "./actions";;
-import { playSound } from "@/lib/sounds";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { motion } from"framer-motion";
+import { Button } from"@/components/ui/button";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { useBranding } from"@/components/branding-provider";
+import { useToast } from"@/components/ui/toast";
+import { createExpense, CreateExpenseData } from"./actions";;
+import { playSound } from"@/lib/sounds";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
 
 
 interface Transaction {
@@ -151,27 +151,24 @@ export function TransactionsClient({
                                 <Button
                                     key={t.id}
                                     variant="ghost"
-                                    onClick={() => setView(t.id as "all" | "payments" | "expenses")}
-                                    className={cn(
-                                        "crm-filter-tab shrink-0 px-3 sm:px-6",
-                                        isActive && "active"
+                                    onClick={() => setView(t.id as"all" |"payments" |"expenses")}
+                                    className={cn("crm-filter-tab shrink-0 px-3 sm:px-6",
+                                        isActive &&"active"
                                     )}
                                 >
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeFinanceTab"
-                                            className={cn(
-                                                "absolute inset-0 rounded-[10px] z-0",
-                                                t.activeColor || "bg-primary shadow-primary/20",
+                                            className={cn("absolute inset-0 rounded-[10px] z-0",
+                                                t.activeColor ||"bg-primary shadow-primary/20",
                                                 t.shadowColor
                                             )}
-                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                            transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                                         />
                                     )}
                                     <div className="relative z-10 flex items-center justify-center gap-2">
-                                        <TabIcon className={cn(
-                                            "w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
-                                            isActive ? "text-white" : (t.id === 'payments' ? "text-emerald-500" : (t.id === 'expenses' ? "text-rose-500" : "text-slate-400"))
+                                        <TabIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
+                                            isActive ?"text-white" : (t.id === 'payments' ?"text-emerald-500" : (t.id === 'expenses' ?"text-rose-500" :"text-slate-400"))
                                         )} />
                                         <span className="hidden sm:inline relative z-10">{t.label}</span>
                                     </div>
@@ -197,7 +194,7 @@ export function TransactionsClient({
                 <ResponsiveDataView
                     data={filtered}
                     mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
-                    desktopClassName="hidden md:block "
+                    desktopClassName="hidden md:block"
                     renderTable={() => (
                         <div className="overflow-x-auto">
                             <table className="crm-table">
@@ -213,14 +210,13 @@ export function TransactionsClient({
                                     {filtered.map((t) => (
                                         <tr key={t.id} className="crm-tr">
                                             <td className="crm-td">
-                                                <div className="text-sm font-bold text-slate-900">{format(new Date(t.date), "dd.MM.yyyy", { locale: ru })}</div>
-                                                <div className="text-xs text-slate-400 font-bold mt-0.5">{format(new Date(t.date), "HH:mm", { locale: ru })}</div>
+                                                <div className="text-sm font-bold text-slate-900">{format(new Date(t.date),"dd.MM.yyyy", { locale: ru })}</div>
+                                                <div className="text-xs text-slate-400 font-bold mt-0.5">{format(new Date(t.date),"HH:mm", { locale: ru })}</div>
                                             </td>
                                             <td className="crm-td">
                                                 <div className="flex items-center gap-3">
-                                                    <div className={cn(
-                                                        "w-10 h-10 rounded-2xl flex items-center justify-center shadow-inner",
-                                                        t.type === 'payment' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
+                                                    <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center shadow-inner",
+                                                        t.type === 'payment' ?"bg-emerald-50 text-emerald-600" :"bg-rose-50 text-rose-600"
                                                     )}>
                                                         {t.type === 'payment' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                                                     </div>
@@ -231,12 +227,11 @@ export function TransactionsClient({
                                                 </div>
                                             </td>
                                             <td className="crm-td">
-                                                <div className="text-xs text-slate-500 font-medium line-clamp-1 max-w-xs">{t.description || "—"}</div>
+                                                <div className="text-xs text-slate-500 font-medium line-clamp-1 max-w-xs">{t.description ||"—"}</div>
                                             </td>
                                             <td className="crm-td crm-td-number">
-                                                <div className={cn(
-                                                    "text-lg font-bold",
-                                                    t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
+                                                <div className={cn("text-lg font-bold",
+                                                    t.type === 'payment' ?"text-emerald-600" :"text-rose-600"
                                                 )}>
                                                     {t.type === 'payment' ? '+' : '-'}{Number(t.amount).toLocaleString()} {currencySymbol}
                                                 </div>
@@ -261,9 +256,8 @@ export function TransactionsClient({
                             className="group relative flex items-center justify-between p-4 transition-all duration-300 active:bg-slate-50 focus:outline-none focus:bg-slate-50"
                         >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
-                                <div className={cn(
-                                    "w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-active:scale-90",
-                                    t.type === 'payment' ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
+                                <div className={cn("w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 shadow-sm transition-transform group-active:scale-90",
+                                    t.type === 'payment' ?"bg-emerald-50 text-emerald-600" :"bg-rose-50 text-rose-600"
                                 )}>
                                     {t.type === 'payment' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                                 </div>
@@ -272,18 +266,17 @@ export function TransactionsClient({
                                         <span className="text-sm font-black text-slate-900 truncate leading-tight">
                                             {t.category}
                                         </span>
-                                        <span className={cn(
-                                            "text-sm font-black ",
-                                            t.type === 'payment' ? "text-emerald-600" : "text-rose-600"
+                                        <span className={cn("text-sm font-black",
+                                            t.type === 'payment' ?"text-emerald-600" :"text-rose-600"
                                         )}>
                                             {t.type === 'payment' ? '+' : '-'}{Math.round(Number(t.amount)).toLocaleString()} {currencySymbol}
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                                            <span>{format(new Date(t.date), "d MMM", { locale: ru })}</span>
+                                            <span>{format(new Date(t.date),"d MMM", { locale: ru })}</span>
                                             <span>•</span>
-                                            <span className="truncate max-w-[120px]">{t.description || "Без описания"}</span>
+                                            <span className="truncate max-w-[120px]">{t.description ||"Без описания"}</span>
                                         </div>
                                         {t.orderNumber && (
                                             <span className="text-xs font-bold text-primary bg-primary/5 px-1.5 py-0.5 rounded-[4px]">
@@ -332,7 +325,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         const amount = parseFloat(formData.get("amount") as string);
 
         if (!amount || amount <= 0) {
-            toast("Сумма должна быть больше нуля", "error");
+            toast("Сумма должна быть больше нуля","error");
             setIsLoading(false);
             return;
         }
@@ -342,15 +335,15 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         try {
             const res = await createExpense(data);
             if (res.success) {
-                toast("Расход записан", "success");
+                toast("Расход записан","success");
                 playSound("expense_added");
                 onSuccess();
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Ошибка", "error");
+            toast("Ошибка","error");
             playSound("notification_error");
         } finally {
             setIsLoading(false);
@@ -370,11 +363,11 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                         <Select
                             name="category"
                             options={[
-                                { id: "purchase", title: "Закупки" },
-                                { id: "salary", title: "Зарплаты" },
-                                { id: "rent", title: "Аренда" },
-                                { id: "tax", title: "Налоги" },
-                                { id: "other", title: "Прочее" }
+                                { id:"purchase", title:"Закупки" },
+                                { id:"salary", title:"Зарплаты" },
+                                { id:"rent", title:"Аренда" },
+                                { id:"tax", title:"Налоги" },
+                                { id:"other", title:"Прочее" }
                             ]}
                             value={category}
                             onChange={setCategory}

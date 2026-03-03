@@ -1,28 +1,27 @@
-
 "use server";
 
-import { z } from "zod";
+import { z } from"zod";
 
-import fs from "fs";
-import path from "path";
-import sharp from "sharp";
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db";
-import { inventoryCategories } from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
-import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
-import { sanitizeFileName } from "./shared-utils";
+import fs from"fs";
+import path from"path";
+import sharp from"sharp";
+import { eq } from"drizzle-orm";
+import { db } from"@/lib/db";
+import { inventoryCategories } from"@/lib/schema";
+import { logError } from"@/lib/error-logger";
+import { LOCAL_STORAGE_ROOT } from"@/lib/local-storage";
+import { sanitizeFileName } from"./shared-utils";
 
 /**
- * Builds a category hierarchy path (text format for display/search, e.g., "Category > Subcategory").
+ * Builds a category hierarchy path (text format for display/search, e.g.,"Category > Subcategory").
  */
 export async function getCategoryFullPath(categoryId: string | null): Promise<string> {
     const validation = z.string().uuid().nullable().optional().or(z.literal("")).safeParse(categoryId);
-    if (!validation.success) return "";
+    if (!validation.success) return"";
     const cleanId = validation.data || null;
 
     try {
-        if (!cleanId) return "";
+        if (!cleanId) return"";
 
         const paths: string[] = [];
         let currentId: string | null = cleanId;
@@ -41,15 +40,15 @@ export async function getCategoryFullPath(categoryId: string | null): Promise<st
             currentId = category.parentId;
         }
 
-        return paths.join(" > ");
+        return paths.join(" >");
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/actions-utils",
-            method: "getCategoryFullPath",
+            path:"/dashboard/warehouse/actions-utils",
+            method:"getCategoryFullPath",
             details: { categoryId }
         });
-        return "";
+        return"";
     }
 }
 
@@ -58,11 +57,11 @@ export async function getCategoryFullPath(categoryId: string | null): Promise<st
  */
 export async function getCategoryPath(categoryId: string | null): Promise<string> {
     const validation = z.string().uuid().nullable().optional().or(z.literal("")).safeParse(categoryId);
-    if (!validation.success) return "Uncategorized";
+    if (!validation.success) return"Uncategorized";
     const cleanId = validation.data || null;
 
     try {
-        if (!cleanId) return "Uncategorized";
+        if (!cleanId) return"Uncategorized";
 
         const paths: string[] = [];
         let currentId: string | null = cleanId;
@@ -85,11 +84,11 @@ export async function getCategoryPath(categoryId: string | null): Promise<string
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/actions-utils",
-            method: "getCategoryPath",
+            path:"/dashboard/warehouse/actions-utils",
+            method:"getCategoryPath",
             details: { categoryId }
         });
-        return "Uncategorized";
+        return"Uncategorized";
     }
 }
 
@@ -123,8 +122,8 @@ export async function isDescendant(nodeId: string, possibleAncestorId: string): 
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/actions-utils",
-            method: "isDescendant",
+            path:"/dashboard/warehouse/actions-utils",
+            method:"isDescendant",
             details: { nodeId, possibleAncestorId }
         });
         return false;
@@ -163,13 +162,13 @@ export async function updateChildrenPaths(parentId: string) {
 
         const parent = allCategories.find(c => c.id === parentId);
         if (parent) {
-            await updateBatch(parentId, parent.fullPath || "");
+            await updateBatch(parentId, parent.fullPath ||"");
         }
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/actions-utils",
-            method: "updateChildrenPaths",
+            path:"/dashboard/warehouse/actions-utils",
+            method:"updateChildrenPaths",
             details: { parentId }
         });
     }
@@ -183,7 +182,7 @@ export async function saveFile(file: File | null, directoryPath: string): Promis
 
     let buffer: Buffer = Buffer.from(await file.arrayBuffer());
     const MAX_SIZE = 700 * 1024; // 700KB
-    let extension = path.extname(file.name) || ".jpg";
+    let extension = path.extname(file.name) ||".jpg";
 
     if (file.type.startsWith("image/") && buffer.length > MAX_SIZE) {
         try {
@@ -196,12 +195,12 @@ export async function saveFile(file: File | null, directoryPath: string): Promis
                 .webp({ quality: 80 })
                 .toBuffer();
 
-            extension = ".webp";
+            extension =".webp";
         } catch (e) {
             await logError({
                 error: e,
-                path: "/dashboard/warehouse/actions-utils",
-                method: "saveFile",
+                path:"/dashboard/warehouse/actions-utils",
+                method:"saveFile",
                 details: { filename: file.name }
             });
         }
@@ -223,8 +222,8 @@ export async function saveFile(file: File | null, directoryPath: string): Promis
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/actions-utils",
-            method: "saveFile",
+            path:"/dashboard/warehouse/actions-utils",
+            method:"saveFile",
             details: { directoryPath }
         });
         return null;

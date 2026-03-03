@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { formatUnit } from "@/lib/utils";
-import { Store } from "lucide-react";
-import { ItemStock } from "@/app/(main)/dashboard/warehouse/types";
+import React from"react";
+import { formatUnit } from"@/lib/utils";
+import { Store } from"lucide-react";
+import { ItemStock } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ItemWarehouseBreakdownSectionProps {
     stocks: ItemStock[];
@@ -27,7 +27,7 @@ export function ItemWarehouseBreakdownSection({
                         </div>
                         <div className="flex flex-col">
                             <h4 className="text-sm font-bold text-foreground"> {/* Replaced text-xs font-bold text-slate-900 */}
-                                {stock.storageLocation?.name || "Основной"}
+                                {stock.storageLocation?.name ||"Основной"}
                             </h4>
                             <p className="text-[11px] font-medium text-muted-foreground mt-0.5">Складское помещение</p> {/* Replaced text-xs font-bold text-slate-400 and text */}
                         </div>

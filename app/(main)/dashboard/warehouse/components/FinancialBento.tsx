@@ -1,6 +1,6 @@
-import React from "react";
-import { CircleDollarSign, Clock, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React from"react";
+import { CircleDollarSign, Clock, Trash2 } from"lucide-react";
+import { cn } from"@/lib/utils";
 
 interface Financials {
     totalCostValue: number;
@@ -40,7 +40,7 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
                     </div>
                 </div>
                 <div className="mt-auto pt-2 border-t border-slate-100">
-                    <span className="text-xl sm:text-2xl font-black text-slate-900 tabular-nums ">
+                    <span className="text-xl sm:text-2xl font-black text-slate-900 tabular-nums">
                         {formatMoney(financials.totalCostValue, currencySymbol)}
                     </span>
                 </div>
@@ -58,7 +58,7 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
                     </div>
                 </div>
                 <div className="mt-auto pt-2 border-t border-slate-100">
-                    <span className="text-xl sm:text-2xl font-black text-emerald-600 tabular-nums ">
+                    <span className="text-xl sm:text-2xl font-black text-emerald-600 tabular-nums">
                         {formatMoney(financials.totalRetailValue, currencySymbol)}
                     </span>
                 </div>
@@ -76,7 +76,7 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
                     </div>
                 </div>
                 <div className="mt-auto pt-2 border-t border-slate-100">
-                    <span className="text-xl sm:text-2xl font-black text-indigo-600 tabular-nums ">
+                    <span className="text-xl sm:text-2xl font-black text-indigo-600 tabular-nums">
                         {formatMoney(financials.frozenCostValue, currencySymbol)}
                     </span>
                 </div>
@@ -94,9 +94,8 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
                     </div>
                 </div>
                 <div className="mt-auto pt-2 border-t border-slate-100">
-                    <span className={cn(
-                        "text-xl sm:text-2xl font-black tabular-nums ",
-                        financials.writeOffValue30d > 0 ? "text-rose-500" : "text-slate-400"
+                    <span className={cn("text-xl sm:text-2xl font-black tabular-nums",
+                        financials.writeOffValue30d > 0 ?"text-rose-500" :"text-slate-400"
                     )}>
                         {formatMoney(financials.writeOffValue30d, currencySymbol)}
                     </span>
@@ -106,4 +105,4 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
     );
 });
 
-FinancialBento.displayName = "FinancialBento";
+FinancialBento.displayName ="FinancialBento";

@@ -1,10 +1,10 @@
-import React from "react";
-import { Printer, RotateCw, AlignLeft, AlignCenter, Download, Minus, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils";
-import { PaperSize, LayoutStyle, LabelDimensions, LabelContentSettings, LabelUiState, ResolvedParam } from "./hooks/useLabelPrinterLogic";
+import React from"react";
+import { Printer, RotateCw, AlignLeft, AlignCenter, Download, Minus, Plus } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Switch } from"@/components/ui/switch";
+import { cn } from"@/lib/utils";
+import { PaperSize, LayoutStyle, LabelDimensions, LabelContentSettings, LabelUiState, ResolvedParam } from"./hooks/useLabelPrinterLogic";
 
 interface LabelPrinterSettingsProps {
     settings: {
@@ -70,12 +70,11 @@ export function LabelPrinterSettings({
                                 key={size}
                                 onClick={() => setDimensions(prev => ({ ...prev, paperSize: size as PaperSize }))}
                                 variant="ghost"
-                                className={cn(
-                                    "w-full h-11 rounded-2xl text-xs font-black border-2 transition-all duration-200 flex items-center justify-center leading-none",
+                                className={cn("w-full h-11 rounded-2xl text-xs font-black border-2 transition-all duration-200 flex items-center justify-center leading-none",
                                     dimensions.paperSize === size
-                                        ? "bg-slate-900 text-white border-slate-900 shadow-md hover:bg-slate-800 hover:text-white"
-                                        : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50",
-                                    size === 'custom' && "col-span-2"
+                                        ?"bg-slate-900 text-white border-slate-900 shadow-md hover:bg-slate-800 hover:text-white"
+                                        :"bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+                                    size === 'custom' &&"col-span-2"
                                 )}
                             >
                                 {size === 'custom' ? 'Свой размер' : size.replace('x', ' × ')}
@@ -122,9 +121,8 @@ export function LabelPrinterSettings({
                                 key={style.id}
                                 onClick={() => setUiState(prev => ({ ...prev, layoutStyle: style.id as LayoutStyle }))}
                                 variant="ghost"
-                                className={cn(
-                                    "py-2.5 px-3 rounded-2xl border-2 font-black text-xs transition-all",
-                                    uiState.layoutStyle === style.id ? "bg-slate-900 border-slate-900 text-white shadow-md ring-2 ring-slate-900/10 hover:bg-slate-800 hover:text-white" : "bg-white border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50"
+                                className={cn("py-2.5 px-3 rounded-2xl border-2 font-black text-xs transition-all",
+                                    uiState.layoutStyle === style.id ?"bg-slate-900 border-slate-900 text-white shadow-md ring-2 ring-slate-900/10 hover:bg-slate-800 hover:text-white" :"bg-white border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50"
                                 )}
                             >
                                 {style.label}
@@ -134,7 +132,7 @@ export function LabelPrinterSettings({
                 </div>
 
                 {/* Characteristics Toggles */}
-                <div className={cn("space-y-2.5 transition-opacity", uiState.layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
+                <div className={cn("space-y-2.5 transition-opacity", uiState.layoutStyle === 'minimal' &&"opacity-40 pointer-events-none")}>
                     <label className="text-[11px] font-bold text-slate-500 ml-1">Характеристики</label>
                     <div className="-mx-2 grid grid-cols-2 gap-x-1 gap-y-0.5">
                         <ToggleItem label="Артикул товара" checked={contentSettings.showArticle} onChange={(v) => setContentSettings(prev => ({ ...prev, showArticle: v }))} compact />
@@ -148,7 +146,7 @@ export function LabelPrinterSettings({
                         {hasAttributeCode && <ToggleItem label="Цвет" checked={contentSettings.showColor} onChange={(v) => setContentSettings(prev => ({ ...prev, showColor: v }))} compact />}
 
                         {resolvedParams
-                            .filter(p => !["brand", "quality", "material", "size", "color"].includes(p.slug))
+                            .filter(p => !["brand","quality","material","size","color"].includes(p.slug))
                             .map(p => (
                                 <ToggleItem
                                     key={p.slug}
@@ -164,7 +162,7 @@ export function LabelPrinterSettings({
                 </div>
 
                 {/* Custom Text */}
-                <div className={cn("space-y-2.5 transition-opacity", uiState.layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
+                <div className={cn("space-y-2.5 transition-opacity", uiState.layoutStyle === 'minimal' &&"opacity-40 pointer-events-none")}>
                     <label className="text-[11px] font-bold text-slate-500 ml-1">Дополнительная строка</label>
                     <Input
                         type="text"
@@ -187,7 +185,7 @@ export function LabelPrinterSettings({
                             variant="ghost"
                             className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl border-2 border-slate-900 bg-slate-900 text-white font-black text-xs shadow-sm transition-all active:scale-[0.98] hover:bg-slate-800 hover:text-white w-full h-auto"
                         >
-                            <RotateCw className={cn("w-3.5 h-3.5 transition-transform duration-500", dimensions.isLandscape && "rotate-90")} />
+                            <RotateCw className={cn("w-3.5 h-3.5 transition-transform duration-500", dimensions.isLandscape &&"rotate-90")} />
                             {currentW > currentH ? 'Горизонтальный' : 'Вертикальный'}
                         </Button>
                         <div className="flex bg-slate-50 p-1 rounded-2xl border-2 border-transparent">
@@ -195,9 +193,8 @@ export function LabelPrinterSettings({
                                 type="button"
                                 onClick={() => setUiState(prev => ({ ...prev, alignment: 'left' }))}
                                 variant="ghost"
-                                className={cn(
-                                    "flex-1 py-1.5 flex items-center justify-center rounded-2xl transition-all h-auto",
-                                    uiState.alignment === 'left' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
+                                className={cn("flex-1 py-1.5 flex items-center justify-center rounded-2xl transition-all h-auto",
+                                    uiState.alignment === 'left' ?"bg-white shadow-sm text-slate-900 hover:bg-white" :"text-slate-400 hover:text-slate-600 hover:bg-transparent"
                                 )}
                             >
                                 <AlignLeft className="w-4 h-4" />
@@ -206,9 +203,8 @@ export function LabelPrinterSettings({
                                 type="button"
                                 onClick={() => setUiState(prev => ({ ...prev, alignment: 'center' }))}
                                 variant="ghost"
-                                className={cn(
-                                    "flex-1 py-1.5 flex items-center justify-center rounded-2xl transition-all h-auto",
-                                    uiState.alignment === 'center' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
+                                className={cn("flex-1 py-1.5 flex items-center justify-center rounded-2xl transition-all h-auto",
+                                    uiState.alignment === 'center' ?"bg-white shadow-sm text-slate-900 hover:bg-white" :"text-slate-400 hover:text-slate-600 hover:bg-transparent"
                                 )}
                             >
                                 <AlignCenter className="w-4 h-4" />
@@ -265,15 +261,13 @@ export function LabelPrinterSettings({
 
 function ToggleItem({ label, checked, onChange, compact }: { label: string; checked: boolean; onChange: (v: boolean) => void; compact?: boolean }) {
     return (
-        <label className={cn(
-            "flex items-center justify-between transition-colors cursor-pointer group",
-            compact ? "p-2 rounded-2xl hover:bg-slate-50/80" : "p-3 rounded-2xl hover:bg-slate-50"
+        <label className={cn("flex items-center justify-between transition-colors cursor-pointer group",
+            compact ?"p-2 rounded-2xl hover:bg-slate-50/80" :"p-3 rounded-2xl hover:bg-slate-50"
         )}>
-            <span className={cn(
-                "font-bold text-slate-900 transition-colors",
-                compact ? "text-[12px]" : "text-sm"
+            <span className={cn("font-bold text-slate-900 transition-colors",
+                compact ?"text-[12px]" :"text-sm"
             )}>{label}</span>
-            <Switch checked={checked} onCheckedChange={onChange} variant="success" className={compact ? "scale-75 origin-right" : ""} />
+            <Switch checked={checked} onCheckedChange={onChange} variant="success" className={compact ?"scale-75 origin-right" :""} />
         </label>
     );
 }

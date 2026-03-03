@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from"react";
 import {
     Search,
     Calendar,
@@ -10,24 +10,24 @@ import {
     Layout,
     List,
     Layers
-} from "lucide-react";
-import { CreateTaskDialog } from "./create-task-dialog";
-import { KanbanBoard } from "./kanban-board";
-import { CalendarView } from "./calendar-view";
-import { TaskAnalytics } from "./task-analytics";
-import { TaskDetailsDialog } from "./task-details-dialog";
-import { TasksList } from "./tasks-list";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Task } from "./types";
-import { X } from "lucide-react";
-import { useMediaQuery } from "@/hooks/use-media-query";
-import { Input } from "@/components/ui/input";
-import { PageHeader } from "@/components/layout/page-header";
+} from"lucide-react";
+import { CreateTaskDialog } from"./create-task-dialog";
+import { KanbanBoard } from"./kanban-board";
+import { CalendarView } from"./calendar-view";
+import { TaskAnalytics } from"./task-analytics";
+import { TaskDetailsDialog } from"./task-details-dialog";
+import { TasksList } from"./tasks-list";
+import { cn } from"@/lib/utils";
+import { motion } from"framer-motion";
+import { useRouter, useSearchParams } from"next/navigation";
+import { Task } from"./types";
+import { X } from"lucide-react";
+import { useMediaQuery } from"@/hooks/use-media-query";
+import { Input } from"@/components/ui/input";
+import { PageHeader } from"@/components/layout/page-header";
 
 
-import { User, Order } from "@/lib/types";
+import { User, Order } from"@/lib/types";
 
 interface Department {
     id: string;
@@ -54,7 +54,7 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
     const initialView = searchParams.get("view");
 
     const [activeTab, setActiveTab] = useState(
-        initialTab && ["all", "my", "role"].includes(initialTab) ? initialTab : "all"
+        initialTab && ["all","my","role"].includes(initialTab) ? initialTab :"all"
     );
     const [view, setView] = useState<'kanban' | 'calendar' | 'analytics' | 'list'>(
         initialView && ['kanban', 'calendar', 'analytics', 'list'].includes(initialView)
@@ -83,21 +83,21 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
 
     const filteredTasks = initialTasks.filter(task => {
         const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (task.description?.toLowerCase() || "").includes(searchQuery.toLowerCase());
+            (task.description?.toLowerCase() ||"").includes(searchQuery.toLowerCase());
 
         let isMatchingTab = true;
         // For Kanban, we don't filter by 'done' here, as 'done' is a column.
         // We only filter by 'my' and 'department' for active tasks.
-        if (activeTab === "my") isMatchingTab = task.assignedToUserId === currentUserId;
-        else if (activeTab === "role") isMatchingTab = task.assignedToDepartmentId === currentUserDepartmentId;
+        if (activeTab ==="my") isMatchingTab = task.assignedToUserId === currentUserId;
+        else if (activeTab ==="role") isMatchingTab = task.assignedToDepartmentId === currentUserDepartmentId;
 
         return matchesSearch && isMatchingTab;
     });
 
     const tabs = [
-        { id: "all", label: "Все потоки", icon: Layers },
-        { id: "my", label: "Моя работа", icon: UserIcon },
-        { id: "role", label: "Отдел", icon: Users },
+        { id:"all", label:"Все потоки", icon: Layers },
+        { id:"my", label:"Моя работа", icon: UserIcon },
+        { id:"role", label:"Отдел", icon: Users },
     ];
 
     const viewTabs = [
@@ -150,16 +150,15 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                     <button type="button"
                                         key={tab.id}
                                         onClick={() => handleTabChange(tab.id)}
-                                        className={cn(
-                                            "crm-filter-tab flex-1 sm:flex-none shrink-0",
-                                            isActive && "active"
+                                        className={cn("crm-filter-tab flex-1 sm:flex-none shrink-0",
+                                            isActive &&"active"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeTaskTab"
                                                 className="absolute inset-0 bg-primary rounded-[10px] z-0"
-                                                transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                                transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
                                         <div className="relative z-10 flex items-center justify-center gap-2">
@@ -185,16 +184,15 @@ export function TasksClient({ initialTasks, users, departments, orders, currentU
                                     <button type="button"
                                         key={tab.id}
                                         onClick={() => setView(tab.id)}
-                                        className={cn(
-                                            "crm-filter-tab flex-1 sm:flex-none shrink-0",
-                                            isActive && "active"
+                                        className={cn("crm-filter-tab flex-1 sm:flex-none shrink-0",
+                                            isActive &&"active"
                                         )}
                                     >
                                         {isActive && (
                                             <motion.div
                                                 layoutId="activeTaskView"
                                                 className="absolute inset-0 bg-primary rounded-[10px] z-0"
-                                                transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                                transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                                             />
                                         )}
                                         <div className="relative z-10 flex items-center justify-center gap-2">

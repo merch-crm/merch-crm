@@ -1,7 +1,7 @@
 "use client";
 
-import { Factory, AlertCircle, CheckCircle2, Gauge, Timer } from "lucide-react";
-import { pluralize } from "@/lib/pluralize";
+import { Factory, AlertCircle, CheckCircle2, Gauge, Timer } from"lucide-react";
+import { pluralize } from"@/lib/pluralize";
 
 
 interface ProductionStatsProps {
@@ -62,7 +62,7 @@ export function ProductionWidgets({ stats }: ProductionStatsProps) {
                         </div>
                         <div>
                             <div className="text-3xl md:text-4xl font-bold text-rose-600 leading-none mb-1">{stats.urgent}</div>
-                            <div className="text-sm md:text-base font-bold text-rose-400  ">Срочные / Просроченные</div>
+                            <div className="text-sm md:text-base font-bold text-rose-400">Срочные / Просроченные</div>
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
-import { useItemDetail } from "../context/ItemDetailContext";
-import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useItemDetail } from"../context/ItemDetailContext";
+import dynamic from"next/dynamic";
+import { useRouter } from"next/navigation";
 
 // Dynamic imports for performance with typed props
 const AdjustStockDialog = dynamic(() => import("@/app/(main)/dashboard/warehouse/adjust-stock-dialog").then(m => m.AdjustStockDialog));
@@ -41,7 +41,7 @@ export function ItemDialogs() {
                 item={item}
                 locations={storageLocations}
                 itemStocks={stocks}
-                initialType={(adjustType as "in" | "out") || "in"}
+                initialType={(adjustType as"in" |"out") ||"in"}
                 user={user}
                 isOpen={!!adjustType}
                 onClose={() => {

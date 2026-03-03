@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React from "react";
+import Image from"next/image";
+import React from"react";
 import {
     Search,
     SlidersHorizontal,
@@ -13,7 +13,7 @@ import {
     Crown,
     Smartphone,
     Apple
-} from "lucide-react";
+} from"lucide-react";
 
 export default function CardsCRM() {
     return (
@@ -190,9 +190,9 @@ export default function CardsCRM() {
 
                     <div className="space-y-3">
                         {[
-                            { icon: "16%", text: "Short-term deposits with increased income up to 16%", date: "27 Feb, 2025" },
-                            { icon: "x2", text: "we have increased the limits on physical cards by 2 times", date: "16 Feb, 2025" },
-                            { icon: "2%", text: "2% cashback is now available for tickets to sports matches", date: "02 Feb, 2025" },
+                            { icon:"16%", text:"Short-term deposits with increased income up to 16%", date:"27 Feb, 2025" },
+                            { icon:"x2", text:"we have increased the limits on physical cards by 2 times", date:"16 Feb, 2025" },
+                            { icon:"2%", text:"2% cashback is now available for tickets to sports matches", date:"02 Feb, 2025" },
                         ].map((item, idx) => (
                             <div key={idx} className="bg-slate-50/50 rounded-[var(--radius-inner)] p-4 flex gap-3 hover:bg-slate-100/50 transition-colors cursor-pointer border border-white/60">
                                 <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center shrink-0">
@@ -246,9 +246,9 @@ export default function CardsCRM() {
 
                         <div className="space-y-3">
                             {[
-                                { name: "Apple", cashback: "1.5%" },
-                                { name: "McDonald's", cashback: "1.2%" },
-                                { name: "PlayStation Network", cashback: "4.5%" },
+                                { name:"Apple", cashback:"1.5%" },
+                                { name:"McDonald's", cashback:"1.2%" },
+                                { name:"PlayStation Network", cashback:"4.5%" },
                             ].map((partner, idx) => (
                                 <div key={idx} className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">

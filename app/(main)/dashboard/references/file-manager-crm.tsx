@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Select } from "@/components/ui/select";
+import React, { useState } from"react";
+import { Select } from"@/components/ui/select";
 import {
     Folder,
     FileText,
@@ -16,12 +16,12 @@ import {
     MoreHorizontal,
     Share2,
     Plus
-} from "lucide-react";
+} from"lucide-react";
 
 interface FileItem {
     id: string;
     name: string;
-    type: "folder" | "file" | "image";
+    type:"folder" |"file" |"image";
     size?: string;
     date: string;
     sharedWith?: number;
@@ -37,54 +37,54 @@ interface FolderCard {
 }
 
 export default function FileManagerCRM() {
-    const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+    const [viewMode, setViewMode] = useState<"grid" |"list">("grid");
     const [sortBy, setSortBy] = useState("type");
 
     // Данные для первого дизайна (macOS style)
     const folders: FolderCard[] = [
-        { id: "1", name: "customer #1", date: "09/01/2021, 10:44 am", sharedWith: 3, color: "bg-blue-500" },
-        { id: "2", name: "customer #2", date: "09/01/2021, 10:44 am", sharedWith: 2, color: "bg-blue-500" },
-        { id: "3", name: "customer #3", date: "09/12/2021, 5:12 pm", sharedWith: 4, color: "bg-blue-500" },
-        { id: "4", name: "customer #4", date: "09/15/2021, 6:56 pm", sharedWith: 1, color: "bg-blue-500" },
-        { id: "5", name: "customer #5", date: "09/01/2021, 10:44 am", sharedWith: 3, color: "bg-blue-500" },
-        { id: "6", name: "customer #6", date: "09/01/2021, 10:44 am", sharedWith: 2, color: "bg-blue-500" },
-        { id: "7", name: "customer #7", date: "09/01/2021, 10:44 am", sharedWith: 5, color: "bg-blue-500" },
-        { id: "8", name: "customer #8", date: "09/01/2021, 10:44 am", sharedWith: 2, color: "bg-blue-500" },
+        { id:"1", name:"customer #1", date:"09/01/2021, 10:44 am", sharedWith: 3, color:"bg-blue-500" },
+        { id:"2", name:"customer #2", date:"09/01/2021, 10:44 am", sharedWith: 2, color:"bg-blue-500" },
+        { id:"3", name:"customer #3", date:"09/12/2021, 5:12 pm", sharedWith: 4, color:"bg-blue-500" },
+        { id:"4", name:"customer #4", date:"09/15/2021, 6:56 pm", sharedWith: 1, color:"bg-blue-500" },
+        { id:"5", name:"customer #5", date:"09/01/2021, 10:44 am", sharedWith: 3, color:"bg-blue-500" },
+        { id:"6", name:"customer #6", date:"09/01/2021, 10:44 am", sharedWith: 2, color:"bg-blue-500" },
+        { id:"7", name:"customer #7", date:"09/01/2021, 10:44 am", sharedWith: 5, color:"bg-blue-500" },
+        { id:"8", name:"customer #8", date:"09/01/2021, 10:44 am", sharedWith: 2, color:"bg-blue-500" },
     ];
 
     const pdfFiles = [
-        { id: "p1", name: "design proposals", date: "09/01/2021, 10:44 am" },
-        { id: "p2", name: "design proposals", date: "09/01/2021, 10:44 am" },
-        { id: "p3", name: "design proposals", date: "09/01/2021, 10:44 am" },
-        { id: "p4", name: "design proposals", date: "09/01/2021, 10:44 am" },
-        { id: "p5", name: "design proposals", date: "09/01/2021, 10:44 am" },
+        { id:"p1", name:"design proposals", date:"09/01/2021, 10:44 am" },
+        { id:"p2", name:"design proposals", date:"09/01/2021, 10:44 am" },
+        { id:"p3", name:"design proposals", date:"09/01/2021, 10:44 am" },
+        { id:"p4", name:"design proposals", date:"09/01/2021, 10:44 am" },
+        { id:"p5", name:"design proposals", date:"09/01/2021, 10:44 am" },
     ];
 
     // Данные для второго дизайна (Drive style)
     const recentProjects = [
-        { id: "r1", name: "Designs", sharedWith: 3, color: "bg-indigo-500" },
-        { id: "r2", name: "Design Sprint 2.0", sharedWith: 2, color: "bg-white" },
-        { id: "r3", name: "Discovery Call", sharedWith: 3, color: "bg-white" },
+        { id:"r1", name:"Designs", sharedWith: 3, color:"bg-indigo-500" },
+        { id:"r2", name:"Design Sprint 2.0", sharedWith: 2, color:"bg-white" },
+        { id:"r3", name:"Discovery Call", sharedWith: 3, color:"bg-white" },
     ];
 
     const newFiles: FileItem[] = [
-        { id: "n1", name: "Manual wesbite", type: "file", size: "2.3 MB", date: "21.03.2019" },
-        { id: "n2", name: "Gymnastic", type: "image", size: "1.8 MB", date: "20.03.2019" },
-        { id: "n3", name: "Neverous", type: "file", size: "4.2 MB", date: "20.01.2019" },
-        { id: "n4", name: "Manual app", type: "file", size: "3.1 MB", date: "12.01.2019" },
+        { id:"n1", name:"Manual wesbite", type:"file", size:"2.3 MB", date:"21.03.2019" },
+        { id:"n2", name:"Gymnastic", type:"image", size:"1.8 MB", date:"20.03.2019" },
+        { id:"n3", name:"Neverous", type:"file", size:"4.2 MB", date:"20.01.2019" },
+        { id:"n4", name:"Manual app", type:"file", size:"3.1 MB", date:"12.01.2019" },
     ];
 
     const sharedFiles = [
-        { id: "s1", name: "Manual Guidelines" },
-        { id: "s2", name: "Manual Illustrations" },
-        { id: "s3", name: "Overflight Cover Photo" },
-        { id: "s4", name: "Design Process Draft" },
-        { id: "s5", name: "Wallpaper #1" },
-        { id: "s6", name: "Manual" },
+        { id:"s1", name:"Manual Guidelines" },
+        { id:"s2", name:"Manual Illustrations" },
+        { id:"s3", name:"Overflight Cover Photo" },
+        { id:"s4", name:"Design Process Draft" },
+        { id:"s5", name:"Wallpaper #1" },
+        { id:"s6", name:"Manual" },
     ];
 
     return (
-        <section className="space-y-12">
+        <section className="space-y-3">
             {/* Заголовок секции */}
             <div className="text-center space-y-3">
                 <h2 className="text-3xl font-bold text-slate-900">
@@ -117,9 +117,9 @@ export default function FileManagerCRM() {
                                 value={sortBy}
                                 onChange={setSortBy}
                                 options={[
-                                    { id: "type", title: "type" },
-                                    { id: "name", title: "name" },
-                                    { id: "date", title: "date" },
+                                    { id:"type", title:"type" },
+                                    { id:"name", title:"name" },
+                                    { id:"date", title:"date" },
                                 ]}
                                 compact
                                 variant="minimal"
@@ -128,14 +128,14 @@ export default function FileManagerCRM() {
                         <div className="flex gap-2">
                             <button type="button"
                                 onClick={() => setViewMode("grid")}
-                                className={`p-2 rounded-lg transition-colors ${viewMode === "grid" ? "bg-blue-100 text-blue-600" : "text-slate-400 hover:bg-slate-100"
+                                className={`p-2 rounded-lg transition-colors ${viewMode ==="grid" ?"bg-blue-100 text-blue-600" :"text-slate-400 hover:bg-slate-100"
                                     }`}
                             >
                                 <Grid3x3 className="w-4 h-4" />
                             </button>
                             <button type="button"
                                 onClick={() => setViewMode("list")}
-                                className={`p-2 rounded-lg transition-colors ${viewMode === "list" ? "bg-blue-100 text-blue-600" : "text-slate-400 hover:bg-slate-100"
+                                className={`p-2 rounded-lg transition-colors ${viewMode ==="list" ?"bg-blue-100 text-blue-600" :"text-slate-400 hover:bg-slate-100"
                                     }`}
                             >
                                 <List className="w-4 h-4" />
@@ -365,7 +365,7 @@ export default function FileManagerCRM() {
                                         className="flex items-center gap-3 p-4 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer group"
                                     >
                                         <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                                            {file.type === "image" ? (
+                                            {file.type ==="image" ? (
                                                 <ImageIcon className="w-5 h-5 text-slate-400" />
                                             ) : (
                                                 <FileText className="w-5 h-5 text-slate-400" />
@@ -375,7 +375,7 @@ export default function FileManagerCRM() {
                                             <p className="font-semibold text-sm text-slate-900">{file.name}</p>
                                         </div>
                                         <div className="text-sm text-slate-500">{file.date}</div>
-                                        <div className="text-sm text-slate-500 w-20">.{file.type === "image" ? "psd" : "sketch"}</div>
+                                        <div className="text-sm text-slate-500 w-20">.{file.type ==="image" ?"psd" :"sketch"}</div>
                                         <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button type="button" className="p-1.5 hover:bg-slate-200 rounded-lg transition-colors">
                                                 <MoreHorizontal className="w-4 h-4 text-slate-400" />

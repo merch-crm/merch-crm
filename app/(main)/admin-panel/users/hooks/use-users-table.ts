@@ -1,6 +1,6 @@
-import { useState, useCallback } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import type { User } from "@/lib/types";
+import { useState, useCallback } from"react";
+import { useRouter, usePathname, useSearchParams } from"next/navigation";
+import type { User } from"@/lib/types";
 
 export function useUsersTable() {
     const router = useRouter();
@@ -13,7 +13,7 @@ export function useUsersTable() {
     const [viewingStatsUser, setViewingStatsUser] = useState<User | null>(null);
     const [impersonateUserConfirm, setImpersonateUserConfirm] = useState<User | null>(null);
     const [isImpersonatingLoading, setIsImpersonatingLoading] = useState<string | null>(null);
-    const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
+    const [searchValue, setSearchValue] = useState(searchParams.get("search") ||"");
 
     const createQueryString = useCallback(
         (name: string, value: string) => {
@@ -23,7 +23,7 @@ export function useUsersTable() {
             } else {
                 params.delete(name);
             }
-            if (name === "search") params.delete("page"); // Reset page on search
+            if (name ==="search") params.delete("page"); // Reset page on search
             return params.toString();
         },
         [searchParams]

@@ -9,11 +9,11 @@ import {
     Layers,
     PieChart,
     LucideIcon
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useBranding } from "@/components/branding-provider";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { useBranding } from"@/components/branding-provider";
 
-import { FundStats } from "./actions";;
+import { FundStats } from"./actions";;
 
 interface FundsClientProps {
     fundsData: FundStats;
@@ -37,9 +37,8 @@ function FundCard({ fund, currencySymbol }: FundCardProps) {
     return (
         <div className="crm-card p-6 bg-white flex flex-col justify-between hover:scale-[1.02] transition-all duration-500 border-none shadow-md group overflow-hidden relative h-full">
             <div className="flex justify-between items-start mb-10">
-                <div className={cn(
-                    "h-14 w-14 rounded-[var(--radius-inner)] flex items-center justify-center font-bold shadow-inner group-hover:scale-110 transition-transform duration-500",
-                    fund.color.replace('bg-', 'bg-') + "/10",
+                <div className={cn("h-14 w-14 rounded-[var(--radius-inner)] flex items-center justify-center font-bold shadow-inner group-hover:scale-110 transition-transform duration-500",
+                    fund.color.replace('bg-', 'bg-') +"/10",
                     fund.color.replace('bg-', 'text-')
                 )}>
                     <Icon className="w-7 h-7" />
@@ -66,7 +65,7 @@ function FundCard({ fund, currencySymbol }: FundCardProps) {
 }
 
 export function FundsClient({ fundsData }: FundsClientProps) {
-    const { currencySymbol = "₽" } = useBranding();
+    const { currencySymbol ="₽" } = useBranding();
 
     return (
         <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -84,7 +83,7 @@ export function FundsClient({ fundsData }: FundsClientProps) {
                         <PieChart className="w-8 h-8" />
                     </div>
                     <div>
-                        <h3 className="text-3xl font-black text-slate-900 ">Распределение капитала</h3>
+                        <h3 className="text-3xl font-black text-slate-900">Распределение капитала</h3>
                         <p className="text-slate-400 text-xs font-bold mt-1.5 opacity-80">Визуальный баланс всех фондов организации</p>
                     </div>
                 </div>

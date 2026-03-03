@@ -1,17 +1,17 @@
 "use client";
 
-import * as React from "react";
-import { Calculator, ChevronUp, ChevronDown } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { pluralize } from "@/lib/pluralize";
-import { formatPrice } from "./utils";
-import { PriceBreakdownProps } from "./types";
-import { PriceLineItem } from "./PriceLineItem";
+import * as React from"react";
+import { Calculator, ChevronUp, ChevronDown } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { pluralize } from"@/lib/pluralize";
+import { formatPrice } from"./utils";
+import { PriceBreakdownProps } from"./types";
+import { PriceLineItem } from"./PriceLineItem";
 
 export function PriceBreakdown({
     lines,
-    title = "Расчёт стоимости",
-    currency = "₽",
+    title ="Расчёт стоимости",
+    currency ="₽",
     showQuantity = true,
     showUnitPrice = true,
     collapsible = false,
@@ -20,16 +20,15 @@ export function PriceBreakdown({
 }: PriceBreakdownProps) {
     const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
 
-    const totalLine = lines.find((l) => l.type === "total");
-    const otherLines = lines.filter((l) => l.type !== "total");
+    const totalLine = lines.find((l) => l.type ==="total");
+    const otherLines = lines.filter((l) => l.type !=="total");
 
     return (
         <div className={cn("rounded-xl border border-slate-200 bg-white overflow-hidden", className)}>
             {/* Хедер */}
             <div role="button" tabIndex={0}
-                className={cn(
-                    "p-4 border-b border-slate-100 flex items-center justify-between",
-                    collapsible && "cursor-pointer hover:bg-slate-50 transition-colors"
+                className={cn("p-4 border-b border-slate-100 flex items-center justify-between",
+                    collapsible &&"cursor-pointer hover:bg-slate-50 transition-colors"
                 )}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                 onClick={() => collapsible && setIsExpanded(!isExpanded)}

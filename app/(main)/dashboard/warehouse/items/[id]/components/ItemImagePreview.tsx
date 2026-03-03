@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
-import { Image as ImageIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import React from"react";
+import Image from"next/image";
+import { Image as ImageIcon } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ItemImagePreviewProps {
     item: InventoryItem;
@@ -28,9 +28,8 @@ export function ItemImagePreview({
     return (
         <div className="group relative w-full aspect-square crm-card rounded-3xl overflow-hidden">
             <div role="button" tabIndex={0}
-                className={cn(
-                    "absolute inset-0 bg-muted/50 overflow-hidden",
-                    isEditing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
+                className={cn("absolute inset-0 bg-muted/50 overflow-hidden",
+                    isEditing ?"cursor-grab active:cursor-grabbing" :"cursor-pointer"
                 )}
                 onMouseDown={handleMainMouseDown}
                 onKeyDown={(e) => {

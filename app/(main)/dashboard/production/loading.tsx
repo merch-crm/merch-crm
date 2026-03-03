@@ -1,4 +1,4 @@
-import { SkeletonTable } from "@/components/ui/skeleton";
+import { SkeletonTable } from"@/components/ui/skeleton";
 
 export default function ProductionLoading() {
     return (

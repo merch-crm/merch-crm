@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle, Undo2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from"react";
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle, Undo2 } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
 
-export type ToastType = "success" | "error" | "info" | "warning" | "destructive";
+export type ToastType ="success" |"error" |"info" |"warning" |"destructive";
 
 interface ToastAction {
     label: string;
@@ -20,7 +20,7 @@ interface ToastProps {
     onClose: () => void;
 }
 
-export function Toast({ message, type = "info", duration = 4000, action, onClose }: ToastProps) {
+export function Toast({ message, type ="info", duration = 4000, action, onClose }: ToastProps) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
@@ -45,19 +45,18 @@ export function Toast({ message, type = "info", duration = 4000, action, onClose
     };
 
     const styles = {
-        success: "crm-toast-success",
-        error: "crm-toast-error",
-        destructive: "crm-toast-destructive",
-        warning: "crm-toast-warning",
-        info: "crm-toast-info",
+        success:"crm-toast-success",
+        error:"crm-toast-error",
+        destructive:"crm-toast-destructive",
+        warning:"crm-toast-warning",
+        info:"crm-toast-info",
     };
 
     return (
         <div
-            className={cn(
-                "crm-toast",
+            className={cn("crm-toast",
                 styles[type],
-                isVisible ? "translate-y-0 opacity-100 scale-100" : "translate-y-12 opacity-0 scale-95"
+                isVisible ?"translate-y-0 opacity-100 scale-100" :"translate-y-12 opacity-0 scale-95"
             )}
         >
             <div className="flex-shrink-0">{icons[type]}</div>
@@ -113,14 +112,14 @@ export function useToast() {
     return toastApi;
 }
 
-import { triggerMutation } from "../global-undo";
-import { playSound } from "@/lib/sounds";
+import { triggerMutation } from"../global-undo";
+import { playSound } from"@/lib/sounds";
 
 export function ToastContainer() {
     const [activeToast, setActiveToast] = useState<ToastState | null>(null);
 
     useEffect(() => {
-        toastFn = (message: string, type: ToastType = "info", options = {}) => {
+        toastFn = (message: string, type: ToastType ="info", options = {}) => {
             setActiveToast({ message, type, id: Date.now(), action: options.action });
 
             if (options.mutation) {
@@ -128,11 +127,11 @@ export function ToastContainer() {
             }
 
             // Play sound for success and warning using global sound system
-            if (type === "success") {
+            if (type ==="success") {
                 playSound("notification_success");
-            } else if (type === "warning") {
+            } else if (type ==="warning") {
                 playSound("notification_warning");
-            } else if (type === "error" || type === "destructive") {
+            } else if (type ==="error" || type ==="destructive") {
                 playSound("notification_error");
             }
         };

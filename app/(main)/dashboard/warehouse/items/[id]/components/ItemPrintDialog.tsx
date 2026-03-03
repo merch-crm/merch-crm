@@ -1,11 +1,11 @@
 "use client";
 
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { QRCode } from "@/components/ui/qr-code";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
-import { useState } from "react";
-import { Printer, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { QRCode } from"@/components/ui/qr-code";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import { useState } from"react";
+import { Printer, ChevronLeft, ChevronRight } from"lucide-react";
+import { Button } from"@/components/ui/button";
 
 interface ItemPrintDialogProps {
     item: InventoryItem;
@@ -54,17 +54,17 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
                         <label className="text-sm font-bold text-foreground mb-3">Предпросмотр</label>
                         <div id="label-to-print" className="bg-card p-5 rounded-2xl shadow-2xl shadow-border/50 border border-border flex flex-col items-center gap-3 w-[240px] aspect-[1/1.4] justify-between transition-transform hover:scale-[1.02]">
                             <div className="w-full text-center">
-                                <h4 className="font-extrabold text-foreground leading-tight text-[11px] mb-1">{(item.category as { name?: string })?.name || "Без категории"}</h4>
+                                <h4 className="font-extrabold text-foreground leading-tight text-[11px] mb-1">{(item.category as { name?: string })?.name ||"Без категории"}</h4>
                                 <p className="text-xs font-bold text-muted-foreground truncate w-full px-2">{item.name}</p>
                             </div>
 
                             <div className="flex-1 flex items-center justify-center w-full py-2">
-                                <QRCode value={item.sku || "NO-SKU"} size={140} className="border-none shadow-none p-0" />
+                                <QRCode value={item.sku ||"NO-SKU"} size={140} className="border-none shadow-none p-0" />
                             </div>
 
                             <div className="w-full text-center">
                                 <div className="bg-foreground text-background py-2 px-4 rounded-2xl font-black text-xs shadow-lg shadow-foreground/20">
-                                    {item.sku || "NO-SKU"}
+                                    {item.sku ||"NO-SKU"}
                                 </div>
                             </div>
                         </div>

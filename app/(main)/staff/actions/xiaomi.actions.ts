@@ -1,15 +1,15 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { xiaomiAccounts, cameras } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
-import { logAction } from "@/lib/audit";
-import { eq, and } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { XiaomiLoginSchema, XiaomiVerifySchema } from "../validation";
-import { encrypt, decrypt } from "@/lib/crypto";
+import { db } from"@/lib/db";
+import { xiaomiAccounts, cameras } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logError } from"@/lib/error-logger";
+import { logAction } from"@/lib/audit";
+import { eq, and } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { XiaomiLoginSchema, XiaomiVerifySchema } from"../validation";
+import { encrypt, decrypt } from"@/lib/crypto";
 
 // Удалены локальные хелперы encrypt/decrypt
 
@@ -31,6 +31,7 @@ export async function getXiaomiAccounts() {
         await requireAdmin(session);
 
         const accounts = await db.query.xiaomiAccounts.findMany({
+        limit: 500,
             where: eq(xiaomiAccounts.isActive, true),
             orderBy: (xa, { desc }) => [desc(xa.createdAt)],
             with: {
@@ -50,10 +51,10 @@ export async function getXiaomiAccounts() {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/xiaomi",
-            method: "getXiaomiAccounts",
+            path:"/staff/xiaomi",
+            method:"getXiaomiAccounts",
         });
-        return { success: false, error: "Не удалось загрузить аккаунты Xiaomi" };
+        return { success: false, error:"Не удалось загрузить аккаунты Xiaomi" };
     }
 }
 
@@ -72,11 +73,11 @@ export async function loginXiaomi(formData: FormData) {
         const { username, password, region } = validated.data;
 
         // Запрос к go2rtc для авторизации Xiaomi
-        const go2rtcUrl = process.env.GO2RTC_URL || "http://localhost:1984";
+        const go2rtcUrl = process.env.GO2RTC_URL ||"http://localhost:1984";
 
         const response = await fetch(`${go2rtcUrl}/api/xiaomi/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method:"POST",
+            headers: {"Content-Type":"application/json" },
             body: JSON.stringify({ username, password, region }),
         });
 
@@ -127,7 +128,7 @@ export async function loginXiaomi(formData: FormData) {
             },
         }).returning();
 
-        await logAction("Добавлен аккаунт Xiaomi", "xiaomi_account", newAccount.id, {
+        await logAction("Добавлен аккаунт Xiaomi","xiaomi_account", newAccount.id, {
             xiaomiUserId: result.userId,
             region,
         });
@@ -144,10 +145,10 @@ export async function loginXiaomi(formData: FormData) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/xiaomi/login",
-            method: "loginXiaomi",
+            path:"/staff/xiaomi/login",
+            method:"loginXiaomi",
         });
-        return { success: false, error: "Ошибка при авторизации в Xiaomi" };
+        return { success: false, error:"Ошибка при авторизации в Xiaomi" };
     }
 }
 
@@ -168,14 +169,14 @@ export async function verifyXiaomi(formData: FormData) {
 
         if (!pendingSession || pendingSession.expiresAt < Date.now()) {
             verificationSessions.delete(sessionId);
-            return { success: false, error: "Сессия истекла, повторите авторизацию" };
+            return { success: false, error:"Сессия истекла, повторите авторизацию" };
         }
 
-        const go2rtcUrl = process.env.GO2RTC_URL || "http://localhost:1984";
+        const go2rtcUrl = process.env.GO2RTC_URL ||"http://localhost:1984";
 
         const response = await fetch(`${go2rtcUrl}/api/xiaomi/verify`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method:"POST",
+            headers: {"Content-Type":"application/json" },
             body: JSON.stringify({
                 username: pendingSession.username,
                 password: pendingSession.password,
@@ -210,7 +211,7 @@ export async function verifyXiaomi(formData: FormData) {
             },
         }).returning();
 
-        await logAction("Добавлен аккаунт Xiaomi (с верификацией)", "xiaomi_account", newAccount.id, {
+        await logAction("Добавлен аккаунт Xiaomi (с верификацией)","xiaomi_account", newAccount.id, {
             xiaomiUserId: result.userId,
             region: pendingSession.region,
         });
@@ -227,10 +228,10 @@ export async function verifyXiaomi(formData: FormData) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/xiaomi/verify",
-            method: "verifyXiaomi",
+            path:"/staff/xiaomi/verify",
+            method:"verifyXiaomi",
         });
-        return { success: false, error: "Ошибка при верификации" };
+        return { success: false, error:"Ошибка при верификации" };
     }
 }
 
@@ -247,15 +248,15 @@ export async function syncXiaomiDevices(accountId: string) {
         });
 
         if (!account) {
-            return { success: false, error: "Аккаунт не найден" };
+            return { success: false, error:"Аккаунт не найден" };
         }
 
         const token = JSON.parse(decrypt(account.encryptedToken));
-        const go2rtcUrl = process.env.GO2RTC_URL || "http://localhost:1984";
+        const go2rtcUrl = process.env.GO2RTC_URL ||"http://localhost:1984";
 
         const response = await fetch(`${go2rtcUrl}/api/xiaomi/devices`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method:"POST",
+            headers: {"Content-Type":"application/json" },
             body: JSON.stringify({
                 token,
                 region: account.region,
@@ -263,7 +264,7 @@ export async function syncXiaomiDevices(accountId: string) {
         });
 
         if (!response.ok) {
-            return { success: false, error: "Не удалось получить список устройств" };
+            return { success: false, error:"Не удалось получить список устройств" };
         }
 
         const devices: Array<{
@@ -275,7 +276,7 @@ export async function syncXiaomiDevices(accountId: string) {
         }> = await response.json();
 
         // Фильтруем только камеры
-        const cameraModels = ["xiaomi.camera", "chuangmi.camera", "isa.camera"];
+        const cameraModels = ["xiaomi.camera","chuangmi.camera","isa.camera"];
         const cameraDevices = devices.filter(d =>
             cameraModels.some(prefix => d.model.startsWith(prefix))
         );
@@ -288,14 +289,14 @@ export async function syncXiaomiDevices(accountId: string) {
                 model: device.model,
                 name: device.name,
                 localIp: device.localIp,
-                status: device.isOnline ? "online" : "offline",
+                status: device.isOnline ?"online" :"offline",
                 lastOnlineAt: device.isOnline ? new Date() : null,
             }).onConflictDoUpdate({
                 target: cameras.deviceId,
                 set: {
                     name: device.name,
                     localIp: device.localIp,
-                    status: device.isOnline ? "online" : "offline",
+                    status: device.isOnline ?"online" :"offline",
                     lastOnlineAt: device.isOnline ? new Date() : undefined,
                     updatedAt: new Date(),
                 },
@@ -307,7 +308,7 @@ export async function syncXiaomiDevices(accountId: string) {
             .set({ lastSyncAt: new Date() })
             .where(eq(xiaomiAccounts.id, accountId));
 
-        await logAction("Синхронизация устройств Xiaomi", "xiaomi_account", accountId, {
+        await logAction("Синхронизация устройств Xiaomi","xiaomi_account", accountId, {
             devicesFound: devices.length,
             camerasFound: cameraDevices.length,
         });
@@ -324,10 +325,10 @@ export async function syncXiaomiDevices(accountId: string) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/xiaomi/sync",
-            method: "syncXiaomiDevices",
+            path:"/staff/xiaomi/sync",
+            method:"syncXiaomiDevices",
         });
-        return { success: false, error: "Ошибка при синхронизации устройств" };
+        return { success: false, error:"Ошибка при синхронизации устройств" };
     }
 }
 
@@ -341,7 +342,7 @@ export async function deleteXiaomiAccount(accountId: string) {
         });
 
         if (!account) {
-            return { success: false, error: "Аккаунт не найден" };
+            return { success: false, error:"Аккаунт не найден" };
         }
 
         // Мягкое удаление — деактивируем
@@ -352,7 +353,7 @@ export async function deleteXiaomiAccount(accountId: string) {
             })
             .where(eq(xiaomiAccounts.id, accountId));
 
-        await logAction("Удалён аккаунт Xiaomi", "xiaomi_account", accountId, {
+        await logAction("Удалён аккаунт Xiaomi","xiaomi_account", accountId, {
             xiaomiUserId: account.xiaomiUserId,
         });
 
@@ -362,9 +363,9 @@ export async function deleteXiaomiAccount(accountId: string) {
     } catch (error) {
         await logError({
             error,
-            path: "/staff/xiaomi/delete",
-            method: "deleteXiaomiAccount",
+            path:"/staff/xiaomi/delete",
+            method:"deleteXiaomiAccount",
         });
-        return { success: false, error: "Ошибка при удалении аккаунта" };
+        return { success: false, error:"Ошибка при удалении аккаунта" };
     }
 }

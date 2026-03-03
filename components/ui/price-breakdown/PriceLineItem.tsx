@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "./utils";
-import { PriceLineItemProps } from "./types";
-import { TYPE_COLORS, TYPE_ICONS } from "./constants";
-import { PriceRow } from "./PriceRow";
+import * as React from"react";
+import { cn } from"@/lib/utils";
+import { formatPrice } from"./utils";
+import { PriceLineItemProps } from"./types";
+import { TYPE_COLORS, TYPE_ICONS } from"./constants";
+import { PriceRow } from"./PriceRow";
 
 export function PriceLineItem({
     line,
@@ -20,7 +20,7 @@ export function PriceLineItem({
     const hasDetails = line.details && line.details.length > 0;
 
     return (
-        <div className={cn(nested && "ml-8 border-l-2 border-slate-100")}>
+        <div className={cn(nested &&"ml-8 border-l-2 border-slate-100")}>
             <PriceRow
                 icon={icon}
                 colorClasses={colors}

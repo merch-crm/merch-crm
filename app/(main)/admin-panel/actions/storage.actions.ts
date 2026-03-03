@@ -1,12 +1,12 @@
 "use server";
 
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { revalidatePath } from "next/cache";
-import fs from "fs";
-import { z } from "zod";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { revalidatePath } from"next/cache";
+import fs from"fs";
+import { z } from"zod";
 
 export async function getStorageDetails(prefix?: string) {
     const session = await getSession();
@@ -36,8 +36,8 @@ export async function getStorageDetails(prefix?: string) {
             }
         };
     } catch (error) {
-        await logError({ error, path: "/admin-panel/storage/details", method: "getStorageDetails" });
-        return { success: false, error: "Ошибка при получении данных хранилища" };
+        await logError({ error, path:"/admin-panel/storage/details", method:"getStorageDetails" });
+        return { success: false, error:"Ошибка при получении данных хранилища" };
     }
 }
 
@@ -45,17 +45,17 @@ export async function deleteS3FileAction(key: string) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const { key: validKey } = z.object({ key: z.string().min(1, "Ключ обязателен") }).parse({ key });
+        const { key: validKey } = z.object({ key: z.string().min(1,"Ключ обязателен") }).parse({ key });
 
         const { deleteFile } = await import("@/lib/storage");
         const res = await deleteFile(validKey);
         if (res.success) {
-            await logAction("Удален файл S3", "s3_storage", "system", { key });
+            await logAction("Удален файл S3","s3_storage","system", { key });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при удалении файла" };
+        return { success: false, error:"Ошибка при удалении файла" };
     }
 }
 
@@ -63,17 +63,17 @@ export async function createS3FolderAction(path: string) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const { path: validPath } = z.object({ path: z.string().min(1, "Путь обязателен") }).parse({ path });
+        const { path: validPath } = z.object({ path: z.string().min(1,"Путь обязателен") }).parse({ path });
 
         const { createFolder } = await import("@/lib/storage");
         const res = await createFolder(validPath);
         if (res.success) {
-            await logAction("Создана папка S3", "s3_storage", "system", { path });
+            await logAction("Создана папка S3","s3_storage","system", { path });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при создании папки" };
+        return { success: false, error:"Ошибка при создании папки" };
     }
 }
 
@@ -83,7 +83,7 @@ export async function getLocalStorageDetails(prefix?: string) {
         await requireAdmin(session);
         const { listLocalFiles, getLocalStorageStats } = await import("@/lib/local-storage");
         const stats = await getLocalStorageStats();
-        const content = await listLocalFiles(prefix || "");
+        const content = await listLocalFiles(prefix ||"");
 
         return {
             success: true,
@@ -94,7 +94,7 @@ export async function getLocalStorageDetails(prefix?: string) {
             }
         };
     } catch {
-        return { success: false, error: "Ошибка при получении данных локального хранилища" };
+        return { success: false, error:"Ошибка при получении данных локального хранилища" };
     }
 }
 
@@ -102,17 +102,17 @@ export async function createLocalFolderAction(folderPath: string) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const { folderPath: validPath } = z.object({ folderPath: z.string().min(1, "Путь обязателен") }).parse({ folderPath });
+        const { folderPath: validPath } = z.object({ folderPath: z.string().min(1,"Путь обязателен") }).parse({ folderPath });
 
         const { createLocalFolder } = await import("@/lib/local-storage");
         const res = await createLocalFolder(validPath);
         if (res.success) {
-            await logAction("Создана локальная папка", "local_storage", "system", { path: folderPath });
+            await logAction("Создана локальная папка","local_storage","system", { path: folderPath });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при создании папки" };
+        return { success: false, error:"Ошибка при создании папки" };
     }
 }
 
@@ -120,17 +120,17 @@ export async function deleteLocalFileAction(filePath: string) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const { filePath: validPath } = z.object({ filePath: z.string().min(1, "Путь обязателен") }).parse({ filePath });
+        const { filePath: validPath } = z.object({ filePath: z.string().min(1,"Путь обязателен") }).parse({ filePath });
 
         const { deleteLocalFile } = await import("@/lib/local-storage");
         const res = await deleteLocalFile(validPath);
         if (res.success) {
-            await logAction("Удален локальный файл", "local_storage", "system", { path: filePath });
+            await logAction("Удален локальный файл","local_storage","system", { path: filePath });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при удалении файла" };
+        return { success: false, error:"Ошибка при удалении файла" };
     }
 }
 
@@ -143,12 +143,12 @@ export async function renameS3FileAction(oldKey: string, newKey: string) {
         const { renameFile } = await import("@/lib/storage");
         const res = await renameFile(validOld, validNew);
         if (res.success) {
-            await logAction("Переименован файл S3", "s3_storage", "system", { oldKey, newKey });
+            await logAction("Переименован файл S3","s3_storage","system", { oldKey, newKey });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при переименовании" };
+        return { success: false, error:"Ошибка при переименовании" };
     }
 }
 
@@ -156,17 +156,17 @@ export async function deleteMultipleS3FilesAction(keys: string[]) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const { keys: validKeys } = z.object({ keys: z.array(z.string().min(1)).min(1, "Необходим хотя бы один ключ") }).parse({ keys });
+        const { keys: validKeys } = z.object({ keys: z.array(z.string().min(1)).min(1,"Необходим хотя бы один ключ") }).parse({ keys });
 
         const { deleteMultipleFiles } = await import("@/lib/storage");
         const res = await deleteMultipleFiles(validKeys);
         if (res.success) {
-            await logAction("Удалено несколько файлов S3", "s3_storage", "system", { count: keys.length });
+            await logAction("Удалено несколько файлов S3","s3_storage","system", { count: keys.length });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при удалении файлов" };
+        return { success: false, error:"Ошибка при удалении файлов" };
     }
 }
 
@@ -179,12 +179,12 @@ export async function renameLocalFileAction(oldPath: string, newPath: string) {
         const { renameLocalFile } = await import("@/lib/local-storage");
         const res = await renameLocalFile(validOld, validNew);
         if (res.success) {
-            await logAction("Переименован локальный файл", "local_storage", "system", { oldPath, newPath });
+            await logAction("Переименован локальный файл","local_storage","system", { oldPath, newPath });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при переименовании" };
+        return { success: false, error:"Ошибка при переименовании" };
     }
 }
 
@@ -192,17 +192,17 @@ export async function deleteMultipleLocalFilesAction(filePaths: string[]) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const { filePaths: validPaths } = z.object({ filePaths: z.array(z.string().min(1)).min(1, "Необходим хотя бы один путь") }).parse({ filePaths });
+        const { filePaths: validPaths } = z.object({ filePaths: z.array(z.string().min(1)).min(1,"Необходим хотя бы один путь") }).parse({ filePaths });
 
         const { deleteMultipleLocalFiles } = await import("@/lib/local-storage");
         const res = await deleteMultipleLocalFiles(validPaths);
         if (res.success) {
-            await logAction("Удалено несколько локальных файлов", "local_storage", "system", { count: filePaths.length });
+            await logAction("Удалено несколько локальных файлов","local_storage","system", { count: filePaths.length });
             revalidatePath("/admin-panel/storage");
         }
         return res;
     } catch {
-        return { success: false, error: "Ошибка при удалении файлов" };
+        return { success: false, error:"Ошибка при удалении файлов" };
     }
 }
 
@@ -214,6 +214,6 @@ export async function getS3FileUrlAction(key: string) {
         const url = await getFileUrl(key);
         return { success: true, data: url };
     } catch {
-        return { success: false, error: "Ошибка при получении ссылки на файл" };
+        return { success: false, error:"Ошибка при получении ссылки на файл" };
     }
 }

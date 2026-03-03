@@ -1,6 +1,6 @@
 "use client";
 
-import NextImage from "next/image";
+import NextImage from"next/image";
 import {
     User,
     Clock,
@@ -12,9 +12,9 @@ import {
     Image as ImageIcon,
     FileText,
     FileIcon
-} from "lucide-react";
-import { formatDate, formatDateTime } from "@/lib/formatters";
-import { Task } from "../types";
+} from"lucide-react";
+import { formatDate, formatDateTime } from"@/lib/formatters";
+import { Task } from"../types";
 
 interface TaskDetailsTabProps {
     task: Task;
@@ -31,11 +31,11 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
     };
 
     const formatSize = (bytes: number) => {
-        if (!bytes) return "0 Б";
+        if (!bytes) return"0 Б";
         const k = 1024;
-        const sizes = ["Б", "КБ", "МБ", "ГБ"];
+        const sizes = ["Б","КБ","МБ","ГБ"];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) +"" + sizes[i];
     };
 
     return (
@@ -53,10 +53,10 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
                         </div>
                         <div>
                             <p className="text-sm font-bold text-slate-900 leading-tight">
-                                {task.assignedToUser?.name || task.assignedToDepartment?.name || "Все"}
+                                {task.assignedToUser?.name || task.assignedToDepartment?.name ||"Все"}
                             </p>
                             <p className="text-xs font-bold text-slate-400">
-                                {task.assignedToDepartmentId ? "Групповая задача" : "Персональная"}
+                                {task.assignedToDepartmentId ?"Групповая задача" :"Персональная"}
                             </p>
                         </div>
                     </div>
@@ -68,10 +68,10 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
                         <div className="flex flex-col pt-1">
                             <span className="text-xs font-bold text-slate-400 mb-1">Срок выполнения</span>
                             <span className="text-base font-bold text-slate-900">
-                                {task.dueDate ? formatDate(task.dueDate, "d MMMM yyyy") : "Срок не установлен"}
+                                {task.dueDate ? formatDate(task.dueDate,"d MMMM yyyy") :"Срок не установлен"}
                             </span>
                             <div className="text-sm text-slate-400">
-                                {task.dueDate ? `Осталось совсем немного` : "Без привязки ко времени"}
+                                {task.dueDate ? `Осталось совсем немного` :"Без привязки ко времени"}
                             </div>
                         </div>
                     </div>
@@ -84,8 +84,8 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
                             <User className="w-5 h-5 text-slate-400" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-slate-900">{task.creator?.name || "Система"}</p>
-                            <p className="text-xs font-medium text-slate-400">{formatDateTime(task.createdAt, "HH:mm, dd.MM.yyyy")}</p>
+                            <p className="text-sm font-bold text-slate-900">{task.creator?.name ||"Система"}</p>
+                            <p className="text-xs font-medium text-slate-400">{formatDateTime(task.createdAt,"HH:mm, dd.MM.yyyy")}</p>
                         </div>
                     </div>
                 </div>
@@ -135,7 +135,7 @@ export function TaskDetailsTab({ task, isPending, fileInputRef, onFileUpload }: 
                             className="flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-2xl hover:border-primary/20 hover:shadow-lg hover:shadow-primary/5 transition-all group"
                         >
                             <div className="h-10 w-10 rounded-2xl bg-slate-50 flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
-                                {getFileIcon(file.contentType || "")}
+                                {getFileIcon(file.contentType ||"")}
                             </div>
                             <div className="flex-1 min-w-0">
                                 <p className="text-xs font-bold text-slate-900 truncate">{file.fileName}</p>

@@ -104,7 +104,7 @@ describe('KanbanBoard', () => {
         });
     });
 
-    it('plays sound when dropping a task to "done"', async () => {
+    it('plays sound when dropping a task to"done"', async () => {
         render(
             <SheetStackProvider>
                 <KanbanBoard tasks={mockTasks} currentUserId="user1" />

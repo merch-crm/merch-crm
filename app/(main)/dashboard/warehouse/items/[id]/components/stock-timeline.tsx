@@ -1,13 +1,13 @@
-import React from "react";
+import React from"react";
 import {
     Activity,
     Package,
     ShoppingCart,
     AlertTriangle
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { format, addDays } from "date-fns";
-import { ru } from "date-fns/locale";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { format, addDays } from"date-fns";
+import { ru } from"date-fns/locale";
 
 interface StockTimelineProps {
     currentQuantity: number;
@@ -23,9 +23,9 @@ interface StockTimelineProps {
 // Helper for Russian declension
 function getDayDeclension(number: number) {
     const abs = Math.abs(number);
-    if (abs % 10 === 1 && abs % 100 !== 11) return "день";
-    if (abs % 10 >= 2 && abs % 10 <= 4 && (abs % 100 < 10 || abs % 100 >= 20)) return "дня";
-    return "дней";
+    if (abs % 10 === 1 && abs % 100 !== 11) return"день";
+    if (abs % 10 >= 2 && abs % 10 <= 4 && (abs % 100 < 10 || abs % 100 >= 20)) return"дня";
+    return"дней";
 }
 
 export function StockTimeline({
@@ -62,10 +62,9 @@ export function StockTimeline({
                                 <span className="text-xs font-black text-muted-foreground shrink-0">{format(new Date(), 'd MMM', { locale: ru })}</span>
                             </div>
                             <div className="flex items-baseline gap-1.5 leading-none">
-                                <span className={cn(
-                                    "text-2xl font-black",
-                                    currentQuantity <= criticalStockThreshold ? "text-rose-600" :
-                                        currentQuantity <= lowStockThreshold ? "text-amber-600" : "text-foreground"
+                                <span className={cn("text-2xl font-black",
+                                    currentQuantity <= criticalStockThreshold ?"text-rose-600" :
+                                        currentQuantity <= lowStockThreshold ?"text-amber-600" :"text-foreground"
                                 )}>{currentQuantity}</span>
                                 <span className="text-xs font-black text-muted-foreground">{unit}</span>
                             </div>
@@ -74,11 +73,10 @@ export function StockTimeline({
 
                     {/* Stage 2: Low Stock */}
                     <div className="flex items-start gap-3">
-                        <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center shadow-sm z-10 border-2 transition-colors shrink-0",
-                            analytics.daysToLow <= 7 ? "bg-amber-50 border-amber-500" : "bg-card border-border"
+                        <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shadow-sm z-10 border-2 transition-colors shrink-0",
+                            analytics.daysToLow <= 7 ?"bg-amber-50 border-amber-500" :"bg-card border-border"
                         )}>
-                            <ShoppingCart className={cn("w-4 h-4", analytics.daysToLow <= 7 ? "text-amber-600" : "text-muted-foreground/30")} />
+                            <ShoppingCart className={cn("w-4 h-4", analytics.daysToLow <= 7 ?"text-amber-600" :"text-muted-foreground/30")} />
                         </div>
                         <div className="space-y-1 min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2">
@@ -91,19 +89,17 @@ export function StockTimeline({
                             </div>
                             <div className="flex items-center flex-wrap gap-2 leading-none">
                                 <div className="flex items-baseline gap-1">
-                                    <span className={cn(
-                                        "text-2xl font-black",
-                                        analytics.daysToLow === 0 ? "text-amber-600" : "text-foreground"
+                                    <span className={cn("text-2xl font-black",
+                                        analytics.daysToLow === 0 ?"text-amber-600" :"text-foreground"
                                     )}>
-                                        {analytics.daysToLow === 0 ? "—" : (analytics.daysToLow === Infinity ? "∞" : analytics.daysToLow)}
+                                        {analytics.daysToLow === 0 ?"—" : (analytics.daysToLow === Infinity ?"∞" : analytics.daysToLow)}
                                     </span>
                                     <span className="text-xs font-black text-muted-foreground">
-                                        {analytics.daysToLow === 0 ? "достигнут" : (analytics.daysToLow === Infinity ? "дней" : getDayDeclension(analytics.daysToLow))}
+                                        {analytics.daysToLow === 0 ?"достигнут" : (analytics.daysToLow === Infinity ?"дней" : getDayDeclension(analytics.daysToLow))}
                                     </span>
                                 </div>
-                                <span className={cn(
-                                    "text-xs font-bold px-1.5 py-0.5 rounded whitespace-nowrap",
-                                    analytics.daysToLow === 0 ? "bg-amber-500 text-white" : "bg-amber-100/50 text-amber-700"
+                                <span className={cn("text-xs font-bold px-1.5 py-0.5 rounded whitespace-nowrap",
+                                    analytics.daysToLow === 0 ?"bg-amber-500 text-white" :"bg-amber-100/50 text-amber-700"
                                 )}>
                                     {lowStockThreshold} {unit}
                                 </span>
@@ -113,11 +109,10 @@ export function StockTimeline({
 
                     {/* Stage 3: Critical */}
                     <div className="flex items-start gap-3">
-                        <div className={cn(
-                            "w-8 h-8 rounded-full flex items-center justify-center shadow-sm z-10 border-2 transition-colors shrink-0",
-                            analytics.daysToCritical <= 3 ? "bg-rose-50 border-rose-500" : "bg-card border-border"
+                        <div className={cn("w-8 h-8 rounded-full flex items-center justify-center shadow-sm z-10 border-2 transition-colors shrink-0",
+                            analytics.daysToCritical <= 3 ?"bg-rose-50 border-rose-500" :"bg-card border-border"
                         )}>
-                            <AlertTriangle className={cn("w-4 h-4", analytics.daysToCritical <= 3 ? "text-rose-600" : "text-muted-foreground/30")} />
+                            <AlertTriangle className={cn("w-4 h-4", analytics.daysToCritical <= 3 ?"text-rose-600" :"text-muted-foreground/30")} />
                         </div>
                         <div className="space-y-1 min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2">
@@ -130,19 +125,17 @@ export function StockTimeline({
                             </div>
                             <div className="flex items-center flex-wrap gap-2 leading-none">
                                 <div className="flex items-baseline gap-1">
-                                    <span className={cn(
-                                        "text-2xl font-black",
-                                        analytics.daysToCritical === 0 ? "text-rose-600" : "text-foreground"
+                                    <span className={cn("text-2xl font-black",
+                                        analytics.daysToCritical === 0 ?"text-rose-600" :"text-foreground"
                                     )}>
-                                        {analytics.daysToCritical === 0 ? "—" : (analytics.daysToCritical === Infinity ? "∞" : analytics.daysToCritical)}
+                                        {analytics.daysToCritical === 0 ?"—" : (analytics.daysToCritical === Infinity ?"∞" : analytics.daysToCritical)}
                                     </span>
                                     <span className="text-xs font-black text-muted-foreground">
-                                        {analytics.daysToCritical === 0 ? "критично" : (analytics.daysToCritical === Infinity ? "дней" : getDayDeclension(analytics.daysToCritical))}
+                                        {analytics.daysToCritical === 0 ?"критично" : (analytics.daysToCritical === Infinity ?"дней" : getDayDeclension(analytics.daysToCritical))}
                                     </span>
                                 </div>
-                                <span className={cn(
-                                    "text-xs font-bold px-1.5 py-0.5 rounded whitespace-nowrap",
-                                    analytics.daysToCritical === 0 ? "bg-rose-500 text-white" : "bg-rose-100/50 text-rose-700"
+                                <span className={cn("text-xs font-bold px-1.5 py-0.5 rounded whitespace-nowrap",
+                                    analytics.daysToCritical === 0 ?"bg-rose-500 text-white" :"bg-rose-100/50 text-rose-700"
                                 )}>
                                     {criticalStockThreshold} {unit}
                                 </span>

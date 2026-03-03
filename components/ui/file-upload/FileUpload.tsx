@@ -1,11 +1,11 @@
 "use client";
 
-import * as React from "react";
-import { Upload } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { formatFileSize } from "@/lib/formatters";
-import { FileUploadProps, UploadedFile } from "./types";
-import { FileItem } from "./FileItem";
+import * as React from"react";
+import { Upload } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { formatFileSize } from"@/lib/formatters";
+import { FileUploadProps, UploadedFile } from"./types";
+import { FileItem } from"./FileItem";
 
 export function FileUpload({
     value = [],
@@ -16,7 +16,7 @@ export function FileUpload({
     maxSize = 10 * 1024 * 1024, // 10 МБ
     multiple = true,
     disabled = false,
-    label = "Загрузите файлы",
+    label ="Загрузите файлы",
     description,
     className,
 }: FileUploadProps) {
@@ -33,7 +33,7 @@ export function FileUpload({
                     id: crypto.randomUUID(),
                     file,
                     progress: 100,
-                    status: "success" as const,
+                    status:"success" as const,
                     preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
                 }))
             );
@@ -56,16 +56,16 @@ export function FileUpload({
         if (accept) {
             const acceptedTypes = accept.split(",").map((t) => t.trim());
             const fileType = file.type;
-            const fileExt = "." + file.name.split(".").pop()?.toLowerCase();
+            const fileExt ="." + file.name.split(".").pop()?.toLowerCase();
 
             const isAccepted = acceptedTypes.some((type) => {
                 if (type.startsWith(".")) return fileExt === type.toLowerCase();
-                if (type.endsWith("/*")) return fileType.startsWith(type.replace("/*", "/"));
+                if (type.endsWith("/*")) return fileType.startsWith(type.replace("/*","/"));
                 return fileType === type;
             });
 
             if (!isAccepted) {
-                return "Недопустимый формат файла";
+                return"Недопустимый формат файла";
             }
         }
         return null;
@@ -82,7 +82,7 @@ export function FileUpload({
                 id: crypto.randomUUID(),
                 file,
                 progress: error ? 0 : 0,
-                status: error ? "error" : "pending",
+                status: error ?"error" :"pending",
                 error: error || undefined,
                 preview: file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined,
             };
@@ -92,11 +92,11 @@ export function FileUpload({
 
         // Загрузка файлов
         for (const uploadedFile of uploadedFiles) {
-            if (uploadedFile.status === "error") continue;
+            if (uploadedFile.status ==="error") continue;
 
             setFiles((prev) =>
                 prev.map((f) =>
-                    f.id === uploadedFile.id ? { ...f, status: "uploading" } : f
+                    f.id === uploadedFile.id ? { ...f, status:"uploading" } : f
                 )
             );
 
@@ -123,7 +123,7 @@ export function FileUpload({
                 setFiles((prev) =>
                     prev.map((f) =>
                         f.id === uploadedFile.id
-                            ? { ...f, progress: 100, status: "success" }
+                            ? { ...f, progress: 100, status:"success" }
                             : f
                     )
                 );
@@ -132,7 +132,7 @@ export function FileUpload({
                 setFiles((prev) =>
                     prev.map((f) =>
                         f.id === uploadedFile.id
-                            ? { ...f, status: "error", error: "Ошибка загрузки" }
+                            ? { ...f, status:"error", error:"Ошибка загрузки" }
                             : f
                     )
                 );
@@ -141,7 +141,7 @@ export function FileUpload({
 
         // Обновляем внешнее состояние
         const successFiles = [...files, ...uploadedFiles]
-            .filter((f) => f.status === "success" || f.status === "pending")
+            .filter((f) => f.status ==="success" || f.status ==="pending")
             .map((f) => f.file);
         onChange?.(successFiles);
     };
@@ -186,7 +186,7 @@ export function FileUpload({
             processFiles(e.target.files);
         }
         // Сброс input для повторной загрузки того же файла
-        e.target.value = "";
+        e.target.value ="";
     };
 
     const removeFile = (id: string) => {
@@ -197,7 +197,7 @@ export function FileUpload({
         });
 
         const remainingFiles = files
-            .filter((f) => f.id !== id && (f.status === "success" || f.status === "pending"))
+            .filter((f) => f.id !== id && (f.status ==="success" || f.status ==="pending"))
             .map((f) => f.file);
         onChange?.(remainingFiles);
     };
@@ -206,13 +206,13 @@ export function FileUpload({
         if (description) return description;
         const parts: string[] = [];
         if (accept) {
-            const types = accept.split(",").map((t) => t.trim().replace(".", "").toUpperCase());
-            parts.push(types.join(", "));
+            const types = accept.split(",").map((t) => t.trim().replace(".","").toUpperCase());
+            parts.push(types.join(","));
         }
         if (maxSize) {
             parts.push(`до ${formatFileSize(maxSize)}`);
         }
-        return parts.join(" • ");
+        return parts.join(" •");
     }, [accept, maxSize, description]);
 
     return (
@@ -224,12 +224,11 @@ export function FileUpload({
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => !disabled && inputRef.current?.click()}
-                className={cn(
-                    "relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all",
+                className={cn("relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all",
                     isDragging
-                        ? "border-primary bg-primary/5"
-                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
-                    disabled && "cursor-not-allowed opacity-50 hover:border-slate-200 hover:bg-transparent"
+                        ?"border-primary bg-primary/5"
+                        :"border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+                    disabled &&"cursor-not-allowed opacity-50 hover:border-slate-200 hover:bg-transparent"
                 )}
             >
                 <input
@@ -244,9 +243,8 @@ export function FileUpload({
 
                 <div className="flex flex-col items-center gap-3">
                     <div
-                        className={cn(
-                            "w-14 h-14 rounded-full flex items-center justify-center transition-colors",
-                            isDragging ? "bg-primary/10 text-primary" : "bg-slate-100 text-slate-500"
+                        className={cn("w-14 h-14 rounded-full flex items-center justify-center transition-colors",
+                            isDragging ?"bg-primary/10 text-primary" :"bg-slate-100 text-slate-500"
                         )}
                     >
                         <Upload className="w-6 h-6" />
@@ -254,7 +252,7 @@ export function FileUpload({
                     <div>
                         <p className="text-sm font-bold text-slate-900">{label}</p>
                         <p className="text-xs text-slate-500 mt-1">
-                            Перетащите файлы сюда или{" "}
+                            Перетащите файлы сюда или{""}
                             <span className="text-primary font-medium">выберите</span>
                         </p>
                     </div>

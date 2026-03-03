@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from"framer-motion";
+import { Trash2 } from"lucide-react";
+import { Button } from"@/components/ui/button";
 
 interface DeleteConfirmationProps {
     isOpen: boolean;
@@ -18,8 +18,8 @@ export function DeleteConfirmation({
     onClose,
     onConfirm,
     isDeleting = false,
-    title = "Удалить категорию?",
-    description = "Вы уверены, что хотите удалить эту категорию? Это действие нельзя будет отменить."
+    title ="Удалить категорию?",
+    description ="Вы уверены, что хотите удалить эту категорию? Это действие нельзя будет отменить."
 }: DeleteConfirmationProps) {
     return (
         <AnimatePresence>
@@ -58,7 +58,7 @@ export function DeleteConfirmation({
                                 onClick={onConfirm}
                                 disabled={isDeleting}
                             >
-                                {isDeleting ? "Удаление..." : "Удалить"}
+                                {isDeleting ?"Удаление..." :"Удалить"}
                             </Button>
                             <Button
                                 type="button"

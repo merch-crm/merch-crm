@@ -1,29 +1,29 @@
 "use client";
 
-import { User as UserIcon, Trash2, Edit, Users, Building, Search, X, BarChart2, LogIn, MoreVertical } from "lucide-react";
-import { RoleBadge } from "@/components/ui/role-badge";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { DeleteUserDialog } from "./delete-user-dialog";
-import { EditUserDialog } from "./edit-user-dialog";
-import { UserStatsDrawer } from "./user-stats-drawer";
-import { cn, handleA11yKeyDown } from "@/lib/utils";
-import { impersonateUser } from "../actions/security.actions";;
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { User as UserIcon, Trash2, Edit, Users, Building, Search, X, BarChart2, LogIn, MoreVertical } from"lucide-react";
+import { RoleBadge } from"@/components/ui/role-badge";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { DeleteUserDialog } from"./delete-user-dialog";
+import { EditUserDialog } from"./edit-user-dialog";
+import { UserStatsDrawer } from"./user-stats-drawer";
+import { cn, handleA11yKeyDown } from"@/lib/utils";
+import { impersonateUser } from"../actions/security.actions";;
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+} from"@/components/ui/dropdown-menu";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { EmptyState } from "@/components/ui/empty-state";
-import { useUsersTable } from "./hooks/use-users-table";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { EmptyState } from"@/components/ui/empty-state";
+import { useUsersTable } from"./hooks/use-users-table";
 
-import type { User } from "@/lib/types";
+import type { User } from"@/lib/types";
 
 // User interface is now imported from @/lib/types
 
@@ -104,9 +104,8 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                             <tr
                                                 key={user.id}
                                                 onClick={() => actions.setEditingUser(user)}
-                                                className={cn(
-                                                    "crm-tr-clickable",
-                                                    isSelected && "crm-tr-selected"
+                                                className={cn("crm-tr-clickable",
+                                                    isSelected &&"crm-tr-selected"
                                                 )}
                                             >
                                                 <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
@@ -120,17 +119,16 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 <td className="crm-td">
                                                     <div className="flex items-center gap-3">
                                                         <div
-                                                            className={cn(
-                                                                "h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
-                                                                isSelected ? "bg-white border-primary/20 text-primary scale-110" : "text-white border-transparent"
+                                                            className={cn("h-10 w-10 rounded-full flex items-center justify-center transition-all shadow-sm border",
+                                                                isSelected ?"bg-white border-primary/20 text-primary scale-110" :"text-white border-transparent"
                                                             )}
                                                             style={{
                                                                 backgroundColor: isSelected
                                                                     ? undefined
-                                                                    : (typeof user.role === 'object' ? user.role?.color : null) || user.department_color || "#94a3b8"
+                                                                    : (typeof user.role === 'object' ? user.role?.color : null) || user.department_color ||"#94a3b8"
                                                             }}
                                                         >
-                                                            <UserIcon className={cn("w-5 h-5", isSelected ? "text-primary" : "text-white")} />
+                                                            <UserIcon className={cn("w-5 h-5", isSelected ?"text-primary" :"text-white")} />
                                                         </div>
                                                         <div>
                                                             <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
@@ -144,7 +142,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                 <td className="crm-td">
                                                     <div className="flex items-center gap-2 text-sm text-slate-600 font-medium">
                                                         <Building className="w-4 h-4 text-slate-300" />
-                                                        {(typeof user.department === 'object' ? user.department?.name : user.department) || "—"}
+                                                        {(typeof user.department === 'object' ? user.department?.name : user.department) ||"—"}
                                                     </div>
                                                 </td>
                                                 <td className="crm-td crm-td-actions" onClick={(e) => e.stopPropagation()}>
@@ -154,9 +152,8 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                                             size="icon"
                                                             onClick={() => actions.setImpersonateUserConfirm(user)}
                                                             disabled={state.isImpersonatingLoading === user.id}
-                                                            className={cn(
-                                                                "p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all h-auto w-auto",
-                                                                state.isImpersonatingLoading === user.id && "animate-pulse"
+                                                            className={cn("p-2 text-slate-400 hover:text-amber-600 hover:bg-white rounded-[18px] transition-all h-auto w-auto",
+                                                                state.isImpersonatingLoading === user.id &&"animate-pulse"
                                                             )}
                                                             title="Войти как пользователь"
                                                         >
@@ -205,9 +202,8 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                     return (
                         <div role="button" tabIndex={0}
                             key={user.id}
-                            className={cn(
-                                "bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 active:scale-[0.98] transition-all",
-                                isSelected ? "crm-tr-selected" : ""
+                            className={cn("bg-white p-4 rounded-2xl border border-slate-200 shadow-sm space-y-3 active:scale-[0.98] transition-all",
+                                isSelected ?"crm-tr-selected" :""
                             )}
                             onKeyDown={(e) => handleA11yKeyDown(e, () => actions.setEditingUser(user))}
                             onClick={() => actions.setEditingUser(user)}
@@ -216,13 +212,13 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                                 <div className="flex items-center gap-3">
                                     <div
                                         className="h-10 w-10 rounded-xl flex items-center justify-center text-white shadow-sm border border-transparent"
-                                        style={{ backgroundColor: (typeof user.role === 'object' ? user.role?.color : null) || user.department_color || "#94a3b8" }}
+                                        style={{ backgroundColor: (typeof user.role === 'object' ? user.role?.color : null) || user.department_color ||"#94a3b8" }}
                                     >
                                         <UserIcon className="w-5 h-5 text-white" />
                                     </div>
                                     <div>
                                         <div className="text-sm font-bold text-slate-900">{user.name}</div>
-                                        <div className="text-xs font-medium text-slate-400">{(typeof user.role === 'object' ? user.role?.name : user.role) || "Сотрудник"}</div>
+                                        <div className="text-xs font-medium text-slate-400">{(typeof user.role === 'object' ? user.role?.name : user.role) ||"Сотрудник"}</div>
                                     </div>
                                 </div>
                                 <div role="button" tabIndex={0} onKeyDown={(e) => handleA11yKeyDown(e, () => e.stopPropagation())} onClick={(e) => e.stopPropagation()}>
@@ -258,7 +254,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                             <div className="flex items-center justify-between pt-2 border-t border-slate-50">
                                 <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
                                     <Building className="w-3.5 h-3.5 opacity-50" />
-                                    {(typeof user.department === 'object' ? user.department?.name : user.department) || "Нет отдела"}
+                                    {(typeof user.department === 'object' ? user.department?.name : user.department) ||"Нет отдела"}
                                 </div>
                                 <div role="button" tabIndex={0} onKeyDown={(e) => handleA11yKeyDown(e, () => e.stopPropagation())} onClick={(e) => e.stopPropagation()}>
                                     <input
@@ -320,11 +316,11 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                     actions.setIsImpersonatingLoading(userId);
                     const res = await impersonateUser(userId);
                     if (res.success) {
-                        toast(`Вы вошли как ${state.impersonateUserConfirm.name}`, "success");
+                        toast(`Вы вошли как ${state.impersonateUserConfirm.name}`,"success");
                         playSound("notification_success");
-                        window.location.href = "/dashboard";
+                        window.location.href ="/dashboard";
                     } else {
-                        toast(res.error || "Ошибка", "destructive");
+                        toast(res.error ||"Ошибка","destructive");
                         playSound("notification_error");
                         actions.setIsImpersonatingLoading(null);
                     }

@@ -1,19 +1,19 @@
-import * as React from "react";
+import * as React from"react";
 
 export type PriceLineType =
-    | "base"           // Базовая стоимость
-    | "blank"          // Бланк (товар)
-    | "print"          // Нанесение
-    | "embroidery"     // Вышивка
-    | "engraving"      // Гравировка
-    | "discount"       // Скидка
-    | "markup"         // Наценка
-    | "shipping"       // Доставка
-    | "packaging"      // Упаковка
-    | "service"        // Услуга
-    | "subtotal"       // Промежуточный итог
-    | "total"          // Итого
-    | "custom";        // Кастомная строка
+    |"base"           // Базовая стоимость
+    |"blank"          // Бланк (товар)
+    |"print"          // Нанесение
+    |"embroidery"     // Вышивка
+    |"engraving"      // Гравировка
+    |"discount"       // Скидка
+    |"markup"         // Наценка
+    |"shipping"       // Доставка
+    |"packaging"      // Упаковка
+    |"service"        // Услуга
+    |"subtotal"       // Промежуточный итог
+    |"total"          // Итого
+    |"custom";        // Кастомная строка
 
 export interface PriceLine {
     id: string;
@@ -81,7 +81,7 @@ export interface ProductPriceCalculatorProps {
         colors?: number;
         positions?: number;
     }>;
-    discount?: { type: "percent" | "fixed"; value: number; label?: string };
+    discount?: { type:"percent" |"fixed"; value: number; label?: string };
     shipping?: number;
     currency?: string;
     onQuantityChange?: (quantity: number) => void;
@@ -98,7 +98,7 @@ export interface PriceComparisonProps {
 }
 
 export interface PrintDetailsProps {
-    method: "screen" | "digital" | "embroidery" | "engraving" | "transfer" | "sublimation";
+    method:"screen" |"digital" |"embroidery" |"engraving" |"transfer" |"sublimation";
     colors?: number;
     positions?: number;
     size?: { width: number; height: number };

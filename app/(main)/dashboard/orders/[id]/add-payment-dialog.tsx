@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { PlusCircle, Loader2 } from "lucide-react";
-import { addPayment } from "../actions/financials.actions";;
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { useBranding } from "@/components/branding-provider";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { useState } from"react";
+import { PlusCircle, Loader2 } from"lucide-react";
+import { addPayment } from"../actions/financials.actions";;
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { useBranding } from"@/components/branding-provider";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Checkbox } from"@/components/ui/checkbox";
+import { cn } from"@/lib/utils";
 
 interface AddPaymentDialogProps {
     orderId: string;
@@ -21,7 +21,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
     const { currencySymbol } = useBranding();
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [amount, setAmount] = useState<string>(remainingAmount > 0 ? String(remainingAmount) : "");
+    const [amount, setAmount] = useState<string>(remainingAmount > 0 ? String(remainingAmount) :"");
     const [method, setMethod] = useState<string>("cash");
     const [isAdvance, setIsAdvance] = useState(false);
     const [comment, setComment] = useState("");
@@ -37,17 +37,17 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
         try {
             const res = await addPayment(orderId, Number(amount), method, isAdvance, comment);
             if (res.success) {
-                toast("Оплата добавлена", "success");
+                toast("Оплата добавлена","success");
                 playSound("payment_received");
                 setIsOpen(false);
                 setAmount("");
                 setComment("");
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Ошибка соединения", "error");
+            toast("Ошибка соединения","error");
         } finally {
             setLoading(false);
         }
@@ -90,21 +90,20 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
                         <label className="text-xs font-bold text-slate-700 ml-1">Способ оплаты</label>
                         <div className="grid grid-cols-2 gap-2">
                             {[
-                                { id: "cash", label: "Наличные" },
-                                { id: "bank", label: "Карта/Банк" },
-                                { id: "online", label: "Онлайн" },
-                                { id: "account", label: "Р/С" },
+                                { id:"cash", label:"Наличные" },
+                                { id:"bank", label:"Карта/Банк" },
+                                { id:"online", label:"Онлайн" },
+                                { id:"account", label:"Р/С" },
                             ].map((m) => (
                                 <Button
                                     key={m.id}
                                     type="button"
                                     variant="ghost"
                                     onClick={() => setMethod(m.id)}
-                                    className={cn(
-                                        "py-2.5 rounded-[12px] text-xs font-bold transition-all border h-auto",
+                                    className={cn("py-2.5 rounded-[12px] text-xs font-bold transition-all border h-auto",
                                         method === m.id
-                                            ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm hover:bg-emerald-100"
-                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                            ?"bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm hover:bg-emerald-100"
+                                            :"bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                                     )}
                                 >
                                     {m.label}
@@ -139,7 +138,7 @@ export function AddPaymentDialog({ orderId, remainingAmount }: AddPaymentDialogP
                             className="w-full py-6 rounded-[14px] bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl shadow-emerald-200 transition-all active:scale-[0.98] disabled:opacity-70 disabled:active:scale-100 flex items-center justify-center gap-2"
                         >
                             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                            {isAdvance ? "Внести аванс" : "Внести оплату"}
+                            {isAdvance ?"Внести аванс" :"Внести оплату"}
                         </Button>
                     </div>
                 </form>

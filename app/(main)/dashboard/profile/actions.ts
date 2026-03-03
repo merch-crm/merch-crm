@@ -1,21 +1,21 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { users, orders, tasks, auditLogs, clients } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { comparePassword, hashPassword } from "@/lib/password";
-import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { db } from"@/lib/db";
+import { users, orders, tasks, auditLogs, clients } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { comparePassword, hashPassword } from"@/lib/password";
+import { eq, count, sum, desc, and, gte, lte, sql } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { cookies } from"next/headers";
 
-import { startOfMonth, endOfMonth } from "date-fns";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { saveAvatarFile } from "@/lib/avatar-storage";
-import { z } from "zod";
+import { startOfMonth, endOfMonth } from"date-fns";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { saveAvatarFile } from"@/lib/avatar-storage";
+import { z } from"zod";
 
 const ProfileSchema = z.object({
-    name: z.string().min(1, "Имя обязательно"),
+    name: z.string().min(1,"Имя обязательно"),
     phone: z.string().optional().nullable(),
     telegram: z.string().optional().nullable(),
     instagram: z.string().optional().nullable(),
@@ -24,11 +24,11 @@ const ProfileSchema = z.object({
 });
 
 const PasswordSchema = z.object({
-    currentPassword: z.string().min(1, "Введите текущий пароль"),
-    newPassword: z.string().min(6, "Новый пароль должен быть не менее 6 символов"),
-    confirmPassword: z.string().min(1, "Подтвердите новый пароль"),
+    currentPassword: z.string().min(1,"Введите текущий пароль"),
+    newPassword: z.string().min(6,"Новый пароль должен быть не менее 6 символов"),
+    confirmPassword: z.string().min(1,"Подтвердите новый пароль"),
 }).refine(data => data.newPassword === data.confirmPassword, {
-    message: "Пароли не совпадают",
+    message:"Пароли не совпадают",
     path: ["confirmPassword"]
 });
 
@@ -43,7 +43,7 @@ export async function logout() {
 
 export async function getUserProfile() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const user = await db.query.users.findFirst({
@@ -54,7 +54,7 @@ export async function getUserProfile() {
             }
         });
 
-        if (!user) return { success: false, error: "пользователь not found" };
+        if (!user) return { success: false, error:"пользователь not found" };
 
 
 
@@ -62,11 +62,11 @@ export async function getUserProfile() {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "getUserProfile"
+            path:"/dashboard/profile",
+            method:"getUserProfile"
         });
         console.error("Error fetching profile:", error);
-        return { success: false, error: "Не удалось загрузить profile" };
+        return { success: false, error:"Не удалось загрузить profile" };
     }
 }
 
@@ -74,7 +74,7 @@ export async function getUserProfile() {
 
 export async function updateProfile(formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const rawData = {
         name: formData.get("name"),
@@ -87,7 +87,7 @@ export async function updateProfile(formData: FormData) {
 
     const validated = ProfileSchema.safeParse(rawData);
     if (!validated.success) {
-        return { success: false, error: "Некорректные данные: " + validated.error.issues[0].message };
+        return { success: false, error:"Некорректные данные:" + validated.error.issues[0].message };
     }
 
     const { name, phone, telegram, instagram, socialMax, birthday } = validated.data;
@@ -111,7 +111,7 @@ export async function updateProfile(formData: FormData) {
             });
 
             const buffer = Buffer.from(await avatarFile.arrayBuffer());
-            const displayName = name || session.name || "user";
+            const displayName = name || session.name ||"user";
             updateData.avatar = await saveAvatarFile(buffer, session.id, displayName, currentUser?.avatar || null);
         }
 
@@ -120,29 +120,29 @@ export async function updateProfile(formData: FormData) {
                 .set(updateData)
                 .where(eq(users.id, session.id));
 
-            await logAction("profile_update", "users", session.id, {
+            await logAction("profile_update","users", session.id, {
                 changedFields: Object.keys(updateData).filter(k => k !== 'avatar')
             }, tx);
         });
 
         revalidatePath("/dashboard/profile");
-        revalidatePath("/", "layout");
+        revalidatePath("/","layout");
 
         return { success: true };
     } catch (error: unknown) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "updateProfile",
+            path:"/dashboard/profile",
+            method:"updateProfile",
             details: { name, phone }
         });
-        return { success: false, error: "Не удалось обновить профиль" };
+        return { success: false, error:"Не удалось обновить профиль" };
     }
 }
 
 export async function updatePassword(formData: FormData) {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const rawData = Object.fromEntries(formData);
     const validated = PasswordSchema.safeParse(rawData);
@@ -157,10 +157,10 @@ export async function updatePassword(formData: FormData) {
             where: eq(users.id, session.id)
         });
 
-        if (!user) return { success: false, error: "Пользователь не найден" };
+        if (!user) return { success: false, error:"Пользователь не найден" };
 
         const isMatch = await comparePassword(currentPassword, user.passwordHash);
-        if (!isMatch) return { success: false, error: "Текущий пароль указан неверно" };
+        if (!isMatch) return { success: false, error:"Текущий пароль указан неверно" };
 
         const newHash = await hashPassword(newPassword);
         await db.transaction(async (tx) => {
@@ -168,23 +168,23 @@ export async function updatePassword(formData: FormData) {
                 .set({ passwordHash: newHash })
                 .where(eq(users.id, session.id));
 
-            await logAction("password_change", "users", session.id, undefined, tx);
+            await logAction("password_change","users", session.id, undefined, tx);
         });
 
         return { success: true };
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "updatePassword"
+            path:"/dashboard/profile",
+            method:"updatePassword"
         });
-        return { success: false, error: "Не удалось обновить пароль" };
+        return { success: false, error:"Не удалось обновить пароль" };
     }
 }
 
 export async function getUserStatistics() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const now = new Date();
@@ -222,7 +222,7 @@ export async function getUserStatistics() {
             .limit(20);
 
         const totalTasks = userTasksCount.reduce((acc, curr) => acc + Number(curr.count), 0);
-        const completedTasks = Number(userTasksCount.find(t => t.status === "done")?.count || 0);
+        const completedTasks = Number(userTasksCount.find(t => t.status ==="done")?.count || 0);
         const efficiency = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
         // 3. Activity stats
@@ -246,11 +246,11 @@ export async function getUserStatistics() {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "getUserStatistics"
+            path:"/dashboard/profile",
+            method:"getUserStatistics"
         });
         console.error("Error fetching user statistics:", error);
-        return { success: false, error: "Не удалось загрузить статистика" };
+        return { success: false, error:"Не удалось загрузить статистика" };
     }
 }
 
@@ -276,10 +276,10 @@ export async function getUpcomingBirthdays() {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "getUpcomingBirthdays"
+            path:"/dashboard/profile",
+            method:"getUpcomingBirthdays"
         });
-        return { success: false, error: "Не удалось загрузить дни рождения", data: [] };
+        return { success: false, error:"Не удалось загрузить дни рождения", data: [] };
     }
 }
 
@@ -302,16 +302,16 @@ export async function getLostClientsCount() {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "getLostClientsCount"
+            path:"/dashboard/profile",
+            method:"getLostClientsCount"
         });
-        return { success: false, error: "Не удалось загрузить количество потерянных клиентов", data: 0 };
+        return { success: false, error:"Не удалось загрузить количество потерянных клиентов", data: 0 };
     }
 }
 
 export async function getUserSchedule() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const userTasks = await db.query.tasks.findMany({
@@ -324,11 +324,11 @@ export async function getUserSchedule() {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "getUserSchedule"
+            path:"/dashboard/profile",
+            method:"getUserSchedule"
         });
         console.error("Error fetching user schedule:", error);
-        return { success: false, error: "Не удалось загрузить schedule" };
+        return { success: false, error:"Не удалось загрузить schedule" };
     }
 }
 
@@ -336,7 +336,7 @@ export async function getUserSchedule() {
 
 export async function getUserActivities() {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const logs = await db.select()
@@ -349,10 +349,10 @@ export async function getUserActivities() {
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/profile",
-            method: "getUserActivities"
+            path:"/dashboard/profile",
+            method:"getUserActivities"
         });
         console.error("Error fetching user activities:", error);
-        return { success: false, error: "Не удалось загрузить activities" };
+        return { success: false, error:"Не удалось загрузить activities" };
     }
 }

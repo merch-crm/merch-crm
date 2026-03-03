@@ -1,1 +1,1 @@
-export * from "./task-details/index";
+export * from"./task-details/index";

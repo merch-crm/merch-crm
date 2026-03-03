@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
-import { createDepartment } from "../../actions/departments.actions";
-import { getRoles } from "../../actions/roles.actions";
+import { useState, useEffect, useCallback } from"react";
+import { createDepartment } from"../../actions/departments.actions";
+import { getRoles } from"../../actions/roles.actions";
 
 export interface Role {
     id: string;
@@ -16,7 +16,7 @@ export function useAddDepartment(onSuccess: () => void) {
         loading: false,
         fetchingRoles: false,
         error: null as string | null,
-        selectedColor: "indigo",
+        selectedColor:"indigo",
         roles: [] as Role[],
         selectedRoleIds: [] as string[],
     });

@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React from"react";
+import { ChevronLeft, ChevronRight } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { usePathname, useRouter, useSearchParams } from"next/navigation";
 
 
 interface PaginationProps {
@@ -14,7 +14,7 @@ interface PaginationProps {
     className?: string;
     itemName?: string;
     itemNames?: [string, string, string];
-    variant?: "default" | "light";
+    variant?:"default" |"light";
 }
 
 export function Pagination({
@@ -23,7 +23,7 @@ export function Pagination({
     pageSize,
     onPageChange,
     className,
-    itemName = "позиций",
+    itemName ="позиций",
     itemNames,
 }: PaginationProps) {
     const router = useRouter();
@@ -61,7 +61,7 @@ export function Pagination({
         const windowEnd = Math.min(totalPages - 1, currentPage + 1);
 
         // Add ellipsis before window if window starts after page 2
-        // This covers the case "When on page 4, hide page 2" (window starts at 3, gap 2 hidden)
+        // This covers the case"When on page 4, hide page 2" (window starts at 3, gap 2 hidden)
         if (windowStart > 2) {
             pages.push("...");
         } else if (windowStart === 2) {
@@ -87,7 +87,7 @@ export function Pagination({
         return pages;
     };
 
-    // For the "X out of Y" part, we need genitive case: "из 1 позиции", "из 5 позиций"
+    // For the"X out of Y" part, we need genitive case:"из 1 позиции","из 5 позиций"
     // In our [one, few, many] array, 'few' is usually Genitive Singular and 'many' is Genitive Plural
     const genitiveItemName = itemNames
         ? (totalItems % 10 === 1 && totalItems % 100 !== 11 ? itemNames[1] : itemNames[2])
@@ -120,8 +120,8 @@ export function Pagination({
                                 onClick={() => typeof page === 'number' ? handlePageChange(page) : undefined}
                                 disabled={typeof page !== 'number'}
                                 className={cn(
-                                    page === "..." ? "pagination-ellipsis" : "pagination-item",
-                                    page === currentPage && "active"
+                                    page ==="..." ?"pagination-ellipsis" :"pagination-item",
+                                    page === currentPage &&"active"
                                 )}
                             >
                                 {page}

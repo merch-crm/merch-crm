@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-import { ClipboardList, Printer } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
-import { ItemHistorySection } from "./ItemHistorySection";
+import React from"react";
+import { ClipboardList, Printer } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
+import { ItemHistorySection } from"./ItemHistorySection";
 
 interface ItemHistoryWrapperProps {
     history: ItemHistoryTransaction[];
@@ -19,11 +19,8 @@ export function ItemHistoryWrapper({
     tabletTab
 }: ItemHistoryWrapperProps) {
     return (
-        <div className={cn(
-            "crm-card rounded-3xl p-4 sm:p-6 space-y-3",
-            "md:col-span-2 xl:col-span-12",
-            tabletTab === 'history' ? "block" : "hidden",
-            "xl:block"
+        <div className={cn("crm-card rounded-3xl p-4 sm:p-6 space-y-3","md:col-span-2 xl:col-span-12",
+            tabletTab === 'history' ?"block" :"hidden","xl:block"
         )}>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-8">
                 <div className="flex items-center gap-3">

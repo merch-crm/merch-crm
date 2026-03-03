@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
+import { useEffect, useState, useMemo } from"react";
+import Link from"next/link";
 import {
     Users,
     Plus,
@@ -15,18 +15,18 @@ import {
     LayoutGrid,
     Clock,
     CalendarDays
-} from "lucide-react";
-import { Rouble } from "@/components/ui/icons";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { Rouble } from"@/components/ui/icons";
+import { cn } from"@/lib/utils";
 
-import { useBranding } from "@/components/branding-provider";
-import { Button } from "@/components/ui/button";
-import { ModernStatCard } from "@/components/ui/stat-card";
+import { useBranding } from"@/components/branding-provider";
+import { Button } from"@/components/ui/button";
+import { ModernStatCard } from"@/components/ui/stat-card";
 
-import { getDashboardStatsByPeriod, getDashboardNotifications } from "./actions";
-import type { Notification, BrandingSettings } from "@/lib/types";
-import { formatDistanceToNow } from "date-fns";
-import { ru } from "date-fns/locale";
+import { getDashboardStatsByPeriod, getDashboardNotifications } from"./actions";
+import type { Notification, BrandingSettings } from"@/lib/types";
+import { formatDistanceToNow } from"date-fns";
+import { ru } from"date-fns/locale";
 
 interface DashboardStats {
     totalClients: number;
@@ -92,40 +92,40 @@ export function DashboardClient({ initialStats, period, userName, branding: init
     }, [period]);
 
     const formattedTime = useMemo(() => {
-        if (!isMounted || !time) return "--:--";
+        if (!isMounted || !time) return"--:--";
         return time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
     }, [isMounted, time]);
 
     const formattedDate = useMemo(() => {
-        if (!isMounted || !time) return "...";
+        if (!isMounted || !time) return"...";
         return time.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
     }, [isMounted, time]);
 
     const primaryAction = {
-        name: "Новый заказ",
+        name:"Новый заказ",
         icon: Plus,
-        color: "bg-primary",
-        href: "/dashboard/orders",
+        color:"bg-primary",
+        href:"/dashboard/orders",
     };
 
     const actions = [
         {
-            name: "Добавить клиента",
+            name:"Добавить клиента",
             icon: UserPlus,
-            color: "bg-primary",
-            href: "/dashboard/clients",
+            color:"bg-primary",
+            href:"/dashboard/clients",
         },
         {
-            name: "Загрузить дизайн",
+            name:"Загрузить дизайн",
             icon: UploadCloud,
-            color: "bg-violet-500",
-            href: "/dashboard/design",
+            color:"bg-violet-500",
+            href:"/dashboard/design",
         },
         {
-            name: "Склад",
+            name:"Склад",
             icon: Package,
-            color: "bg-amber-500",
-            href: "/dashboard/warehouse",
+            color:"bg-amber-500",
+            href:"/dashboard/warehouse",
         },
     ];
 
@@ -140,7 +140,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         <LayoutGrid className="h-4 w-4" />
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight ">Главная</h1>
+                        <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight">Главная</h1>
                     </div>
                 </div>
 
@@ -176,7 +176,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                             <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-6">
                                 {initialBranding?.dashboardWelcome?.includes('%name%')
                                     ? initialBranding.dashboardWelcome.replace('%name%', userName.split(' ')[0])
-                                    : (initialBranding?.dashboardWelcome || "Привет") + `, `} <span className="text-primary">{userName.split(' ')[0]}</span>
+                                    : (initialBranding?.dashboardWelcome ||"Привет") + `, `} <span className="text-primary">{userName.split(' ')[0]}</span>
                             </h2>
                         </div>
 
@@ -232,14 +232,14 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         icon={Users}
                         value={statsData?.totalClients ?? 0}
                         label="Всего клиентов"
-                        badge={{ text: "+12%", variant: "success" }}
+                        badge={{ text:"+12%", variant:"success" }}
                     />
 
                     <ModernStatCard
                         icon={ShoppingBag}
                         value={statsData?.totalOrders ?? 0}
                         label="Заказов в работе"
-                        badge={{ text: `${statsData?.inProduction ?? 0} в работе`, variant: "primary" }}
+                        badge={{ text: `${statsData?.inProduction ?? 0} в работе`, variant:"primary" }}
                     />
 
                     <ModernStatCard
@@ -247,7 +247,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         value={statsData?.averageCheck.replace(' ' + currencySymbol, '')}
                         suffix={currencySymbol}
                         label="Средний чек"
-                        badge={{ text: "-2.4%", variant: "error" }}
+                        badge={{ text:"-2.4%", variant:"error" }}
                         colorScheme="rose"
                     />
                 </div>
@@ -272,8 +272,8 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                     {actions.map((action) => (
                         <Link key={action.name} href={action.href} className="group">
                             <div className="crm-card h-full flex flex-col items-center justify-center gap-3">
-                                <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center transition-all", action.color === "bg-primary" ? "bg-primary/10" : action.color.replace('bg-', 'bg-').replace('500', '50'))}>
-                                    <action.icon className={cn("h-7 w-7", action.color === "bg-primary" ? "text-primary" : action.color.replace('bg-', 'text-').replace('500', '600'))} />
+                                <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center transition-all", action.color ==="bg-primary" ?"bg-primary/10" : action.color.replace('bg-', 'bg-').replace('500', '50'))}>
+                                    <action.icon className={cn("h-7 w-7", action.color ==="bg-primary" ?"text-primary" : action.color.replace('bg-', 'text-').replace('500', '600'))} />
                                 </div>
                                 <span className="font-bold text-slate-700 group-hover:text-primary transition-colors">{action.name}</span>
                             </div>
@@ -314,12 +314,10 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                             notifications.map((note) => (
                                 <div key={note.id} className="flex items-center justify-between px-[var(--radius-padding)] py-4 bg-transparent hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0">
                                     <div className="flex items-center gap-3">
-                                        <div className={cn(
-                                            "w-2 h-2 rounded-full ring-4 shrink-0",
-                                            note.type === "success" ? "bg-emerald-500 ring-emerald-500/10" :
-                                                note.type === "info" ? "bg-sky-500 ring-sky-500/10" :
-                                                    note.type === "warning" ? "bg-amber-500 ring-amber-500/10" :
-                                                        "bg-rose-500 ring-rose-500/10"
+                                        <div className={cn("w-2 h-2 rounded-full ring-4 shrink-0",
+                                            note.type ==="success" ?"bg-emerald-500 ring-emerald-500/10" :
+                                                note.type ==="info" ?"bg-sky-500 ring-sky-500/10" :
+                                                    note.type ==="warning" ?"bg-amber-500 ring-amber-500/10" :"bg-rose-500 ring-rose-500/10"
                                         )} />
                                         <div>
                                             <span className="text-sm font-bold text-slate-700 block">{note.title}</span>

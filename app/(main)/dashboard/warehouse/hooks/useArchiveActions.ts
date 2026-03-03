@@ -1,16 +1,16 @@
-import { useState, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { restoreInventoryItems, deleteInventoryItems } from "../bulk-actions";;
-import { pluralize } from "@/lib/pluralize";
+import { useState, useCallback } from"react";
+import { useRouter, useSearchParams } from"next/navigation";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { restoreInventoryItems, deleteInventoryItems } from"../bulk-actions";;
+import { pluralize } from"@/lib/pluralize";
 
 export function useArchiveActions() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { toast } = useToast();
 
-    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
+    const [searchQuery, setSearchQuery] = useState(searchParams.get("search") ||"");
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [isRestoring, setIsRestoring] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -29,14 +29,14 @@ export function useArchiveActions() {
     const handleRestore = async (ids: string[]) => {
         setIsRestoring(true);
         try {
-            const res = await restoreInventoryItems(ids, "Восстановление из архива");
+            const res = await restoreInventoryItems(ids,"Восстановление из архива");
             if (res.success) {
-                toast(`Восстановлено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                toast(`Восстановлено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`,"success");
                 playSound("notification_success");
                 setSelectedIds([]);
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка при восстановлении", "error");
+                toast(res.error ||"Ошибка при восстановлении","error");
                 playSound("notification_error");
             }
         } finally {
@@ -46,21 +46,21 @@ export function useArchiveActions() {
 
     const handleDelete = async (ids: string[]) => {
         if (!password) {
-            toast("Введите пароль для удаления", "error");
+            toast("Введите пароль для удаления","error");
             return;
         }
         setIsDeleting(true);
         try {
             const res = await deleteInventoryItems(ids);
             if (res.success) {
-                toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`, "success");
+                toast(`Удалено: ${ids.length} ${pluralize(ids.length, 'позиция', 'позиции', 'позиций')}`,"success");
                 playSound("client_deleted");
                 setSelectedIds([]);
                 setIdsToDelete([]);
                 setPassword("");
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка при удалении", "error");
+                toast(res.error ||"Ошибка при удалении","error");
                 playSound("notification_error");
             }
         } finally {

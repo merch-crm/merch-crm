@@ -1,11 +1,11 @@
-import { Images } from "lucide-react";
-import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { StepFooter } from "./step-footer";
-import { useMediaLogic } from "../hooks/useMediaLogic";
-import { MainPhotoUploader } from "./main-photo-uploader";
-import { ImageThumbControls } from "./image-thumb-controls";
-import { CompactDropzone } from "./compact-dropzone";
-import { AdditionalPhotos } from "./additional-photos";
+import { Images } from"lucide-react";
+import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { StepFooter } from"./step-footer";
+import { useMediaLogic } from"../hooks/useMediaLogic";
+import { MainPhotoUploader } from"./main-photo-uploader";
+import { ImageThumbControls } from"./image-thumb-controls";
+import { CompactDropzone } from"./compact-dropzone";
+import { AdditionalPhotos } from"./additional-photos";
 
 interface MediaStepProps {
     formData: ItemFormData;
@@ -53,7 +53,7 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                             <Images className="w-6 h-6 text-white" aria-label="Images" />
                         </div>
                         <div className="flex-1">
-                            <h2 className="text-xl font-bold text-slate-900 ">Галерея фотографий</h2>
+                            <h2 className="text-xl font-bold text-slate-900">Галерея фотографий</h2>
                             <p className="text-xs text-slate-700 font-bold opacity-60">Визуализация карточки товара</p>
                         </div>
 
@@ -151,8 +151,8 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                     onBack={onBack}
                     onNext={onNext}
                     isNextDisabled={!isMinimumRequiredMet || isProcessing}
-                    validationError={!isMinimumRequiredMet ? "Загрузите обязательно 3 главных ракурса" : undefined}
-                    hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 3 ? "Вы можете добавить еще 3 дополнительных ракурса" : undefined}
+                    validationError={!isMinimumRequiredMet ?"Загрузите обязательно 3 главных ракурса" : undefined}
+                    hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 3 ?"Вы можете добавить еще 3 дополнительных ракурса" : undefined}
                 />
             </div>
         </div>

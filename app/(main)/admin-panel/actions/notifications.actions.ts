@@ -1,13 +1,13 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { systemSettings } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { logAction } from "@/lib/audit";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { NotificationSettingsSchema } from "../validation";
+import { db } from"@/lib/db";
+import { systemSettings } from"@/lib/schema";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { logAction } from"@/lib/audit";
+import { eq } from"drizzle-orm";
+import { revalidatePath } from"next/cache";
+import { NotificationSettingsSchema } from"../validation";
 
 export interface NotificationSettings {
     system: {
@@ -36,7 +36,7 @@ export interface NotificationSettings {
 export async function getNotificationSettingsAction() {
     try {
         const setting = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key, "notifications")
+            where: eq(systemSettings.key,"notifications")
         });
 
         const defaultSettings: NotificationSettings = {
@@ -46,8 +46,8 @@ export async function getNotificationSettingsAction() {
             },
             telegram: {
                 enabled: false,
-                botToken: "",
-                chatId: "",
+                botToken:"",
+                chatId:"",
                 notifyOnNewOrder: true,
                 notifyOnLowStock: true,
                 notifyOnSystemError: true
@@ -67,7 +67,7 @@ export async function getNotificationSettingsAction() {
         if (!setting) return { success: true, data: defaultSettings };
         return { success: true, data: { ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) } };
     } catch {
-        return { success: true, data: null, error: "Не удалось загрузить настройки уведомлений" };
+        return { success: true, data: null, error:"Не удалось загрузить настройки уведомлений" };
     }
 }
 
@@ -82,16 +82,16 @@ export async function updateNotificationSettingsAction(data: NotificationSetting
 
         const validData = validated.data;
         await db.insert(systemSettings)
-            .values({ key: "notifications", value: validData, updatedAt: new Date() })
+            .values({ key:"notifications", value: validData, updatedAt: new Date() })
             .onConflictDoUpdate({
                 target: systemSettings.key,
                 set: { value: validData, updatedAt: new Date() }
             });
 
         revalidatePath("/admin-panel/notifications");
-        await logAction("Изменение настроек уведомлений", "system", "notifications", data as unknown as Record<string, unknown>);
+        await logAction("Изменение настроек уведомлений","system","notifications", data as unknown as Record<string, unknown>);
         return { success: true };
     } catch {
-        return { success: false, error: "Не удалось обновить настройки уведомлений" };
+        return { success: false, error:"Не удалось обновить настройки уведомлений" };
     }
 }

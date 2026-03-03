@@ -18,11 +18,12 @@ export async function getDailyReport(date: string) {
 
         // Получаем статистику за день
         const stats = await db.query.dailyWorkStats.findMany({
+        limit: 500,
             where: eq(dailyWorkStats.date, targetDate)
         })
 
         // Получаем настройки для определения опозданий
-        const settings = await db.query.presenceSettings.findMany()
+        const settings = await db.query.presenceSettings.findMany({ limit: 500 })
         const settingsMap = settings.reduce((acc, s) => {
             acc[s.key] = s.value as string | number | boolean
             return acc
@@ -108,6 +109,7 @@ export async function getWeeklyReport(date: string) {
 
         // Получаем статистику за неделю
         const stats = await db.query.dailyWorkStats.findMany({
+        limit: 500,
             where: and(
                 gte(dailyWorkStats.date, startOfWeek),
                 lte(dailyWorkStats.date, endOfWeek)
@@ -234,6 +236,7 @@ export async function getMonthlyReport(year: number, month: number) {
 
         // Получаем статистику за месяц
         const stats = await db.query.dailyWorkStats.findMany({
+        limit: 500,
             where: and(
                 gte(dailyWorkStats.date, startOfMonth),
                 lte(dailyWorkStats.date, endOfMonth)

@@ -1,8 +1,8 @@
 "use server";
 
-import { eq, sql, and, inArray } from "drizzle-orm";
-import * as schema from "@/lib/schema";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { eq, sql, and, inArray } from"drizzle-orm";
+import * as schema from"@/lib/schema";
+import { NodePgDatabase } from"drizzle-orm/node-postgres";
 
 const { orders, orderItems, inventoryItems } = schema;
 
@@ -12,7 +12,7 @@ export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<
 export async function releaseReservationsForOrders(orderIds: string[], tx: Transaction) {
     if (orderIds.length === 0) return;
 
-    const reservationStatuses = ["new", "design", "production"] as const;
+    const reservationStatuses = ["new","design","production"] as const;
 
     // Find all orders that have reserved status
     const targetOrders = await tx.query.orders.findMany({

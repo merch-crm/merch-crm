@@ -1,9 +1,9 @@
-import * as React from "react";
-import { motion, AnimatePresence, useDragControls } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { useSheetStack } from "@/components/ui/sheet-stack-context";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import * as React from"react";
+import { motion, AnimatePresence, useDragControls } from"framer-motion";
+import { cn } from"@/lib/utils";
+import { useSheetStack } from"@/components/ui/sheet-stack-context";
+import { X } from"lucide-react";
+import { Button } from"@/components/ui/button";
 
 interface BottomSheetProps {
     isOpen: boolean;
@@ -33,7 +33,7 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
         if (isOpen) {
             registerSheet(sheetId);
             const previousOverflow = document.body.style.overflow;
-            document.body.style.overflow = "hidden";
+            document.body.style.overflow ="hidden";
 
             return () => {
                 unregisterSheet(sheetId);
@@ -98,20 +98,18 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                                 onClose();
                             }
                         }}
-                        initial={{ y: "100%" }}
+                        initial={{ y:"100%" }}
                         animate={{ y: 0 }}
-                        exit={{ y: "100%" }}
+                        exit={{ y:"100%" }}
                         transition={{
-                            type: "spring",
+                            type:"spring",
                             damping: 30,
                             stiffness: 300,
                             mass: 0.8
                         }}
-                        className={cn(
-                            "fixed bottom-0 left-0 right-0 shadow-2xl max-h-[95vh] !w-full !max-w-none flex flex-col overflow-hidden bg-white",
-                            !hasCustomRounding && "rounded-t-[32px]",
-                            className,
-                            "rounded-b-none" // Force flat bottom to avoid gaps
+                        className={cn("fixed bottom-0 left-0 right-0 shadow-2xl max-h-[95vh] !w-full !max-w-none flex flex-col overflow-hidden bg-white",
+                            !hasCustomRounding &&"rounded-t-[32px]",
+                            className,"rounded-b-none" // Force flat bottom to avoid gaps
                         )}
                         style={{
                             zIndex: zIndex + 1,
@@ -129,9 +127,9 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                         {(!hideClose || (title && showVisualTitle)) && (
                             <div className="flex items-center justify-between px-6 pt-2 pb-4 shrink-0 relative">
                                 {/* Left Spacer to balance the close button */}
-                                <div className={cn("w-10 h-10 shrink-0", "invisible")} />
+                                <div className={cn("w-10 h-10 shrink-0","invisible")} />
 
-                                <div className={cn("flex-1 text-center px-2", (!title || !showVisualTitle) && "sr-only")}>
+                                <div className={cn("flex-1 text-center px-2", (!title || !showVisualTitle) &&"sr-only")}>
                                     {title && (
                                         <h2 className="text-xl font-bold text-slate-900 leading-tight">
                                             {title}

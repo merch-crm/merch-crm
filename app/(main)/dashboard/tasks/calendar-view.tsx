@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from "lucide-react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
+import { useState, useEffect } from"react";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon } from"lucide-react";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn } from"@/lib/utils";
 
-import { Task } from "./types";
+import { Task } from"./types";
 
 interface CalendarViewProps {
     tasks: Task[];
@@ -35,18 +35,18 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
 
     const getPriorityColor = (priority: string) => {
         switch (priority) {
-            case "high": return "bg-rose-500";
-            case "normal": return "bg-amber-400";
-            default: return "bg-slate-300";
+            case"high": return"bg-rose-500";
+            case"normal": return"bg-amber-400";
+            default: return"bg-slate-300";
         }
     };
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case "done": return "border-emerald-500";
-            case "in_progress": return "border-primary";
-            case "review": return "border-amber-400";
-            default: return "border-slate-300";
+            case"done": return"border-emerald-500";
+            case"in_progress": return"border-primary";
+            case"review": return"border-amber-400";
+            default: return"border-slate-300";
         }
     };
 
@@ -60,9 +60,9 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                     </div>
                     <div>
                         <h2 className="text-2xl font-bold text-slate-900">
-                            {format(monthToRender, "LLLL yyyy", { locale: ru })}
+                            {format(monthToRender,"LLLL yyyy", { locale: ru })}
                         </h2>
-                        <p className="text-xs font-bold text-slate-400 ">
+                        <p className="text-xs font-bold text-slate-400">
                             Календарь задач
                         </p>
                     </div>
@@ -92,9 +92,9 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
 
             {/* Weekday Headers */}
             <div className="grid grid-cols-7 gap-2 mb-4">
-                {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"].map((day) => (
+                {["Пн","Вт","Ср","Чт","Пт","Сб","Вс"].map((day) => (
                     <div key={day} className="text-center">
-                        <span className="text-xs font-bold text-slate-400 ">
+                        <span className="text-xs font-bold text-slate-400">
                             {day}
                         </span>
                     </div>
@@ -111,18 +111,16 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                     return (
                         <div
                             key={day.toString()}
-                            className={cn(
-                                "min-h-[120px] p-3 rounded-2xl border-2 transition-all",
-                                isCurrentMonth ? "bg-white" : "bg-slate-50/50",
-                                isCurrentDay ? "border-primary shadow-lg shadow-primary/10" : "border-slate-200 hover:border-slate-200"
+                            className={cn("min-h-[120px] p-3 rounded-2xl border-2 transition-all",
+                                isCurrentMonth ?"bg-white" :"bg-slate-50/50",
+                                isCurrentDay ?"border-primary shadow-lg shadow-primary/10" :"border-slate-200 hover:border-slate-200"
                             )}
                         >
                             <div className="flex items-center justify-between mb-2">
-                                <span className={cn(
-                                    "text-sm font-bold",
-                                    isCurrentDay ? "text-primary" : isCurrentMonth ? "text-slate-900" : "text-slate-300"
+                                <span className={cn("text-sm font-bold",
+                                    isCurrentDay ?"text-primary" : isCurrentMonth ?"text-slate-900" :"text-slate-300"
                                 )}>
-                                    {format(day, "d", { locale: ru })}
+                                    {format(day,"d", { locale: ru })}
                                 </span>
                                 {dayTasks.length > 0 && (
                                     <span className="px-1.5 py-0.5 bg-primary/5 text-primary rounded-md text-xs font-bold">
@@ -136,17 +134,15 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                     <button type="button"
                                         key={task.id}
                                         onClick={() => onTaskClick(task)}
-                                        className={cn(
-                                            "w-full text-left p-2 rounded-2xl border-l-4 transition-all hover:shadow-md group",
+                                        className={cn("w-full text-left p-2 rounded-2xl border-l-4 transition-all hover:shadow-md group",
                                             getStatusColor(task.status),
-                                            task.status === "done" ? "bg-slate-50" : "bg-white hover:bg-primary/5"
+                                            task.status ==="done" ?"bg-slate-50" :"bg-white hover:bg-primary/5"
                                         )}
                                     >
                                         <div className="flex items-center gap-1.5 mb-1">
                                             <div className={cn("h-1.5 w-1.5 rounded-full", getPriorityColor(task.priority))} />
-                                            <span className={cn(
-                                                "text-xs font-bold truncate",
-                                                task.status === "done" ? "line-through text-slate-400" : "text-slate-700 group-hover:text-primary"
+                                            <span className={cn("text-xs font-bold truncate",
+                                                task.status ==="done" ?"line-through text-slate-400" :"text-slate-700 group-hover:text-primary"
                                             )}>
                                                 {task.title}
                                             </span>
@@ -154,7 +150,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                                     </button>
                                 ))}
                                 {dayTasks.length > 3 && (
-                                    <div className="text-xs font-bold text-slate-400 text-center ">
+                                    <div className="text-xs font-bold text-slate-400 text-center">
                                         +{dayTasks.length - 3} ещё
                                     </div>
                                 )}

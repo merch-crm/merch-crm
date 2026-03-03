@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Tag, Download, Archive, X, LucideIcon } from "lucide-react";
-import { createPortal } from "react-dom";
-import { Button } from "@/components/ui/button";
-import { exportToCSV } from "@/lib/export-utils";
-import { InventoryItem, StorageLocation } from "@/app/(main)/dashboard/warehouse/types";
+import React from"react";
+import { motion, AnimatePresence } from"framer-motion";
+import { MapPin, Tag, Download, Archive, X, LucideIcon } from"lucide-react";
+import { createPortal } from"react-dom";
+import { Button } from"@/components/ui/button";
+import { exportToCSV } from"@/lib/export-utils";
+import { InventoryItem, StorageLocation } from"@/app/(main)/dashboard/warehouse/types";
 
 interface MassActionsBarProps {
     selectedIds: string[];
@@ -17,7 +17,7 @@ interface MassActionsBarProps {
     onBulkMove: () => void;
     onBulkPrint: () => void;
     onArchive: () => void;
-    toast: (msg: string, type: "success" | "error") => void;
+    toast: (msg: string, type:"success" |"error") => void;
 }
 
 interface ActionBtnProps {
@@ -75,10 +75,10 @@ export const MassActionsBar = React.memo(({
                     />
 
                     <motion.div
-                        initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                        exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                        initial={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, x:"-50%", scale: 1 }}
+                        exit={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                        transition={{ type:"spring", damping: 25, stiffness: 200, mass: 0.8 }}
                         className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-1.5 md:p-2 gap-1.5 md:gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 w-[calc(100%-2rem)] md:w-auto overflow-x-auto no-scrollbar"
                     >
                         <div className="flex items-center gap-2 md:gap-3 pl-1 shrink-0">
@@ -112,30 +112,30 @@ export const MassActionsBar = React.memo(({
                                 ariaLabel="Экспортировать выбранные товары в CSV"
                                 onClick={() => {
                                     const itemsToExport = (items || []).filter(i => selectedIds.includes(i.id));
-                                    exportToCSV(itemsToExport, "inventory_export", [
-                                        { header: "ID", key: "id" },
-                                        { header: "Название", key: "name" },
-                                        { header: "Артикул", key: (item: InventoryItem) => item.sku || "" },
-                                        { header: "Количество", key: "quantity" },
-                                        { header: "Ед.изм", key: "unit" },
-                                        { header: "Категория", key: (item: InventoryItem) => item.category?.name || "" },
+                                    exportToCSV(itemsToExport,"inventory_export", [
+                                        { header:"ID", key:"id" },
+                                        { header:"Название", key:"name" },
+                                        { header:"Артикул", key: (item: InventoryItem) => item.sku ||"" },
+                                        { header:"Количество", key:"quantity" },
+                                        { header:"Ед.изм", key:"unit" },
+                                        { header:"Категория", key: (item: InventoryItem) => item.category?.name ||"" },
                                         {
-                                            header: "Склад", key: (item: InventoryItem) => {
+                                            header:"Склад", key: (item: InventoryItem) => {
                                                 if (item.stocks && item.stocks.length > 0) {
                                                     const stocksStr = item.stocks
                                                         .filter((s: { storageLocationId: string; quantity: number }) => s.quantity > 0)
                                                         .map((s: { storageLocationId: string; quantity: number }) => {
-                                                            const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "Неизвестно";
+                                                            const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name ||"Неизвестно";
                                                             return `${locName} (${s.quantity})`;
                                                         })
-                                                        .join("; ");
+                                                        .join(";");
                                                     if (stocksStr) return stocksStr;
                                                 }
-                                                return "";
+                                                return"";
                                             }
                                         },
-                                        { header: "Себестоимость", key: (item: InventoryItem) => item.costPrice || 0 },
-                                        { header: "Цена продажи", key: (item: InventoryItem) => item.sellingPrice || 0 }
+                                        { header:"Себестоимость", key: (item: InventoryItem) => item.costPrice || 0 },
+                                        { header:"Цена продажи", key: (item: InventoryItem) => item.sellingPrice || 0 }
                                     ]);
                                 }}
                             />
@@ -151,7 +151,7 @@ export const MassActionsBar = React.memo(({
                                     const itemsToArchive = (items || []).filter(i => selectedIds.includes(i.id));
                                     const hasStock = itemsToArchive.some(i => i.quantity > 0);
                                     if (hasStock) {
-                                        toast("Нельзя архивировать товары с остатком > 0", "error");
+                                        toast("Нельзя архивировать товары с остатком > 0","error");
                                         return;
                                     }
                                     onArchive();
@@ -181,4 +181,4 @@ export const MassActionsBar = React.memo(({
     );
 });
 
-MassActionsBar.displayName = "MassActionsBar";
+MassActionsBar.displayName ="MassActionsBar";

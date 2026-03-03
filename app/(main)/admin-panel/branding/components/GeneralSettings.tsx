@@ -1,8 +1,8 @@
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Select, SelectOption } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { BrandingSettings } from "../hooks/useBrandingForm";
+import { Input } from"@/components/ui/input";
+import { Button } from"@/components/ui/button";
+import { Select, SelectOption } from"@/components/ui/select";
+import { cn } from"@/lib/utils";
+import { BrandingSettings } from"../hooks/useBrandingForm";
 
 interface GeneralSettingsProps {
     formData: BrandingSettings;
@@ -11,17 +11,17 @@ interface GeneralSettingsProps {
 
 export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps) {
     const timezoneOptions: SelectOption[] = [
-        { id: "Europe/Kaliningrad", title: "Калининград (UTC+2)" },
-        { id: "Europe/Moscow", title: "Москва (UTC+3)" },
-        { id: "Europe/Samara", title: "Самара (UTC+4)" },
-        { id: "Asia/Yekaterinburg", title: "Екатеринбург (UTC+5)" },
-        { id: "Asia/Omsk", title: "Омск (UTC+6)" },
-        { id: "Asia/Novosibirsk", title: "Новосибирск (UTC+7)" },
-        { id: "Asia/Irkutsk", title: "Иркутск (UTC+8)" },
-        { id: "Asia/Yakutsk", title: "Якутск (UTC+9)" },
-        { id: "Asia/Vladivostok", title: "Владивосток (UTC+10)" },
-        { id: "Asia/Magadan", title: "Магадан (UTC+11)" },
-        { id: "Asia/Kamchatka", title: "Камчатка (UTC+12)" },
+        { id:"Europe/Kaliningrad", title:"Калининград (UTC+2)" },
+        { id:"Europe/Moscow", title:"Москва (UTC+3)" },
+        { id:"Europe/Samara", title:"Самара (UTC+4)" },
+        { id:"Asia/Yekaterinburg", title:"Екатеринбург (UTC+5)" },
+        { id:"Asia/Omsk", title:"Омск (UTC+6)" },
+        { id:"Asia/Novosibirsk", title:"Новосибирск (UTC+7)" },
+        { id:"Asia/Irkutsk", title:"Иркутск (UTC+8)" },
+        { id:"Asia/Yakutsk", title:"Якутск (UTC+9)" },
+        { id:"Asia/Vladivostok", title:"Владивосток (UTC+10)" },
+        { id:"Asia/Magadan", title:"Магадан (UTC+11)" },
+        { id:"Asia/Kamchatka", title:"Камчатка (UTC+12)" },
     ];
 
     return (
@@ -47,7 +47,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                                 Слоган (Slogan)
                             </label>
                             <Input
-                                value={formData.loginSlogan || ""}
+                                value={formData.loginSlogan ||""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, loginSlogan: e.target.value }))}
                                 placeholder="Ваша CRM для управления мерчем"
                                 className="h-11 rounded-xl"
@@ -61,7 +61,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                                 Текст приветствия
                             </label>
                             <Input
-                                value={formData.dashboardWelcome || ""}
+                                value={formData.dashboardWelcome ||""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, dashboardWelcome: e.target.value }))}
                                 placeholder="Добро пожаловать в систему управления"
                                 className="h-11 rounded-xl"
@@ -81,24 +81,23 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                             Валюта системы
                         </label>
                         <div className="flex flex-wrap gap-2">
-                            {["₽", "$", "€", "₴", "₸"].map((sym) => (
+                            {["₽","$","€","₴","₸"].map((sym) => (
                                 <Button
                                     key={sym}
                                     type="button"
                                     variant="outline"
                                     onClick={() => setFormData(prev => ({ ...prev, currencySymbol: sym }))}
-                                    className={cn(
-                                        "w-10 h-10 rounded-xl font-bold text-sm transition-all p-0",
+                                    className={cn("w-10 h-10 rounded-xl font-bold text-sm transition-all p-0",
                                         formData.currencySymbol === sym
-                                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
-                                            : "bg-white text-slate-500 border-slate-200 hover:border-primary/50"
+                                            ?"bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
+                                            :"bg-white text-slate-500 border-slate-200 hover:border-primary/50"
                                     )}
                                 >
                                     {sym}
                                 </Button>
                             ))}
                             <Input
-                                value={formData.currencySymbol || ""}
+                                value={formData.currencySymbol ||""}
                                 onChange={(e) => setFormData(prev => ({ ...prev, currencySymbol: e.target.value }))}
                                 placeholder="Свой..."
                                 className="h-10 w-24 rounded-xl text-center font-bold"
@@ -112,17 +111,16 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                             Формат даты
                         </label>
                         <div className="flex flex-wrap gap-2">
-                            {["DD.MM.YYYY", "YYYY-MM-DD", "MM/DD/YYYY"].map((fmt) => (
+                            {["DD.MM.YYYY","YYYY-MM-DD","MM/DD/YYYY"].map((fmt) => (
                                 <Button
                                     key={fmt}
                                     type="button"
                                     variant="outline"
                                     onClick={() => setFormData(prev => ({ ...prev, dateFormat: fmt }))}
-                                    className={cn(
-                                        "px-3 h-10 rounded-xl font-bold text-[11px] transition-all",
+                                    className={cn("px-3 h-10 rounded-xl font-bold text-[11px] transition-all",
                                         formData.dateFormat === fmt
-                                            ? "bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
-                                            : "bg-white text-slate-500 border-slate-200 hover:border-primary/50"
+                                            ?"bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
+                                            :"bg-white text-slate-500 border-slate-200 hover:border-primary/50"
                                     )}
                                 >
                                     {fmt}
@@ -138,7 +136,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                         </label>
                         <Select
                             options={timezoneOptions}
-                            value={formData.timezone || "Europe/Moscow"}
+                            value={formData.timezone ||"Europe/Moscow"}
                             onChange={(val) => setFormData(prev => ({ ...prev, timezone: val }))}
                             placeholder="Выберите часовой пояс"
                             className="w-full"

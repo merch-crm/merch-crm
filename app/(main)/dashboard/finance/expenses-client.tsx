@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Search, Calendar, FileText } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { useToast } from "@/components/ui/toast";
-import { createExpense, CreateExpenseData } from "./actions";;
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { playSound } from "@/lib/sounds";
-import { useBranding } from "@/components/branding-provider";
-import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { EmptyState } from "@/components/ui/empty-state";
+import { useState } from"react";
+import { Plus, Search, Calendar, FileText } from"lucide-react";
+import { useRouter } from"next/navigation";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { useToast } from"@/components/ui/toast";
+import { createExpense, CreateExpenseData } from"./actions";;
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { playSound } from"@/lib/sounds";
+import { useBranding } from"@/components/branding-provider";
+import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { EmptyState } from"@/components/ui/empty-state";
 
 export interface Expense {
     id: string;
@@ -35,24 +35,24 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
 
     const expenses = initialData || [];
     const filteredExpenses = expenses.filter(e =>
-    ((e.description || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    ((e.description ||"").toLowerCase().includes(searchQuery.toLowerCase()) ||
         e.category.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const categoryLabels: Record<string, string> = {
-        rent: "Аренда",
-        salary: "Зарплата",
-        purchase: "Закупки",
-        tax: "Налоги",
-        other: "Прочее"
+        rent:"Аренда",
+        salary:"Зарплата",
+        purchase:"Закупки",
+        tax:"Налоги",
+        other:"Прочее"
     };
 
     const categoryColors: Record<string, string> = {
-        rent: "bg-blue-50 text-blue-600 border-blue-100",
-        salary: "bg-primary/5 text-primary border-primary/20",
-        purchase: "bg-amber-50 text-amber-600 border-amber-100",
-        tax: "bg-rose-50 text-rose-600 border-rose-100",
-        other: "bg-slate-50 text-slate-600 border-slate-200"
+        rent:"bg-blue-50 text-blue-600 border-blue-100",
+        salary:"bg-primary/5 text-primary border-primary/20",
+        purchase:"bg-amber-50 text-amber-600 border-amber-100",
+        tax:"bg-rose-50 text-rose-600 border-rose-100",
+        other:"bg-slate-50 text-slate-600 border-slate-200"
     };
 
     return (
@@ -106,13 +106,12 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                                     <Calendar className="w-5 h-5" />
                                                 </div>
                                                 <div className="font-bold text-slate-900 text-sm">
-                                                    {format(new Date(expense.date), "d MMM yyyy", { locale: ru })}
+                                                    {format(new Date(expense.date),"d MMM yyyy", { locale: ru })}
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="crm-td">
-                                            <span className={cn(
-                                                "px-2 py-1 rounded-md text-xs font-bold",
+                                            <span className={cn("px-2 py-1 rounded-md text-xs font-bold",
                                                 categoryColors[expense.category] || categoryColors.other
                                             )}>
                                                 {categoryLabels[expense.category]}
@@ -120,7 +119,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                         </td>
                                         <td className="crm-td">
                                             <div className="text-sm font-medium text-slate-600">
-                                                {expense.description || "Без описания"}
+                                                {expense.description ||"Без описания"}
                                             </div>
                                         </td>
                                         <td className="crm-td crm-td-number">
@@ -137,18 +136,17 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                         <div key={expense.id} className="p-4 flex flex-col gap-2 border-b border-slate-100 last:border-none active:bg-slate-50 transition-colors">
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-3">
-                                    <div className={cn(
-                                        "w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border",
+                                    <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border",
                                         categoryColors[expense.category] || categoryColors.other
                                     )}>
                                         <Calendar className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <div className="text-sm font-bold text-slate-900">
-                                            {categoryLabels[expense.category] || "Прочее"}
+                                            {categoryLabels[expense.category] ||"Прочее"}
                                         </div>
                                         <div className="text-xs text-slate-400 font-bold">
-                                            {format(new Date(expense.date), "d MMM yyyy", { locale: ru })}
+                                            {format(new Date(expense.date),"d MMM yyyy", { locale: ru })}
                                         </div>
                                     </div>
                                 </div>
@@ -198,7 +196,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         const amount = parseFloat(formData.get("amount") as string);
 
         if (!amount || amount <= 0) {
-            toast("Сумма должна быть больше нуля", "error");
+            toast("Сумма должна быть больше нуля","error");
             setIsLoading(false);
             return;
         }
@@ -208,15 +206,15 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
         try {
             const res = await createExpense(data);
             if (res.success) {
-                toast("Расход добавлен", "success");
+                toast("Расход добавлен","success");
                 playSound("expense_added");
                 onSuccess();
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Ошибка", "error");
+            toast("Ошибка","error");
             playSound("notification_error");
         } finally {
             setIsLoading(false);
@@ -241,11 +239,11 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
                         <Select
                             name="category"
                             options={[
-                                { id: "purchase", title: "Закупки" },
-                                { id: "rent", title: "Аренда" },
-                                { id: "salary", title: "Зарплата" },
-                                { id: "tax", title: "Налоги" },
-                                { id: "other", title: "Прочее" }
+                                { id:"purchase", title:"Закупки" },
+                                { id:"rent", title:"Аренда" },
+                                { id:"salary", title:"Зарплата" },
+                                { id:"tax", title:"Налоги" },
+                                { id:"other", title:"Прочее" }
                             ]}
                             value={category}
                             onChange={setCategory}

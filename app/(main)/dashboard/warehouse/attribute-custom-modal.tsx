@@ -1,23 +1,23 @@
 "use client";
 
-import React from "react";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { ColorPicker } from "@/components/ui/color-picker";
-import { cn } from "@/lib/utils";
-import type { AttributeType } from "./types";
-import { Plus, Trash2, Shapes, Ruler, Palette, Box, Hash, Layers, Shirt, Maximize, Tag, Globe, Weight, Droplets, Package, Waves, Wrench, type LucideIcon } from "lucide-react";
+import React from"react";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { ColorPicker } from"@/components/ui/color-picker";
+import { cn } from"@/lib/utils";
+import type { AttributeType } from"./types";
+import { Plus, Trash2, Shapes, Ruler, Palette, Box, Hash, Layers, Shirt, Maximize, Tag, Globe, Weight, Droplets, Package, Waves, Wrench, type LucideIcon } from"lucide-react";
 interface CustomForm {
     name: string;
     hex: string;
     l: string;
     w: string;
     h: string;
-    u: "MM" | "CM" | "M";
-    weightUnit: "G" | "KG";
-    volumeUnit: "ML" | "L";
+    u:"MM" |"CM" |"M";
+    weightUnit:"G" |"KG";
+    volumeUnit:"ML" |"L";
     quantityUnit: string;
     composition: { name: string; percent: string }[];
     fullName: string;
@@ -62,33 +62,33 @@ export function AttributeCustomModal({
     transliterate,
     CharacteristicsLink
 }: AttributeCustomModalProps) {
-    const isColorType = currentAttributeType?.dataType === "color" || currentAttributeType?.hasColor || type === "color";
+    const isColorType = currentAttributeType?.dataType ==="color" || currentAttributeType?.hasColor || type ==="color";
     const hasUnits = currentAttributeType?.hasUnits;
     const hasComposition = currentAttributeType?.hasComposition;
-    const isDimensions = currentAttributeType?.dataType === "dimensions";
+    const isDimensions = currentAttributeType?.dataType ==="dimensions";
 
-    const isQuantity = currentAttributeType?.dataType === "quantity";
-    const isWeight = currentAttributeType?.dataType === "weight";
-    const isVolume = currentAttributeType?.dataType === "volume";
-    const isComposition = currentAttributeType?.dataType === "composition";
-    const isNumeric = ["quantity", "weight", "volume", "density"].includes(currentAttributeType?.dataType || "");
-    const TypeIcon = (currentAttributeType && DATA_TYPE_ICONS[currentAttributeType.dataType]) || (type === "color" ? Palette : Plus);
+    const isQuantity = currentAttributeType?.dataType ==="quantity";
+    const isWeight = currentAttributeType?.dataType ==="weight";
+    const isVolume = currentAttributeType?.dataType ==="volume";
+    const isComposition = currentAttributeType?.dataType ==="composition";
+    const isNumeric = ["quantity","weight","volume","density"].includes(currentAttributeType?.dataType ||"");
+    const TypeIcon = (currentAttributeType && DATA_TYPE_ICONS[currentAttributeType.dataType]) || (type ==="color" ? Palette : Plus);
 
     const displayLabel = label || (
-        type === "brand" ? "Бренд" :
-            type === "material" ? "Материал" :
-                type === "size" ? "Размер" :
-                    type === "quality" ? "Качество ткани" : type
+        type ==="brand" ?"Бренд" :
+            type ==="material" ?"Материал" :
+                type ==="size" ?"Размер" :
+                    type ==="quality" ?"Качество ткани" : type
     );
 
-    const title = isColorType ? "Новый цвет" :
-        type === "brand" ? "Новый бренд" :
-            type === "material" ? "Новый материал" :
-                type === "size" ? "Новый размер" :
-                    type === "quality" ? "Новое качество" :
-                        displayLabel.toLowerCase() === "состав" ? "Новый состав" : "Новая опция";
+    const title = isColorType ?"Новый цвет" :
+        type ==="brand" ?"Новый бренд" :
+            type ==="material" ?"Новый материал" :
+                type ==="size" ?"Новый размер" :
+                    type ==="quality" ?"Новое качество" :
+                        displayLabel.toLowerCase() ==="состав" ?"Новый состав" :"Новая опция";
 
-    const subtitle = isColorType ? "Добавление оттенка в палитру" : `Раздел: ${displayLabel}`;
+    const subtitle = isColorType ?"Добавление оттенка в палитру" : `Раздел: ${displayLabel}`;
     const Icon = TypeIcon;
 
     return (
@@ -115,7 +115,7 @@ export function AttributeCustomModal({
                 </div>
 
                 <div className="px-6 py-6 pb-5 bg-slate-50/30 overflow-y-auto custom-scrollbar space-y-3">
-                    <div className={cn("grid gap-3", !isColorType && "grid-cols-2")}>
+                    <div className={cn("grid gap-3", !isColorType &&"grid-cols-2")}>
                         {isDimensions ? (
                             <div className="space-y-3 col-span-2">
                                 <div className="grid grid-cols-3 gap-3">
@@ -154,19 +154,18 @@ export function AttributeCustomModal({
                                     <label className="text-xs font-bold text-slate-700 ml-1">Ед. измерения</label>
                                     <div className="grid grid-cols-3 gap-2">
                                         {[
-                                            { id: "MM", title: "мм" },
-                                            { id: "CM", title: "см" },
-                                            { id: "M", title: "м" }
+                                            { id:"MM", title:"мм" },
+                                            { id:"CM", title:"см" },
+                                            { id:"M", title:"м" }
                                         ].map(item => (
                                             <button
                                                 key={item.id}
                                                 type="button"
-                                                onClick={() => setCustomForm(prev => ({ ...prev, u: item.id as "MM" | "CM" | "M" }))}
-                                                className={cn(
-                                                    "h-9 rounded-lg border-2 font-bold text-xs transition-all",
+                                                onClick={() => setCustomForm(prev => ({ ...prev, u: item.id as"MM" |"CM" |"M" }))}
+                                                className={cn("h-9 rounded-lg border-2 font-bold text-xs transition-all",
                                                     customForm.u === item.id
-                                                        ? "bg-primary/5 border-primary text-primary"
-                                                        : "bg-white border-slate-100 text-slate-400"
+                                                        ?"bg-primary/5 border-primary text-primary"
+                                                        :"bg-white border-slate-100 text-slate-400"
                                                 )}
                                             >
                                                 {item.title}
@@ -191,13 +190,13 @@ export function AttributeCustomModal({
                                             value={customForm.quantityUnit}
                                             onChange={v => setCustomForm(prev => ({ ...prev, quantityUnit: v }))}
                                             options={[
-                                                { id: "PCS", title: "шт" },
-                                                { id: "PAR", title: "пар" },
-                                                { id: "SET", title: "компл" },
-                                                { id: "PKG", title: "уп" },
-                                                { id: "ROL", title: "рул" },
-                                                { id: "L", title: "л" },
-                                                { id: "M", title: "м" }
+                                                { id:"PCS", title:"шт" },
+                                                { id:"PAR", title:"пар" },
+                                                { id:"SET", title:"компл" },
+                                                { id:"PKG", title:"уп" },
+                                                { id:"ROL", title:"рул" },
+                                                { id:"L", title:"л" },
+                                                { id:"M", title:"м" }
                                             ]}
                                             placeholder="Ед."
                                         />
@@ -207,7 +206,7 @@ export function AttributeCustomModal({
                         ) : (isWeight || isVolume) ? (
                             <div className="space-y-3 pt-2 w-full col-span-2">
                                 <label className="text-sm font-bold text-slate-700 ml-1">
-                                    {isWeight ? "Вес" : "Объем"}
+                                    {isWeight ?"Вес" :"Объем"}
                                 </label>
                                 <div className="flex gap-2">
                                     <Input
@@ -225,11 +224,11 @@ export function AttributeCustomModal({
                                                 [isWeight ? 'weightUnit' : 'volumeUnit']: v
                                             }))}
                                             options={isWeight ? [
-                                                { id: "G", title: "г" },
-                                                { id: "KG", title: "кг" }
+                                                { id:"G", title:"г" },
+                                                { id:"KG", title:"кг" }
                                             ] : [
-                                                { id: "ML", title: "мл" },
-                                                { id: "L", title: "л" }
+                                                { id:"ML", title:"мл" },
+                                                { id:"L", title:"л" }
                                             ]}
                                             placeholder="Ед."
                                         />
@@ -240,11 +239,10 @@ export function AttributeCustomModal({
                             <div className="col-span-2 space-y-3">
                                 <div className="flex items-center justify-between ml-1">
                                     <label className="text-sm font-bold text-slate-700">Состав материалов</label>
-                                    <div className={cn(
-                                        "text-xs font-bold px-2 py-0.5 rounded-full border",
+                                    <div className={cn("text-xs font-bold px-2 py-0.5 rounded-full border",
                                         customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0) === 100
-                                            ? "text-emerald-500 bg-emerald-50 border-emerald-100"
-                                            : "text-rose-500 bg-rose-50 border-rose-100"
+                                            ?"text-emerald-500 bg-emerald-50 border-emerald-100"
+                                            :"text-rose-500 bg-rose-50 border-rose-100"
                                     )}>
                                         Всего: {customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0)}%
                                     </div>
@@ -301,7 +299,7 @@ export function AttributeCustomModal({
                                     className="w-full h-11 border-2 border-dashed border-slate-200 text-slate-400 hover:text-primary hover:border-primary/50 hover:bg-primary/5 font-bold text-sm gap-2 rounded-[var(--radius-inner)]"
                                     onClick={() => setCustomForm(prev => ({
                                         ...prev,
-                                        composition: [...prev.composition, { name: "", percent: "" }]
+                                        composition: [...prev.composition, { name:"", percent:"" }]
                                     }))}
                                 >
                                     <Plus className="w-4 h-4" /> Добавить материал
@@ -314,13 +312,13 @@ export function AttributeCustomModal({
                                         <div className="space-y-1.5 flex-1 w-full">
                                             <label className="text-sm font-bold text-slate-700 ml-1">Название</label>
                                             <Input
-                                                placeholder={isColorType ? "Напр: Синий" : isNumeric ? "0" : "Напр: Хлопок"}
+                                                placeholder={isColorType ?"Напр: Синий" : isNumeric ?"0" :"Напр: Хлопок"}
                                                 className="w-full h-12 px-4 rounded-[var(--radius-inner)] bg-white border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-slate-300 placeholder:font-medium font-bold text-sm text-slate-900 shadow-sm"
                                                 value={customForm.fullName}
                                                 onChange={e => {
                                                     const val = e.target.value;
                                                     setCustomForm(prev => {
-                                                        const brandTranslit = (currentAttributeType?.dataType === "brand" || type === "brand") ? val.substring(0, 3).toUpperCase() : transliterate(val).toUpperCase();
+                                                        const brandTranslit = (currentAttributeType?.dataType ==="brand" || type ==="brand") ? val.substring(0, 3).toUpperCase() : transliterate(val).toUpperCase();
                                                         return {
                                                             ...prev,
                                                             fullName: val,
@@ -329,14 +327,14 @@ export function AttributeCustomModal({
                                                         };
                                                     });
                                                 }}
-                                                onKeyDown={(e) => e.key === "Enter" && onSave()}
+                                                onKeyDown={(e) => e.key ==="Enter" && onSave()}
                                                 autoFocus
                                             />
                                         </div>
                                         {(hasUnits || hasComposition) && (
                                             <div className="space-y-1.5 flex-1 w-full">
                                                 <label className="text-sm font-bold text-slate-700 ml-1">
-                                                    {hasComposition ? "Значение (%)" : "Величина"}
+                                                    {hasComposition ?"Значение (%)" :"Величина"}
                                                 </label>
                                                 <div className="flex gap-2">
                                                     <div className="flex-1 relative">
@@ -346,9 +344,9 @@ export function AttributeCustomModal({
                                                             onChange={e => {
                                                                 const val = e.target.value;
                                                                 setCustomForm(prev => {
-                                                                    const unit = hasComposition ? "%" : prev.measureUnit;
-                                                                    const namePart = prev.fullName || (val ? `${val}${unit}` : "");
-                                                                    const codePart = val ? `${val}${transliterate(unit).toUpperCase()}` : "";
+                                                                    const unit = hasComposition ?"%" : prev.measureUnit;
+                                                                    const namePart = prev.fullName || (val ? `${val}${unit}` :"");
+                                                                    const codePart = val ? `${val}${transliterate(unit).toUpperCase()}` :"";
                                                                     return {
                                                                         ...prev,
                                                                         measureValue: val,
@@ -359,9 +357,8 @@ export function AttributeCustomModal({
                                                                 });
                                                             }}
                                                             placeholder="0"
-                                                            className={cn(
-                                                                "h-12 rounded-[var(--radius-inner)] bg-white border-slate-200 font-bold",
-                                                                hasComposition && "pr-8"
+                                                            className={cn("h-12 rounded-[var(--radius-inner)] bg-white border-slate-200 font-bold",
+                                                                hasComposition &&"pr-8"
                                                             )}
                                                         />
                                                         {hasComposition && (
@@ -400,9 +397,8 @@ export function AttributeCustomModal({
                                     <label className="text-sm font-bold text-slate-700 ml-1">Артикул</label>
                                     <Input
                                         placeholder="SIN"
-                                        className={cn(
-                                            "w-full h-12 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 placeholder:font-medium font-bold text-sm text-slate-900 shadow-sm",
-                                            isDimensions && "bg-slate-100 cursor-not-allowed text-slate-400"
+                                        className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 placeholder:font-medium font-bold text-sm text-slate-900 shadow-sm",
+                                            isDimensions &&"bg-slate-100 cursor-not-allowed text-slate-400"
                                         )}
                                         readOnly={isDimensions}
                                         value={customForm.code}
@@ -441,7 +437,7 @@ export function AttributeCustomModal({
                         onClick={onSave}
                         disabled={
                             isDimensions ? (!customForm.l || !customForm.w || !customForm.h) :
-                                currentAttributeType?.dataType === "composition" ? (customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0) !== 100) :
+                                currentAttributeType?.dataType ==="composition" ? (customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0) !== 100) :
                                     !customForm.name.trim() || isSaving
                         }
                     >

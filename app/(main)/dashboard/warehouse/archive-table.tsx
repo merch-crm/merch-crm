@@ -1,25 +1,25 @@
 "use client";
 
-import Image from "next/image";
-import { useState, useEffect } from "react";
-import { Package, RotateCcw, Trash2, Search, Clock, MessageCircle, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { motion, AnimatePresence } from "framer-motion";
-import { useRouter, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
+import Image from"next/image";
+import { useState, useEffect } from"react";
+import { Package, RotateCcw, Trash2, Search, Clock, MessageCircle, Eye } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { motion, AnimatePresence } from"framer-motion";
+import { useRouter, useSearchParams } from"next/navigation";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn } from"@/lib/utils";
 
 
-import { InventoryItem } from "./types";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Pagination } from "@/components/ui/pagination";
-import { Checkbox } from "@/components/ui/checkbox";
-import { pluralize } from "@/lib/pluralize";
-import { useDebounce } from "@/hooks/use-debounce";
-import { EmptyState } from "@/components/ui/empty-state";
-import { useArchiveActions } from "./hooks/useArchiveActions";
+import { InventoryItem } from"./types";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { Pagination } from"@/components/ui/pagination";
+import { Checkbox } from"@/components/ui/checkbox";
+import { pluralize } from"@/lib/pluralize";
+import { useDebounce } from"@/hooks/use-debounce";
+import { EmptyState } from"@/components/ui/empty-state";
+import { useArchiveActions } from"./hooks/useArchiveActions";
 
 interface ArchiveTableProps {
     items: InventoryItem[];
@@ -39,14 +39,14 @@ export function ArchiveTable({ items = [], total }: ArchiveTableProps) {
     const itemsPerPage = 20;
 
     useEffect(() => {
-        if (debouncedSearch !== (searchParams.get("search") || "")) {
-            updateUrl({ search: debouncedSearch, page: "1" });
+        if (debouncedSearch !== (searchParams.get("search") ||"")) {
+            updateUrl({ search: debouncedSearch, page:"1" });
         }
     }, [debouncedSearch, updateUrl, searchParams]);
 
     const currentItems = Array.isArray(items) ? items : [];
 
-    if ((items?.length || 0) === 0 && searchQuery === "") {
+    if ((items?.length || 0) === 0 && searchQuery ==="") {
         return (
             <EmptyState
                 icon={Clock}
@@ -126,9 +126,8 @@ export function ArchiveTable({ items = [], total }: ArchiveTableProps) {
                             <tr
                                 key={item.id}
                                 onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
-                                className={cn(
-                                    "crm-tr-clickable",
-                                    selectedIds.includes(item.id) && "crm-tr-selected"
+                                className={cn("crm-tr-clickable",
+                                    selectedIds.includes(item.id) &&"crm-tr-selected"
                                 )}
                             >
                                 <td className="crm-td" onClick={(e) => e.stopPropagation()}>
@@ -153,28 +152,28 @@ export function ArchiveTable({ items = [], total }: ArchiveTableProps) {
                                         </div>
                                         <div>
                                             <div className="font-bold text-slate-900 leading-tight">{item.name}</div>
-                                            <div className="text-xs font-bold text-slate-400 mt-0.5">{item.category?.name || "Без категории"}</div>
+                                            <div className="text-xs font-bold text-slate-400 mt-0.5">{item.category?.name ||"Без категории"}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td className="crm-td">
                                     <span className="text-xs font-mono font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-[var(--radius-inner)]">
-                                        {item.sku || "—"}
+                                        {item.sku ||"—"}
                                     </span>
                                 </td>
                                 <td className="crm-td">
                                     <div className="flex items-center gap-2 text-slate-500">
                                         <Clock className="w-3.5 h-3.5" />
                                         <span className="text-xs font-medium">
-                                            {item.archivedAt ? format(new Date(item.archivedAt), "d MMM yyyy, HH:mm", { locale: ru }) : "—"}
+                                            {item.archivedAt ? format(new Date(item.archivedAt),"d MMM yyyy, HH:mm", { locale: ru }) :"—"}
                                         </span>
                                     </div>
                                 </td>
                                 <td className="crm-td">
                                     <div className="flex items-center gap-2 max-w-[200px]">
                                         <MessageCircle className="w-3.5 h-3.5 text-slate-300 shrink-0" />
-                                        <span className="text-xs text-slate-500 truncate" title={item.archiveReason || ""}>
-                                            {item.archiveReason || "—"}
+                                        <span className="text-xs text-slate-500 truncate" title={item.archiveReason ||""}>
+                                            {item.archiveReason ||"—"}
                                         </span>
                                     </div>
                                 </td>
@@ -249,7 +248,7 @@ export function ArchiveTable({ items = [], total }: ArchiveTableProps) {
                 onConfirm={() => handleDelete(idsToDelete)}
                 isLoading={isDeleting}
                 title="Удаление из системы"
-                description={"Вы уверены, что хотите НАВСЕГДА удалить архивные " + pluralize(idsToDelete.length, 'позицию', 'позиции', 'позиций') + " (" + idsToDelete.length + ")? Это действие нельзя отменить. Введите пароль подтверждения."}
+                description={"Вы уверены, что хотите НАВСЕГДА удалить архивные" + pluralize(idsToDelete.length, 'позицию', 'позиции', 'позиций') +" (" + idsToDelete.length +")? Это действие нельзя отменить. Введите пароль подтверждения."}
                 confirmText="Удалить окончательно"
                 variant="destructive"
             >
@@ -336,11 +335,11 @@ function MobileArchiveList({
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                     <span className="text-xs font-bold text-slate-400">
-                                        {item.archivedAt ? format(new Date(item.archivedAt), "d MMM, HH:mm", { locale: ru }) : "—"}
+                                        {item.archivedAt ? format(new Date(item.archivedAt),"d MMM, HH:mm", { locale: ru }) :"—"}
                                     </span>
                                     <div className="w-0.5 h-0.5 bg-slate-300 rounded-full" />
                                     <span className="text-xs font-medium text-slate-500 truncate">
-                                        {item.category?.name || "Без категории"}
+                                        {item.category?.name ||"Без категории"}
                                     </span>
                                 </div>
                             </div>
@@ -351,7 +350,7 @@ function MobileArchiveList({
                             {isExpanded && (
                                 <motion.div
                                     initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
+                                    animate={{ height:"auto", opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                     className="overflow-hidden"

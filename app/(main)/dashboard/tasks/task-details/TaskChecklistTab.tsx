@@ -1,8 +1,8 @@
 "use client";
 
-import { CheckCircle2, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Task } from "../types";
+import { CheckCircle2, X } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { Task } from"../types";
 
 interface TaskChecklistTabProps {
     task: Task;
@@ -48,18 +48,16 @@ export function TaskChecklistTab({
                     >
                         <button type="button"
                             onClick={() => onToggleItem(item.id, !item.isCompleted)}
-                            className={cn(
-                                "h-6 w-6 rounded-2xl border-2 flex items-center justify-center transition-all",
+                            className={cn("h-6 w-6 rounded-2xl border-2 flex items-center justify-center transition-all",
                                 item.isCompleted
-                                    ? "bg-emerald-500 border-emerald-500"
-                                    : "border-slate-200 hover:border-primary"
+                                    ?"bg-emerald-500 border-emerald-500"
+                                    :"border-slate-200 hover:border-primary"
                             )}
                         >
                             {item.isCompleted && <CheckCircle2 className="w-4 h-4 text-white" />}
                         </button>
-                        <span className={cn(
-                            "flex-1 text-sm font-bold text-slate-700",
-                            item.isCompleted && "line-through text-slate-400"
+                        <span className={cn("flex-1 text-sm font-bold text-slate-700",
+                            item.isCompleted &&"line-through text-slate-400"
                         )}>
                             {item.content}
                         </span>

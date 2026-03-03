@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from "@/lib/utils";
+import { cn } from"@/lib/utils";
 
 export interface SummaryStatCardProps {
     icon: React.ComponentType<{ className?: string }>;
@@ -12,8 +12,7 @@ export interface SummaryStatCardProps {
 export function SummaryStatCard({ icon: Icon, iconColor, label, value, className }: SummaryStatCardProps) {
     return (
         <div
-            className={cn(
-                "flex items-center gap-3 p-3 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors duration-200",
+            className={cn("flex items-center gap-3 p-3 rounded-3xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors duration-200",
                 className
             )}
             aria-label={`${label}: ${value}`}
@@ -25,7 +24,7 @@ export function SummaryStatCard({ icon: Icon, iconColor, label, value, className
                 <div className="text-xs font-bold text-slate-500 leading-tight sm:truncate mt-0.5">
                     {label}
                 </div>
-                <div className="text-xl font-black text-slate-900 tabular-nums leading-none ">
+                <div className="text-xl font-black text-slate-900 tabular-nums leading-none">
                     {value}
                 </div>
             </div>

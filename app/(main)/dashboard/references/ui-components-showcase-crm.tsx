@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import React, { useState } from "react";
+import Image from"next/image";
+import React, { useState } from"react";
 import {
     Search,
     ChevronDown,
@@ -18,8 +18,8 @@ import {
     Calendar,
     Layers,
     Sparkles
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
 
 export default function UiComponentsShowcaseCRM() {
     const [activeTab, setActiveTab] = useState("all");
@@ -36,15 +36,14 @@ export default function UiComponentsShowcaseCRM() {
                     <p className="text-xs font-bold  text-slate-400 mt-2">Design Components Library</p>
                 </div>
                 <div className="flex gap-2">
-                    {["all", "forms", "widgets", "editors"].map((tab) => (
+                    {["all","forms","widgets","editors"].map((tab) => (
                         <button type="button"
                             key={tab}
                             onClick={() => setActiveTab(tab)}
-                            className={cn(
-                                "px-5 py-2.5 rounded-[var(--radius-inner)] text-xs font-bold transition-all",
+                            className={cn("px-5 py-2.5 rounded-[var(--radius-inner)] text-xs font-bold transition-all",
                                 activeTab === tab
-                                    ? "bg-slate-900 text-white shadow-xl shadow-slate-900/20"
-                                    : "bg-white text-slate-400 border border-slate-200 hover:bg-slate-50"
+                                    ?"bg-slate-900 text-white shadow-xl shadow-slate-900/20"
+                                    :"bg-white text-slate-400 border border-slate-200 hover:bg-slate-50"
                             )}
                         >
                             {tab}
@@ -149,7 +148,7 @@ export default function UiComponentsShowcaseCRM() {
                             </div>
                             <div>
                                 <h4 className="font-bold text-slate-900">Weekend Launch</h4>
-                                <p className="text-xs font-bold text-slate-400 ">Global Event</p>
+                                <p className="text-xs font-bold text-slate-400">Global Event</p>
                             </div>
                         </div>
                         <div className="flex items-center justify-between p-5 bg-white rounded-[var(--radius-inner)] shadow-crm-sm border border-slate-200">
@@ -185,8 +184,8 @@ export default function UiComponentsShowcaseCRM() {
                         </div>
 
                         <div className="flex justify-end gap-3 mt-4">
-                            <button type="button" className="h-10 px-6 rounded-[var(--radius-inner)] btn-secondary text-xs font-bold ">Discard</button>
-                            <button type="button" className="h-10 px-6 rounded-[var(--radius-inner)] btn-primary text-xs font-bold ">Publish</button>
+                            <button type="button" className="h-10 px-6 rounded-[var(--radius-inner)] btn-secondary text-xs font-bold">Discard</button>
+                            <button type="button" className="h-10 px-6 rounded-[var(--radius-inner)] btn-primary text-xs font-bold">Publish</button>
                         </div>
                     </div>
                 </div>
@@ -203,7 +202,7 @@ export default function UiComponentsShowcaseCRM() {
                             </div>
                         ))}
                     </div>
-                    <p className="text-xs font-bold text-slate-400 ">Used by <span className="text-slate-900">12 designers</span> in this session</p>
+                    <p className="text-xs font-bold text-slate-400">Used by <span className="text-slate-900">12 designers</span> in this session</p>
                 </div>
                 <div className="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-full border border-slate-200 text-xs font-bold  text-slate-400">
                     <Layers className="w-4 h-4" />

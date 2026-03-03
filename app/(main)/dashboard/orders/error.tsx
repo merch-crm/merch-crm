@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from 'react'
-import { ErrorView } from "@/components/ui/error-view"
+import { ErrorView } from"@/components/ui/error-view"
 
 export default function OrdersError({
     error,
@@ -17,7 +17,7 @@ export default function OrdersError({
     return (
         <ErrorView
             title="Ошибка загрузки заказов"
-            message={error.message || "Произошла непредвиденная ошибка"}
+            message={error.message ||"Произошла непредвиденная ошибка"}
             onReset={() => reset()}
         />
     )

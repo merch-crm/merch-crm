@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { useHistoryTable } from "./hooks/useHistoryTable";
-import { Pagination } from "@/components/ui/pagination";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { formatPlural } from "@/lib/utils";
-import { EmptyState } from "@/components/ui/empty-state";
-import { History } from "lucide-react";
+import { useState } from"react";
+import { useHistoryTable } from"./hooks/useHistoryTable";
+import { Pagination } from"@/components/ui/pagination";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { formatPlural } from"@/lib/utils";
+import { EmptyState } from"@/components/ui/empty-state";
+import { History } from"lucide-react";
 
-import { HistoryToolbar } from "./components/history/HistoryToolbar";
-import { HistorySelectionBar } from "./components/history/HistorySelectionBar";
-import { HistoryDisplay } from "./components/history/HistoryDisplay";
+import { HistoryToolbar } from"./components/history/HistoryToolbar";
+import { HistorySelectionBar } from"./components/history/HistorySelectionBar";
+import { HistoryDisplay } from"./components/history/HistoryDisplay";
 
-import { type Transaction } from "./history-types";
+import { type Transaction } from"./history-types";
 
 interface HistoryTableProps {
     transactions: Transaction[];
@@ -124,7 +124,7 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
                 onConfirm={confirmDelete}
                 isLoading={isDeleting}
                 title="Удалить записи из истории?"
-                description={`Вы уверены, что хотите безвозвратно удалить ${selectedIds.length} ${formatPlural(selectedIds.length, ["выбранную запись", "выбранные записи", "выбранных записей"])}? Это действие нельзя отменить.`}
+                description={`Вы уверены, что хотите безвозвратно удалить ${selectedIds.length} ${formatPlural(selectedIds.length, ["выбранную запись","выбранные записи","выбранных записей"])}? Это действие нельзя отменить.`}
                 confirmText="Удалить"
                 variant="destructive"
             />

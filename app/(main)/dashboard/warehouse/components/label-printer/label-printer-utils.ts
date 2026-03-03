@@ -1,4 +1,4 @@
-import { PaperSize } from "./label-printer-types";
+import { PaperSize } from"./label-printer-types";
 
 export const getSizeDimensions = (size: PaperSize, customWidth: number, customHeight: number) => {
     switch (size) {

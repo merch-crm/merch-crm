@@ -1,20 +1,20 @@
 "use server";
 
-import { z } from "zod";
-import { eq } from "drizzle-orm";
-import { db } from "@/lib/db";
+import { z } from"zod";
+import { eq } from"drizzle-orm";
+import { db } from"@/lib/db";
 import {
     inventoryAttributes,
     inventoryAttributeTypes,
     inventoryItems,
     inventoryCategories,
-} from "@/lib/schema";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
-import { refreshWarehouse } from "../../warehouse-shared.actions";
-import { type ActionResult } from "@/lib/types";
-import { generateItemName, generateItemSku } from "../libs/sku-generator";
+} from"@/lib/schema";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { getSession } from"@/lib/auth";
+import { refreshWarehouse } from"../../warehouse-shared.actions";
+import { type ActionResult } from"@/lib/types";
+import { generateItemName, generateItemSku } from"../libs/sku-generator";
 
 const regenerateSchema = z.object({
     confirm: z.boolean().optional()
@@ -27,12 +27,12 @@ const regenerateSchema = z.object({
 export async function regenerateAllItemSKUs(input?: z.infer<typeof regenerateSchema>): Promise<ActionResult<{ updatedCount: number; totalItems: number }>> {
     const validated = regenerateSchema.safeParse(input || {});
     if (!validated.success) {
-        return { success: false, error: "Неверные параметры запроса" };
+        return { success: false, error:"Неверные параметры запроса" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
+    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
+        return { success: false, error:"Недостаточно прав" };
     }
 
     try {
@@ -43,7 +43,7 @@ export async function regenerateAllItemSKUs(input?: z.infer<typeof regenerateSch
             .orderBy(inventoryAttributeTypes.sortOrder, inventoryAttributeTypes.createdAt)
             .limit(100);
 
-        const customTypes = allTypes.filter(t => !["brand", "quality", "material", "size", "color"].includes(t.slug));
+        const customTypes = allTypes.filter(t => !["brand","quality","material","size","color"].includes(t.slug));
 
         let updatedCount = 0;
 
@@ -75,10 +75,7 @@ export async function regenerateAllItemSKUs(input?: z.infer<typeof regenerateSch
             }
         }
 
-        await logAction(
-            "Массовое обновление SKU и имен",
-            "inventory_items",
-            "bulk",
+        await logAction("Массовое обновление SKU и имен","inventory_items","bulk",
             { updatedCount, totalItems: items?.length }
         );
 
@@ -87,9 +84,9 @@ export async function regenerateAllItemSKUs(input?: z.infer<typeof regenerateSch
     } catch (error) {
         await logError({
             error,
-            path: "/dashboard/warehouse/attributes/actions/maintenance.actions",
-            method: "regenerateAllItemSKUs"
+            path:"/dashboard/warehouse/attributes/actions/maintenance.actions",
+            method:"regenerateAllItemSKUs"
         });
-        return { success: false, error: "Не удалось обновить данные" };
+        return { success: false, error:"Не удалось обновить данные" };
     }
 }

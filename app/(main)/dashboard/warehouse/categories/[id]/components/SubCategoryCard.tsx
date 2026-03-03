@@ -1,13 +1,13 @@
 "use client";
 
-import React, { createElement } from "react";
-import { GripVertical, Edit, Trash2, ChevronRight } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Category } from "@/app/(main)/dashboard/warehouse/types";
-import { getCategoryIcon, getColorStyles } from "@/app/(main)/dashboard/warehouse/category-utils";
+import React, { createElement } from"react";
+import { GripVertical, Edit, Trash2, ChevronRight } from"lucide-react";
+import { useSortable } from"@dnd-kit/sortable";
+import { CSS } from"@dnd-kit/utilities";
+import { cn } from"@/lib/utils";
+import { Button } from"@/components/ui/button";
+import { Category } from"@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon, getColorStyles } from"@/app/(main)/dashboard/warehouse/category-utils";
 
 interface NavigationRouter {
     push: (href: string) => void;
@@ -54,9 +54,8 @@ export const SortableSubCategoryCard = React.memo(({
                     router.push(`/dashboard/warehouse/categories/${subcat.id}`);
                 }
             }}
-            className={cn(
-                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm !rounded-2xl sm:!rounded-[var(--radius)] w-full h-full",
-                isDragging && "opacity-0 scale-95"
+            className={cn("group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm !rounded-2xl sm:!rounded-[var(--radius)] w-full h-full",
+                isDragging &&"opacity-0 scale-95"
             )}
         >
             <SubCategoryCardContent
@@ -70,7 +69,7 @@ export const SortableSubCategoryCard = React.memo(({
     );
 });
 
-SortableSubCategoryCard.displayName = "SortableSubCategoryCard";
+SortableSubCategoryCard.displayName ="SortableSubCategoryCard";
 
 interface SubCategoryCardContentProps {
     subcat: Category;
@@ -96,9 +95,8 @@ export const SubCategoryCardContent = React.memo(({
                 <div role="button" tabIndex={0}
                     {...dragHandleProps}
                     aria-label="Перетащить для изменения порядка"
-                    className={cn(
-                        "w-8 h-10 -ml-2 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-lg hover:bg-slate-50",
-                        isDragging && "cursor-grabbing text-primary"
+                    className={cn("w-8 h-10 -ml-2 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-lg hover:bg-slate-50",
+                        isDragging &&"cursor-grabbing text-primary"
                     )}
                     onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
                 >
@@ -109,7 +107,7 @@ export const SubCategoryCardContent = React.memo(({
                     className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-all", colorStyles.className)}
                     style={colorStyles.style}
                 >
-                    {createElement(IconComponent, { className: "w-5 h-5" })}
+                    {createElement(IconComponent, { className:"w-5 h-5" })}
                 </div>
                 <div>
                     <h4 className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">
@@ -121,9 +119,8 @@ export const SubCategoryCardContent = React.memo(({
                 </div>
             </div>
 
-            <div className={cn(
-                "flex items-center gap-0.5 transition-all relative z-10",
-                isDragging && "opacity-0"
+            <div className={cn("flex items-center gap-0.5 transition-all relative z-10",
+                isDragging &&"opacity-0"
             )}>
                 <Button
                     type="button"
@@ -159,4 +156,4 @@ export const SubCategoryCardContent = React.memo(({
     );
 });
 
-SubCategoryCardContent.displayName = "SubCategoryCardContent";
+SubCategoryCardContent.displayName ="SubCategoryCardContent";

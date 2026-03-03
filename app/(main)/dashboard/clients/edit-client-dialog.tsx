@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { User, Phone, Mail, MapPin, Loader2, Building2, Link as LinkIcon, MessageSquare } from "lucide-react";
-import { updateClient, getManagers } from "./actions/core.actions";;
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import { useEffect, useState } from"react";
+import { User, Phone, Mail, MapPin, Loader2, Building2, Link as LinkIcon, MessageSquare } from"lucide-react";
+import { updateClient, getManagers } from"./actions/core.actions";;
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
 
 
 interface ClientData {
@@ -40,14 +40,14 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
     const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
     const { toast } = useToast();
 
-    const [acquisitionSource, setAcquisitionSource] = useState(client.acquisitionSource || "");
-    const [managerId, setManagerId] = useState(client.managerId || "");
+    const [acquisitionSource, setAcquisitionSource] = useState(client.acquisitionSource ||"");
+    const [managerId, setManagerId] = useState(client.managerId ||"");
 
     const [prevClient, setPrevClient] = useState(client);
     if (client.id !== prevClient.id) {
         setPrevClient(client);
-        setAcquisitionSource(client.acquisitionSource || "");
-        setManagerId(client.managerId || "");
+        setAcquisitionSource(client.acquisitionSource ||"");
+        setManagerId(client.managerId ||"");
     }
 
     useEffect(() => {
@@ -67,10 +67,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
         const res = await updateClient(client.id, formData);
         setLoading(false);
         if (!res.success) {
-            toast(res.error, "error");
+            toast(res.error,"error");
             playSound("notification_error");
         } else {
-            toast("Данные клиента обновлены", "success");
+            toast("Данные клиента обновлены","success");
             playSound("client_updated");
             onClose();
         }
@@ -122,7 +122,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="patronymic"
-                                defaultValue={client.patronymic || ""}
+                                defaultValue={client.patronymic ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
@@ -133,7 +133,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="company"
-                                defaultValue={client.company || ""}
+                                defaultValue={client.company ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
@@ -148,7 +148,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="phone"
-                                defaultValue={client.phone || ""}
+                                defaultValue={client.phone ||""}
                                 required
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
@@ -160,7 +160,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="email"
                                 name="email"
-                                defaultValue={client.email || ""}
+                                defaultValue={client.email ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
@@ -174,7 +174,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="telegram"
-                                defaultValue={client.telegram || ""}
+                                defaultValue={client.telegram ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                                 placeholder="@username"
                             />
@@ -186,7 +186,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="instagram"
-                                defaultValue={client.instagram || ""}
+                                defaultValue={client.instagram ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                                 placeholder="insta_link"
                             />
@@ -201,7 +201,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="socialLink"
-                                defaultValue={client.socialLink || ""}
+                                defaultValue={client.socialLink ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                                 placeholder="vk.com/..."
                             />
@@ -215,11 +215,11 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 value={acquisitionSource}
                                 onChange={setAcquisitionSource}
                                 options={[
-                                    { id: "", title: "Не указан" },
-                                    { id: "instagram", title: "Instagram" },
-                                    { id: "website", title: "Сайт" },
-                                    { id: "recommendation", title: "Рекомендация" },
-                                    { id: "other", title: "Другое" },
+                                    { id:"", title:"Не указан" },
+                                    { id:"instagram", title:"Instagram" },
+                                    { id:"website", title:"Сайт" },
+                                    { id:"recommendation", title:"Рекомендация" },
+                                    { id:"other", title:"Другое" },
                                 ]}
                                 triggerClassName="h-12 bg-slate-50 border-slate-200"
                             />
@@ -236,7 +236,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                                 value={managerId}
                                 onChange={setManagerId}
                                 options={[
-                                    { id: "", title: "Не назначен" },
+                                    { id:"", title:"Не назначен" },
                                     ...managers.map(m => ({ id: m.id, title: m.name }))
                                 ]}
                                 triggerClassName="h-12 bg-slate-50 border-slate-200"
@@ -252,7 +252,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="city"
-                                defaultValue={client.city || ""}
+                                defaultValue={client.city ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
@@ -263,7 +263,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                             <Input
                                 type="text"
                                 name="address"
-                                defaultValue={client.address || ""}
+                                defaultValue={client.address ||""}
                                 className="w-full h-12 px-4 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white transition-all shadow-none"
                             />
                         </div>
@@ -275,7 +275,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         </label>
                         <textarea
                             name="comments"
-                            defaultValue={client.comments || ""}
+                            defaultValue={client.comments ||""}
                             rows={3}
                             className="w-full p-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary transition-all outline-none resize-none"
                         />
@@ -298,7 +298,7 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
                         className="h-11 w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]"
                     >
                         {loading && <Loader2 className="w-5 h-5 animate-spin" />}
-                        {loading ? "Сохранение..." : "Сохранить изменения"}
+                        {loading ?"Сохранение..." :"Сохранить изменения"}
                     </Button>
                 </div>
             </form>

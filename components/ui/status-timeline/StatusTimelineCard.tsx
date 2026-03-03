@@ -1,16 +1,16 @@
 "use client";
 
-import * as React from "react";
-import { Clock } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { StatusTimelineCardProps } from "./types";
-import { StatusTimeline } from "./StatusTimeline";
+import * as React from"react";
+import { Clock } from"lucide-react";
+import { formatDistanceToNow } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn } from"@/lib/utils";
+import { StatusTimelineCardProps } from"./types";
+import { StatusTimeline } from"./StatusTimeline";
 
 export function StatusTimelineCard({
     events,
-    title = "История заказа",
+    title ="История заказа",
     currentStatus,
     className,
 }: StatusTimelineCardProps) {
@@ -28,7 +28,7 @@ export function StatusTimelineCard({
                         <div>
                             <p className="text-sm font-bold text-slate-900">{title}</p>
                             <p className="text-xs text-slate-500">
-                                {events.length} {events.length === 1 ? "событие" : "событий"}
+                                {events.length} {events.length === 1 ?"событие" :"событий"}
                             </p>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ export function StatusTimelineCard({
             {lastEvent && (
                 <div className="p-4 bg-slate-50 border-t border-slate-100">
                     <p className="text-xs text-slate-500">
-                        Последнее обновление:{" "}
+                        Последнее обновление:{""}
                         <span className="font-medium text-slate-700">
                             {formatDistanceToNow(lastEvent.timestamp, { addSuffix: true, locale: ru })}
                         </span>

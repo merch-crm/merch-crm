@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { HexColorPicker } from "react-colorful";
-import { Pipette, Hash } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import React, { useState, useEffect } from"react";
+import { HexColorPicker } from"react-colorful";
+import { Pipette, Hash } from"lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from"@/components/ui/popover";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { cn } from"@/lib/utils";
 
 interface ColorPickerProps {
     color: string;
@@ -17,17 +17,7 @@ interface ColorPickerProps {
     presets?: string[];
 }
 
-const DEFAULT_PRESETS = [
-    "#5d00ff", // Brand Primary
-    "#0F172A", // Slate 900
-    "#64748B", // Slate 500
-    "#F43F5E", // Rose 500
-    "#10B981", // Emerald 500
-    "#F59E0B", // Amber 500
-    "#3B82F6", // Blue 500
-    "#8B5CF6", // Violet 500
-    "#EC4899", // Pink 500
-    "#FFFFFF", // White
+const DEFAULT_PRESETS = ["#5d00ff", // Brand Primary"#0F172A", // Slate 900"#64748B", // Slate 500"#F43F5E", // Rose 500"#10B981", // Emerald 500"#F59E0B", // Amber 500"#3B82F6", // Blue 500"#8B5CF6", // Violet 500"#EC4899", // Pink 500"#FFFFFF", // White
 ];
 
 export function ColorPicker({
@@ -54,7 +44,7 @@ export function ColorPicker({
     };
 
     const pickerNode = (
-        <div className={cn("p-1 space-y-3", !isInline && "p-3.5")}>
+        <div className={cn("p-1 space-y-3", !isInline &&"p-3.5")}>
             <style>{colorPickerStyles}</style>
 
             <div className="custom-color-picker-wrapper block w-full">
@@ -84,14 +74,13 @@ export function ColorPicker({
                                 type="button"
                                 variant="ghost"
                                 onClick={() => onChange(p)}
-                                className={cn(
-                                    "w-full h-auto aspect-square p-0 rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center bg-transparent hover:bg-transparent",
-                                    color.toLowerCase() === p.toLowerCase() && "ring-2 ring-primary ring-offset-1"
+                                className={cn("w-full h-auto aspect-square p-0 rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center bg-transparent hover:bg-transparent",
+                                    color.toLowerCase() === p.toLowerCase() &&"ring-2 ring-primary ring-offset-1"
                                 )}
                                 style={{ backgroundColor: p }}
                             >
                                 {color.toLowerCase() === p.toLowerCase() && (
-                                    <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" style={{ backgroundColor: p === "#FFFFFF" ? "#cbd5e1" : "white" }} />
+                                    <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" style={{ backgroundColor: p ==="#FFFFFF" ?"#cbd5e1" :"white" }} />
                                 )}
                             </Button>
                         ))}

@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
-import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
-import { Save, Loader2, Archive } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import React from"react";
+import { createPortal } from"react-dom";
+import { motion } from"framer-motion";
+import { Save, Loader2, Archive } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ItemEditingBarProps {
     isEditing: boolean;
@@ -48,10 +48,10 @@ export const ItemEditingBar = React.memo(({
                 }}
             />
             <motion.div
-                initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                initial={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, x:"-50%", scale: 1 }}
+                exit={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                transition={{ type:"spring", damping: 25, stiffness: 200, mass: 0.8 }}
                 className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-card p-2.5 px-4 md:px-8 gap-3 md:gap-3 rounded-3xl md:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-border w-[calc(100%-2rem)] md:w-auto overflow-hidden"
                 data-dialog-open="true"
             >
@@ -129,4 +129,4 @@ export const ItemEditingBar = React.memo(({
     );
 });
 
-ItemEditingBar.displayName = "ItemEditingBar";
+ItemEditingBar.displayName ="ItemEditingBar";

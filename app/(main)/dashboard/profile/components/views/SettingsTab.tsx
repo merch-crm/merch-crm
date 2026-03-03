@@ -1,8 +1,8 @@
-import React from "react";
-import { UserCircle, Shield } from "lucide-react";
-import { ProfileForm } from "../../profile-form";
-import { PasswordForm } from "../../password-form";
-import { UserProfile } from "../../types";
+import React from"react";
+import { UserCircle, Shield } from"lucide-react";
+import { ProfileForm } from"../../profile-form";
+import { PasswordForm } from"../../password-form";
+import { UserProfile } from"../../types";
 
 interface SettingsTabProps {
     user: UserProfile;

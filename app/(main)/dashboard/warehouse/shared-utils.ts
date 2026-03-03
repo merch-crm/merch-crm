@@ -3,8 +3,8 @@
  * Safe for both client and server.
  */
 export function sanitizeFileName(name: string): string {
-    return (name || "")
-        .replace(/[^a-zA-Z0-9а-яА-ЯёЁ0-9 \-\.]/g, "_")
+    return (name ||"")
+        .replace(/[^a-zA-Z0-9а-яА-ЯёЁ0-9 \-\.]/g,"_")
         .trim();
 }
 

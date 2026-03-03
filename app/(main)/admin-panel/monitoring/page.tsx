@@ -1,7 +1,7 @@
 "use client";
 
-import { SystemStats } from "@/components/admin/system-stats";
-import { Activity } from "lucide-react";
+import { SystemStats } from"@/components/admin/system-stats";
+import { Activity } from"lucide-react";
 
 export default function MonitoringStatsPage() {
     return (

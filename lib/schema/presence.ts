@@ -61,6 +61,7 @@ export const xiaomiAccounts = pgTable("xiaomi_accounts", {
     createdById: uuid("created_by_id").references(() => users.id, { onDelete: "set null" }),
 }, (table) => [
     index("xiaomi_accounts_xiaomi_user_id_idx").on(table.xiaomiUserId),
+    index("xiaomi_accounts_email_idx").on(table.email),
     index("xiaomi_accounts_is_active_idx").on(table.isActive),
     index("xiaomi_accounts_created_at_idx").on(table.createdAt),
 ]);
@@ -139,6 +140,7 @@ export const workstations = pgTable("workstations", {
     index("workstations_camera_id_idx").on(table.cameraId),
     index("workstations_assigned_user_id_idx").on(table.assignedUserId),
     index("workstations_is_active_idx").on(table.isActive),
+    index("workstations_created_at_idx").on(table.createdAt),
 ]);
 
 // ============================================
@@ -161,12 +163,14 @@ export const presenceLogs = pgTable("presence_logs", {
     }>(),
     snapshotUrl: text("snapshot_url"),
     timestamp: timestamp("timestamp").notNull().defaultNow(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => [
     index("presence_logs_user_id_idx").on(table.userId),
     index("presence_logs_camera_id_idx").on(table.cameraId),
     index("presence_logs_workstation_id_idx").on(table.workstationId),
     index("presence_logs_event_type_idx").on(table.eventType),
     index("presence_logs_timestamp_idx").on(table.timestamp),
+    index("presence_logs_created_at_idx").on(table.createdAt),
 ]);
 
 // ============================================
@@ -226,9 +230,11 @@ export const presenceSettings = pgTable("presence_settings", {
     value: jsonb("value").notNull(),
     description: text("description"),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedById: uuid("updated_by_id").references(() => users.id, { onDelete: "set null" }),
 }, (table) => [
     index("presence_settings_key_idx").on(table.key),
+    index("presence_settings_created_at_idx").on(table.createdAt),
 ]);
 
 // ============================================

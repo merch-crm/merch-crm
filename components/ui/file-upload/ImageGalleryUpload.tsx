@@ -1,10 +1,10 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
-import { Upload, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ImageGalleryUploadProps, GalleryItem } from "./types";
+import * as React from"react";
+import Image from"next/image";
+import { Upload, X } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { ImageGalleryUploadProps, GalleryItem } from"./types";
 
 export function ImageGalleryUpload({
     value = [],
@@ -109,7 +109,7 @@ export function ImageGalleryUpload({
                         multiple
                         onChange={(e) => {
                             if (e.target.files) handleFiles(e.target.files);
-                            e.target.value = "";
+                            e.target.value ="";
                         }}
                         className="sr-only"
                     />

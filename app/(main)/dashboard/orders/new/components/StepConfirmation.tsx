@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Client } from "@/lib/types";
+import React from"react";
+import { Client } from"@/lib/types";
 
 interface OrderInventoryItem {
     id: string;
@@ -81,11 +81,11 @@ export function StepConfirmation({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-4 bg-card border border-border rounded-2xl shadow-sm">
                     <p className="text-xs font-bold text-muted-foreground mb-1">Приоритет</p>
-                    <p className="font-bold text-sm ">{details.priority === 'low' ? 'Низкий' : details.priority === 'medium' ? 'Средний' : 'Высокий'}</p>
+                    <p className="font-bold text-sm">{details.priority === 'low' ? 'Низкий' : details.priority === 'medium' ? 'Средний' : 'Высокий'}</p>
                 </div>
                 <div className="p-4 bg-card border border-border rounded-2xl shadow-sm">
                     <p className="text-xs font-bold text-muted-foreground mb-1">Оплата</p>
-                    <p className="font-bold text-sm ">
+                    <p className="font-bold text-sm">
                         {details.paymentMethod === 'cash' ? 'Наличные' :
                             details.paymentMethod === 'bank' ? 'Безнал (Карта)' :
                                 details.paymentMethod === 'online' ? 'Онлайн-касса' : 'Расчетный счет'}

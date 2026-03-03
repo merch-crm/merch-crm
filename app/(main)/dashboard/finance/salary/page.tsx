@@ -1,13 +1,13 @@
-import { getSalaryStats } from "../actions";;
-import { getSession } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { startOfDay, endOfDay, subDays } from "date-fns";
-import { redirect } from "next/navigation";
-import { SalaryClient } from "../salary-client";
+import { getSalaryStats } from"../actions";;
+import { getSession } from"@/lib/auth";
+import { db } from"@/lib/db";
+import { users } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { startOfDay, endOfDay, subDays } from"date-fns";
+import { redirect } from"next/navigation";
+import { SalaryClient } from"../salary-client";
 
-export const dynamic = "force-dynamic";
+export const dynamic ="force-dynamic";
 
 export default async function SalaryPage({
     searchParams: searchParamsPromise,
@@ -23,10 +23,10 @@ export default async function SalaryPage({
         with: { department: true, role: true }
     });
 
-    const isAllowed = user?.role?.name === "Администратор" || ["Руководство"].includes(user?.department?.name || "");
+    const isAllowed = user?.role?.name ==="Администратор" || ["Руководство"].includes(user?.department?.name ||"");
     if (!isAllowed) return redirect("/dashboard/finance");
 
-    const range = searchParams.range || "30d";
+    const range = searchParams.range ||"30d";
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
     const now = new Date();
@@ -34,13 +34,13 @@ export default async function SalaryPage({
     if (searchParams.from && searchParams.to) {
         fromDate = startOfDay(new Date(searchParams.from));
         toDate = endOfDay(new Date(searchParams.to));
-    } else if (range === "today") {
+    } else if (range ==="today") {
         fromDate = startOfDay(now); toDate = endOfDay(now);
-    } else if (range === "7d") {
+    } else if (range ==="7d") {
         fromDate = startOfDay(subDays(now, 6)); toDate = endOfDay(now);
-    } else if (range === "30d") {
+    } else if (range ==="30d") {
         fromDate = startOfDay(subDays(now, 29)); toDate = endOfDay(now);
-    } else if (range === "365d") {
+    } else if (range ==="365d") {
         fromDate = startOfDay(subDays(now, 364)); toDate = endOfDay(now);
     }
 

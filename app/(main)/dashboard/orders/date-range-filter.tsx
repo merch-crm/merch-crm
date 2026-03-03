@@ -1,34 +1,34 @@
 "use client";
 
-import { useState } from "react";
-import { Calendar as CalendarIcon, ChevronDown, Check } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { DateRange } from "react-day-picker";
-import { Calendar } from "@/components/ui/calendar";
+import { useState } from"react";
+import { Calendar as CalendarIcon, ChevronDown, Check } from"lucide-react";
+import { useRouter, useSearchParams } from"next/navigation";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { cn } from"@/lib/utils";
+import { DateRange } from"react-day-picker";
+import { Calendar } from"@/components/ui/calendar";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { AnimatePresence, motion } from "framer-motion";
+} from"@/components/ui/popover";
+import { Button } from"@/components/ui/button";
+import { AnimatePresence, motion } from"framer-motion";
 
 const ranges = [
-    { label: "Все время", value: "all" },
-    { label: "Сегодня", value: "today" },
-    { label: "Вчера", value: "yesterday" },
-    { label: "7 дней", value: "7d" },
-    { label: "30 дней", value: "30d" },
-    { label: "90 дней", value: "90d" },
+    { label:"Все время", value:"all" },
+    { label:"Сегодня", value:"today" },
+    { label:"Вчера", value:"yesterday" },
+    { label:"7 дней", value:"7d" },
+    { label:"30 дней", value:"30d" },
+    { label:"90 дней", value:"90d" },
 ];
 
 export function DateRangeFilter() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentRange = searchParams.get("range") || "all";
+    const currentRange = searchParams.get("range") ||"all";
     const fromParam = searchParams.get("from");
     const toParam = searchParams.get("to");
 
@@ -51,18 +51,18 @@ export function DateRangeFilter() {
     const handleApplyCustomRange = () => {
         if (dateRange?.from) {
             const params = new URLSearchParams(searchParams.toString());
-            const fromStr = format(dateRange.from, "yyyy-MM-dd", { locale: ru });
-            const toStr = dateRange.to ? format(dateRange.to, "yyyy-MM-dd", { locale: ru }) : fromStr;
+            const fromStr = format(dateRange.from,"yyyy-MM-dd", { locale: ru });
+            const toStr = dateRange.to ? format(dateRange.to,"yyyy-MM-dd", { locale: ru }) : fromStr;
 
             params.set("from", fromStr);
             params.set("to", toStr);
-            params.set("range", "custom");
+            params.set("range","custom");
             router.push(`?${params.toString()}`);
             setIsPopoverOpen(false);
         }
     };
 
-    const isCustom = currentRange === "custom";
+    const isCustom = currentRange ==="custom";
 
     return (
         <div className="flex flex-col gap-3">
@@ -74,11 +74,10 @@ export function DateRangeFilter() {
                         variant="ghost"
                         asChild
                         onClick={() => handleRangeChange(range.value)}
-                        className={cn(
-                            "px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] sm:rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto h-auto hover:bg-white/50",
+                        className={cn("px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] sm:rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto h-auto hover:bg-white/50",
                             currentRange === range.value && !isCustom
-                                ? "bg-white text-primary shadow-sm hover:bg-white"
-                                : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                                ?"bg-white text-primary shadow-sm hover:bg-white"
+                                :"text-slate-500 hover:text-slate-700 hover:bg-white/50"
                         )}
                     >
                         <button type="button">{range.label}</button>
@@ -91,15 +90,14 @@ export function DateRangeFilter() {
                         <Button
                             variant="ghost"
                             asChild
-                            className={cn(
-                                "flex items-center justify-center gap-2 px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto col-span-2 sm:col-span-1 h-auto hover:bg-white/50",
+                            className={cn("flex items-center justify-center gap-2 px-4 py-2 text-[12px] sm:text-sm font-bold rounded-[14px] transition-all whitespace-nowrap w-full sm:w-auto col-span-2 sm:col-span-1 h-auto hover:bg-white/50",
                                 isCustom
-                                    ? "bg-white text-primary shadow-sm hover:bg-white"
-                                    : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                                    ?"bg-white text-primary shadow-sm hover:bg-white"
+                                    :"text-slate-500 hover:text-slate-700 hover:bg-white/50"
                             )}
                         >
                             <button type="button">
-                                <CalendarIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isCustom ? "text-primary" : "text-slate-400")} />
+                                <CalendarIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4", isCustom ?"text-primary" :"text-slate-400")} />
                                 <span className="hidden sm:inline">Выбрать период</span>
                                 <span className="sm:hidden">Период</span>
                                 <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 opacity-50" />
@@ -142,11 +140,11 @@ export function DateRangeFilter() {
                                                 {dateRange?.from ? (
                                                     <>
                                                         Выбрано: <span className="text-primary font-bold">
-                                                            {format(dateRange.from, "d MMM", { locale: ru })}
-                                                            {dateRange.to && ` - ${format(dateRange.to, "d MMM", { locale: ru })}`}
+                                                            {format(dateRange.from,"d MMM", { locale: ru })}
+                                                            {dateRange.to && ` - ${format(dateRange.to,"d MMM", { locale: ru })}`}
                                                         </span>
                                                     </>
-                                                ) : "Выберите даты"}
+                                                ) :"Выберите даты"}
                                             </div>
                                             <Button
                                                 size="sm"
@@ -167,7 +165,7 @@ export function DateRangeFilter() {
                 {isCustom && fromParam && toParam && (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-[14px] shadow-sm border border-slate-200/50 animate-in fade-in slide-in-from-left-2 duration-300">
                         <span className="text-primary font-bold text-sm">
-                            {format(new Date(fromParam), "dd.MM.yy", { locale: ru })} — {format(new Date(toParam), "dd.MM.yy", { locale: ru })}
+                            {format(new Date(fromParam),"dd.MM.yy", { locale: ru })} — {format(new Date(toParam),"dd.MM.yy", { locale: ru })}
                         </span>
                         <Button
                             variant="ghost"

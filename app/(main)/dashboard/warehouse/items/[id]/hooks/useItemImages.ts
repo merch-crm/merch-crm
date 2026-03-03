@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useToast } from "@/components/ui/toast";
-import { compressImage } from "@/lib/image-processing";
-import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { useState } from"react";
+import { useToast } from"@/components/ui/toast";
+import { compressImage } from"@/lib/image-processing";
+import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
 
 export function useItemImages(
     item: InventoryItem,
@@ -38,7 +38,7 @@ export function useItemImages(
                         [type]: { uploading: false, progress: 100, uploaded: true }
                     }
                 }));
-                toast(`Файл ${fileName} готов`, "success");
+                toast(`Файл ${fileName} готов`,"success");
                 if (onComplete) onComplete();
             } else {
                 setUploads(prev => ({
@@ -52,7 +52,7 @@ export function useItemImages(
         }, 300);
     };
 
-    const handleImageUpdate = async (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => {
+    const handleImageUpdate = async (file: File | null, type:"front" |"back" |"side" |"details", index?: number) => {
         if (!file) return;
 
         try {
@@ -62,12 +62,12 @@ export function useItemImages(
                 maxSizeMB: 0.7
             });
 
-            if (type === "details") {
+            if (type ==="details") {
                 const currentCount = (item.imageDetails?.length || 0);
                 const isAdding = typeof index !== 'number' || index >= currentCount;
 
                 if (isAdding && currentCount >= 3) {
-                    toast("Максимальное количество дополнительных фото — 3", "error");
+                    toast("Максимальное количество дополнительных фото — 3","error");
                     return;
                 }
 
@@ -88,56 +88,56 @@ export function useItemImages(
                 return;
             }
 
-            if (type === "front") setUploads(prev => ({ ...prev, front: compressedFile }));
-            else if (type === "back") setUploads(prev => ({ ...prev, back: compressedFile }));
-            else if (type === "side") setUploads(prev => ({ ...prev, side: compressedFile }));
+            if (type ==="front") setUploads(prev => ({ ...prev, front: compressedFile }));
+            else if (type ==="back") setUploads(prev => ({ ...prev, back: compressedFile }));
+            else if (type ==="side") setUploads(prev => ({ ...prev, side: compressedFile }));
 
             simulateUpload(type, compressedFile.name, () => {
                 setItem(prev => {
-                    if (type === "front") return { ...prev, image: preview };
-                    if (type === "back") return { ...prev, imageBack: preview };
-                    if (type === "side") return { ...prev, imageSide: preview };
+                    if (type ==="front") return { ...prev, image: preview };
+                    if (type ==="back") return { ...prev, imageBack: preview };
+                    if (type ==="side") return { ...prev, imageSide: preview };
                     return prev;
                 });
             });
         } catch (error) {
             console.error("Compression failed:", error);
-            toast("Ошибка при обработке изображения", "error");
+            toast("Ошибка при обработке изображения","error");
         }
     };
 
     const handleImageRemove = (type: string, index?: number) => {
-        if (type === "details" && typeof index === "number") {
+        if (type ==="details" && typeof index ==="number") {
             const newDetails = [...(item.imageDetails || [])];
             newDetails.splice(index, 1);
             setItem(prev => ({ ...prev, imageDetails: newDetails }));
         } else {
-            setItem(prev => ({ ...prev, [type === "front" ? "image" : type === "back" ? "imageBack" : "imageSide"]: null }));
+            setItem(prev => ({ ...prev, [type ==="front" ?"image" : type ==="back" ?"imageBack" :"imageSide"]: null }));
         }
     };
 
-    const handleSetMain = (type: "front" | "back" | "side" | "details", index?: number) => {
+    const handleSetMain = (type:"front" |"back" |"side" |"details", index?: number) => {
         const currentMain = item.image;
         let newMain: string | null = null;
         const updatedItem = { ...item };
 
-        if (type === "back") {
+        if (type ==="back") {
             newMain = item.imageBack;
             updatedItem.imageBack = currentMain;
-        } else if (type === "side") {
+        } else if (type ==="side") {
             newMain = item.imageSide;
             updatedItem.imageSide = currentMain;
-        } else if (type === "details" && typeof index === "number" && item.imageDetails) {
+        } else if (type ==="details" && typeof index ==="number" && item.imageDetails) {
             newMain = item.imageDetails[index];
             const newDetails = [...item.imageDetails];
-            newDetails[index] = currentMain || "";
+            newDetails[index] = currentMain ||"";
             updatedItem.imageDetails = newDetails;
         }
 
         if (newMain) {
             updatedItem.image = newMain;
             setItem(updatedItem);
-            toast("Фото установлено как основное", "success");
+            toast("Фото установлено как основное","success");
         }
     };
 

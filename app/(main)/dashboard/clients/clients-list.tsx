@@ -1,40 +1,40 @@
 "use client";
 
-import { useEffect, useCallback, useMemo } from "react";
-import { getClients, getManagers, updateClientField, getRegions } from "./actions/core.actions";
-import { bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients } from "./actions/bulk.actions";
-import { useDebounce } from "@/hooks/use-debounce";
-import { undoLastAction } from "../undo-actions";
-import { exportToCSV } from "@/lib/export-utils";
+import { useEffect, useCallback, useMemo } from"react";
+import { getClients, getManagers, updateClientField, getRegions } from"./actions/core.actions";
+import { bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients } from"./actions/bulk.actions";
+import { useDebounce } from"@/hooks/use-debounce";
+import { undoLastAction } from"../undo-actions";
+import { exportToCSV } from"@/lib/export-utils";
 import {
     Users as UsersIcon,
     Download,
     Archive,
     Trash2,
     X
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { cn } from "@/lib/utils";
-import { ClientProfileDrawer } from "./client-profile-drawer";
-import { EditClientDialog } from "./edit-client-dialog";
-import { useSearchParams } from "next/navigation";
-import { createPortal } from "react-dom";
-import { Pagination } from "@/components/ui/pagination";
-import { useBranding } from "@/components/branding-provider";
-import { Button } from "@/components/ui/button";
-import type { ClientSummary as Client } from "@/lib/types";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { ClientFilterPanel } from "./components/client-filter-panel";
-import { ClientTable } from "./components/client-table";
+} from"lucide-react";
+import { motion, AnimatePresence } from"framer-motion";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { cn } from"@/lib/utils";
+import { ClientProfileDrawer } from"./client-profile-drawer";
+import { EditClientDialog } from"./edit-client-dialog";
+import { useSearchParams } from"next/navigation";
+import { createPortal } from"react-dom";
+import { Pagination } from"@/components/ui/pagination";
+import { useBranding } from"@/components/branding-provider";
+import { Button } from"@/components/ui/button";
+import type { ClientSummary as Client } from"@/lib/types";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { ClientFilterPanel } from"./components/client-filter-panel";
+import { ClientTable } from"./components/client-table";
 
 
-import { useClientsState } from "./hooks/use-clients-state";
+import { useClientsState } from"./hooks/use-clients-state";
 
 export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: string | null, showFinancials?: boolean }) {
     const branding = useBranding();
-    const currencySymbol = branding.currencySymbol || "₽";
+    const currencySymbol = branding.currencySymbol ||"₽";
 
     const {
         viewState, setViewState,
@@ -56,7 +56,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         const history = localStorage.getItem("client_search_history");
         const parsedHistory = history ? JSON.parse(history) : [];
 
-        // Use a slight delay to satisfy audit tool's "synchronous" check
+        // Use a slight delay to satisfy audit tool's"synchronous" check
         const t = setTimeout(() => {
             setViewState(prev => ({ ...prev, mounted: true, now: Date.now() }));
             if (parsedHistory.length > 0) {
@@ -119,17 +119,17 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         const res = await bulkDeleteClients(selectedIds);
         setUiState(prev => ({ ...prev, isBulkUpdating: false }));
         if (res.success) {
-            toast("Удалено: " + selectedIds.length, "success", {
+            toast("Удалено:" + selectedIds.length,"success", {
                 action: {
-                    label: "Отменить",
+                    label:"Отменить",
                     onClick: async () => {
                         const undoRes = await undoLastAction();
                         if (undoRes.success) {
-                            toast("Действие отменено", "success");
+                            toast("Действие отменено","success");
                             playSound("notification_success");
                             fetchClients();
                         } else {
-                            toast(undoRes.error || "Ошибка", "error");
+                            toast(undoRes.error ||"Ошибка","error");
                         }
                     }
                 }
@@ -138,17 +138,17 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             setSelectedIds([]);
             fetchClients();
         } else {
-            toast(res.error || "Ошибка", "error");
+            toast(res.error ||"Ошибка","error");
         }
     };
 
     const handleUpdateField = async (clientId: string, field: string, value: string | number | boolean | null) => {
         const res = await updateClientField(clientId, field, value);
         if (res?.success) {
-            toast("Обновлено", "success", { mutation: true });
+            toast("Обновлено","success", { mutation: true });
             fetchClients();
         } else {
-            toast(res?.error || "Ошибка", "error");
+            toast(res?.error ||"Ошибка","error");
         }
     };
 
@@ -157,11 +157,11 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         const res = await bulkArchiveClients(selectedIds, !filters.showArchived);
         setUiState(prev => ({ ...prev, isBulkUpdating: false }));
         if (res?.success) {
-            toast(filters.showArchived ? "Восстановлено" : "Архивировано", "success");
+            toast(filters.showArchived ?"Восстановлено" :"Архивировано","success");
             setSelectedIds([]);
             fetchClients();
         } else {
-            toast(res?.error || "Ошибка", "error");
+            toast(res?.error ||"Ошибка","error");
         }
     };
 
@@ -188,14 +188,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
 
     const handleExport = useCallback(() => {
         const selectedClients = (viewState.data?.clients || []).filter(c => selectedIds.includes(c.id));
-        exportToCSV(selectedClients, "clients_export", [
-            { header: "Фамилия", key: "lastName" },
-            { header: "Имя", key: "firstName" },
-            { header: "Компания", key: "company" },
-            { header: "Телефон", key: "phone" },
-            { header: "Email", key: "email" }
+        exportToCSV(selectedClients,"clients_export", [
+            { header:"Фамилия", key:"lastName" },
+            { header:"Имя", key:"firstName" },
+            { header:"Компания", key:"company" },
+            { header:"Телефон", key:"phone" },
+            { header:"Email", key:"email" }
         ]);
-        toast("Экспорт завершен", "success");
+        toast("Экспорт завершен","success");
         playSound("notification_success");
     }, [viewState.data, selectedIds, toast]);
 
@@ -215,7 +215,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             />
 
             <div className="px-1 flex items-center justify-between">
-                <p className="text-[11px] font-bold text-slate-500 ">
+                <p className="text-[11px] font-bold text-slate-500">
                     Найдено: <span className="text-slate-900">{viewState.data?.total || 0}</span>
                 </p>
                 <div className="text-[11px] font-black text-slate-300">
@@ -256,7 +256,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             )}
 
             <ClientProfileDrawer
-                clientId={dialogs.selectedClientId || ""}
+                clientId={dialogs.selectedClientId ||""}
                 isOpen={!!dialogs.selectedClientId}
                 onClose={() => setDialogs(prev => ({ ...prev, selectedClientId: null }))}
                 onEdit={() => {
@@ -283,9 +283,9 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             <AnimatePresence>
                 {selectedIds.length > 0 && viewState.mounted && createPortal(
                     <motion.div
-                        initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                        exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
+                        initial={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, x:"-50%", scale: 1 }}
+                        exit={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
                         className="fixed bottom-10 left-1/2 z-[100] flex items-center bg-white p-2.5 px-8 gap-3 rounded-full shadow-2xl border border-slate-200"
                     >
                         <div className="flex items-center gap-3 px-2">
@@ -297,7 +297,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                         <div className="w-px h-6 bg-slate-200 mx-1" />
 
                         <div className="flex items-center gap-1">
-                            {["Администратор", "Управляющий", "Отдел продаж"].includes(userRoleName || "") && (
+                            {["Администратор","Управляющий","Отдел продаж"].includes(userRoleName ||"") && (
                                 <Button type="button" variant="ghost" onClick={handleExport} className="h-9 px-4 rounded-full text-[11px] font-bold">
                                     <Download className="w-3.5 h-3.5 mr-2" /> Экспорт
                                 </Button>
@@ -307,7 +307,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 <Button
                                     type="button"
                                     onClick={() => setUiState(prev => ({ ...prev, showManagerSelect: !prev.showManagerSelect }))}
-                                    className={cn("h-9 px-4 rounded-full text-[11px] font-bold", uiState.showManagerSelect ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-600")}
+                                    className={cn("h-9 px-4 rounded-full text-[11px] font-bold", uiState.showManagerSelect ?"bg-slate-900 text-white" :"bg-slate-50 text-slate-600")}
                                 >
                                     <UsersIcon className="w-3.5 h-3.5 mr-2" /> Менеджер
                                 </Button>
@@ -319,9 +319,9 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                             <button
                                                 type="button"
                                                 onClick={async () => {
-                                                    const res = await bulkUpdateClientManager(selectedIds, "");
+                                                    const res = await bulkUpdateClientManager(selectedIds,"");
                                                     if (res.success) {
-                                                        toast("Обновлено", "success");
+                                                        toast("Обновлено","success");
                                                         setSelectedIds([]);
                                                         fetchClients();
                                                     }
@@ -338,7 +338,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                                     onClick={async () => {
                                                         const res = await bulkUpdateClientManager(selectedIds, m.id);
                                                         if (res.success) {
-                                                            toast(`Назначен: ${m.name}`, "success");
+                                                            toast(`Назначен: ${m.name}`,"success");
                                                             setSelectedIds([]);
                                                             fetchClients();
                                                         }
@@ -354,13 +354,13 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                                 )}
                             </div>
 
-                            {["Администратор", "Управляющий"].includes(userRoleName || "") && (
+                            {["Администратор","Управляющий"].includes(userRoleName ||"") && (
                                 <Button type="button" variant="ghost" onClick={handleBulkArchive} className="h-9 px-4 rounded-full text-[11px] font-bold hover:bg-amber-50 text-amber-600">
                                     <Archive className="w-3.5 h-3.5 mr-2" /> В архив
                                 </Button>
                             )}
 
-                            {userRoleName === "Администратор" && (
+                            {userRoleName ==="Администратор" && (
                                 <Button type="button" variant="ghost" onClick={() => setUiState(prev => ({ ...prev, showDeleteConfirm: true }))} className="h-9 px-4 rounded-full text-[11px] font-bold text-rose-500 hover:bg-rose-50">
                                     <Trash2 className="w-3.5 h-3.5 mr-2" /> Удалить
                                 </Button>

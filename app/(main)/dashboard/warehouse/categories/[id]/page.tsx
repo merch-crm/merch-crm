@@ -1,14 +1,14 @@
-import { db } from "@/lib/db";
+import { db } from"@/lib/db";
 
-import { inventoryCategories } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { notFound, redirect } from "next/navigation";
-import { Metadata } from "next";
-import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from "./category-detail-client";
-import type { StorageLocation, InventoryFilters } from "../../types";
-import { getSession } from "@/lib/auth";
-import { serializeForClient, type Serialized } from "@/lib/serialize";
-import { cache } from "react";
+import { inventoryCategories } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { notFound, redirect } from"next/navigation";
+import { Metadata } from"next";
+import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from"./category-detail-client";
+import type { StorageLocation, InventoryFilters } from"../../types";
+import { getSession } from"@/lib/auth";
+import { serializeForClient, type Serialized } from"@/lib/serialize";
+import { cache } from"react";
 
 type PageParams = {
     params: Promise<{ id: string }>;
@@ -49,12 +49,12 @@ const getCachedCategory = cache(async (id: string, isUuid: boolean) => {
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
     const { id: paramId } = await params;
-    if (paramId === "orphaned") return { title: "Склад | Без категории" };
+    if (paramId ==="orphaned") return { title:"Склад | Без категории" };
 
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
     const found = await getCachedCategory(paramId, isUuid);
 
-    return { title: found ? `Склад | ${found.name}` : "Склад | Категория" };
+    return { title: found ? `Склад | ${found.name}` :"Склад | Категория" };
 }
 
 export default async function CategoryPage({
@@ -73,7 +73,7 @@ export default async function CategoryPage({
     let parentCategory = null;
     let resolvedCategoryId: string | null = null;
 
-    if (paramId === "orphaned") {
+    if (paramId ==="orphaned") {
         resolvedCategoryId = null; // orphaned
     } else {
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
@@ -166,7 +166,7 @@ export default async function CategoryPage({
             search: searchParamsObj.search,
             status: searchParamsObj.status as InventoryFilters["status"],
             storageLocationId: searchParamsObj.storage,
-            onlyOrphaned: paramId === "orphaned"
+            onlyOrphaned: paramId ==="orphaned"
         }),
         getStorageLocations(),
         getInventoryAttributeTypes(),
@@ -191,14 +191,14 @@ export default async function CategoryPage({
 
     // Fallback object for UI if orphaned
     const finalCategory = category ? serializeForClient(category) as Serialized<Category> : {
-        id: "orphaned",
-        name: "Без категории",
-        description: "Товары, которым не назначена категория",
+        id:"orphaned",
+        name:"Без категории",
+        description:"Товары, которым не назначена категория",
         prefix: null,
-        color: "slate",
-        icon: "box",
+        color:"slate",
+        icon:"box",
         isSystem: true,
-        gender: "neuter",
+        gender:"neuter",
         sortOrder: 0,
         isActive: true
     } as Serialized<Category>;

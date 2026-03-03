@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { ClientFiltersSchema } from "./validation";
+import { z } from"zod";
+import { ClientFiltersSchema } from"./validation";
 
 export type ClientFilters = z.infer<typeof ClientFiltersSchema>;
 
@@ -14,8 +14,8 @@ export {
     getManagers, getRegions, getClients, checkClientDuplicates,
     addClient, updateClient, updateClientComments, getClientDetails,
     getClientStats, deleteClient, updateClientField, toggleClientArchived
-} from "./actions/core.actions";
+} from"./actions/core.actions";
 
 export {
     bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients
-} from "./actions/bulk.actions";
+} from"./actions/bulk.actions";

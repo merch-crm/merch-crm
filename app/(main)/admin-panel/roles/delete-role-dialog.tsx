@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Loader2, Lock } from "lucide-react";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useState } from"react";
+import { Loader2, Lock } from"lucide-react";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
 
 interface DeleteRoleDialogProps {
     role: { id: string; name: string; isSystem?: boolean } | null;
@@ -56,7 +56,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                     <div className="p-4 bg-rose-50 rounded-[18px] border border-rose-100">
                         <div className="flex items-center gap-2 text-rose-600 mb-3">
                             <Lock className="w-4 h-4" />
-                            <span className="text-xs font-bold ">Системная защита</span>
+                            <span className="text-xs font-bold">Системная защита</span>
                         </div>
                         <p className="text-xs font-bold text-rose-500/80 mb-3">
                             Это системная роль. Для подтверждения удаления введите пароль от своей учетной записи.
@@ -93,7 +93,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
                         className="flex-[1.2] rounded-[18px] h-12 font-bold shadow-lg shadow-red-500/10"
                     >
                         {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
-                        {loading ? "Удаление..." : "Удалить роль"}
+                        {loading ?"Удаление..." :"Удалить роль"}
                     </Button>
                 </div>
             </div>

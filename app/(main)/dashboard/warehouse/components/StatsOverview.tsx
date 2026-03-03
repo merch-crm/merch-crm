@@ -1,6 +1,6 @@
-import React from "react";
-import { Layers, Building2, Package, PackageCheck, Clock, Archive } from "lucide-react";
-import { SummaryStatCard } from "@/components/ui/summary-stat-card";
+import React from"react";
+import { Layers, Building2, Package, PackageCheck, Clock, Archive } from"lucide-react";
+import { SummaryStatCard } from"@/components/ui/summary-stat-card";
 
 interface StatsOverviewProps {
     totalStorages: number;
@@ -84,4 +84,4 @@ export const StatsOverview = React.memo(({
     );
 });
 
-StatsOverview.displayName = "StatsOverview";
+StatsOverview.displayName ="StatsOverview";

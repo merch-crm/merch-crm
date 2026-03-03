@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useToast } from "@/components/ui/toast";
-import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from "../attribute-actions";
-import type { InventoryAttribute as Attribute, AttributeType } from "../types";
+import { useState, useEffect, useMemo } from"react";
+import { useRouter, useSearchParams } from"next/navigation";
+import { useToast } from"@/components/ui/toast";
+import { createInventoryAttribute, deleteInventoryAttribute, updateInventoryAttribute, updateInventoryAttributeType, deleteInventoryAttributeType } from"../attribute-actions";
+import type { InventoryAttribute as Attribute, AttributeType } from"../types";
 import {
     DESIRED_CATEGORY_ORDER,
     sortAttributeValues,
@@ -10,7 +10,7 @@ import {
     DEFAULT_VALUE_FORM,
     DEFAULT_TYPE_FORM,
     DEFAULT_DELETE_DIALOG
-} from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+} from"@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 interface Category {
     id: string;
@@ -35,7 +35,7 @@ export interface ValueFormState {
     length: string;
     width: string;
     height: string;
-    dimensionUnit: "мм" | "см" | "м";
+    dimensionUnit:"мм" |"см" |"м";
     // General metadata
     fullName: string;
     shortName: string;
@@ -57,7 +57,7 @@ export interface TypeFormState {
     editingType: AttributeType | null;
     name: string;
     categoryId: string;
-    dataType: "text" | "unit" | "color" | "dimensions" | "quantity" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
+    dataType:"text" |"unit" |"color" |"dimensions" |"quantity" |"composition" |"material" |"size" |"brand" |"country" |"density" |"weight" |"volume" |"package" |"consumable";
     isSystem: boolean;
     showInSku: boolean;
     showInName: boolean;
@@ -106,8 +106,8 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         const cat = searchParams.get("cat");
         if (cat) return cat;
         if (rootCategories.length > 0) return rootCategories[0].id;
-        if (hasUncategorized) return "uncategorized";
-        return "";
+        if (hasUncategorized) return"uncategorized";
+        return"";
     });
 
     const [valueForm, setValueForm] = useState<ValueFormState>(DEFAULT_VALUE_FORM);
@@ -128,7 +128,7 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             return;
         }
 
-        const isActiveValid = activeCategoryId === "uncategorized" || rootCategories.some(c => c.id === activeCategoryId);
+        const isActiveValid = activeCategoryId ==="uncategorized" || rootCategories.some(c => c.id === activeCategoryId);
         if (!activeCategoryId || !isActiveValid) {
             if (rootCategories.length > 0) {
                 setActiveCategoryId(rootCategories[0].id);
@@ -169,7 +169,7 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             length?: string;
             width?: string;
             height?: string;
-            dimensionUnit?: "мм" | "см" | "м";
+            dimensionUnit?:"мм" |"см" |"м";
             fullName?: string;
             shortName?: string;
             isOversize?: boolean;
@@ -183,17 +183,17 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
 
         const compositionItems = typedMeta?.items && typedMeta.items.length > 0
             ? typedMeta.items.map((it) => ({
-                name: it.name || "",
-                value: it.value || it.percent || "",
-                unit: it.unit || "%"
+                name: it.name ||"",
+                value: it.value || it.percent ||"",
+                unit: it.unit ||"%"
             }))
-            : [{ name: "", value: "", unit: "%" }];
+            : [{ name:"", value:"", unit:"%" }];
 
-        const isDensity = type?.dataType === "density";
-        const isWeight = type?.dataType === "weight";
-        const isVolume = type?.dataType === "volume";
+        const isDensity = type?.dataType ==="density";
+        const isWeight = type?.dataType ==="weight";
+        const isVolume = type?.dataType ==="volume";
 
-        let initialFullName = typedMeta?.fullName || "";
+        let initialFullName = typedMeta?.fullName ||"";
         if (!initialFullName && (isDensity || isWeight || isVolume)) {
             initialFullName = attr.name.replace(/[^0-9.]/g, '').trim();
         }
@@ -205,25 +205,25 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             name: attr.name,
             code: attr.value,
             isCodeManuallyEdited: false,
-            colorHex: typedMeta?.hex || "#000000",
-            length: typedMeta?.length || "",
-            width: typedMeta?.width || "",
-            height: typedMeta?.height || "",
-            dimensionUnit: typedMeta?.dimensionUnit || "мм",
+            colorHex: typedMeta?.hex ||"#000000",
+            length: typedMeta?.length ||"",
+            width: typedMeta?.width ||"",
+            height: typedMeta?.height ||"",
+            dimensionUnit: typedMeta?.dimensionUnit ||"мм",
             fullName: initialFullName,
-            shortName: typedMeta?.shortName || "",
+            shortName: typedMeta?.shortName ||"",
             isOversize: typedMeta?.isOversize || false,
             compositionItems,
-            consumableType: typedMeta?.consumableType || "краска",
-            consumableCustomType: typedMeta?.consumableCustomType || "",
-            consumableValue: typedMeta?.consumableValue || "",
-            consumableUnit: typedMeta?.consumableUnit || "мл",
-            consumableExtra: typedMeta?.consumableExtra || "",
-            error: "",
+            consumableType: typedMeta?.consumableType ||"краска",
+            consumableCustomType: typedMeta?.consumableCustomType ||"",
+            consumableValue: typedMeta?.consumableValue ||"",
+            consumableUnit: typedMeta?.consumableUnit ||"мл",
+            consumableExtra: typedMeta?.consumableExtra ||"",
+            error:"",
             isSaving: false
         });
 
-        if (type?.dataType === "consumable" && typedMeta?.hex) {
+        if (type?.dataType ==="consumable" && typedMeta?.hex) {
             setTypeForm(prev => ({ ...prev, hasColor: true }));
         }
     }
@@ -233,39 +233,39 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
 
         const currentType = attributeTypes.find(t => t.slug === valueForm.targetTypeSlug);
         const dataType = currentType?.dataType;
-        const isComposition = dataType === "composition";
-        const isConsumable = dataType === "consumable";
+        const isComposition = dataType ==="composition";
+        const isConsumable = dataType ==="consumable";
         const hasComposition = typeForm.hasComposition || isComposition || isConsumable;
-        const hasColor = (dataType === "color") || typeForm.hasColor;
-        const isDimensions = dataType === "dimensions";
+        const hasColor = (dataType ==="color") || typeForm.hasColor;
+        const isDimensions = dataType ==="dimensions";
         const filled = (hasComposition || isComposition) ? valueForm.compositionItems.filter(i => i.name.trim()) : [];
 
         let effectiveName = valueForm.name;
         let effectiveCode = valueForm.code;
 
         if ((hasComposition || isComposition) && !isConsumable) {
-            if (filled.length === 0) { setValueForm(prev => ({ ...prev, error: "Добавьте хотя бы один компонент" })); return; }
-            effectiveName = filled.map(i => `${i.name}${i.unit === '%' ? '%' : ` ${i.unit}`}`).join(", ");
+            if (filled.length === 0) { setValueForm(prev => ({ ...prev, error:"Добавьте хотя бы один компонент" })); return; }
+            effectiveName = filled.map(i => `${i.name}${i.unit === '%' ? '%' : ` ${i.unit}`}`).join(",");
             effectiveCode = filled.map(i => `${transliterateToSku(i.name).substring(0, 4).toUpperCase()}${transliterateToSku(i.unit).toUpperCase()}`).join("");
             setValueForm(prev => ({ ...prev, name: effectiveName, code: effectiveCode }));
         } else if (isConsumable) {
-            const typeValue = valueForm.consumableType === "другое" ? valueForm.consumableCustomType : valueForm.consumableType;
+            const typeValue = valueForm.consumableType ==="другое" ? valueForm.consumableCustomType : valueForm.consumableType;
             if (hasComposition) {
-                const compName = filled.map(i => `${i.name}${i.unit === '%' ? '%' : ` ${i.unit}`}`).join(", ");
+                const compName = filled.map(i => `${i.name}${i.unit === '%' ? '%' : ` ${i.unit}`}`).join(",");
                 const compCode = filled.map(i => `${transliterateToSku(i.name).substring(0, 4).toUpperCase()}${transliterateToSku(i.unit).toUpperCase()}`).join("");
-                effectiveName = `${typeValue}${compName ? ` ${compName}` : ""}${valueForm.consumableExtra ? ` (${valueForm.consumableExtra})` : ""}`;
+                effectiveName = `${typeValue}${compName ? ` ${compName}` :""}${valueForm.consumableExtra ? ` (${valueForm.consumableExtra})` :""}`;
                 if (!valueForm.isCodeManuallyEdited) {
-                    effectiveCode = `${transliterateToSku(typeValue).toUpperCase()}${compCode}${valueForm.consumableExtra ? transliterateToSku(valueForm.consumableExtra).substring(0, 3).toUpperCase() : ""}`;
+                    effectiveCode = `${transliterateToSku(typeValue).toUpperCase()}${compCode}${valueForm.consumableExtra ? transliterateToSku(valueForm.consumableExtra).substring(0, 3).toUpperCase() :""}`;
                 }
             } else {
-                effectiveName = `${typeValue}${valueForm.consumableValue ? ` ${valueForm.consumableValue}${valueForm.consumableUnit}` : ""}${valueForm.consumableExtra ? ` (${valueForm.consumableExtra})` : ""}`;
+                effectiveName = `${typeValue}${valueForm.consumableValue ? ` ${valueForm.consumableValue}${valueForm.consumableUnit}` :""}${valueForm.consumableExtra ? ` (${valueForm.consumableExtra})` :""}`;
                 if (!valueForm.isCodeManuallyEdited) {
-                    effectiveCode = `${transliterateToSku(typeValue).toUpperCase()}${valueForm.consumableValue}${transliterateToSku(valueForm.consumableUnit).toUpperCase()}${valueForm.consumableExtra ? transliterateToSku(valueForm.consumableExtra).substring(0, 3).toUpperCase() : ""}`;
+                    effectiveCode = `${transliterateToSku(typeValue).toUpperCase()}${valueForm.consumableValue}${transliterateToSku(valueForm.consumableUnit).toUpperCase()}${valueForm.consumableExtra ? transliterateToSku(valueForm.consumableExtra).substring(0, 3).toUpperCase() :""}`;
                 }
             }
         } else {
-            if (!valueForm.name.trim()) { setValueForm(prev => ({ ...prev, error: "Введите название" })); return; }
-            if (!valueForm.code.trim()) { setValueForm(prev => ({ ...prev, error: "Введите код" })); return; }
+            if (!valueForm.name.trim()) { setValueForm(prev => ({ ...prev, error:"Введите название" })); return; }
+            if (!valueForm.code.trim()) { setValueForm(prev => ({ ...prev, error:"Введите код" })); return; }
         }
 
         const normalizedCode = effectiveCode.trim().toUpperCase();
@@ -275,8 +275,8 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         });
 
         if (isDuplicate) {
-            setValueForm(prev => ({ ...prev, error: "Значение с таким кодом уже существует", isSaving: false }));
-            toast("Значение с таким кодом уже существует", "error");
+            setValueForm(prev => ({ ...prev, error:"Значение с таким кодом уже существует", isSaving: false }));
+            toast("Значение с таким кодом уже существует","error");
             return;
         }
 
@@ -288,7 +288,7 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             dimensionUnit: isDimensions ? valueForm.dimensionUnit : undefined,
             fullName: valueForm.fullName,
             shortName: valueForm.shortName,
-            isOversize: (dataType === "size") ? valueForm.isOversize : undefined,
+            isOversize: (dataType ==="size") ? valueForm.isOversize : undefined,
             items: (hasComposition || isComposition) ? filled : undefined,
             consumableType: isConsumable ? valueForm.consumableType : undefined,
             consumableCustomType: isConsumable ? valueForm.consumableCustomType : undefined,
@@ -307,15 +307,15 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             }
 
             if (!res.success) {
-                setValueForm(prev => ({ ...prev, error: res.error || "Ошибка при сохранении" }));
+                setValueForm(prev => ({ ...prev, error: res.error ||"Ошибка при сохранении" }));
             } else {
-                toast(valueForm.editingAttribute ? "Обновлено успешно" : "Добавлено успешно", "success");
+                toast(valueForm.editingAttribute ?"Обновлено успешно" :"Добавлено успешно","success");
                 setValueForm(prev => ({ ...prev, isOpen: false }));
                 router.refresh();
             }
         } catch (err) {
             console.error("[WAREHOUSE_CHARACTERISTIC] Save error:", err);
-            setValueForm(prev => ({ ...prev, error: "Ошибка при сохранении" }));
+            setValueForm(prev => ({ ...prev, error:"Ошибка при сохранении" }));
         } finally {
             setValueForm(prev => ({ ...prev, isSaving: false }));
         }
@@ -327,18 +327,18 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         try {
             const res = await deleteInventoryAttribute(deleteDialog.attribute.id);
             if (res.success) {
-                toast("Удалено успешно", "success");
+                toast("Удалено успешно","success");
                 setDeleteDialog(prev => ({ ...prev, attribute: null }));
                 if (valueForm.editingAttribute?.id === deleteDialog.attribute.id) {
                     setValueForm(prev => ({ ...prev, isOpen: false }));
                 }
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка при удалении", "error");
+                toast(res.error ||"Ошибка при удалении","error");
             }
         } catch (err) {
             console.error("[WAREHOUSE_CHARACTERISTIC] Delete error:", err);
-            toast("Ошибка при удалении", "error");
+            toast("Ошибка при удалении","error");
         } finally {
             setDeleteDialog(prev => ({ ...prev, isDeleting: false }));
         }
@@ -350,18 +350,18 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         try {
             const res = await deleteInventoryAttributeType(deleteDialog.type.id, deleteDialog.password);
             if (res.success) {
-                toast("Раздел удален", "success");
-                setDeleteDialog(prev => ({ ...prev, type: null, password: "" }));
+                toast("Раздел удален","success");
+                setDeleteDialog(prev => ({ ...prev, type: null, password:"" }));
                 setTypeForm(prev => ({ ...prev, editingType: null }));
                 router.refresh();
             } else {
-                toast(res.error || "Ошибка удаления", "error");
-                setDeleteDialog(prev => ({ ...prev, password: "" }));
+                toast(res.error ||"Ошибка удаления","error");
+                setDeleteDialog(prev => ({ ...prev, password:"" }));
             }
         } catch (err) {
             console.error("[WAREHOUSE_CHARACTERISTIC] Delete type error:", err);
-            toast("Ошибка удаления", "error");
-            setDeleteDialog(prev => ({ ...prev, password: "" }));
+            toast("Ошибка удаления","error");
+            setDeleteDialog(prev => ({ ...prev, password:"" }));
         } finally {
             setDeleteDialog(prev => ({ ...prev, isDeletingType: false }));
         }
@@ -371,8 +371,8 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         setTypeForm({
             editingType: type,
             name: type.name,
-            categoryId: type.categoryId || "uncategorized",
-            dataType: type.dataType || "text",
+            categoryId: type.categoryId ||"uncategorized",
+            dataType: type.dataType ||"text",
             isSystem: type.isSystem || false,
             showInSku: type.showInSku ?? true,
             showInName: type.showInName ?? true,
@@ -388,7 +388,7 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         if (!typeForm.editingType || !typeForm.name.trim()) return;
         setTypeForm(prev => ({ ...prev, isLoading: true, error: null }));
         try {
-            const catId = typeForm.categoryId === "uncategorized" ? null : typeForm.categoryId;
+            const catId = typeForm.categoryId ==="uncategorized" ? null : typeForm.categoryId;
             const res = await updateInventoryAttributeType(
                 typeForm.editingType.id,
                 {
@@ -404,23 +404,23 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
                 }
             );
             if (res.success) {
-                toast("Раздел обновлен", "success");
+                toast("Раздел обновлен","success");
                 setTypeForm(prev => ({ ...prev, editingType: null }));
                 router.refresh();
             } else {
-                const errorMsg = res.error || "Ошибка обновления";
+                const errorMsg = res.error ||"Ошибка обновления";
                 setTypeForm(prev => ({ ...prev, error: errorMsg }));
-                toast(errorMsg, "error");
+                toast(errorMsg,"error");
             }
         } catch (err) {
             console.error("[WAREHOUSE_CHARACTERISTIC] Update type error:", err);
-            toast("Ошибка обновления", "error");
+            toast("Ошибка обновления","error");
         } finally {
             setTypeForm(prev => ({ ...prev, isLoading: false }));
         }
     }
 
-    const filteredTypes = activeCategoryId === "uncategorized"
+    const filteredTypes = activeCategoryId ==="uncategorized"
         ? attributeTypes.filter(t => !t.categoryId)
         : attributeTypes.filter(t => t.categoryId === activeCategoryId);
 

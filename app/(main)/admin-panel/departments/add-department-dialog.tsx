@@ -1,14 +1,14 @@
 "use client";
 
-import { Plus, Building, Loader2, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
-import { useAddDepartment } from "./hooks/use-add-department";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { DEPARTMENT_COLORS, getDepartmentColorHex } from "@/lib/constants";
-import { IconInput } from "@/components/ui/icon-input";
+import { Plus, Building, Loader2, Check } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Textarea } from"@/components/ui/textarea";
+import { cn } from"@/lib/utils";
+import { useAddDepartment } from"./hooks/use-add-department";
+import { useIsMobile } from"@/hooks/use-mobile";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { DEPARTMENT_COLORS, getDepartmentColorHex } from"@/lib/constants";
+import { IconInput } from"@/components/ui/icon-input";
 
 interface AddDepartmentDialogProps {
     onSuccess: () => void;
@@ -24,14 +24,13 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
             <Button
                 type="button"
                 onClick={() => updateState({ isOpen: true })}
-                size={isMobile ? "default" : "lg"}
-                className={cn(
-                    "rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
-                    isMobile ? "w-11 h-11 p-0" : ""
+                size={isMobile ?"default" :"lg"}
+                className={cn("rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
+                    isMobile ?"w-11 h-11 p-0" :""
                 )}
                 title="Добавить отдел"
             >
-                <Plus className={cn("h-5 w-5", !isMobile && "mr-2")} />
+                <Plus className={cn("h-5 w-5", !isMobile &&"mr-2")} />
                 <span className="hidden sm:inline">Добавить отдел</span>
             </Button>
 
@@ -86,8 +85,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                         key={color.value}
                                         type="button"
                                         onClick={() => updateState({ selectedColor: color.value })}
-                                        className={cn(
-                                            "w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110 outline-none",
+                                        className={cn("w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center p-0 hover:scale-110 outline-none",
                                             state.selectedColor === color.value ? `border-white ring-2 ring-offset-2 ${color.ring} shadow-lg scale-110` : 'border-transparent opacity-60 hover:opacity-100'
                                         )}
                                         style={{ backgroundColor: getDepartmentColorHex(color.value) }}
@@ -121,13 +119,11 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                                     type="button"
                                                     variant="ghost"
                                                     onClick={() => toggleRole(role.id)}
-                                                    className={cn(
-                                                        "flex items-center justify-start gap-3 p-6 rounded-[var(--radius-inner)] transition-all text-left group h-auto border-none",
+                                                    className={cn("flex items-center justify-start gap-3 p-6 rounded-[var(--radius-inner)] transition-all text-left group h-auto border-none",
                                                         isSelected ? 'bg-white shadow-md border-primary/20 ring-4 ring-primary/5 hover:bg-white' : 'hover:bg-white/80 border-transparent hover:border-slate-200'
                                                     )}
                                                 >
-                                                    <div className={cn(
-                                                        "w-6 h-6 rounded-[18px] border flex items-center justify-center transition-all shrink-0",
+                                                    <div className={cn("w-6 h-6 rounded-[18px] border flex items-center justify-center transition-all shrink-0",
                                                         isSelected ? 'bg-primary border-primary text-white shadow-lg shadow-primary/10' : 'bg-white border-slate-200 text-transparent group-hover:border-slate-300'
                                                     )}>
                                                         <Check className="w-4 h-4 stroke-[3px]" />
@@ -156,7 +152,7 @@ export function AddDepartmentDialog({ onSuccess }: AddDepartmentDialogProps) {
                                 className="w-full h-12 rounded-[var(--radius-inner)] font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
                             >
                                 {state.loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
-                                {state.loading ? "Создание..." : "Создать отдел"}
+                                {state.loading ?"Создание..." :"Создать отдел"}
                             </Button>
                         </div>
                     </form>

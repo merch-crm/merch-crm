@@ -1,19 +1,19 @@
 "use client";
 
-import * as React from "react";
-import { cn } from "@/lib/utils";
-import { format, formatDistanceToNow } from "date-fns";
-import { ru } from "date-fns/locale";
-import Image from "next/image";
-import { User, Package, MessageSquare, AlertTriangle, CheckCircle, Flame, Timer, Calendar } from "lucide-react";
-import { OrderStatus } from "@/lib/types";
-import { OrderData, STATUS_CONFIG, PRIORITY_CONFIG } from "./types";
-import { formatPrice, getDeadlineUrgency } from "./utils";
-import { OrderQueueCardCompact } from "./order-queue-card-compact";
+import * as React from"react";
+import { cn } from"@/lib/utils";
+import { format, formatDistanceToNow } from"date-fns";
+import { ru } from"date-fns/locale";
+import Image from"next/image";
+import { User, Package, MessageSquare, AlertTriangle, CheckCircle, Flame, Timer, Calendar } from"lucide-react";
+import { OrderStatus } from"@/lib/types";
+import { OrderData, STATUS_CONFIG, PRIORITY_CONFIG } from"./types";
+import { formatPrice, getDeadlineUrgency } from"./utils";
+import { OrderQueueCardCompact } from"./order-queue-card-compact";
 
 export interface OrderQueueCardProps {
     order: OrderData;
-    variant?: "default" | "compact" | "detailed";
+    variant?:"default" |"compact" |"detailed";
     selected?: boolean;
     dragging?: boolean;
     onClick?: () => void;
@@ -27,7 +27,7 @@ export interface OrderQueueCardProps {
 
 export function OrderQueueCard({
     order,
-    variant = "default",
+    variant ="default",
     selected = false,
     dragging = false,
     onClick,
@@ -43,7 +43,7 @@ export function OrderQueueCard({
     const isPaid = order.paidAmount && order.paidAmount >= order.totalAmount;
     const isPartiallyPaid = order.paidAmount && order.paidAmount > 0 && order.paidAmount < order.totalAmount;
 
-    if (variant === "compact") {
+    if (variant ==="compact") {
         return (
             <OrderQueueCardCompact
                 order={order}
@@ -59,12 +59,11 @@ export function OrderQueueCard({
             onClick={onClick}
             onDoubleClick={onDoubleClick}
             onContextMenu={onContextMenu}
-            className={cn(
-                "rounded-xl border bg-white transition-all cursor-pointer group",
-                selected ? "border-primary ring-2 ring-primary/20" : "border-slate-200 hover:border-slate-300",
-                dragging && "shadow-xl rotate-2 opacity-90",
-                order.hasProblems && "border-l-4 border-l-rose-500",
-                order.priority === "urgent" && !order.hasProblems && "border-l-4 border-l-orange-500",
+            className={cn("rounded-xl border bg-white transition-all cursor-pointer group",
+                selected ?"border-primary ring-2 ring-primary/20" :"border-slate-200 hover:border-slate-300",
+                dragging &&"shadow-xl rotate-2 opacity-90",
+                order.hasProblems &&"border-l-4 border-l-rose-500",
+                order.priority ==="urgent" && !order.hasProblems &&"border-l-4 border-l-orange-500",
                 className
             )}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
@@ -73,7 +72,7 @@ export function OrderQueueCard({
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2 min-w-0">
                         {/* Приоритет */}
-                        {order.priority !== "normal" && (
+                        {order.priority !=="normal" && (
                             <div className={cn("shrink-0", priorityConfig.color)}>
                                 {priorityConfig.icon}
                             </div>
@@ -141,14 +140,14 @@ export function OrderQueueCard({
                     )}
                     <div className="flex-1 min-w-0 ml-2">
                         <p className="text-xs text-slate-500 truncate">
-                            {order.totalItems} {order.totalItems === 1 ? "позиция" : "позиций"}
+                            {order.totalItems} {order.totalItems === 1 ?"позиция" :"позиций"}
                         </p>
                     </div>
                 </div>
             </div>
 
             {/* Прогресс (если в производстве) */}
-            {order.progress !== undefined && order.status === "in_production" && (
+            {order.progress !== undefined && order.status ==="in_production" && (
                 <div className="px-4 pb-3">
                     <div className="flex items-center gap-2">
                         <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -183,12 +182,11 @@ export function OrderQueueCard({
                 <div className="flex items-center gap-3 text-xs">
                     {order.deadline ? (
                         <div
-                            className={cn(
-                                "flex items-center gap-1",
-                                deadlineUrgency?.isOverdue && "text-rose-600",
-                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue && "text-orange-600",
-                                deadlineUrgency?.isSoon && "text-amber-600",
-                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon && "text-slate-500"
+                            className={cn("flex items-center gap-1",
+                                deadlineUrgency?.isOverdue &&"text-rose-600",
+                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"text-orange-600",
+                                deadlineUrgency?.isSoon &&"text-amber-600",
+                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"text-slate-500"
                             )}
                         >
                             {deadlineUrgency?.isOverdue || deadlineUrgency?.isUrgent ? (
@@ -198,14 +196,14 @@ export function OrderQueueCard({
                             )}
                             <span className="font-medium">
                                 {deadlineUrgency?.isOverdue
-                                    ? "Просрочен"
+                                    ?"Просрочен"
                                     : formatDistanceToNow(order.deadline, { addSuffix: false, locale: ru })}
                             </span>
                         </div>
                     ) : (
                         <div className="flex items-center gap-1 text-slate-400">
                             <Calendar className="w-3.5 h-3.5" />
-                            <span>{format(order.createdAt, "d MMM", { locale: ru })}</span>
+                            <span>{format(order.createdAt,"d MMM", { locale: ru })}</span>
                         </div>
                     )}
 

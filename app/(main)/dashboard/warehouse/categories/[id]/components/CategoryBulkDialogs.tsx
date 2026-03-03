@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { useToast } from "@/components/ui/toast";
-import { StorageLocationSelect } from "@/components/ui/storage-location-select";
-import { CategorySelect } from "@/app/(main)/dashboard/warehouse/category-select";
-import { pluralize } from "@/lib/pluralize";
-import { bulkMoveInventoryItems, bulkUpdateInventoryCategory } from "@/app/(main)/dashboard/warehouse/bulk-actions";;
-import { Category } from "@/app/(main)/dashboard/warehouse/types";
-import { StorageLocation } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
+import React, { useState, useEffect } from"react";
+import { Button } from"@/components/ui/button";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { useToast } from"@/components/ui/toast";
+import { StorageLocationSelect } from"@/components/ui/storage-location-select";
+import { CategorySelect } from"@/app/(main)/dashboard/warehouse/category-select";
+import { pluralize } from"@/lib/pluralize";
+import { bulkMoveInventoryItems, bulkUpdateInventoryCategory } from"@/app/(main)/dashboard/warehouse/bulk-actions";;
+import { Category } from"@/app/(main)/dashboard/warehouse/types";
+import { StorageLocation } from"@/app/(main)/dashboard/warehouse/storage-locations-tab";
 
 interface BulkMoveDialogProps {
     isOpen: boolean;
@@ -44,13 +44,13 @@ export const BulkMoveDialog = React.memo(({
         try {
             const res = await bulkMoveInventoryItems(selectedIds, targetLocationId, comment);
             if (res.success) {
-                toast("Успешно перемещено: " + selectedIds.length + " " + pluralize(selectedIds.length, 'позиция', 'позиции', 'позиций'), "success");
+                toast("Успешно перемещено:" + selectedIds.length +"" + pluralize(selectedIds.length, 'позиция', 'позиции', 'позиций'),"success");
                 onSuccess();
             } else {
-                toast(res.error || "Ошибка при перемещении", "error");
+                toast(res.error ||"Ошибка при перемещении","error");
             }
         } catch {
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
         } finally {
             setIsLoading(false);
         }
@@ -97,7 +97,7 @@ export const BulkMoveDialog = React.memo(({
                         disabled={!targetLocationId || isLoading}
                         className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all"
                     >
-                        {isLoading ? "Перемещение…" : "Подтвердить перемещение"}
+                        {isLoading ?"Перемещение…" :"Подтвердить перемещение"}
                     </Button>
                 </div>
             </div>
@@ -105,7 +105,7 @@ export const BulkMoveDialog = React.memo(({
     );
 });
 
-BulkMoveDialog.displayName = "BulkMoveDialog";
+BulkMoveDialog.displayName ="BulkMoveDialog";
 
 interface BulkCategoryDialogProps {
     isOpen: boolean;
@@ -132,13 +132,13 @@ export const BulkCategoryDialog = React.memo(({
         try {
             const res = await bulkUpdateInventoryCategory(selectedIds, targetCategoryId);
             if (res.success) {
-                toast("Категория изменена для " + selectedIds.length + " " + pluralize(selectedIds.length, 'позиции', 'позиций', 'позиций'), "success");
+                toast("Категория изменена для" + selectedIds.length +"" + pluralize(selectedIds.length, 'позиции', 'позиций', 'позиций'),"success");
                 onSuccess();
             } else {
-                toast(res.error || "Ошибка", "error");
+                toast(res.error ||"Ошибка","error");
             }
         } catch {
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
         } finally {
             setIsLoading(false);
         }
@@ -170,11 +170,11 @@ export const BulkCategoryDialog = React.memo(({
                     disabled={!targetCategoryId || isLoading}
                     className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all"
                 >
-                    {isLoading ? "Обновление..." : "Сменить категорию"}
+                    {isLoading ?"Обновление..." :"Сменить категорию"}
                 </Button>
             </div>
         </ResponsiveModal>
     );
 });
 
-BulkCategoryDialog.displayName = "BulkCategoryDialog";
+BulkCategoryDialog.displayName ="BulkCategoryDialog";

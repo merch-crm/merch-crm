@@ -1,24 +1,24 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from"react";
 import {
     Mail, Phone, MapPin, Building2, Calendar,
     TrendingUp, ShoppingBag, Edit2, ExternalLink,
     MessageCircle, Plus, Info, Activity, User, Link as LinkIcon
-} from "lucide-react";
-import { formatDate } from "@/lib/formatters";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation";
-import { cn, safeExternalOpen } from "@/lib/utils";
-import { useBranding } from "@/components/branding-provider";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { useToast } from "@/components/ui/toast";
-import { InfoRow } from "@/components/ui/info-row";
-import { EmptyState } from "@/components/ui/empty-state";
-import { ModernStatCard } from "@/components/ui/stat-card";
-import { getClientDetails } from "./actions/core.actions";
-import type { ClientProfile } from "@/lib/types";
+} from"lucide-react";
+import { formatDate } from"@/lib/formatters";
+import { Button } from"@/components/ui/button";
+import { Badge } from"@/components/ui/badge";
+import { useRouter } from"next/navigation";
+import { cn, safeExternalOpen } from"@/lib/utils";
+import { useBranding } from"@/components/branding-provider";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { useToast } from"@/components/ui/toast";
+import { InfoRow } from"@/components/ui/info-row";
+import { EmptyState } from"@/components/ui/empty-state";
+import { ModernStatCard } from"@/components/ui/stat-card";
+import { getClientDetails } from"./actions/core.actions";
+import type { ClientProfile } from"@/lib/types";
 
 // Local interfaces removed in favor of @/lib/types
 
@@ -31,19 +31,19 @@ interface ClientProfileDrawerProps {
     userRoleName?: string | null;
 }
 
-type TabType = "general" | "orders" | "activity";
+type TabType ="general" |"orders" |"activity";
 
 /**
- * Safe date formatter to prevent "Invalid time value" errors
+ * Safe date formatter to prevent"Invalid time value" errors
  */
 const safeFormat = (dateStr: string | null | undefined, formatStr: string) => {
-    if (!dateStr) return "---";
+    if (!dateStr) return"---";
     try {
         const date = new Date(dateStr);
-        if (isNaN(date.getTime())) return "---";
+        if (isNaN(date.getTime())) return"---";
         return formatDate(date, formatStr);
     } catch {
-        return "---";
+        return"---";
     }
 };
 
@@ -62,7 +62,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
             setClient(result.data || null);
         } else {
             setClient(null);
-            toast(result.error, "error");
+            toast(result.error,"error");
         }
         setLoading(false);
     }, [toast]);
@@ -73,13 +73,13 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
         }
     }, [isOpen, clientId, loadClientProfile]);
 
-    const fullName = client ? `${client.lastName} ${client.firstName} ${client.patronymic || ""}`.trim() : "";
+    const fullName = client ? `${client.lastName} ${client.firstName} ${client.patronymic ||""}`.trim() :"";
 
     return (
         <ResponsiveModal
             isOpen={isOpen}
             onClose={onClose}
-            title={loading ? "Загрузка..." : fullName}
+            title={loading ?"Загрузка..." : fullName}
             description="Профиль клиента"
             className="max-w-2xl max-h-[90vh]"
         >
@@ -89,11 +89,11 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                     {/* Quick Action Bar */}
                     {!loading && client && client.id && (
                         <div className="flex flex-wrap gap-2 mb-6 mt-2">
-                            {!["Печатник", "Дизайнер"].includes(userRoleName || "") && (
+                            {!["Печатник","Дизайнер"].includes(userRoleName ||"") && (
                                 <Button
                                     className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs"
                                     onClick={() => {
-                                        safeExternalOpen(`tel:${client.phone}`, "Телефон", toast, true);
+                                        safeExternalOpen(`tel:${client.phone}`,"Телефон", toast, true);
                                     }}
                                 >
                                     <Phone className="w-3.5 h-3.5 mr-2" /> Позвонить
@@ -103,7 +103,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <Button
                                     className="h-9 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-xs"
                                     onClick={() => {
-                                        safeExternalOpen(`https://t.me/${client.telegram?.replace('@', '')}`, "Telegram", toast);
+                                        safeExternalOpen(`https://t.me/${client.telegram?.replace('@', '')}`,"Telegram", toast);
                                     }}
                                 >
                                     <MessageCircle className="w-3.5 h-3.5 mr-2" /> Telegram
@@ -130,20 +130,19 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
 
                     {/* Tabs */}
                     <div className="flex gap-3">
-                        {(["general", "orders", "activity"] as const).map((tab) => (
+                        {(["general","orders","activity"] as const).map((tab) => (
                             <button type="button"
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={cn(
-                                    "pb-3 text-xs font-medium transition-all relative",
+                                className={cn("pb-3 text-xs font-medium transition-all relative",
                                     activeTab === tab
-                                        ? "text-primary"
-                                        : "text-slate-400 hover:text-slate-600"
+                                        ?"text-primary"
+                                        :"text-slate-400 hover:text-slate-600"
                                 )}
                             >
-                                {tab === "general" && "Общая информация"}
-                                {tab === "orders" && "Заказы"}
-                                {tab === "activity" && "Активность"}
+                                {tab ==="general" &&"Общая информация"}
+                                {tab ==="orders" &&"Заказы"}
+                                {tab ==="activity" &&"Активность"}
                                 {activeTab === tab && (
                                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-t-full mt-auto" />
                                 )}
@@ -162,7 +161,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                     ) : client ? (
                         <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
 
-                            {activeTab === "general" && (
+                            {activeTab ==="general" && (
                                 <div className="space-y-3">
                                     {/* Stats Cards */}
                                     <div className="grid grid-cols-2 gap-3">
@@ -194,7 +193,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             <InfoRow
                                                 icon={Phone}
                                                 label="Телефон"
-                                                value={["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : client.phone}
+                                                value={["Печатник","Дизайнер"].includes(userRoleName ||"") ?"HIDDEN" : client.phone}
                                                 variant="minimal"
                                             />
                                             {client.email && (
@@ -224,7 +223,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             <div className="flex flex-wrap gap-2">
                                                 {client.telegram && (
                                                     <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100 transition-all" onClick={() => {
-                                                        safeExternalOpen(`https://t.me/${client.telegram?.replace('@', '')}`, "Telegram", toast);
+                                                        safeExternalOpen(`https://t.me/${client.telegram?.replace('@', '')}`,"Telegram", toast);
                                                     }}>
                                                         <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white"><MessageCircle className="w-3 h-3" /></div>
                                                         Telegram
@@ -232,7 +231,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                 )}
                                                 {client.instagram && (
                                                     <Badge variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100 transition-all" onClick={() => {
-                                                        safeExternalOpen(`https://instagram.com/${client.instagram?.replace('@', '')}`, "Instagram", toast);
+                                                        safeExternalOpen(`https://instagram.com/${client.instagram?.replace('@', '')}`,"Instagram", toast);
                                                     }}>
                                                         <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white"><ExternalLink className="w-3 h-3" /></div>
                                                         Instagram
@@ -248,7 +247,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                             <InfoRow
                                                 icon={User}
                                                 label="Ответственный"
-                                                value={client.manager?.name || "Не назначен"}
+                                                value={client.manager?.name ||"Не назначен"}
                                                 variant="minimal"
                                             />
                                         </div>
@@ -269,7 +268,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 </div>
                             )}
 
-                            {activeTab === "orders" && (
+                            {activeTab ==="orders" && (
                                 <div className="space-y-3">
                                     <div className="flex items-center justify-between px-1">
                                         <h3 className="text-xs font-semibold text-slate-400">Список последних заказов</h3>
@@ -290,7 +289,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                         <div>
                                                             <p className="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors">Заказ #{order.orderNumber || order.id.slice(0, 8)}</p>
                                                             <p className="text-xs font-medium text-slate-400 mt-0.5">
-                                                                {safeFormat(order.createdAt?.toString(), "d MMM yyyy")}
+                                                                {safeFormat(order.createdAt?.toString(),"d MMM yyyy")}
                                                             </p>
                                                         </div>
                                                     </div>
@@ -314,7 +313,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 </div>
                             )}
 
-                            {activeTab === "activity" && (
+                            {activeTab ==="activity" && (
                                 <div className="space-y-3">
                                     <div className="flex items-center gap-2 px-1">
                                         <Activity className="w-4 h-4 text-slate-400" />
@@ -330,13 +329,13 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                                     <div className="space-y-1">
                                                         <div className="flex items-center justify-between">
                                                             <p className="text-sm font-bold text-slate-900">{log.action}</p>
-                                                            <p className="text-xs font-medium text-slate-400">{safeFormat(log.createdAt, "HH:mm, dd.MM.yyyy")}</p>
+                                                            <p className="text-xs font-medium text-slate-400">{safeFormat(log.createdAt,"HH:mm, dd.MM.yyyy")}</p>
                                                         </div>
                                                         <div className="flex items-center gap-2">
                                                             <div className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400">
                                                                 {log.user?.name?.[0] || 'S'}
                                                             </div>
-                                                            <p className="text-xs font-bold text-slate-500">{log.user?.name || "Система"}</p>
+                                                            <p className="text-xs font-bold text-slate-500">{log.user?.name ||"Система"}</p>
                                                         </div>
                                                         {log.details ? (
                                                             <div className="mt-2 p-3 rounded-xl bg-slate-50 text-xs text-slate-500 font-medium overflow-hidden">
@@ -362,9 +361,9 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                                 <div className="flex items-center justify-between text-xs font-medium text-slate-400">
                                     <div className="flex items-center gap-2">
                                         <Calendar className="w-3.5 h-3.5" />
-                                        <span>Регистрация: {safeFormat(client.createdAt?.toString(), "d MMMM yyyy")}</span>
+                                        <span>Регистрация: {safeFormat(client.createdAt?.toString(),"d MMMM yyyy")}</span>
                                     </div>
-                                    <span className="text-primary font-mono">ID: {client.id ? client.id.slice(0, 8) : "---"}</span>
+                                    <span className="text-primary font-mono">ID: {client.id ? client.id.slice(0, 8) :"---"}</span>
                                 </div>
                             </div>
                         </div>

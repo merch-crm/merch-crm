@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import Image from "next/image";
-import { Package } from "lucide-react";
-import { InventoryItem, ThumbnailSettings } from "@/app/(main)/dashboard/warehouse/types";
+import React, { useState, useMemo } from"react";
+import Image from"next/image";
+import { Package } from"lucide-react";
+import { InventoryItem, ThumbnailSettings } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ItemThumbnailProps {
     item: InventoryItem;
@@ -45,4 +45,4 @@ export const ItemThumbnail = React.memo(({ item }: ItemThumbnailProps) => {
     );
 });
 
-ItemThumbnail.displayName = "ItemThumbnail";
+ItemThumbnail.displayName ="ItemThumbnail";

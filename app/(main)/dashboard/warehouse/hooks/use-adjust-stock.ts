@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { adjustInventoryStock } from "../stock-actions";;
-import { playSound } from "@/lib/sounds";
-import type { StorageLocation } from "../storage-locations-tab";
+import { useState, useEffect } from"react";
+import { adjustInventoryStock } from"../stock-actions";;
+import { playSound } from"@/lib/sounds";
+import type { StorageLocation } from"../storage-locations-tab";
 
 interface UseAdjustStockProps {
     item: {
@@ -11,16 +11,16 @@ interface UseAdjustStockProps {
         costPrice?: number | string | null;
     };
     locations: StorageLocation[];
-    initialType?: "in" | "out" | "set";
+    initialType?:"in" |"out" |"set";
     onClose: () => void;
 }
 
-export function useAdjustStock({ item, locations, initialType = "in", onClose }: UseAdjustStockProps) {
-    const [amount, setAmount] = useState<number>(initialType === "set" ? (item?.quantity || 0) : 1);
-    const [type, setType] = useState<"in" | "out" | "set">(initialType);
-    const [selectedLocationId, setSelectedLocationId] = useState<string>(item?.storageLocationId || "");
+export function useAdjustStock({ item, locations, initialType ="in", onClose }: UseAdjustStockProps) {
+    const [amount, setAmount] = useState<number>(initialType ==="set" ? (item?.quantity || 0) : 1);
+    const [type, setType] = useState<"in" |"out" |"set">(initialType);
+    const [selectedLocationId, setSelectedLocationId] = useState<string>(item?.storageLocationId ||"");
     const [reason, setReason] = useState("");
-    const [costPrice, setCostPrice] = useState<string>(item?.costPrice ? String(item.costPrice) : "");
+    const [costPrice, setCostPrice] = useState<string>(item?.costPrice ? String(item.costPrice) :"");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState("");
 
@@ -42,7 +42,7 @@ export function useAdjustStock({ item, locations, initialType = "in", onClose }:
         setError("");
 
         try {
-            const finalCostPrice = (type === "in" || type === "out")
+            const finalCostPrice = (type ==="in" || type ==="out")
                 ? (costPrice ? parseFloat(costPrice) : (item.costPrice ? Number(item.costPrice) : undefined))
                 : undefined;
 
@@ -55,12 +55,12 @@ export function useAdjustStock({ item, locations, initialType = "in", onClose }:
                 finalCostPrice
             );
             if (res.success) {
-                if (type === "in") playSound("stock_replenished");
+                if (type ==="in") playSound("stock_replenished");
                 else playSound("item_updated");
                 if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
                 onClose();
             } else {
-                setError(res.error || "Ошибка при обновлении");
+                setError(res.error ||"Ошибка при обновлении");
                 playSound("notification_error");
             }
         } catch {

@@ -1,42 +1,42 @@
-import { cn } from "@/lib/utils";
+import { cn } from"@/lib/utils";
 
 interface ProgressProps {
     value: number;
     max?: number;
-    size?: "sm" | "md" | "lg";
-    variant?: "default" | "primary" | "success" | "warning" | "error";
+    size?:"sm" |"md" |"lg";
+    variant?:"default" |"primary" |"success" |"warning" |"error";
     showValue?: boolean;
     animated?: boolean;
     className?: string;
 }
 
 const sizeClasses = {
-    sm: "h-1.5",
-    md: "h-2.5",
-    lg: "h-4",
+    sm:"h-1.5",
+    md:"h-2.5",
+    lg:"h-4",
 };
 
 const variantClasses = {
-    default: "bg-slate-600",
-    primary: "bg-primary",
-    success: "bg-emerald-500",
-    warning: "bg-amber-500",
-    error: "bg-rose-500",
+    default:"bg-slate-600",
+    primary:"bg-primary",
+    success:"bg-emerald-500",
+    warning:"bg-amber-500",
+    error:"bg-rose-500",
 };
 
 const variantBgClasses = {
-    default: "bg-slate-200",
-    primary: "bg-primary/20",
-    success: "bg-emerald-100",
-    warning: "bg-amber-100",
-    error: "bg-rose-100",
+    default:"bg-slate-200",
+    primary:"bg-primary/20",
+    success:"bg-emerald-100",
+    warning:"bg-amber-100",
+    error:"bg-rose-100",
 };
 
 function Progress({
     value,
     max = 100,
-    size = "md",
-    variant = "primary",
+    size ="md",
+    variant ="primary",
     showValue = false,
     animated = false,
     className,
@@ -46,17 +46,15 @@ function Progress({
     return (
         <div className={cn("w-full", className)}>
             <div
-                className={cn(
-                    "w-full rounded-full overflow-hidden",
+                className={cn("w-full rounded-full overflow-hidden",
                     sizeClasses[size],
                     variantBgClasses[variant]
                 )}
             >
                 <div
-                    className={cn(
-                        "h-full rounded-full transition-all duration-500 ease-out",
+                    className={cn("h-full rounded-full transition-all duration-500 ease-out",
                         variantClasses[variant],
-                        animated && "animate-pulse"
+                        animated &&"animate-pulse"
                     )}
                     style={{ width: `${percentage}%` }}
                     role="progressbar"
@@ -108,7 +106,7 @@ interface FileUploadProgressProps {
     fileName: string;
     fileSize?: string;
     progress: number;
-    status?: "uploading" | "success" | "error";
+    status?:"uploading" |"success" |"error";
     onCancel?: () => void;
     onRetry?: () => void;
 }
@@ -117,27 +115,26 @@ function FileUploadProgress({
     fileName,
     fileSize,
     progress,
-    status = "uploading",
+    status ="uploading",
     onCancel,
     onRetry,
 }: FileUploadProgressProps) {
-    const variant = status === "error" ? "error" : status === "success" ? "success" : "primary";
+    const variant = status ==="error" ?"error" : status ==="success" ?"success" :"primary";
 
     return (
         <div className="rounded-lg border border-slate-200 bg-white p-4 space-y-3">
             <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
                     <div
-                        className={cn(
-                            "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-                            status === "error" ? "bg-rose-100" : status === "success" ? "bg-emerald-100" : "bg-primary/10"
+                        className={cn("w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                            status ==="error" ?"bg-rose-100" : status ==="success" ?"bg-emerald-100" :"bg-primary/10"
                         )}
                     >
-                        {status === "error" ? (
+                        {status ==="error" ? (
                             <svg className="w-5 h-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
-                        ) : status === "success" ? (
+                        ) : status ==="success" ? (
                             <svg className="w-5 h-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
@@ -150,11 +147,11 @@ function FileUploadProgress({
                     <div className="min-w-0">
                         <p className="text-sm font-bold text-slate-900 truncate">{fileName}</p>
                         <p className="text-xs text-slate-500">
-                            {status === "error" ? "Ошибка загрузки" : status === "success" ? "Загружено" : fileSize || "Загрузка..."}
+                            {status ==="error" ?"Ошибка загрузки" : status ==="success" ?"Загружено" : fileSize ||"Загрузка..."}
                         </p>
                     </div>
                 </div>
-                {status === "uploading" && onCancel && (
+                {status ==="uploading" && onCancel && (
                     <button type="button"
                         onClick={onCancel}
                         className="p-1.5 rounded-md hover:bg-slate-100 transition-colors shrink-0"
@@ -164,7 +161,7 @@ function FileUploadProgress({
                         </svg>
                     </button>
                 )}
-                {status === "error" && onRetry && (
+                {status ==="error" && onRetry && (
                     <button type="button"
                         onClick={onRetry}
                         className="text-xs font-bold text-primary hover:text-primary/80 transition-colors shrink-0"
@@ -173,7 +170,7 @@ function FileUploadProgress({
                     </button>
                 )}
             </div>
-            {status === "uploading" && (
+            {status ==="uploading" && (
                 <Progress value={progress} variant={variant} size="sm" />
             )}
         </div>
@@ -190,11 +187,11 @@ interface Step {
 interface StepsProgressProps {
     steps: Step[];
     currentStep: number;
-    variant?: "default" | "primary";
+    variant?:"default" |"primary";
     className?: string;
 }
 
-function StepsProgress({ steps, currentStep, variant = "primary", className }: StepsProgressProps) {
+function StepsProgress({ steps, currentStep, variant ="primary", className }: StepsProgressProps) {
     return (
         <div className={cn("space-y-0", className)}>
             {steps.map((step, index) => {
@@ -206,23 +203,21 @@ function StepsProgress({ steps, currentStep, variant = "primary", className }: S
                         {/* Линия соединения (вертикальный прогресс) */}
                         {index < steps.length - 1 && (
                             <div
-                                className={cn(
-                                    "absolute left-4 top-8 w-0.5 h-[calc(100%-8px)] transition-colors",
-                                    isCompleted ? "bg-emerald-500" : "bg-slate-200"
+                                className={cn("absolute left-4 top-8 w-0.5 h-[calc(100%-8px)] transition-colors",
+                                    isCompleted ?"bg-emerald-500" :"bg-slate-200"
                                 )}
                             />
                         )}
                         <div className="flex flex-col items-center">
                             <div
-                                className={cn(
-                                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors z-10",
+                                className={cn("w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors z-10",
                                     isCompleted
-                                        ? "bg-emerald-500 text-white"
+                                        ?"bg-emerald-500 text-white"
                                         : isCurrent
-                                            ? variant === "primary"
-                                                ? "bg-primary text-white"
-                                                : "bg-slate-900 text-white"
-                                            : "bg-slate-200 text-slate-500"
+                                            ? variant ==="primary"
+                                                ?"bg-primary text-white"
+                                                :"bg-slate-900 text-white"
+                                            :"bg-slate-200 text-slate-500"
                                 )}
                             >
                                 {isCompleted ? (
@@ -236,9 +231,8 @@ function StepsProgress({ steps, currentStep, variant = "primary", className }: S
                         </div>
                         <div className="pb-8 pt-1.5">
                             <p
-                                className={cn(
-                                    "text-sm font-bold leading-none",
-                                    isCompleted || isCurrent ? "text-slate-900" : "text-slate-500"
+                                className={cn("text-sm font-bold leading-none",
+                                    isCompleted || isCurrent ?"text-slate-900" :"text-slate-500"
                                 )}
                             >
                                 {step.label}
@@ -264,16 +258,15 @@ function StepsProgressHorizontal({ steps, currentStep, className }: StepsProgres
                 const isLast = index === steps.length - 1;
 
                 return (
-                    <div key={step.id} className={cn("flex items-center", !isLast && "flex-1")}>
+                    <div key={step.id} className={cn("flex items-center", !isLast &&"flex-1")}>
                         <div className="flex flex-col items-center relative">
                             <div
-                                className={cn(
-                                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors z-10",
+                                className={cn("w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors z-10",
                                     isCompleted
-                                        ? "bg-emerald-500 text-white"
+                                        ?"bg-emerald-500 text-white"
                                         : isCurrent
-                                            ? "bg-primary text-white"
-                                            : "bg-slate-200 text-slate-500"
+                                            ?"bg-primary text-white"
+                                            :"bg-slate-200 text-slate-500"
                                 )}
                             >
                                 {isCompleted ? (
@@ -286,9 +279,8 @@ function StepsProgressHorizontal({ steps, currentStep, className }: StepsProgres
                             </div>
                             <div className="absolute top-10 w-max text-center">
                                 <span
-                                    className={cn(
-                                        "text-xs font-medium block whitespace-nowrap",
-                                        isCompleted || isCurrent ? "text-slate-900" : "text-slate-500"
+                                    className={cn("text-xs font-medium block whitespace-nowrap",
+                                        isCompleted || isCurrent ?"text-slate-900" :"text-slate-500"
                                     )}
                                 >
                                     {step.label}
@@ -297,9 +289,8 @@ function StepsProgressHorizontal({ steps, currentStep, className }: StepsProgres
                         </div>
                         {!isLast && (
                             <div
-                                className={cn(
-                                    "h-0.5 flex-1 mx-2 transition-colors",
-                                    isCompleted ? "bg-emerald-500" : "bg-slate-200"
+                                className={cn("h-0.5 flex-1 mx-2 transition-colors",
+                                    isCompleted ?"bg-emerald-500" :"bg-slate-200"
                                 )}
                             />
                         )}

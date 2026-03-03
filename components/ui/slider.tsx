@@ -1,71 +1,57 @@
 "use client";
 
-import * as React from "react";
-import * as SliderPrimitive from "@radix-ui/react-slider";
-import { cn } from "@/lib/utils";
+import * as React from"react";
+import * as SliderPrimitive from"@radix-ui/react-slider";
+import { cn } from"@/lib/utils";
 
 interface SliderProps
     extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
-    variant?: "default" | "primary";
+    variant?:"default" |"primary";
 }
 
 const Slider = React.forwardRef<
     React.ElementRef<typeof SliderPrimitive.Root>,
     SliderProps
->(({ className, variant = "primary", ...props }, ref) => (
+>(({ className, variant ="primary", ...props }, ref) => (
     <SliderPrimitive.Root
         ref={ref}
-        className={cn(
-            "relative flex w-full touch-none select-none items-center",
+        className={cn("relative flex w-full touch-none select-none items-center",
             className
         )}
         {...props}
     >
         <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-slate-200">
             <SliderPrimitive.Range
-                className={cn(
-                    "absolute h-full",
-                    variant === "primary" ? "bg-primary" : "bg-slate-600"
+                className={cn("absolute h-full",
+                    variant ==="primary" ?"bg-primary" :"bg-slate-600"
                 )}
             />
         </SliderPrimitive.Track>
         {props.defaultValue?.map((_, index) => (
             <SliderPrimitive.Thumb
                 key={index}
-                className={cn(
-                    "block h-5 w-5 rounded-full border-2 bg-white shadow-lg transition-transform",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                    "disabled:pointer-events-none disabled:opacity-50",
-                    "hover:scale-110 active:scale-95",
-                    variant === "primary"
-                        ? "border-primary focus-visible:ring-primary"
-                        : "border-slate-600 focus-visible:ring-slate-600"
+                className={cn("block h-5 w-5 rounded-full border-2 bg-white shadow-lg transition-transform","focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2","disabled:pointer-events-none disabled:opacity-50","hover:scale-110 active:scale-95",
+                    variant ==="primary"
+                        ?"border-primary focus-visible:ring-primary"
+                        :"border-slate-600 focus-visible:ring-slate-600"
                 )}
             />
         )) ||
             (props.value?.map((_, index) => (
                 <SliderPrimitive.Thumb
                     key={index}
-                    className={cn(
-                        "block h-5 w-5 rounded-full border-2 bg-white shadow-lg transition-transform",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                        "disabled:pointer-events-none disabled:opacity-50",
-                        "hover:scale-110 active:scale-95",
-                        variant === "primary"
-                            ? "border-primary focus-visible:ring-primary"
-                            : "border-slate-600 focus-visible:ring-slate-600"
+                    className={cn("block h-5 w-5 rounded-full border-2 bg-white shadow-lg transition-transform","focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2","disabled:pointer-events-none disabled:opacity-50","hover:scale-110 active:scale-95",
+                        variant ==="primary"
+                            ?"border-primary focus-visible:ring-primary"
+                            :"border-slate-600 focus-visible:ring-slate-600"
                     )}
                 />
             )) || (
                     <SliderPrimitive.Thumb
-                        className={cn(
-                            "block h-5 w-5 rounded-full border-2 bg-white shadow-lg transition-transform",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
-                            "disabled:pointer-events-none disabled:opacity-50",
-                            "hover:scale-110 active:scale-95",
-                            variant === "primary"
-                                ? "border-primary focus-visible:ring-primary"
-                                : "border-slate-600 focus-visible:ring-slate-600"
+                        className={cn("block h-5 w-5 rounded-full border-2 bg-white shadow-lg transition-transform","focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2","disabled:pointer-events-none disabled:opacity-50","hover:scale-110 active:scale-95",
+                            variant ==="primary"
+                                ?"border-primary focus-visible:ring-primary"
+                                :"border-slate-600 focus-visible:ring-slate-600"
                         )}
                     />
                 ))}
@@ -74,7 +60,7 @@ const Slider = React.forwardRef<
 Slider.displayName = SliderPrimitive.Root.displayName;
 
 // Слайдер с отображением значения
-interface SliderWithValueProps extends Omit<SliderProps, "value" | "onValueChange"> {
+interface SliderWithValueProps extends Omit<SliderProps,"value" |"onValueChange"> {
     value: number;
     onValueChange: (value: number) => void;
     formatValue?: (value: number) => string;
@@ -110,7 +96,7 @@ function SliderWithValue({
 }
 
 // Range слайдер (диапазон)
-interface RangeSliderProps extends Omit<SliderProps, "value" | "onValueChange"> {
+interface RangeSliderProps extends Omit<SliderProps,"value" |"onValueChange"> {
     value: [number, number];
     onValueChange: (value: [number, number]) => void;
     formatValue?: (value: number) => string;
@@ -165,12 +151,12 @@ function PriceRangeSlider({
     min = 0,
     max = 100000,
     step = 100,
-    currency = "₽",
-    label = "Цена",
+    currency ="₽",
+    label ="Цена",
     className,
 }: PriceRangeSliderProps) {
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat("ru-RU").format(price) + " " + currency;
+        return new Intl.NumberFormat("ru-RU").format(price) +"" + currency;
     };
 
     return (
@@ -192,7 +178,7 @@ function PriceRangeSlider({
                         type="text"
                         value={formatPrice(value[0])}
                         onChange={(e) => {
-                            const num = parseInt(e.target.value.replace(/\D/g, "")) || min;
+                            const num = parseInt(e.target.value.replace(/\D/g,"")) || min;
                             onValueChange([Math.min(num, value[1]), value[1]]);
                         }}
                         className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -205,7 +191,7 @@ function PriceRangeSlider({
                         type="text"
                         value={formatPrice(value[1])}
                         onChange={(e) => {
-                            const num = parseInt(e.target.value.replace(/\D/g, "")) || max;
+                            const num = parseInt(e.target.value.replace(/\D/g,"")) || max;
                             onValueChange([value[0], Math.max(num, value[0])]);
                         }}
                         className="w-full h-10 px-3 rounded-md border border-slate-200 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -234,8 +220,8 @@ function QuantitySlider({
     min = 0,
     max = 100,
     step = 1,
-    label = "Количество",
-    unit = "шт.",
+    label ="Количество",
+    unit ="шт.",
     className,
 }: QuantitySliderProps) {
     return (
@@ -284,7 +270,7 @@ function QuantitySlider({
 }
 
 // Слайдер с отметками (шкала)
-interface SliderWithMarksProps extends Omit<SliderProps, "value" | "onValueChange"> {
+interface SliderWithMarksProps extends Omit<SliderProps,"value" |"onValueChange"> {
     value: number;
     onValueChange: (value: number) => void;
     marks: { value: number; label: string }[];
@@ -336,11 +322,10 @@ function SliderWithMarks({
                                 style={{ left: `${percent}%` }}
                             >
                                 <div className="flex flex-col items-center gap-1">
-                                    <div className={cn("w-1 h-1.5 rounded-full", value === mark.value ? "bg-primary" : "bg-slate-300")} />
+                                    <div className={cn("w-1 h-1.5 rounded-full", value === mark.value ?"bg-primary" :"bg-slate-300")} />
                                     <span
-                                        className={cn(
-                                            "text-xs font-medium transition-colors whitespace-nowrap",
-                                            value === mark.value ? "text-primary" : "text-slate-400 hover:text-slate-600"
+                                        className={cn("text-xs font-medium transition-colors whitespace-nowrap",
+                                            value === mark.value ?"text-primary" :"text-slate-400 hover:text-slate-600"
                                         )}
                                     >
                                         {mark.label}

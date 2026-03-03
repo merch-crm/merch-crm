@@ -1,8 +1,8 @@
-import { getDashboardStatsByPeriod } from "./actions";
-import { getSession } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import { DashboardClient } from "./dashboard-client";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getDashboardStatsByPeriod } from"./actions";
+import { getSession } from"@/lib/auth";
+import { redirect } from"next/navigation";
+import { DashboardClient } from"./dashboard-client";
+import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
 
 export default async function DashboardPage({
     searchParams,
@@ -14,7 +14,7 @@ export default async function DashboardPage({
         redirect("/api/auth/logout");
     }
 
-    const { period = "month" } = await searchParams;
+    const { period ="month" } = await searchParams;
 
     const statsData = await getDashboardStatsByPeriod(period);
     const branding = await getBrandingSettings();
@@ -26,7 +26,7 @@ export default async function DashboardPage({
         <DashboardClient
             initialStats={statsData}
             period={period}
-            userName={session.name || "Пользователь"}
+            userName={session.name ||"Пользователь"}
             branding={branding}
         />
     );

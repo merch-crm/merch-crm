@@ -1,13 +1,13 @@
 "use server";
 
-import { sql, and, or, ilike, eq, lt, gt, desc, asc, type SQL, count, gte, lte } from "drizzle-orm";
-import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
-import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
-import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { ClientSchema, ClientUpdateSchema, ClientFiltersSchema, ClientIdSchema, UpdateClientFieldSchema } from "../validation";
+import { sql, and, or, ilike, eq, lt, gt, desc, asc, type SQL, count, gte, lte } from"drizzle-orm";
+import { db } from"@/lib/db";
+import * as schema from"@/lib/schema";
+import { revalidatePath } from"next/cache";
+import { getSession } from"@/lib/auth";
+import { logAction } from"@/lib/audit";
+import { logError } from"@/lib/error-logger";
+import { ClientSchema, ClientUpdateSchema, ClientFiltersSchema, ClientIdSchema, UpdateClientFieldSchema } from"../validation";
 import {
     ClientSummary,
     ClientStats,
@@ -16,8 +16,8 @@ import {
     ClientProfile,
     ActionResult,
     AuditLogDetails
-} from "@/lib/types";
-import { releaseReservationsForOrders } from "./utils";
+} from"@/lib/types";
+import { releaseReservationsForOrders } from"./utils";
 
 const { clients, orders, payments, auditLogs } = schema;
 
@@ -31,8 +31,8 @@ export async function getManagers(): Promise<ActionResult<{ id: string; name: st
         });
         return { success: true, data };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getManagers" });
-        return { success: false, error: "Не удалось загрузить менеджеров" };
+        await logError({ error, path:"/dashboard/clients/actions", method:"getManagers" });
+        return { success: false, error:"Не удалось загрузить менеджеров" };
     }
 }
 
@@ -43,8 +43,8 @@ export async function getRegions(): Promise<ActionResult<string[]>> {
             .orderBy(asc(clients.city)).limit(100);
         return { success: true, data: result.map(r => r.city as string) };
     } catch (error) {
-        logError({ error, path: "getRegions" });
-        return { success: false, error: "Не удалось загрузить регионы" };
+        logError({ error, path:"getRegions" });
+        return { success: false, error:"Не удалось загрузить регионы" };
     }
 }
 
@@ -66,24 +66,24 @@ export async function getClients(filters: Record<string, unknown> = {}): Promise
             const pattern = `%${search}%`;
             baseConditions.push(or(ilike(clients.name, pattern), ilike(clients.lastName, pattern), ilike(clients.firstName, pattern), ilike(clients.company, pattern), ilike(clients.phone, pattern), ilike(clients.email, pattern)));
         }
-        if (region && region !== "all") baseConditions.push(eq(clients.city, region));
+        if (region && region !=="all") baseConditions.push(eq(clients.city, region));
 
         const havingConditions: (SQL | undefined)[] = [];
-        if (period !== "all") {
+        if (period !=="all") {
             const filterDate = new Date();
-            if (period === "month") filterDate.setMonth(new Date().getMonth() - 1);
-            else if (period === "quarter") filterDate.setMonth(new Date().getMonth() - 3);
-            else if (period === "year") filterDate.setFullYear(new Date().getFullYear() - 1);
+            if (period ==="month") filterDate.setMonth(new Date().getMonth() - 1);
+            else if (period ==="quarter") filterDate.setMonth(new Date().getMonth() - 3);
+            else if (period ==="year") filterDate.setFullYear(new Date().getFullYear() - 1);
             havingConditions.push(gt(sql<Date>`max(${orders.createdAt})`, filterDate));
         }
 
-        if (orderCount !== "any") {
-            if (orderCount === "0") havingConditions.push(eq(sql<number>`count(${orders.id})`, 0));
-            else if (orderCount === "1-5") { havingConditions.push(gte(sql<number>`count(${orders.id})`, 1)); havingConditions.push(lte(sql<number>`count(${orders.id})`, 5)); }
-            else if (orderCount === "5+") havingConditions.push(gt(sql<number>`count(${orders.id})`, 5));
+        if (orderCount !=="any") {
+            if (orderCount ==="0") havingConditions.push(eq(sql<number>`count(${orders.id})`, 0));
+            else if (orderCount ==="1-5") { havingConditions.push(gte(sql<number>`count(${orders.id})`, 1)); havingConditions.push(lte(sql<number>`count(${orders.id})`, 5)); }
+            else if (orderCount ==="5+") havingConditions.push(gt(sql<number>`count(${orders.id})`, 5));
         }
 
-        if (status === "lost") {
+        if (status ==="lost") {
             const limit = new Date(); limit.setMonth(limit.getMonth() - 3);
             havingConditions.push(lt(sql<Date>`max(${orders.createdAt})`, limit));
         }
@@ -101,10 +101,10 @@ export async function getClients(filters: Record<string, unknown> = {}): Promise
 
         if (havingConditions.length > 0) query.having(and(...havingConditions));
 
-        if (sortBy === "alphabet") query.orderBy(asc(clients.lastName), asc(clients.firstName));
-        else if (sortBy === "last_order") query.orderBy(desc(sql`max(${orders.createdAt})`));
-        else if (sortBy === "order_count") query.orderBy(desc(sql<number>`count(${orders.id})`));
-        else if (sortBy === "revenue") query.orderBy(desc(sql`coalesce(sum(${orders.totalAmount}), 0)`));
+        if (sortBy ==="alphabet") query.orderBy(asc(clients.lastName), asc(clients.firstName));
+        else if (sortBy ==="last_order") query.orderBy(desc(sql`max(${orders.createdAt})`));
+        else if (sortBy ==="order_count") query.orderBy(desc(sql<number>`count(${orders.id})`));
+        else if (sortBy ==="revenue") query.orderBy(desc(sql`coalesce(sum(${orders.totalAmount}), 0)`));
         else query.orderBy(asc(clients.lastName));
 
         const data = await query.limit(limit).offset(offset);
@@ -120,22 +120,22 @@ export async function getClients(filters: Record<string, unknown> = {}): Promise
         }
 
         const session = await getSession();
-        const shouldHidePhone = ["Печатник", "Дизайнер"].includes(session?.roleName || "");
+        const shouldHidePhone = ["Печатник","Дизайнер"].includes(session?.roleName ||"");
 
         const safeData: ClientSummary[] = (data ?? []).map(c => ({
             ...c,
-            displayName: String(c.name || ((c.lastName || "") + " " + (c.firstName || "")).trim()),
+            displayName: String(c.name || ((c.lastName ||"") +"" + (c.firstName ||"")).trim()),
             isVip: (Number(c.totalSpent) || 0) > 100000,
-            phone: shouldHidePhone ? "HIDDEN" : String(c.phone),
+            phone: shouldHidePhone ?"HIDDEN" : String(c.phone),
             totalOrders: Number(c.totalOrders || 0),
             totalSpent: Number(c.totalSpent || 0),
-            type: (c.clientType === "b2b" ? "b2b" : "b2c") as "b2b" | "b2c"
+            type: (c.clientType ==="b2b" ?"b2b" :"b2c") as"b2b" |"b2c"
         })) as unknown as ClientSummary[];
 
         return { success: true, data: { clients: safeData, total, totalPages: Math.ceil(total / limit), currentPage: page } };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients", method: "getClients", details: filters });
-        return { success: false, error: "Не удалось загрузить клиенты" };
+        await logError({ error, path:"/dashboard/clients", method:"getClients", details: filters });
+        return { success: false, error:"Не удалось загрузить клиенты" };
     }
 }
 
@@ -143,7 +143,7 @@ export async function checkClientDuplicates(data: { phone?: string, email?: stri
     try {
         const conditions: (SQL | undefined)[] = [];
         if (data.phone) {
-            const digits = data.phone.replace(/\D/g, "");
+            const digits = data.phone.replace(/\D/g,"");
             if (digits.length >= 6) conditions.push(sql`regexp_replace(${clients.phone}, '\\D', '', 'g') LIKE ${'%' + digits + '%'}`);
         }
         if (data.email && data.email.trim().length > 3) {
@@ -160,14 +160,14 @@ export async function checkClientDuplicates(data: { phone?: string, email?: stri
         const duplicates = await db.select().from(clients).where(and(or(...filtered), eq(clients.isArchived, false))).limit(5);
         return { success: true, data: duplicates };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "checkClientDuplicates" });
-        return { success: false, error: "Ошибка при проверке дубликатов" };
+        await logError({ error, path:"/dashboard/clients/actions", method:"checkClientDuplicates" });
+        return { success: false, error:"Ошибка при проверке дубликатов" };
     }
 }
 
 export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: (typeof clients.$inferSelect)[] } | void>> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const validation = ClientSchema.safeParse(Object.fromEntries(formData));
     if (!validation.success) return { success: false, error: validation.error.issues[0].message };
@@ -180,39 +180,39 @@ export async function addClient(formData: FormData): Promise<ActionResult<{ dupl
             if (dupRes.success && (dupRes.data?.length || 0) > 0) return { success: true, data: { duplicates: dupRes.data } };
         }
 
-        const fullName = [lastName, firstName, patronymic].filter(Boolean).join(" ");
+        const fullName = [lastName, firstName, patronymic].filter(Boolean).join("");
         await db.transaction(async (tx) => {
             const [newClient] = await tx.insert(clients).values({ ...validation.data, name: fullName, managerId: validation.data.managerId || null }).returning();
-            await logAction("Создан клиент", "client", newClient.id, { name: fullName }, tx);
+            await logAction("Создан клиент","client", newClient.id, { name: fullName }, tx);
         });
 
         revalidatePath("/dashboard/clients");
         revalidatePath("/dashboard/orders");
         return { success: true };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients", method: "addClient", details: { lastName, firstName, phone } });
-        return { success: false, error: "Не удалось добавить клиент" };
+        await logError({ error, path:"/dashboard/clients", method:"addClient", details: { lastName, firstName, phone } });
+        return { success: false, error:"Не удалось добавить клиент" };
     }
 }
 
 export async function updateClient(clientId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     const validation = ClientUpdateSchema.safeParse(Object.fromEntries(formData));
     if (!validation.success) return { success: false, error: validation.error.issues[0].message };
 
     try {
-        const fullName = [validation.data.lastName, validation.data.firstName, validation.data.patronymic].filter(Boolean).join(" ");
+        const fullName = [validation.data.lastName, validation.data.firstName, validation.data.patronymic].filter(Boolean).join("");
         await db.transaction(async (tx) => {
             await tx.update(clients).set({ ...validation.data, name: fullName, managerId: validation.data.managerId || null, updatedAt: new Date() }).where(eq(clients.id, clientId));
-            await logAction("Обновлен клиент", "client", clientId, { name: fullName }, tx);
+            await logAction("Обновлен клиент","client", clientId, { name: fullName }, tx);
         });
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
-        await logError({ error, path: `/dashboard/clients/${clientId}`, method: "updateClient" });
-        return { success: false, error: "Не удалось обновить клиент" };
+        await logError({ error, path: `/dashboard/clients/${clientId}`, method:"updateClient" });
+        return { success: false, error:"Не удалось обновить клиент" };
     }
 }
 
@@ -222,11 +222,11 @@ export async function getClientDetails(clientId: string): Promise<ActionResult<C
 
     try {
         const client = await db.query.clients.findFirst({ where: eq(clients.id, clientId), with: { manager: { columns: { name: true } } } });
-        if (!client) return { success: false, error: "Клиент не найден" };
+        if (!client) return { success: false, error:"Клиент не найден" };
 
         const session = await getSession();
-        const shouldHidePhone = ["Печатник", "Дизайнер"].includes(session?.roleName || "");
-        if (shouldHidePhone) client.phone = "HIDDEN";
+        const shouldHidePhone = ["Печатник","Дизайнер"].includes(session?.roleName ||"");
+        if (shouldHidePhone) client.phone ="HIDDEN";
 
         const ordersRaw = await db.query.orders.findMany({ where: eq(orders.clientId, clientId), orderBy: [desc(orders.createdAt)], limit: 100 });
         const clientOrders: ClientProfileOrder[] = ordersRaw.map(o => ({ id: o.id, orderNumber: o.orderNumber || o.id.slice(0, 8).toUpperCase(), createdAt: o.createdAt, status: o.status, totalPrice: Number(o.totalAmount) }));
@@ -237,7 +237,7 @@ export async function getClientDetails(clientId: string): Promise<ActionResult<C
         const totalSpentVal = Number(statsRes?.total || 0);
         const totalPaid = Number(paymentsRes?.total || 0);
 
-        const activityRaw = await db.query.auditLogs.findMany({ where: and(eq(auditLogs.entityId, clientId), eq(auditLogs.entityType, "client")), orderBy: [desc(auditLogs.createdAt)], limit: 20, with: { user: { columns: { name: true } } } });
+        const activityRaw = await db.query.auditLogs.findMany({ where: and(eq(auditLogs.entityId, clientId), eq(auditLogs.entityType,"client")), orderBy: [desc(auditLogs.createdAt)], limit: 20, with: { user: { columns: { name: true } } } });
         const activity = activityRaw.map(l => ({ id: l.id, action: l.action, createdAt: l.createdAt.toISOString(), user: l.user, details: l.details as AuditLogDetails | null }));
 
         const clientProfile: ClientProfile = {
@@ -253,8 +253,8 @@ export async function getClientDetails(clientId: string): Promise<ActionResult<C
 
         return { success: true, data: clientProfile };
     } catch (error) {
-        await logError({ error, path: `/dashboard/clients/${clientId}`, method: "getClientDetails" });
-        return { success: false, error: "Не удалось загрузить данные клиента" };
+        await logError({ error, path: `/dashboard/clients/${clientId}`, method:"getClientDetails" });
+        return { success: false, error:"Не удалось загрузить данные клиента" };
     }
 }
 
@@ -278,15 +278,15 @@ export async function getClientStats(): Promise<ActionResult<ClientStats>> {
             }
         };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getClientStats" });
-        return { success: false, error: "Не удалось загрузить статистику" };
+        await logError({ error, path:"/dashboard/clients/actions", method:"getClientStats" });
+        return { success: false, error:"Не удалось загрузить статистику" };
     }
 }
 
 export async function deleteClient(clientId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-    if (session.roleName !== "Администратор") return { success: false, error: "Только администратор может удалять клиентов" };
+    if (!session) return { success: false, error:"Не авторизован" };
+    if (session.roleName !=="Администратор") return { success: false, error:"Только администратор может удалять клиентов" };
 
     try {
         await db.transaction(async (tx) => {
@@ -300,53 +300,53 @@ export async function deleteClient(clientId: string): Promise<ActionResult> {
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
-        await logError({ error, path: `/dashboard/clients/${clientId}`, method: "deleteClient" });
-        return { success: false, error: "Не удалось удалить клиент" };
+        await logError({ error, path: `/dashboard/clients/${clientId}`, method:"deleteClient" });
+        return { success: false, error:"Не удалось удалить клиент" };
     }
 }
 
 export async function updateClientField(clientId: string, field: string, value: unknown): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         const validated = UpdateClientFieldSchema.parse({ clientId, field, value });
         await db.update(clients).set({ [validated.field]: validated.value || null, updatedAt: new Date() }).where(eq(clients.id, clientId));
-        await logAction(`Изменение поля клиента: ${field}`, "client", clientId, { field, value });
+        await logAction(`Изменение поля клиента: ${field}`,"client", clientId, { field, value });
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients", method: "updateClientField" });
-        return { success: false, error: "Ошибка обновления" };
+        await logError({ error, path:"/dashboard/clients", method:"updateClientField" });
+        return { success: false, error:"Ошибка обновления" };
     }
 }
 
 export async function toggleClientArchived(clientId: string, isArchived: boolean): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         await db.update(clients).set({ isArchived, updatedAt: new Date() }).where(eq(clients.id, clientId));
-        await logAction(isArchived ? "Архивация клиента" : "Разархивация клиента", "client", clientId, { isArchived });
+        await logAction(isArchived ?"Архивация клиента" :"Разархивация клиента","client", clientId, { isArchived });
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients", method: "toggleClientArchived" });
-        return { success: false, error: "Ошибка" };
+        await logError({ error, path:"/dashboard/clients", method:"toggleClientArchived" });
+        return { success: false, error:"Ошибка" };
     }
 }
 
 export async function updateClientComments(clientId: string, comments: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    if (!session) return { success: false, error:"Не авторизован" };
 
     try {
         await db.update(clients).set({ comments, updatedAt: new Date() }).where(eq(clients.id, clientId));
-        await logAction("Обновлен комментарий клиента", "client", clientId, { comments });
+        await logAction("Обновлен комментарий клиента","client", clientId, { comments });
         revalidatePath("/dashboard/clients");
         return { success: true };
     } catch (error) {
-        await logError({ error, path: "/dashboard/clients", method: "updateClientComments" });
-        return { success: false, error: "Ошибка" };
+        await logError({ error, path:"/dashboard/clients", method:"updateClientComments" });
+        return { success: false, error:"Ошибка" };
     }
 }

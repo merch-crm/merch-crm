@@ -1,21 +1,21 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { systemSettings } from "@/lib/schema";
-import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
-import { revalidatePath } from "next/cache";
-import { logAction } from "@/lib/audit";
-import { saveLocalFile } from "@/lib/local-storage";
-import { logError } from "@/lib/error-logger";
-import { BrandingSettingsSchema, IconGroupsSchema } from "./validation";
-import sharp from "sharp";
+import { db } from"@/lib/db";
+import { systemSettings } from"@/lib/schema";
+import { eq } from"drizzle-orm";
+import { getSession } from"@/lib/auth";
+import { requireAdmin } from"@/lib/admin";
+import { revalidatePath } from"next/cache";
+import { logAction } from"@/lib/audit";
+import { saveLocalFile } from"@/lib/local-storage";
+import { logError } from"@/lib/error-logger";
+import { BrandingSettingsSchema, IconGroupsSchema } from"./validation";
+import sharp from"sharp";
 
-import type { BrandingSettings } from "@/lib/types";
+import type { BrandingSettings } from"@/lib/types";
 
-import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { getBrandingSettings as getBrandingSettingsLib } from "@/lib/branding";
+import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { getBrandingSettings as getBrandingSettingsLib } from"@/lib/branding";
 
 export const getBrandingSettings = getBrandingSettingsLib;
 
@@ -44,7 +44,7 @@ export async function updateBrandingSettings(data: BrandingSettings) {
         await db.transaction(async (tx) => {
             await tx.insert(systemSettings)
                 .values({
-                    key: "branding",
+                    key:"branding",
                     value: validData,
                     updatedAt: new Date()
                 })
@@ -53,22 +53,22 @@ export async function updateBrandingSettings(data: BrandingSettings) {
                     set: { value: validData, updatedAt: new Date() }
                 });
 
-            await logAction("Обновление настроек брендинга", "system", "branding", saveData, tx);
+            await logAction("Обновление настроек брендинга","system","branding", saveData, tx);
         });
 
         revalidatePath("/dashboard");
         revalidatePath("/admin-panel/branding");
-        revalidatePath("/", "layout");
+        revalidatePath("/","layout");
 
         return { success: true };
     } catch (error: unknown) {
         await logError({
             error,
-            path: "/admin-panel/branding",
-            method: "updateBrandingSettings",
+            path:"/admin-panel/branding",
+            method:"updateBrandingSettings",
             details: { data }
         });
-        const errorMessage = error instanceof Error ? error.message : "Ошибка при обновлении настроек";
+        const errorMessage = error instanceof Error ? error.message :"Ошибка при обновлении настроек";
         return { error: errorMessage };
     }
 }
@@ -79,54 +79,54 @@ export async function uploadBrandingFile(formData: FormData) {
         await requireAdmin(session);
 
         const file = formData.get("file") as File;
-        const type = formData.get("type") as "logo" | "favicon" | "background" | "sound" | "print_logo" | "crm_background" | "email_logo";
+        const type = formData.get("type") as"logo" |"favicon" |"background" |"sound" |"print_logo" |"crm_background" |"email_logo";
         const soundKey = formData.get("soundKey") as string | null;
 
         if (!file || !type) {
-            return { error: "Отсутствуют необходимые данные" };
+            return { error:"Отсутствуют необходимые данные" };
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
         let processedBuffer: Buffer;
         let fileName: string;
 
-        if (type === "logo") {
+        if (type ==="logo") {
             processedBuffer = await sharp(buffer)
                 .resize({ width: 500, withoutEnlargement: true })
                 .webp({ quality: 80 })
                 .toBuffer();
             fileName = `branding/logo_brand_crm.webp`;
-        } else if (type === "favicon") {
+        } else if (type ==="favicon") {
             processedBuffer = await sharp(buffer)
                 .resize(48, 48)
                 .png()
                 .toBuffer();
             fileName = `branding/favicon.png`;
-        } else if (type === "background") {
+        } else if (type ==="background") {
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1920, withoutEnlargement: true })
                 .webp({ quality: 70 })
                 .toBuffer();
             fileName = `branding/bg_${Date.now()}.webp`;
-        } else if (type === "print_logo") {
+        } else if (type ==="print_logo") {
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1000, withoutEnlargement: true })
                 .png({ quality: 90 })
                 .toBuffer();
             fileName = `branding/print_logo_${Date.now()}.png`;
-        } else if (type === "crm_background") {
+        } else if (type ==="crm_background") {
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1920, withoutEnlargement: true })
                 .webp({ quality: 70 })
                 .toBuffer();
             fileName = `branding/crm_bg_${Date.now()}.webp`;
-        } else if (type === "email_logo") {
+        } else if (type ==="email_logo") {
             processedBuffer = await sharp(buffer)
                 .resize({ width: 600, withoutEnlargement: true })
                 .png({ quality: 90 })
                 .toBuffer();
             fileName = `branding/email_logo_${Date.now()}.png`;
-        } else if (type === "sound") {
+        } else if (type ==="sound") {
             processedBuffer = buffer;
             const extension = file.name.split('.').pop() || 'mp3';
             if (soundKey) {
@@ -135,7 +135,7 @@ export async function uploadBrandingFile(formData: FormData) {
                 fileName = `sounds/sound_${Date.now()}.${extension}`;
             }
         } else {
-            return { error: "Некорректный тип" };
+            return { error:"Некорректный тип" };
         }
 
         const result = await saveLocalFile(fileName, processedBuffer);
@@ -146,15 +146,15 @@ export async function uploadBrandingFile(formData: FormData) {
                 url: `/api/storage/local/${fileName}`
             };
         } else {
-            return { error: result.error || "Failed to save file" };
+            return { error: result.error ||"Failed to save file" };
         }
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/branding",
-            method: "uploadBrandingFile"
+            path:"/admin-panel/branding",
+            method:"uploadBrandingFile"
         });
-        return { error: "Не удалось обработать файл" };
+        return { error:"Не удалось обработать файл" };
     }
 }
 
@@ -187,17 +187,17 @@ export async function exportDatabaseBackup() {
     } catch (error: unknown) {
         await logError({
             error,
-            path: "/admin-panel/branding",
-            method: "exportDatabaseBackup"
+            path:"/admin-panel/branding",
+            method:"exportDatabaseBackup"
         });
-        const errorMessage = error instanceof Error ? error.message : "Ошибка при экспорте базы данных";
+        const errorMessage = error instanceof Error ? error.message :"Ошибка при экспорте базы данных";
         return { error: errorMessage };
     }
 }
 
 export async function getIconGroups(): Promise<SerializedIconGroup[]> {
     try {
-        const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "icon_groups")).limit(1);
+        const result = await db.select().from(systemSettings).where(eq(systemSettings.key,"icon_groups")).limit(1);
         const settings = result[0];
 
         if (!settings) {
@@ -209,8 +209,8 @@ export async function getIconGroups(): Promise<SerializedIconGroup[]> {
     } catch (error) {
         await logError({
             error,
-            path: "/admin-panel/branding",
-            method: "getIconGroups"
+            path:"/admin-panel/branding",
+            method:"getIconGroups"
         });
         return serializeIconGroups(ICON_GROUPS);
     }
@@ -229,7 +229,7 @@ export async function updateIconGroups(groups: SerializedIconGroup[]) {
         await db.transaction(async (tx) => {
             await tx.insert(systemSettings)
                 .values({
-                    key: "icon_groups",
+                    key:"icon_groups",
                     value: serialized,
                     updatedAt: new Date()
                 })
@@ -238,7 +238,7 @@ export async function updateIconGroups(groups: SerializedIconGroup[]) {
                     set: { value: serialized, updatedAt: new Date() }
                 });
 
-            await logAction("Обновление категорий иконок", "system", "icon_groups", {}, tx);
+            await logAction("Обновление категорий иконок","system","icon_groups", {}, tx);
         });
 
         revalidatePath("/dashboard");
@@ -248,11 +248,11 @@ export async function updateIconGroups(groups: SerializedIconGroup[]) {
     } catch (error: unknown) {
         await logError({
             error,
-            path: "/admin-panel/branding",
-            method: "updateIconGroups",
+            path:"/admin-panel/branding",
+            method:"updateIconGroups",
             details: { groupsCount: groups.length }
         });
-        const errorMessage = error instanceof Error ? error.message : "Ошибка при обновлении групп иконок";
+        const errorMessage = error instanceof Error ? error.message :"Ошибка при обновлении групп иконок";
         return { error: errorMessage };
     }
 }

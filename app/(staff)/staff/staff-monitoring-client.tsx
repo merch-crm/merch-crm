@@ -81,8 +81,8 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
     }
 
     return (
-        <div className="space-y-6 animate-in fade-in duration-500">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-3 animate-in fade-in duration-500">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-900">Мониторинг присутствия</h1>
                     <p className="text-slate-500 mt-1">
@@ -96,7 +96,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
             </div>
 
             {/* Статистика */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 <StatCard
                     title="На работе"
                     value={stats.present}
@@ -139,7 +139,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                             <p className="text-sm mt-1">Настройте камеры для начала отслеживания</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                             {status.map((employee) => (
                                 <EmployeeStatusCard key={employee.userId} employee={employee} />
                             ))}
@@ -157,7 +157,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                     </div>
                 </CardHeader>
                 <CardBody className="p-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
                         <div className="text-center p-6 bg-slate-50 rounded-2xl border border-slate-100/50">
                             <p className="text-3xl font-bold text-slate-900">{report.length}</p>
                             <p className="text-sm font-medium text-slate-500 mt-1">Присутствовали</p>
@@ -179,7 +179,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                                     key={emp.userId}
                                     className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-slate-200 transition-all shadow-sm"
                                 >
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3">
                                         <div className="relative">
                                             {emp.userAvatar ? (
                                                 <Image
@@ -206,9 +206,9 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-3">
                                         {emp.lateMinutes > 0 && (
-                                            <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-orange-50 text-orange-600 rounded-lg border border-orange-100">
+                                            <span className="px-2.5 py-1 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider bg-orange-50 text-orange-600 rounded-lg border border-orange-100">
                                                 Опоздал {emp.lateMinutes}м
                                             </span>
                                         )}
@@ -216,7 +216,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                                             <span className="text-sm font-bold text-slate-900">
                                                 {emp.workHours.toFixed(1)} ч
                                             </span>
-                                            <p className="text-[10px] text-slate-400 font-medium">отработано</p>
+                                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">отработано</p>
                                         </div>
                                     </div>
                                 </div>
@@ -249,13 +249,13 @@ function StatCard({
 
     return (
         <Card className="crm-card border-none shadow-sm bg-white overflow-hidden">
-            <CardBody className="flex items-center gap-5 p-6">
+            <CardBody className="flex items-center gap-3 p-6">
                 <div className={cn('p-4 rounded-2xl border', colors[color])}>
                     <Icon className="w-7 h-7" />
                 </div>
                 <div>
                     <p className="text-3xl font-bold text-slate-900 tabular-nums">{value}</p>
-                    <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wide">{title}</p>
+                    <p className="text-sm font-semibold text-slate-500 mt-1  tracking-wide">{title}</p>
                 </div>
             </CardBody>
         </Card>
@@ -274,7 +274,7 @@ function EmployeeStatusCard({ employee }: { employee: PresenceStatus }) {
 
     return (
         <div className="p-5 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
                 <div className="relative">
                     {employee.userAvatar ? (
                         <Image
@@ -298,7 +298,7 @@ function EmployeeStatusCard({ employee }: { employee: PresenceStatus }) {
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="font-bold text-slate-900 truncate text-lg">{employee.userName}</p>
-                    <div className={cn('inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider', config.bgColor, config.textColor)}>
+                    <div className={cn('inline-flex items-center px-2 py-0.5 rounded-full text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider', config.bgColor, config.textColor)}>
                         {config.label}
                     </div>
                 </div>
@@ -322,11 +322,11 @@ function EmployeeStatusCard({ employee }: { employee: PresenceStatus }) {
             <div className="mt-4 grid grid-cols-2 gap-2">
                 <div className="bg-slate-50 rounded-xl p-2 text-center">
                     <p className="text-xs font-bold text-slate-900">{(employee.todayWorkSeconds / 3600).toFixed(1)}ч</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Работа</p>
+                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400  tracking-tighter">Работа</p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-2 text-center">
                     <p className="text-xs font-bold text-slate-900">{(employee.todayIdleSeconds / 3600).toFixed(1)}ч</p>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Простой</p>
+                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400  tracking-tighter">Простой</p>
                 </div>
             </div>
         </div>

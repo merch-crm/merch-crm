@@ -1,8 +1,8 @@
-import { Package, ArrowRightLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Pagination } from "@/components/ui/pagination";
-import { formatUnit } from "@/lib/utils";
-import { StorageLocationItem } from "../../storage-locations-tab";
+import { Package, ArrowRightLeft } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { Pagination } from"@/components/ui/pagination";
+import { formatUnit } from"@/lib/utils";
+import { StorageLocationItem } from"../../storage-locations-tab";
 
 interface LocationItemsListProps {
     currentPage: number;

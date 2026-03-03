@@ -1,8 +1,8 @@
 "use client";
 
-import { RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { RotateCcw } from"lucide-react";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
 
 interface ThumbSettings {
     zoom: number;
@@ -49,10 +49,9 @@ function AxisSlider({ label, value, bound, onChange }: AxisSliderProps) {
                     />
                 </div>
                 <div
-                    className={cn(
-                        "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
-                        bound <= 0 && "bg-muted-foreground/30",
-                        value !== 0 && "border-primary/20 ring-2 ring-primary/10"
+                    className={cn("absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
+                        bound <= 0 &&"bg-muted-foreground/30",
+                        value !== 0 &&"border-primary/20 ring-2 ring-primary/10"
                     )}
                     style={{ left: normalizedPos }}
                 />
@@ -65,9 +64,8 @@ function AxisSlider({ label, value, bound, onChange }: AxisSliderProps) {
                     disabled={bound <= 0}
                     onChange={(e) => onChange(parseInt(e.target.value))}
                     onDoubleClick={() => onChange(0)}
-                    className={cn(
-                        "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0",
-                        bound <= 0 && "cursor-not-allowed"
+                    className={cn("absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30 p-0 m-0",
+                        bound <= 0 &&"cursor-not-allowed"
                     )}
                 />
             </div>
@@ -104,9 +102,8 @@ export function ItemImageCropper({
                                 />
                             </div>
                             <div
-                                className={cn(
-                                    "absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
-                                    thumbSettings.zoom !== 1 && "border-primary/20 ring-2 ring-primary/10"
+                                className={cn("absolute top-1/2 -translate-y-1/2 -ml-1.5 w-3 h-3 rounded-full shadow-sm border border-border bg-background transition-all duration-75 pointer-events-none z-20",
+                                    thumbSettings.zoom !== 1 &&"border-primary/20 ring-2 ring-primary/10"
                                 )}
                                 style={{
                                     left: `${(thumbSettings.zoom - 1) / 2 * 100}%`

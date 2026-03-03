@@ -1,15 +1,15 @@
 "use client";
 
-import { ArrowRightLeft, ChevronUp, ChevronDown } from "lucide-react";
-import { InventoryItem } from "./types";
-import { StorageLocation } from "./storage-locations-tab";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { SubmitButton } from "@/components/ui/submit-button";
-import { Select, SelectOption } from "@/components/ui/select";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { useMoveInventory } from "./hooks/use-move-inventory";
+import { ArrowRightLeft, ChevronUp, ChevronDown } from"lucide-react";
+import { InventoryItem } from"./types";
+import { StorageLocation } from"./storage-locations-tab";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
+import { Input } from"@/components/ui/input";
+import { SubmitButton } from"@/components/ui/submit-button";
+import { Select, SelectOption } from"@/components/ui/select";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { useMoveInventory } from"./hooks/use-move-inventory";
 
 interface MoveInventoryDialogProps {
     items: InventoryItem[];
@@ -49,7 +49,7 @@ export function MoveInventoryDialog({
     const locationOptions: SelectOption[] = (locations || []).map(loc => ({
         id: loc.id,
         title: loc.name,
-        description: loc.description || "Место хранения"
+        description: loc.description ||"Место хранения"
     }));
 
     return (
@@ -58,8 +58,7 @@ export function MoveInventoryDialog({
                 <Button
                     type="button"
                     onClick={() => setIsOpen(true)}
-                    className={cn(
-                        "h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
+                    className={cn("h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
                         className
                     )}
                 >
@@ -102,7 +101,7 @@ export function MoveInventoryDialog({
                                 disabled={isPending}
                                 onChange={(val) => {
                                     setSelectedItemId(val);
-                                    setFieldErrors(prev => ({ ...prev, itemId: "" }));
+                                    setFieldErrors(prev => ({ ...prev, itemId:"" }));
                                 }}
                                 placeholder="Выберите товар из списка..."
                                 showSearch
@@ -119,7 +118,7 @@ export function MoveInventoryDialog({
                                     value={fromLocationId}
                                     onChange={(val) => {
                                         setFromLocationId(val);
-                                        setFieldErrors(prev => ({ ...prev, fromLocationId: "" }));
+                                        setFieldErrors(prev => ({ ...prev, fromLocationId:"" }));
                                     }}
                                     placeholder="Склад..."
                                     showSearch
@@ -134,7 +133,7 @@ export function MoveInventoryDialog({
                                     value={toLocationId}
                                     onChange={(val) => {
                                         setToLocationId(val);
-                                        setFieldErrors(prev => ({ ...prev, toLocationId: "" }));
+                                        setFieldErrors(prev => ({ ...prev, toLocationId:"" }));
                                     }}
                                     placeholder="Склад..."
                                     showSearch
@@ -155,11 +154,10 @@ export function MoveInventoryDialog({
                                     value={quantity}
                                     onChange={(e) => {
                                         setQuantity(e.target.value);
-                                        setFieldErrors(prev => ({ ...prev, quantity: "" }));
+                                        setFieldErrors(prev => ({ ...prev, quantity:"" }));
                                     }}
-                                    className={cn(
-                                        "w-full h-12 pl-4 pr-12 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-sm font-bold outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm",
-                                        fieldErrors.quantity && "border-rose-300 bg-rose-50 text-rose-900"
+                                    className={cn("w-full h-12 pl-4 pr-12 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-sm font-bold outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/5 shadow-sm",
+                                        fieldErrors.quantity &&"border-rose-300 bg-rose-50 text-rose-900"
                                     )}
                                 />
                                 <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
@@ -194,11 +192,10 @@ export function MoveInventoryDialog({
                                 value={comment}
                                 onChange={(e) => {
                                     setComment(e.target.value);
-                                    setFieldErrors(prev => ({ ...prev, comment: "" }));
+                                    setFieldErrors(prev => ({ ...prev, comment:"" }));
                                 }}
-                                className={cn(
-                                    "w-full h-12 px-4 rounded-[var(--radius-inner)] border text-sm font-bold outline-none transition-all shadow-sm",
-                                    fieldErrors.comment ? "border-rose-300 bg-rose-50 text-rose-900" : "border-slate-200 bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5"
+                                className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] border text-sm font-bold outline-none transition-all shadow-sm",
+                                    fieldErrors.comment ?"border-rose-300 bg-rose-50 text-rose-900" :"border-slate-200 bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5"
                                 )}
                             />
                             {fieldErrors.comment && <p className="text-xs font-bold text-rose-500 ml-1 leading-tight">{fieldErrors.comment}</p>}

@@ -1,6 +1,6 @@
-import { Warehouse, AlertCircle } from "lucide-react";
-import { formatUnit } from "@/lib/utils";
-import { ItemFormData, StorageLocation } from "@/app/(main)/dashboard/warehouse/types";
+import { Warehouse, AlertCircle } from"lucide-react";
+import { formatUnit } from"@/lib/utils";
+import { ItemFormData, StorageLocation } from"@/app/(main)/dashboard/warehouse/types";
 
 interface StorageCardProps {
     formData: ItemFormData;

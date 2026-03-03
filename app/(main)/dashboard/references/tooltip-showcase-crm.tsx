@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
-import { Lightbulb, Sparkles } from "lucide-react";
+import React from"react";
+import { motion } from"framer-motion";
+import { Lightbulb, Sparkles } from"lucide-react";
 
 const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
     return (
@@ -13,21 +13,21 @@ const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
                 className={`relative p-6 rounded-[1.25rem] w-[320px] shadow-[0_10px_40px_-5px_rgba(0,0,0,0.1)] ${dark
-                    ? "bg-[#161617] text-white"
-                    : "bg-white text-[#161617]"
+                    ?"bg-[#161617] text-white"
+                    :"bg-white text-[#161617]"
                     }`}
             >
                 {/* Content */}
                 <div className="space-y-2 relative z-10">
                     <h3 className="font-bold text-lg leading-tight">Tooltip</h3>
-                    <p className={`text-[0.93rem] leading-relaxed ${dark ? "text-white/60" : "text-[#161617]/60"
+                    <p className={`text-[0.93rem] leading-relaxed ${dark ?"text-white/60" :"text-[#161617]/60"
                         }`}>
                         Try connecting to another server. In case of a repeated error, please wait, if nothing happens, try to write a letter to the post office.
                     </p>
                 </div>
 
                 {/* Arrow (Triangle) */}
-                <div className={`absolute -bottom-3 left-8 w-6 h-6 rotate-45 transform ${dark ? "bg-[#161617]" : "bg-white"
+                <div className={`absolute -bottom-3 left-8 w-6 h-6 rotate-45 transform ${dark ?"bg-[#161617]" :"bg-white"
                     }`} />
             </motion.div>
 
@@ -36,8 +36,8 @@ const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`w-14 h-14 rounded-[1.2rem] flex items-center justify-center shadow-[0_4px_20px_-2px_rgba(0,0,0,0.1)] self-start ml-4 ${dark
-                    ? "bg-[#161617] text-white"
-                    : "bg-white text-[#161617]"
+                    ?"bg-[#161617] text-white"
+                    :"bg-white text-[#161617]"
                     }`}
             >
                 <div className="relative">
@@ -51,7 +51,7 @@ const TooltipVariant = ({ dark = false }: { dark?: boolean }) => {
 
 export default function TooltipShowcaseCRM() {
     return (
-        <section className="space-y-12 py-12 flex flex-col items-center">
+        <section className="space-y-3 py-12 flex flex-col items-center">
             <div className="flex items-center gap-3 self-start px-2 mb-[-1rem]">
                 <div className="h-8 w-1 bg-slate-900 rounded-full" />
                 <h2 className="text-3xl font-bold text-slate-800">Smart Tooltips</h2>

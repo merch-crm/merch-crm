@@ -89,8 +89,8 @@ describe('useAddStorageLocation', () => {
         const { result } = renderHook(() => useAddStorageLocation());
 
         const formData = new FormData();
-        formData.append("name", "a");
-        formData.append("address", "123");
+        formData.append("name","a");
+        formData.append("address","123");
 
         await act(async () => {
             await result.current.handleSubmit(formData);
@@ -112,8 +112,8 @@ describe('useAddStorageLocation', () => {
         });
 
         const formData = new FormData();
-        formData.append("name", "Valid Name");
-        formData.append("address", "Valid City, Street 123");
+        formData.append("name","Valid Name");
+        formData.append("address","Valid City, Street 123");
 
         await act(async () => {
             await result.current.handleSubmit(formData);
@@ -128,7 +128,7 @@ describe('useAddStorageLocation', () => {
     });
 
     it('should handle failed submission', async () => {
-        vi.mocked(addStorageLocation).mockResolvedValue({ success: false, error: "Server Error" });
+        vi.mocked(addStorageLocation).mockResolvedValue({ success: false, error:"Server Error" });
         const { result } = renderHook(() => useAddStorageLocation());
 
         // Open first
@@ -137,8 +137,8 @@ describe('useAddStorageLocation', () => {
         });
 
         const formData = new FormData();
-        formData.append("name", "Valid Name");
-        formData.append("address", "Valid City, Street 123");
+        formData.append("name","Valid Name");
+        formData.append("address","Valid City, Street 123");
 
         await act(async () => {
             await result.current.handleSubmit(formData);

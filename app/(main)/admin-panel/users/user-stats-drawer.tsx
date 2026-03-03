@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { X, TrendingUp, CheckCircle, PieChart, Loader2, Calendar } from "lucide-react";
-import { getUserStats } from "./stats/actions";
-import { useBranding } from "@/components/branding-provider";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from"react";
+import { X, TrendingUp, CheckCircle, PieChart, Loader2, Calendar } from"lucide-react";
+import { getUserStats } from"./stats/actions";
+import { useBranding } from"@/components/branding-provider";
+import { Button } from"@/components/ui/button";
 
 
 interface UserStatsDrawerProps {
@@ -75,10 +75,10 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                     <div className="flex items-start justify-between mb-6">
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">
-                                {loading ? "Загрузка..." : stats?.user.name || "Статистика"}
+                                {loading ?"Загрузка..." : stats?.user.name ||"Статистика"}
                             </h2>
                             <p className="text-sm font-medium text-slate-400 mt-1">
-                                {stats?.user.role || "Сотрудник"}
+                                {stats?.user.role ||"Сотрудник"}
                             </p>
                         </div>
                         <Button
@@ -147,7 +147,7 @@ export function UserStatsDrawer({ userId, isOpen, onClose }: UserStatsDrawerProp
                                 <div className="p-6 bg-primary rounded-[2rem] text-white shadow-lg shadow-primary/20">
                                     <div className="flex items-center justify-between mb-6">
                                         <div>
-                                            <p className="text-white/70 text-xs font-bold ">Эффективность</p>
+                                            <p className="text-white/70 text-xs font-bold">Эффективность</p>
                                             <div className="text-4xl font-bold mt-1">{stats.tasks.efficiency}%</div>
                                         </div>
                                         <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm">

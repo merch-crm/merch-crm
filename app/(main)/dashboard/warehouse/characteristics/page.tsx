@@ -1,14 +1,14 @@
-import { getInventoryAttributes, getInventoryAttributeTypes } from "../attribute-actions";
-import { getInventoryCategories } from "../category-actions";;
-import { WarehouseCharacteristic } from "../warehouse-characteristic";
-import { AttributeType } from "../types";
-import { getSession } from "@/lib/auth";
+import { getInventoryAttributes, getInventoryAttributeTypes } from"../attribute-actions";
+import { getInventoryCategories } from"../category-actions";;
+import { WarehouseCharacteristic } from"../warehouse-characteristic";
+import { AttributeType } from"../types";
+import { getSession } from"@/lib/auth";
 
 export const metadata = {
-    title: "Склад | Характеристики",
+    title:"Склад | Характеристики",
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic ="force-dynamic";
 
 export default async function CharacteristicsPage() {
     const [

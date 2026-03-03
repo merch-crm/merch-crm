@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { WikiSidebar } from "./wiki-sidebar";
-import { getWikiPageDetail, createWikiFolder, createWikiPage, updateWikiPage, deleteWikiPage } from "./actions";
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { useState, useEffect, useCallback } from"react";
+import { WikiSidebar } from"./wiki-sidebar";
+import { getWikiPageDetail, createWikiFolder, createWikiPage, updateWikiPage, deleteWikiPage } from"./actions";
+import { useRouter } from"next/navigation";
+import { cn } from"@/lib/utils";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
-import { Button } from "@/components/ui/button";
-import { Edit2, Trash2, Check, X, Search, Menu, Eye, EyeOff, Bold, Italic, Heading1, Heading2, List, Link as LinkIcon } from "lucide-react";
+import { Button } from"@/components/ui/button";
+import { Edit2, Trash2, Check, X, Search, Menu, Eye, EyeOff, Bold, Italic, Heading1, Heading2, List, Link as LinkIcon } from"lucide-react";
 
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { PromptDialog } from "@/components/ui/prompt-dialog";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { PromptDialog } from"@/components/ui/prompt-dialog";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
 
 interface WikiFolder {
     id: string;
@@ -52,7 +52,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
         isEditing: false,
         isPreview: false,
         isLoading: false,
-        editData: { title: "", content: "" }
+        editData: { title:"", content:"" }
     });
 
     // Consolidated dialog state
@@ -66,7 +66,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
         setIsMounted(true);
     }, []);
 
-    const canEdit = ["Администратор", "Управляющий", "Дизайнер"].includes(userRole);
+    const canEdit = ["Администратор","Управляющий","Дизайнер"].includes(userRole);
 
     const fetchPageDetail = useCallback(async (id: string) => {
         setPageState(prev => ({ ...prev, isLoading: true }));
@@ -77,7 +77,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                 setPageState(prev => ({
                     ...prev,
                     content: data as WikiPage,
-                    editData: { title: data.title || "", content: data.content || "" }
+                    editData: { title: data.title ||"", content: data.content ||"" }
                 }));
             }
         } finally {
@@ -106,13 +106,13 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
         }
     }, [uiState.selectedPageId, pageState.editData, fetchPageDetail, router]);
 
-    const insertMarkdown = (prefix: string, suffix: string = "") => {
+    const insertMarkdown = (prefix: string, suffix: string ="") => {
         const textarea = document.querySelector('textarea');
         if (!textarea) return;
 
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
-        const text = pageState.editData.content || "";
+        const text = pageState.editData.content ||"";
         const before = text.substring(0, start);
         const selected = text.substring(start, end);
         const after = text.substring(end);
@@ -171,7 +171,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
 
     const confirmCreatePage = async (title: string) => {
         setDialogs(prev => ({ ...prev, page: { ...prev.page, isOpen: false } }));
-        const res = await createWikiPage({ title, content: "", folderId: dialogs.page.folderId });
+        const res = await createWikiPage({ title, content:"", folderId: dialogs.page.folderId });
         if (res.success && res.data) {
             const newId = res.data.id;
             setPageState(prev => ({
@@ -260,7 +260,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                             />
                         ) : (
                             <h1 className="text-lg md:text-xl font-bold text-slate-900 truncate">
-                                {pageState.content?.title || "Выберите статью"}
+                                {pageState.content?.title ||"Выберите статью"}
                             </h1>
                         )}
                     </div>
@@ -309,8 +309,8 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                                             size="icon"
                                             type="button"
                                             onClick={() => setPageState(prev => ({ ...prev, isPreview: !prev.isPreview }))}
-                                            aria-label={pageState.isPreview ? "Выключить предпросмотр" : "Предпросмотр"}
-                                            className={cn(pageState.isPreview && "text-primary bg-primary/5")}
+                                            aria-label={pageState.isPreview ?"Выключить предпросмотр" :"Предпросмотр"}
+                                            className={cn(pageState.isPreview &&"text-primary bg-primary/5")}
                                         >
                                             {pageState.isPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                         </Button>
@@ -354,10 +354,10 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                                             size="sm"
                                             type="button"
                                             onClick={() => setPageState(prev => ({ ...prev, isPreview: !prev.isPreview }))}
-                                            className={cn("h-8 gap-2 font-bold text-xs", pageState.isPreview && "bg-white shadow-sm border border-slate-200 text-primary")}
+                                            className={cn("h-8 gap-2 font-bold text-xs", pageState.isPreview &&"bg-white shadow-sm border border-slate-200 text-primary")}
                                         >
                                             {pageState.isPreview ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                                            {pageState.isPreview ? "Редактор" : "Просмотр"}
+                                            {pageState.isPreview ?"Редактор" :"Просмотр"}
                                         </Button>
                                     </div>
 
@@ -381,7 +381,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                             ) : (
                                 <div className="prose prose-premium prose-slate max-w-none animate-in fade-in duration-500">
                                     {pageState.content?.content ? (
-                                        <div className="text-slate-800 font-medium leading-[1.75] text-base md:text-[17px] ">
+                                        <div className="text-slate-800 font-medium leading-[1.75] text-base md:text-[17px]">
                                             <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                                 {pageState.content.content}
                                             </ReactMarkdown>
@@ -430,7 +430,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                     <div className="px-4 md:px-8 py-4 border-t border-slate-200/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs font-bold text-slate-400 bg-white/40">
                         <div className="flex items-center gap-2">
                             <span className="opacity-60">Автор:</span>
-                            <span className="text-slate-600">{pageState.content.author?.name || "Система"}</span>
+                            <span className="text-slate-600">{pageState.content.author?.name ||"Система"}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="opacity-60">Обновлено:</span>
@@ -441,7 +441,7 @@ export function WikiClient({ initialFolders = [], initialPages = [], userRole }:
                                     year: 'numeric',
                                     hour: '2-digit',
                                     minute: '2-digit'
-                                }) : "..."}
+                                }) :"..."}
                             </span>
                         </div>
                     </div>

@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { MapPin, Phone, User } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { RecipientInfoProps } from "./types";
+import * as React from"react";
+import { MapPin, Phone, User } from"lucide-react";
+import { cn } from"@/lib/utils";
+import { RecipientInfoProps } from"./types";
 
 export function RecipientInfo({ name, phone, address, className }: RecipientInfoProps) {
     if (!name && !phone && !address) return null;

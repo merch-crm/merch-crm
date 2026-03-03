@@ -1,16 +1,16 @@
 "use client";
 
-import { CategoryStep } from "./components/category-step";
-import { BasicInfoStep } from "./components/basic-info-step";
-import { MediaStep } from "./components/media-step";
-import { StockStep } from "./components/stock-step";
-import { PackagingBasicInfoStep } from "./components/packaging-basic-info-step";
-import { SummaryStep } from "./components/summary-step";
-import { NewItemSidebar } from "./components/new-item-sidebar";
-import { InventoryAttribute, AttributeType, Category, StorageLocation } from "../../types";
-import { useNewItemLogic } from "./hooks/useNewItemLogic";
-import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
-import { useEffect } from "react";
+import { CategoryStep } from"./components/category-step";
+import { BasicInfoStep } from"./components/basic-info-step";
+import { MediaStep } from"./components/media-step";
+import { StockStep } from"./components/stock-step";
+import { PackagingBasicInfoStep } from"./components/packaging-basic-info-step";
+import { SummaryStep } from"./components/summary-step";
+import { NewItemSidebar } from"./components/new-item-sidebar";
+import { InventoryAttribute, AttributeType, Category, StorageLocation } from"../../types";
+import { useNewItemLogic } from"./hooks/useNewItemLogic";
+import { useBreadcrumbs } from"@/components/layout/breadcrumbs-context";
+import { useEffect } from"react";
 
 interface NewItemPageClientProps {
     categories: Category[];
@@ -37,8 +37,8 @@ export function NewItemPageClient({
 
     useEffect(() => {
         setCustomTrail([
-            { label: "Склад", href: "/dashboard/warehouse" },
-            { label: "Создание позиции", href: "/dashboard/warehouse/items/new" }
+            { label:"Склад", href:"/dashboard/warehouse" },
+            { label:"Создание позиции", href:"/dashboard/warehouse/items/new" }
         ]);
         return () => setCustomTrail(null);
     }, [setCustomTrail]);
@@ -71,11 +71,11 @@ export function NewItemPageClient({
     });
 
     const steps = [
-        { id: 0, title: "Категория", desc: "Выбор категории" },
-        { id: 2, title: "Описание", desc: "Характеристики" },
-        { id: 3, title: "Галерея", desc: "Фото и медиа" },
-        { id: 4, title: "Склад", desc: "Остатки и хранение" },
-        { id: 5, title: "Итог", desc: "Проверка и создание" }
+        { id: 0, title:"Категория", desc:"Выбор категории" },
+        { id: 2, title:"Описание", desc:"Характеристики" },
+        { id: 3, title:"Галерея", desc:"Фото и медиа" },
+        { id: 4, title:"Склад", desc:"Остатки и хранение" },
+        { id: 5, title:"Итог", desc:"Проверка и создание" }
     ];
 
     return (

@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/toast";
-import { moveInventoryItem } from "../stock-actions";;
-import type { InventoryItem } from "../types";
-import type { StorageLocation } from "../storage-locations-tab";
+import { useState } from"react";
+import { useRouter } from"next/navigation";
+import { useToast } from"@/components/ui/toast";
+import { moveInventoryItem } from"../stock-actions";;
+import type { InventoryItem } from"../types";
+import type { StorageLocation } from"../storage-locations-tab";
 
 interface UseMoveInventoryProps {
     items: InventoryItem[];
@@ -24,9 +24,9 @@ export function useMoveInventory({ items, locations, externalIsOpen, externalOnC
         setInternalIsOpen(val);
     };
 
-    const [selectedItemId, setSelectedItemId] = useState(defaultItemId || "");
-    const [fromLocationId, setFromLocationId] = useState(() => (locations || [])[0]?.id || "");
-    const [toLocationId, setToLocationId] = useState(() => (locations || [])[1]?.id || (locations || [])[0]?.id || "");
+    const [selectedItemId, setSelectedItemId] = useState(defaultItemId ||"");
+    const [fromLocationId, setFromLocationId] = useState(() => (locations || [])[0]?.id ||"");
+    const [toLocationId, setToLocationId] = useState(() => (locations || [])[1]?.id || (locations || [])[0]?.id ||"");
     const [quantity, setQuantity] = useState("");
     const [comment, setComment] = useState("");
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -47,13 +47,13 @@ export function useMoveInventory({ items, locations, externalIsOpen, externalOnC
 
         const newErrors: Record<string, string> = {};
 
-        if (!itemId) newErrors.itemId = "Выберите товар";
-        if (!fromLocId) newErrors.fromLocationId = "Выберите склад отправитель";
-        if (!toLocId) newErrors.toLocationId = "Выберите склад получатель";
-        if (fromLocId && toLocId && fromLocId === toLocId) newErrors.toLocationId = "Склады должны быть разными";
+        if (!itemId) newErrors.itemId ="Выберите товар";
+        if (!fromLocId) newErrors.fromLocationId ="Выберите склад отправитель";
+        if (!toLocId) newErrors.toLocationId ="Выберите склад получатель";
+        if (fromLocId && toLocId && fromLocId === toLocId) newErrors.toLocationId ="Склады должны быть разными";
 
         if (!qty || qty <= 0) {
-            newErrors.quantity = "Введите количество";
+            newErrors.quantity ="Введите количество";
         } else {
             const item = (items || []).find(i => i.id === itemId);
             if (item && qty > item.quantity) {
@@ -62,7 +62,7 @@ export function useMoveInventory({ items, locations, externalIsOpen, externalOnC
         }
 
         if (!commentValue || commentValue.trim().length < 3) {
-            newErrors.comment = "Обязательно укажите причину перемещения";
+            newErrors.comment ="Обязательно укажите причину перемещения";
         }
 
         if (Object.keys(newErrors).length > 0) {
@@ -74,12 +74,12 @@ export function useMoveInventory({ items, locations, externalIsOpen, externalOnC
         setFieldErrors({});
         const res = await moveInventoryItem(formData);
         if (!res?.success) {
-            toast(res.error || "Ошибка", "error");
+            toast(res.error ||"Ошибка","error");
         } else {
             setIsOpen(false);
             setQuantity("");
             setComment("");
-            toast("Товар перемещен", "success");
+            toast("Товар перемещен","success");
             router.refresh();
         }
         setIsPending(false);

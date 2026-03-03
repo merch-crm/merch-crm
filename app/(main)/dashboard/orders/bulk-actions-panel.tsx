@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useState, useEffect } from"react";
+import { createPortal } from"react-dom";
 import {
     Trash2,
     X,
     Printer,
     FileDown,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { bulkUpdateOrderStatus, bulkUpdateOrderPriority, bulkDeleteOrders } from "./actions/bulk.actions";;
-import { Select } from "@/components/ui/select";
-import { useToast } from "@/components/ui/toast";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { pluralize, sentence } from "@/lib/pluralize";
-import { Button } from "@/components/ui/button";
+} from"lucide-react";
+import { motion, AnimatePresence } from"framer-motion";
+import { bulkUpdateOrderStatus, bulkUpdateOrderPriority, bulkDeleteOrders } from"./actions/bulk.actions";;
+import { Select } from"@/components/ui/select";
+import { useToast } from"@/components/ui/toast";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
+import { pluralize, sentence } from"@/lib/pluralize";
+import { Button } from"@/components/ui/button";
 
 interface BulkActionsPanelProps {
     selectedIds: string[];
@@ -35,14 +35,14 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
 
     if (selectedIds.length === 0) return null;
 
-    const handleStatusUpdate = async (status: "new" | "design" | "production" | "done" | "shipped" | "cancelled") => {
+    const handleStatusUpdate = async (status:"new" |"design" |"production" |"done" |"shipped" |"cancelled") => {
         setIsProcessing(true);
         const res = await bulkUpdateOrderStatus(selectedIds, status);
         if (res.success) {
-            toast("Статус обновлен для " + selectedIds.length + " " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов'), "success", { mutation: true });
+            toast("Статус обновлен для" + selectedIds.length +"" + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов'),"success", { mutation: true });
             onClear();
         } else {
-            toast(res.error || "Ошибка при обновлении", "error");
+            toast(res.error ||"Ошибка при обновлении","error");
         }
         setIsProcessing(false);
     };
@@ -51,10 +51,10 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
         setIsProcessing(true);
         const res = await bulkUpdateOrderPriority(selectedIds, priority);
         if (res.success) {
-            toast("Приоритет обновлен для " + selectedIds.length + " " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов'), "success", { mutation: true });
+            toast("Приоритет обновлен для" + selectedIds.length +"" + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов'),"success", { mutation: true });
             onClear();
         } else {
-            toast(res.error || "Ошибка при обновлении", "error");
+            toast(res.error ||"Ошибка при обновлении","error");
         }
         setIsProcessing(false);
     };
@@ -64,14 +64,14 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
         try {
             const res = await bulkDeleteOrders(selectedIds);
             if (res.success) {
-                toast(sentence(selectedIds.length, 'm', { one: 'Удален', many: 'Удалено' }, { one: 'заказ', few: 'заказа', many: 'заказов' }), "success", { mutation: true });
+                toast(sentence(selectedIds.length, 'm', { one: 'Удален', many: 'Удалено' }, { one: 'заказ', few: 'заказа', many: 'заказов' }),"success", { mutation: true });
                 onClear();
             } else {
-                toast(res.error || "Ошибка при удалении", "error");
+                toast(res.error ||"Ошибка при удалении","error");
             }
         } catch (error) {
             console.error(error);
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
         } finally {
             setIsProcessing(false);
             setShowDeleteConfirm(false);
@@ -99,10 +99,10 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                         }}
                     />
                     <motion.div
-                        initial={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                        exit={{ opacity: 0, y: 100, x: "-50%", scale: 0.9 }}
-                        transition={{ type: "spring", damping: 25, stiffness: 200, mass: 0.8 }}
+                        initial={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, x:"-50%", scale: 1 }}
+                        exit={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
+                        transition={{ type:"spring", damping: 25, stiffness: 200, mass: 0.8 }}
                         className="fixed bottom-6 sm:bottom-10 left-1/2 z-[110] flex items-center crm-card !p-2 sm:!p-2.5 !px-4 sm:!px-8 gap-2 sm:gap-3 !rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] max-w-[95vw] sm:max-w-none"
                     >
 
@@ -122,14 +122,14 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                             <div className="w-[100px] sm:w-[140px]">
                                 <Select
                                     value=""
-                                    onChange={(val) => handleStatusUpdate(val as "new" | "design" | "production" | "done" | "shipped" | "cancelled")}
+                                    onChange={(val) => handleStatusUpdate(val as"new" |"design" |"production" |"done" |"shipped" |"cancelled")}
                                     options={[
-                                        { id: "new", title: "Новый", description: "Только что созданный", color: "text-blue-500" },
-                                        { id: "design", title: "Дизайн", description: "Создание макета", color: "text-purple-500" },
-                                        { id: "production", title: "Производство", description: "В процессе изготовления", color: "text-amber-500" },
-                                        { id: "done", title: "Готов", description: "Ожидает отгрузки", color: "text-emerald-500" },
-                                        { id: "shipped", title: "Отправлен", description: "Передан в доставку", color: "text-slate-500" },
-                                        { id: "cancelled", title: "Отменен", description: "Заказ аннулирован", color: "text-rose-500" },
+                                        { id:"new", title:"Новый", description:"Только что созданный", color:"text-blue-500" },
+                                        { id:"design", title:"Дизайн", description:"Создание макета", color:"text-purple-500" },
+                                        { id:"production", title:"Производство", description:"В процессе изготовления", color:"text-amber-500" },
+                                        { id:"done", title:"Готов", description:"Ожидает отгрузки", color:"text-emerald-500" },
+                                        { id:"shipped", title:"Отправлен", description:"Передан в доставку", color:"text-slate-500" },
+                                        { id:"cancelled", title:"Отменен", description:"Заказ аннулирован", color:"text-rose-500" },
                                     ]}
                                     placeholder="Статус"
                                     variant="minimal"
@@ -144,8 +144,8 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                                     value=""
                                     onChange={(val) => handlePriorityUpdate(val)}
                                     options={[
-                                        { id: "high", title: "Срочный", description: "Максимальный приоритет", color: "text-rose-500" },
-                                        { id: "normal", title: "Обычный", description: "Стандартный приоритет", color: "text-slate-500" },
+                                        { id:"high", title:"Срочный", description:"Максимальный приоритет", color:"text-rose-500" },
+                                        { id:"normal", title:"Обычный", description:"Стандартный приоритет", color:"text-slate-500" },
                                     ]}
                                     placeholder="Приоритет"
                                     variant="minimal"
@@ -162,7 +162,7 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                                 size="icon"
                                 title="Печать бланков"
                                 className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all hidden xs:flex"
-                                onClick={() => toast("Печать бланков для " + selectedIds.length + " " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов') + "...", "info")}
+                                onClick={() => toast("Печать бланков для" + selectedIds.length +"" + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов') +"...","info")}
                             >
                                 <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </Button>
@@ -207,8 +207,8 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
                             isOpen={showDeleteConfirm}
                             onClose={() => setShowDeleteConfirm(false)}
                             onConfirm={handleDelete}
-                            title={"Удаление " + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}
-                            description={"Вы уверены, что хотите удалить " + pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов') + " (" + selectedIds.length + ")? Это действие необратимо."}
+                            title={"Удаление" + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов')}
+                            description={"Вы уверены, что хотите удалить" + pluralize(selectedIds.length, 'выбранный заказ', 'выбранные заказа', 'выбранные заказов') +" (" + selectedIds.length +")? Это действие необратимо."}
                             confirmText="Удалить"
                             variant="destructive"
                             isLoading={isProcessing}

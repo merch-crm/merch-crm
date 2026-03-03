@@ -1,7 +1,7 @@
-import { Plus, RefreshCcw, Trash2 } from "lucide-react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Plus, RefreshCcw, Trash2 } from"lucide-react";
+import Image from"next/image";
+import { Button } from"@/components/ui/button";
+import { cn } from"@/lib/utils";
 
 interface MainPhotoUploaderProps {
     preview: string | null;
@@ -35,9 +35,8 @@ export function MainPhotoUploader({
     return (
         <div className="flex flex-col justify-start items-center w-full">
             <div
-                className={cn(
-                    "relative w-full aspect-square rounded-3xl overflow-hidden border-2 border-dashed transition-all group shrink-0",
-                    preview ? "border-slate-200 bg-white" : "border-slate-200 bg-slate-50/50 hover:bg-white shadow-sm"
+                className={cn("relative w-full aspect-square rounded-3xl overflow-hidden border-2 border-dashed transition-all group shrink-0",
+                    preview ?"border-slate-200 bg-white" :"border-slate-200 bg-slate-50/50 hover:bg-white shadow-sm"
                 )}>
                 <div ref={containerRef} className="absolute inset-0">
                     {uploading ? (

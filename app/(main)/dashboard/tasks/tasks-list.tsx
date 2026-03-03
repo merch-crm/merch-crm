@@ -1,24 +1,24 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition } from"react";
 import {
     CheckCircle2,
     User,
     Calendar,
     Trash2,
     ChevronRight
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { toggleTaskStatus, deleteTask } from "./actions";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
-import { TaskDetailsDialog } from "./task-details-dialog";
-import { useToast } from "@/components/ui/toast";
-import { Button } from "@/components/ui/button";
-import { playSound } from "@/lib/sounds";
-import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+} from"lucide-react";
+import { cn } from"@/lib/utils";
+import { toggleTaskStatus, deleteTask } from"./actions";
+import { format } from"date-fns";
+import { ru } from"date-fns/locale";
+import { TaskDetailsDialog } from"./task-details-dialog";
+import { useToast } from"@/components/ui/toast";
+import { Button } from"@/components/ui/button";
+import { playSound } from"@/lib/sounds";
+import { ConfirmDialog } from"@/components/ui/confirm-dialog";
 
-import { Task } from "./types";
+import { Task } from"./types";
 
 interface TasksListProps {
     tasks: Task[];
@@ -35,9 +35,9 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
 
     const getPriorityConfig = (priority: string) => {
         switch (priority) {
-            case "high": return { label: "Высокий", color: "text-rose-600 bg-rose-50", icon: "text-rose-500" };
-            case "normal": return { label: "Обычный", color: "text-amber-600 bg-amber-50", icon: "text-amber-500" };
-            default: return { label: "Низкий", color: "text-slate-500 bg-slate-50", icon: "text-slate-400" };
+            case"high": return { label:"Высокий", color:"text-rose-600 bg-rose-50", icon:"text-rose-500" };
+            case"normal": return { label:"Обычный", color:"text-amber-600 bg-amber-50", icon:"text-amber-500" };
+            default: return { label:"Низкий", color:"text-slate-500 bg-slate-50", icon:"text-slate-400" };
         }
     };
 
@@ -46,8 +46,8 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
         startTransition(async () => {
             const res = await toggleTaskStatus(taskId, status);
             if (res.success) {
-                toast(status === "done" ? "Задача выполнена" : "Задача возвращена в работу", "success");
-                if (status !== "done") playSound("task_completed");
+                toast(status ==="done" ?"Задача выполнена" :"Задача возвращена в работу","success");
+                if (status !=="done") playSound("task_completed");
                 else playSound("notification_success");
             }
         });
@@ -64,16 +64,16 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
         try {
             const res = await deleteTask(taskToDelete);
             if (res.success) {
-                toast("Задача удалена", "success");
+                toast("Задача удалена","success");
                 playSound("notification_success");
                 setTaskToDelete(null);
             } else {
-                toast(res.error || "Ошибка при удалении", "error");
+                toast(res.error ||"Ошибка при удалении","error");
                 playSound("notification_error");
             }
         } catch (error) {
             console.error(error);
-            toast("Произошла ошибка", "error");
+            toast("Произошла ошибка","error");
             playSound("notification_error");
         } finally {
             setIsDeleting(false);
@@ -97,42 +97,39 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
             <div className="crm-card flex flex-col !p-0 mt-6">
                 {tasks.map((task, index) => {
                     const config = getPriorityConfig(task.priority);
-                    const isDone = task.status === "done";
+                    const isDone = task.status ==="done";
 
                     return (
                         <div role="button" tabIndex={0}
                             key={task.id}
                             onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedTask(task)}
-                            className={cn(
-                                "group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50",
-                                index !== tasks.length - 1 && "border-b border-slate-100",
-                                isDone && "bg-slate-50/50"
+                            className={cn("group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50",
+                                index !== tasks.length - 1 &&"border-b border-slate-100",
+                                isDone &&"bg-slate-50/50"
                             )}
                         >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={(e) => handleToggle(e, task.id, isDone ? "in_progress" : "done")}
-                                    className={cn(
-                                        "h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center transition-all active:scale-90 border-2",
+                                    onClick={(e) => handleToggle(e, task.id, isDone ?"in_progress" :"done")}
+                                    className={cn("h-10 w-10 shrink-0 rounded-2xl flex items-center justify-center transition-all active:scale-90 border-2",
                                         isDone
-                                            ? "bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-200 hover:bg-emerald-600"
-                                            : "bg-white border-slate-200 text-slate-200 hover:text-primary hover:border-primary/20"
+                                            ?"bg-emerald-500 border-emerald-500 text-white shadow-sm shadow-emerald-200 hover:bg-emerald-600"
+                                            :"bg-white border-slate-200 text-slate-200 hover:text-primary hover:border-primary/20"
                                     )}
                                 >
-                                    <CheckCircle2 className={cn("w-5 h-5", isDone && "animate-in zoom-in-50")} />
+                                    <CheckCircle2 className={cn("w-5 h-5", isDone &&"animate-in zoom-in-50")} />
                                 </Button>
 
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-0.5">
-                                        <h3 className={cn(
-                                            "text-sm font-black text-slate-900 truncate",
-                                            isDone && "line-through text-slate-400 font-bold"
+                                        <h3 className={cn("text-sm font-black text-slate-900 truncate",
+                                            isDone &&"line-through text-slate-400 font-bold"
                                         )}>
                                             {task.title}
                                         </h3>
-                                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-black ", config.color)}>
+                                        <span className={cn("px-2 py-0.5 rounded-full text-xs font-black", config.color)}>
                                             {config.label}
                                         </span>
                                     </div>
@@ -140,16 +137,15 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                                         <div className="flex items-center gap-1">
                                             <User className="w-3 h-3" />
                                             <span className="truncate max-w-[100px]">
-                                                {task.assignedToUser?.name || task.assignedToRole?.name || "Все"}
+                                                {task.assignedToUser?.name || task.assignedToRole?.name ||"Все"}
                                             </span>
                                         </div>
                                         {task.dueDate && (
-                                            <div className={cn(
-                                                "flex items-center gap-1",
-                                                new Date(task.dueDate) < new Date() && !isDone ? "text-rose-500" : ""
+                                            <div className={cn("flex items-center gap-1",
+                                                new Date(task.dueDate) < new Date() && !isDone ?"text-rose-500" :""
                                             )}>
                                                 <Calendar className="w-3 h-3" />
-                                                <span>{format(new Date(task.dueDate), "d MMM", { locale: ru })}</span>
+                                                <span>{format(new Date(task.dueDate),"d MMM", { locale: ru })}</span>
                                             </div>
                                         )}
                                         {task.order && (

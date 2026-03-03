@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom";
-import { Building, ArrowRightLeft, RefreshCw } from "lucide-react";
+import { useState } from"react";
+import { useRouter } from"next/navigation";
+import { useFormStatus } from"react-dom";
+import { Building, ArrowRightLeft, RefreshCw } from"lucide-react";
 
-import { useToast } from "@/components/ui/toast";
-import { playSound } from "@/lib/sounds";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { cn, formatUnit } from "@/lib/utils";
+import { useToast } from"@/components/ui/toast";
+import { playSound } from"@/lib/sounds";
+import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from"@/components/ui/button";
+import { Input } from"@/components/ui/input";
+import { Select } from"@/components/ui/select";
+import { cn, formatUnit } from"@/lib/utils";
 
-import { moveInventoryItem } from "../../stock-actions";
-import { StorageLocation, StorageLocationItem } from "../../storage-locations-tab";
+import { moveInventoryItem } from"../../stock-actions";
+import { StorageLocation, StorageLocationItem } from"../../storage-locations-tab";
 
 interface QuickTransferModalProps {
     item: StorageLocationItem;
@@ -26,7 +26,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
     const { toast } = useToast();
     const router = useRouter();
     const [state, setState] = useState({
-        toLocationId: "",
+        toLocationId:"",
         errors: {} as Record<string, string>
     });
 
@@ -37,10 +37,10 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
         const comment = formData.get("comment") as string;
         const newErrors: Record<string, string> = {};
 
-        if (!toLocationId) newErrors.toLocationId = "Выберите склад получатель";
-        if (!qtyS || isNaN(qty) || qty <= 0) newErrors.quantity = "Введите корректное количество";
+        if (!toLocationId) newErrors.toLocationId ="Выберите склад получатель";
+        if (!qtyS || isNaN(qty) || qty <= 0) newErrors.quantity ="Введите корректное количество";
         else if (qty > item.quantity) newErrors.quantity = `Максимально: ${item.quantity}`;
-        if (!comment || comment.trim().length < 3) newErrors.comment = "Укажите причину";
+        if (!comment || comment.trim().length < 3) newErrors.comment ="Укажите причину";
 
         if (Object.keys(newErrors).length > 0) {
             setState(prev => ({ ...prev, errors: newErrors }));
@@ -50,10 +50,10 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
         setState(prev => ({ ...prev, errors: {} }));
         const res = await moveInventoryItem(formData);
         if (!res?.success) {
-            toast(res.error, "error");
+            toast(res.error,"error");
             playSound("notification_error");
         } else {
-            toast(`Товар перемещен`, "success");
+            toast(`Товар перемещен`,"success");
             playSound("stock_replenished");
             onSuccess(item.id, qty);
             router.refresh();
@@ -89,7 +89,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
                         <Select
                             options={locations.filter(l => l.id !== currentLocationId).map(l => ({ id: l.id, title: l.name, icon: <Building className="w-4 h-4 opacity-50" /> }))}
                             value={state.toLocationId}
-                            onChange={(val) => setState(prev => ({ ...prev, toLocationId: val, errors: { ...prev.errors, toLocationId: "" } }))}
+                            onChange={(val) => setState(prev => ({ ...prev, toLocationId: val, errors: { ...prev.errors, toLocationId:"" } }))}
                             placeholder="Выберите склад"
                         />
                         <input type="hidden" name="toLocationId" value={state.toLocationId} />
@@ -105,9 +105,8 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
                                 min="1"
                                 max={item.quantity}
                                 placeholder="0"
-                                className={cn(
-                                    "w-full h-11 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm tabular-nums",
-                                    state.errors.quantity ? "border-rose-200 bg-rose-50/50" : "border-slate-200 bg-slate-50 focus:border-primary"
+                                className={cn("w-full h-11 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm tabular-nums",
+                                    state.errors.quantity ?"border-rose-200 bg-rose-50/50" :"border-slate-200 bg-slate-50 focus:border-primary"
                                 )}
                             />
                         </div>
@@ -116,9 +115,8 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
                             <Input
                                 name="comment"
                                 placeholder="..."
-                                className={cn(
-                                    "w-full h-11 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm",
-                                    state.errors.comment ? "border-rose-200 bg-rose-50/50" : "border-slate-200 bg-slate-50 focus:border-primary"
+                                className={cn("w-full h-11 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm",
+                                    state.errors.comment ?"border-rose-200 bg-rose-50/50" :"border-slate-200 bg-slate-50 focus:border-primary"
                                 )}
                             />
                         </div>

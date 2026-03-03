@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import { GripVertical, Pencil, ChevronRight } from "lucide-react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { cn } from "@/lib/utils";
-import { Category } from "@/app/(main)/dashboard/warehouse/types";
-import { getCategoryIcon, getHexColor } from "@/app/(main)/dashboard/warehouse/category-utils";
-import { pluralize } from "@/lib/pluralize";
+import React, { useState, useRef, useEffect } from"react";
+import { GripVertical, Pencil, ChevronRight } from"lucide-react";
+import { useSortable } from"@dnd-kit/sortable";
+import { CSS } from"@dnd-kit/utilities";
+import { cn } from"@/lib/utils";
+import { Category } from"@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon, getHexColor } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { pluralize } from"@/lib/pluralize";
 
 interface NavigationRouter {
     push: (href: string) => void;
@@ -119,11 +119,8 @@ export const SortableCategoryCard = React.memo(({
                     router.push(`/dashboard/warehouse/categories/${category.id}`);
                 }
             }}
-            className={cn(
-                "group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-shadow duration-300",
-                "hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80",
-                isDragging ? "shadow-2xl ring-2 ring-primary/20 border-primary/30" : "shadow-sm",
-                "h-full flex flex-col"
+            className={cn("group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-shadow duration-300","hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80",
+                isDragging ?"shadow-2xl ring-2 ring-primary/20 border-primary/30" :"shadow-sm","h-full flex flex-col"
             )}
         >
             <CategoryCardContent
@@ -138,7 +135,7 @@ export const SortableCategoryCard = React.memo(({
     );
 });
 
-SortableCategoryCard.displayName = "SortableCategoryCard";
+SortableCategoryCard.displayName ="SortableCategoryCard";
 
 interface CategoryCardContentProps {
     category: CategoryWithChildren;
@@ -158,14 +155,13 @@ export const CategoryCardContent = React.memo(({
     onEdit,
 }: CategoryCardContentProps) => {
     const IconComponent = getCategoryIcon(category);
-    const color = category.color || "slate";
+    const color = category.color ||"slate";
     const hexColor = getHexColor(color);
-    const isOrphaned = category.id === "orphaned";
+    const isOrphaned = category.id ==="orphaned";
 
     return (
-        <div className={cn(
-            "relative flex flex-col items-center w-full h-full min-h-[220px]", // Stabilize height
-            !isDragging && "pt-4 sm:pt-5"
+        <div className={cn("relative flex flex-col items-center w-full h-full min-h-[220px]", // Stabilize height
+            !isDragging &&"pt-4 sm:pt-5"
         )}>
 
             {/* Drag Handle & Edit */}
@@ -174,9 +170,8 @@ export const CategoryCardContent = React.memo(({
                     <div role="button" tabIndex={0}
                         {...dragHandleProps}
                         aria-label="Перетащить для изменения порядка"
-                        className={cn(
-                            "w-8 h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-all rounded-lg opacity-100 lg:opacity-0 lg:group-hover:opacity-100",
-                            isDragging && "cursor-grabbing text-primary opacity-100"
+                        className={cn("w-8 h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-all rounded-lg opacity-100 lg:opacity-0 lg:group-hover:opacity-100",
+                            isDragging &&"cursor-grabbing text-primary opacity-100"
                         )}
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         onClick={(e) => e.stopPropagation()}
@@ -200,17 +195,15 @@ export const CategoryCardContent = React.memo(({
 
             {/* Main content area */}
             <div className="relative z-10 w-full h-full p-4 sm:p-5 flex flex-col justify-center">
-                <div className={cn(
-                    "flex flex-wrap items-stretch justify-center w-full h-full gap-y-3",
-                    isWide && "flex-nowrap items-center justify-center gap-x-3 sm:gap-x-3 px-4 sm:px-8",
-                    isExtraWide && "items-center gap-x-3 px-6"
+                <div className={cn("flex flex-wrap items-stretch justify-center w-full h-full gap-y-3",
+                    isWide &&"flex-nowrap items-center justify-center gap-x-3 sm:gap-x-3 px-4 sm:px-8",
+                    isExtraWide &&"items-center gap-x-3 px-6"
                 )}>
 
                     {/* Column 1: Identity */}
-                    <div className={cn(
-                        "flex flex-col items-center justify-center min-w-0 max-w-full",
-                        isWide ? "flex-[1] basis-0" : "w-full max-w-[280px]",
-                        isExtraWide && "flex-[0.8] basis-auto"
+                    <div className={cn("flex flex-col items-center justify-center min-w-0 max-w-full",
+                        isWide ?"flex-[1] basis-0" :"w-full max-w-[280px]",
+                        isExtraWide &&"flex-[0.8] basis-auto"
                     )}>
                         <div
                             className="w-[64px] h-[64px] rounded-full flex items-center justify-center text-white mb-2 transition-transform"
@@ -222,21 +215,19 @@ export const CategoryCardContent = React.memo(({
                             {category.name}
                         </h3>
                         <p className="text-[11px] font-semibold text-slate-400 text-center">
-                            {category.itemCount || 0} {pluralize(category.itemCount || 0, "активный SKU", "активных SKU", "активных SKU")} на складе
+                            {category.itemCount || 0} {pluralize(category.itemCount || 0,"активный SKU","активных SKU","активных SKU")} на складе
                         </p>
                     </div>
 
                     {/* Column 2: Subcategories */}
-                    <div className={cn(
-                        "flex flex-col items-center justify-center min-w-0 border-y lg:border-y-0 border-slate-100/80 py-4 my-auto lg:py-0",
-                        isWide ? "flex-[1] basis-0 px-2 w-full" : "max-w-[600px] w-full",
-                        isExtraWide && "flex-[2.5] basis-auto"
+                    <div className={cn("flex flex-col items-center justify-center min-w-0 border-y lg:border-y-0 border-slate-100/80 py-4 my-auto lg:py-0",
+                        isWide ?"flex-[1] basis-0 px-2 w-full" :"max-w-[600px] w-full",
+                        isExtraWide &&"flex-[2.5] basis-auto"
                     )}>
                         {category.children && category.children.length > 0 ? (
                             <div className="w-full xl:px-2 max-w-[320px]">
-                                <div className={cn(
-                                    "grid gap-2 w-full",
-                                    isExtraWide ? "grid-cols-5" : (isWide ? "grid-cols-1" : "grid-cols-3")
+                                <div className={cn("grid gap-2 w-full",
+                                    isExtraWide ?"grid-cols-5" : (isWide ?"grid-cols-1" :"grid-cols-3")
                                 )}>
                                     {(() => {
                                         let maxSlots = 6;
@@ -271,9 +262,8 @@ export const CategoryCardContent = React.memo(({
                                 </div>
                             </div>
                         ) : (
-                            <div className={cn(
-                                "flex flex-col items-center justify-center w-full min-h-[80px] space-y-2 opacity-[0.25] transition-all",
-                                isExtraWide ? "scale-100" : "scale-90"
+                            <div className={cn("flex flex-col items-center justify-center w-full min-h-[80px] space-y-2 opacity-[0.25] transition-all",
+                                isExtraWide ?"scale-100" :"scale-90"
                             )}>
                                 <div className="flex items-center gap-3 w-full max-w-[180px]">
                                     <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full" />
@@ -281,7 +271,7 @@ export const CategoryCardContent = React.memo(({
                                     <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full" />
                                 </div>
                                 <div className="text-[12px] font-bold text-slate-400 text-center tracking-tight px-4 line-clamp-2">
-                                    {category.description || "Нет подкатегорий"}
+                                    {category.description ||"Нет подкатегорий"}
                                 </div>
                                 <div className="flex items-center gap-3 w-full max-w-[180px]">
                                     <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full" />
@@ -293,10 +283,9 @@ export const CategoryCardContent = React.memo(({
                     </div>
 
                     {/* Column 3: Stats */}
-                    <div className={cn(
-                        "flex flex-col items-center justify-between min-w-0 py-1",
-                        isWide ? "flex-[1] basis-0" : "w-full max-w-[280px]",
-                        isExtraWide && "flex-[0.8] basis-auto"
+                    <div className={cn("flex flex-col items-center justify-between min-w-0 py-1",
+                        isWide ?"flex-[1] basis-0" :"w-full max-w-[280px]",
+                        isExtraWide &&"flex-[0.8] basis-auto"
                     )}>
                         <div className="flex flex-col items-center w-full">
                             <div className="mb-1 flex flex-col items-center">
@@ -304,7 +293,7 @@ export const CategoryCardContent = React.memo(({
                                     {(category.totalQuantity || 0).toLocaleString()}
                                 </span>
                                 <span className="text-[12px] font-bold" style={{ color: hexColor }}>
-                                    {pluralize(category.totalQuantity || 0, "единица", "единицы", "единиц")} в наличии
+                                    {pluralize(category.totalQuantity || 0,"единица","единицы","единиц")} в наличии
                                 </span>
                             </div>
                             <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 w-max mb-4">
@@ -314,9 +303,7 @@ export const CategoryCardContent = React.memo(({
                                 </span>
                             </div>
                         </div>
-                        <div className={cn(
-                            "flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-50 text-slate-900 transition-all font-extrabold text-[12px] cursor-pointer whitespace-nowrap",
-                            "group-hover:bg-slate-900 group-hover:text-white group-hover:shadow-lg group-hover:shadow-slate-900/10"
+                        <div className={cn("flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-50 text-slate-900 transition-all font-extrabold text-[12px] cursor-pointer whitespace-nowrap","group-hover:bg-slate-900 group-hover:text-white group-hover:shadow-lg group-hover:shadow-slate-900/10"
                         )}>
                             <span>Перейти к категории</span>
                             <ChevronRight className="w-3.5 h-3.5" />
@@ -328,7 +315,7 @@ export const CategoryCardContent = React.memo(({
     );
 });
 
-CategoryCardContent.displayName = "CategoryCardContent";
+CategoryCardContent.displayName ="CategoryCardContent";
 
 /* ── Compact drag preview (rendered inside DragOverlay) ── */
 interface DragPreviewProps {
@@ -337,7 +324,7 @@ interface DragPreviewProps {
 
 export const DragPreview = React.memo(({ category }: DragPreviewProps) => {
     const IconComponent = getCategoryIcon(category);
-    const color = category.color || "slate";
+    const color = category.color ||"slate";
     const hexColor = getHexColor(color);
 
     return (
@@ -355,4 +342,4 @@ export const DragPreview = React.memo(({ category }: DragPreviewProps) => {
     );
 });
 
-DragPreview.displayName = "DragPreview";
+DragPreview.displayName ="DragPreview";
