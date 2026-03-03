@@ -325,7 +325,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 title="Вход в Mi Home"
                 description="Введите данные вашего аккаунта Xiaomi"
             >
-                <div className="space-y-3 py-6 px-4">
+                <form action={handleXiaomiLogin} className="space-y-3 py-6 px-4">
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-900  tracking-wider">
                             Email или номер телефона
@@ -388,6 +388,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
 
                     <div className="flex gap-3 pt-4">
                         <Button
+                            type="button"
                             variant="outline"
                             className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-[11px] leading-tight text-neutral-500"
                             onClick={() => setLoginModalOpen(false)}
@@ -396,14 +397,13 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         </Button>
                         <SubmitButton
                             className="flex-1 rounded-2xl h-12 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-slate-200"
-                            onClick={handleXiaomiLogin}
                             isLoading={isPending}
                         >
                             <LogIn className="w-4 h-4 mr-2" />
                             Войти
                         </SubmitButton>
                     </div>
-                </div>
+                </form>
             </ResponsiveModal>
 
             {/* Модальное окно настроек камеры */}
@@ -414,7 +414,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 description={selectedCamera?.name || ''}
             >
                 {selectedCamera && (
-                    <div className="space-y-3 py-6 px-4">
+                    <form action={handleUpdateCamera} className="space-y-3 py-6 px-4">
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-slate-900  tracking-wider">
                                 Название устройства
@@ -470,6 +470,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
 
                         <div className="flex gap-3 pt-4">
                             <Button
+                                type="button"
                                 variant="outline"
                                 className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-[11px] leading-tight text-neutral-500"
                                 onClick={() => setSettingsModalOpen(false)}
@@ -478,13 +479,12 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             </Button>
                             <SubmitButton
                                 className="flex-1 rounded-2xl h-12 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
-                                onClick={handleUpdateCamera}
                                 isLoading={isPending}
                             >
                                 Сохранить изменения
                             </SubmitButton>
                         </div>
-                    </div>
+                    </form>
                 )}
             </ResponsiveModal>
 
