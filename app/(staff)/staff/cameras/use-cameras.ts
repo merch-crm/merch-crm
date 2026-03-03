@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { type DetectionZone } from '@/lib/schema/presence'
 import { toast } from 'sonner'
 import {
     loginXiaomiAccount,
@@ -36,7 +37,7 @@ export interface Camera {
     isEnabled: boolean
     confidenceThreshold: string | number | null
     xiaomiAccount: { email: string | null; nickname: string | null } | null
-    workstations: Array<{ id: string; name: string; zone: any; color: string | null }>
+    workstations: Array<{ id: string; name: string; zone: DetectionZone | null; color: string | null }>
 }
 
 export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras: Camera[]) {

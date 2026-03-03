@@ -513,7 +513,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             zones={selectedCamera.workstations.map(w => ({
                                 id: w.id,
                                 name: w.name,
-                                zone: w.zone as any,
+                                zone: w.zone,
                                 color: w.color || '#3B82F6'
                             }))}
                             className="aspect-video w-full"

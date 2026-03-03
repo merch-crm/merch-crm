@@ -3,15 +3,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
+import { type DetectionZone } from '@/lib/schema/presence'
+
 interface Zone {
     id: string
     name: string
-    zone: {
-        type: 'rect' | 'polygon' | 'circle'
-        x: number; y: number; width: number; height: number;
-        points: { x: number; y: number }[];
-        cx: number; cy: number; radius: number;
-    } | null
+    zone: DetectionZone | null
     color: string
     isOccupied?: boolean
     occupiedBy?: string
@@ -150,7 +147,7 @@ export function CameraPreview({
 
         return () => {
             video.pause()
-            video.src =""
+            video.src = ""
             video.load()
         }
     }, [streamUrl, zones, showLabels])
