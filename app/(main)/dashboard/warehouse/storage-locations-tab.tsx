@@ -527,10 +527,7 @@ const SortableLocationCard = memo(({
 
     return (
         <div
-            ref={(node) => {
-                setNodeRef(node);
-                if (cardRef) (cardRef as any).current = node;
-            }}
+            ref={setNodeRef}
             style={style}
             onClick={onClick}
             className={cn(

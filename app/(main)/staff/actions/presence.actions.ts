@@ -1,13 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { presenceLogs, workSessions, dailyWorkStats, employeeFaces, cameras, users } from "@/lib/schema";
+import { presenceLogs, dailyWorkStats, cameras, users } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logError } from "@/lib/error-logger";
 import { eq, and, gte, lte, desc, sql } from "drizzle-orm";
 import { PresenceDetectSchema } from "../validation";
-import { revalidatePath } from "next/cache";
 
 // ============================================
 // PRESENCE DETECTION (вызывается Python-сервисом)

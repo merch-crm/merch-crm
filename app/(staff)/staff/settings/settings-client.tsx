@@ -238,7 +238,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">сек</div>
                                 </div>
-                                <p className="text-[9px] text-slate-400 font-medium">Интервал отсутствия в кадре для перевода в статус "Бездействие"</p>
+                                <p className="text-[9px] text-slate-400 font-medium">Интервал отсутствия в кадре для перевода в статус &quot;Бездействие&quot;</p>
                             </div>
                         </CardBody>
                     </Card>

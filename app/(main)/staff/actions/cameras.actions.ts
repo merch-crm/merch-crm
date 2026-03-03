@@ -1,12 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { cameras, xiaomiAccounts } from "@/lib/schema";
+import { cameras } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { UpdateCameraSchema } from "../validation";
 

@@ -159,8 +159,8 @@ export function CameraPreview({
         const rectW = textWidth + padding * 2
         const rectH = 32
 
-        let drawX = center ? x - rectW / 2 : x
-        let drawY = center ? y - rectH / 2 : y - rectH - 10
+        const drawX = center ? x - rectW / 2 : x
+        const drawY = center ? y - rectH / 2 : y - rectH - 10
 
         // Draw Background
         ctx.globalAlpha = 0.9

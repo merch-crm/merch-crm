@@ -9,7 +9,8 @@ import {
     Clock,
     Activity,
     TrendingUp,
-    AlertCircle
+    AlertCircle,
+    Video
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 

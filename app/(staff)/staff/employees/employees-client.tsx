@@ -16,7 +16,8 @@ import {
     CheckCircle,
     Upload,
     X,
-    UserCheck
+    UserCheck,
+    Plus
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -405,13 +406,11 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
 
             {/* Модальное окно захвата фото */}
             <ResponsiveModal
-                open={addFaceModalOpen}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        stopCamera()
-                        setCapturedImage(null)
-                    }
-                    setAddFaceModalOpen(open)
+                isOpen={addFaceModalOpen}
+                onClose={() => {
+                    stopCamera()
+                    setCapturedImage(null)
+                    setAddFaceModalOpen(false)
                 }}
                 title="Регистрация биометрии"
                 description={selectedEmployee?.name || 'Новое лицо'}
@@ -499,7 +498,7 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
                                 <SubmitButton
                                     className="flex-1 rounded-2xl h-14 bg-indigo-600 hover:bg-indigo-700 font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100"
                                     onClick={handleAddFace}
-                                    loading={isPending}
+                                    isLoading={isPending}
                                 >
                                     <Upload className="w-4 h-4 mr-2" />
                                     Подтвердить
@@ -514,8 +513,8 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
 
             {/* Подтверждение удаления */}
             <ConfirmDialog
-                open={!!deleteFaceId}
-                onOpenChange={(open) => !open && setDeleteFaceId(null)}
+                isOpen={!!deleteFaceId}
+                onClose={() => setDeleteFaceId(null)}
                 title="Удалить биометрию?"
                 description="Сотрудник больше не будет распознаваться по этому фото. Если это было единственное фото, доступ к системе присутствия для него будет ограничен."
                 confirmText="Да, удалить"

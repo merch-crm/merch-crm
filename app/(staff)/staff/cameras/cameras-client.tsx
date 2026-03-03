@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react'
 import { Card, CardBody, CardHeader } from '@/components/ui/card-bento'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select } from '@/components/ui/select'
 import { ResponsiveModal } from '@/components/ui/responsive-modal'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { SubmitButton } from '@/components/ui/submit-button'
@@ -71,7 +71,7 @@ interface Props {
 }
 
 export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Props) {
-    const [accounts, setAccounts] = useState(initialAccounts)
+    const [accounts] = useState(initialAccounts)
     const [cameras, setCameras] = useState(initialCameras)
     const [isPending, startTransition] = useTransition()
 
@@ -160,7 +160,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
             if (result.success) {
                 toast.success(`Статус: ${result.data?.status}`)
                 setCameras(prev => prev.map(c =>
-                    c.id === cameraId ? { ...c, status: result.data?.status as any } : c
+                    c.id === cameraId ? { ...c, status: result.data?.status as "online" | "offline" | "error" | "connecting" } : c
                 ))
             } else {
                 toast.error(result.error || 'Ошибка подключения')
@@ -446,8 +446,8 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
 
             {/* Модальное окно логина Xiaomi */}
             <ResponsiveModal
-                open={loginModalOpen}
-                onOpenChange={setLoginModalOpen}
+                isOpen={loginModalOpen}
+                onClose={() => setLoginModalOpen(false)}
                 title="Вход в Mi Home"
                 description="Введите данные вашего аккаунта Xiaomi"
             >
@@ -493,19 +493,11 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         </label>
                         <Select
                             value={loginForm.region}
-                            onValueChange={(value) => setLoginForm(prev => ({ ...prev, region: value }))}
-                        >
-                            <SelectTrigger className="rounded-xl h-12 bg-slate-50 border-none shadow-inner">
-                                <SelectValue placeholder="Выберите регион" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-2xl border-slate-100 shadow-xl">
-                                {regions.map((region) => (
-                                    <SelectItem key={region.value} value={region.value} className="rounded-xl">
-                                        {region.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                            onChange={(value) => setLoginForm(prev => ({ ...prev, region: value }))}
+                            options={regions.map(r => ({ id: r.value, title: r.label }))}
+                            placeholder="Выберите регион"
+                            triggerClassName="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
+                        />
                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-2 px-1">
                             Выберите регион, который указан в вашем приложении Mi Home
                         </p>
@@ -531,7 +523,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         <SubmitButton
                             className="flex-1 rounded-2xl h-12 font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-slate-200"
                             onClick={handleXiaomiLogin}
-                            loading={isPending}
+                            isLoading={isPending}
                         >
                             <LogIn className="w-4 h-4 mr-2" />
                             Войти
@@ -542,8 +534,8 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
 
             {/* Модальное окно настроек камеры */}
             <ResponsiveModal
-                open={settingsModalOpen}
-                onOpenChange={setSettingsModalOpen}
+                isOpen={settingsModalOpen}
+                onClose={() => setSettingsModalOpen(false)}
                 title="Настройки камеры"
                 description={selectedCamera?.name || ''}
             >
@@ -613,7 +605,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             <SubmitButton
                                 className="flex-1 rounded-2xl h-12 font-bold uppercase tracking-widest text-[10px] shadow-lg shadow-indigo-100"
                                 onClick={handleUpdateCamera}
-                                loading={isPending}
+                                isLoading={isPending}
                             >
                                 Сохранить изменения
                             </SubmitButton>
@@ -624,8 +616,8 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
 
             {/* Диалог подтверждения удаления */}
             <ConfirmDialog
-                open={!!deleteAccountId}
-                onOpenChange={(open) => !open && setDeleteAccountId(null)}
+                isOpen={!!deleteAccountId}
+                onClose={() => setDeleteAccountId(null)}
                 title="Отключить аккаунт?"
                 description="Все связанные камеры будут удалены из системы. Данные о присутствии сохранятся."
                 confirmText="Да, отключить"
