@@ -193,6 +193,7 @@ export const workSessions = pgTable("work_sessions", {
     index("work_sessions_date_idx").on(table.date),
     index("work_sessions_session_type_idx").on(table.sessionType),
     index("work_sessions_user_date_idx").on(table.userId, table.date),
+    index("work_sessions_created_at_idx").on(table.createdAt),
 ]);
 
 // ============================================
@@ -218,6 +219,7 @@ export const dailyWorkStats = pgTable("daily_work_stats", {
     index("daily_work_stats_user_id_idx").on(table.userId),
     index("daily_work_stats_date_idx").on(table.date),
     index("daily_work_stats_user_date_idx").on(table.userId, table.date),
+    index("daily_work_stats_created_at_idx").on(table.createdAt),
 ]);
 
 // ============================================

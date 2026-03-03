@@ -341,9 +341,9 @@ export function ZoneEditor({
                     </div>
 
                     <div className="flex items-center gap-2 pr-2">
-                        <button onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomOut className="w-4 h-4 text-slate-500" /></button>
+                        <button type="button" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomOut className="w-4 h-4 text-slate-500" /></button>
                         <span className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-600 w-8 text-center">{Math.round(zoom * 100)}%</span>
-                        <button onClick={() => setZoom(z => Math.min(4, z + 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomIn className="w-4 h-4 text-slate-500" /></button>
+                        <button type="button" onClick={() => setZoom(z => Math.min(4, z + 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomIn className="w-4 h-4 text-slate-500" /></button>
                     </div>
                 </div>
 
@@ -365,6 +365,7 @@ export function ZoneEditor({
 
                     <div className="absolute top-4 right-4 flex flex-col gap-2">
                         <button
+                            type="button"
                             onClick={() => { setCurrentZone(null); setPolygonPoints([]); setPan({ x: 0, y: 0 }); setZoom(1); }}
                             className="bg-white/90 backdrop-blur p-2.5 rounded-xl shadow-lg hover:bg-white transition-all text-slate-900 border border-slate-200"
                             title="Сбросить"
@@ -403,6 +404,7 @@ export function ZoneEditor({
 function ToolButton({ icon: Icon, active, onClick, label }: { icon: React.ElementType, active: boolean, onClick: () => void, label: string }) {
     return (
         <button
+            type="button"
             onClick={onClick}
             className={cn("flex flex-col items-center justify-center p-2 rounded-xl transition-all w-12",
                 active ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"

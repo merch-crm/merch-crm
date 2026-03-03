@@ -296,7 +296,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                     <Card
                         key={employee.id}
                         className={cn("crm-card border-none shadow-sm transition-all hover:shadow-md overflow-hidden bg-white",
-                            !employee.hasFace &&"opacity-80"
+                            !employee.hasFace && "opacity-80"
                         )}
                     >
                         <CardBody className="p-6">
@@ -343,7 +343,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                         <div
                                             key={face.id}
                                             className={cn("relative group",
-                                                face.isPrimary ?"ring-2 ring-indigo-500 ring-offset-2 rounded-xl" :"p-0.5"
+                                                face.isPrimary ? "ring-2 ring-indigo-500 ring-offset-2 rounded-xl" : "p-0.5"
                                             )}
                                         >
                                             {face.photoUrl ? (
@@ -364,6 +364,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                                 <div className="absolute inset-0 bg-indigo-900/40 rounded-xl opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-1.5 backdrop-blur-[1px]">
                                                     {!face.isPrimary && (
                                                         <button
+                                                            type="button"
                                                             onClick={() => handleSetPrimary(face.id, employee.id)}
                                                             className="p-1.5 bg-white/90 rounded-lg hover:bg-white text-indigo-600 shadow-sm transition-transform active:scale-95"
                                                             title="Сделать основным"
@@ -372,6 +373,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                                         </button>
                                                     )}
                                                     <button
+                                                        type="button"
                                                         onClick={() => setDeleteFaceId(face.id)}
                                                         className="p-1.5 bg-white/90 rounded-lg hover:bg-rose-50 text-rose-500 shadow-sm transition-transform active:scale-95"
                                                         title="Удалить"
@@ -391,6 +393,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
 
                                     {isAdmin && (
                                         <button
+                                            type="button"
                                             onClick={() => {
                                                 setSelectedEmployee(employee)
                                                 setAddFaceModalOpen(true)

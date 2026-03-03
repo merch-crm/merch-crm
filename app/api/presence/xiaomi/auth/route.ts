@@ -20,7 +20,7 @@ export async function GET() {
         await requireAdmin(session)
 
         const clientId = process.env.XIAOMI_CLIENT_ID
-        const redirectUri = process.env.XIAOMI_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL}/api/presence/xiaomi/callback`
+        const redirectUri = process.env.XIAOMI_REDIRECT_URI || `${process.env.APP_URL}/api/presence/xiaomi/callback`
 
         if (!clientId) {
             return NextResponse.json({

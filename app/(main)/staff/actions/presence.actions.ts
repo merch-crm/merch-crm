@@ -1,12 +1,12 @@
 "use server";
 
-import { db } from"@/lib/db";
-import { presenceLogs, dailyWorkStats, cameras, users } from"@/lib/schema";
-import { getSession } from"@/lib/auth";
-import { requireAdmin } from"@/lib/admin";
-import { logError } from"@/lib/error-logger";
-import { eq, and, gte, lte, desc, sql } from"drizzle-orm";
-import { PresenceDetectSchema } from"../validation";
+import { db } from "@/lib/db";
+import { presenceLogs, dailyWorkStats, cameras, users } from "@/lib/schema";
+import { getSession } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin";
+import { logError } from "@/lib/error-logger";
+import { eq, and, gte, lte, desc, sql } from "drizzle-orm";
+import { PresenceDetectSchema } from "../validation";
 
 // ============================================
 // PRESENCE DETECTION (вызывается Python-сервисом)
@@ -39,7 +39,7 @@ export async function recordPresenceEvent(data: unknown) {
         });
 
         if (!camera) {
-            return { success: false, error:"Камера не найдена или отключена" };
+            return { success: false, error: "Камера не найдена или отключена" };
         }
 
         const eventTime = timestamp ? new Date(timestamp) : new Date();
@@ -58,7 +58,7 @@ export async function recordPresenceEvent(data: unknown) {
         }).returning();
 
         // Если распознан пользователь — обновляем статистику
-        if (userId && (eventType ==="detected" || eventType ==="recognized")) {
+        if (userId && (eventType === "detected" || eventType === "recognized")) {
             await updateDailyStats(userId, eventTime, today);
         }
 
@@ -66,40 +66,38 @@ export async function recordPresenceEvent(data: unknown) {
     } catch (error) {
         await logError({
             error,
-            path:"/api/presence/detect",
-            method:"recordPresenceEvent",
+            path: "/api/presence/detect",
+            method: "recordPresenceEvent",
         });
-        return { success: false, error:"Ошибка записи события" };
+        return { success: false, error: "Ошибка записи события" };
     }
 }
 
 async function updateDailyStats(userId: string, eventTime: Date, today: Date) {
-    // Получаем или создаём запись статистики за день
-    let stats = await db.query.dailyWorkStats.findFirst({
-        where: and(
-            eq(dailyWorkStats.userId, userId),
-            eq(dailyWorkStats.date, today)
-        ),
-    });
+    await db.transaction(async (tx) => {
+        const stats = await tx.query.dailyWorkStats.findFirst({
+            where: and(
+                eq(dailyWorkStats.userId, userId),
+                eq(dailyWorkStats.date, today)
+            ),
+        });
 
-    if (!stats) {
-        // Создаём новую запись
-        const [newStats] = await db.insert(dailyWorkStats).values({
-            userId,
-            date: today,
-            firstSeenAt: eventTime,
-            lastSeenAt: eventTime,
-        }).returning();
-        stats = newStats;
-    } else {
-        // Обновляем lastSeenAt
-        await db.update(dailyWorkStats)
-            .set({
+        if (!stats) {
+            await tx.insert(dailyWorkStats).values({
+                userId,
+                date: today,
+                firstSeenAt: eventTime,
                 lastSeenAt: eventTime,
-                updatedAt: new Date(),
-            })
-            .where(eq(dailyWorkStats.id, stats.id));
-    }
+            });
+        } else {
+            await tx.update(dailyWorkStats)
+                .set({
+                    lastSeenAt: eventTime,
+                    updatedAt: new Date(),
+                })
+                .where(eq(dailyWorkStats.id, stats.id));
+        }
+    });
 }
 
 // ============================================
@@ -161,6 +159,7 @@ export async function getCurrentPresenceStatus() {
         });
 
         const statsData = await db.query.dailyWorkStats.findMany({
+            limit: 500,
             where: and(
                 sql`${dailyWorkStats.userId} IN ${userIds}`,
                 eq(dailyWorkStats.date, today)
@@ -193,15 +192,15 @@ export async function getCurrentPresenceStatus() {
             const lastEventTime = lastEvent?.timestamp.getTime() || 0;
             const idleThreshold = 60 * 1000; // 60 секунд
 
-            let status:"working" |"idle" |"away" |"offline" ="offline";
+            let status: "working" | "idle" | "away" | "offline" = "offline";
 
             if (lastEvent) {
-                if (lastEvent.eventType ==="lost") {
-                    status ="away";
+                if (lastEvent.eventType === "lost") {
+                    status = "away";
                 } else if (now - lastEventTime < idleThreshold) {
-                    status ="working";
+                    status = "working";
                 } else {
-                    status ="idle";
+                    status = "idle";
                 }
             }
 
@@ -222,10 +221,10 @@ export async function getCurrentPresenceStatus() {
     } catch (error) {
         await logError({
             error,
-            path:"/staff/presence/status",
-            method:"getCurrentPresenceStatus",
+            path: "/staff/presence/status",
+            method: "getCurrentPresenceStatus",
         });
-        return { success: false, error:"Не удалось загрузить статус присутствия" };
+        return { success: false, error: "Не удалось загрузить статус присутствия" };
     }
 }
 
@@ -261,7 +260,7 @@ export async function getDailyReport(date: Date) {
 
         const result = stats.map(s => ({
             userId: s.userId,
-            userName: s.user?.name ||"Неизвестно",
+            userName: s.user?.name || "Неизвестно",
             userAvatar: s.user?.avatar || null,
             departmentName: s.user?.department?.name || null,
             firstSeenAt: s.firstSeenAt,
@@ -277,10 +276,10 @@ export async function getDailyReport(date: Date) {
     } catch (error) {
         await logError({
             error,
-            path:"/staff/reports/daily",
-            method:"getDailyReport",
+            path: "/staff/reports/daily",
+            method: "getDailyReport",
         });
-        return { success: false, error:"Не удалось загрузить отчёт" };
+        return { success: false, error: "Не удалось загрузить отчёт" };
     }
 }
 
@@ -336,7 +335,7 @@ export async function getWeeklyReport(startDate: Date) {
 
             return {
                 userId,
-                userName: user?.name ||"Неизвестно",
+                userName: user?.name || "Неизвестно",
                 userAvatar: user?.avatar || null,
                 departmentName: user?.department?.name || null,
                 daysWorked: days.length,
@@ -351,10 +350,10 @@ export async function getWeeklyReport(startDate: Date) {
     } catch (error) {
         await logError({
             error,
-            path:"/staff/reports/weekly",
-            method:"getWeeklyReport",
+            path: "/staff/reports/weekly",
+            method: "getWeeklyReport",
         });
-        return { success: false, error:"Не удалось загрузить отчёт" };
+        return { success: false, error: "Не удалось загрузить отчёт" };
     }
 }
 
@@ -408,7 +407,7 @@ export async function getMonthlyReport(year: number, month: number) {
 
             return {
                 userId,
-                userName: user?.name ||"Неизвестно",
+                userName: user?.name || "Неизвестно",
                 userAvatar: user?.avatar || null,
                 departmentName: user?.department?.name || null,
                 daysWorked: days.length,
@@ -424,9 +423,9 @@ export async function getMonthlyReport(year: number, month: number) {
     } catch (error) {
         await logError({
             error,
-            path:"/staff/reports/monthly",
-            method:"getMonthlyReport",
+            path: "/staff/reports/monthly",
+            method: "getMonthlyReport",
         });
-        return { success: false, error:"Не удалось загрузить отчёт" };
+        return { success: false, error: "Не удалось загрузить отчёт" };
     }
 }

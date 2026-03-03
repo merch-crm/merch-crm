@@ -146,6 +146,7 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
                 ].map((item) => (
                     <button
                         key={item.type}
+                        type="button"
                         onClick={() => {
                             setReportType(item.type)
                             fetchReport(currentDate)
@@ -193,7 +194,7 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
             </div>
 
             {/* Контент отчёта */}
-            <div className={cn("transition-opacity duration-300", isPending ?"opacity-30" :"opacity-100")}>
+            <div className={cn("transition-opacity duration-300", isPending ? "opacity-30" : "opacity-100")}>
                 {reportType === 'daily' && dailyReport && (
                     <DailyReportView data={dailyReport} />
                 )}
@@ -376,9 +377,9 @@ function WeeklyReportView({ data }: { data: WeeklyReport }) {
                         {data.employees.slice(0, 10).map((emp, index: number) => (
                             <div key={emp.userId} className="flex items-center gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50/30">
                                 <span className={cn("w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black",
-                                    index === 0 ?"bg-amber-100 text-amber-600 shadow-sm" :
-                                        index === 1 ?"bg-slate-200 text-slate-600 shadow-sm" :
-                                            index === 2 ?"bg-orange-100 text-orange-600 shadow-sm" :"bg-white text-slate-400 border border-slate-100"
+                                    index === 0 ? "bg-amber-100 text-amber-600 shadow-sm" :
+                                        index === 1 ? "bg-slate-200 text-slate-600 shadow-sm" :
+                                            index === 2 ? "bg-orange-100 text-orange-600 shadow-sm" : "bg-white text-slate-400 border border-slate-100"
                                 )}>
                                     {index + 1}
                                 </span>

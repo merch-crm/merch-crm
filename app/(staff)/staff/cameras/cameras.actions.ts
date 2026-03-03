@@ -46,6 +46,7 @@ export async function getCameras() {
         }
 
         const allCameras = await db.query.cameras.findMany({
+            limit: 500,
             with: {
                 xiaomiAccount: {
                     columns: {
@@ -212,7 +213,7 @@ export async function syncXiaomiDevices(accountId: string) {
                     streamUrl,
                     status: 'offline',
                     isEnabled: true,
-                    confidenceThreshold:"0.6"
+                    confidenceThreshold: "0.6"
                 })
                 addedCount++
             }

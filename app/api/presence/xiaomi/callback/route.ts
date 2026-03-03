@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
                 client_secret: process.env.XIAOMI_CLIENT_SECRET!,
                 grant_type: 'authorization_code',
                 code,
-                redirect_uri: process.env.XIAOMI_REDIRECT_URI || `${process.env.NEXT_PUBLIC_APP_URL}/api/presence/xiaomi/callback`
+                redirect_uri: process.env.XIAOMI_REDIRECT_URI || `${process.env.APP_URL}/api/presence/xiaomi/callback`
             })
         })
 
