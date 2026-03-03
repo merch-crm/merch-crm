@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { xiaomiAccounts, cameras } from '@/lib/schema/presence'
+import { xiaomiAccounts, cameras, workstations } from '@/lib/schema/presence'
 import { eq, desc, inArray } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { checkIsAdmin } from '@/lib/admin'
@@ -492,6 +492,15 @@ export async function getCameras() {
                         email: true,
                         nickname: true
                     }
+                },
+                workstations: {
+                    columns: {
+                        id: true,
+                        name: true,
+                        zone: true,
+                        color: true
+                    },
+                    where: eq(workstations.isActive, true)
                 }
             },
             orderBy: [desc(cameras.createdAt)]

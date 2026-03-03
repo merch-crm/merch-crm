@@ -36,6 +36,7 @@ export interface Camera {
     isEnabled: boolean
     confidenceThreshold: string | number | null
     xiaomiAccount: { email: string | null; nickname: string | null } | null
+    workstations: Array<{ id: string; name: string; zone: any; color: string | null }>
 }
 
 export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras: Camera[]) {

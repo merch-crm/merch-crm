@@ -6,16 +6,7 @@ import { users } from '@/lib/schema/users'
 import { eq, asc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { CreateWorkstationSchema, UpdateWorkstationSchema, DeleteWorkstationSchema } from '../validation'
-
-export interface WorkstationInput {
-    name: string;
-    description?: string | null;
-    cameraId?: string | null;
-    assignedUserId?: string | null;
-    requiresAssignedUser?: boolean;
-    zone?: DetectionZone | null;
-    color?: string | null;
-}
+import { type WorkstationInput } from './types'
 
 export async function getWorkstations() {
     try {

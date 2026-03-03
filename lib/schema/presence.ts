@@ -258,6 +258,7 @@ export const camerasRelations = relations(cameras, ({ one, many }) => ({
     }),
     presenceLogs: many(presenceLogs),
     workSessions: many(workSessions),
+    workstations: many(workstations),
 }));
 
 export const employeeFacesRelations = relations(employeeFaces, ({ one }) => ({

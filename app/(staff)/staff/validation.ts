@@ -1,4 +1,4 @@
-'use server';
+// Validation schemas for staff actions
 
 import { z } from 'zod';
 

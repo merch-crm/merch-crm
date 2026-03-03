@@ -24,38 +24,10 @@ import {
     Play
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useCamerasState, useLoginForm, useCameraActions } from './use-cameras'
+import { useCamerasState, useLoginForm, useCameraActions, type XiaomiAccount, type Camera } from './use-cameras'
 import { CameraPreview } from '@/components/staff/camera-preview'
 
-interface XiaomiAccount {
-    id: string
-    xiaomiUserId: string
-    email: string | null
-    nickname: string | null
-    region: string
-    isActive: boolean
-    createdAt: Date
-}
-
-interface Camera {
-    id: string
-    xiaomiAccountId: string | null
-    deviceId: string
-    model: string | null
-    name: string
-    location: string | null
-    localIp: string | null
-    streamUrl: string | null
-    status: 'online' | 'offline' | 'error' | 'connecting'
-    lastOnlineAt: Date | null
-    errorMessage: string | null
-    isEnabled: boolean
-    confidenceThreshold: string | number | null
-    xiaomiAccount: {
-        email: string | null
-        nickname: string | null
-    } | null
-}
+// Удалены дублирующиеся интерфейсы (импортируются из use-cameras.ts)
 
 interface Props {
     initialAccounts: XiaomiAccount[]
@@ -538,7 +510,12 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                     <div className="p-4">
                         <CameraPreview
                             streamUrl={`http://localhost:1984/api/stream.mp4?src=xiaomi_${selectedCamera.deviceId}`}
-                            zones={[]} // Зоны пока не передаем или можно добавить позже
+                            zones={selectedCamera.workstations.map(w => ({
+                                id: w.id,
+                                name: w.name,
+                                zone: w.zone as any,
+                                color: w.color || '#3B82F6'
+                            }))}
                             className="aspect-video w-full"
                         />
                         <div className="mt-4 flex items-center justify-between text-xs text-slate-500">

@@ -1,9 +1,9 @@
 "use client";
 
-import { useFormStatus } from"react-dom";
-import { Button, ButtonProps } from"@/components/ui/button";
-import { Loader2 } from"lucide-react";
-import { cn } from"@/lib/utils";
+import { useFormStatus } from "react-dom";
+import { Button, ButtonProps } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SubmitButtonProps extends ButtonProps {
     isLoading?: boolean;
@@ -29,6 +29,15 @@ export function SubmitButton({
             disabled={disabled || isLoadingState}
             className={cn("gap-2", className)}
             {...props}
-        >{isLoadingState && <Loader2 className="h-4 w-4 animate-spin" />}{isLoadingState ? (loadingText || text || children) : (text || children)}</Button>
+        >
+            {isLoadingState ? (
+                <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {loadingText || text || children}
+                </>
+            ) : (
+                text || children
+            )}
+        </Button>
     );
 }
