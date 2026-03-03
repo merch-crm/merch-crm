@@ -8,9 +8,6 @@ import { SubmitButton } from '@/components/ui/submit-button'
 import {
     Settings,
     Clock,
-    Server,
-    CheckCircle,
-    XCircle,
     RefreshCw,
     Save,
     Wifi,
@@ -28,7 +25,7 @@ import {
 } from './settings.actions'
 
 interface Props {
-    initialSettings: Record<string, any>
+    initialSettings: Record<string, string | number | boolean>
 }
 
 export function SettingsClient({ initialSettings }: Props) {
@@ -61,7 +58,7 @@ export function SettingsClient({ initialSettings }: Props) {
             } else {
                 toast.error(result.error || 'go2rtc недоступен')
             }
-        } catch (e) {
+        } catch {
             setGo2rtcStatus('error')
         } finally {
             setTestingGo2rtc(false)
@@ -78,14 +75,14 @@ export function SettingsClient({ initialSettings }: Props) {
             } else {
                 toast.error(result.error || 'Ошибка сервиса распознавания')
             }
-        } catch (e) {
+        } catch {
             setPythonStatus('error')
         } finally {
             setTestingPython(false)
         }
     }
 
-    const updateSetting = (key: string, value: any) => {
+    const updateSetting = (key: string, value: string | number | boolean) => {
         setSettings(prev => ({ ...prev, [key]: value }))
     }
 
@@ -134,7 +131,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                     <Input
                                         type="time"
                                         className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold text-slate-900 focus:ring-indigo-500 focus:border-indigo-500"
-                                        value={settings.work_start_time || '09:00'}
+                                        value={(settings.work_start_time as string) || '09:00'}
                                         onChange={(e) => updateSetting('work_start_time', e.target.value)}
                                     />
                                 </div>
@@ -146,7 +143,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                     <Input
                                         type="time"
                                         className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold text-slate-900"
-                                        value={settings.work_end_time || '18:00'}
+                                        value={(settings.work_end_time as string) || '18:00'}
                                         onChange={(e) => updateSetting('work_end_time', e.target.value)}
                                     />
                                 </div>
@@ -162,7 +159,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                         min="0"
                                         max="120"
                                         className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold text-slate-900"
-                                        value={settings.late_threshold_minutes || 15}
+                                        value={(settings.late_threshold_minutes as number) || 15}
                                         onChange={(e) => updateSetting('late_threshold_minutes', parseInt(e.target.value))}
                                     />
                                     <p className="text-[9px] text-slate-400 font-medium">Допустимое время задержки без фиксации опоздания</p>
@@ -176,7 +173,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                         min="1"
                                         max="24"
                                         className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold text-slate-900"
-                                        value={settings.auto_clock_out_hours || 12}
+                                        value={(settings.auto_clock_out_hours as number) || 12}
                                         onChange={(e) => updateSetting('auto_clock_out_hours', parseInt(e.target.value))}
                                     />
                                     <p className="text-[9px] text-slate-400 font-medium">Закрытие смены при отсутствии события ухода</p>
@@ -205,7 +202,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                         Уверенность (Confidence Index)
                                     </label>
                                     <span className="text-sm font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
-                                        {((settings.recognition_confidence || 0.6) * 100).toFixed(0)}%
+                                        {((Number(settings.recognition_confidence) || 0.6) * 100).toFixed(0)}%
                                     </span>
                                 </div>
                                 <input
@@ -213,7 +210,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                     min="0.3"
                                     max="0.95"
                                     step="0.05"
-                                    value={settings.recognition_confidence || 0.6}
+                                    value={(settings.recognition_confidence as number) || 0.6}
                                     onChange={(e) => updateSetting('recognition_confidence', parseFloat(e.target.value))}
                                     className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                                 />
@@ -233,7 +230,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                         min="10"
                                         max="300"
                                         className="h-12 rounded-xl bg-slate-50 border-slate-200 font-bold text-slate-900 pr-12"
-                                        value={settings.idle_threshold_seconds || 30}
+                                        value={(settings.idle_threshold_seconds as number) || 30}
                                         onChange={(e) => updateSetting('idle_threshold_seconds', parseInt(e.target.value))}
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">сек</div>
@@ -262,7 +259,7 @@ export function SettingsClient({ initialSettings }: Props) {
                             <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2 block">Cервис URL</label>
                             <Input
                                 className="h-10 rounded-xl bg-white/50 border-slate-200 text-xs font-bold"
-                                value={settings.go2rtc_url || 'http://localhost:1984'}
+                                value={(settings.go2rtc_url as string) || 'http://localhost:1984'}
                                 onChange={(e) => updateSetting('go2rtc_url', e.target.value)}
                                 placeholder="http://localhost:1984"
                             />
@@ -324,7 +321,7 @@ function InfrastructureCard({
     status: 'unknown' | 'connected' | 'error',
     loading: boolean,
     onTest: () => void,
-    icon: any,
+    icon: React.ElementType,
     color: 'blue' | 'green',
     children?: React.ReactNode
 }) {

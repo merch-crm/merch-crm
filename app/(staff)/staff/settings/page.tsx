@@ -22,7 +22,7 @@ export default async function SettingsPage() {
     return (
         <Suspense fallback={<SettingsSkeleton />}>
             <SettingsClient
-                initialSettings={(settingsResult.success ? settingsResult.data : {}) as any}
+                initialSettings={(settingsResult.success ? settingsResult.data : {}) as Record<string, string | number | boolean>}
             />
         </Suspense>
     )

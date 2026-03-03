@@ -1,9 +1,8 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { dailyWorkStats, workSessions, presenceLogs, presenceSettings } from '@/lib/schema/presence'
-import { users } from '@/lib/schema'
-import { eq, and, gte, lte, desc, sql } from 'drizzle-orm'
+import { dailyWorkStats } from '@/lib/schema/presence'
+import { eq, and, gte, lte } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { logError } from '@/lib/error-logger'
 
@@ -25,9 +24,9 @@ export async function getDailyReport(date: string) {
         // Получаем настройки для определения опозданий
         const settings = await db.query.presenceSettings.findMany()
         const settingsMap = settings.reduce((acc, s) => {
-            acc[s.key] = s.value
+            acc[s.key] = s.value as string | number | boolean
             return acc
-        }, {} as Record<string, any>)
+        }, {} as Record<string, string | number | boolean>)
 
         const workStartTime = settingsMap.work_start_time || '09:00'
         const lateThreshold = settingsMap.late_threshold_minutes || 15
@@ -48,7 +47,7 @@ export async function getDailyReport(date: string) {
             const workStartString = `${date}T${workStartTime}:00`
             const workStart = new Date(workStartString)
             const isLate = stat.firstSeenAt ?
-                new Date(stat.firstSeenAt) > new Date(workStart.getTime() + lateThreshold * 60 * 1000) :
+                new Date(stat.firstSeenAt) > new Date(workStart.getTime() + Number(lateThreshold) * 60 * 1000) :
                 false
 
             return {
@@ -335,29 +334,33 @@ export async function getMonthlyReport(year: number, month: number) {
     }
 }
 
-export async function exportReport(type: 'daily' | 'weekly' | 'monthly', params: any) {
+export async function exportReport(type: 'daily' | 'weekly' | 'monthly', params: { date?: string; year?: number; month?: number }) {
     try {
         const session = await getSession()
         if (!session) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        let result: any
+        let result: {
+            success: boolean
+            data?: Record<string, unknown>
+            error?: string
+        }
 
         switch (type) {
             case 'daily':
-                result = await getDailyReport(params.date)
+                result = await getDailyReport(params.date!)
                 break
             case 'weekly':
-                result = await getWeeklyReport(params.date)
+                result = await getWeeklyReport(params.date!)
                 break
             case 'monthly':
-                result = await getMonthlyReport(params.year, params.month)
+                result = await getMonthlyReport(params.year!, params.month!)
                 break
         }
 
-        if (!result.success) {
-            return { success: false, error: result.error }
+        if (!result.success || !result.data) {
+            return { success: false, error: result.error || 'No data generated' }
         }
 
         const data = result.data
@@ -365,15 +368,15 @@ export async function exportReport(type: 'daily' | 'weekly' | 'monthly', params:
         // Генерируем CSV
         let csv = ''
 
-        if (type === 'daily' && data.employees) {
+        if (type === 'daily' && 'employees' in data && data.employees) {
             csv = 'Имя,Email,Приход,Уход,Часы работы,Опоздание\n'
-            for (const emp of data.employees) {
-                csv += `"${emp.userName}","${emp.email}","${emp.firstSeen || '-'}","${emp.lastSeen || '-'}",${emp.workHours.toFixed(2)},${emp.isLate ? 'Да' : 'Нет'}\n`
+            for (const emp of data.employees as Record<string, unknown>[]) {
+                csv += `"${emp.userName}","${emp.email}","${emp.firstSeen || '-'}","${emp.lastSeen || '-'}",${(emp.workHours as number).toFixed(2)},${emp.isLate ? 'Да' : 'Нет'}\n`
             }
-        } else if (type === 'monthly' && data.employees) {
+        } else if (type === 'monthly' && 'employees' in data && data.employees) {
             csv = 'Имя,Email,Дней присутствия,Всего часов,Среднее в день,Опоздания\n'
-            for (const emp of data.employees) {
-                csv += `"${emp.userName}","${emp.email}",${emp.daysPresent},${emp.totalHours.toFixed(2)},${emp.dailyAvgHours.toFixed(2)},${emp.lateCount}\n`
+            for (const emp of data.employees as Record<string, unknown>[]) {
+                csv += `"${emp.userName}","${emp.email}",${emp.daysPresent},${(emp.totalHours as number).toFixed(2)},${(emp.dailyAvgHours as number).toFixed(2)},${emp.lateCount}\n`
             }
         }
 
