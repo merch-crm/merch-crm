@@ -24,7 +24,7 @@ interface Point {
     y: number
 }
 
-type Zone =
+export type Zone =
     | { type: 'rect', x: number, y: number, width: number, height: number }
     | { type: 'polygon', points: Point[] }
     | { type: 'circle', cx: number, cy: number, radius: number }
@@ -353,9 +353,9 @@ export function ZoneEditor({
                         width={canvasSize.width}
                         height={canvasSize.height}
                         className={cn("w-full h-full",
-                            tool === 'pan' &&"cursor-grab",
-                            isPanning &&"cursor-grabbing",
-                            (tool === 'rect' || tool === 'polygon' || tool === 'circle') &&"cursor-crosshair"
+                            tool === 'pan' && "cursor-grab",
+                            isPanning && "cursor-grabbing",
+                            (tool === 'rect' || tool === 'polygon' || tool === 'circle') && "cursor-crosshair"
                         )}
                         onMouseDown={handleMouseDown}
                         onMouseMove={handleMouseMove}
@@ -405,7 +405,7 @@ function ToolButton({ icon: Icon, active, onClick, label }: { icon: React.Elemen
         <button
             onClick={onClick}
             className={cn("flex flex-col items-center justify-center p-2 rounded-xl transition-all w-12",
-                active ?"bg-white text-blue-600 shadow-sm" :"text-slate-500 hover:text-slate-900 hover:bg-white/50"
+                active ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-900 hover:bg-white/50"
             )}
         >
             <Icon className="w-4 h-4" />

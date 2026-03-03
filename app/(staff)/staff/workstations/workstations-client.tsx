@@ -310,7 +310,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                                 onChange={(value: string) => setForm(prev => ({ ...prev, assignedUserId: value }))}
                                 options={[
                                     { id: '', title: 'Любой сотрудник' },
-                                    ...users.map(user => ({ id: user.id, title: user.name }))
+                                    ...(users ?? []).map(user => ({ id: user.id, title: user.name }))
                                 ]}
                                 triggerClassName="h-12 w-full rounded-xl font-medium"
                             />
@@ -388,7 +388,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                     open={zoneEditorOpen}
                     onOpenChange={setZoneEditorOpen}
                     imageUrl={cameras.find(c => c.id === form.cameraId)?.streamUrl?.replace('/stream.mp4', '/frame.jpeg')}
-                    initialZone={form.zone ? (form.zone as unknown as any) : undefined}
+                    initialZone={form.zone ? (form.zone as unknown as import('@/components/staff/zone-editor').Zone) : undefined}
                     color={form.color}
                     onSave={(zone) => {
                         setForm(prev => ({ ...prev, zone }))
@@ -400,7 +400,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
 
             {/* Confirm delete modal */}
             <ResponsiveModal isOpen={!!confirmDeleteId} onClose={() => setConfirmDeleteId(null)}>
-                <div className="p-6 flex flex-col gap-4">
+                <div className="p-6 flex flex-col gap-3">
                     <h3 className="text-lg font-bold text-slate-900">Удалить рабочее место?</h3>
                     <p className="text-sm text-slate-500">Это действие нельзя отменить.</p>
                     <div className="flex gap-3 justify-end">
