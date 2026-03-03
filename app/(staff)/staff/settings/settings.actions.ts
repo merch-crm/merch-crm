@@ -8,6 +8,7 @@ import { checkIsAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
+import { UpdatePresenceSettingsSchema } from '../validation'
 
 export async function getPresenceSettings() {
     try {
@@ -42,9 +43,14 @@ export async function updatePresenceSettings(updates: Record<string, string | nu
             return { success: false, error: 'Forbidden' }
         }
 
+        const parsed = UpdatePresenceSettingsSchema.safeParse(updates)
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
         // Обработка обновлений: используем upsert или просто update если записи гарантированно есть
         // В миграции мы должны были инициализировать базовые настройки
-        for (const [key, value] of Object.entries(updates)) {
+        for (const [key, value] of Object.entries(parsed.data)) {
             await db.insert(presenceSettings)
                 .values({
                     key,
@@ -80,7 +86,7 @@ export async function testGo2rtcConnection() {
         }
 
         const settings = await db.query.presenceSettings.findMany({
-        limit: 500,
+            limit: 500,
             where: eq(presenceSettings.key, 'go2rtc_url')
         })
 

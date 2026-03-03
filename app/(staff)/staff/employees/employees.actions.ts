@@ -9,6 +9,7 @@ import { checkIsAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
+import { AddEmployeeFaceInputSchema, DeleteEmployeeFaceSchema, SetPrimaryFaceSchema } from '../validation'
 
 export async function getEmployeesWithFaces() {
     try {
@@ -31,7 +32,7 @@ export async function getEmployeesWithFaces() {
 
         // Получаем все лица
         const faces = await db.query.employeeFaces.findMany({
-        limit: 500,
+            limit: 500,
             where: eq(employeeFaces.isActive, true)
         })
 
@@ -111,26 +112,31 @@ export async function addEmployeeFace(data: {
             return { success: false, error: 'Forbidden' }
         }
 
+        const parsed = AddEmployeeFaceInputSchema.safeParse(data)
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
         // Проверяем, есть ли уже primary face
         const existingPrimary = await db.query.employeeFaces.findFirst({
             where: and(
-                eq(employeeFaces.userId, data.userId),
+                eq(employeeFaces.userId, parsed.data.userId),
                 eq(employeeFaces.isActive, true),
                 eq(employeeFaces.isPrimary, true)
             )
         })
 
         const [face] = await db.insert(employeeFaces).values({
-            userId: data.userId,
-            photoUrl: data.photoUrl,
-            faceEncoding: data.faceEncoding,
-            quality: data.quality?.toString(), // Decimal в Drizzle PG => string
+            userId: parsed.data.userId,
+            photoUrl: parsed.data.photoUrl,
+            faceEncoding: parsed.data.faceEncoding,
+            quality: parsed.data.quality?.toString(),
             isActive: true,
-            isPrimary: !existingPrimary, // Если нет основного, это станет основным
+            isPrimary: !existingPrimary,
             createdById: session.id
         }).returning()
 
-        await logAction('Добавление лица сотрудника', 'employee_face', face.id, { userId: data.userId })
+        await logAction('Добавление лица сотрудника', 'employee_face', face.id, { userId: parsed.data.userId })
         revalidatePath('/staff/employees')
 
         return { success: true, data: face }
@@ -152,15 +158,20 @@ export async function deleteEmployeeFace(faceId: string) {
             return { success: false, error: 'Forbidden' }
         }
 
+        const parsed = DeleteEmployeeFaceSchema.safeParse({ faceId })
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
         // Софт-удаление
         await db.update(employeeFaces)
             .set({
                 isActive: false,
                 updatedAt: new Date()
             })
-            .where(eq(employeeFaces.id, faceId))
+            .where(eq(employeeFaces.id, parsed.data.faceId))
 
-        await logAction('Удаление лица сотрудника', 'employee_face', faceId, {})
+        await logAction('Удаление лица сотрудника', 'employee_face', parsed.data.faceId, {})
         revalidatePath('/staff/employees')
 
         return { success: true }
@@ -182,17 +193,22 @@ export async function setPrimaryFace(faceId: string, userId: string) {
             return { success: false, error: 'Forbidden' }
         }
 
+        const parsed = SetPrimaryFaceSchema.safeParse({ faceId, userId })
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
         // Убираем primary у всех лиц пользователя
         await db.update(employeeFaces)
             .set({ isPrimary: false, updatedAt: new Date() })
-            .where(eq(employeeFaces.userId, userId))
+            .where(eq(employeeFaces.userId, parsed.data.userId))
 
         // Устанавливаем выбранное лицо основным
         await db.update(employeeFaces)
             .set({ isPrimary: true, updatedAt: new Date() })
-            .where(eq(employeeFaces.id, faceId))
+            .where(eq(employeeFaces.id, parsed.data.faceId))
 
-        await logAction('Изменение основного лица', 'employee_face', faceId, { isPrimary: true })
+        await logAction('Изменение основного лица', 'employee_face', parsed.data.faceId, { isPrimary: true })
         revalidatePath('/staff/employees')
 
         return { success: true }

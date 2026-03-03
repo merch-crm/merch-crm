@@ -5,6 +5,7 @@ import { workstations, cameras, type DetectionZone } from '@/lib/schema/presence
 import { users } from '@/lib/schema/users'
 import { eq, asc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
+import { CreateWorkstationSchema, UpdateWorkstationSchema, DeleteWorkstationSchema } from '../validation'
 
 export interface WorkstationInput {
     name: string;
@@ -77,8 +78,13 @@ export async function getUsers() {
 
 export async function createWorkstation(data: WorkstationInput) {
     try {
+        const parsed = CreateWorkstationSchema.safeParse(data)
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
         const [result] = await db.insert(workstations).values({
-            ...data,
+            ...parsed.data,
             updatedAt: new Date()
         }).returning()
 
@@ -92,12 +98,22 @@ export async function createWorkstation(data: WorkstationInput) {
 
 export async function updateWorkstation(id: string, data: Partial<WorkstationInput>) {
     try {
+        const parsed = UpdateWorkstationSchema.safeParse(data)
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
+        const idCheck = DeleteWorkstationSchema.safeParse({ id })
+        if (!idCheck.success) {
+            return { success: false, error: idCheck.error.issues[0].message }
+        }
+
         const [result] = await db.update(workstations)
             .set({
-                ...data,
+                ...parsed.data,
                 updatedAt: new Date()
             })
-            .where(eq(workstations.id, id))
+            .where(eq(workstations.id, idCheck.data.id))
             .returning()
 
         revalidatePath('/staff/workstations')
@@ -110,7 +126,12 @@ export async function updateWorkstation(id: string, data: Partial<WorkstationInp
 
 export async function deleteWorkstation(id: string) {
     try {
-        await db.delete(workstations).where(eq(workstations.id, id))
+        const parsed = DeleteWorkstationSchema.safeParse({ id })
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
+        await db.delete(workstations).where(eq(workstations.id, parsed.data.id))
         revalidatePath('/staff/workstations')
         return { success: true }
     } catch {

@@ -9,6 +9,7 @@ import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
 import { decrypt, encrypt } from '@/lib/crypto'
+import { XiaomiLoginInputSchema, SyncXiaomiDevicesSchema } from '../validation'
 
 export async function getXiaomiAccounts() {
     try {
@@ -81,7 +82,12 @@ export async function loginXiaomiAccount(formData: {
             return { success: false, error: 'Forbidden' }
         }
 
-        const { username, password, region } = formData
+        const parsed = XiaomiLoginInputSchema.safeParse(formData)
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
+        const { username, password, region } = parsed.data
 
         // Авторизация через Xiaomi Mi Home API (интеграция с go2rtc)
         const authResult = await authenticateXiaomi(username, password, region)
@@ -156,9 +162,14 @@ export async function syncXiaomiDevices(accountId: string) {
             return { success: false, error: 'Forbidden' }
         }
 
+        const parsed = SyncXiaomiDevicesSchema.safeParse({ accountId })
+        if (!parsed.success) {
+            return { success: false, error: parsed.error.issues[0].message }
+        }
+
         // Получаем аккаунт с токеном
         const account = await db.query.xiaomiAccounts.findFirst({
-            where: eq(xiaomiAccounts.id, accountId)
+            where: eq(xiaomiAccounts.id, parsed.data.accountId)
         })
 
         if (!account) {
