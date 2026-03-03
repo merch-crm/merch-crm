@@ -421,7 +421,7 @@ const LocationCardContent = memo(({
                             <User className="w-2 sm:w-3 sm:h-3 text-slate-400" />
                         </div>
                         <span className="text-xs sm:text-xs font-bold text-slate-500 break-words line-clamp-2 md:line-clamp-none">
-                            {loc.responsibleUser?.name || "Нет отв."}
+                            {loc.responsibleUser?.name || "Не назначен"}
                         </span>
                     </div>
 
