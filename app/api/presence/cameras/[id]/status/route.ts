@@ -26,7 +26,7 @@ export async function PATCH(
 
         await db.update(cameras)
             .set({
-                status: status as any,
+                status: status as 'online' | 'offline' | 'error',
                 errorMessage: error_message || null,
                 lastOnlineAt: status === 'online' ? new Date() : undefined,
                 updatedAt: new Date()

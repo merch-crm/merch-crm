@@ -19,9 +19,9 @@ export async function getPresenceSettings() {
         const settings = await db.query.presenceSettings.findMany()
 
         const settingsMap = settings.reduce((acc, s) => {
-            acc[s.key] = s.value
+            acc[s.key] = s.value as string | number | boolean
             return acc
-        }, {} as Record<string, any>)
+        }, {} as Record<string, string | number | boolean>)
 
         return { success: true, data: settingsMap }
     } catch (error) {
@@ -30,7 +30,7 @@ export async function getPresenceSettings() {
     }
 }
 
-export async function updatePresenceSettings(updates: Record<string, any>) {
+export async function updatePresenceSettings(updates: Record<string, string | number | boolean>) {
     try {
         const session = await getSession()
         if (!session) {
@@ -94,7 +94,7 @@ export async function testGo2rtcConnection() {
         } else {
             return { success: false, error: 'go2rtc returned error' }
         }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'go2rtc not responding' }
     }
 }
@@ -118,7 +118,7 @@ export async function testPythonService() {
         } else {
             return { success: false, error: 'Service returned error' }
         }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Service not responding' }
     }
 }

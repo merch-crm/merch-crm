@@ -2,7 +2,7 @@ import Redis from "ioredis";
 import { env } from "./env";
 import { Readable } from 'stream';
 
-const isE2E = process.env.NEXT_PUBLIC_E2E === 'true';
+const isE2E = process.env.NEXT_PUBLIC_E2E === 'true' || process.env.NODE_ENV === 'test';
 
 // Простая заглушка для Redis (in-memory)
 class RedisMock {

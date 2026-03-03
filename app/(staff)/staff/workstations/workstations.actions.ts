@@ -1,10 +1,20 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { workstations, cameras } from '@/lib/schema/presence'
+import { workstations, cameras, type DetectionZone } from '@/lib/schema/presence'
 import { users } from '@/lib/schema/users'
 import { eq, asc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
+
+export interface WorkstationInput {
+    name: string;
+    description?: string | null;
+    cameraId?: string | null;
+    assignedUserId?: string | null;
+    requiresAssignedUser?: boolean;
+    zone?: DetectionZone | null;
+    color?: string | null;
+}
 
 export async function getWorkstations() {
     try {
@@ -44,7 +54,7 @@ export async function getCameras() {
             }
         })
         return { success: true, data }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch cameras' }
     }
 }
@@ -60,12 +70,12 @@ export async function getUsers() {
             orderBy: [asc(users.name)]
         })
         return { success: true, data }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to fetch users' }
     }
 }
 
-export async function createWorkstation(data: any) {
+export async function createWorkstation(data: WorkstationInput) {
     try {
         const [result] = await db.insert(workstations).values({
             ...data,
@@ -80,7 +90,7 @@ export async function createWorkstation(data: any) {
     }
 }
 
-export async function updateWorkstation(id: string, data: any) {
+export async function updateWorkstation(id: string, data: Partial<WorkstationInput>) {
     try {
         const [result] = await db.update(workstations)
             .set({
@@ -103,7 +113,7 @@ export async function deleteWorkstation(id: string) {
         await db.delete(workstations).where(eq(workstations.id, id))
         revalidatePath('/staff/workstations')
         return { success: true }
-    } catch (error) {
+    } catch {
         return { success: false, error: 'Failed to delete workstation' }
     }
 }

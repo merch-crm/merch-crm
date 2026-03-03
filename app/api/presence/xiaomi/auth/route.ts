@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import { requireAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
@@ -6,7 +6,7 @@ import { logError } from '@/lib/error-logger'
 // Xiaomi OAuth endpoints
 const XIAOMI_AUTH_URL = 'https://account.xiaomi.com/oauth2/authorize'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const session = await getSession()
         if (!session) {

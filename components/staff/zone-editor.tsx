@@ -44,14 +44,12 @@ export function ZoneEditor({
     open: isOpen,
     onOpenChange: onClose,
     imageUrl,
-    videoUrl,
     initialZone,
     color = '#3B82F6',
     onSave,
     onCancel
 }: ZoneEditorProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
-    const videoRef = useRef<HTMLVideoElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
 
     const [tool, setTool] = useState<Tool>('rect')
@@ -221,7 +219,7 @@ export function ZoneEditor({
                 ctx.stroke()
             })
         }
-    }, [zoom, pan, canvasSize, currentZone, polygonPoints, tool, color, imageLoaded, drawZone, normalizedToScreen])
+    }, [zoom, pan, currentZone, polygonPoints, tool, color, imageLoaded, drawZone, normalizedToScreen])
 
     useEffect(() => {
         if (isOpen) {
@@ -403,7 +401,7 @@ export function ZoneEditor({
     )
 }
 
-function ToolButton({ icon: Icon, active, onClick, label }: { icon: any, active: boolean, onClick: () => void, label: string }) {
+function ToolButton({ icon: Icon, active, onClick, label }: { icon: React.ElementType, active: boolean, onClick: () => void, label: string }) {
     return (
         <button
             onClick={onClick}

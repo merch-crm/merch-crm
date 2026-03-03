@@ -1,10 +1,9 @@
 'use client'
 
-import Link from 'next/link'
 import { Menu, Bell, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
+import Image from 'next/image'
 
 interface StaffHeaderProps {
     session: {
@@ -34,10 +33,13 @@ export function StaffHeader({ session, branding }: StaffHeaderProps) {
 
             <div className="flex items-center gap-3">
                 {branding?.logoUrl ? (
-                    <img
+                    <Image
                         src={branding.logoUrl}
                         alt={branding.companyName || 'Logo'}
+                        width={100}
+                        height={32}
                         className="h-8 w-auto"
+                        unoptimized
                     />
                 ) : (
                     <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">

@@ -6,7 +6,12 @@ import { cn } from '@/lib/utils'
 interface Zone {
     id: string
     name: string
-    zone: any
+    zone: {
+        type: 'rect' | 'polygon' | 'circle'
+        x: number; y: number; width: number; height: number;
+        points: { x: number; y: number }[];
+        cx: number; cy: number; radius: number;
+    } | null
     color: string
     isOccupied?: boolean
     occupiedBy?: string
@@ -96,7 +101,7 @@ export function CameraPreview({
                 if (zone.type === 'polygon' && zone.points?.length > 0) {
                     ctx.beginPath()
                     ctx.moveTo(zone.points[0].x * canvas.width, zone.points[0].y * canvas.height)
-                    zone.points.forEach((p: any) => ctx.lineTo(p.x * canvas.width, p.y * canvas.height))
+                    zone.points.forEach((p) => ctx.lineTo(p.x * canvas.width, p.y * canvas.height))
                     ctx.closePath()
 
                     ctx.globalAlpha = fillOpacity
@@ -106,8 +111,8 @@ export function CameraPreview({
                     ctx.stroke()
 
                     if (showLabels) {
-                        const centerX = zone.points.reduce((s: number, p: any) => s + p.x, 0) / zone.points.length * canvas.width
-                        const centerY = zone.points.reduce((s: number, p: any) => s + p.y, 0) / zone.points.length * canvas.height
+                        const centerX = zone.points.reduce((s: number, p) => s + p.x, 0) / zone.points.length * canvas.width
+                        const centerY = zone.points.reduce((s: number, p) => s + p.y, 0) / zone.points.length * canvas.height
                         drawLabel(ctx, name, occupiedBy || assignedUser?.name, centerX, centerY, color, isOccupied, true)
                     }
                 }
@@ -190,11 +195,10 @@ export function CameraPreview({
             <canvas
                 ref={canvasRef}
                 className="w-full h-auto cursor-pointer"
-                onClick={(e) => {
+                onClick={() => {
                     if (!onZoneClick || !canvasRef.current) return
-                    const rect = canvasRef.current.getBoundingClientRect()
-                    const x = (e.clientX - rect.left) / rect.width
-                    const y = (e.clientY - rect.top) / rect.height
+                    // const x = (e.clientX - rect.left) / rect.width
+                    // const y = (e.clientY - rect.top) / rect.height
                     // Logic for clicking zone could be added here
                 }}
             />

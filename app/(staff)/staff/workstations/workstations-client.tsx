@@ -21,13 +21,13 @@ import { createWorkstation, updateWorkstation, deleteWorkstation } from './works
 import { ZoneEditor } from '@/components/staff/zone-editor'
 import { DetectionZone } from '@/lib/schema/presence'
 
-interface Workstation {
+export interface Workstation {
     id: string
     name: string
     description: string | null
     cameraId: string | null
     assignedUserId: string | null
-    zone: any | null
+    zone: DetectionZone | null
     color: string | null
     isActive: boolean
     requiresAssignedUser: boolean
@@ -36,13 +36,12 @@ interface Workstation {
 }
 
 interface Props {
-    initialWorkstations: any[]
+    initialWorkstations: Workstation[]
     cameras: { id: string; name: string; streamUrl: string | null; deviceId: string }[]
     users: { id: string; name: string; email: string }[]
-    isAdmin: boolean
 }
 
-export function WorkstationsClient({ initialWorkstations, cameras, users, isAdmin }: Props) {
+export function WorkstationsClient({ initialWorkstations, cameras, users }: Props) {
     const [workstations, setWorkstations] = useState<Workstation[]>(initialWorkstations)
     const [isPending, startTransition] = useTransition()
 
@@ -56,7 +55,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users, isAdmi
         cameraId: '',
         assignedUserId: '',
         requiresAssignedUser: false,
-        zone: null as any | null,
+        zone: null as DetectionZone | null,
         color: '#3B82F6'
     })
 

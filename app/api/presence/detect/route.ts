@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { presenceLogs, employeeFaces, cameras, workstations } from '@/lib/schema/presence'
-import { eq, and, sql } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { logError } from '@/lib/error-logger'
 
 // Секретный ключ для Python-сервиса
@@ -27,8 +27,7 @@ export async function POST(request: NextRequest) {
             snapshot_url,
             timestamp,
             workstation_id,
-            face_position,
-            metadata
+            face_position
         } = body
 
         // Валидация
