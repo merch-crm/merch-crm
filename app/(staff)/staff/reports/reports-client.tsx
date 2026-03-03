@@ -17,20 +17,21 @@ import {
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { getDailyReport, getWeeklyReport, getMonthlyReport, exportReport } from './reports.actions'
+import type { DailyReport, WeeklyReport, MonthlyReport } from './reports.types'
 
 type ReportType = 'daily' | 'weekly' | 'monthly'
 
 interface Props {
-    initialDaily: any
-    initialWeekly: any
-    initialMonthly: any
+    initialDaily: DailyReport | null
+    initialWeekly: WeeklyReport | null
+    initialMonthly: MonthlyReport | null
 }
 
 export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: Props) {
     const [reportType, setReportType] = useState<ReportType>('daily')
-    const [dailyReport, setDailyReport] = useState(initialDaily)
-    const [weeklyReport, setWeeklyReport] = useState(initialWeekly)
-    const [monthlyReport, setMonthlyReport] = useState(initialMonthly)
+    const [dailyReport, setDailyReport] = useState<DailyReport | null>(initialDaily)
+    const [weeklyReport, setWeeklyReport] = useState<WeeklyReport | null>(initialWeekly)
+    const [monthlyReport, setMonthlyReport] = useState<MonthlyReport | null>(initialMonthly)
     const [isPending, startTransition] = useTransition()
 
     // Текущие даты для навигации
@@ -62,15 +63,15 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
             switch (reportType) {
                 case 'daily':
                     const daily = await getDailyReport(dateStr)
-                    if (daily.success) setDailyReport(daily.data)
+                    if (daily.success) setDailyReport(daily.data ?? null)
                     break
                 case 'weekly':
                     const weekly = await getWeeklyReport(dateStr)
-                    if (weekly.success) setWeeklyReport(weekly.data)
+                    if (weekly.success) setWeeklyReport(weekly.data ?? null)
                     break
                 case 'monthly':
                     const monthly = await getMonthlyReport(date.getFullYear(), date.getMonth() + 1)
-                    if (monthly.success) setMonthlyReport(monthly.data)
+                    if (monthly.success) setMonthlyReport(monthly.data ?? null)
                     break
             }
         })
@@ -209,7 +210,7 @@ export function ReportsClient({ initialDaily, initialWeekly, initialMonthly }: P
     )
 }
 
-function DailyReportView({ data }: { data: any }) {
+function DailyReportView({ data }: { data: DailyReport }) {
     return (
         <div className="space-y-6">
             {/* Сводка */}
@@ -267,7 +268,7 @@ function DailyReportView({ data }: { data: any }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.employees.map((emp: any) => (
+                                    {data.employees.map((emp) => (
                                         <tr key={emp.userId} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
                                             <td className="py-4 px-6">
                                                 <div className="flex items-center gap-3">
@@ -321,7 +322,7 @@ function DailyReportView({ data }: { data: any }) {
     )
 }
 
-function WeeklyReportView({ data }: { data: any }) {
+function WeeklyReportView({ data }: { data: WeeklyReport }) {
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -332,7 +333,7 @@ function WeeklyReportView({ data }: { data: any }) {
                     </CardHeader>
                     <CardBody className="p-8">
                         <div className="flex items-end justify-between gap-4 h-64 overflow-x-auto pb-4">
-                            {data.dailyBreakdown.map((day: any, index: number) => {
+                            {data.dailyBreakdown.map((day, index: number) => {
                                 const maxHours = 12
                                 const height = (day.avgHours / maxHours) * 100
 
@@ -372,7 +373,7 @@ function WeeklyReportView({ data }: { data: any }) {
                 </CardHeader>
                 <CardBody className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {data.employees.slice(0, 10).map((emp: any, index: number) => (
+                        {data.employees.slice(0, 10).map((emp, index: number) => (
                             <div key={emp.userId} className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50/30">
                                 <span className={cn(
                                     "w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black",
@@ -402,7 +403,7 @@ function WeeklyReportView({ data }: { data: any }) {
     )
 }
 
-function MonthlyReportView({ data }: { data: any }) {
+function MonthlyReportView({ data }: { data: MonthlyReport }) {
     return (
         <div className="space-y-6">
             {/* Сводка за месяц */}
@@ -452,7 +453,7 @@ function MonthlyReportView({ data }: { data: any }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.employees.map((emp: any) => (
+                                {data.employees.map((emp) => (
                                     <tr key={emp.userId} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
                                         <td className="py-4 px-6">
                                             <p className="font-bold text-slate-900 text-sm">{emp.userName}</p>
@@ -502,7 +503,7 @@ function StatCard({
 }: {
     title: string
     value: string | number
-    icon: any
+    icon: React.ElementType
     color: 'blue' | 'emerald' | 'orange' | 'indigo'
 }) {
     const colors = {
@@ -527,7 +528,7 @@ function StatCard({
     )
 }
 
-function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: any, color: 'emerald' | 'rose' | 'indigo' }) {
+function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: React.ElementType, color: 'emerald' | 'rose' | 'indigo' }) {
     const configs = {
         emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', ring: 'ring-emerald-100' },
         rose: { bg: 'bg-rose-50', text: 'text-rose-600', ring: 'ring-rose-100' },

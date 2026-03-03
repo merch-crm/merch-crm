@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { StaffMonitoringClient } from './staff-monitoring-client'
+import { StaffMonitoringClient, type PresenceStatus, type DailyReportRow } from './staff-monitoring-client'
 import { getCurrentPresenceStatus, getDailyReport } from '@/app/(main)/staff/actions'
 
 export default async function StaffMonitoringPage() {
@@ -26,9 +26,9 @@ export default async function StaffMonitoringPage() {
         <div className="space-y-6">
             <Suspense fallback={<MonitoringSkeleton />}>
                 <StaffMonitoringClient
-                    initialStatus={initialStatus as any}
-                    initialReport={initialReport as any}
-                    session={session}
+                    initialStatus={initialStatus as unknown as PresenceStatus[]}
+                    initialReport={initialReport as unknown as DailyReportRow[]}
+                    session={session as { id: string; name: string }}
                 />
             </Suspense>
         </div>

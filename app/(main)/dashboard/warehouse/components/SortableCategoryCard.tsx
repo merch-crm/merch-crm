@@ -280,8 +280,8 @@ export const CategoryCardContent = React.memo(({
                                     <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
                                     <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full" />
                                 </div>
-                                <div className="text-[12px] font-bold text-slate-400 text-center tracking-tight">
-                                    Нет подкатегорий
+                                <div className="text-[12px] font-bold text-slate-400 text-center tracking-tight px-4 line-clamp-2">
+                                    {category.description || "Нет подкатегорий"}
                                 </div>
                                 <div className="flex items-center gap-3 w-full max-w-[180px]">
                                     <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full" />

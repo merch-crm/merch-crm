@@ -23,6 +23,13 @@ vi.mock('./category-utils', () => ({
     sortCategories: (cats: Category[]) => cats,
 }));
 
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+};
+
 vi.mock('./edit-category-dialog', () => ({
     // Use an identifiable component name for the mock
     EditCategoryDialog: ({ isOpen, category }: { isOpen: boolean; category: { name: string } }) => {

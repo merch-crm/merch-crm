@@ -12,9 +12,10 @@ import {
     AlertCircle,
     Video
 } from 'lucide-react'
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 
-interface PresenceStatus {
+export interface PresenceStatus {
     userId: string
     userName: string
     userAvatar: string | null
@@ -26,7 +27,7 @@ interface PresenceStatus {
     todayIdleSeconds: number
 }
 
-interface DailyReportRow {
+export interface DailyReportRow {
     userId: string
     userName: string
     userAvatar: string | null
@@ -46,9 +47,9 @@ interface Props {
     session: { id: string; name: string }
 }
 
-export function StaffMonitoringClient({ initialStatus, initialReport, session }: Props) {
-    const [status, setStatus] = useState<PresenceStatus[]>(initialStatus)
-    const [report, setReport] = useState<DailyReportRow[]>(initialReport)
+export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
+    const [status] = useState<PresenceStatus[]>(initialStatus)
+    const [report] = useState<DailyReportRow[]>(initialReport)
 
     // Автообновление каждые 30 секунд
     useEffect(() => {
@@ -181,7 +182,13 @@ export function StaffMonitoringClient({ initialStatus, initialReport, session }:
                                     <div className="flex items-center gap-4">
                                         <div className="relative">
                                             {emp.userAvatar ? (
-                                                <img src={emp.userAvatar} className="w-10 h-10 rounded-full object-cover border border-slate-100" />
+                                                <Image
+                                                    src={emp.userAvatar}
+                                                    alt={emp.userName}
+                                                    width={40}
+                                                    height={40}
+                                                    className="w-10 h-10 rounded-full object-cover border border-slate-100"
+                                                />
                                             ) : (
                                                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-100">
                                                     <span className="text-sm font-semibold text-slate-500">
@@ -230,7 +237,7 @@ function StatCard({
 }: {
     title: string
     value: number
-    icon: any
+    icon: React.ElementType
     color: 'green' | 'yellow' | 'red' | 'orange'
 }) {
     const colors = {
@@ -270,7 +277,13 @@ function EmployeeStatusCard({ employee }: { employee: PresenceStatus }) {
             <div className="flex items-center gap-4">
                 <div className="relative">
                     {employee.userAvatar ? (
-                        <img src={employee.userAvatar} className="w-12 h-12 rounded-full object-cover border-2 border-slate-50" />
+                        <Image
+                            src={employee.userAvatar}
+                            alt={employee.userName}
+                            width={48}
+                            height={48}
+                            className="w-12 h-12 rounded-full object-cover border-2 border-slate-50"
+                        />
                     ) : (
                         <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center border-2 border-slate-50">
                             <span className="text-base font-bold text-slate-500">

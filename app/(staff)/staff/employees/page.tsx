@@ -1,7 +1,7 @@
 import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { EmployeesClient } from './employees-client'
+import { EmployeesClient, type Employee } from './employees-client'
 import { getEmployeesWithFaces, getEmployeesWithoutFaces } from './employees.actions'
 import { checkIsAdmin } from '@/lib/admin'
 
@@ -22,8 +22,8 @@ export default async function EmployeesPage() {
     return (
         <Suspense fallback={<EmployeesSkeleton />}>
             <EmployeesClient
-                initialEmployees={employeesResult.success ? (employeesResult.data as any) : []}
-                employeesWithoutFaces={withoutFacesResult.success ? (withoutFacesResult.data as any) : []}
+                initialEmployees={employeesResult.success ? (employeesResult.data as unknown as Employee[]) : []}
+                employeesWithoutFaces={withoutFacesResult.success ? (withoutFacesResult.data as { id: string; name: string; email: string }[]) : []}
                 isAdmin={isAdmin}
             />
         </Suspense>
