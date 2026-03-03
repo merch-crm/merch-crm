@@ -380,8 +380,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                     open={zoneEditorOpen}
                     onOpenChange={setZoneEditorOpen}
                     imageUrl={cameras.find(c => c.id === form.cameraId)?.streamUrl?.replace('/stream.mp4', '/frame.jpeg')}
-                    videoUrl={cameras.find(c => c.id === form.cameraId)?.streamUrl}
-                    initialZone={form.zone}
+                    initialZone={form.zone ? (form.zone as any) : undefined}
                     color={form.color}
                     onSave={(zone) => {
                         setForm(prev => ({ ...prev, zone }))
