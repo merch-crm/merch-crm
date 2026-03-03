@@ -1,6 +1,6 @@
 "use client";
-import { useState, useEffect, useCallback } from"react";
-import { Book } from"lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Book } from "lucide-react";
 import {
     DndContext,
     closestCenter,
@@ -10,17 +10,17 @@ import {
     DragEndEvent,
     DragOverlay,
     DragStartEvent,
-} from"@dnd-kit/core";
+} from "@dnd-kit/core";
 import {
     SortableContext,
     arrayMove,
     rectSortingStrategy,
-} from"@dnd-kit/sortable";
-import { EmptyState } from"@/components/ui/empty-state";
-import { InventoryAttribute as Attribute, AttributeType } from"../../types";
-import { SortableCharacteristicCard, CharacteristicCardContent } from"./SortableCharacteristicCard";
-import { reorderInventoryAttributeTypes } from"../../attribute-actions";
-import { useToast } from"@/components/ui/toast";
+} from "@dnd-kit/sortable";
+import { EmptyState } from "@/components/ui/empty-state";
+import { InventoryAttribute as Attribute, AttributeType } from "../../types";
+import { SortableCharacteristicCard, CharacteristicCardContent } from "./SortableCharacteristicCard";
+import { reorderInventoryAttributeTypes } from "../../attribute-actions";
+import { useToast } from "@/components/ui/toast";
 
 interface CharacteristicGridProps {
     filteredTypes: AttributeType[];
@@ -83,7 +83,7 @@ export function CharacteristicGrid({
         const updates = reordered.map((t, i) => ({ id: t.id, sortOrder: i }));
         const res = await reorderInventoryAttributeTypes(updates);
         if (!res.success) {
-            toast("Не удалось сохранить порядок","error");
+            toast("Не удалось сохранить порядок", "error");
             setLocalTypes(filteredTypes); // rollback
         }
     }, [localTypes, filteredTypes, toast]);
@@ -101,24 +101,28 @@ export function CharacteristicGrid({
                     strategy={rectSortingStrategy}
                 >
                     <div className="flex flex-col gap-3">
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                        <div className="flex flex-wrap items-stretch justify-center w-full gap-3">
                             {localTypes.map((type) => (
-                                <SortableCharacteristicCard
+                                <div
                                     key={type.id}
-                                    type={type}
-                                    attributes={attributes}
-                                    openEditType={openEditType}
-                                    openEditValue={openEditValue}
-                                />
+                                    className="transition-all duration-300 flex-grow min-w-[280px] flex-[1_1_21%]"
+                                >
+                                    <SortableCharacteristicCard
+                                        type={type}
+                                        attributes={attributes}
+                                        openEditType={openEditType}
+                                        openEditValue={openEditValue}
+                                    />
+                                </div>
                             ))}
                             {localTypes.length === 0 && (
-                                <div className="col-span-full">
+                                <div className="w-full">
                                     <EmptyState
                                         icon={Book}
                                         title="Нет характеристик"
                                         description={
-                                            activeCategoryId ==="uncategorized"
-                                                ?"Все характеристики распределены по категориям."
+                                            activeCategoryId === "uncategorized"
+                                                ? "Все характеристики распределены по категориям."
                                                 : `В категории «${activeCategoryName}» пока нет созданных типов характеристик.`
                                         }
                                     />
