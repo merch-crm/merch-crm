@@ -10,3 +10,4 @@ export * from "./finance";
 export * from "./tasks";
 export * from "./system";
 export * from "./wiki";
+export * from "./presence";

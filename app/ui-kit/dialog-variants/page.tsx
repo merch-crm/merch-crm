@@ -8,10 +8,10 @@ import { Switch } from "@/components/ui/switch";
 import { Check, X, Box, Shirt, Hash, LayoutGrid, Palette, Type, Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// --- ВАРИАНТ 1: Bento Style (Близок к макету, но чище и структурнее) ---
+// --- ВАРИАНТ 1: Bento Style ---
 const Variant1 = () => {
     return (
-        <div className="bg-white rounded-[24px] shadow-xl overflow-hidden max-w-xl w-full mx-auto border border-slate-200/60 font-sans">
+        <div className="bg-white rounded-[24px] shadow-xl overflow-hidden w-full border border-slate-200/60 font-sans">
             <div className="p-8 space-y-8">
                 {/* Header */}
                 <div className="flex items-center gap-3">
@@ -19,7 +19,7 @@ const Variant1 = () => {
                         <Shirt className="w-7 h-7" />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-slate-900 ">Новая категория</h2>
+                        <h2 className="text-2xl font-black text-slate-900">Новая категория</h2>
                         <p className="text-sm text-slate-500 font-medium">Настройка параметров раздела одежды</p>
                     </div>
                 </div>
@@ -27,17 +27,17 @@ const Variant1 = () => {
                 {/* Main Info */}
                 <div className="grid grid-cols-3 gap-3">
                     <div className="col-span-2 space-y-2">
-                        <Label className="text-xs font-bold text-slate-700 uppercase ">Название категории</Label>
+                        <Label className="text-xs font-bold text-slate-700 uppercase">Название категории</Label>
                         <Input placeholder="Напр. Футболки" className="h-12 bg-slate-50/50 border-slate-200" />
                     </div>
                     <div className="col-span-1 space-y-2">
-                        <Label className="text-xs font-bold text-slate-700 uppercase ">Артикул</Label>
+                        <Label className="text-xs font-bold text-slate-700 uppercase">Артикул</Label>
                         <Input placeholder="TS" className="h-12 bg-slate-50/50 border-slate-200 font-mono uppercase" />
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <Label className="text-xs font-bold text-slate-700 uppercase ">Описание категории</Label>
+                    <Label className="text-xs font-bold text-slate-700 uppercase">Описание категории</Label>
                     <Textarea
                         placeholder="Опциональное описание назначения этой категории..."
                         className="resize-none h-24 bg-slate-50/50 border-slate-200"
@@ -46,7 +46,6 @@ const Variant1 = () => {
 
                 {/* Bento Grid Features */}
                 <div className="grid grid-cols-2 gap-3">
-                    {/* Icon Selection */}
                     <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/30 flex flex-col justify-between">
                         <Label className="text-sm font-bold text-slate-700 mb-3">Иконка</Label>
                         <div className="flex-1 border-2 border-dashed border-slate-300 rounded-xl flex items-center justify-center bg-white cursor-pointer hover:border-primary/50 transition-colors py-4">
@@ -56,7 +55,6 @@ const Variant1 = () => {
                         </div>
                     </div>
 
-                    {/* Color Selection */}
                     <div className="p-4 rounded-2xl border border-slate-200 bg-slate-50/30 flex flex-col justify-between">
                         <Label className="text-sm font-bold text-slate-700 mb-3">Цвет</Label>
                         <div className="flex flex-wrap gap-2.5">
@@ -103,7 +101,6 @@ const Variant1 = () => {
                 </div>
             </div>
 
-            {/* Footer */}
             <div className="px-8 py-5 border-t border-slate-100 bg-slate-50 flex items-center justify-between mt-2">
                 <Button variant="ghost" className="text-slate-500 hover:text-slate-900 hover:bg-slate-200">
                     Отмена
@@ -116,10 +113,10 @@ const Variant1 = () => {
     );
 };
 
-// --- ВАРИАНТ 2: Minimalist list / iOS Style ---
+// --- ВАРИАНТ 2: iOS Style ---
 const Variant2 = () => {
     return (
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden max-w-[480px] w-full mx-auto border border-slate-200">
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden w-full border border-slate-200">
             <div className="p-6 border-b border-slate-100 text-center relative">
                 <Button variant="ghost" size="icon" className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full hidden sm:flex">
                     <X className="w-5 h-5 text-slate-400" />
@@ -132,8 +129,6 @@ const Variant2 = () => {
             </div>
 
             <div className="p-6 space-y-6 bg-slate-50/50">
-
-                {/* Section 1: Basic Info */}
                 <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
                     <div className="p-4 border-b border-slate-100 flex items-center gap-3">
                         <div className="w-8 flex justify-center text-slate-400"><Type className="w-5 h-5" /></div>
@@ -155,7 +150,6 @@ const Variant2 = () => {
                     </div>
                 </div>
 
-                {/* Section 2: Visuals */}
                 <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
                     <div className="p-4 flex items-center justify-between cursor-pointer hover:bg-slate-50 transition-colors">
                         <div className="flex items-center gap-3">
@@ -181,7 +175,6 @@ const Variant2 = () => {
                     </div>
                 </div>
 
-                {/* Section 3: Switches */}
                 <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
                     <div className="p-4 flex items-center justify-between">
                         <div>
@@ -198,7 +191,6 @@ const Variant2 = () => {
                         <Switch variant="success" defaultChecked />
                     </div>
                 </div>
-
             </div>
 
             <div className="p-6 bg-white border-t border-slate-100 flex gap-3">
@@ -209,11 +201,10 @@ const Variant2 = () => {
     );
 };
 
-// --- ВАРИАНТ 3: Horizontal Standard (Более классический, структурированный CRM вид) ---
+// --- ВАРИАНТ 3: Horizontal CRM Style ---
 const Variant3 = () => {
     return (
-        <div className="bg-white rounded-xl shadow-xl overflow-hidden max-w-3xl w-full mx-auto border border-slate-200">
-            {/* Header */}
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden w-full border border-slate-200">
             <div className="px-6 py-5 border-b border-slate-200 flex flex-row items-center justify-between bg-slate-50/50">
                 <div className="flex items-center gap-3">
                     <div className="p-2 bg-white rounded-lg shadow-sm border border-slate-200">
@@ -232,7 +223,6 @@ const Variant3 = () => {
             </div>
 
             <div className="p-6 flex gap-8">
-                {/* Left Column: Form Fields */}
                 <div className="flex-1 space-y-5">
                     <div className="flex gap-3">
                         <div className="flex-[2] space-y-1.5">
@@ -268,7 +258,6 @@ const Variant3 = () => {
                     </div>
                 </div>
 
-                {/* Right Column: Visuals Side */}
                 <div className="w-64 shrink-0 space-y-6">
                     <div className="space-y-3">
                         <Label className="text-sm font-semibold text-slate-700">Внешний вид</Label>
@@ -295,7 +284,6 @@ const Variant3 = () => {
                 </div>
             </div>
 
-            {/* Footer */}
             <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-3">
                 <Button variant="outline">Отменить</Button>
                 <Button variant="default">Сохранить категорию</Button>
@@ -304,64 +292,62 @@ const Variant3 = () => {
     );
 };
 
-
 export default function DialogVariantsPage() {
     return (
         <div className="min-h-screen bg-slate-100/50 p-8 md:p-12">
-            <div className="max-w-[1400px] mx-auto space-y-12">
-                <div className="mb-12">
-                    <h1 className="text-3xl font-black text-slate-900  mb-2">Варианты дизайна модального окна</h1>
-                    <p className="text-slate-500">3 разных концепта для формы создания категории на складе</p>
+            <div className="max-w-[1400px] mx-auto space-y-24">
+                <div className="mb-12 text-center">
+                    <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Варианты дизайна модального окна</h1>
+                    <p className="text-slate-600">Три концептуальных подхода к созданию интерфейса модального окна для складской системы</p>
                 </div>
 
                 {/* Variant 1 */}
-                <div className="space-y-3">
+                <div className="space-y-6">
                     <div className="flex items-center gap-3">
                         <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">1</div>
-                        <h2 className="text-xl font-bold text-slate-800">Вариант 1: &quot;Современный Bento&quot; (Улучшенный оригинал)</h2>
+                        <h2 className="text-xl font-bold text-slate-800">Вариант 1: Современный Bento</h2>
                     </div>
-                    <p className="text-sm text-slate-500 mb-6 max-w-2xl">
-                        Этот вариант развивает идею из макета. Иконка перенесена в заголовок, а настройки распределены по аккуратным карточкам-блокам. Выглядит современно и визуально разбивает анкету на логические зоны.
+                    <p className="text-sm text-slate-500 max-w-2xl">
+                        Этот вариант развивает идею из макета. Иконка перенесена в заголовок, а настройки распределены по аккуратным карточкам-блокам.
                     </p>
-                    <div className="py-12 bg-slate-200/50 rounded-[32px] border border-slate-200 border-dashed overflow-x-auto">
-                        <div className="w-[600px] mx-auto p-4 flex justify-center">
+                    <div className="py-20 bg-slate-200/50 rounded-[48px] border-2 border-slate-300 border-dashed overflow-hidden">
+                        <div className="max-w-[620px] mx-auto p-4 sm:p-8">
                             <Variant1 />
                         </div>
                     </div>
                 </div>
 
                 {/* Variant 2 */}
-                <div className="space-y-3 pt-8">
+                <div className="space-y-6">
                     <div className="flex items-center gap-3">
                         <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">2</div>
-                        <h2 className="text-xl font-bold text-slate-800">Вариант 2: &quot;Минималистичный iOS-стиль&quot;</h2>
+                        <h2 className="text-xl font-bold text-slate-800">Вариант 2: Минималистичный iOS-стиль</h2>
                     </div>
-                    <p className="text-sm text-slate-500 mb-6 max-w-2xl">
-                        Компактный вертикальный дизайн. Поля слиты со списком (как настройки в iOS или линейные формы). Отлично подойдет для мобильных устройств или сайдбаров (Sheet), где ширина ограничена.
+                    <p className="text-sm text-slate-500 max-w-2xl">
+                        Компактный вертикальный дизайн. Поля слиты со списком. Отлично подойдет для мобильных устройств.
                     </p>
-                    <div className="py-12 bg-slate-200/50 rounded-[32px] border border-slate-200 border-dashed overflow-x-auto">
-                        <div className="w-[500px] mx-auto p-4 flex justify-center">
+                    <div className="py-20 bg-slate-200/50 rounded-[48px] border-2 border-slate-300 border-dashed overflow-hidden">
+                        <div className="max-w-[460px] mx-auto p-4 sm:p-8">
                             <Variant2 />
                         </div>
                     </div>
                 </div>
 
                 {/* Variant 3 */}
-                <div className="space-y-3 pt-8 pb-12">
+                <div className="space-y-6 pb-32">
                     <div className="flex items-center gap-3">
                         <div className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center font-bold">3</div>
-                        <h2 className="text-xl font-bold text-slate-800">Вариант 3: &quot;Классический Горизонтальный CRM-модуль&quot;</h2>
+                        <h2 className="text-xl font-bold text-slate-800">Вариант 3: Классический CRM-модуль</h2>
                     </div>
-                    <p className="text-sm text-slate-500 mb-6 max-w-2xl">
-                        Более широкое и классическое окно. Текстовые поля сгруппированы слева, а визуальные настройки (цвет и иконка) выведены в сайдбар справа. Эффективно использует пространство экрана на десктопах.
+                    <p className="text-sm text-slate-500 max-w-2xl">
+                        Более широкое и классическое окно. Текстовые поля сгруппированы слева, а визуальные настройки выведены в сайдбар справа.
                     </p>
-                    <div className="py-12 bg-slate-200/50 rounded-[32px] border border-slate-200 border-dashed overflow-x-auto">
-                        <div className="w-[850px] mx-auto p-4 flex justify-center">
+                    <div className="py-20 bg-slate-200/50 rounded-[48px] border-2 border-slate-300 border-dashed overflow-hidden">
+                        <div className="max-w-[920px] mx-auto p-4 sm:p-8">
                             <Variant3 />
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );

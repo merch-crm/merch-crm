@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/toast";
 import { AttributeType } from "./types";
 import { AttributeCustomModal } from "./attribute-custom-modal";
 import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+import { toAccusative } from "@/lib/pluralize";
 
 interface AttributeSelectorProps {
     type: string;
@@ -297,7 +298,7 @@ export function AttributeSelector({
                             }}
                             className={cn(
                                 "group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[14px] border bg-white transition-all duration-300 shadow-sm p-0 w-auto cursor-pointer",
-                                value === c.code ? "border-slate-900 shadow-md z-10" : "border-slate-200 hover:border-slate-300 hover:shadow-md"
+                                value === c.code ? "border-slate-900 shadow-md z-10" : "border-slate-200"
                             )}
                         >
                             <div
@@ -339,7 +340,7 @@ export function AttributeSelector({
         type === "material" ? "Создать материал" :
             type === "size" ? "Создать размер" :
                 type === "quality" ? "Создать качество" :
-                    label ? `Создать ${label.toLowerCase()}` : "Создать опцию";
+                    label ? `Создать ${toAccusative(label.toLowerCase())}` : "Создать опцию";
 
     const placeholder = type === "brand" ? "Выберите бренд..." :
         type === "material" ? "Выберите материал..." :

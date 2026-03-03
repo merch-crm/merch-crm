@@ -17,7 +17,7 @@ It sets up an SSH tunnel to the remote PostgreSQL + Redis database and launches 
 // turbo
 2. **Establish SSH tunnel to remote DB (PostgreSQL on 5432, Redis on 6379)**
    ```bash
-   ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:6379 root@89.104.69.25
+   ssh -i ~/.ssh/antigravity_key -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:6379 root@89.104.69.25
    ```
    Wait 2 seconds after this step.
 

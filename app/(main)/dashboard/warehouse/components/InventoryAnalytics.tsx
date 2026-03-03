@@ -147,7 +147,7 @@ export const InventoryAnalytics = React.memo(({
                                                         daysSince > 60 ? "text-orange-500" :
                                                             "text-amber-500"
                                             )}>
-                                                {daysSince === null ? 'никогда' : `${daysSince} дн.`}
+                                                {daysSince === null ? 'никогда' : `${daysSince} ${pluralize(daysSince, "день", "дня", "дней")}`}
                                             </span>
                                         </div>
                                     </Link>

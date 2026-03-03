@@ -20,7 +20,7 @@ export default function StatVariantsPage() {
             <div className="max-w-5xl mx-auto space-y-16">
 
                 <div className="space-y-2">
-                    <h1 className="text-3xl font-black text-slate-900 ">Варианты статистики</h1>
+                    <h1 className="text-3xl font-black text-slate-900">Варианты статистики</h1>
                     <p className="text-slate-500">Сравнение 3 концептуальных подходов к отображению сводной информации.</p>
                 </div>
 
@@ -81,7 +81,7 @@ export default function StatVariantsPage() {
                                 <Layers className="w-6 h-6 text-slate-700" />
                             </div>
                             <div>
-                                <h2 className="text-xl font-bold text-slate-900 leading-tight ">Общая статистика</h2>
+                                <h2 className="text-xl font-bold text-slate-900 leading-tight">Общая статистика</h2>
                                 <p className="text-sm font-medium text-slate-500">Сводка по складу</p>
                             </div>
                         </div>

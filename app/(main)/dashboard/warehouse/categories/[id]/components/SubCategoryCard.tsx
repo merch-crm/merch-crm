@@ -55,7 +55,7 @@ export const SortableSubCategoryCard = React.memo(({
                 }
             }}
             className={cn(
-                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm !rounded-2xl sm:!rounded-[var(--radius)] w-full",
+                "group crm-card p-6 cursor-pointer flex items-center justify-between relative overflow-hidden transition-all duration-500 shadow-sm !rounded-2xl sm:!rounded-[var(--radius)] w-full h-full",
                 isDragging && "opacity-0 scale-95"
             )}
         >

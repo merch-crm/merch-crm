@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { LayoutGrid } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { sortCategories } from "./category-utils";
@@ -19,6 +19,7 @@ import {
     useSensor,
     useSensors,
     DragEndEvent,
+    DragOverEvent,
     TouchSensor,
     DragOverlay,
     DragStartEvent,
@@ -29,7 +30,7 @@ import {
     sortableKeyboardCoordinates,
     rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SortableCategoryCard, CategoryCardContent } from "./components/SortableCategoryCard";
+import { SortableCategoryCard, DragPreview } from "./components/SortableCategoryCard";
 
 interface InventoryClientProps {
     items?: InventoryItem[];
@@ -43,6 +44,10 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [categories, setCategories] = useState<Category[]>(initialCategories);
     const [activeId, setActiveId] = useState<string | null>(null);
+
+    const preDragOrderRef = useRef<Category[]>(initialCategories);
+    const lastOverIdRef = useRef<string | null>(null);
+    const lastDragUpdateTimeRef = useRef<number>(0);
 
     useEffect(() => {
         setCategories(initialCategories);
@@ -66,23 +71,47 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
     );
 
     const handleDragStart = (event: DragStartEvent) => {
-        setActiveId(event.active.id as string);
+        const id = event.active.id as string;
+        preDragOrderRef.current = categories;
+        lastOverIdRef.current = null;
+        lastDragUpdateTimeRef.current = 0;
+        setActiveId(id);
+
+        if (typeof window !== 'undefined' && window.navigator.vibrate) {
+            window.navigator.vibrate(5);
+        }
     };
+
+    const handleDragOver = useCallback((event: DragOverEvent) => {
+        const { active, over } = event;
+        if (!over || active.id === over.id) return;
+
+        const overId = over.id as string;
+        if (lastOverIdRef.current === overId) return;
+
+        // Throttle updates during drag to prevent React depth error
+        const now = Date.now();
+        if (now - lastDragUpdateTimeRef.current < 50) return;
+        lastDragUpdateTimeRef.current = now;
+        lastOverIdRef.current = overId;
+
+        setCategories((prev) => {
+            const oldIndex = prev.findIndex((c) => c.id === active.id);
+            const newIndex = prev.findIndex((c) => c.id === overId);
+            if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return prev;
+            return arrayMove(prev, oldIndex, newIndex);
+        });
+    }, []);
 
     const handleDragEnd = async (event: DragEndEvent) => {
         setActiveId(null);
+        lastOverIdRef.current = null;
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
-            const oldIndex = categories.findIndex((item) => item.id === active.id);
-            const newIndex = categories.findIndex((item) => item.id === over.id);
-
-            const newOrder = arrayMove(categories, oldIndex, newIndex);
-            setCategories(newOrder);
-
             try {
-                const updateItems = newOrder
-                    .filter(c => !c.isSystem)
+                const updateItems = categories
+                    .filter((c) => !c.isSystem)
                     .map((cat, index) => ({
                         id: cat.id,
                         sortOrder: index + 1,
@@ -91,66 +120,70 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
                 const res = await updateInventoryCategoriesOrder(updateItems);
                 if (!res.success) {
                     toast(res.error || "Ошибка", "error");
-                    setCategories(initialCategories);
+                    setCategories(preDragOrderRef.current);
                 }
             } catch {
                 toast("Ошибка при сохранении порядка", "error");
-                setCategories(initialCategories);
+                setCategories(preDragOrderRef.current);
             }
         }
     };
 
-    // Helper function to recursively count total quantity for a category and all its descendants
-    const countRecursiveTotalQuantity = (categoryId: string): number => {
-        const category = categories.find(c => c.id === categoryId);
-        if (!category) return 0;
-
-        let total = category.totalQuantity || 0;
-        const children = categories.filter(c => c.parentId === categoryId);
-
-        for (const child of children) {
-            total += countRecursiveTotalQuantity(child.id);
-        }
-
-        return total;
+    const handleDragCancel = () => {
+        setActiveId(null);
+        lastOverIdRef.current = null;
+        setCategories(preDragOrderRef.current);
     };
 
-    const countRecursiveTotalCost = (categoryId: string): number => {
-        const category = categories.find(c => c.id === categoryId);
-        if (!category) return 0;
-
-        let total = Number(category.totalCost) || 0;
-        const children = categories.filter(c => c.parentId === categoryId);
-
-        for (const child of children) {
-            total += countRecursiveTotalCost(child.id);
-        }
-
-        return total;
-    };
-
-    const topLevelCategories = categories.filter(c => !c.parentId || c.parentId === "");
-    const subCategories = categories.filter(c => c.parentId && c.parentId !== "");
-
-    const itemsByCategory = topLevelCategories.map(category => {
-        const children = sortCategories(
-            subCategories.filter(sc => sc.parentId === category.id)
-        );
-
-        const totalItemsCount = (category.itemCount ?? 0) +
-            children.reduce((sum, child) => sum + (child.itemCount ?? 0), 0);
-
-        const totalQty = countRecursiveTotalQuantity(category.id);
-        const totalCostVal = countRecursiveTotalCost(category.id);
-
-        return {
-            ...category,
-            itemCount: totalItemsCount,
-            totalQuantity: totalQty,
-            totalCost: totalCostVal,
-            children: children
+    // Memoize helpers to prevent closure issues
+    const recursiveStats = useMemo(() => {
+        const getQty = (id: string, cats: Category[]): number => {
+            const cat = cats.find(c => c.id === id);
+            if (!cat) return 0;
+            let total = cat.totalQuantity || 0;
+            cats.filter(c => c.parentId === id).forEach(child => {
+                total += getQty(child.id, cats);
+            });
+            return total;
         };
-    });
+
+        const getCost = (id: string, cats: Category[]): number => {
+            const cat = cats.find(c => c.id === id);
+            if (!cat) return 0;
+            let total = Number(cat.totalCost) || 0;
+            cats.filter(c => c.parentId === id).forEach(child => {
+                total += getCost(child.id, cats);
+            });
+            return total;
+        };
+
+        return { getQty, getCost };
+    }, []);
+
+    const itemsByCategory = useMemo(() => {
+        const topLevelCategories = categories.filter((c) => !c.parentId || c.parentId === "");
+        const subCategories = categories.filter((c) => c.parentId && c.parentId !== "");
+
+        return topLevelCategories.map(category => {
+            const children = sortCategories(
+                subCategories.filter(sc => sc.parentId === category.id)
+            );
+
+            const totalItemsCount =
+                (category.itemCount ?? 0) + children.reduce((sum, child) => sum + (child.itemCount ?? 0), 0);
+
+            const totalQty = recursiveStats.getQty(category.id, categories);
+            const totalCostVal = recursiveStats.getCost(category.id, categories);
+
+            return {
+                ...category,
+                itemCount: totalItemsCount,
+                totalQuantity: totalQty,
+                totalCost: totalCostVal,
+                children: children,
+            };
+        });
+    }, [categories, recursiveStats]);
 
     if (itemsByCategory.length === 0) {
         return (
@@ -169,39 +202,37 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
                 sensors={sensors}
                 collisionDetection={closestCenter}
                 onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
                 onDragEnd={handleDragEnd}
-                onDragCancel={() => setActiveId(null)}
+                onDragCancel={handleDragCancel}
             >
-                <SortableContext
-                    items={itemsByCategory.map(c => c.id)}
-                    strategy={rectSortingStrategy}
-                >
+                <SortableContext items={itemsByCategory.map((c) => c.id)} strategy={rectSortingStrategy}>
                     <div className="flex flex-wrap gap-3" data-testid="categories-list">
                         {itemsByCategory.map((category) => (
-                            <div key={category.id} className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-12px)] xl:basis-[calc(25%-12px)] min-w-[280px]">
+                            <div
+                                key={category.id}
+                                className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-12px)] xl:basis-[calc(25%-12px)] min-w-[280px]"
+                            >
                                 <SortableCategoryCard
                                     category={category}
                                     router={router}
                                     setEditingCategory={setEditingCategory}
+                                    isAnyDragging={!!activeId}
                                 />
                             </div>
                         ))}
                     </div>
                 </SortableContext>
 
-                <DragOverlay adjustScale={true} dropAnimation={{
-                    duration: 250,
-                    easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
-                }}>
-                    {activeId ? (
-                        <div className="w-full h-full pointer-events-none z-[100]">
-                            <div className="bg-white border border-primary/30 rounded-[24px] sm:rounded-3xl shadow-2xl shadow-primary/15 flex flex-col items-center">
-                                <CategoryCardContent
-                                    category={itemsByCategory.find(c => c.id === activeId)!}
-                                    isDragging={true}
-                                />
-                            </div>
-                        </div>
+                <DragOverlay
+                    adjustScale={false}
+                    dropAnimation={{
+                        duration: 200,
+                        easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+                    }}
+                >
+                    {activeId && itemsByCategory.find((c) => c.id === activeId) ? (
+                        <DragPreview category={itemsByCategory.find((c) => c.id === activeId)!} />
                     ) : null}
                 </DragOverlay>
             </DndContext>

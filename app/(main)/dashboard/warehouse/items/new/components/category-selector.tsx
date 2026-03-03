@@ -4,6 +4,7 @@ import { createElement, useEffect, useRef } from "react";
 import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getCategoryCardStyles, getHexColor } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { pluralize } from "@/lib/pluralize";
 import { Category } from "@/app/(main)/dashboard/warehouse/types";
 
 interface CategorySelectorProps {
@@ -212,7 +213,7 @@ export function CategorySelector({
                                     "rounded-[16px] sm:rounded-[18px]",
                                     isSelected
                                         ? "border-slate-900 bg-slate-50 shadow-md"
-                                        : "border-slate-200 bg-white hover:border-slate-300 shadow-sm hover:shadow-md"
+                                        : "border-slate-200 bg-white hover:border-slate-300 shadow-sm"
                                 )}
                             >
                                 <div
@@ -299,14 +300,14 @@ export function CategorySelector({
                                 {!isCompact && (
                                     <div className="hidden xl:flex flex-col items-center w-full">
                                         <p className="text-[11px] text-slate-400 font-bold mt-1 mb-3">
-                                            0 активных SKU
+                                            0 {pluralize(0, "активный SKU", "активных SKU", "активных SKU")}
                                         </p>
                                         <div className="w-full h-px bg-slate-100 mb-2" />
                                         <div className="text-[32px] sm:text-[40px] font-black text-slate-900 leading-none tracking-tighter mb-0.5 sm:mb-1 mt-3">
                                             0
                                         </div>
                                         <div className="text-[11px] font-bold mb-1 text-slate-500">
-                                            единиц
+                                            {pluralize(0, "единица", "единицы", "единиц")}
                                         </div>
                                     </div>
                                 )}
@@ -315,7 +316,7 @@ export function CategorySelector({
                                 {isCompact && (
                                     <div className="hidden xl:flex flex-col items-center mt-1">
                                         <div className="text-lg font-black text-slate-900 leading-none">0</div>
-                                        <div className="text-xs font-bold text-slate-400">единиц</div>
+                                        <div className="text-xs font-bold text-slate-400">{pluralize(0, "единица", "единицы", "единиц")}</div>
                                     </div>
                                 )}
 

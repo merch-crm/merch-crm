@@ -106,3 +106,38 @@ export function sentence(
     const noun = pluralize(count, nounForms.one, nounForms.few, nounForms.many);
     return `${verb} ${count} ${noun}`;
 }
+
+/**
+ * Преобразование существительного или словосочетания в винительный падеж (кого? что?)
+ * Используется для кнопок "Создать [Объект]"
+ * Отрабатывает основные окончания для женского рода и прилагательных
+ */
+export function toAccusative(text: string): string {
+    if (!text) return text;
+
+    const words = text.split(' ');
+    const inflectedWords = words.map(word => {
+        const lower = word.toLowerCase();
+
+        // Прилагательные на -ая (общая -> общую)
+        if (lower.endsWith('ая')) {
+            return word.slice(0, -2) + 'ую';
+        }
+
+        // Существительные на -а (единица -> единицу)
+        if (lower.endsWith('а')) {
+            return word.slice(0, -1) + 'у';
+        }
+
+        // Существительные на -я (партия -> партию)
+        if (lower.endsWith('я')) {
+            return word.slice(0, -1) + 'ю';
+        }
+
+        // Если существительное оканчивается на -ь (напр. роль -> роль), или мужской/средний род, оставляем как есть
+        // В данном контексте этого достаточно
+        return word;
+    });
+
+    return inflectedWords.join(' ');
+}

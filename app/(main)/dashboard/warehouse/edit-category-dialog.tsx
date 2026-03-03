@@ -140,7 +140,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             title="Редактирование категории"
             description="Изменение параметров названия, цвета, иконки и артикула существующей категории"
             showVisualTitle={false}
-            className="sm:max-w-[720px]"
+            className="sm:max-w-[900px]"
         >
             <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                 <div className="flex items-center justify-between p-6 pb-2 shrink-0">
@@ -283,7 +283,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
                     {/* Right column: subcategories */}
                     {isParentCategory && (
-                        <div className="w-[280px] shrink-0 flex flex-col overflow-hidden">
+                        <div className="w-[360px] shrink-0 flex flex-col overflow-hidden">
                             <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                                 <span className="text-sm font-bold text-slate-700">Подкатегории</span>
                                 <span className="bg-slate-50 text-slate-900 border border-slate-200 w-7 h-7 flex items-center justify-center rounded-full text-[13px] font-bold shadow-sm">{subCategories.length}</span>
@@ -297,7 +297,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                                         <p className="text-xs font-bold text-slate-300">Нет подкатегорий</p>
                                     </div>
                                 ) : (
-                                    <div className="grid grid-cols-3 gap-2">
+                                    <div className="grid grid-cols-4 gap-2">
                                         {subCategories.map(sub => {
                                             const IconComponent = getCategoryIcon(sub);
                                             return (

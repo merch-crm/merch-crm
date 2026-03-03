@@ -95,9 +95,9 @@
     }
 }
 
-.crm-card:hover {
+/* .crm-card:hover {
     box-shadow: var(--crm-shadow-md);
-}
+} */
 
 .glass-panel {
     background-color: white;
@@ -107,9 +107,9 @@
     transition: all 0.3s ease;
 }
 
-.glass-panel:hover {
+/* .glass-panel:hover {
     box-shadow: var(--crm-shadow-md);
-}
+} */
 
 .glass-panel:focus,
 .glass-panel:focus-visible {

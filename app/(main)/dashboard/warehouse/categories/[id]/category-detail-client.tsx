@@ -265,9 +265,9 @@ export function CategoryDetailClient({
                                 items={subCategories.map(s => s.id)}
                                 strategy={rectSortingStrategy}
                             >
-                                <div className="flex flex-wrap gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
                                     {currentSubCategories.map((subcat) => (
-                                        <div key={subcat.id} className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-12px)] xl:basis-[calc(25%-12px)] min-w-[280px]">
+                                        <div key={subcat.id} className="min-w-0">
                                             <SortableSubCategoryCard
                                                 subcat={subcat}
                                                 router={router}

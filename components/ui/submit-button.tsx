@@ -29,9 +29,6 @@ export function SubmitButton({
             disabled={disabled || isLoadingState}
             className={cn("gap-2", className)}
             {...props}
-        >
-            {isLoadingState && <Loader2 className="h-4 w-4 animate-spin" />}
-            {isLoadingState ? (loadingText || text || children) : (text || children)}
-        </Button>
+        >{isLoadingState && <Loader2 className="h-4 w-4 animate-spin" />}{isLoadingState ? (loadingText || text || children) : (text || children)}</Button>
     );
 }

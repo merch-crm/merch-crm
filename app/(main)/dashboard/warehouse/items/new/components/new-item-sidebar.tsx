@@ -84,7 +84,7 @@ export function NewItemSidebar({
             {/* Desktop Full View */}
             <aside className={cn(
                 "hidden xl:flex flex-col shrink-0 z-40 transition-all duration-300 overflow-hidden text-medium",
-                "crm-card crm-card--spacious !rounded-3xl shadow-sm hover:shadow-md",
+                "crm-card crm-card--spacious !rounded-3xl shadow-sm",
                 "w-[320px] h-full"
             )}>
                 <div className="pb-6 shrink-0">

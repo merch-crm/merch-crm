@@ -21,7 +21,7 @@ export default function CategoryVariantsPage() {
         <div className="min-h-screen bg-slate-50 p-8 sm:p-12 font-sans">
             <div className="max-w-7xl mx-auto">
                 <div className="mb-12">
-                    <h1 className="text-4xl font-extrabold text-slate-900  mb-4">UI Kit: Category Card Variants</h1>
+                    <h1 className="text-4xl font-extrabold text-slate-900 mb-4">UI Kit: Category Card Variants</h1>
                     <p className="text-lg text-slate-500">10 different design directions for the warehouse category cards.</p>
                 </div>
 
@@ -38,7 +38,7 @@ export default function CategoryVariantsPage() {
                                 <IconComponent className="w-10 h-10 stroke-[1.5]" />
                             </div>
                             <div className="flex-1 w-full flex flex-col items-center">
-                                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900  mb-2">{category.name}</h3>
+                                <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">{category.name}</h3>
                                 <p className="text-sm font-semibold text-slate-400 mb-6">{category.itemCount} активных SKU на складе</p>
                                 <div className="w-[120px] h-px bg-slate-100 mb-4" />
                                 <div className="flex flex-wrap justify-center gap-1.5 max-w-[240px] mb-2">

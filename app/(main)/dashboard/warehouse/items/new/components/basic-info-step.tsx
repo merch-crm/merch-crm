@@ -94,7 +94,7 @@ export function BasicInfoStep({
     return (
         <div className="flex flex-col h-full min-h-0">
             <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-0.5">
-                <div className="space-y-4 px-6 pb-10 pt-2">
+                <div className="space-y-3 px-6 pb-10 pt-2">
 
                     {/* Header */}
                     <div className="flex items-center justify-between">
@@ -108,8 +108,8 @@ export function BasicInfoStep({
                             </div>
                         </div>
 
-                        <div className="hidden sm:flex items-center gap-2 xl:gap-3">
-                            <div className="flex items-center gap-2 xl:gap-3 bg-slate-50 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm">
+                        <div className="hidden sm:flex items-center gap-3 xl:gap-3">
+                            <div className="flex items-center gap-3 xl:gap-3 bg-slate-50 px-2.5 py-1.5 xl:px-4 xl:py-2 rounded-[var(--radius)] border border-slate-200/50 shadow-sm">
                                 <div
                                     className="w-8 h-8 xl:w-10 xl:h-10 rounded-[var(--radius)] flex items-center justify-center shadow-sm shrink-0 text-white"
                                     style={getCategoryCardStyles(displayCategory.color).icon}
@@ -137,12 +137,12 @@ export function BasicInfoStep({
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
-                        <div className="lg:col-span-12 flex flex-col gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-2">
+                        <div className="lg:col-span-12 flex flex-col gap-3">
 
                             {/* Базовые данные */}
                             {!isClothing && (
-                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-3">
                                     <div className="flex items-center gap-3 mb-2">
                                         <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25 text-white shrink-0">
                                             <Package className="w-5 h-5 stroke-[2.5]" />
@@ -153,7 +153,7 @@ export function BasicInfoStep({
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         <div className="space-y-2">
                                             <label className="text-[13px] font-bold text-slate-500 ml-1">
                                                 Название позиции <span className="text-rose-500">*</span>
@@ -167,7 +167,7 @@ export function BasicInfoStep({
                                             />
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                             <div className="space-y-2">
                                                 <label className="text-[13px] font-bold text-slate-500 ml-1">
                                                     Артикул <span className="text-rose-500">*</span>
@@ -200,9 +200,9 @@ export function BasicInfoStep({
 
                             {/* Свойства позиции (Dynamic Attributes) */}
                             {categoryAttributes.length > 0 && (
-                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-3">
 
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-3">
                                         {categoryAttributes.map((attr) => {
                                             const isFullWidth = attr.dataType === 'color';
                                             return (
@@ -223,7 +223,7 @@ export function BasicInfoStep({
 
                             {/* Дополнительно */}
                             {(isPackaging || isConsumables) && (
-                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                                <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-3">
                                     <div className="flex items-center gap-3 mb-2">
                                         <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white shrink-0">
                                             {isPackaging ? <Ruler className="w-5 h-5 stroke-[2.5]" /> : <Wrench className="w-5 h-5 stroke-[2.5]" />}
@@ -234,7 +234,7 @@ export function BasicInfoStep({
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
+                                    <div className="space-y-3">
                                         {isPackaging && (
                                             <div className="grid grid-cols-3 gap-3">
                                                 {['width', 'height', 'depth'].map(dim => (
@@ -247,10 +247,10 @@ export function BasicInfoStep({
                                                                 type="number"
                                                                 value={(formData[dim as keyof ItemFormData] as string) || ""}
                                                                 onChange={(e) => updateFormData({ [dim]: e.target.value })}
-                                                                className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-100 bg-slate-50/50 text-sm font-bold focus-visible:border-slate-300 transition-all shadow-none"
+                                                                className="w-full h-11 px-4 pr-10 rounded-xl border border-slate-100 bg-slate-50/50 text-xs font-bold focus-visible:border-slate-300 transition-all shadow-none"
                                                                 placeholder="0"
                                                             />
-                                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300 pointer-events-none">СМ</span>
+                                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 pointer-events-none">СМ</span>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -278,7 +278,7 @@ export function BasicInfoStep({
                             )}
 
                             {/* Заметки */}
-                            <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-6">
+                            <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[20px] p-6 space-y-3">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/25 text-white shrink-0">
                                         <AlignLeft className="w-5 h-5 stroke-[2.5]" />

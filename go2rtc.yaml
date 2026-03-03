@@ -1,0 +1,23 @@
+api:
+  listen: ":1984"
+  origin: "*"
+
+rtsp:
+  listen: ":8554"
+
+webrtc:
+  listen: ":8555"
+  candidates:
+    - stun:stun.l.google.com:19302
+
+# Xiaomi камеры добавляются через Mi Home аккаунт
+# При первом запуске нужно авторизоваться через API
+
+xiaomi:
+  # Аккаунты добавляются динамически через CRM
+  
+log:
+  level: info
+
+ffmpeg:
+  bin: ffmpeg

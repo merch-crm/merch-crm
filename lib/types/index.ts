@@ -13,3 +13,4 @@ export * from "./finance";
 export * from "./notification";
 export * from "./branding";
 export * from "./inventory";
+export * from "./presence";

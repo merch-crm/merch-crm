@@ -5,7 +5,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { deleteStorageLocation, updateStorageLocationsOrder } from "./storage-actions";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, memo, useRef } from "react";
 import { EditStorageLocationDialog } from "./edit-storage-location-dialog";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
@@ -47,7 +47,7 @@ export interface StorageLocation {
     items?: StorageLocationItem[];
 }
 
-export type StorageLocationItem = {
+export interface StorageLocationItem {
     id: string;
     name: string;
     quantity: number;
@@ -55,7 +55,7 @@ export type StorageLocationItem = {
     sku?: string | null;
     categoryId?: string | null;
     categoryName?: string | null;
-};
+}
 
 interface StorageLocationsTabProps {
     locations: StorageLocation[];
@@ -70,9 +70,12 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         deleteIsSystem: false,
         deletePassword: "",
         isDeleting: false,
-        isMounted: false,
-        activeId: null as string | null
+        activeId: null as string | null,
+        dragLayout: { isWide: false, isExtraWide: false }
     });
+
+    const [stableLayouts, setStableLayouts] = useState<Record<string, { isWide: boolean; isExtraWide: boolean }>>({});
+    const cardLayoutsRef = useRef<Map<string, { isWide: boolean; isExtraWide: boolean }>>(new Map());
 
     const [dataState, setDataState] = useState({
         localLocations: locations,
@@ -80,7 +83,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     });
     const { toast } = useToast();
 
-    // State during render pattern for synchronizing props with local state
     if (locations !== dataState.prevPropsLocations) {
         setDataState(prev => ({
             ...prev,
@@ -88,7 +90,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             localLocations: locations
         }));
 
-        // Sync editing location if it changed in props
         if (uiState.editingLocation) {
             const updated = locations.find(l => l.id === uiState.editingLocation?.id);
             if (updated && JSON.stringify(updated) !== JSON.stringify(uiState.editingLocation)) {
@@ -96,10 +97,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             }
         }
     }
-
-    useEffect(() => {
-        setUiState(prev => ({ ...prev, isMounted: true }));
-    }, []);
 
     const handleDeleteClick = (e: React.MouseEvent, id: string, name: string, isSystem: boolean) => {
         e.stopPropagation();
@@ -147,7 +144,13 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
     );
 
     const handleDragStart = (event: DragStartEvent) => {
-        setUiState(prev => ({ ...prev, activeId: event.active.id as string }));
+        const id = event.active.id as string;
+        const layout = cardLayoutsRef.current.get(id) || { isWide: false, isExtraWide: false };
+        setUiState(prev => ({
+            ...prev,
+            activeId: id,
+            dragLayout: layout
+        }));
     };
 
     const handleDragEnd = async (event: DragEndEvent) => {
@@ -174,18 +177,14 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
         }
     };
 
-    if (dataState.localLocations.length === 0) {
-        return (
-            <EmptyState
-                icon={MapPin}
-                title="Места хранения не найдены"
-                description="Добавьте первое место хранения для систематизации учета."
-                className="py-20"
-            />
-        );
-    }
-
-    if (!uiState.isMounted) return null;
+    if (!dataState.localLocations.length) return (
+        <EmptyState
+            icon={MapPin}
+            title="Места хранения не найдены"
+            description="Добавьте первое место хранения для систематизации учета."
+            className="py-20"
+        />
+    );
 
     return (
         <>
@@ -199,24 +198,49 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                     items={dataState.localLocations.map(l => l.id)}
                     strategy={rectSortingStrategy}
                 >
-                    <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
+                    <div className="flex flex-wrap items-stretch justify-center w-full gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-6 duration-1000" data-testid="storage-list">
                         {dataState.localLocations.map((loc) => (
-                            <SortableLocationCard
+                            <div
                                 key={loc.id}
-                                loc={loc}
-                                onDeleteClick={(e: React.MouseEvent) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
-                                onClick={() => handleEdit(loc)}
-                            />
+                                className={cn(
+                                    "transition-all duration-300 flex-grow",
+                                    (stableLayouts[loc.id]?.isWide || (uiState.activeId && cardLayoutsRef.current.get(loc.id)?.isWide))
+                                        ? "min-w-[500px] flex-[1_1_600px]"
+                                        : "min-w-[300px] flex-[1_1_21%]"
+                                )}
+                            >
+                                <SortableLocationCard
+                                    loc={loc}
+                                    isAnyDragging={!!uiState.activeId}
+                                    isWide={stableLayouts[loc.id]?.isWide}
+                                    isExtraWide={stableLayouts[loc.id]?.isExtraWide}
+                                    onLayoutChange={(id, wide, extraWide) => {
+                                        cardLayoutsRef.current.set(id, { isWide: wide, isExtraWide: extraWide });
+                                        if (stableLayouts[id]?.isWide !== wide || stableLayouts[id]?.isExtraWide !== extraWide) {
+                                            setStableLayouts(prev => ({ ...prev, [id]: { isWide: wide, isExtraWide: extraWide } }));
+                                        }
+                                    }}
+                                    onDeleteClick={(e: React.MouseEvent) => handleDeleteClick(e, loc.id, loc.name, loc.isSystem || false)}
+                                    onClick={() => handleEdit(loc)}
+                                />
+                            </div>
                         ))}
                     </div>
                 </SortableContext>
-                <DragOverlay adjustScale={true}>
+                <DragOverlay adjustScale={false} dropAnimation={{
+                    duration: 250,
+                    easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
+                }}>
                     {uiState.activeId ? (
-                        <div className="w-full h-full pointer-events-none">
-                            <LocationCardContent
-                                loc={dataState.localLocations.find(l => l.id === uiState.activeId)!}
-                                isOverlay
-                            />
+                        <div className="w-full h-full pointer-events-none z-[100]">
+                            <div className="bg-white border border-primary/40 rounded-[28px] sm:rounded-[32px] shadow-2xl shadow-primary/20 overflow-hidden">
+                                <LocationCardContent
+                                    loc={dataState.localLocations.find(l => l.id === uiState.activeId)!}
+                                    isOverlay
+                                    isWide={uiState.dragLayout.isWide}
+                                    isExtraWide={uiState.dragLayout.isExtraWide}
+                                />
+                            </div>
                         </div>
                     ) : null}
                 </DragOverlay>
@@ -263,6 +287,10 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
 
 interface SortableLocationCardProps {
     loc: StorageLocation;
+    isAnyDragging?: boolean;
+    isWide?: boolean;
+    isExtraWide?: boolean;
+    onLayoutChange?: (id: string, isWide: boolean, isExtraWide: boolean) => void;
     onEdit?: (e: React.MouseEvent) => void;
     onDeleteClick?: (e: React.MouseEvent) => void;
     onClick: () => void;
@@ -273,13 +301,17 @@ const LocationCardContent = memo(({
     onEdit,
     onDeleteClick,
     dragHandleProps,
-    isOverlay
+    isOverlay,
+    isWide,
+    isExtraWide
 }: {
     loc: StorageLocation;
     onEdit?: (e: React.MouseEvent) => void;
     onDeleteClick?: (e: React.MouseEvent) => void;
     dragHandleProps?: Record<string, unknown>;
     isOverlay?: boolean;
+    isWide?: boolean;
+    isExtraWide?: boolean;
 }) => {
     const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
     const isBrak = loc.name.toLowerCase().includes("брак");
@@ -300,7 +332,7 @@ const LocationCardContent = memo(({
 
     return (
         <div className={cn(
-            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[220px] sm:min-h-[380px] crm-card shadow-sm p-3 sm:p-6",
+            "group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[380px] crm-card shadow-sm p-5",
             !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
             isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
                 isDefault
@@ -313,7 +345,7 @@ const LocationCardContent = memo(({
                 <div className="flex items-center gap-1 sm:gap-3 min-w-0">
                     <div role="button" tabIndex={0}
                         {...dragHandleProps}
-                        className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-slate-300 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-4px] sm:mr-[-8px]"
+                        className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-slate-400 hover:text-primary cursor-grab active:cursor-grabbing transition-colors rounded-[var(--radius-inner)] hover:bg-slate-50 mr-[-4px] sm:mr-[-8px] z-30"
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}
                     >
                         <GripVertical className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
@@ -405,16 +437,16 @@ const LocationCardContent = memo(({
                     </div>
 
                     {!isOverlay && (
-                        <div className="flex gap-1.5 sm:gap-2 shrink-0">
+                        <div className="flex gap-1.5 sm:gap-2 shrink-0 z-30">
                             <button type="button"
-                                onClick={onEdit}
+                                onClick={(e) => { e.stopPropagation(); onEdit?.(e); }}
                                 className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:bg-primary/5 hover:text-primary transition-all border border-slate-200"
                             >
                                 <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                             </button>
                             {!loc.isSystem && (
                                 <button type="button"
-                                    onClick={onDeleteClick}
+                                    onClick={(e) => { e.stopPropagation(); onDeleteClick?.(e); }}
                                     className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all border border-rose-100"
                                 >
                                     <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -424,13 +456,28 @@ const LocationCardContent = memo(({
                     )}
                 </div>
             </div>
-        </div >
+        </div>
     );
 });
 
 LocationCardContent.displayName = "LocationCardContent";
 
-const SortableLocationCard = memo(({ loc, onEdit, onDeleteClick, onClick }: SortableLocationCardProps) => {
+const SortableLocationCard = memo(({
+    loc,
+    isAnyDragging,
+    isWide: isWideProp,
+    isExtraWide: isExtraWideProp,
+    onLayoutChange,
+    onEdit,
+    onDeleteClick,
+    onClick
+}: SortableLocationCardProps) => {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [isWide, setIsWide] = useState(isWideProp ?? false);
+    const [isExtraWide, setIsExtraWide] = useState(isExtraWideProp ?? false);
+    const isWideRef = useRef(isWideProp ?? false);
+    const isExtraWideRef = useRef(isExtraWideProp ?? false);
+
     const {
         attributes,
         listeners,
@@ -440,24 +487,65 @@ const SortableLocationCard = memo(({ loc, onEdit, onDeleteClick, onClick }: Sort
         isDragging
     } = useSortable({ id: loc.id });
 
+    useEffect(() => {
+        if (!cardRef.current) return;
+
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const width = entry.contentRect.width;
+                const wide = width > 380;
+                const extraWide = width > 930;
+
+                if (isDragging || isAnyDragging) {
+                    isWideRef.current = wide;
+                    isExtraWideRef.current = extraWide;
+                    return;
+                }
+
+                if (isWideRef.current !== wide || isExtraWideRef.current !== extraWide) {
+                    isWideRef.current = wide;
+                    isExtraWideRef.current = extraWide;
+                    setIsWide(wide);
+                    setIsExtraWide(extraWide);
+                    onLayoutChange?.(loc.id, wide, extraWide);
+                }
+            }
+        });
+
+        observer.observe(cardRef.current);
+        return () => observer.disconnect();
+    }, [isDragging, isAnyDragging, loc.id, onLayoutChange]);
+
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
         zIndex: isDragging ? 50 : undefined,
-        opacity: isDragging ? 0 : 1,
     };
 
+    const effectiveIsWide = (isDragging || isAnyDragging) ? (isWideProp ?? isWideRef.current) : isWide;
+    const effectiveIsExtraWide = (isDragging || isAnyDragging) ? (isExtraWideProp ?? isExtraWideRef.current) : isExtraWide;
+
     return (
-        <div role="button" tabIndex={0}
-            ref={setNodeRef}
+        <div
+            ref={(node) => {
+                setNodeRef(node);
+                if (cardRef) (cardRef as any).current = node;
+            }}
             style={style}
             onClick={onClick}
-            className="h-full cursor-pointer"
-            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}>
+            className={cn(
+                "group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-all duration-300 h-full",
+                "hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80 cursor-pointer",
+                isDragging ? "shadow-2xl ring-2 ring-primary/20 scale-[1.02] z-50 border-primary/30" : "shadow-sm"
+            )}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
+        >
             <LocationCardContent
                 loc={loc}
                 onEdit={onEdit}
                 onDeleteClick={onDeleteClick}
+                isWide={effectiveIsWide}
+                isExtraWide={effectiveIsExtraWide}
                 dragHandleProps={{ ...attributes, ...listeners }}
             />
         </div>

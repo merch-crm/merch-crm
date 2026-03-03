@@ -93,7 +93,7 @@ export function NewItemPageClient({
 
                 <div className="flex-1 relative h-full flex flex-col gap-2">
                     <div className="relative flex-1 flex flex-col min-h-0">
-                        <div className="crm-card crm-card--spacious !rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
+                        <div className="crm-card crm-card--spacious !rounded-3xl shadow-sm transition-all duration-300 overflow-hidden flex flex-col h-full min-h-0 relative">
                             {step === 0 && (
                                 <CategoryStep
                                     topLevelCategories={topLevelCategories}

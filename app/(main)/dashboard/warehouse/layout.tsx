@@ -123,8 +123,8 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                                 {currentInfo.title}
                             </h1>
-                            <p className="text-slate-500 text-[12px] sm:text-[13px] font-medium sm:mt-1.5 mt-0 line-clamp-2">
-                                {currentInfo.description}
+                            <p className="text-slate-500 text-[12px] sm:text-[13px] font-medium sm:mt-1.5 mt-0 line-clamp-2" suppressHydrationWarning>
+                                {currentInfo?.description}
                             </p>
                         </div>
 

@@ -116,6 +116,9 @@ export default function UIKitPage() {
                                 <a href="/ui-kit/error-modals" className="text-xs font-bold text-rose-500 hover:text-rose-600 bg-rose-50 px-3 py-1.5 rounded-lg transition-all">
                                     Окна ошибок (5 вариантов)
                                 </a>
+                                <a href="/ui-kit/dropdowns" className="text-xs font-bold text-sky-500 hover:text-sky-600 bg-sky-50 px-3 py-1.5 rounded-lg transition-all">
+                                    Дропдауны Kit (13 вариантов)
+                                </a>
                             </div>
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
