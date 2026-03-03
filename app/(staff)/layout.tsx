@@ -2,7 +2,7 @@ import { getSession } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { StaffSidebar } from '@/components/staff/staff-sidebar'
 import { StaffHeader } from '@/components/staff/staff-header'
-import { getBrandingSettings } from '@/app/(main)/dashboard/dashboard.actions'
+import { getBrandingSettings } from '@/app/(main)/admin-panel/actions/branding.actions'
 
 export default async function StaffLayout({
     children

@@ -8,8 +8,9 @@ const SERVICE_API_KEY = process.env.PRESENCE_SERVICE_API_KEY || 'presence-secret
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await params
     try {
         // Проверка API ключа
         const authHeader = request.headers.get('Authorization')
@@ -30,7 +31,7 @@ export async function PATCH(
                 lastOnlineAt: status === 'online' ? new Date() : undefined,
                 updatedAt: new Date()
             })
-            .where(eq(cameras.id, params.id))
+            .where(eq(cameras.id, id))
 
         return NextResponse.json({ success: true })
 

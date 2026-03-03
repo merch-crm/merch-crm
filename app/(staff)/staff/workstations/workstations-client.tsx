@@ -39,9 +39,10 @@ interface Props {
     initialWorkstations: any[]
     cameras: { id: string; name: string; streamUrl: string | null; deviceId: string }[]
     users: { id: string; name: string; email: string }[]
+    isAdmin: boolean
 }
 
-export function WorkstationsClient({ initialWorkstations, cameras, users }: Props) {
+export function WorkstationsClient({ initialWorkstations, cameras, users, isAdmin }: Props) {
     const [workstations, setWorkstations] = useState<Workstation[]>(initialWorkstations)
     const [isPending, startTransition] = useTransition()
 
@@ -237,8 +238,8 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
 
             {/* Модальное окно создания/редактирования */}
             <ResponsiveModal
-                open={modalOpen}
-                onOpenChange={setModalOpen}
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
                 title={editingWorkstation ? 'Редактировать рабочее место' : 'Новое рабочее место'}
             >
                 <div className="space-y-6 py-4 px-1">
@@ -366,7 +367,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                         <SubmitButton
                             className="flex-1 h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-lg"
                             onClick={handleSave}
-                            loading={isPending}
+                            isLoading={isPending}
                         >
                             {editingWorkstation ? 'Сохранить изменения' : 'Создать место'}
                         </SubmitButton>

@@ -5,7 +5,7 @@ import { employeeFaces } from '@/lib/schema/presence'
 import { users } from '@/lib/schema/users'
 import { eq, desc, and } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
-import { requireAdmin } from '@/lib/admin'
+import { checkIsAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
@@ -23,9 +23,9 @@ export async function getEmployeesWithFaces() {
                 id: true,
                 name: true,
                 email: true,
-                role: true,
-                avatarUrl: true
+                avatar: true
             },
+            with: { role: true },
             orderBy: [desc(users.createdAt)]
         })
 
@@ -105,8 +105,8 @@ export async function addEmployeeFace(data: {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
@@ -146,8 +146,8 @@ export async function deleteEmployeeFace(faceId: string) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
@@ -176,8 +176,8 @@ export async function setPrimaryFace(faceId: string, userId: string) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 

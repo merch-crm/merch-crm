@@ -237,8 +237,6 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
                                 <LocationCardContent
                                     loc={dataState.localLocations.find(l => l.id === uiState.activeId)!}
                                     isOverlay
-                                    isWide={uiState.dragLayout.isWide}
-                                    isExtraWide={uiState.dragLayout.isExtraWide}
                                 />
                             </div>
                         </div>
@@ -301,17 +299,13 @@ const LocationCardContent = memo(({
     onEdit,
     onDeleteClick,
     dragHandleProps,
-    isOverlay,
-    isWide,
-    isExtraWide
+    isOverlay
 }: {
     loc: StorageLocation;
     onEdit?: (e: React.MouseEvent) => void;
     onDeleteClick?: (e: React.MouseEvent) => void;
     dragHandleProps?: Record<string, unknown>;
     isOverlay?: boolean;
-    isWide?: boolean;
-    isExtraWide?: boolean;
 }) => {
     const totalItemsInLoc = loc.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
     const isBrak = loc.name.toLowerCase().includes("брак");
@@ -473,8 +467,6 @@ const SortableLocationCard = memo(({
     onClick
 }: SortableLocationCardProps) => {
     const cardRef = useRef<HTMLDivElement>(null);
-    const [isWide, setIsWide] = useState(isWideProp ?? false);
-    const [isExtraWide, setIsExtraWide] = useState(isExtraWideProp ?? false);
     const isWideRef = useRef(isWideProp ?? false);
     const isExtraWideRef = useRef(isExtraWideProp ?? false);
 
@@ -505,8 +497,6 @@ const SortableLocationCard = memo(({
                 if (isWideRef.current !== wide || isExtraWideRef.current !== extraWide) {
                     isWideRef.current = wide;
                     isExtraWideRef.current = extraWide;
-                    setIsWide(wide);
-                    setIsExtraWide(extraWide);
                     onLayoutChange?.(loc.id, wide, extraWide);
                 }
             }
@@ -522,8 +512,7 @@ const SortableLocationCard = memo(({
         zIndex: isDragging ? 50 : undefined,
     };
 
-    const effectiveIsWide = (isDragging || isAnyDragging) ? (isWideProp ?? isWideRef.current) : isWide;
-    const effectiveIsExtraWide = (isDragging || isAnyDragging) ? (isExtraWideProp ?? isExtraWideRef.current) : isExtraWide;
+    // { ... } (removed unused variables)
 
     return (
         <div
@@ -541,8 +530,6 @@ const SortableLocationCard = memo(({
                 loc={loc}
                 onEdit={onEdit}
                 onDeleteClick={onDeleteClick}
-                isWide={effectiveIsWide}
-                isExtraWide={effectiveIsExtraWide}
                 dragHandleProps={{ ...attributes, ...listeners }}
             />
         </div>

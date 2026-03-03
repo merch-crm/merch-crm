@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { EmployeesClient } from './employees-client'
 import { getEmployeesWithFaces, getEmployeesWithoutFaces } from './employees.actions'
-import { requireAdmin } from '@/lib/admin'
+import { checkIsAdmin } from '@/lib/admin'
 
 export default async function EmployeesPage() {
     const session = await getSession()
@@ -12,8 +12,7 @@ export default async function EmployeesPage() {
         redirect('/logout')
     }
 
-    const adminCheck = await requireAdmin(session)
-    const isAdmin = adminCheck.success
+    const isAdmin = await checkIsAdmin(session)
 
     const [employeesResult, withoutFacesResult] = await Promise.all([
         getEmployeesWithFaces(),

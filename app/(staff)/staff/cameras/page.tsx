@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { CamerasClient } from './cameras-client'
 import { getXiaomiAccounts, getCameras } from './cameras.actions'
-import { requireAdmin } from '@/lib/admin'
+import { checkIsAdmin } from '@/lib/admin'
 
 export default async function CamerasPage() {
     const session = await getSession()
@@ -12,8 +12,7 @@ export default async function CamerasPage() {
         redirect('/logout')
     }
 
-    const adminCheck = await requireAdmin(session)
-    const isAdmin = adminCheck.success
+    const isAdmin = await checkIsAdmin(session)
 
     const [accountsResult, camerasResult] = await Promise.all([
         getXiaomiAccounts(),
@@ -23,8 +22,8 @@ export default async function CamerasPage() {
     return (
         <Suspense fallback={<CamerasSkeleton />}>
             <CamerasClient
-                initialAccounts={accountsResult.success ? accountsResult.data : []}
-                initialCameras={camerasResult.success ? (camerasResult.data as any) : []}
+                initialAccounts={accountsResult.success ? (accountsResult.data ?? []) : []}
+                initialCameras={camerasResult.success ? (camerasResult.data ?? []) : []}
                 isAdmin={isAdmin}
             />
         </Suspense>

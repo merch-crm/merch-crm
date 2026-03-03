@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { SettingsClient } from './settings-client'
 import { getPresenceSettings } from './settings.actions'
-import { requireAdmin } from '@/lib/admin'
+import { checkIsAdmin } from '@/lib/admin'
 
 export default async function SettingsPage() {
     const session = await getSession()
@@ -12,8 +12,8 @@ export default async function SettingsPage() {
         redirect('/logout')
     }
 
-    const adminCheck = await requireAdmin(session)
-    if (!adminCheck.success) {
+    const isAdmin = await checkIsAdmin(session)
+    if (!isAdmin) {
         redirect('/staff')
     }
 
@@ -22,7 +22,7 @@ export default async function SettingsPage() {
     return (
         <Suspense fallback={<SettingsSkeleton />}>
             <SettingsClient
-                initialSettings={settingsResult.success ? settingsResult.data : {}}
+                initialSettings={(settingsResult.success ? settingsResult.data : {}) as any}
             />
         </Suspense>
     )

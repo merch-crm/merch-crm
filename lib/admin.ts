@@ -24,3 +24,18 @@ export async function requireAdmin(session: Session | null) {
 
     return user;
 }
+
+export async function checkIsAdmin(session: Session | null): Promise<boolean> {
+    if (!session) return false;
+
+    try {
+        const user = await db.query.users.findFirst({
+            where: eq(users.id, session.id),
+            with: { role: true }
+        });
+
+        return user?.role?.name === "Администратор";
+    } catch {
+        return false;
+    }
+}

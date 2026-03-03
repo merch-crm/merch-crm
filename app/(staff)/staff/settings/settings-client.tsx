@@ -100,7 +100,7 @@ export function SettingsClient({ initialSettings }: Props) {
                 </div>
                 <SubmitButton
                     onClick={handleSave}
-                    loading={isPending}
+                    isLoading={isPending}
                     className="rounded-2xl h-14 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-widest text-[10px] shadow-xl shadow-indigo-100 transition-all active:scale-95"
                 >
                     <Save className="w-4 h-4 mr-2" />

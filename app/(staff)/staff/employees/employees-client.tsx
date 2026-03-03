@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useTransition } from 'react'
+import Image from 'next/image'
 import { Card, CardBody, CardHeader } from '@/components/ui/card-bento'
 import { Button } from '@/components/ui/button'
 import { ResponsiveModal } from '@/components/ui/responsive-modal'
@@ -8,7 +9,6 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { SubmitButton } from '@/components/ui/submit-button'
 import {
     Users,
-    UserPlus,
     Camera,
     Trash2,
     Star,
@@ -52,8 +52,8 @@ interface Props {
     isAdmin: boolean
 }
 
-export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdmin }: Props) {
-    const [employees, setEmployees] = useState(initialEmployees)
+export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
+    const [employees] = useState(initialEmployees)
     const [isPending, startTransition] = useTransition()
 
     // Модальные окна
@@ -170,8 +170,9 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
                 } else {
                     toast.error(result.error || 'Ошибка в базе данных')
                 }
-            } catch (error: any) {
-                toast.error(error.message || 'Не удалось обработать фото')
+            } catch (error: unknown) {
+                const errorMessage = error instanceof Error ? error.message : 'Не удалось обработать фото'
+                toast.error(errorMessage)
                 console.error('Face registration error:', error)
             }
         })
@@ -303,9 +304,11 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="relative">
                                     {employee.avatarUrl ? (
-                                        <img
+                                        <Image
                                             src={employee.avatarUrl}
                                             alt={employee.name}
+                                            width={56}
+                                            height={56}
                                             className="w-14 h-14 rounded-2xl object-cover border-2 border-slate-50 shadow-sm"
                                         />
                                     ) : (
@@ -346,9 +349,11 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
                                             )}
                                         >
                                             {face.photoUrl ? (
-                                                <img
+                                                <Image
                                                     src={face.photoUrl}
                                                     alt="Face"
+                                                    width={60}
+                                                    height={60}
                                                     className="w-[60px] h-[60px] rounded-xl object-cover border border-slate-100 shadow-sm"
                                                 />
                                             ) : (
@@ -472,10 +477,12 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
                     {capturedImage && (
                         <div className="space-y-6">
                             <div className="relative overflow-hidden rounded-3xl aspect-square max-w-sm mx-auto shadow-xl ring-4 ring-emerald-500/10">
-                                <img
+                                <Image
                                     src={capturedImage}
                                     className="w-full h-full object-cover"
                                     alt="Result"
+                                    width={384}
+                                    height={384}
                                 />
                                 <div className="absolute top-4 right-4 animate-in zoom-in duration-300">
                                     <div className="bg-emerald-500 text-white p-2 rounded-full shadow-lg">
@@ -525,7 +532,7 @@ export function EmployeesClient({ initialEmployees, employeesWithoutFaces, isAdm
     )
 }
 
-function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: any, color: 'emerald' | 'rose' | 'indigo' }) {
+function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: React.ElementType, color: 'emerald' | 'rose' | 'indigo' }) {
     const configs = {
         emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', ring: 'ring-emerald-100' },
         rose: { bg: 'bg-rose-50', text: 'text-rose-600', ring: 'ring-rose-100' },

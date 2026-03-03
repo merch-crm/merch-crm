@@ -13,8 +13,8 @@ interface StaffHeaderProps {
         email: string
     }
     branding?: {
-        logo_url?: string | null
-        company_name?: string | null
+        logoUrl?: string | null
+        companyName?: string | null
     }
 }
 
@@ -33,10 +33,10 @@ export function StaffHeader({ session, branding }: StaffHeaderProps) {
             </Button>
 
             <div className="flex items-center gap-3">
-                {branding?.logo_url ? (
+                {branding?.logoUrl ? (
                     <img
-                        src={branding.logo_url}
-                        alt={branding.company_name || 'Logo'}
+                        src={branding.logoUrl}
+                        alt={branding.companyName || 'Logo'}
                         className="h-8 w-auto"
                     />
                 ) : (

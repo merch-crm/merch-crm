@@ -46,7 +46,7 @@ interface XiaomiAccount {
 
 interface Camera {
     id: string
-    xiaomiAccountId: string
+    xiaomiAccountId: string | null
     deviceId: string
     model: string | null
     name: string
@@ -57,11 +57,11 @@ interface Camera {
     lastOnlineAt: Date | null
     errorMessage: string | null
     isEnabled: boolean
-    confidenceThreshold: string | number
-    xiaomiAccount?: {
+    confidenceThreshold: string | number | null
+    xiaomiAccount: {
         email: string | null
         nickname: string | null
-    }
+    } | null
 }
 
 interface Props {
@@ -177,7 +177,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 location: selectedCamera.location || undefined,
                 confidenceThreshold: typeof selectedCamera.confidenceThreshold === 'string'
                     ? parseFloat(selectedCamera.confidenceThreshold)
-                    : selectedCamera.confidenceThreshold
+                    : (selectedCamera.confidenceThreshold ?? undefined)
             })
 
             if (result.success) {
@@ -323,7 +323,6 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                             {cameras.map((camera) => {
                                 const status = statusConfig[camera.status]
-                                const StatusIcon = status.icon
 
                                 return (
                                     <div
@@ -574,7 +573,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                     Порог уверенности ИИ
                                 </label>
                                 <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-bold">
-                                    {((typeof selectedCamera.confidenceThreshold === 'string' ? parseFloat(selectedCamera.confidenceThreshold) : selectedCamera.confidenceThreshold) * 100).toFixed(0)}%
+                                    {((typeof selectedCamera.confidenceThreshold === 'string' ? parseFloat(selectedCamera.confidenceThreshold) : (selectedCamera.confidenceThreshold ?? 0.6)) * 100).toFixed(0)}%
                                 </span>
                             </div>
                             <input
@@ -582,7 +581,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                 min="0.3"
                                 max="0.95"
                                 step="0.05"
-                                value={typeof selectedCamera.confidenceThreshold === 'string' ? parseFloat(selectedCamera.confidenceThreshold) : selectedCamera.confidenceThreshold}
+                                value={typeof selectedCamera.confidenceThreshold === 'string' ? parseFloat(selectedCamera.confidenceThreshold) : (selectedCamera.confidenceThreshold ?? 0.6)}
                                 onChange={(e) => setSelectedCamera(prev =>
                                     prev ? { ...prev, confidenceThreshold: parseFloat(e.target.value) } : null
                                 )}

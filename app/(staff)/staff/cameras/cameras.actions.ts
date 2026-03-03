@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 import { xiaomiAccounts, cameras } from '@/lib/schema/presence'
 import { eq, desc } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
-import { requireAdmin } from '@/lib/admin'
+import { checkIsAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
@@ -75,8 +75,8 @@ export async function loginXiaomiAccount(formData: {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
@@ -150,8 +150,8 @@ export async function syncXiaomiDevices(accountId: string) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
@@ -176,7 +176,7 @@ export async function syncXiaomiDevices(accountId: string) {
 
         // Фильтруем только камеры
         const cameraDevices = devicesResult.devices!.filter(
-            (d: any) => d.model?.includes('camera') || d.model?.includes('chuangmi')
+            (d: { model?: string }) => d.model?.includes('camera') || d.model?.includes('chuangmi')
         )
 
         // Синхронизируем камеры в БД
@@ -246,8 +246,8 @@ export async function deleteXiaomiAccount(accountId: string) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
@@ -276,8 +276,8 @@ export async function toggleCamera(cameraId: string, enabled: boolean) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
@@ -309,8 +309,8 @@ export async function updateCameraSettings(cameraId: string, data: {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 

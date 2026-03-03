@@ -41,8 +41,8 @@ interface ZoneEditorProps {
 }
 
 export function ZoneEditor({
-    open,
-    onOpenChange,
+    open: isOpen,
+    onOpenChange: onClose,
     imageUrl,
     videoUrl,
     initialZone,
@@ -224,7 +224,7 @@ export function ZoneEditor({
     }, [zoom, pan, canvasSize, currentZone, polygonPoints, tool, color, imageLoaded, drawZone, normalizedToScreen])
 
     useEffect(() => {
-        if (open) {
+        if (isOpen) {
             const animate = () => {
                 draw()
                 requestAnimationFrame(animate)
@@ -232,7 +232,7 @@ export function ZoneEditor({
             const handle = requestAnimationFrame(animate)
             return () => cancelAnimationFrame(handle)
         }
-    }, [open, draw])
+    }, [isOpen, draw])
 
     const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
         const rect = canvasRef.current!.getBoundingClientRect()
@@ -326,8 +326,8 @@ export function ZoneEditor({
 
     return (
         <ResponsiveModal
-            open={open}
-            onOpenChange={onOpenChange}
+            isOpen={isOpen}
+            onClose={() => onClose(false)}
             title="Настройка зоны детекции"
             description="Выделите область рабочего места на кадре (прямоугольник, круг или многоугольник)"
         >

@@ -4,7 +4,7 @@ import { db } from '@/lib/db'
 import { presenceSettings } from '@/lib/schema/presence'
 import { eq } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
-import { requireAdmin } from '@/lib/admin'
+import { checkIsAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
@@ -37,8 +37,8 @@ export async function updatePresenceSettings(updates: Record<string, any>) {
             return { success: false, error: 'Unauthorized' }
         }
 
-        const adminCheck = await requireAdmin(session)
-        if (!adminCheck.success) {
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) {
             return { success: false, error: 'Forbidden' }
         }
 
