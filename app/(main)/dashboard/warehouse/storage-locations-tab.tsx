@@ -324,7 +324,7 @@ const LocationCardContent = memo(({
     const total = Object.values(grouped).reduce((sum, i) => sum + i.count, 0) || 1;
 
     return (
-        <div className={cn("group relative flex flex-col transition-all duration-300 overflow-hidden h-full min-h-[380px] crm-card shadow-sm p-5",
+        <div className={cn("group relative flex flex-col transition-all duration-300 h-full min-h-[380px] p-6 lg:p-8",
             !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
             isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
                 isDefault
@@ -416,17 +416,17 @@ const LocationCardContent = memo(({
                 )}
 
                 <div className="flex items-center justify-between pt-2 sm:pt-4 transition-all">
-                    <div className="flex items-center gap-1 sm:gap-1.5 min-w-0">
+                    <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 pr-2">
                         <div className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
                             <User className="w-2 sm:w-3 sm:h-3 text-slate-400" />
                         </div>
-                        <span className="text-xs sm:text-xs font-bold text-slate-500 truncate">
+                        <span className="text-xs sm:text-xs font-bold text-slate-500 break-words line-clamp-2 md:line-clamp-none">
                             {loc.responsibleUser?.name || "Нет отв."}
                         </span>
                     </div>
 
                     {!isOverlay && (
-                        <div className="flex gap-1.5 sm:gap-2 shrink-0 z-30">
+                        <div className="flex gap-1.5 sm:gap-2 shrink-0 z-30 ml-auto">
                             <button type="button"
                                 onClick={(e) => { e.stopPropagation(); onEdit?.(e); }}
                                 className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:bg-primary/5 hover:text-primary transition-all border border-slate-200"
