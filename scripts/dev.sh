@@ -13,11 +13,12 @@ echo ""
 echo -e "${YELLOW}📌 Шаг 1: Очистка порта 5432...${NC}"
 lsof -ti:5432 | xargs kill -9 2>/dev/null || true
 lsof -ti:6379 | xargs kill -9 2>/dev/null || true
+lsof -ti:1984 | xargs kill -9 2>/dev/null || true
 sleep 1
 
 # 2. Установка SSH-туннеля
 echo -e "${YELLOW}📌 Шаг 2: Установка SSH-туннеля к удаленной БД...${NC}"
-ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:6379 root@89.104.69.25
+ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:6379 -L 1984:127.0.0.1:1984 root@89.104.69.25
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ SSH-туннель установлен${NC}"
     sleep 2

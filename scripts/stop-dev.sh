@@ -16,7 +16,7 @@ echo -e "${GREEN}✅ Dev-сервер остановлен${NC}"
 
 # 2. Закрытие SSH-туннелей
 echo -e "${YELLOW}📌 Закрытие SSH-туннелей...${NC}"
-lsof -ti:5432 | xargs kill -9 2>/dev/null || true
+lsof -ti:5432,6379,1984 | xargs kill -9 2>/dev/null || true
 echo -e "${GREEN}✅ Туннели закрыты${NC}"
 
 echo ""
