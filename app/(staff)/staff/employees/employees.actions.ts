@@ -20,6 +20,7 @@ export async function getEmployeesWithFaces() {
 
         // Получаем всех пользователей
         const allUsers = await db.query.users.findMany({
+            limit: 1000,
             columns: {
                 id: true,
                 name: true,
@@ -32,7 +33,7 @@ export async function getEmployeesWithFaces() {
 
         // Получаем все лица
         const faces = await db.query.employeeFaces.findMany({
-            limit: 500,
+            limit: 1000,
             where: eq(employeeFaces.isActive, true)
         })
 
@@ -68,6 +69,7 @@ export async function getEmployeesWithoutFaces() {
 
         // Получаем всех пользователей
         const allUsers = await db.query.users.findMany({
+            limit: 1000,
             columns: {
                 id: true,
                 name: true,
@@ -77,6 +79,7 @@ export async function getEmployeesWithoutFaces() {
 
         // Получаем ID пользователей, у которых уже есть активные лица
         const usersWithFaces = await db.query.employeeFaces.findMany({
+            limit: 1000,
             where: eq(employeeFaces.isActive, true),
             columns: {
                 userId: true

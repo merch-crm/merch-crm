@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useRef, useEffect, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import {
     Square,
@@ -16,10 +16,10 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ResponsiveModal } from '@/components/ui/responsive-modal'
+import { useDrawingState, useViewportState, useCanvasState } from './use-zone-editor'
 
-type Tool = 'select' | 'rect' | 'polygon' | 'circle' | 'pan'
 
-interface Point {
+export interface Point {
     x: number
     y: number
 }
@@ -52,19 +52,27 @@ export function ZoneEditor({
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const imageRef = useRef<HTMLImageElement>(null)
 
-    const [tool, setTool] = useState<Tool>('rect')
-    const [currentZone, setCurrentZone] = useState<Zone | null>(initialZone || null)
-    const [isDrawing, setIsDrawing] = useState(false)
-    const [polygonPoints, setPolygonPoints] = useState<Point[]>([])
-    const [startPoint, setStartPoint] = useState<Point | null>(null)
+    const drawingState = useDrawingState(initialZone)
+    const {
+        tool, setTool,
+        currentZone, setCurrentZone,
+        isDrawing, setIsDrawing,
+        polygonPoints, setPolygonPoints,
+        startPoint, setStartPoint,
+        resetZone
+    } = drawingState
 
-    const [zoom, setZoom] = useState(1)
-    const [pan, setPan] = useState({ x: 0, y: 0 })
-    const [isPanning, setIsPanning] = useState(false)
-    const [lastPanPoint, setLastPanPoint] = useState<Point | null>(null)
+    const viewportState = useViewportState()
+    const {
+        zoom, setZoom,
+        pan, setPan,
+        isPanning, setIsPanning,
+        lastPanPoint, setLastPanPoint,
+        resetViewport
+    } = viewportState
 
-    const [canvasSize, setCanvasSize] = useState({ width: 800, height: 450 })
-    const [imageLoaded, setImageLoaded] = useState(false)
+    const canvasState = useCanvasState()
+    const { canvasSize, setCanvasSize, imageLoaded, setImageLoaded } = canvasState
 
     const screenToNormalized = useCallback((screenX: number, screenY: number): Point => {
         const canvas = canvasRef.current
@@ -320,7 +328,7 @@ export function ZoneEditor({
             }
             img.src = imageUrl
         }
-    }, [imageUrl])
+    }, [imageUrl, setCanvasSize, setImageLoaded])
 
     return (
         <ResponsiveModal
@@ -366,7 +374,7 @@ export function ZoneEditor({
                     <div className="absolute top-4 right-4 flex flex-col gap-2">
                         <button
                             type="button"
-                            onClick={() => { setCurrentZone(null); setPolygonPoints([]); setPan({ x: 0, y: 0 }); setZoom(1); }}
+                            onClick={() => { resetZone(); resetViewport(); }}
                             className="bg-white/90 backdrop-blur p-2.5 rounded-xl shadow-lg hover:bg-white transition-all text-slate-900 border border-slate-200"
                             title="Сбросить"
                         >

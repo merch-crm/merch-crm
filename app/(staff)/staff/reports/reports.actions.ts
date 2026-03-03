@@ -5,9 +5,37 @@ import { dailyWorkStats } from '@/lib/schema/presence'
 import { eq, and, gte, lte } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { logError } from '@/lib/error-logger'
+import { z } from 'zod'
+
+const DailyReportSchema = z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)')
+})
+
+const WeeklyReportSchema = z.object({
+    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format (YYYY-MM-DD)')
+})
+
+const MonthlyReportSchema = z.object({
+    year: z.number().int().min(2000).max(2100),
+    month: z.number().int().min(1).max(12)
+})
+
+const ExportReportSchema = z.object({
+    type: z.enum(['daily', 'weekly', 'monthly']),
+    params: z.object({
+        date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Invalid date format').optional(),
+        year: z.number().int().optional(),
+        month: z.number().int().optional()
+    })
+})
 
 export async function getDailyReport(date: string) {
     try {
+        const validated = DailyReportSchema.safeParse({ date })
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0].message }
+        }
+
         const session = await getSession()
         if (!session) {
             return { success: false, error: 'Unauthorized' }
@@ -18,12 +46,12 @@ export async function getDailyReport(date: string) {
 
         // Получаем статистику за день
         const stats = await db.query.dailyWorkStats.findMany({
-        limit: 500,
+            limit: 1000,
             where: eq(dailyWorkStats.date, targetDate)
         })
 
         // Получаем настройки для определения опозданий
-        const settings = await db.query.presenceSettings.findMany({ limit: 500 })
+        const settings = await db.query.presenceSettings.findMany({ limit: 1000 })
         const settingsMap = settings.reduce((acc, s) => {
             acc[s.key] = s.value as string | number | boolean
             return acc
@@ -34,6 +62,7 @@ export async function getDailyReport(date: string) {
 
         // Получаем всех пользователей
         const allUsers = await db.query.users.findMany({
+            limit: 1000,
             columns: { id: true, name: true, email: true }
         })
 
@@ -92,6 +121,11 @@ export async function getDailyReport(date: string) {
 
 export async function getWeeklyReport(date: string) {
     try {
+        const validated = WeeklyReportSchema.safeParse({ date })
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0].message }
+        }
+
         const session = await getSession()
         if (!session) {
             return { success: false, error: 'Unauthorized' }
@@ -109,7 +143,7 @@ export async function getWeeklyReport(date: string) {
 
         // Получаем статистику за неделю
         const stats = await db.query.dailyWorkStats.findMany({
-        limit: 500,
+            limit: 1000,
             where: and(
                 gte(dailyWorkStats.date, startOfWeek),
                 lte(dailyWorkStats.date, endOfWeek)
@@ -118,6 +152,7 @@ export async function getWeeklyReport(date: string) {
 
         // Получаем всех пользователей
         const allUsers = await db.query.users.findMany({
+            limit: 1000,
             columns: { id: true, name: true, email: true }
         })
 
@@ -226,6 +261,11 @@ export async function getWeeklyReport(date: string) {
 
 export async function getMonthlyReport(year: number, month: number) {
     try {
+        const validated = MonthlyReportSchema.safeParse({ year, month })
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0].message }
+        }
+
         const session = await getSession()
         if (!session) {
             return { success: false, error: 'Unauthorized' }
@@ -236,7 +276,7 @@ export async function getMonthlyReport(year: number, month: number) {
 
         // Получаем статистику за месяц
         const stats = await db.query.dailyWorkStats.findMany({
-        limit: 500,
+            limit: 1000,
             where: and(
                 gte(dailyWorkStats.date, startOfMonth),
                 lte(dailyWorkStats.date, endOfMonth)
@@ -245,6 +285,7 @@ export async function getMonthlyReport(year: number, month: number) {
 
         // Получаем всех пользователей
         const allUsers = await db.query.users.findMany({
+            limit: 1000,
             columns: { id: true, name: true, email: true }
         })
 
@@ -339,6 +380,11 @@ export async function getMonthlyReport(year: number, month: number) {
 
 export async function exportReport(type: 'daily' | 'weekly' | 'monthly', params: { date?: string; year?: number; month?: number }) {
     try {
+        const validated = ExportReportSchema.safeParse({ type, params })
+        if (!validated.success) {
+            return { success: false, error: validated.error.issues[0].message }
+        }
+
         const session = await getSession()
         if (!session) {
             return { success: false, error: 'Unauthorized' }

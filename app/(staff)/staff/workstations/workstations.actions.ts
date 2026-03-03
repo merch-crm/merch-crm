@@ -20,6 +20,7 @@ export interface WorkstationInput {
 export async function getWorkstations() {
     try {
         const data = await db.query.workstations.findMany({
+            limit: 1000,
             with: {
                 camera: {
                     columns: {
@@ -46,6 +47,7 @@ export async function getWorkstations() {
 export async function getCameras() {
     try {
         const data = await db.query.cameras.findMany({
+            limit: 1000,
             where: eq(cameras.isEnabled, true),
             columns: {
                 id: true,
@@ -63,6 +65,7 @@ export async function getCameras() {
 export async function getUsers() {
     try {
         const data = await db.query.users.findMany({
+            limit: 1000,
             columns: {
                 id: true,
                 name: true,

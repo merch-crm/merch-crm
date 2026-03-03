@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useTransition } from 'react'
 import { Card, CardBody, CardHeader } from '@/components/ui/card-bento'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,18 +20,12 @@ import {
     Eye,
     EyeOff,
     LogIn,
-    Smartphone
+    Smartphone,
+    Play
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
-import {
-    loginXiaomiAccount,
-    syncXiaomiDevices,
-    deleteXiaomiAccount,
-    toggleCamera,
-    updateCameraSettings,
-    testCameraConnection
-} from './cameras.actions'
+import { useCamerasState, useLoginForm, useCameraActions } from './use-cameras'
+import { CameraPreview } from '@/components/staff/camera-preview'
 
 interface XiaomiAccount {
     id: string
@@ -71,124 +64,30 @@ interface Props {
 }
 
 export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Props) {
-    const [accounts] = useState(initialAccounts)
-    const [cameras, setCameras] = useState(initialCameras)
-    const [isPending, startTransition] = useTransition()
+    const camerasState = useCamerasState(initialAccounts, initialCameras)
+    const loginFormState = useLoginForm()
+    const {
+        handleXiaomiLogin,
+        handleSyncDevices,
+        handleDeleteAccount,
+        handleToggleCamera,
+        handleTestConnection,
+        handleUpdateCamera,
+        handleOpenLiveView
+    } = useCameraActions(camerasState, loginFormState)
 
-    // Модальные окна
-    const [loginModalOpen, setLoginModalOpen] = useState(false)
-    const [settingsModalOpen, setSettingsModalOpen] = useState(false)
-    const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null)
-    const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null)
+    const {
+        accounts,
+        cameras,
+        isPending,
+        loginModalOpen, setLoginModalOpen,
+        settingsModalOpen, setSettingsModalOpen,
+        deleteAccountId, setDeleteAccountId,
+        selectedCamera, setSelectedCamera,
+        liveViewModalOpen, setLiveViewModalOpen
+    } = camerasState
 
-    // Форма логина Xiaomi
-    const [loginForm, setLoginForm] = useState({
-        username: '',
-        password: '',
-        region: 'cn'
-    })
-    const [showPassword, setShowPassword] = useState(false)
-
-    const handleXiaomiLogin = async () => {
-        if (!loginForm.username || !loginForm.password) {
-            toast.error('Введите логин и пароль')
-            return
-        }
-
-        startTransition(async () => {
-            const result = await loginXiaomiAccount(loginForm)
-
-            if (result.success) {
-                toast.success(`Аккаунт ${result.data?.nickname || loginForm.username} подключён`)
-                setLoginModalOpen(false)
-                setLoginForm({ username: '', password: '', region: 'cn' })
-                window.location.reload()
-            } else {
-                toast.error(result.error || 'Ошибка авторизации')
-            }
-        })
-    }
-
-    const handleSyncDevices = async (accountId: string) => {
-        startTransition(async () => {
-            const result = await syncXiaomiDevices(accountId)
-
-            if (result.success) {
-                toast.success(`Синхронизировано: добавлено ${result.data?.added}, обновлено ${result.data?.updated}`)
-                window.location.reload()
-            } else {
-                toast.error(result.error || 'Ошибка синхронизации')
-            }
-        })
-    }
-
-    const handleDeleteAccount = async () => {
-        if (!deleteAccountId) return
-
-        startTransition(async () => {
-            const result = await deleteXiaomiAccount(deleteAccountId)
-
-            if (result.success) {
-                toast.success('Аккаунт удалён')
-                setDeleteAccountId(null)
-                window.location.reload()
-            } else {
-                toast.error(result.error || 'Ошибка удаления')
-            }
-        })
-    }
-
-    const handleToggleCamera = async (cameraId: string, enabled: boolean) => {
-        startTransition(async () => {
-            const result = await toggleCamera(cameraId, enabled)
-
-            if (result.success) {
-                toast.success(enabled ? 'Камера включена' : 'Камера отключена')
-                setCameras(prev => prev.map(c =>
-                    c.id === cameraId ? { ...c, isEnabled: enabled } : c
-                ))
-            } else {
-                toast.error(result.error || 'Ошибка')
-            }
-        })
-    }
-
-    const handleTestConnection = async (cameraId: string) => {
-        startTransition(async () => {
-            const result = await testCameraConnection(cameraId)
-
-            if (result.success) {
-                toast.success(`Статус: ${result.data?.status}`)
-                setCameras(prev => prev.map(c =>
-                    c.id === cameraId ? { ...c, status: result.data?.status as"online" |"offline" |"error" |"connecting" } : c
-                ))
-            } else {
-                toast.error(result.error || 'Ошибка подключения')
-            }
-        })
-    }
-
-    const handleUpdateCamera = async () => {
-        if (!selectedCamera) return
-
-        startTransition(async () => {
-            const result = await updateCameraSettings(selectedCamera.id, {
-                name: selectedCamera.name,
-                location: selectedCamera.location || undefined,
-                confidenceThreshold: typeof selectedCamera.confidenceThreshold === 'string'
-                    ? parseFloat(selectedCamera.confidenceThreshold)
-                    : (selectedCamera.confidenceThreshold ?? undefined)
-            })
-
-            if (result.success) {
-                toast.success('Настройки сохранены')
-                setSettingsModalOpen(false)
-                window.location.reload()
-            } else {
-                toast.error(result.error || 'Ошибка сохранения')
-            }
-        })
-    }
+    const { loginForm, setLoginForm, showPassword, setShowPassword } = loginFormState
 
     const statusConfig = {
         online: { label: 'Онлайн', icon: Wifi, color: 'text-green-600 bg-green-50' },
@@ -280,7 +179,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 disabled={isPending}
                                             >
                                                 <RefreshCw className={cn("w-4 h-4 mr-2",
-                                                    isPending &&"animate-spin"
+                                                    isPending && "animate-spin"
                                                 )} />
                                                 Опубликовать
                                             </Button>
@@ -328,14 +227,14 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                         key={camera.id}
                                         className={cn("p-5 rounded-3xl border transition-all shadow-sm",
                                             camera.isEnabled
-                                                ?"bg-white border-slate-100"
-                                                :"bg-slate-50 border-slate-200 opacity-60"
+                                                ? "bg-white border-slate-100"
+                                                : "bg-slate-50 border-slate-200 opacity-60"
                                         )}
                                     >
                                         <div className="flex items-start justify-between mb-4">
                                             <div className="flex items-center gap-3">
                                                 <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center border",
-                                                    camera.isEnabled ?"bg-slate-50 border-slate-100" :"bg-slate-100 border-slate-200"
+                                                    camera.isEnabled ? "bg-slate-50 border-slate-100" : "bg-slate-100 border-slate-200"
                                                 )}>
                                                     <Video className="w-6 h-6 text-slate-600" />
                                                 </div>
@@ -385,7 +284,16 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                         )}
 
                                         {isAdmin && (
-                                            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-slate-50 mt-auto">
+                                            <div className="grid grid-cols-4 gap-2 pt-4 border-t border-slate-50 mt-auto">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider"
+                                                    onClick={() => handleOpenLiveView(camera)}
+                                                >
+                                                    <Play className="w-3.5 h-3.5 mr-1.5" />
+                                                    Стрим
+                                                </Button>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
@@ -412,7 +320,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                     variant="ghost"
                                                     size="sm"
                                                     className={cn("rounded-xl h-9 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider group",
-                                                        camera.isEnabled ?"hover:bg-rose-50 text-slate-500 hover:text-rose-600" :"hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
+                                                        camera.isEnabled ? "hover:bg-rose-50 text-slate-500 hover:text-rose-600" : "hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
                                                     )}
                                                     onClick={() => handleToggleCamera(camera.id, !camera.isEnabled)}
                                                 >
@@ -618,6 +526,33 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 onConfirm={handleDeleteAccount}
                 variant="destructive"
             />
+
+            {/* Модальное окно Live View */}
+            <ResponsiveModal
+                isOpen={liveViewModalOpen}
+                onClose={() => setLiveViewModalOpen(false)}
+                title="Прямой эфир"
+                description={selectedCamera?.name || ''}
+            >
+                {selectedCamera && (
+                    <div className="p-4">
+                        <CameraPreview
+                            streamUrl={`http://localhost:1984/api/stream.mp4?src=xiaomi_${selectedCamera.deviceId}`}
+                            zones={[]} // Зоны пока не передаем или можно добавить позже
+                            className="aspect-video w-full"
+                        />
+                        <div className="mt-4 flex items-center justify-between text-xs text-slate-500">
+                            <div className="flex items-center gap-2">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                {selectedCamera.model}
+                            </div>
+                            <div>
+                                {selectedCamera.localIp}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </ResponsiveModal>
         </div>
     )
 }

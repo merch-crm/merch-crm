@@ -2,68 +2,20 @@
 
 import { db } from '@/lib/db'
 import { xiaomiAccounts, cameras } from '@/lib/schema/presence'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, inArray } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { checkIsAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { revalidatePath } from 'next/cache'
-import { decrypt, encrypt } from '@/lib/crypto'
-import { XiaomiLoginInputSchema, SyncXiaomiDevicesSchema } from '../validation'
+import { encrypt, decrypt } from '@/lib/crypto'
+import crypto from 'crypto'
 
-export async function getXiaomiAccounts() {
-    try {
-        const session = await getSession()
-        if (!session) {
-            return { success: false, error: 'Unauthorized' }
-        }
-
-        const accounts = await db.query.xiaomiAccounts.findMany({
-            where: eq(xiaomiAccounts.isActive, true),
-            orderBy: [desc(xiaomiAccounts.createdAt)],
-            columns: {
-                id: true,
-                xiaomiUserId: true,
-                email: true,
-                nickname: true,
-                region: true,
-                isActive: true,
-                createdAt: true
-            }
-        })
-
-        return { success: true, data: accounts }
-    } catch (error) {
-        logError({ error: error as Error, path: 'cameras.actions', method: 'getXiaomiAccounts' })
-        return { success: false, error: 'Failed to fetch accounts' }
-    }
-}
-
-export async function getCameras() {
-    try {
-        const session = await getSession()
-        if (!session) {
-            return { success: false, error: 'Unauthorized' }
-        }
-
-        const allCameras = await db.query.cameras.findMany({
-            limit: 500,
-            with: {
-                xiaomiAccount: {
-                    columns: {
-                        email: true,
-                        nickname: true
-                    }
-                }
-            },
-            orderBy: [desc(cameras.createdAt)]
-        })
-
-        return { success: true, data: allCameras }
-    } catch (error) {
-        logError({ error: error as Error, path: 'cameras.actions', method: 'getCameras' })
-        return { success: false, error: 'Failed to fetch cameras' }
-    }
+interface XiaomiDevice {
+    did: string
+    name: string
+    model: string
+    localip: string
 }
 
 export async function loginXiaomiAccount(formData: {
@@ -82,22 +34,26 @@ export async function loginXiaomiAccount(formData: {
             return { success: false, error: 'Forbidden' }
         }
 
-        const parsed = XiaomiLoginInputSchema.safeParse(formData)
-        if (!parsed.success) {
-            return { success: false, error: parsed.error.issues[0].message }
-        }
+        const { username, password, region } = formData
 
-        const { username, password, region } = parsed.data
+        console.log(`[Xiaomi Login] Attempting login for ${username}, region: ${region}`)
 
-        // Авторизация через Xiaomi Mi Home API (интеграция с go2rtc)
-        const authResult = await authenticateXiaomi(username, password, region)
+        // Шаг 1: Получаем cookies и _sign
+        const authResult = await xiaomiLogin(username, password, region)
 
         if (!authResult.success) {
-            return { success: false, error: authResult.error || 'Authentication failed' }
+            console.error(`[Xiaomi Login] Failed: ${authResult.error}`)
+            return { success: false, error: authResult.error || 'Ошибка авторизации' }
         }
 
-        // Шифруем токен
-        const encryptedToken = encrypt(authResult.token!)
+        console.log(`[Xiaomi Login] Success for ${username}`)
+
+        // Шифруем токены
+        const encryptedToken = encrypt(JSON.stringify({
+            serviceToken: authResult.serviceToken,
+            userId: authResult.userId,
+            ssecurity: authResult.ssecurity
+        }))
 
         // Проверяем, есть ли уже такой аккаунт
         const existingAccount = await db.query.xiaomiAccounts.findFirst({
@@ -107,12 +63,12 @@ export async function loginXiaomiAccount(formData: {
         let accountId: string
 
         if (existingAccount) {
-            // Обновляем существующий
             await db.update(xiaomiAccounts)
                 .set({
                     encryptedToken,
                     email: username,
-                    nickname: authResult.nickname,
+                    nickname: authResult.nickname || username,
+                    region,
                     isActive: true,
                     updatedAt: new Date()
                 })
@@ -120,7 +76,6 @@ export async function loginXiaomiAccount(formData: {
 
             accountId = existingAccount.id
         } else {
-            // Создаём новый
             const [newAccount] = await db.insert(xiaomiAccounts).values({
                 xiaomiUserId: authResult.userId!,
                 email: username,
@@ -134,21 +89,156 @@ export async function loginXiaomiAccount(formData: {
             accountId = newAccount.id
         }
 
-        await logAction('Подключен аккаунт Xiaomi', 'xiaomi_account', accountId, { email: username })
+        await logAction('create', 'xiaomi_account', accountId, { email: username, region })
         revalidatePath('/staff/cameras')
 
         return {
             success: true,
             data: {
                 accountId,
-                nickname: authResult.nickname
+                nickname: authResult.nickname || username
             }
         }
     } catch (error) {
+        console.error('[Xiaomi Login] Exception:', error)
         logError({ error: error as Error, path: 'cameras.actions', method: 'loginXiaomiAccount' })
-        return { success: false, error: 'Failed to login' }
+        return { success: false, error: 'Ошибка подключения к Xiaomi' }
     }
 }
+
+// === Xiaomi Authentication ===
+
+async function xiaomiLogin(username: string, password: string, region: string): Promise<{
+    success: boolean
+    error?: string
+    serviceToken?: string
+    userId?: string
+    ssecurity?: string
+    nickname?: string
+}> {
+    try {
+        // Определяем URL в зависимости от региона
+        const regionUrls: Record<string, string> = {
+            'cn': 'https://account.xiaomi.com',
+            'de': 'https://account.xiaomi.com',
+            'us': 'https://account.xiaomi.com',
+            'ru': 'https://account.xiaomi.com',
+            'tw': 'https://account.xiaomi.com',
+            'sg': 'https://account.xiaomi.com',
+            'in': 'https://account.xiaomi.com'
+        }
+
+        const baseUrl = regionUrls[region] || regionUrls['cn']
+
+        // Шаг 1: Получаем начальные cookies
+        const step1Response = await fetch(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
+            method: 'GET',
+            headers: {
+                'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+
+        if (!step1Response.ok) {
+            return { success: false, error: 'Не удалось подключиться к серверу Xiaomi' }
+        }
+
+        const step1Text = await step1Response.text()
+        // Xiaomi возвращает JSON с префиксом &&&START&&&
+        const step1Json = JSON.parse(step1Text.replace('&&&START&&&', ''))
+
+        const sign = step1Json._sign
+        const sid = step1Json.sid || 'xiaomiio'
+        const callback = step1Json.callback || 'https://sts.api.io.mi.com/sts'
+
+        // Получаем cookies
+        const cookies = step1Response.headers.get('set-cookie') || ''
+
+        // Шаг 2: Авторизация
+        const passwordHash = crypto.createHash('md5').update(password).digest('hex').toUpperCase()
+
+        const authParams = new URLSearchParams({
+            'sid': sid,
+            'hash': passwordHash,
+            'callback': callback,
+            'qs': '%3Fsid%3Dxiaomiio%26_json%3Dtrue',
+            'user': username,
+            '_sign': sign,
+            '_json': 'true'
+        })
+
+        const step2Response = await fetch(`${baseUrl}/pass/serviceLoginAuth2`, {
+            method: 'POST',
+            headers: {
+                'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': cookies
+            },
+            body: authParams.toString()
+        })
+
+        const step2Text = await step2Response.text()
+        const step2Json = JSON.parse(step2Text.replace('&&&START&&&', ''))
+
+        // Проверяем результат
+        if (step2Json.code !== 0) {
+            // Расшифровываем ошибку
+            const errorMessages: Record<number, string> = {
+                70016: 'Неверный логин или пароль',
+                70001: 'Аккаунт не найден',
+                70002: 'Аккаунт заблокирован',
+                87001: 'Требуется подтверждение (включите 2FA или используйте пароль приложения)',
+                [-32]: 'Слишком много попыток, попробуйте позже'
+            }
+
+            return {
+                success: false,
+                error: errorMessages[step2Json.code] || `Ошибка авторизации (код: ${step2Json.code})`
+            }
+        }
+
+        const ssecurity = step2Json.ssecurity
+        const userId = step2Json.userId?.toString() || step2Json.cUserId
+        const location = step2Json.location
+        const nickname = step2Json.nick || step2Json.nickname
+
+        if (!ssecurity || !userId) {
+            return { success: false, error: 'Не удалось получить токен авторизации' }
+        }
+
+        // Шаг 3: Получаем serviceToken
+        const step3Response = await fetch(location, {
+            method: 'GET',
+            headers: {
+                'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830'
+            },
+            redirect: 'manual' // Не следуем редиректам автоматически
+        })
+
+        // serviceToken в cookies
+        const step3Cookies = step3Response.headers.get('set-cookie') || ''
+        const serviceTokenMatch = step3Cookies.match(/serviceToken=([^;]+)/)
+        const serviceToken = serviceTokenMatch ? serviceTokenMatch[1] : null
+
+        if (!serviceToken) {
+            return { success: false, error: 'Не удалось получить сервисный токен' }
+        }
+
+        return {
+            success: true,
+            serviceToken,
+            userId,
+            ssecurity,
+            nickname
+        }
+
+    } catch (error) {
+        console.error('[xiaomiLogin] Error:', error)
+        return { success: false, error: 'Ошибка сети при подключении к Xiaomi' }
+    }
+}
+
+// === Получение устройств ===
 
 export async function syncXiaomiDevices(accountId: string) {
     try {
@@ -162,46 +252,49 @@ export async function syncXiaomiDevices(accountId: string) {
             return { success: false, error: 'Forbidden' }
         }
 
-        const parsed = SyncXiaomiDevicesSchema.safeParse({ accountId })
-        if (!parsed.success) {
-            return { success: false, error: parsed.error.issues[0].message }
-        }
-
-        // Получаем аккаунт с токеном
         const account = await db.query.xiaomiAccounts.findFirst({
-            where: eq(xiaomiAccounts.id, parsed.data.accountId)
+            where: eq(xiaomiAccounts.id, accountId)
         })
 
         if (!account) {
-            return { success: false, error: 'Account not found' }
+            return { success: false, error: 'Аккаунт не найден' }
         }
 
-        // Расшифровываем токен
-        const token = decrypt(account.encryptedToken)
+        // Расшифровываем токены
+        const tokens = JSON.parse(decrypt(account.encryptedToken))
+        const { serviceToken, userId, ssecurity } = tokens
 
-        // Получаем устройства через Mi Home API
-        const devicesResult = await fetchXiaomiDevices(token, account.region)
+        // Получаем устройства
+        const devices = await fetchXiaomiDevices(serviceToken, userId, ssecurity, account.region)
 
-        if (!devicesResult.success) {
-            return { success: false, error: devicesResult.error }
+        if (!devices.success) {
+            return { success: false, error: devices.error }
         }
 
-        // Фильтруем только камеры
-        const cameraDevices = devicesResult.devices!.filter(
-            (d: { model?: string }) => d.model?.includes('camera') || d.model?.includes('chuangmi')
+        // Фильтруем камеры
+        const cameraModels = ['chuangmi.camera', 'xiaomi.camera', 'isa.camera', 'lumi.camera']
+        const cameraDevices = devices.devices!.filter((d: XiaomiDevice) =>
+            cameraModels.some(model => d.model?.startsWith(model))
         )
 
-        // Синхронизируем камеры в БД
+        console.log(`[Sync] Found ${cameraDevices.length} cameras out of ${devices.devices!.length} devices`)
+
+        // Синхронизируем
         let addedCount = 0
         let updatedCount = 0
 
-        for (const device of cameraDevices) {
-            const existingCamera = await db.query.cameras.findFirst({
-                where: eq(cameras.deviceId, device.did)
-            })
+        const deviceIds = cameraDevices.map(d => d.did)
+        const existingCamerasList = await db.query.cameras.findMany({
+            limit: 1000,
+            where: inArray(cameras.deviceId, deviceIds)
+        })
 
-            const go2rtcUrl = process.env.GO2RTC_URL || 'http://localhost:1984'
-            const streamUrl = `${go2rtcUrl}/api/stream.mp4?src=${device.did}`
+        const cameraMap = new Map(existingCamerasList.map(c => [c.deviceId, c]))
+
+        for (const device of cameraDevices) {
+            const existingCamera = cameraMap.get(device.did)
+
+            const streamUrl = `rtsp://localhost:8554/xiaomi_${device.did}`
 
             if (existingCamera) {
                 await db.update(cameras)
@@ -230,24 +323,184 @@ export async function syncXiaomiDevices(accountId: string) {
             }
         }
 
-        await logAction('Синхронизация устройств Xiaomi', 'cameras', accountId, {
-            added: addedCount,
-            updated: updatedCount
-        })
-
+        await logAction('sync', 'cameras', accountId, { added: addedCount, updated: updatedCount })
         revalidatePath('/staff/cameras')
 
         return {
             success: true,
-            data: {
-                added: addedCount,
-                updated: updatedCount,
-                total: cameraDevices.length
-            }
+            data: { added: addedCount, updated: updatedCount, total: cameraDevices.length }
         }
     } catch (error) {
+        console.error('[syncXiaomiDevices] Error:', error)
         logError({ error: error as Error, path: 'cameras.actions', method: 'syncXiaomiDevices' })
-        return { success: false, error: 'Failed to sync devices' }
+        return { success: false, error: 'Ошибка синхронизации' }
+    }
+}
+
+async function fetchXiaomiDevices(
+    serviceToken: string,
+    userId: string,
+    ssecurity: string,
+    region: string
+): Promise<{ success: boolean; error?: string; devices?: XiaomiDevice[] }> {
+    try {
+        // API endpoints по регионам
+        const apiUrls: Record<string, string> = {
+            'cn': 'https://api.io.mi.com/app',
+            'de': 'https://de.api.io.mi.com/app',
+            'us': 'https://us.api.io.mi.com/app',
+            'ru': 'https://ru.api.io.mi.com/app',
+            'tw': 'https://tw.api.io.mi.com/app',
+            'sg': 'https://sg.api.io.mi.com/app',
+            'in': 'https://i.api.io.mi.com/app'
+        }
+
+        const apiUrl = apiUrls[region] || apiUrls['cn']
+
+        // Генерируем подпись запроса
+        const nonce = generateNonce()
+        const signedNonce = generateSignedNonce(ssecurity, nonce)
+
+        const data = JSON.stringify({
+            getVirtualModel: false,
+            getHuamiDevices: 0
+        })
+
+        const params: Record<string, string> = {
+            data,
+            rc4_hash__: generateRc4Hash(signedNonce, data)
+        }
+
+        const signature = generateSignature(`/home/device_list`, signedNonce, nonce, params)
+
+        const response = await fetch(`${apiUrl}/home/device_list`, {
+            method: 'POST',
+            headers: {
+                'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136 MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': `userId=${userId}; serviceToken=${serviceToken}`,
+                'x-xiaomi-protocal-flag-cli': 'PROTOCAL-HTTP2'
+            },
+            body: new URLSearchParams({
+                ...params,
+                signature,
+                _nonce: nonce,
+                ssecurity
+            }).toString()
+        })
+
+        if (!response.ok) {
+            return { success: false, error: 'Ошибка запроса к API Xiaomi' }
+        }
+
+        const result = await response.json()
+
+        if (result.code !== 0) {
+            return { success: false, error: result.message || 'Ошибка получения устройств' }
+        }
+
+        return { success: true, devices: result.result?.list || [] }
+
+    } catch (error) {
+        console.error('[fetchXiaomiDevices] Error:', error)
+        return { success: false, error: 'Ошибка сети' }
+    }
+}
+
+// === Crypto helpers ===
+
+function generateNonce(): string {
+    const buf = Buffer.alloc(12)
+    buf.writeInt32BE(Math.floor(Math.random() * 1000000), 0)
+    buf.writeInt32BE(Math.floor(Date.now() / 60000), 8)
+    return buf.toString('base64')
+}
+
+function generateSignedNonce(ssecurity: string, nonce: string): string {
+    const hash = crypto.createHash('sha256')
+    hash.update(Buffer.from(ssecurity, 'base64'))
+    hash.update(Buffer.from(nonce, 'base64'))
+    return hash.digest('base64')
+}
+
+function generateSignature(
+    uri: string,
+    signedNonce: string,
+    nonce: string,
+    params: Record<string, string>
+): string {
+    const exps: string[] = [uri, signedNonce, nonce]
+
+    const keys = Object.keys(params).sort()
+    for (const key of keys) {
+        exps.push(`${key}=${params[key]}`)
+    }
+
+    const signStr = exps.join('&')
+    const hmac = crypto.createHmac('sha256', Buffer.from(signedNonce, 'base64'))
+    hmac.update(signStr)
+    return hmac.digest('base64')
+}
+
+function generateRc4Hash(signedNonce: string, data: string): string {
+    const hmac = crypto.createHmac('sha256', Buffer.from(signedNonce, 'base64'))
+    hmac.update(data)
+    return hmac.digest('base64')
+}
+
+export async function getXiaomiAccounts() {
+    try {
+        const session = await getSession()
+        if (!session) {
+            return { success: false, error: 'Unauthorized' }
+        }
+
+        const accounts = await db.query.xiaomiAccounts.findMany({
+            limit: 1000,
+            where: eq(xiaomiAccounts.isActive, true),
+            orderBy: [desc(xiaomiAccounts.createdAt)],
+            columns: {
+                id: true,
+                xiaomiUserId: true,
+                email: true,
+                nickname: true,
+                region: true,
+                isActive: true,
+                createdAt: true
+            }
+        })
+
+        return { success: true, data: accounts }
+    } catch (error) {
+        logError({ error: error as Error, path: 'cameras.actions', method: 'getXiaomiAccounts' })
+        return { success: false, error: 'Failed to fetch accounts' }
+    }
+}
+
+export async function getCameras() {
+    try {
+        const session = await getSession()
+        if (!session) {
+            return { success: false, error: 'Unauthorized' }
+        }
+
+        const allCameras = await db.query.cameras.findMany({
+            limit: 1000,
+            with: {
+                xiaomiAccount: {
+                    columns: {
+                        email: true,
+                        nickname: true
+                    }
+                }
+            },
+            orderBy: [desc(cameras.createdAt)]
+        })
+
+        return { success: true, data: allCameras }
+    } catch (error) {
+        logError({ error: error as Error, path: 'cameras.actions', method: 'getCameras' })
+        return { success: false, error: 'Failed to fetch cameras' }
     }
 }
 
@@ -360,6 +613,7 @@ export async function testCameraConnection(cameraId: string) {
         }
 
         const go2rtcUrl = process.env.GO2RTC_URL || 'http://localhost:1984'
+        const streamName = `xiaomi_${camera.deviceId}`
 
         try {
             const response = await fetch(`${go2rtcUrl}/api/streams`, {
@@ -368,8 +622,7 @@ export async function testCameraConnection(cameraId: string) {
 
             if (response.ok) {
                 const streams = await response.json()
-                const streamName = `xiaomi_${camera.deviceId}`
-                const isOnline = streams[streamName]?.producers?.length > 0
+                const isOnline = !!(streams[streamName]?.producers?.length > 0)
 
                 await db.update(cameras)
                     .set({
@@ -389,7 +642,8 @@ export async function testCameraConnection(cameraId: string) {
                     }
                 }
             }
-        } catch {
+        } catch (e) {
+            console.error('[testCameraConnection] go2rtc error:', e)
             await db.update(cameras)
                 .set({
                     status: 'error',
@@ -400,72 +654,12 @@ export async function testCameraConnection(cameraId: string) {
 
             revalidatePath('/staff/cameras')
 
-            return { success: false, error: 'go2rtc service unavailable' }
+            return { success: false, error: 'Сервис go2rtc недоступен' }
         }
 
-        return { success: false, error: 'Unknown error' }
+        return { success: false, error: 'Неизвестная ошибка' }
     } catch (error) {
         logError({ error: error as Error, path: 'cameras.actions', method: 'testCameraConnection' })
         return { success: false, error: 'Failed to test connection' }
-    }
-}
-
-// === Вспомогательные функции для Xiaomi API ===
-
-async function authenticateXiaomi(username: string, password: string, region: string) {
-    try {
-        // Используем go2rtc API для авторизации Xiaomi
-        const go2rtcUrl = process.env.GO2RTC_URL || 'http://localhost:1984'
-
-        const response = await fetch(`${go2rtcUrl}/api/xiaomi/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password, region }),
-            signal: AbortSignal.timeout(30000)
-        })
-
-        if (!response.ok) {
-            const error = await response.text()
-            return { success: false, error: error || 'Authentication failed' }
-        }
-
-        const data = await response.json()
-
-        return {
-            success: true,
-            token: data.token || data.access_token,
-            userId: data.userId || data.user_id,
-            nickname: data.nickname || data.nick
-        }
-    } catch (error) {
-        console.error('Xiaomi auth error:', error)
-        return { success: false, error: 'Connection failed' }
-    }
-}
-
-async function fetchXiaomiDevices(token: string, region: string) {
-    try {
-        const go2rtcUrl = process.env.GO2RTC_URL || 'http://localhost:1984'
-
-        const response = await fetch(`${go2rtcUrl}/api/xiaomi/devices`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token, region }),
-            signal: AbortSignal.timeout(30000)
-        })
-
-        if (!response.ok) {
-            return { success: false, error: 'Failed to fetch devices' }
-        }
-
-        const data = await response.json()
-
-        return {
-            success: true,
-            devices: data.devices || data
-        }
-    } catch (error) {
-        console.error('Xiaomi devices error:', error)
-        return { success: false, error: 'Connection failed' }
     }
 }

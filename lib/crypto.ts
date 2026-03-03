@@ -1,30 +1,47 @@
-import crypto from "crypto";
+import crypto from 'crypto'
 
-const ENCRYPTION_KEY = process.env.XIAOMI_ENCRYPTION_KEY || "";
-const ENCRYPTION_IV_LENGTH = 16;
+const ALGORITHM = 'aes-256-gcm'
+const IV_LENGTH = 16
 
-export function encrypt(text: string): string {
-    if (!ENCRYPTION_KEY) throw new Error("XIAOMI_ENCRYPTION_KEY не настроен");
-    if (ENCRYPTION_KEY.length !== 64) throw new Error("XIAOMI_ENCRYPTION_KEY должен быть 32-битным hex-ключом (64 символа)");
-
-    const iv = crypto.randomBytes(ENCRYPTION_IV_LENGTH);
-    const cipher = crypto.createCipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY, "hex"), iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString("hex") + ":" + encrypted.toString("hex");
+function getEncryptionKey(): Buffer {
+    const key = process.env.ENCRYPTION_KEY || process.env.XIAOMI_ENCRYPTION_KEY || process.env.NEXTAUTH_SECRET || 'default-encryption-key-change-me!'
+    // Приводим к 32 байтам для AES-256
+    return crypto.createHash('sha256').update(key).digest()
 }
 
-export function decrypt(text: string): string {
-    if (!ENCRYPTION_KEY) throw new Error("XIAOMI_ENCRYPTION_KEY не настроен");
-    if (ENCRYPTION_KEY.length !== 64) throw new Error("XIAOMI_ENCRYPTION_KEY должен быть 32-битным hex-ключом (64 символа)");
+export function encrypt(text: string): string {
+    const key = getEncryptionKey()
+    const iv = crypto.randomBytes(IV_LENGTH)
 
-    const parts = text.split(":");
-    if (parts.length < 2) throw new Error("Некорректный формат зашифрованной строки");
+    const cipher = crypto.createCipheriv(ALGORITHM, key, iv)
 
-    const iv = Buffer.from(parts.shift()!, "hex");
-    const encryptedText = Buffer.from(parts.join(":"), "hex");
-    const decipher = crypto.createDecipheriv("aes-256-cbc", Buffer.from(ENCRYPTION_KEY, "hex"), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
+    let encrypted = cipher.update(text, 'utf8', 'hex')
+    encrypted += cipher.final('hex')
+
+    const authTag = cipher.getAuthTag()
+
+    // Формат: iv:authTag:encryptedData
+    return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`
+}
+
+export function decrypt(encryptedText: string): string {
+    const key = getEncryptionKey()
+
+    const parts = encryptedText.split(':')
+    if (parts.length !== 3) {
+        // Поддержка старого формата или ошибка
+        throw new Error('Invalid encrypted text format')
+    }
+
+    const iv = Buffer.from(parts[0], 'hex')
+    const authTag = Buffer.from(parts[1], 'hex')
+    const encrypted = parts[2]
+
+    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv)
+    decipher.setAuthTag(authTag)
+
+    let decrypted = decipher.update(encrypted, 'hex', 'utf8')
+    decrypted += decipher.final('utf8')
+
+    return decrypted
 }

@@ -1,13 +1,18 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/auth'
 import { db } from '@/lib/db'
-
 import { logError } from '@/lib/error-logger'
 
-export async function GET() {
+const SERVICE_API_KEY = process.env.PRESENCE_SERVICE_API_KEY || 'presence-secret-key'
+
+export async function GET(request: NextRequest) {
     try {
+        // Проверка авторизации: сессия ИЛИ API ключ
         const session = await getSession()
-        if (!session) {
+        const authHeader = request.headers.get('Authorization')
+        const isServiceAuth = authHeader === `Bearer ${SERVICE_API_KEY}`
+
+        if (!session && !isServiceAuth) {
             return NextResponse.json(
                 { success: false, error: 'Unauthorized' },
                 { status: 401 }
@@ -15,6 +20,8 @@ export async function GET() {
         }
 
         const allCameras = await db.query.cameras.findMany({
+            limit: 1000,
+            where: (cameras, { eq }) => eq(cameras.isEnabled, true),
             with: {
                 xiaomiAccount: {
                     columns: {
@@ -33,7 +40,7 @@ export async function GET() {
             allCameras.map(async (camera) => {
                 let isStreaming = false
 
-                // В go2rtc стрим обычно называется xiaomi_{deviceId}
+                // В go2rtc стрим всегда имеет префикс xiaomi_
                 const streamName = `xiaomi_${camera.deviceId}`
 
                 try {
@@ -43,10 +50,11 @@ export async function GET() {
                     })
                     if (response.ok) {
                         const streams = await response.json()
+                        // Проверяем наличие продьюсеров (активного потока)
                         isStreaming = !!(streams[streamName]?.producers?.length > 0)
                     }
                 } catch {
-                    // Таймаут или ошибка - камера оффлайн
+                    // Таймаут или ошибка - камера оффлайн или go2rtc недоступен
                 }
 
                 return {

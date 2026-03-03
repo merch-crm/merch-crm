@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import Image from 'next/image'
 import { Card, CardBody, CardHeader } from '@/components/ui/card-bento'
 import { Button } from '@/components/ui/button'
@@ -20,12 +20,7 @@ import {
     Plus
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
-import {
-    addEmployeeFace,
-    deleteEmployeeFace,
-    setPrimaryFace
-} from './employees.actions'
+import { useEmployeeModals, useFaceCapture, useEmployeeActions } from './use-employees'
 
 interface EmployeeFace {
     id: string
@@ -56,156 +51,14 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
     const [employees] = useState(initialEmployees)
     const [isPending, startTransition] = useTransition()
 
-    // Модальные окна
-    const [addFaceModalOpen, setAddFaceModalOpen] = useState(false)
-    const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
-    const [deleteFaceId, setDeleteFaceId] = useState<string | null>(null)
+    const modals = useEmployeeModals()
+    const { addFaceModalOpen, setAddFaceModalOpen, selectedEmployee, setSelectedEmployee, deleteFaceId, setDeleteFaceId } = modals
 
-    // Для захвата фото
-    const videoRef = useRef<HTMLVideoElement>(null)
-    const canvasRef = useRef<HTMLCanvasElement>(null)
-    const [isCapturing, setIsCapturing] = useState(false)
-    const [capturedImage, setCapturedImage] = useState<string | null>(null)
-    const [stream, setStream] = useState<MediaStream | null>(null)
+    const capture = useFaceCapture()
+    const { videoRef, canvasRef, isCapturing, capturedImage, setCapturedImage, startCamera, stopCamera, capturePhoto } = capture
 
-    const startCamera = async () => {
-        try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    width: { ideal: 640 },
-                    height: { ideal: 640 }, // Квадратное соотношение для лиц
-                    facingMode: 'user'
-                }
-            })
-
-            if (videoRef.current) {
-                videoRef.current.srcObject = mediaStream
-                setStream(mediaStream)
-                setIsCapturing(true)
-            }
-        } catch (error) {
-            toast.error('Не удалось получить доступ к камере')
-            console.error('Camera error:', error)
-        }
-    }
-
-    const stopCamera = () => {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop())
-            setStream(null)
-        }
-        setIsCapturing(false)
-    }
-
-    const capturePhoto = () => {
-        if (videoRef.current && canvasRef.current) {
-            const canvas = canvasRef.current
-            const video = videoRef.current
-
-            const size = Math.min(video.videoWidth, video.videoHeight)
-            canvas.width = size
-            canvas.height = size
-
-            const ctx = canvas.getContext('2d')
-            if (ctx) {
-                // Центрируем обрезку под квадрат
-                const startX = (video.videoWidth - size) / 2
-                const startY = (video.videoHeight - size) / 2
-                ctx.drawImage(video, startX, startY, size, size, 0, 0, size, size)
-
-                const imageData = canvas.toDataURL('image/jpeg', 0.9)
-                setCapturedImage(imageData)
-                stopCamera()
-            }
-        }
-    }
-
-    const handleAddFace = async () => {
-        if (!selectedEmployee || !capturedImage) return
-
-        startTransition(async () => {
-            try {
-                // 1. Получаем эмбеддинг лица через API (прокси к Python сервису)
-                const response = await fetch('/api/presence/encode-face', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ image: capturedImage })
-                })
-
-                if (!response.ok) {
-                    const error = await response.json()
-                    throw new Error(error.error || 'Ошибка обработки лица')
-                }
-
-                const { encoding, quality } = await response.json()
-
-                // 2. Загружаем само фото
-                const uploadResponse = await fetch('/api/upload', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        file: capturedImage,
-                        folder: 'faces'
-                    })
-                })
-
-                if (!uploadResponse.ok) throw new Error('Ошибка загрузки фото')
-                const uploadResult = await uploadResponse.json()
-                const photoUrl = uploadResult.url
-
-                // 3. Сохраняем в БД через Server Action
-                const result = await addEmployeeFace({
-                    userId: selectedEmployee.id,
-                    photoUrl,
-                    faceEncoding: encoding,
-                    quality
-                })
-
-                if (result.success) {
-                    toast.success('Лицо успешно зарегистрировано')
-                    setAddFaceModalOpen(false)
-                    setCapturedImage(null)
-                    setSelectedEmployee(null)
-                    window.location.reload()
-                } else {
-                    toast.error(result.error || 'Ошибка в базе данных')
-                }
-            } catch (error: unknown) {
-                const errorMessage = error instanceof Error ? error.message : 'Не удалось обработать фото'
-                toast.error(errorMessage)
-                console.error('Face registration error:', error)
-            }
-        })
-    }
-
-    const handleDeleteFace = async () => {
-        if (!deleteFaceId) return
-
-        startTransition(async () => {
-            const result = await deleteEmployeeFace(deleteFaceId)
-
-            if (result.success) {
-                toast.success('Фото удалено')
-                setDeleteFaceId(null)
-                window.location.reload()
-            } else {
-                toast.error(result.error || 'Ошибка удаления')
-            }
-        })
-    }
-
-    const handleSetPrimary = async (faceId: string, userId: string) => {
-        startTransition(async () => {
-            const result = await setPrimaryFace(faceId, userId)
-
-            if (result.success) {
-                toast.success('Фото назначено основным')
-                window.location.reload()
-            } else {
-                toast.error(result.error || 'Ошибка')
-            }
-        })
-    }
+    const actions = useEmployeeActions(startTransition, modals, capture)
+    const { handleAddFace, handleDeleteFace, handleSetPrimary } = actions
 
     const employeesWithoutFacesFiltered = employees.filter(e => !e.hasFace)
 
