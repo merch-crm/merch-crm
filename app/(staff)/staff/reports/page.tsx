@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { ReportsClient } from './reports-client'
 import { getMonthlyReport, getWeeklyReport, getDailyReport } from './reports.actions'
+import type { DailyReport, WeeklyReport, MonthlyReport } from './reports.types'
 
 export default async function ReportsPage() {
     const session = await getSession()
@@ -23,9 +24,9 @@ export default async function ReportsPage() {
     return (
         <Suspense fallback={<ReportsSkeleton />}>
             <ReportsClient
-                initialDaily={dailyResult.success ? dailyResult.data : null}
-                initialWeekly={weeklyResult.success ? weeklyResult.data : null}
-                initialMonthly={monthlyResult.success ? monthlyResult.data : null}
+                initialDaily={dailyResult.success ? (dailyResult.data as DailyReport) : null}
+                initialWeekly={weeklyResult.success ? (weeklyResult.data as WeeklyReport) : null}
+                initialMonthly={monthlyResult.success ? (monthlyResult.data as MonthlyReport) : null}
             />
         </Suspense>
     )
