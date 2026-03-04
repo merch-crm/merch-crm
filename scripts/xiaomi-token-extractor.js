@@ -1,10 +1,4 @@
-/**
- * Xiaomi Token Extractor (Native Node.js v18+)
- * Использует встроенный fetch API для избежания проблем с socket hang up.
- */
-
-import crypto from 'crypto';
-import querystring from 'querystring';
+import { getMiIOT } from 'mi-service-lite';
 import readline from 'readline';
 
 const rl = readline.createInterface({
@@ -14,34 +8,8 @@ const rl = readline.createInterface({
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-function md5(str) {
-    return crypto.createHash('md5').update(str).digest('hex').toUpperCase();
-}
-
-async function requestFetch(url, options, body = null) {
-    if (body) {
-        options.body = body;
-    }
-
-    if (options.method === 'POST' && !options.headers['Content-Type']) {
-        options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    }
-
-    try {
-        const response = await fetch(url, options);
-        const responseText = await response.text();
-        return {
-            status: response.status,
-            headers: Object.fromEntries(response.headers.entries()),
-            body: responseText
-        };
-    } catch (err) {
-        throw new Error(`Ошибка сети (${url}): ${err.message}`);
-    }
-}
-
-async function extractXiaomiTokens() {
-    console.log('\n=== Извлечение токенов Xiaomi ===\n');
+async function extract() {
+    console.log('\n=== Извлечение токенов Xiaomi (mi-service-lite) ===\n');
     console.log('Скрипт поможет получить userId, serviceToken и ssecurity для CRM.\n');
 
     const username = await question('Введите email или номер телефона Xiaomi: ');
@@ -53,120 +21,41 @@ async function extractXiaomiTokens() {
         return;
     }
 
-    const passwordHash = md5(password);
-    const baseUrl = 'https://account.xiaomi.com';
-    const userAgent = 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830';
+    console.log('\nПодключение к Xiaomi Cloud...');
 
     try {
-        console.log('\n[1/3] Получение сессионных cookie...');
-        const step1Response = await requestFetch(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
-            method: 'GET',
-            headers: { 'User-Agent': userAgent }
-        });
+        let miIOT;
+        while (!miIOT) {
+            // getMiIOT инициирует логин. Если потребуется 2FA, библиотека выведет ссылку в консоль.
+            miIOT = await getMiIOT({
+                userId: username,
+                password: password,
+                service: 'xiaomiio'
+            });
 
-        const step1Text = step1Response.body.replace('&&&START&&&', '');
-        const step1Json = JSON.parse(step1Text);
-
-        const sign = step1Json._sign;
-        const sid = step1Json.sid || 'xiaomiio';
-        const callback = step1Json.callback || 'https://sts.api.io.mi.com/sts';
-
-        const rawCookies = step1Response.headers['set-cookie'] || '';
-        let cookies = rawCookies;
-        if (typeof rawCookies === 'string') {
-            cookies = rawCookies.split(',').map(c => c.split(';')[0]).join('; ');
-        }
-
-        const authParams = querystring.stringify({
-            sid: sid,
-            hash: passwordHash,
-            callback: callback,
-            qs: '%3Fsid%3Dxiaomiio%26_json%3Dtrue',
-            user: username,
-            _sign: sign,
-            _json: 'true'
-        });
-
-        console.log('[2/3] Авторизация...');
-        const step2Response = await requestFetch(`${baseUrl}/pass/serviceLoginAuth2`, {
-            method: 'POST',
-            headers: {
-                'User-Agent': userAgent,
-                'Cookie': cookies
+            if (!miIOT || !miIOT.account) {
+                console.log('\n[!] Похоже, требуется подтверждение (2FA).');
+                console.log('Если в консоли выше появилась ссылка (notificationUrl), перейдите по ней в браузере и подтвердите вход.');
+                await question('\nПосле того как подтвердите вход в браузере, нажмите ENTER здесь для повторной попытки...');
+                miIOT = null; // Продолжаем цикл
             }
-        }, authParams);
-
-        const step2Text = step2Response.body.replace('&&&START&&&', '');
-        let step2Json = JSON.parse(step2Text);
-
-        if (step2Json.notificationUrl) {
-            console.log('\nВНИМАНИЕ! Сработала защита 2FA.');
-            console.log('1. Откройте эту ссылку в браузере (выполняйте там логин до успеха):');
-            console.log(`\n=> ${step2Json.notificationUrl}\n`);
-
-            await question('2. После успешного подтверждения в браузере, нажмите ENTER здесь...');
-
-            console.log('\nПовторная попытка авторизации...');
-            const retryResponse = await requestFetch(`${baseUrl}/pass/serviceLoginAuth2`, {
-                method: 'POST',
-                headers: {
-                    'User-Agent': userAgent,
-                    'Cookie': cookies
-                }
-            }, authParams);
-
-            step2Json = JSON.parse(retryResponse.body.replace('&&&START&&&', ''));
         }
 
-        if (step2Json.code !== 0) {
-            console.error('\nОшибка авторизации:', step2Json.description || 'Неизвестная ошибка');
-            console.log('Ответ сервера:', step2Json);
-            rl.close();
-            return;
-        }
+        const account = miIOT.account;
 
-        const ssecurity = step2Json.ssecurity;
-        const userId = step2Json.userId;
-        const locationUrl = step2Json.location;
-
-        if (!locationUrl) {
-            console.error('\nНе удалось получить location URL. Возможно, потребуется использовать официальное приложение.');
-            rl.close();
-            return;
-        }
-
-        console.log('[3/3] Обмен Token на ServiceToken...');
-        const stsResponse = await requestFetch(locationUrl, {
-            method: 'GET',
-            headers: { 'User-Agent': userAgent }
-        });
-
-        const finalRawCookies = stsResponse.headers['set-cookie'] || '';
-        let serviceToken = '';
-        if (typeof finalRawCookies === 'string') {
-            const match = finalRawCookies.match(/serviceToken=([^;,\s]+)/);
-            if (match) serviceToken = match[1];
-        }
-
-        if (!serviceToken) {
-            console.log('\nНе удалось извлечь serviceToken. Ответ STS:', stsResponse.body);
-            rl.close();
-            return;
-        }
-
-        console.log('\n===== УСПЕШНО =====');
-        console.log('\nСкопируйте эти данные в CRM (раздел Камеры -> Добавить аккаунт):\n');
+        console.log('\n===== УСПЕШНО Авторизовано ===\n');
+        console.log('Вставьте эти данные в форму "Добавить аккаунт" в CRM:\n');
         console.log(`Email (идентификатор): ${username}`);
-        console.log(`User ID (xiaomiUserId): ${userId}`);
-        console.log(`Service Token         : ${serviceToken}`);
-        console.log(`ssecurity Token       : ${ssecurity}`);
-        console.log('\n===================\n');
+        console.log(`User ID (xiaomiUserId): ${account.userId || 'Неизвестно'}`);
+        console.log(`Service Token         : ${account.serviceToken}`);
+        console.log(`ssecurity Token       : ${account.pass?.ssecurity || 'Не найдено'}`);
+        console.log('\n==============================\n');
 
     } catch (error) {
-        console.error('Критическая ошибка:', error.message);
+        console.error('\n[Ошибка]:', error.message || error);
     } finally {
         rl.close();
     }
 }
 
-extractXiaomiTokens();
+extract();
