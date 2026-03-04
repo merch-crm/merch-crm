@@ -10,6 +10,7 @@ import { EditCategoryDialog } from "./edit-category-dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { updateInventoryCategoriesOrder } from "./category-actions";
 import { useToast } from "@/components/ui/toast";
+import { cn } from "@/lib/utils";
 
 import {
     DndContext,
@@ -218,7 +219,12 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
                         {itemsByCategory.map((category) => (
                             <div
                                 key={category.id}
-                                className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(33.333%-12px)] xl:basis-[calc(25%-12px)] min-w-[280px]"
+                                className={cn(
+                                    "flex-shrink-0 basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(25%-12px)] min-w-[240px] transition-[width,flex-grow] duration-200",
+                                    activeId
+                                        ? "max-w-full sm:max-w-[calc(50%-12px)] lg:max-w-[calc(25%-12px)]"
+                                        : "flex-grow"
+                                )}
                             >
                                 <SortableCategoryCard
                                     category={category}

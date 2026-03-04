@@ -326,7 +326,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                 title="Вход в Mi Home"
                 description="Введите данные вашего аккаунта Xiaomi"
             >
-                <form action={handleXiaomiLogin} className="space-y-3 py-6 px-4">
+                <form onSubmit={(e) => { e.preventDefault(); handleXiaomiLogin(new FormData(e.currentTarget)) }} className="space-y-3 py-6 px-4">
                     <div className="space-y-2">
                         <label className="text-sm font-bold text-slate-900  tracking-wider">
                             Email или номер телефона
@@ -369,13 +369,14 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             Регион сервера
                         </label>
                         <Select
-                            name="region"
                             value={loginForm.region}
                             onChange={(value) => setLoginForm(prev => ({ ...prev, region: value }))}
                             options={regions.map(r => ({ id: r.value, title: r.label }))}
                             placeholder="Выберите регион"
                             triggerClassName="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
                         />
+                        {/* Hidden input so FormData picks up the region value */}
+                        <input type="hidden" name="region" value={loginForm.region} />
                         <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tight mt-2 px-1">
                             Выберите регион, который указан в вашем приложении Mi Home
                         </p>

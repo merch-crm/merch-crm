@@ -40,13 +40,31 @@ export async function GET(
             return new NextResponse("Cannot read directory as file", { status: 400 });
         }
 
-        const fileBuffer = fs.readFileSync(fullPath);
+        // Use streaming instead of readFileSync to avoid blocking the event loop
+        const stream = fs.createReadStream(fullPath);
+
+        // Convert Node stream to Web ReadableStream
+        const webStream = new ReadableStream({
+            start(controller) {
+                stream.on("data", (chunk: string | Buffer) => {
+                    const buffer = typeof chunk === "string" ? Buffer.from(chunk) : chunk;
+                    controller.enqueue(new Uint8Array(buffer));
+                });
+                stream.on("end", () => controller.close());
+                stream.on("error", (err) => controller.error(err));
+            },
+            cancel() {
+                stream.destroy();
+            }
+        });
+
         const contentType = getMimeType(fullPath);
 
-        return new NextResponse(fileBuffer, {
+        return new NextResponse(webStream, {
             headers: {
                 "Content-Type": contentType,
                 "Cache-Control": "private, max-age=3600",
+                "Content-Length": stats.size.toString(),
             },
         });
     } catch (error) {

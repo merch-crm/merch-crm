@@ -50,27 +50,27 @@ export const SortableCategoryCard = React.memo(({
     const lastExtraWideRef = useRef(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Force layout check when dragging ends
+    // Force layout check when THIS card finishes being dragged (DOM needs ~50ms to settle)
     useEffect(() => {
-        if (!isDragging && !isAnyDragging && cardRef.current) {
-            const width = cardRef.current.getBoundingClientRect().width;
+        if (!isDragging && cardRef.current) {
+            const timer = setTimeout(() => {
+                if (!cardRef.current) return;
+                const width = cardRef.current.getBoundingClientRect().width;
 
-            const wideThreshold = 380;
-            const extraWideThreshold = 930;
-            const buffer = 10;
+                const nextWide = width > 390;
+                const nextExtraWide = width > 940;
 
-            const nextWide = width > wideThreshold + buffer;
-            const nextExtraWide = width > extraWideThreshold + buffer;
-
-            if (nextWide !== lastWideRef.current || nextExtraWide !== lastExtraWideRef.current) {
-                lastWideRef.current = nextWide;
-                lastExtraWideRef.current = nextExtraWide;
-                setIsWide(nextWide);
-                setIsExtraWide(nextExtraWide);
-                onLayoutChange?.(category.id, nextWide, nextExtraWide);
-            }
+                if (nextWide !== lastWideRef.current || nextExtraWide !== lastExtraWideRef.current) {
+                    lastWideRef.current = nextWide;
+                    lastExtraWideRef.current = nextExtraWide;
+                    setIsWide(nextWide);
+                    setIsExtraWide(nextExtraWide);
+                    onLayoutChange?.(category.id, nextWide, nextExtraWide);
+                }
+            }, 50);
+            return () => clearTimeout(timer);
         }
-    }, [isDragging, isAnyDragging, category.id, onLayoutChange]);
+    }, [isDragging, category.id, onLayoutChange]);
 
     useEffect(() => {
         if (!cardRef.current) return;
@@ -79,8 +79,9 @@ export const SortableCategoryCard = React.memo(({
             const entry = entries[0];
             if (!entry) return;
 
-            // CRITICAL: completely ignore shifts while any drag is happening to break loops
-            if (isDragging || isAnyDragging) return;
+            // Only suppress observer for THIS card when it is actively being dragged
+            // Sibling cards must keep observing so flex-grow reflows are tracked correctly
+            if (isDragging) return;
 
             const width = entry.contentRect.width;
 
@@ -116,7 +117,7 @@ export const SortableCategoryCard = React.memo(({
             observer.disconnect();
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
         };
-    }, [isDragging, isAnyDragging, category.id, onLayoutChange]);
+    }, [isDragging, category.id, onLayoutChange]);
 
     const style: React.CSSProperties = {
         transform: CSS.Transform.toString(transform),

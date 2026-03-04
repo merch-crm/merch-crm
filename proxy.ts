@@ -32,7 +32,7 @@ function isSkipPath(pathname: string): boolean {
     return SKIP_PATHS.some((p) => pathname.startsWith(p));
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const { pathname } = req.nextUrl;
 
     // 1. Skip static assets and internal Next.js paths
