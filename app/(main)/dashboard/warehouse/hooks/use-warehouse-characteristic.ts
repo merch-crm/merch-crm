@@ -195,7 +195,7 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
 
         // IMPORTANT: The short version is attr.name, the full version is typedMeta.fullName
         // If meta.fullName is missing, we fall back to name
-        let initialFullName = typedMeta?.fullName || attr.name;
+        const initialFullName = typedMeta?.fullName || attr.name;
 
         // For numeric types, we might want to strip units if they were accidentally saved in fullName
         if (isDensity || isWeight || isVolume) {

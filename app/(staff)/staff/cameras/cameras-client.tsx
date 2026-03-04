@@ -57,7 +57,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
         deleteAccountId, setDeleteAccountId,
         selectedCamera, setSelectedCamera,
         liveViewModalOpen, setLiveViewModalOpen,
-        verificationUrl, setVerificationUrl
+        verificationUrl
     } = camerasState
 
     const { loginForm, setLoginForm, showPassword, setShowPassword } = loginFormState
@@ -397,7 +397,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                     Перейти к подтверждению →
                                 </a>
                                 <span className="block mt-2 text-[10px] text-indigo-400 font-medium">
-                                    После подтверждения в браузере закройте ту вкладку и нажмите "Войти" здесь еще раз.
+                                    После подтверждения в браузере закройте ту вкладку и нажмите &quot;Войти&quot; здесь еще раз.
                                 </span>
                             </p>
                         </div>

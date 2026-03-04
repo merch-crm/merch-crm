@@ -91,7 +91,7 @@ export function useCameraActions(
         setSelectedCamera,
         setLiveViewModalOpen,
     } = state
-    const { loginForm, reset: resetForm } = loginFormState
+    const { reset: resetForm } = loginFormState
     const router = useRouter()
 
     const handleXiaomiLogin = async (formData: FormData) => {

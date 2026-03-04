@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { db } from './lib/db';
 import { inventoryAttributeTypes, inventoryAttributes } from './lib/schema';
-import { eq, and, ne } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 async function main() {
     const types = await db.select().from(inventoryAttributeTypes);
@@ -13,7 +13,6 @@ async function main() {
         groups[t.name].push(t);
     }
 
-    let mergedAttributesCount = 0;
     let deletedTypesCount = 0;
 
     for (const name in groups) {
@@ -29,14 +28,14 @@ async function main() {
                 console.log(`Merging slug "${dupe.slug}" (ID: ${dupe.id}) into master slug "${canonical.slug}" (ID: ${canonical.id})`);
 
                 // Move attributes
-                const res = await db.update(inventoryAttributes)
+                await db.update(inventoryAttributes)
                     .set({ type: canonical.slug })
                     .where(eq(inventoryAttributes.type, dupe.slug));
 
                 // In case there are duplicates with same code in the same type now, we'll let the user handle it or log it
                 // But usually these were separate categories or just ghost duplicates.
 
-                mergedAttributesCount += 1; // Simplification, would need count from update res
+
 
                 // Delete the redundant type
                 await db.delete(inventoryAttributeTypes)

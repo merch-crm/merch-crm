@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { db } from './lib/db';
-import { inventoryAttributeTypes, inventoryAttributes } from './lib/schema';
+import { inventoryAttributes } from './lib/schema';
 import { eq } from 'drizzle-orm';
 
 const cleanupMap: Record<string, { full: string, short: string }> = {
@@ -69,11 +69,11 @@ async function main() {
   let updatedCount = 0;
 
   for (const a of attributes) {
-    let rawName = (a.name || "").toLowerCase().trim();
-    let meta = a.meta as Record<string, any> || {};
-    let rawFullName = (meta.fullName || "").toLowerCase().trim();
+    const rawName = (a.name || "").toLowerCase().trim();
+    const meta = a.meta as Record<string, unknown> || {};
+    const rawFullName = (meta.fullName as string || "").toLowerCase().trim();
 
-    let matched = cleanupMap[rawName] || cleanupMap[rawFullName];
+    const matched = cleanupMap[rawName] || cleanupMap[rawFullName];
 
     if (!matched) {
       // Fallbacks for standardizing what we don't know exactly

@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { db } from './lib/db';
-import { inventoryAttributeTypes, inventoryAttributes } from './lib/schema';
+import { inventoryAttributes } from './lib/schema';
 import { eq } from 'drizzle-orm';
 
 const namingMap: Record<string, string> = {
@@ -42,15 +42,15 @@ async function main() {
     let updatedCount = 0;
 
     for (const a of attributes) {
-        let meta = a.meta as Record<string, any> || {};
-        let currentFullName = (meta.fullName || "").toLowerCase().trim();
-        let currentShortName = (a.name || "").toLowerCase().trim();
+        const meta = a.meta as Record<string, unknown> || {};
+        const currentFullName = (meta.fullName as string || "").toLowerCase().trim();
+        const currentShortName = (a.name || "").toLowerCase().trim();
 
         // Strategy: 
         // If fullName is an abbreviation, swap it for the full word.
         // Ensure name (shortName) is actually the abbreviation.
 
-        let targetFullName = namingMap[currentFullName] || namingMap[currentShortName] || meta.fullName;
+        const targetFullName = namingMap[currentFullName] || namingMap[currentShortName] || (meta.fullName as string);
         let targetShortName = currentShortName;
 
         // Fix specific cases where short name was the full word
