@@ -36,13 +36,13 @@ async function main() {
 
       for (let i = 0; i < attrs.length; i++) {
         const a = attrs[i];
-        const meta = a.meta as any || {};
-        const fullName = meta.fullName || a.name;
+        const meta = a.meta as Record<string, unknown> || {};
+        const fullName = (meta.fullName as string) || a.name;
         const shortName = a.name;
         const hasShortName = (fullName.toLowerCase() !== shortName.toLowerCase() && shortName) ? shortName : "❌";
 
         if (i === 0) {
-          md += `| **${t.name}** | ${fullName} | ${hasShortName} | ${attrs.map(v => (v.meta as any)?.fullName || v.name).join(', ')} |\n`;
+          md += `| **${t.name}** | ${fullName} | ${hasShortName} | ${attrs.map(v => (v.meta as Record<string, unknown>)?.fullName || v.name).join(', ')} |\n`;
         } else {
           md += `| | ${fullName} | ${hasShortName} | |\n`;
         }

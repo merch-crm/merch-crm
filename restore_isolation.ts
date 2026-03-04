@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { db } from './lib/db';
 import { inventoryAttributeTypes, inventoryAttributes } from './lib/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import fs from 'fs';
 
 async function main() {
