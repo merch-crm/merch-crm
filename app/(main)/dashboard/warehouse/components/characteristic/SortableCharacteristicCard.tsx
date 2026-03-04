@@ -61,7 +61,9 @@ export function CharacteristicCardContent({
                             : <span className="font-bold text-xl leading-none pt-0.5">{type.name[0]}</span>}
                     </div>
                     <div>
-                        <h3 className="font-bold text-lg text-slate-800 leading-tight mb-1 group-hover:text-indigo-600 transition-colors">{type.name}</h3>
+                        <h3 className="font-bold text-lg text-slate-800 leading-tight mb-1 group-hover:text-indigo-600 transition-colors whitespace-normal break-words">
+                            {type.name === 'Единица измерения' ? 'Ед. измерения' : type.name}
+                        </h3>
                         <div className="flex flex-wrap items-center gap-1.5">
                             {type.isSystem && <span className="text-xs font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded-[4px]">Sys</span>}
                             {type.showInSku && <span className="text-xs font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-[4px]">в арт.</span>}

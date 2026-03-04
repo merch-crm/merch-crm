@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useMemo } from"react";
-import { LayoutGrid } from"lucide-react";
-import { useRouter } from"next/navigation";
-import { sortCategories } from"./category-utils";
-import { Session } from"@/lib/auth";
-import { InventoryItem, Category } from"./types";
-import { EditCategoryDialog } from"./edit-category-dialog";
-import { EmptyState } from"@/components/ui/empty-state";
-import { updateInventoryCategoriesOrder } from"./category-actions";
-import { useToast } from"@/components/ui/toast";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { LayoutGrid } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { sortCategories } from "./category-utils";
+import { Session } from "@/lib/auth";
+import { InventoryItem, Category } from "./types";
+import { EditCategoryDialog } from "./edit-category-dialog";
+import { EmptyState } from "@/components/ui/empty-state";
+import { updateInventoryCategoriesOrder } from "./category-actions";
+import { useToast } from "@/components/ui/toast";
 
 import {
     DndContext,
@@ -23,14 +23,14 @@ import {
     TouchSensor,
     DragOverlay,
     DragStartEvent,
-} from"@dnd-kit/core";
+} from "@dnd-kit/core";
 import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     rectSortingStrategy,
-} from"@dnd-kit/sortable";
-import { SortableCategoryCard, DragPreview } from"./components/SortableCategoryCard";
+} from "@dnd-kit/sortable";
+import { SortableCategoryCard, DragPreview } from "./components/SortableCategoryCard";
 
 interface InventoryClientProps {
     items?: InventoryItem[];
@@ -109,8 +109,15 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
         const { active, over } = event;
 
         if (over && active.id !== over.id) {
+            // Need to get the exact final array from state hook because closure might be stale
+            let finalCategories: Category[] = [];
+            setCategories((latestCategories) => {
+                finalCategories = latestCategories;
+                return latestCategories;
+            });
+
             try {
-                const updateItems = categories
+                const updateItems = finalCategories
                     .filter((c) => !c.isSystem)
                     .map((cat, index) => ({
                         id: cat.id,
@@ -119,11 +126,11 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
 
                 const res = await updateInventoryCategoriesOrder(updateItems);
                 if (!res.success) {
-                    toast(res.error ||"Ошибка","error");
+                    toast(res.error || "Ошибка", "error");
                     setCategories(preDragOrderRef.current);
                 }
             } catch {
-                toast("Ошибка при сохранении порядка","error");
+                toast("Ошибка при сохранении порядка", "error");
                 setCategories(preDragOrderRef.current);
             }
         }
@@ -161,8 +168,8 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
     }, []);
 
     const itemsByCategory = useMemo(() => {
-        const topLevelCategories = categories.filter((c) => !c.parentId || c.parentId ==="");
-        const subCategories = categories.filter((c) => c.parentId && c.parentId !=="");
+        const topLevelCategories = categories.filter((c) => !c.parentId || c.parentId === "");
+        const subCategories = categories.filter((c) => c.parentId && c.parentId !== "");
 
         return topLevelCategories.map(category => {
             const children = sortCategories(
@@ -228,7 +235,7 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
                     adjustScale={false}
                     dropAnimation={{
                         duration: 200,
-                        easing:"cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+                        easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
                     }}
                 >
                     {activeId && itemsByCategory.find((c) => c.id === activeId) ? (

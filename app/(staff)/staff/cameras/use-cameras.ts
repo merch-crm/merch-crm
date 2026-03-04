@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import { type DetectionZone } from '@/lib/schema/presence'
 import { toast } from 'sonner'
 import {
@@ -51,6 +52,7 @@ export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras
     const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null)
     const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null)
     const [liveViewModalOpen, setLiveViewModalOpen] = useState(false)
+    const [verificationUrl, setVerificationUrl] = useState<string | null>(null)
 
     return {
         accounts,
@@ -61,6 +63,7 @@ export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras
         deleteAccountId, setDeleteAccountId,
         selectedCamera, setSelectedCamera,
         liveViewModalOpen, setLiveViewModalOpen,
+        verificationUrl, setVerificationUrl
     }
 }
 
@@ -89,21 +92,33 @@ export function useCameraActions(
         setLiveViewModalOpen,
     } = state
     const { loginForm, reset: resetForm } = loginFormState
+    const router = useRouter()
 
-    const handleXiaomiLogin = async () => {
-        if (!loginForm.username || !loginForm.password) {
+    const handleXiaomiLogin = async (formData: FormData) => {
+        const username = formData.get('username') as string
+        const password = formData.get('password') as string
+        const region = formData.get('region') as string
+
+        if (!username || !password) {
             toast.error('Введите логин и пароль')
             return
         }
+
         startTransition(async () => {
-            const result = await loginXiaomiAccount(loginForm)
+            const result = await loginXiaomiAccount({ username, password, region })
             if (result.success) {
-                toast.success(`Аккаунт ${result.data?.nickname || loginForm.username} подключён`)
+                toast.success(`Аккаунт ${result.data?.nickname || username} подключён`)
+                state.setVerificationUrl(null)
                 setLoginModalOpen(false)
                 resetForm()
-                window.location.reload()
+                router.refresh()
             } else {
-                toast.error(result.error || 'Ошибка авторизации')
+                if (result.verificationUrl) {
+                    state.setVerificationUrl(result.verificationUrl)
+                    toast.info('Требуется подтверждение личности')
+                } else {
+                    toast.error(result.error || 'Ошибка авторизации')
+                }
             }
         })
     }
@@ -113,7 +128,7 @@ export function useCameraActions(
             const result = await syncXiaomiDevices(accountId)
             if (result.success) {
                 toast.success(`Синхронизировано: добавлено ${result.data?.added}, обновлено ${result.data?.updated}`)
-                window.location.reload()
+                router.refresh()
             } else {
                 toast.error(result.error || 'Ошибка синхронизации')
             }
@@ -127,7 +142,7 @@ export function useCameraActions(
             if (result.success) {
                 toast.success('Аккаунт удалён')
                 setDeleteAccountId(null)
-                window.location.reload()
+                router.refresh()
             } else {
                 toast.error(result.error || 'Ошибка удаления')
             }
@@ -160,20 +175,24 @@ export function useCameraActions(
         })
     }
 
-    const handleUpdateCamera = () => {
+    const handleUpdateCamera = async (formData: FormData) => {
         if (!selectedCamera) return
+
+        const name = formData.get('name') as string
+        const location = formData.get('location') as string
+        const confidenceThresholdRaw = formData.get('confidenceThreshold') as string
+        const confidenceThreshold = confidenceThresholdRaw ? parseFloat(confidenceThresholdRaw) : undefined
+
         startTransition(async () => {
             const result = await updateCameraSettings(selectedCamera.id, {
-                name: selectedCamera.name,
-                location: selectedCamera.location || undefined,
-                confidenceThreshold: typeof selectedCamera.confidenceThreshold === 'string'
-                    ? parseFloat(selectedCamera.confidenceThreshold)
-                    : (selectedCamera.confidenceThreshold ?? undefined)
+                name,
+                location: location || undefined,
+                confidenceThreshold
             })
             if (result.success) {
                 toast.success('Настройки сохранены')
                 setSettingsModalOpen(false)
-                window.location.reload()
+                router.refresh()
             } else {
                 toast.error(result.error || 'Ошибка сохранения')
             }

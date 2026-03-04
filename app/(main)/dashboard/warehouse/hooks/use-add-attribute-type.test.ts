@@ -59,41 +59,37 @@ describe('useAddAttributeType', () => {
 
     it('initializes with default values', () => {
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
-        expect(result.current.name).toBe('Общая'); // Derived from default dataType 'text'
-        expect(result.current.dataType).toBe('text');
+        expect(result.current.dataTypes).toEqual([]);
         expect(result.current.activeCategoryId).toBe('cat1'); // Default to first category
         expect(result.current.isOpen).toBe(false);
     });
 
-    it('name updates automatically when dataType changes', () => {
+    it('dataTypes updates automatically when toggleDataType changes', () => {
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
-            result.current.setDataType('color');
+            result.current.toggleDataType('color');
         });
 
-        // Name is always derived from DATA_TYPE_META
-        expect(result.current.name).toBe('Цвет');
-        expect(result.current.slug).toBe('color');
+        expect(result.current.dataTypes).toEqual(['color']);
     });
 
     it('handleOpen resets state properly', () => {
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
-            result.current.setDataType('dimensions');
+            result.current.toggleDataType('dimensions');
             result.current.setHasColor(true);
             result.current.handleOpen();
         });
 
         expect(result.current.isOpen).toBe(true);
-        expect(result.current.dataType).toBe('text'); // reset to default"text"
-        expect(result.current.name).toBe('Общая'); // auto-derived from 'text'
+        expect(result.current.dataTypes).toEqual([]); // reset to default empty array
         expect(result.current.hasColor).toBe(false);
         expect(result.current.error).toBeNull();
     });
 
-    it('handleCreate calls createInventoryAttributeType with auto-derived name', async () => {
+    it('handleCreate fails without any dataTypes selected', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
@@ -102,8 +98,8 @@ describe('useAddAttributeType', () => {
             await result.current.handleCreate();
         });
 
-        // Should succeed — name is auto-derived as 'Общая' from default 'text' type
-        expect(createInventoryAttributeType).toHaveBeenCalled();
+        expect(result.current.error).toBe('Выберите хотя бы один тип данных');
+        expect(createInventoryAttributeType).not.toHaveBeenCalled();
     });
 
     it('handleCreate succeeds and calls router.refresh()', async () => {
@@ -112,7 +108,7 @@ describe('useAddAttributeType', () => {
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
-            result.current.setDataType('material');
+            result.current.toggleDataType('material');
             result.current.setActiveCategoryId('cat2');
         });
 
@@ -138,15 +134,20 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleCreate fails and shows error toast', async () => {
-        (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: false, error: 'Database error' });
+        vi.mocked(createInventoryAttributeType).mockReset();
+        vi.mocked(createInventoryAttributeType).mockResolvedValue({ success: false, error: 'Database error' });
 
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+
+        act(() => {
+            result.current.toggleDataType('text');
+        });
 
         await act(async () => {
             await result.current.handleCreate();
         });
 
-        expect(result.current.error).toBe('Database error');
+        expect(createInventoryAttributeType).toHaveBeenCalled();
         expect(mockToast).toHaveBeenCalledWith('Database error', 'error');
         expect(playSound).toHaveBeenCalledWith('notification_error');
     });

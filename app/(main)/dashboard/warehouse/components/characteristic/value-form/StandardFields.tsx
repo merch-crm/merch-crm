@@ -1,10 +1,10 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from"react";
-import { LucideIcon, Palette, Layers } from"lucide-react";
-import { Input } from"@/components/ui/input";
-import { Switch } from"@/components/ui/switch";
-import { type ValueFormState, type TypeFormState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
-import { transliterateToSku } from"@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+import React, { type Dispatch, type SetStateAction } from "react";
+import { LucideIcon, Palette, Layers } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { type ValueFormState, type TypeFormState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 interface StandardFieldsProps {
     valueForm: ValueFormState;
@@ -54,7 +54,7 @@ export function StandardFields({
     return (
         <div className="space-y-3">
             <div className="space-y-1.5">
-                <label className="text-sm font-bold text-slate-700 block ml-1">Название назначения</label>
+                <label className="text-sm font-bold text-slate-700 block ml-1">Полное (название назначения)</label>
                 <Input
                     value={valueForm.name}
                     onChange={e => {

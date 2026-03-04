@@ -56,7 +56,8 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
         settingsModalOpen, setSettingsModalOpen,
         deleteAccountId, setDeleteAccountId,
         selectedCamera, setSelectedCamera,
-        liveViewModalOpen, setLiveViewModalOpen
+        liveViewModalOpen, setLiveViewModalOpen,
+        verificationUrl, setVerificationUrl
     } = camerasState
 
     const { loginForm, setLoginForm, showPassword, setShowPassword } = loginFormState
@@ -331,6 +332,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             Email или номер телефона
                         </label>
                         <Input
+                            name="username"
                             type="text"
                             placeholder="example@xiaomi.com"
                             className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
@@ -345,6 +347,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         </label>
                         <div className="relative">
                             <Input
+                                name="password"
                                 type={showPassword ? 'text' : 'password'}
                                 placeholder="••••••••"
                                 className="rounded-xl h-12 bg-slate-50 border-none shadow-inner pr-12"
@@ -366,6 +369,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             Регион сервера
                         </label>
                         <Select
+                            name="region"
                             value={loginForm.region}
                             onChange={(value) => setLoginForm(prev => ({ ...prev, region: value }))}
                             options={regions.map(r => ({ id: r.value, title: r.label }))}
@@ -376,6 +380,28 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             Выберите регион, который указан в вашем приложении Mi Home
                         </p>
                     </div>
+
+                    {verificationUrl && (
+                        <div className="bg-indigo-50 border-2 border-indigo-100 rounded-2xl p-4 animate-in slide-in-from-top-2 duration-300">
+                            <p className="text-xs text-indigo-800 leading-relaxed">
+                                <span className="font-bold flex items-center gap-2 mb-2">
+                                    <AlertCircle className="w-4 h-4" /> Требуется подтверждение:
+                                </span>
+                                Для завершения входа необходимо подтвердить личность в аккаунте Xiaomi.
+                                <a
+                                    href={verificationUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="block mt-3 p-3 bg-white border border-indigo-200 rounded-xl text-center font-bold text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
+                                >
+                                    Перейти к подтверждению →
+                                </a>
+                                <span className="block mt-2 text-[10px] text-indigo-400 font-medium">
+                                    После подтверждения в браузере закройте ту вкладку и нажмите "Войти" здесь еще раз.
+                                </span>
+                            </p>
+                        </div>
+                    )}
 
                     <div className="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4">
                         <p className="text-xs text-amber-800 leading-relaxed font-medium">
@@ -420,6 +446,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                 Название устройства
                             </label>
                             <Input
+                                name="name"
                                 className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
                                 value={selectedCamera.name}
                                 onChange={(e) => setSelectedCamera(prev =>
@@ -433,6 +460,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                 Расположение (локация)
                             </label>
                             <Input
+                                name="location"
                                 placeholder="Офис, Вход, Склад..."
                                 className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
                                 value={selectedCamera.location || ''}
@@ -452,6 +480,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                 </span>
                             </div>
                             <input
+                                name="confidenceThreshold"
                                 type="range"
                                 min="0.3"
                                 max="0.95"

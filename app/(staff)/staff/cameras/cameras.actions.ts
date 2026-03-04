@@ -43,7 +43,11 @@ export async function loginXiaomiAccount(formData: {
 
         if (!authResult.success) {
             console.error(`[Xiaomi Login] Failed: ${authResult.error}`)
-            return { success: false, error: authResult.error || 'Ошибка авторизации' }
+            return {
+                success: false,
+                error: authResult.error || 'Ошибка авторизации',
+                verificationUrl: authResult.verificationUrl
+            }
         }
 
         console.log(`[Xiaomi Login] Success for ${username}`)
@@ -115,6 +119,7 @@ async function xiaomiLogin(username: string, password: string, region: string): 
     userId?: string
     ssecurity?: string
     nickname?: string
+    verificationUrl?: string
 }> {
     try {
         // Определяем URL в зависимости от региона
@@ -178,7 +183,18 @@ async function xiaomiLogin(username: string, password: string, region: string): 
         })
 
         const step2Text = await step2Response.text()
+        console.log(`[Xiaomi Login] Step 2 Raw Response: ${step2Text}`)
         const step2Json = JSON.parse(step2Text.replace('&&&START&&&', ''))
+        console.log(`[Xiaomi Login] Step 2 JSON:`, JSON.stringify(step2Json, null, 2))
+
+        if (step2Json.notificationUrl) {
+            console.log(`[Xiaomi Login] Identity verification required: ${step2Json.notificationUrl}`)
+            return {
+                success: false,
+                error: 'Требуется подтверждение личности. Пожалуйста, перейдите по ссылке ниже, выполните подтверждение в браузере и попробуйте войти снова.',
+                verificationUrl: step2Json.notificationUrl
+            }
+        }
 
         // Проверяем результат
         if (step2Json.code !== 0) {
@@ -191,6 +207,7 @@ async function xiaomiLogin(username: string, password: string, region: string): 
                 [-32]: 'Слишком много попыток, попробуйте позже'
             }
 
+            console.log(`[Xiaomi Login] Auth failed with code: ${step2Json.code}`)
             return {
                 success: false,
                 error: errorMessages[step2Json.code] || `Ошибка авторизации (код: ${step2Json.code})`
@@ -202,11 +219,15 @@ async function xiaomiLogin(username: string, password: string, region: string): 
         const location = step2Json.location
         const nickname = step2Json.nick || step2Json.nickname
 
+        console.log(`[Xiaomi Login] Step 2 params: ssecurity=${!!ssecurity}, userId=${userId}, location=${!!location}`)
+
         if (!ssecurity || !userId) {
+            console.error(`[Xiaomi Login] Missing critical params in Step 2 JSON`)
             return { success: false, error: 'Не удалось получить токен авторизации' }
         }
 
         // Шаг 3: Получаем serviceToken
+        console.log(`[Xiaomi Login] Step 3: Fetching serviceToken from location`)
         const step3Response = await fetch(location, {
             method: 'GET',
             headers: {
@@ -217,6 +238,7 @@ async function xiaomiLogin(username: string, password: string, region: string): 
 
         // serviceToken в cookies
         const step3Cookies = step3Response.headers.get('set-cookie') || ''
+        console.log(`[Xiaomi Login] Step 3 Cookies: ${step3Cookies}`)
         const serviceTokenMatch = step3Cookies.match(/serviceToken=([^;]+)/)
         const serviceToken = serviceTokenMatch ? serviceTokenMatch[1] : null
 

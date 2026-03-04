@@ -1,9 +1,9 @@
-import { useState } from"react";
-import { useRouter, useSearchParams } from"next/navigation";
-import { useToast } from"@/components/ui/toast";
-import { createInventoryAttributeType } from"../attribute-actions";;
-import { playSound } from"@/lib/sounds";
-import type { Category } from"../types";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "@/components/ui/toast";
+import { createInventoryAttributeType } from "../attribute-actions";;
+import { playSound } from "@/lib/sounds";
+import type { Category } from "../types";
 
 export const transliterateToSlug = (text: string) => {
     const MAP: Record<string, string> = {
@@ -17,25 +17,25 @@ export const transliterateToSlug = (text: string) => {
 };
 
 
-export type DataTypeKey ="text" |"unit" |"color" |"dimensions" |"quantity" |"composition" |"material" |"size" |"brand" |"country" |"density" |"weight" |"volume" |"package" |"consumable";
+export type DataTypeKey = "text" | "unit" | "color" | "dimensions" | "quantity" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
 
 export const DATA_TYPE_META: Record<DataTypeKey, { name: string; slug: string }> = {
-    text: { name:"Общая", slug:"text" },
-    unit: { name:"Единица измерения", slug:"unit" },
-    color: { name:"Цвет", slug:"color" },
-    dimensions: { name:"Габариты", slug:"dimensions" },
-    quantity: { name:"Количество", slug:"quantity" },
+    text: { name: "Общая", slug: "text" },
+    unit: { name: "Единица измерения", slug: "unit" },
+    color: { name: "Цвет", slug: "color" },
+    dimensions: { name: "Габариты", slug: "dimensions" },
+    quantity: { name: "Количество", slug: "quantity" },
 
-    composition: { name:"Состав", slug:"composition" },
-    material: { name:"Материал", slug:"material" },
-    size: { name:"Размер", slug:"size" },
-    brand: { name:"Бренд", slug:"brand" },
-    country: { name:"Страна", slug:"country" },
-    density: { name:"Плотность", slug:"density" },
-    weight: { name:"Вес", slug:"weight" },
-    volume: { name:"Объем", slug:"volume" },
-    package: { name:"Упаковка", slug:"package" },
-    consumable: { name:"Расходники", slug:"consumable" },
+    composition: { name: "Состав", slug: "composition" },
+    material: { name: "Материал", slug: "material" },
+    size: { name: "Размер", slug: "size" },
+    brand: { name: "Бренд", slug: "brand" },
+    country: { name: "Страна", slug: "country" },
+    density: { name: "Плотность", slug: "density" },
+    weight: { name: "Вес", slug: "weight" },
+    volume: { name: "Объем", slug: "volume" },
+    package: { name: "Упаковка", slug: "package" },
+    consumable: { name: "Расходники", slug: "consumable" },
 };
 
 interface UseAddAttributeTypeProps {
@@ -45,7 +45,7 @@ interface UseAddAttributeTypeProps {
 export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [dataType, setDataTypeRaw] = useState<DataTypeKey>("text");
+    const [dataTypes, setDataTypesRaw] = useState<DataTypeKey[]>([]);
     const [isSystem, setIsSystem] = useState(false);
     const [hasColor, setHasColor] = useState(false);
     const [hasUnits, setHasUnits] = useState(false);
@@ -58,19 +58,15 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
 
     const rootCategories = categories.filter(c => !c.parentId);
     const catParam = searchParams.get("cat");
-    const [activeCategoryId, setActiveCategoryId] = useState<string>(catParam || (rootCategories.length > 0 ? rootCategories[0].id :"uncategorized"));
+    const [activeCategoryId, setActiveCategoryId] = useState<string>(catParam || (rootCategories.length > 0 ? rootCategories[0].id : "uncategorized"));
 
-    // Name and slug are always derived from the selected data type
-    const name = DATA_TYPE_META[dataType].name;
-    const slug = DATA_TYPE_META[dataType].slug;
-
-    const setDataType = (type: DataTypeKey) => {
-        setDataTypeRaw(type);
+    const toggleDataType = (type: DataTypeKey) => {
+        setDataTypesRaw(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
         setError(null);
     };
 
     const handleOpen = () => {
-        setDataTypeRaw("text");
+        setDataTypesRaw([]);
         setIsSystem(false);
         setHasColor(false);
         setHasUnits(false);
@@ -86,28 +82,44 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     };
 
     const handleCreate = async () => {
+        if (dataTypes.length === 0) {
+            setError("Выберите хотя бы один тип данных");
+            return;
+        }
 
         setIsLoading(true);
         setError(null);
         try {
-            const catIdToSave = activeCategoryId ==="uncategorized" ? undefined : activeCategoryId;
-            const res = await createInventoryAttributeType({
-                name, slug, category: catIdToSave, isSystem, dataType,
-                hasColor, hasUnits, hasComposition
-            });
-            if (res.success) {
-                toast("Новый раздел создан","success");
+            const catIdToSave = activeCategoryId === "uncategorized" ? undefined : activeCategoryId;
+            let allSuccess = true;
+
+            for (const type of dataTypes) {
+                const name = DATA_TYPE_META[type].name;
+                const slug = DATA_TYPE_META[type].slug;
+
+                const res = await createInventoryAttributeType({
+                    name, slug, category: catIdToSave, isSystem, dataType: type,
+                    hasColor, hasUnits, hasComposition
+                });
+
+                if (!res.success) {
+                    allSuccess = false;
+                    const errorMsg = res.error || `Ошибка создания: ${name}`;
+                    setError(errorMsg);
+                    toast(errorMsg, "error");
+                    playSound("notification_error");
+                    break;
+                }
+            }
+
+            if (allSuccess) {
+                toast(dataTypes.length > 1 ? "Разделы созданы" : "Новый раздел создан", "success");
                 playSound("notification_success");
                 setIsOpen(false);
                 router.refresh();
-            } else {
-                const errorMsg = res.error ||"Ошибка создания";
-                setError(errorMsg);
-                toast(errorMsg,"error");
-                playSound("notification_error");
             }
         } catch {
-            toast("Ошибка создания","error");
+            toast("Ошибка создания", "error");
         } finally {
             setIsLoading(false);
         }
@@ -116,9 +128,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     return {
         isOpen, setIsOpen,
         isLoading,
-        name,
-        slug,
-        dataType, setDataType,
+        dataTypes, toggleDataType,
         isSystem, setIsSystem,
         activeCategoryId, setActiveCategoryId,
         hasColor, setHasColor,
