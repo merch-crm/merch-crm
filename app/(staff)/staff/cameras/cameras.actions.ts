@@ -19,9 +19,11 @@ interface XiaomiDevice {
     localip: string
 }
 
-export async function loginXiaomiAccount(formData: {
-    username: string
-    password: string
+export async function addXiaomiAccountByToken(formData: {
+    email: string
+    userId: string
+    serviceToken: string
+    ssecurity: string
     region: string
 }) {
     try {
@@ -35,34 +37,20 @@ export async function loginXiaomiAccount(formData: {
             return { success: false, error: 'Forbidden' }
         }
 
-        const { username, password, region } = formData
+        const { email, userId, serviceToken, ssecurity, region } = formData
 
-        console.log(`[Xiaomi Login] Attempting login for ${username}, region: ${region}`)
-
-        // Шаг 1: Получаем cookies и _sign
-        const authResult = await xiaomiLogin(username, password, region)
-
-        if (!authResult.success) {
-            console.error(`[Xiaomi Login] Failed: ${authResult.error}`)
-            return {
-                success: false,
-                error: authResult.error || 'Ошибка авторизации',
-                verificationUrl: authResult.verificationUrl
-            }
-        }
-
-        console.log(`[Xiaomi Login] Success for ${username}`)
+        console.log(`[Xiaomi Token Auth] Adding account for ${email}, region: ${region}`)
 
         // Шифруем токены
         const encryptedToken = encrypt(JSON.stringify({
-            serviceToken: authResult.serviceToken,
-            userId: authResult.userId,
-            ssecurity: authResult.ssecurity
+            serviceToken,
+            userId,
+            ssecurity
         }))
 
         // Проверяем, есть ли уже такой аккаунт
         const existingAccount = await db.query.xiaomiAccounts.findFirst({
-            where: eq(xiaomiAccounts.xiaomiUserId, authResult.userId!)
+            where: eq(xiaomiAccounts.xiaomiUserId, userId)
         })
 
         let accountId: string
@@ -71,8 +59,8 @@ export async function loginXiaomiAccount(formData: {
             await db.update(xiaomiAccounts)
                 .set({
                     encryptedToken,
-                    email: username,
-                    nickname: authResult.nickname || username,
+                    email,
+                    nickname: email,
                     region,
                     isActive: true,
                     updatedAt: new Date()
@@ -82,9 +70,9 @@ export async function loginXiaomiAccount(formData: {
             accountId = existingAccount.id
         } else {
             const [newAccount] = await db.insert(xiaomiAccounts).values({
-                xiaomiUserId: authResult.userId!,
-                email: username,
-                nickname: authResult.nickname || username,
+                xiaomiUserId: userId,
+                email,
+                nickname: email,
                 encryptedToken,
                 region,
                 isActive: true,
@@ -94,20 +82,20 @@ export async function loginXiaomiAccount(formData: {
             accountId = newAccount.id
         }
 
-        await logAction('create', 'xiaomi_account', accountId, { email: username, region })
+        await logAction('create', 'xiaomi_account_token', accountId, { email, region })
         revalidatePath('/staff/cameras')
 
         return {
             success: true,
             data: {
                 accountId,
-                nickname: authResult.nickname || username
+                nickname: email
             }
         }
     } catch (error) {
-        console.error('[Xiaomi Login] Exception:', error)
-        logError({ error: error as Error, path: 'cameras.actions', method: 'loginXiaomiAccount' })
-        return { success: false, error: 'Ошибка подключения к Xiaomi' }
+        console.error('[Xiaomi Token Auth] Exception:', error)
+        logError({ error: error as Error, path: 'cameras.actions', method: 'addXiaomiAccountByToken' })
+        return { success: false, error: 'Ошибка сохранения аккаунта' }
     }
 }
 
@@ -159,7 +147,7 @@ async function clearPendingSession(username: string) {
     await db.delete(systemSettings).where(eq(systemSettings.key, key))
 }
 
-async function xiaomiLogin(username: string, password: string, region: string): Promise<{
+async function xiaomiLogin(username: string, password: string, _region: string): Promise<{
     success: boolean
     error?: string
     serviceToken?: string
@@ -173,7 +161,7 @@ async function xiaomiLogin(username: string, password: string, region: string): 
         const passwordHash = crypto.createHash('md5').update(password).digest('hex').toUpperCase()
 
         // Проверяем, есть ли сохранённая pending-сессия (после прохождения верификации)
-        let pendingSession = await getPendingSession(username)
+        const pendingSession = await getPendingSession(username)
 
         let cookies: string
         let sign: string
@@ -317,6 +305,33 @@ async function xiaomiLogin(username: string, password: string, region: string): 
 }
 
 // === Получение устройств ===
+
+export async function loginXiaomiAccount(data: { username: string; password: string; region: string }) {
+    try {
+        const session = await getSession()
+        if (!session) return { success: false, error: 'Unauthorized' }
+
+        const isAdmin = await checkIsAdmin(session)
+        if (!isAdmin) return { success: false, error: 'Forbidden' }
+
+        const loginResult = await xiaomiLogin(data.username, data.password, data.region);
+
+        if (!loginResult.success) {
+            return loginResult; // error or verificationUrl
+        }
+
+        return await addXiaomiAccountByToken({
+            email: data.username,
+            userId: loginResult.userId!,
+            serviceToken: loginResult.serviceToken!,
+            ssecurity: loginResult.ssecurity!,
+            region: data.region
+        });
+    } catch (error) {
+        logError({ error: error as Error, path: 'cameras.actions', method: 'loginXiaomiAccount' })
+        return { success: false, error: 'Ошибка авторизации' }
+    }
+}
 
 export async function syncXiaomiDevices(accountId: string) {
     try {

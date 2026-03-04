@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { type DetectionZone } from '@/lib/schema/presence'
 import { toast } from 'sonner'
 import {
-    loginXiaomiAccount,
+    addXiaomiAccountByToken,
     syncXiaomiDevices,
     deleteXiaomiAccount,
     toggleCamera,
@@ -52,7 +52,6 @@ export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras
     const [deleteAccountId, setDeleteAccountId] = useState<string | null>(null)
     const [selectedCamera, setSelectedCamera] = useState<Camera | null>(null)
     const [liveViewModalOpen, setLiveViewModalOpen] = useState(false)
-    const [verificationUrl, setVerificationUrl] = useState<string | null>(null)
 
     return {
         accounts,
@@ -62,18 +61,23 @@ export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras
         settingsModalOpen, setSettingsModalOpen,
         deleteAccountId, setDeleteAccountId,
         selectedCamera, setSelectedCamera,
-        liveViewModalOpen, setLiveViewModalOpen,
-        verificationUrl, setVerificationUrl
+        liveViewModalOpen, setLiveViewModalOpen
     }
 }
 
 export function useLoginForm() {
-    const [loginForm, setLoginForm] = useState({ username: '', password: '', region: 'ru' })
-    const [showPassword, setShowPassword] = useState(false)
+    const [loginForm, setLoginForm] = useState({
+        email: '',
+        userId: '',
+        serviceToken: '',
+        ssecurity: '',
+        region: 'ru'
+    })
 
-    const reset = () => setLoginForm({ username: '', password: '', region: 'cn' })
+    // reset password state is removed since we use tokens now
+    const reset = () => setLoginForm({ email: '', userId: '', serviceToken: '', ssecurity: '', region: 'ru' })
 
-    return { loginForm, setLoginForm, showPassword, setShowPassword, reset }
+    return { loginForm, setLoginForm, reset }
 }
 
 export function useCameraActions(
@@ -95,30 +99,26 @@ export function useCameraActions(
     const router = useRouter()
 
     const handleXiaomiLogin = async (formData: FormData) => {
-        const username = formData.get('username') as string
-        const password = formData.get('password') as string
+        const email = formData.get('email') as string
+        const userId = formData.get('userId') as string
+        const serviceToken = formData.get('serviceToken') as string
+        const ssecurity = formData.get('ssecurity') as string
         const region = formData.get('region') as string
 
-        if (!username || !password) {
-            toast.error('Введите логин и пароль')
+        if (!email || !userId || !serviceToken || !ssecurity) {
+            toast.error('Заполните все обязательные поля')
             return
         }
 
         startTransition(async () => {
-            const result = await loginXiaomiAccount({ username, password, region })
+            const result = await addXiaomiAccountByToken({ email, userId, serviceToken, ssecurity, region })
             if (result.success) {
-                toast.success(`Аккаунт ${result.data?.nickname || username} подключён`)
-                state.setVerificationUrl(null)
+                toast.success(`Аккаунт ${result.data?.nickname || email} подключён`)
                 setLoginModalOpen(false)
                 resetForm()
                 router.refresh()
             } else {
-                if (result.verificationUrl) {
-                    state.setVerificationUrl(result.verificationUrl)
-                    toast.info('Требуется подтверждение личности')
-                } else {
-                    toast.error(result.error || 'Ошибка авторизации')
-                }
+                toast.error(result.error || 'Ошибка сохранения аккаунта')
             }
         })
     }

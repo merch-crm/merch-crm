@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:push": "drizzle-kit push --force",
+    "xiaomi-token": "node scripts/xiaomi-token-extractor.js",
     "audit": "npx tsx scripts/audit.ts",
     "audit:quick": "npx tsc --noEmit && npm run lint",
     "audit:fix": "npm run lint -- --fix",

@@ -56,11 +56,10 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
         settingsModalOpen, setSettingsModalOpen,
         deleteAccountId, setDeleteAccountId,
         selectedCamera, setSelectedCamera,
-        liveViewModalOpen, setLiveViewModalOpen,
-        verificationUrl
+        liveViewModalOpen, setLiveViewModalOpen
     } = camerasState
 
-    const { loginForm, setLoginForm, showPassword, setShowPassword } = loginFormState
+    const { loginForm, setLoginForm, reset: resetLoginForm } = loginFormState
 
     const statusConfig = {
         online: { label: 'Онлайн', icon: Wifi, color: 'text-green-600 bg-green-50' },
@@ -328,40 +327,59 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
             >
                 <form onSubmit={(e) => { e.preventDefault(); handleXiaomiLogin(new FormData(e.currentTarget)) }} className="space-y-3 py-6 px-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-900  tracking-wider">
-                            Email или номер телефона
+                        <label className="text-sm font-bold text-slate-900 tracking-wider">
+                            Email (для идентификации)
                         </label>
                         <Input
-                            name="username"
-                            type="text"
+                            name="email"
+                            type="email"
                             placeholder="example@xiaomi.com"
                             className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
-                            value={loginForm.username}
-                            onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
+                            value={loginForm.email}
+                            onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-slate-900  tracking-wider">
-                            Пароль
+                        <label className="text-sm font-bold text-slate-900 tracking-wider">
+                            User ID (xiaomiUserId)
                         </label>
-                        <div className="relative">
-                            <Input
-                                name="password"
-                                type={showPassword ? 'text' : 'password'}
-                                placeholder="••••••••"
-                                className="rounded-xl h-12 bg-slate-50 border-none shadow-inner pr-12"
-                                value={loginForm.password}
-                                onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                            />
-                            <button
-                                type="button"
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                        </div>
+                        <Input
+                            name="userId"
+                            type="text"
+                            placeholder="Например: 1234567890"
+                            className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
+                            value={loginForm.userId}
+                            onChange={(e) => setLoginForm(prev => ({ ...prev, userId: e.target.value }))}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-900 tracking-wider">
+                            Service Token
+                        </label>
+                        <Input
+                            name="serviceToken"
+                            type="text"
+                            placeholder="Длинная строка токена"
+                            className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
+                            value={loginForm.serviceToken}
+                            onChange={(e) => setLoginForm(prev => ({ ...prev, serviceToken: e.target.value }))}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-900 tracking-wider">
+                            ssecurity Token
+                        </label>
+                        <Input
+                            name="ssecurity"
+                            type="text"
+                            placeholder="Например: aBcDeFgHiJkLmNoP12345w=="
+                            className="rounded-xl h-12 bg-slate-50 border-none shadow-inner"
+                            value={loginForm.ssecurity}
+                            onChange={(e) => setLoginForm(prev => ({ ...prev, ssecurity: e.target.value }))}
+                        />
                     </div>
 
                     <div className="space-y-2">
@@ -382,34 +400,12 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         </p>
                     </div>
 
-                    {verificationUrl && (
-                        <div className="bg-indigo-50 border-2 border-indigo-100 rounded-2xl p-4 animate-in slide-in-from-top-2 duration-300">
-                            <p className="text-xs text-indigo-800 leading-relaxed">
-                                <span className="font-bold flex items-center gap-2 mb-2">
-                                    <AlertCircle className="w-4 h-4" /> Требуется подтверждение:
-                                </span>
-                                Для завершения входа необходимо подтвердить личность в аккаунте Xiaomi.
-                                <a
-                                    href={verificationUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block mt-3 p-3 bg-white border border-indigo-200 rounded-xl text-center font-bold text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all shadow-sm"
-                                >
-                                    Перейти к подтверждению →
-                                </a>
-                                <span className="block mt-2 text-[10px] text-indigo-400 font-medium">
-                                    После подтверждения в браузере закройте ту вкладку и нажмите &quot;Войти&quot; здесь еще раз.
-                                </span>
-                            </p>
-                        </div>
-                    )}
-
                     <div className="bg-amber-50 border-2 border-amber-100 rounded-2xl p-4">
                         <p className="text-xs text-amber-800 leading-relaxed font-medium">
                             <span className="font-bold flex items-center gap-2 mb-1">
-                                <AlertCircle className="w-4 h-4" /> Внимание:
+                                <AlertCircle className="w-4 h-4" /> Инструкция по получению токена:
                             </span>
-                            Убедитесь, что двухфакторная аутентификация отключена в вашем аккаунте Xiaomi, или создайте пароль приложения.
+                            Для обхода защиты Xiaomi 2FA необходимо извлечь токен вручную. Запустите консольный скрипт <code>npm run xiaomi-token</code> на вашем компьютере для получения User ID, Service Token и ssecurity.
                         </p>
                     </div>
 

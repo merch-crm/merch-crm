@@ -218,7 +218,7 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
                         {itemsByCategory.map((category) => (
                             <div
                                 key={category.id}
-                                className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(25%-12px)] min-w-[240px]"
+                                className="flex-grow flex-shrink basis-full sm:basis-[calc(50%-12px)] lg:basis-[calc(25%-12px)] min-w-[240px] transition-[flex-grow,width] duration-300"
                             >
                                 <SortableCategoryCard
                                     category={category}
