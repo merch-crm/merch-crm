@@ -1,7 +1,11 @@
-const https = require('https');
-const crypto = require('crypto');
-const querystring = require('querystring');
-const readline = require('readline');
+/**
+ * Xiaomi Token Extractor (Native Node.js v18+)
+ * Использует встроенный fetch API для избежания проблем с socket hang up.
+ */
+
+import crypto from 'crypto';
+import querystring from 'querystring';
+import readline from 'readline';
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -14,34 +18,30 @@ function md5(str) {
     return crypto.createHash('md5').update(str).digest('hex').toUpperCase();
 }
 
-function request(url, options, data = null) {
-    return new Promise((resolve, reject) => {
-        const req = https.request(url, options, (res) => {
-            let body = '';
-            res.on('data', (chunk) => body += chunk);
-            res.on('end', () => resolve({
-                status: res.statusCode,
-                headers: res.headers,
-                body
-            }));
-        });
+async function requestFetch(url, options, body = null) {
+    if (body) {
+        options.body = body;
+    }
 
-        req.on('error', reject);
+    if (options.method === 'POST' && !options.headers['Content-Type']) {
+        options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    }
 
-        if (data) {
-            req.write(data);
-        }
-        req.end();
-    });
+    try {
+        const response = await fetch(url, options);
+        const responseText = await response.text();
+        return {
+            status: response.status,
+            headers: Object.fromEntries(response.headers.entries()),
+            body: responseText
+        };
+    } catch (err) {
+        throw new Error(`Ошибка сети (${url}): ${err.message}`);
+    }
 }
 
-function parseCookies(cookieHeaders) {
-    if (!cookieHeaders) return '';
-    return cookieHeaders.map(c => c.split(';')[0]).join('; ');
-}
-
-async function login() {
-    console.log('\n=== Структура извлечения токенов Xiaomi ===\n');
+async function extractXiaomiTokens() {
+    console.log('\n=== Извлечение токенов Xiaomi ===\n');
     console.log('Скрипт поможет получить userId, serviceToken и ssecurity для CRM.\n');
 
     const username = await question('Введите email или номер телефона Xiaomi: ');
@@ -59,7 +59,7 @@ async function login() {
 
     try {
         console.log('\n[1/3] Получение сессионных cookie...');
-        const step1Response = await request(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
+        const step1Response = await requestFetch(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
             method: 'GET',
             headers: { 'User-Agent': userAgent }
         });
@@ -70,7 +70,12 @@ async function login() {
         const sign = step1Json._sign;
         const sid = step1Json.sid || 'xiaomiio';
         const callback = step1Json.callback || 'https://sts.api.io.mi.com/sts';
-        let cookies = parseCookies(step1Response.headers['set-cookie']);
+
+        const rawCookies = step1Response.headers['set-cookie'] || '';
+        let cookies = rawCookies;
+        if (typeof rawCookies === 'string') {
+            cookies = rawCookies.split(',').map(c => c.split(';')[0]).join('; ');
+        }
 
         const authParams = querystring.stringify({
             sid: sid,
@@ -83,11 +88,10 @@ async function login() {
         });
 
         console.log('[2/3] Авторизация...');
-        const step2Response = await request(`${baseUrl}/pass/serviceLoginAuth2`, {
+        const step2Response = await requestFetch(`${baseUrl}/pass/serviceLoginAuth2`, {
             method: 'POST',
             headers: {
                 'User-Agent': userAgent,
-                'Content-Type': 'application/x-www-form-urlencoded',
                 'Cookie': cookies
             }
         }, authParams);
@@ -103,12 +107,10 @@ async function login() {
             await question('2. После успешного подтверждения в браузере, нажмите ENTER здесь...');
 
             console.log('\nПовторная попытка авторизации...');
-            // Повторный запрос после ручной верификации
-            const retryResponse = await request(`${baseUrl}/pass/serviceLoginAuth2`, {
+            const retryResponse = await requestFetch(`${baseUrl}/pass/serviceLoginAuth2`, {
                 method: 'POST',
                 headers: {
                     'User-Agent': userAgent,
-                    'Content-Type': 'application/x-www-form-urlencoded',
                     'Cookie': cookies
                 }
             }, authParams);
@@ -125,28 +127,24 @@ async function login() {
 
         const ssecurity = step2Json.ssecurity;
         const userId = step2Json.userId;
-        const passToken = step2Json.passToken;
         const locationUrl = step2Json.location;
-        const nonce = step2Json.nonce;
 
         if (!locationUrl) {
-            console.error('\nНе удалось получить location URL. Возможно, потребуется QR-код флоу (не поддерживается данным простым скриптом).');
+            console.error('\nНе удалось получить location URL. Возможно, потребуется использовать официальное приложение.');
             rl.close();
             return;
         }
 
         console.log('[3/3] Обмен Token на ServiceToken...');
-        // Имитируем переход по location для STS обмена
-        const stsResponse = await request(locationUrl, {
+        const stsResponse = await requestFetch(locationUrl, {
             method: 'GET',
             headers: { 'User-Agent': userAgent }
         });
 
-        let finalCookies = parseCookies(stsResponse.headers['set-cookie']);
-
+        const finalRawCookies = stsResponse.headers['set-cookie'] || '';
         let serviceToken = '';
-        if (finalCookies) {
-            const match = finalCookies.match(/serviceToken=([^;]+)/);
+        if (typeof finalRawCookies === 'string') {
+            const match = finalRawCookies.match(/serviceToken=([^;,\s]+)/);
             if (match) serviceToken = match[1];
         }
 
@@ -171,4 +169,4 @@ async function login() {
     }
 }
 
-login();
+extractXiaomiTokens();
