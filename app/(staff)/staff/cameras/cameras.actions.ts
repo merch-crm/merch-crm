@@ -2,6 +2,7 @@
 
 import { db } from '@/lib/db'
 import { xiaomiAccounts, cameras, workstations } from '@/lib/schema/presence'
+import { systemSettings } from '@/lib/schema/system'
 import { eq, desc, inArray } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { checkIsAdmin } from '@/lib/admin'
@@ -112,6 +113,52 @@ export async function loginXiaomiAccount(formData: {
 
 // === Xiaomi Authentication ===
 
+// Время жизни pending сессии - 15 минут
+const PENDING_SESSION_TTL_MS = 15 * 60 * 1000
+
+async function savePendingSession(username: string, data: {
+    cookies: string
+    sign: string
+    sid: string
+    callback: string
+    baseUrl: string
+    passwordHash: string
+}) {
+    const key = `xiaomi_pending_${crypto.createHash('md5').update(username).digest('hex')}`
+    await db.insert(systemSettings)
+        .values({
+            key,
+            value: { ...data, expiresAt: Date.now() + PENDING_SESSION_TTL_MS } as Record<string, unknown>,
+            updatedAt: new Date(),
+            createdAt: new Date()
+        })
+        .onConflictDoUpdate({
+            target: systemSettings.key,
+            set: {
+                value: { ...data, expiresAt: Date.now() + PENDING_SESSION_TTL_MS } as Record<string, unknown>,
+                updatedAt: new Date()
+            }
+        })
+}
+
+async function getPendingSession(username: string) {
+    const key = `xiaomi_pending_${crypto.createHash('md5').update(username).digest('hex')}`
+    const row = await db.query.systemSettings.findFirst({ where: eq(systemSettings.key, key) })
+    if (!row) return null
+    const data = row.value as Record<string, unknown>
+    if ((data.expiresAt as number) < Date.now()) {
+        // Просрочена
+        await db.delete(systemSettings).where(eq(systemSettings.key, key))
+        return null
+    }
+    return data as { cookies: string; sign: string; sid: string; callback: string; baseUrl: string; passwordHash: string }
+}
+
+async function clearPendingSession(username: string) {
+    const key = `xiaomi_pending_${crypto.createHash('md5').update(username).digest('hex')}`
+    await db.delete(systemSettings).where(eq(systemSettings.key, key))
+}
+
 async function xiaomiLogin(username: string, password: string, region: string): Promise<{
     success: boolean
     error?: string
@@ -122,46 +169,49 @@ async function xiaomiLogin(username: string, password: string, region: string): 
     verificationUrl?: string
 }> {
     try {
-        // Определяем URL в зависимости от региона
-        const regionUrls: Record<string, string> = {
-            'cn': 'https://account.xiaomi.com',
-            'de': 'https://account.xiaomi.com',
-            'us': 'https://account.xiaomi.com',
-            'ru': 'https://account.xiaomi.com',
-            'tw': 'https://account.xiaomi.com',
-            'sg': 'https://account.xiaomi.com',
-            'in': 'https://account.xiaomi.com'
-        }
-
-        const baseUrl = regionUrls[region] || regionUrls['cn']
-
-        // Шаг 1: Получаем начальные cookies
-        const step1Response = await fetch(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
-            method: 'GET',
-            headers: {
-                'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        })
-
-        if (!step1Response.ok) {
-            return { success: false, error: 'Не удалось подключиться к серверу Xiaomi' }
-        }
-
-        const step1Text = await step1Response.text()
-        // Xiaomi возвращает JSON с префиксом &&&START&&&
-        const step1Json = JSON.parse(step1Text.replace('&&&START&&&', ''))
-
-        const sign = step1Json._sign
-        const sid = step1Json.sid || 'xiaomiio'
-        const callback = step1Json.callback || 'https://sts.api.io.mi.com/sts'
-
-        // Получаем cookies
-        const cookies = step1Response.headers.get('set-cookie') || ''
-
-        // Шаг 2: Авторизация
+        const baseUrl = 'https://account.xiaomi.com'
         const passwordHash = crypto.createHash('md5').update(password).digest('hex').toUpperCase()
 
+        // Проверяем, есть ли сохранённая pending-сессия (после прохождения верификации)
+        let pendingSession = await getPendingSession(username)
+
+        let cookies: string
+        let sign: string
+        let sid: string
+        let callback: string
+
+        if (pendingSession) {
+            // Используем сохранённые данные сессии
+            console.log(`[Xiaomi Login] Reusing pending session for ${username}`)
+            cookies = pendingSession.cookies
+            sign = pendingSession.sign
+            sid = pendingSession.sid
+            callback = pendingSession.callback
+        } else {
+            // Шаг 1: Получаем начальные cookies
+            console.log(`[Xiaomi Login] Step 1: Getting session cookies for ${username}`)
+            const step1Response = await fetch(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
+                method: 'GET',
+                headers: {
+                    'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+
+            if (!step1Response.ok) {
+                return { success: false, error: 'Не удалось подключиться к серверу Xiaomi' }
+            }
+
+            const step1Text = await step1Response.text()
+            const step1Json = JSON.parse(step1Text.replace('&&&START&&&', ''))
+
+            sign = step1Json._sign
+            sid = step1Json.sid || 'xiaomiio'
+            callback = step1Json.callback || 'https://sts.api.io.mi.com/sts'
+            cookies = step1Response.headers.get('set-cookie') || ''
+        }
+
+        // Шаг 2: Авторизация
         const authParams = new URLSearchParams({
             'sid': sid,
             'hash': passwordHash,
@@ -172,6 +222,7 @@ async function xiaomiLogin(username: string, password: string, region: string): 
             '_json': 'true'
         })
 
+        console.log(`[Xiaomi Login] Step 2: Authenticating ${username}`)
         const step2Response = await fetch(`${baseUrl}/pass/serviceLoginAuth2`, {
             method: 'POST',
             headers: {
@@ -188,7 +239,9 @@ async function xiaomiLogin(username: string, password: string, region: string): 
         console.log(`[Xiaomi Login] Step 2 JSON:`, JSON.stringify(step2Json, null, 2))
 
         if (step2Json.notificationUrl) {
-            console.log(`[Xiaomi Login] Identity verification required: ${step2Json.notificationUrl}`)
+            // Сохраняем сессию для следующей попытки (после верификации)
+            console.log(`[Xiaomi Login] Saving pending session and returning verification URL`)
+            await savePendingSession(username, { cookies, sign, sid, callback, baseUrl, passwordHash })
             return {
                 success: false,
                 error: 'Требуется подтверждение личности. Пожалуйста, перейдите по ссылке ниже, выполните подтверждение в браузере и попробуйте войти снова.',
@@ -196,9 +249,13 @@ async function xiaomiLogin(username: string, password: string, region: string): 
             }
         }
 
+        // Очищаем pending-сессию если она была
+        if (pendingSession) {
+            await clearPendingSession(username)
+        }
+
         // Проверяем результат
         if (step2Json.code !== 0) {
-            // Расшифровываем ошибку
             const errorMessages: Record<number, string> = {
                 70016: 'Неверный логин или пароль',
                 70001: 'Аккаунт не найден',
@@ -233,10 +290,9 @@ async function xiaomiLogin(username: string, password: string, region: string): 
             headers: {
                 'User-Agent': 'Android-7.1.1-1.0.0-ONEPLUS A3010-136-NFVQWEASDFGHQWER MiijiaSDK/ONEPLUS A3010 App/xiaomi.smarthome APPV/62830'
             },
-            redirect: 'manual' // Не следуем редиректам автоматически
+            redirect: 'manual'
         })
 
-        // serviceToken в cookies
         const step3Cookies = step3Response.headers.get('set-cookie') || ''
         console.log(`[Xiaomi Login] Step 3 Cookies: ${step3Cookies}`)
         const serviceTokenMatch = step3Cookies.match(/serviceToken=([^;]+)/)

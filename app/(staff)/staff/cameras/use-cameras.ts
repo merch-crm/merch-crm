@@ -68,7 +68,7 @@ export function useCamerasState(initialAccounts: XiaomiAccount[], initialCameras
 }
 
 export function useLoginForm() {
-    const [loginForm, setLoginForm] = useState({ username: '', password: '', region: 'cn' })
+    const [loginForm, setLoginForm] = useState({ username: '', password: '', region: 'ru' })
     const [showPassword, setShowPassword] = useState(false)
 
     const reset = () => setLoginForm({ username: '', password: '', region: 'cn' })

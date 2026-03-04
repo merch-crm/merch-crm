@@ -49,28 +49,45 @@ export const SortableCategoryCard = React.memo(({
     const lastWideRef = useRef(false);
     const lastExtraWideRef = useRef(false);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    // Refs to avoid stale closures inside ResizeObserver and setTimeout callbacks
+    const isAnyDraggingRef = useRef(isAnyDragging);
+    const isDraggingRef = useRef(isDragging);
+    useEffect(() => { isAnyDraggingRef.current = isAnyDragging; }, [isAnyDragging]);
+    useEffect(() => { isDraggingRef.current = isDragging; }, [isDragging]);
 
-    // Force layout check when THIS card finishes being dragged (DOM needs ~50ms to settle)
+    // postDragFreezeRef: keeps the ResizeObserver paused for 300ms after drag ends
+    // This prevents the observer from firing mid-animation and giving wrong readings
+    const postDragFreezeRef = useRef(false);
+    const postDragTimerRef = useRef<NodeJS.Timeout | null>(null);
+
     useEffect(() => {
-        if (!isDragging && cardRef.current) {
-            const timer = setTimeout(() => {
+        if (!isDragging && !isAnyDragging) {
+            // Freeze observer until drop animation completes (200ms) + buffer = 300ms
+            postDragFreezeRef.current = true;
+            if (postDragTimerRef.current) clearTimeout(postDragTimerRef.current);
+
+            postDragTimerRef.current = setTimeout(() => {
+                postDragFreezeRef.current = false;
                 if (!cardRef.current) return;
+
+                // Single authoritative recheck after DOM has fully settled
                 const width = cardRef.current.getBoundingClientRect().width;
+                const wideThreshold = 380;
+                const extraWideThreshold = 930;
+                const nextWide = width > wideThreshold + 10;
+                const nextExtraWide = width > extraWideThreshold + 10;
 
-                const nextWide = width > 390;
-                const nextExtraWide = width > 940;
-
-                if (nextWide !== lastWideRef.current || nextExtraWide !== lastExtraWideRef.current) {
-                    lastWideRef.current = nextWide;
-                    lastExtraWideRef.current = nextExtraWide;
-                    setIsWide(nextWide);
-                    setIsExtraWide(nextExtraWide);
-                    onLayoutChange?.(category.id, nextWide, nextExtraWide);
-                }
-            }, 50);
-            return () => clearTimeout(timer);
+                lastWideRef.current = nextWide;
+                lastExtraWideRef.current = nextExtraWide;
+                setIsWide(nextWide);
+                setIsExtraWide(nextExtraWide);
+                onLayoutChange?.(category.id, nextWide, nextExtraWide);
+            }, 300);
         }
-    }, [isDragging, category.id, onLayoutChange]);
+        return () => {
+            if (postDragTimerRef.current) clearTimeout(postDragTimerRef.current);
+        };
+    }, [isDragging, isAnyDragging, category.id, onLayoutChange]);
 
     useEffect(() => {
         if (!cardRef.current) return;
@@ -79,9 +96,8 @@ export const SortableCategoryCard = React.memo(({
             const entry = entries[0];
             if (!entry) return;
 
-            // Only suppress observer for THIS card when it is actively being dragged
-            // Sibling cards must keep observing so flex-grow reflows are tracked correctly
-            if (isDragging) return;
+            // Use refs to avoid stale closure — isAnyDragging/isDragging may be stale otherwise
+            if (isDraggingRef.current || isAnyDraggingRef.current || postDragFreezeRef.current) return;
 
             const width = entry.contentRect.width;
 
