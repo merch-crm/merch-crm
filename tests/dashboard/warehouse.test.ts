@@ -76,18 +76,20 @@ import {
 describe('getInventoryItems', () => {
     beforeEach(() => vi.clearAllMocks());
 
-    vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-    const items = [{ id: 'i1', name: 'Item 1', quantity: 10 }];
-    mockFindMany.mockResolvedValueOnce(items);
-    mockSelect.mockReturnValue({
-        from: vi.fn().mockReturnValue({
-            where: vi.fn().mockReturnValue({
-                limit: vi.fn().mockResolvedValue([{ count: 1 }]),
+    it('возвращает список товаров без фильтров', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        const items = [{ id: 'i1', name: 'Item 1', quantity: 10 }];
+        mockFindMany.mockResolvedValueOnce(items);
+        mockSelect.mockReturnValue({
+            from: vi.fn().mockReturnValue({
+                where: vi.fn().mockReturnValue({
+                    limit: vi.fn().mockResolvedValue([{ count: 1 }]),
+                }),
             }),
-        }),
+        });
+        const result = await getInventoryItems();
+        expect(result.success).toBe(true);
     });
-    const result = await getInventoryItems();
-    expect(result.success).toBe(true);
 });
 
 it('возвращает ошибку при сбое БД', async () => {

@@ -34,6 +34,7 @@ export async function getLoyaltyLevels(): Promise<ActionResult<LoyaltyLevel[]>> 
  * Создать уровень лояльности
  */
 export async function createLoyaltyLevel(data: Omit<LoyaltyLevel, "id" | "createdAt" | "updatedAt">): Promise<ActionResult<LoyaltyLevel>> {
+    const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Доступ запрещен" };
 
     try {
@@ -59,6 +60,7 @@ export async function createLoyaltyLevel(data: Omit<LoyaltyLevel, "id" | "create
  * Обновить уровень лояльности
  */
 export async function updateLoyaltyLevel(id: string, data: Partial<Omit<LoyaltyLevel, "id" | "createdAt" | "updatedAt">>): Promise<ActionResult<LoyaltyLevel>> {
+    const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Доступ запрещен" };
 
     const validated = z.object({
@@ -88,6 +90,7 @@ export async function updateLoyaltyLevel(id: string, data: Partial<Omit<LoyaltyL
  * Переключить активность уровня лояльности
  */
 export async function toggleLoyaltyLevelActive(id: string, isActive: boolean): Promise<ActionResult<LoyaltyLevel>> {
+    const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Доступ запрещен" };
 
     const validated = z.object({
@@ -138,6 +141,7 @@ export async function deleteLoyaltyLevel(id: string): Promise<ActionResult> {
  * Изменить порядок уровней
  */
 export async function reorderLoyaltyLevels(items: { id: string; priority: number }[]): Promise<ActionResult> {
+    const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Доступ запрещен" };
 
     const validated = z.array(z.object({
@@ -170,6 +174,7 @@ export async function reorderLoyaltyLevels(items: { id: string; priority: number
  * Установить уровень лояльности клиента (вручную или авто)
  */
 export async function setClientLoyaltyLevel(clientId: string, levelId: string | null, setManually: boolean = false): Promise<ActionResult> {
+    const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = z.object({
@@ -205,6 +210,7 @@ export async function setClientLoyaltyLevel(clientId: string, levelId: string | 
  * Пересчитать лояльность для всех клиентов
  */
 export async function recalculateAllClientsLoyalty(): Promise<ActionResult<{ updatedCount: number }>> {
+    const session = await getSession();
     if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Доступ запрещен" };
 
     try {
