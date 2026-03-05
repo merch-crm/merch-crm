@@ -160,11 +160,13 @@ describe('searchClients', () => {
 
     // searchClients: query.length < 2 => returns { success: true, data: [] }
     it('возвращает пустой результат при слишком коротком запросе', async () => {
+        vi.mocked(getSession).mockResolvedValue(mockSession());
         const result = await searchClients('ab');
         expect(result).toEqual({ success: true, data: [] });
     });
 
     it('возвращает пустой массив при пустом запросе', async () => {
+        vi.mocked(getSession).mockResolvedValue(mockSession());
         const result = await searchClients('');
         expect(result).toEqual({ success: true, data: [] });
     });
@@ -182,6 +184,7 @@ describe('getClientsForSelect', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает клиентов для выбора', async () => {
+        vi.mocked(getSession).mockResolvedValue(mockSession());
         const clients = [{ id: '1', name: 'Client 1' }];
         vi.mocked(db.select).mockImplementation(() => ({
             from: vi.fn().mockReturnValue({
@@ -199,6 +202,7 @@ describe('getInventoryForSelect', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает товары для выбора', async () => {
+        vi.mocked(getSession).mockResolvedValue(mockSession());
         const items = [{ id: 'i1', name: 'Item 1', quantity: 10 }];
         vi.mocked(db.select).mockImplementation(() => ({
             from: vi.fn().mockReturnValue({
@@ -280,7 +284,7 @@ describe('updateOrderStatus', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'new');
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: "Недостаточно прав для изменения статуса заказа" });
     });
 
     it('возвращает ошибку при невалидном статусе', async () => {

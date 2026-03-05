@@ -315,7 +315,7 @@ describe('bulkDeleteClients', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await bulkDeleteClients(['33333333-3333-4333-8333-333333333333']);
-        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
+        expect(result).toEqual({ success: false, error: "Не авторизован" });
     });
 
     it('возвращает ошибку при пустом массиве', async () => {

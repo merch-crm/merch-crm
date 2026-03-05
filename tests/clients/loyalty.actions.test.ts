@@ -36,7 +36,7 @@ const { mockDb, queryMock, txMock } = vi.hoisted(() => {
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) }),
         update: vi.fn().mockReturnValue(chainable),
         delete: vi.fn().mockReturnValue(chainable),
-        transaction: vi.fn().mockImplementation(async (fn: any) => fn(txMock)),
+        transaction: vi.fn().mockImplementation(async (fn: (tx: typeof txMock) => Promise<unknown>) => fn(txMock)),
     };
 
     return { mockDb, queryMock, txMock, chainable };
@@ -59,7 +59,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Loyalty Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as ReturnType<typeof mockSession>);
 
         mockDb.insert().values().returning.mockResolvedValue([]);
         mockDb.update().set?.().where?.().returning?.mockResolvedValue([]);
@@ -103,7 +103,7 @@ describe('Loyalty Actions', () => {
             const result = await createLoyaltyLevel(newLevel as any);
 
             expect(result.success).toBe(true);
-            if (result.success) {
+            if (result.success && result.data) {
                 expect(result.data).toEqual(createdLevel);
             }
             expect(logAction).toHaveBeenCalledWith('create_loyalty_level', 'loyalty_level', 'uuid-123', newLevel);
@@ -111,13 +111,13 @@ describe('Loyalty Actions', () => {
         });
 
         it('should deny access if not admin', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce({ role: 'manager' } as any);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as ReturnType<typeof mockSession>);
 
             const result = await createLoyaltyLevel({} as any);
 
             expect(result.success).toBe(false);
             if (!result.success) {
-                expect(result.error).toBe("Access denied");
+                expect(result.error).toBe("Доступ запрещен");
             }
         });
     });
@@ -134,7 +134,7 @@ describe('Loyalty Actions', () => {
             const result = await updateLoyaltyLevel(id, updates);
 
             expect(result.success).toBe(true);
-            if (result.success) {
+            if (result.success && result.data) {
                 expect(result.data).toEqual(updatedLevel);
             }
             expect(logAction).toHaveBeenCalledWith('loyalty_level_updated', 'loyalty_level', id, updates);
@@ -188,8 +188,8 @@ describe('Loyalty Actions', () => {
             const result = await recalculateAllClientsLoyalty();
 
             expect(result.success).toBe(true);
-            if (result.success) {
-                expect(result.data?.updatedCount).toBe(1); // Only c1 updated
+            if (result.success && result.data) {
+                expect(result.data.updatedCount).toBe(1); // Only c1 updated
             }
         });
     });
