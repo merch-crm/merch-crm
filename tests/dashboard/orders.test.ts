@@ -142,7 +142,7 @@ describe('getOrders', () => {
         mockFindMany.mockResolvedValueOnce(orders);
 
         // Mock getSession for role check inside getOrders
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
 
         const result = await getOrders();
         expect(result.success).toBe(true);
@@ -170,10 +170,11 @@ describe('searchClients', () => {
     });
 
     it('ищет клиентов по запросу', async () => {
-        const clients = [{ id: 'c1', firstName: 'Иван', lastName: 'Иванов', name: 'Иванов Иван' }];
-        mockFindMany.mockResolvedValueOnce(clients);
+        vi.mocked(getSession).mockResolvedValue(mockSession());
+        const mockClients = [{ id: 'c1', firstName: 'Иван', lastName: 'Иванов', name: 'Иванов Иван' }];
+        mockFindMany.mockResolvedValueOnce(mockClients);
         const result = await searchClients('Иванов');
-        expect(result).toEqual({ success: true, data: clients });
+        expect(result).toEqual({ success: true, data: mockClients });
     });
 });
 

@@ -31,7 +31,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         update: vi.fn().mockReturnValue(chainable),
     };
 
-    return { mockDb, queryMock, chainable };
+    return { mockDb, chainable };
 });
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
@@ -49,14 +49,14 @@ import { mockSession } from '../helpers/mocks';
 describe('Funnel Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
+        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
     describe('getClientsForFunnel', () => {
         it('should return non-archived, non-lost clients', async () => {
             const mockClients = [{ id: '1', lastName: 'Ivanov', funnelStage: 'lead' }];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockClients));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockClients) => void) => cb(mockClients));
 
             const result = await getClientsForFunnel();
 
@@ -77,7 +77,7 @@ describe('Funnel Actions', () => {
                 { stage: 'lead', count: 5, amount: '5000' },
                 { stage: 'negotiation', count: 2, amount: '2000' }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockStats));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockStats) => void) => cb(mockStats));
 
             const result = await getFunnelStats();
 

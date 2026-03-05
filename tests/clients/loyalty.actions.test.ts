@@ -3,10 +3,6 @@ import {
     getLoyaltyLevels,
     createLoyaltyLevel,
     updateLoyaltyLevel,
-    toggleLoyaltyLevelActive,
-    deleteLoyaltyLevel,
-    reorderLoyaltyLevels,
-    setClientLoyaltyLevel,
     recalculateAllClientsLoyalty
 } from '@/app/(main)/dashboard/clients/actions/loyalty.actions';
 
@@ -61,9 +57,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Loyalty Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as any);
-        // Force session.role = "admin" to match what loyalty.actions.ts expects
-        vi.mocked(getSession).mockResolvedValue({ role: 'admin' } as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
 
         mockDb.insert().values().returning.mockResolvedValue([]);
         mockDb.update().set?.().where?.().returning?.mockResolvedValue([]);

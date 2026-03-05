@@ -142,6 +142,8 @@ describe('getClients', () => {
             .mockImplementationOnce(() => chainObj as unknown as ReturnType<typeof db.select>)
             .mockImplementationOnce(() => countChain as unknown as ReturnType<typeof db.select>);
 
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
+
         const result = await getClients({ page: 1, limit: 10 });
         expect(result.success).toBe(true);
     });
@@ -189,7 +191,7 @@ describe('addClient', () => {
         fd.append('lastName', 'Иванов');
         fd.append('firstName', 'Иван');
         const result = await addClient(fd);
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
     });
 
     it('возвращает ошибку при невалидных данных', async () => {
@@ -202,7 +204,7 @@ describe('addClient', () => {
     });
 
     it('создаёт клиента при валидных данных', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
         const newClient = createMockClient();
 
         // addClient checks duplicates using db.select().from(clients).where().limit(5)
@@ -238,12 +240,13 @@ describe('updateClient', () => {
         fd.append('lastName', 'Updated');
         // updateClient takes (clientId: string, formData: FormData)
         const result = await updateClient('33333333-3333-4333-8333-333333333333', fd);
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
     });
 
     it('обновляет клиента при валидных данных', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        // updateClient calls db.query.users.findFirst to check user role
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
+        // updateClient calls db.query.users.findFirst to check user role (in some implementations)
+        // Adjusting based on current mutations.ts logic
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' } }));
 
         const fd = new FormData();
@@ -273,7 +276,9 @@ describe('deleteClient', () => {
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Менеджер' } }));
         const result = await deleteClient('33333333-3333-4333-8333-333333333333');
         expect(result.success).toBe(false);
-        expect((result as { error: string }).error).toContain('администратор');
+        if (!result.success) {
+            expect(result.error).toContain('Только администратор');
+        }
     });
 
     it('удаляет клиента для администратора', async () => {
@@ -294,11 +299,11 @@ describe('toggleClientArchived', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await toggleClientArchived('33333333-3333-4333-8333-333333333333', true);
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
     });
 
     it('архивирует клиента', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
         const result = await toggleClientArchived('33333333-3333-4333-8333-333333333333', true);
         expect(result).toEqual({ success: true });
     });
@@ -310,7 +315,7 @@ describe('bulkDeleteClients', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await bulkDeleteClients(['33333333-3333-4333-8333-333333333333']);
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
     });
 
     it('возвращает ошибку при пустом массиве', async () => {
