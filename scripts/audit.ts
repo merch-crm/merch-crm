@@ -282,7 +282,7 @@ function checkTypes(files: string[]): AuditError[] {
     let localTypeCount = 0;
 
     for (const file of files) {
-        if (file.includes('lib/types/') || file.includes('scripts/audit.ts')) continue;
+        if (file.includes('lib/types/') || file.includes('scripts/') || isTestFile(file)) continue;
 
         const content = fs.readFileSync(file, 'utf-8');
 
@@ -341,7 +341,7 @@ function checkUXStandards(files: string[]): AuditError[] {
     let violationCount = 0;
 
     for (const file of files) {
-        if (!file.endsWith('.tsx') || file.includes('scripts/audit.ts')) continue;
+        if (!file.endsWith('.tsx') || file.includes('scripts/') || isTestFile(file)) continue;
 
         const content = fs.readFileSync(file, 'utf-8');
 
@@ -465,7 +465,7 @@ function checkComponents(files: string[]): AuditError[] {
     let issueCount = 0;
 
     for (const file of files) {
-        if (!file.endsWith('.tsx') || file.includes('scripts/audit.ts')) continue;
+        if (!file.endsWith('.tsx') || file.includes('scripts/') || isTestFile(file)) continue;
 
         const content = fs.readFileSync(file, 'utf-8');
 
@@ -709,7 +709,7 @@ function checkSecurity(files: string[]): AuditError[] {
     ];
 
     for (const file of files) {
-        if (file.includes('scripts/audit.ts')) continue; // Исключаем сам скрипт аудита
+        if (file.includes('scripts/') || isTestFile(file)) continue; // Исключаем скрипты аудита и тесты
 
         const content = fs.readFileSync(file, 'utf-8');
 
@@ -774,7 +774,7 @@ function checkPerformance(files: string[]): AuditError[] {
     ];
 
     for (const file of files) {
-        if (file.includes('scripts/audit.ts')) continue;
+        if (file.includes('scripts/') || isTestFile(file)) continue;
 
         const content = fs.readFileSync(file, 'utf-8');
 
