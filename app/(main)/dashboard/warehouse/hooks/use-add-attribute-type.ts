@@ -39,7 +39,7 @@ export const DATA_TYPE_META: Record<DataTypeKey, { name: string; slug: string }>
 
 interface UseAddAttributeTypeProps {
     categories: Category[];
-    attributeTypes: AttributeType[];
+    attributeTypes?: AttributeType[];
 }
 
 export function useAddAttributeType({ categories, attributeTypes = [] }: UseAddAttributeTypeProps) {
