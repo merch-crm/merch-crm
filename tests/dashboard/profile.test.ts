@@ -4,14 +4,18 @@ import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const mockTx = {
-    update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
-    insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
-    query: {
-        users: { findFirst: mockFindFirst },
-    },
-};
-return { mockFindFirst, mockFindMany, mockSelect, mockTx };
+const { mockFindFirst, mockFindMany, mockSelect, mockTx } = vi.hoisted(() => {
+    const mockFindFirst = vi.fn();
+    const mockFindMany = vi.fn();
+    const mockSelect = vi.fn();
+    const mockTx = {
+        update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
+        insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
+        query: {
+            users: { findFirst: mockFindFirst },
+        },
+    };
+    return { mockFindFirst, mockFindMany, mockSelect, mockTx };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
