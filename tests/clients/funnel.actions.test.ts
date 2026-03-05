@@ -8,7 +8,7 @@ import {
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockDb, queryMock, chainable } = vi.hoisted(() => {
+const { mockDb, chainable } = vi.hoisted(() => {
     const chainable = {
         where: vi.fn().mockReturnThis(),
         set: vi.fn().mockReturnThis(),

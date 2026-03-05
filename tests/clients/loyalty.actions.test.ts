@@ -3,6 +3,8 @@ import {
     getLoyaltyLevels,
     createLoyaltyLevel,
     updateLoyaltyLevel,
+    deleteLoyaltyLevel,
+    reorderLoyaltyLevels,
     recalculateAllClientsLoyalty
 } from '@/app/(main)/dashboard/clients/actions/loyalty.actions';
 
