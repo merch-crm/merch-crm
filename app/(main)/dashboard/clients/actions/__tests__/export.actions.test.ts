@@ -30,8 +30,6 @@ vi.mock('@/lib/error-logger', () => ({
 }));
 
 // --- Test Data ---
-const mockClientId = '550e8400-e29b-41d4-a716-446655440000';
-const mockContactId = '550e8400-e29b-41d4-a716-446655440001';
 const mockSession = { id: 'user-id', email: 'test@example.com', name: 'Test User', roleName: 'Администратор' };
 
 describe('export.actions', () => {

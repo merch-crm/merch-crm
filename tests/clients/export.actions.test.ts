@@ -36,7 +36,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Export Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as ReturnType<typeof mockSession>);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
@@ -77,7 +77,7 @@ describe('Export Actions', () => {
 
         it('should return error on invalid columns', async () => {
             const invalidParams = { ...validParams, columns: [] };
-            const result = await getExportData(invalidParams as any);
+            const result = await getExportData(invalidParams as Parameters<typeof getExportData>[0]);
             expect(result.success).toBe(false);
             expect(result.error).toBe("Ошибка параметров экспорта");
         });

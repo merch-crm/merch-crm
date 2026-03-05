@@ -10,7 +10,7 @@ import {
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockDb, queryMock, txMock } = vi.hoisted(() => {
+const { mockDb, queryMock } = vi.hoisted(() => {
     const chainable = {
         where: vi.fn().mockReturnThis(),
         set: vi.fn().mockReturnThis(),
@@ -37,9 +37,10 @@ const { mockDb, queryMock, txMock } = vi.hoisted(() => {
         update: vi.fn().mockReturnValue(chainable),
         delete: vi.fn().mockReturnValue(chainable),
         transaction: vi.fn().mockImplementation(async (fn: (tx: typeof txMock) => Promise<unknown>) => fn(txMock)),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
-    return { mockDb, queryMock, txMock, chainable };
+    return { mockDb, queryMock, chainable };
 });
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
@@ -100,7 +101,7 @@ describe('Loyalty Actions', () => {
             const createdLevel = { id: 'uuid-123', ...newLevel };
             mockDb.insert().values().returning.mockResolvedValueOnce([createdLevel]);
 
-            const result = await createLoyaltyLevel(newLevel as any);
+            const result = await createLoyaltyLevel(newLevel as Parameters<typeof createLoyaltyLevel>[0]);
 
             expect(result.success).toBe(true);
             if (result.success && result.data) {
@@ -113,7 +114,7 @@ describe('Loyalty Actions', () => {
         it('should deny access if not admin', async () => {
             vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as ReturnType<typeof mockSession>);
 
-            const result = await createLoyaltyLevel({} as any);
+            const result = await createLoyaltyLevel({} as Parameters<typeof createLoyaltyLevel>[0]);
 
             expect(result.success).toBe(false);
             if (!result.success) {
@@ -129,7 +130,7 @@ describe('Loyalty Actions', () => {
             const updatedLevel = { id, ...updates };
 
             const chain = { set: vi.fn().mockReturnThis(), where: vi.fn().mockReturnThis(), returning: vi.fn().mockResolvedValueOnce([updatedLevel]) };
-            vi.mocked(mockDb.update).mockReturnValueOnce(chain as any);
+            vi.mocked(mockDb.update).mockReturnValueOnce(chain as unknown as ReturnType<typeof mockDb.update>);
 
             const result = await updateLoyaltyLevel(id, updates);
 
@@ -145,7 +146,7 @@ describe('Loyalty Actions', () => {
         it('should delete loyalty level', async () => {
             const id = '55555555-5555-4555-8555-555555555555';
             const chain = { where: vi.fn().mockResolvedValueOnce(undefined) };
-            vi.mocked(mockDb.delete).mockReturnValueOnce(chain as any);
+            vi.mocked(mockDb.delete).mockReturnValueOnce(chain as unknown as ReturnType<typeof mockDb.delete>);
 
             const result = await deleteLoyaltyLevel(id);
 
@@ -183,7 +184,7 @@ describe('Loyalty Actions', () => {
             queryMock.clients.findMany.mockResolvedValueOnce(mockClients);
 
             const chain = { set: vi.fn().mockReturnThis(), where: vi.fn().mockResolvedValueOnce(undefined) };
-            vi.mocked(mockDb.update).mockReturnValue(chain as any);
+            vi.mocked(mockDb.update).mockReturnValue(chain as unknown as ReturnType<typeof mockDb.update>);
 
             const result = await recalculateAllClientsLoyalty();
 

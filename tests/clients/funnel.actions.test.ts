@@ -18,7 +18,7 @@ const { mockDb, chainable } = vi.hoisted(() => {
         limit: vi.fn().mockReturnThis(),
         leftJoin: vi.fn().mockReturnThis(),
         returning: vi.fn().mockResolvedValue([]),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -49,7 +49,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Funnel Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as ReturnType<typeof mockSession>);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
