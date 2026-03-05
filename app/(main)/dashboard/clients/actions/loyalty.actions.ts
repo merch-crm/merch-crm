@@ -121,7 +121,7 @@ export async function toggleLoyaltyLevelActive(id: string, isActive: boolean): P
  */
 export async function deleteLoyaltyLevel(id: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Access denied" };
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Доступ запрещен" };
 
     const validated = z.string().uuid().safeParse(id);
     if (!validated.success) return { success: false, error: "Invalid ID" };

@@ -72,7 +72,8 @@ export async function getExportData(params: ExportParams): Promise<{
 }> {
     try {
         const session = await getSession();
-        if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+        if (!session) return { success: false, error: "Не авторизован" };
+        if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
             return { success: false, error: "Недостаточно прав для экспорта данных" };
         }
 
@@ -269,7 +270,8 @@ export async function getExportColumns(): Promise<{
 }> {
     try {
         const session = await getSession();
-        if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+        if (!session) return { success: false, error: "Не авторизован" };
+        if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
             return { success: false, error: "Недостаточно прав" };
         }
         return { success: true, data: EXPORT_COLUMNS };

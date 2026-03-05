@@ -194,7 +194,8 @@ export async function updateClientContact(
  */
 export async function deleteClientContact(contactId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) return { success: false, error: "Недостаточно прав" };
+    if (!session) return { success: false, error: "Не авторизован" };
+    if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) return { success: false, error: "Недостаточно прав" };
 
     try {
         const contact = await db.query.clientContacts.findFirst({

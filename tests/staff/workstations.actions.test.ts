@@ -40,11 +40,16 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
 });
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
+vi.mock('@/lib/auth', () => ({ getSession: vi.fn() }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
+
+import { getSession } from '@/lib/auth';
+import { mockSession } from '../helpers/mocks';
 
 describe('Workstations Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
         chainable.then.mockImplementation((cb: any) => cb([]));
     });
 

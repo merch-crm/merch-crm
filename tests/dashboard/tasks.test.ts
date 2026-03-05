@@ -16,7 +16,7 @@ const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
         query: {
             tasks: { findFirst: mockFindFirst, findMany: mockFindMany },
             taskComments: { findMany: mockFindMany },
-            taskChecklists: { findMany: mockFindMany },
+            taskChecklists: { findFirst: mockFindFirst, findMany: mockFindMany },
         },
     };
     return { mockFindMany, mockFindFirst, mockSelect, mockTx };
@@ -35,7 +35,7 @@ vi.mock('@/lib/db', () => ({
         query: {
             tasks: { findMany: mockFindMany, findFirst: mockFindFirst },
             taskComments: { findMany: mockFindMany },
-            taskChecklists: { findMany: mockFindMany },
+            taskChecklists: { findMany: mockFindMany, findFirst: mockFindFirst },
             users: { findMany: mockFindMany },
         },
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) }),

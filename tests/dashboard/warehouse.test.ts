@@ -90,14 +90,12 @@ describe('getInventoryItems', () => {
         const result = await getInventoryItems();
         expect(result.success).toBe(true);
     });
-});
-
-it('возвращает ошибку при сбое БД', async () => {
-    vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-    mockFindMany.mockRejectedValueOnce(new Error('DB error'));
-    const result = await getInventoryItems();
-    expect(result).toEqual({ success: false, error: 'Не удалось загрузить товары' });
-});
+    it('возвращает ошибку при сбое БД', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockFindMany.mockRejectedValueOnce(new Error('DB error'));
+        const result = await getInventoryItems();
+        expect(result).toEqual({ success: false, error: 'Не удалось загрузить товары' });
+    });
 });
 
 describe('getInventoryItem', () => {
@@ -169,6 +167,7 @@ describe('checkDuplicateItem', () => {
 
 describe('getMeasurementUnits', () => {
     it('возвращает список единиц измерения', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const result = await getMeasurementUnits();
         expect(result.success).toBe(true);
         if (result.success && result.data) {
@@ -182,11 +181,13 @@ describe('getItemHistory', () => {
     beforeEach(() => vi.clearAllMocks());
 
     it('возвращает ошибку при невалидном UUID', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const result = await getItemHistory('not-a-uuid');
         expect(result).toEqual({ success: false, error: 'Некорректный ID товара' });
     });
 
     it('возвращает историю товара', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const history = [{ id: 't1', type: 'in', changeAmount: 10, createdAt: new Date() }];
         mockFindMany.mockResolvedValueOnce(history);
         const result = await getItemHistory('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
@@ -198,11 +199,13 @@ describe('getItemActiveOrders', () => {
     beforeEach(() => vi.clearAllMocks());
 
     it('возвращает ошибку при невалидном UUID', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const result = await getItemActiveOrders('not-a-uuid');
         expect(result).toEqual({ success: false, error: 'Некорректный ID товара' });
     });
 
     it('возвращает активные заказы товара (исключая cancelled/shipped)', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const orderItems = [
             { id: 'oi1', order: { status: 'new' } },
             { id: 'oi2', order: { status: 'cancelled' } },
