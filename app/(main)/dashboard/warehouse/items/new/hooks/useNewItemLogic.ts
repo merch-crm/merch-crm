@@ -1,18 +1,18 @@
-import { useState, useEffect, useCallback } from"react";
-import { useRouter } from"next/navigation";
-import { useNewItemForm, DEFAULT_FORM_DATA } from"./useNewItemForm";
-import { ItemFormData, Category, StorageLocation } from"@/app/(main)/dashboard/warehouse/types";
-import { addInventoryItem } from"@/app/(main)/dashboard/warehouse/item-actions";
-import { useToast } from"@/components/ui/toast";
-import { playSound } from"@/lib/sounds";
-import { ROUTES } from"@/lib/routes";
-import { sortCategories } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import { useNewItemForm, DEFAULT_FORM_DATA } from "./useNewItemForm";
+import { ItemFormData, Category, StorageLocation, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
+import { addInventoryItem } from "@/app/(main)/dashboard/warehouse/item-actions";
+import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
+import { ROUTES } from "@/lib/routes";
+import { sortCategories } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 const CATEGORY_TYPES = {
-    packaging:"упаковка",
-    clothing:"одежда",
-    consumables:"расходники",
-    uncategorized:"без категории",
+    packaging: "упаковка",
+    clothing: "одежда",
+    consumables: "расходники",
+    uncategorized: "без категории",
 } as const;
 
 interface UseNewItemLogicProps {
@@ -20,12 +20,14 @@ interface UseNewItemLogicProps {
     storageLocations: StorageLocation[];
     initialCategoryId?: string;
     initialSubcategoryId?: string;
+    attributeTypes: AttributeType[];
 }
 
 export function useNewItemLogic({
     categories,
     initialCategoryId,
-    initialSubcategoryId
+    initialSubcategoryId,
+    attributeTypes: _attributeTypes
 }: UseNewItemLogicProps) {
     const router = useRouter();
     const { toast } = useToast();
@@ -42,8 +44,11 @@ export function useNewItemLogic({
         resetForm
     } = useNewItemForm();
 
-    const updateFormData = useCallback((updates: Partial<ItemFormData>) => {
-        setFormData((prev: ItemFormData) => ({ ...prev, ...updates }));
+    const updateFormData = useCallback((updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => {
+        setFormData((prev: ItemFormData) => {
+            const resolvedUpdates = typeof updates === "function" ? updates(prev) : updates;
+            return { ...prev, ...resolvedUpdates };
+        });
         if (validationError) setValidationError("");
     }, [validationError, setFormData, setValidationError]);
 
@@ -81,16 +86,18 @@ export function useNewItemLogic({
 
             if (resolvedSubId) {
                 const subCat = categories.find(c => c.id === resolvedSubId);
-                const isClothing = subCat?.name.toLowerCase().includes(CATEGORY_TYPES.clothing) || initialCat?.name.toLowerCase().includes(CATEGORY_TYPES.clothing);
+                const cleanSubName = subCat?.name.toLowerCase().trim() || "";
+                const cleanInitialName = initialCat?.name.toLowerCase().trim() || "";
+                const isClothing = cleanSubName.includes(CATEGORY_TYPES.clothing) || cleanInitialName.includes(CATEGORY_TYPES.clothing);
                 initialForm = {
                     ...initialForm,
                     subcategoryId: resolvedSubId,
-                    unit: isClothing ?"шт." : initialForm.unit
+                    unit: isClothing ? "шт." : initialForm.unit
                 };
             }
         } else {
             // 2. Draft
-            const saved = typeof window !=="undefined" ? localStorage.getItem("merch_crm_new_item_draft") : null;
+            const saved = typeof window !== "undefined" ? localStorage.getItem("merch_crm_new_item_draft") : null;
             if (saved) {
                 try {
                     const draft = JSON.parse(saved);
@@ -143,7 +150,7 @@ export function useNewItemLogic({
                 step,
                 selectedCategoryId: selectedCategory?.id
             };
-            if (typeof window !=="undefined") {
+            if (typeof window !== "undefined") {
                 localStorage.setItem("merch_crm_new_item_draft", JSON.stringify(dataToSave));
             }
             setIsSaving(false);
@@ -153,7 +160,7 @@ export function useNewItemLogic({
     }, [formData, step, selectedCategory, isMounted, setIsSaving]);
 
     const clearDraft = () => {
-        if (typeof window !=="undefined") {
+        if (typeof window !== "undefined") {
             localStorage.removeItem("merch_crm_new_item_draft");
         }
     };
@@ -161,7 +168,7 @@ export function useNewItemLogic({
     const handleReset = () => {
         clearDraft();
         resetForm();
-        toast("Форма сброшена","info");
+        toast("Форма сброшена", "info");
     };
 
     const subCategories = selectedCategory
@@ -171,7 +178,7 @@ export function useNewItemLogic({
     const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
 
     const topLevelCategories = sortCategories(
-        categories.filter(c => !c.parentId || c.parentId ==="")
+        categories.filter(c => !c.parentId || c.parentId === "")
     );
 
     const hasSubCategories = subCategories.length > 0;
@@ -182,14 +189,14 @@ export function useNewItemLogic({
 
         setFormData((prev: ItemFormData) => ({
             ...prev,
-            subcategoryId:"",
-            brandCode:"",
-            qualityCode:"",
-            materialCode:"",
-            attributeCode:"",
-            sizeCode:"",
-            itemName:"",
-            unit: category.name.toLowerCase().includes(CATEGORY_TYPES.clothing) ?"шт." : prev.unit ||"шт."
+            subcategoryId: "",
+            brandCode: "",
+            qualityCode: "",
+            materialCode: "",
+            attributeCode: "",
+            sizeCode: "",
+            itemName: "",
+            unit: category.name.toLowerCase().includes(CATEGORY_TYPES.clothing) ? "шт." : prev.unit || "шт."
         }));
     };
 
@@ -226,8 +233,11 @@ export function useNewItemLogic({
             }
         }
 
-        const isClothing = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.clothing);
-        const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
+        const cleanCatName = selectedCategory?.name.toLowerCase().trim() || "";
+        const isClothing = cleanCatName === CATEGORY_TYPES.clothing ||
+            cleanCatName.startsWith(CATEGORY_TYPES.clothing + " ") ||
+            cleanCatName.startsWith(CATEGORY_TYPES.clothing + ":");
+        const isPackaging = cleanCatName.includes(CATEGORY_TYPES.packaging);
 
         if (currentStep === 2) {
             if (hasSubCategories && !formData.subcategoryId) {
@@ -236,35 +246,21 @@ export function useNewItemLogic({
             }
 
             if (isClothing) {
-                if (!formData.brandCode) {
+
+                // Helper to validate a standard field with a fallback to the attributes pool
+
+                // All standard attributes are now optional as requested by the user
+                // We no longer return false if isFieldValid is false
+                /* 
+                if (!isFieldValid("brand", "бренд", formData.brandCode)) {
                     setValidationError("Выберите бренд");
                     return false;
                 }
-                if (!formData.qualityCode) {
-                    setValidationError("Выберите качество");
-                    return false;
-                }
-                if (!formData.materialCode) {
-                    setValidationError("Выберите материал");
-                    return false;
-                }
-                if (!formData.attributeCode) {
-                    setValidationError("Выберите цвет");
-                    return false;
-                }
-                if (!formData.sizeCode) {
-                    setValidationError("Выберите размер");
-                    return false;
-                }
+                ...
+                */
             } else if (isPackaging) {
-                if (!formData.depth || !formData.width || !formData.height) {
-                    setValidationError("Укажите все габариты (Длина, Ширина, Высота)");
-                    return false;
-                }
-                if (!formData.weight) {
-                    setValidationError("Укажите вес единицы упаковки");
-                    return false;
-                }
+                // Dimensions and weight are now optional as per user request to remove mandatory filling for all characteristic blocks
+
             } else {
                 if (!formData.itemName) {
                     setValidationError("Введите название позиции");
@@ -304,29 +300,29 @@ export function useNewItemLogic({
         try {
             const submitFormData = new FormData();
 
-            let itemType ="clothing";
-            if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging)) itemType ="packaging";
-            else if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.consumables)) itemType ="consumables";
+            let itemType = "clothing";
+            if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging)) itemType = "packaging";
+            else if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.consumables)) itemType = "consumables";
 
             submitFormData.append("itemType", itemType);
 
-            submitFormData.append("name", formData.itemName ||"");
-            submitFormData.append("categoryId", formData.subcategoryId || selectedCategory?.id ||"");
-            submitFormData.append("sku", formData.sku ||"");
-            submitFormData.append("unit", formData.unit ||"шт.");
-            submitFormData.append("description", formData.description ||"");
-            submitFormData.append("quantity", String(formData.quantity) ||"0");
-            submitFormData.append("criticalStockThreshold", String(formData.criticalStockThreshold) ||"0");
-            submitFormData.append("lowStockThreshold", String(formData.lowStockThreshold) ||"10");
-            submitFormData.append("storageLocationId", formData.storageLocationId ||"");
-            submitFormData.append("costPrice", String(formData.costPrice) ||"0");
-            submitFormData.append("sellingPrice", String(formData.sellingPrice) ||"0");
+            submitFormData.append("name", formData.itemName || "");
+            submitFormData.append("categoryId", formData.subcategoryId || selectedCategory?.id || "");
+            submitFormData.append("sku", formData.sku || "");
+            submitFormData.append("unit", formData.unit || "шт.");
+            submitFormData.append("description", formData.description || "");
+            submitFormData.append("quantity", String(formData.quantity) || "0");
+            submitFormData.append("criticalStockThreshold", String(formData.criticalStockThreshold) || "0");
+            submitFormData.append("lowStockThreshold", String(formData.lowStockThreshold) || "10");
+            submitFormData.append("storageLocationId", formData.storageLocationId || "");
+            submitFormData.append("costPrice", String(formData.costPrice) || "0");
+            submitFormData.append("sellingPrice", String(formData.sellingPrice) || "0");
 
-            submitFormData.append("qualityCode", formData.qualityCode ||"");
-            submitFormData.append("materialCode", formData.materialCode ||"");
-            submitFormData.append("brandCode", formData.brandCode ||"");
-            submitFormData.append("attributeCode", formData.attributeCode ||"");
-            submitFormData.append("sizeCode", formData.sizeCode ||"");
+            submitFormData.append("qualityCode", formData.qualityCode || "");
+            submitFormData.append("materialCode", formData.materialCode || "");
+            submitFormData.append("brandCode", formData.brandCode || "");
+            submitFormData.append("attributeCode", formData.attributeCode || "");
+            submitFormData.append("sizeCode", formData.sizeCode || "");
 
             if (formData.width) submitFormData.append("width", String(formData.width));
             if (formData.height) submitFormData.append("height", String(formData.height));
@@ -363,7 +359,7 @@ export function useNewItemLogic({
             } else {
                 clearDraft();
                 playSound("item_created");
-                toast("Позиция создана","success");
+                toast("Позиция создана", "success");
                 router.push(result.data?.id ? ROUTES.WAREHOUSE.ITEM_DETAIL(result.data.id) : ROUTES.WAREHOUSE.ROOT);
                 router.refresh();
             }
@@ -372,7 +368,7 @@ export function useNewItemLogic({
             setValidationError(
                 error instanceof Error
                     ? error.message
-                    :"Произошла ошибка при создании позиции"
+                    : "Произошла ошибка при создании позиции"
             );
             playSound("notification_error");
             setIsSubmitting(false);

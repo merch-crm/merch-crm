@@ -59,7 +59,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
         liveViewModalOpen, setLiveViewModalOpen
     } = camerasState
 
-    const { loginForm, setLoginForm, reset: resetLoginForm } = loginFormState
+    const { loginForm, setLoginForm } = loginFormState
 
     const statusConfig = {
         online: { label: 'Онлайн', icon: Wifi, color: 'text-green-600 bg-green-50' },

@@ -125,11 +125,17 @@ export function CharacteristicCardContent({
                             })()}
                             <div className="flex flex-col items-start gap-0.5 flex-1 w-full px-0.5">
                                 <span className="text-[13px] font-bold text-slate-700 break-words whitespace-normal leading-tight group-hover/val:text-indigo-600 transition-colors text-left font-sans">
-                                    {(attr.meta as AttributeMeta)?.fullName || attr.name}
+                                    {(() => {
+                                        const rawValue = (attr.meta as AttributeMeta)?.fullName || attr.name;
+                                        if (type.dataType === "country" || type.slug === "country") {
+                                            return rawValue.charAt(0).toUpperCase() + rawValue.slice(1);
+                                        }
+                                        return rawValue;
+                                    })()}
                                     {type.dataType === "density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") && " г/м²"}
                                 </span>
                                 {(attr.meta as AttributeMeta)?.isOversize && (
-                                    <span className="inline-block px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[10px] font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none mt-0.5">oversize</span>
+                                    <span className="inline-block px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-xs font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none mt-0.5">oversize</span>
                                 )}
                             </div>
                         </button>

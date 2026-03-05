@@ -1,10 +1,10 @@
 "use client";
 
-import { useFormStatus } from"react-dom";
-import { cn } from"@/lib/utils";
+import { useFormStatus } from "react-dom";
+import { cn } from "@/lib/utils";
 
-import { Check, Loader2 } from"lucide-react";
-import { Button } from"@/components/ui/button";
+import { Check, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface SubmitButtonProps {
     label: string;
@@ -13,7 +13,7 @@ interface SubmitButtonProps {
     form?: string;
 }
 
-export function SubmitButton({ label, pendingLabel ="Сохранение...", className, form }: SubmitButtonProps) {
+export function SubmitButton({ label, pendingLabel = "Сохранение...", className, form }: SubmitButtonProps) {
     const { pending } = useFormStatus();
 
     return (
@@ -21,6 +21,7 @@ export function SubmitButton({ label, pendingLabel ="Сохранение...", c
             form={form}
             type="submit"
             disabled={pending}
+            suppressHydrationWarning
             className={cn("h-11 px-4 rounded-[var(--radius-inner)] font-bold text-sm inline-flex items-center justify-center gap-2 transition-all disabled:opacity-50",
                 className
             )}
@@ -32,7 +33,7 @@ export function SubmitButton({ label, pendingLabel ="Сохранение...", c
                 </>
             ) : (
                 <>
-                    {label ==="Сохранить" && <Check className="w-4 h-4 stroke-[3]" />}
+                    {label === "Сохранить" && <Check className="w-4 h-4 stroke-[3]" />}
                     {label}
                 </>
             )}

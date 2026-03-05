@@ -107,7 +107,6 @@ export const DEFAULT_VALUE_FORM = {
     height: "",
     dimensionUnit: "мм" as "мм" | "см" | "м",
     fullName: "",
-    shortName: "",
     isOversize: false,
     compositionItems: [{ name: "", value: "", unit: "%" }],
     consumableType: "краска",

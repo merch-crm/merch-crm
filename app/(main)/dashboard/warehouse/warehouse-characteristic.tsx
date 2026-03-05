@@ -1,13 +1,13 @@
 "use client";
 
-import { ConfirmDialog } from"@/components/ui/confirm-dialog";
-import { Session } from"@/lib/auth";
-import { InventoryAttribute as Attribute, AttributeType, Category } from"./types";
-import { useWarehouseCharacteristic } from"./hooks/use-warehouse-characteristic";
-import { CategoryTabs } from"./components/characteristic/CategoryTabs";
-import { CharacteristicGrid } from"./components/characteristic/CharacteristicGrid";
-import { EditTypeDialog } from"./components/characteristic/EditTypeDialog";
-import { PasswordProtection } from"./components/characteristic/PasswordProtection";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import { Session } from "@/lib/auth";
+import { InventoryAttribute as Attribute, AttributeType, Category } from "./types";
+import { useWarehouseCharacteristic } from "./hooks/use-warehouse-characteristic";
+import { CategoryTabs } from "./components/characteristic/CategoryTabs";
+import { CharacteristicGrid } from "./components/characteristic/CharacteristicGrid";
+import { EditTypeDialog } from "./components/characteristic/EditTypeDialog";
+import { PasswordProtection } from "./components/characteristic/PasswordProtection";
 
 
 
@@ -39,9 +39,9 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
         handleTypeUpdate
     } = useWarehouseCharacteristic({ attributes, attributeTypes, categories });
 
-    const activeCategoryName = activeCategoryId ==="uncategorized"
-        ?"Без категории"
-        : (categories.find(c => c.id === activeCategoryId)?.name ||"Категория");
+    const activeCategoryName = activeCategoryId === "uncategorized"
+        ? "Без категории"
+        : (categories.find(c => c.id === activeCategoryId)?.name || "Категория");
 
     return (
         <div className="space-y-3 pb-20">
@@ -97,7 +97,7 @@ export function WarehouseCharacteristic({ attributes = [], attributeTypes = [], 
 
             <ConfirmDialog
                 isOpen={!!deleteDialog.type}
-                onClose={() => setDeleteDialog(prev => ({ ...prev, type: null, password:"" }))}
+                onClose={() => setDeleteDialog(prev => ({ ...prev, type: null, password: "" }))}
                 onConfirm={handleDeleteTypeConfirm}
                 title="Удаление раздела"
                 description={`Вы уверены, что хотите удалить раздел «${deleteDialog.type?.name}»? Все значения в нем также будут недоступны.`}

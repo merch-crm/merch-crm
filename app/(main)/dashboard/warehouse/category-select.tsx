@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useRef, useEffect, createElement } from"react";
-import { ChevronDown, Check, Package, Search } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { Category } from"./types";
-import { getCategoryIcon, getColorStyles } from"./category-utils";
-import { GlassEmptyState } from"@/components/ui/glass-empty-state";
-import { Button } from"@/components/ui/button";
-import { Input } from"@/components/ui/input";
+import { useState, useRef, useEffect, createElement } from "react";
+import { ChevronDown, Check, Package, Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Category } from "./types";
+import { getCategoryIcon, getColorStyles } from "./category-utils";
+import { GlassEmptyState } from "@/components/ui/glass-empty-state";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface CategorySelectProps {
     id?: string;
@@ -19,7 +19,7 @@ interface CategorySelectProps {
     excludeId?: string;
 }
 
-export function CategorySelect({ categories, value, onChange, placeholder ="Выберите категорию", disabled, excludeId }: CategorySelectProps) {
+export function CategorySelect({ categories, value, onChange, placeholder = "Выберите категорию", disabled, excludeId }: CategorySelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const containerRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,7 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
 
     // Filter parents and handle hierarchy
     const availableCategories = categories.filter(cat =>
-        cat.id !== excludeId && (!cat.parentId || cat.parentId ==="")
+        cat.id !== excludeId && (!cat.parentId || cat.parentId === "")
     );
 
     const filteredCategories = availableCategories.filter(cat =>
@@ -60,9 +60,9 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
                 disabled={disabled}
                 onClick={() => setIsOpen(!isOpen)}
                 variant="ghost"
-                className={cn("w-full h-11 px-4 rounded-[var(--radius-inner)] border flex items-center justify-between transition-all outline-none group p-0 bg-transparent hover:bg-transparent shadow-none",
-                    isOpen ?"border-primary ring-4 ring-primary/10 bg-white shadow-crm-md" :"border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-crm-sm",
-                    disabled &&"opacity-50 cursor-not-allowed"
+                className={cn("w-full h-14 px-5 rounded-[20px] border flex items-center justify-between transition-all outline-none group p-0 bg-transparent hover:bg-transparent shadow-none",
+                    isOpen ? "border-primary ring-4 ring-primary/10 bg-white shadow-crm-md" : "border-slate-200 bg-slate-50/50 hover:bg-white hover:border-slate-300 hover:shadow-crm-sm",
+                    disabled && "opacity-50 cursor-not-allowed"
                 )}
             >
                 <div className="flex items-center gap-3">
@@ -72,7 +72,7 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
                                 className={cn("w-7 h-7 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-colors")}
                                 style={getColorStyles(selectedCategory?.color).style}
                             >
-                                {createElement(iconComponent, { className:"w-4 h-4" })}
+                                {createElement(iconComponent, { className: "w-4 h-4" })}
                             </div>
                             <span className="font-bold text-slate-900">{selectedCategory?.name}</span>
                         </>
@@ -80,14 +80,14 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
                         <span className="font-bold text-slate-400">{placeholder}</span>
                     )}
                 </div>
-                <ChevronDown className={cn("w-5 h-5 text-slate-400 transition-transform duration-300", isOpen &&"rotate-180 text-primary")} />
+                <ChevronDown className={cn("w-5 h-5 text-slate-400 transition-transform duration-300", isOpen && "rotate-180 text-primary")} />
             </Button>
 
             {isOpen && (
                 <div
-                    className="absolute top-full left-0 right-0 mt-3 z-[70] bg-white rounded-[var(--radius-inner)] border border-slate-200/60 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 shadow-crm-xl"
+                    className="absolute top-full left-0 right-0 mt-3 z-[70] bg-white rounded-[32px] border border-slate-200/60 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 shadow-crm-xl"
                 >
-                    <div className="p-3 border-b border-slate-200 bg-slate-50/30">
+                    <div className="p-4 border-b border-slate-100 bg-slate-50/30">
                         <div className="relative">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <Input
@@ -95,7 +95,7 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Поиск категории..."
-                                className="w-full h-11 pl-9 pr-4 rounded-[var(--radius-inner)] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/20 transition-all text-sm font-medium"
+                                className="w-full h-12 pl-10 pr-4 rounded-[16px] bg-white border border-slate-200 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/20 transition-all text-sm font-bold"
                             />
                         </div>
                     </div>
@@ -113,8 +113,8 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
                                         type="button"
                                         onClick={() => handleSelect(cat.id)}
                                         variant="ghost"
-                                        className={cn("w-full flex items-center justify-between p-3 rounded-[var(--radius-inner)] transition-all group h-auto mb-1 bg-transparent hover:bg-transparent shadow-none border-none",
-                                            isSelected ?"bg-primary/5 text-primary" :"hover:bg-slate-50 text-slate-600"
+                                        className={cn("w-full flex items-center justify-between p-4 rounded-[18px] transition-all group h-auto mb-1.5 bg-transparent hover:bg-transparent shadow-none border-none",
+                                            isSelected ? "bg-primary/5 text-primary shadow-sm" : "hover:bg-slate-50 text-slate-600"
                                         )}
                                     >
                                         <div className="flex items-center gap-3">
@@ -122,7 +122,7 @@ export function CategorySelect({ categories, value, onChange, placeholder ="Вы
                                                 className={cn("w-9 h-9 rounded-[var(--radius-inner)] flex items-center justify-center shrink-0 shadow-sm transition-transform")}
                                                 style={colorStyles.style}
                                             >
-                                                {createElement(CatIcon, { className:"w-4 h-4" })}
+                                                {createElement(CatIcon, { className: "w-4 h-4" })}
                                             </div>
                                             <span className="font-bold text-sm">{cat.name}</span>
                                         </div>

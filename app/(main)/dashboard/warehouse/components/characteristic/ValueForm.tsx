@@ -46,14 +46,14 @@ export function ValueForm({
     const showColorPicker = !!(isColorType || typeForm.hasColor);
     const isWeight = targetType?.dataType === "weight";
     const isVolume = targetType?.dataType === "volume";
-    const isQuantity = targetType?.dataType === "quantity";
+
     const isPackage = targetType?.dataType === "package";
     const hasUnits = !!(targetType?.dataType === "unit" || targetType?.hasUnits || typeForm.hasUnits || targetType?.hasComposition);
 
     // Show short name field for text, units, weight, volume, quantity, and package
     const showShortName = targetType?.dataType === "text" ||
         (hasUnits && !typeForm.hasComposition) ||
-        isWeight || isVolume || isQuantity || isPackage;
+        isWeight || isVolume || isPackage;
     const hideNames = !!(isDimensions || isCompositionType || isDensity);
 
     const getPlaceholders = () => {
@@ -66,7 +66,6 @@ export function ValueForm({
         if (type === "country") return { full: "Напр: Россия", short: "", code: "RUS" };
         if (type === "package") return { full: "Напр: упаковка", short: "Напр: уп.", code: "PACK" };
         if (type === "density") return { full: "0", short: "", code: "GSM" };
-        if (type === "quantity") return { full: "Напр: штука", short: "Напр: шт.", code: "PCS" };
         if (type === "weight") return { full: "Напр: килограммы", short: "Напр: кг", code: "KG" };
         if (type === "volume") return { full: "Напр: литры", short: "Напр: л", code: "L" };
         return { full: "Напр: Значение", short: "Напр: Зн.", code: "VAL" };
@@ -192,17 +191,26 @@ export function ValueForm({
 
                             {!showCompositionEditor && (
                                 <div className="space-y-1.5 pt-2">
-                                    <label className="text-sm font-bold text-slate-700 block ml-1">Артикул (сокращенно)</label>
+                                    <div className="flex items-center justify-between ml-1 mb-1">
+                                        <label className="text-sm font-bold text-slate-700 block">Артикул (сокращенно)</label>
+                                        <span className={cn("text-xs font-bold px-1.5 py-0.5 rounded-md border",
+                                            valueForm.code.length > 4 ? "bg-rose-50 text-rose-500 border-rose-100" : "bg-slate-50 text-slate-400 border-slate-100"
+                                        )}>
+                                            {valueForm.code.length}/4
+                                        </span>
+                                    </div>
                                     <Input
                                         value={valueForm.code}
                                         readOnly={isDimensions}
+                                        maxLength={4}
                                         onChange={e => {
-                                            const val = e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '');
+                                            const val = e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '').substring(0, 4);
                                             setValueForm((prev: ValueFormState) => ({ ...prev, code: val, isCodeManuallyEdited: true }));
                                         }}
                                         placeholder={placeholders.code}
                                         className={cn("w-full h-11 px-4 rounded-xl bg-white border border-slate-100 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none font-mono transition-all placeholder:text-slate-300 placeholder:font-medium font-bold text-sm text-slate-900 shadow-sm",
-                                            isDimensions && "bg-slate-50 cursor-not-allowed text-slate-500"
+                                            isDimensions && "bg-slate-50 cursor-not-allowed text-slate-500",
+                                            valueForm.code.length > 4 && "border-rose-300 focus:border-rose-500 focus:ring-rose-500/5"
                                         )}
                                         required
                                     />

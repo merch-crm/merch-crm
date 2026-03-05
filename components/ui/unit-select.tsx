@@ -1,7 +1,7 @@
 "use client";
 
-import * as React from"react";
-import { Select, SelectOption } from"./select";
+import * as React from "react";
+import { Select, SelectOption } from "./select";
 
 interface UnitOption {
     id: string;
@@ -18,16 +18,16 @@ interface UnitSelectProps {
 }
 
 const DEFAULT_OPTIONS: UnitOption[] = [
-    { id:"шт.", name:"шт." },
-    { id:"кг", name:"кг" },
-    { id:"м", name:"м" },
-    { id:"л", name:"л" },
+    { id: "шт.", name: "шт." },
+    { id: "кг", name: "кг" },
+    { id: "м", name: "м" },
+    { id: "л", name: "л" },
 ];
 
 export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, className, name, disabled }: UnitSelectProps) {
     const premiumOptions = React.useMemo(() =>
         options.map(opt => ({
-            id: opt.name, // id is actually the value we want to store/display
+            id: opt.id,
             title: opt.name,
         } as SelectOption))
         , [options]);
@@ -41,7 +41,6 @@ export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, classNa
                 onChange={onChange}
                 disabled={disabled}
                 placeholder="Выберите..."
-                compact
                 autoLayout
             />
         </div>

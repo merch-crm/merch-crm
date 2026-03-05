@@ -97,7 +97,7 @@ export const SortableCategoryCard = React.memo(({
             if (!entry) return;
 
             // Use refs to avoid stale closure — isAnyDragging/isDragging may be stale otherwise
-            if (isDraggingRef.current || isAnyDraggingRef.current || postDragFreezeRef.current) return;
+            if (isDraggingRef.current || postDragFreezeRef.current) return;
 
             const width = entry.contentRect.width;
 
@@ -124,7 +124,7 @@ export const SortableCategoryCard = React.memo(({
                     setIsWide(nextWide);
                     setIsExtraWide(nextExtraWide);
                     onLayoutChange?.(category.id, nextWide, nextExtraWide);
-                }, 100); // 100ms debounce
+                }, 50); // 50ms debounce
             }
         });
 
@@ -356,27 +356,23 @@ export const CategoryCardContent = React.memo(({
 
 CategoryCardContent.displayName = "CategoryCardContent";
 
-/* ── Compact drag preview (rendered inside DragOverlay) ── */
+/* ── Full-scale drag preview (rendered inside DragOverlay) ── */
 interface DragPreviewProps {
     category: CategoryWithChildren;
 }
 
 export const DragPreview = React.memo(({ category }: DragPreviewProps) => {
-    const IconComponent = getCategoryIcon(category);
-    const color = category.color || "slate";
-    const hexColor = getHexColor(color);
-
+    // We assume a standard width for the preview since it's floating
+    // 400px is wide enough to show the wide layout on most monitors
     return (
-        <div className="w-[120px] h-[120px] flex flex-col items-center justify-center bg-white border-2 border-primary/30 rounded-[24px] shadow-2xl shadow-primary/20 gap-2 pointer-events-none select-none">
-            <div
-                className="w-[48px] h-[48px] rounded-full flex items-center justify-center text-white"
-                style={{ backgroundColor: hexColor }}
-            >
-                <IconComponent className="w-6 h-6 stroke-[1.5]" />
-            </div>
-            <span className="text-[12px] font-extrabold text-slate-900 leading-tight text-center truncate max-w-[100px] px-1">
-                {category.name}
-            </span>
+        <div className="w-[420px] shadow-2xl rounded-[32px] pointer-events-none select-none overflow-hidden border border-primary/20 bg-white/80 backdrop-blur-sm">
+            <CategoryCardContent
+                category={category}
+                isDragging={false}
+                isWide={true}
+                isExtraWide={false}
+                onEdit={() => { }}
+            />
         </div>
     );
 });

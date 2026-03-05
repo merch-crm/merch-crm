@@ -1,5 +1,5 @@
-import Image from"next/image";
-import { Package } from"lucide-react";
+import Image from "next/image";
+import { Package } from "lucide-react";
 import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
 
 interface ImageGalleryProps {

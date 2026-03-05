@@ -1,12 +1,13 @@
-import { useState, useCallback, useEffect } from"react";
-import { getSession, getAllUsers } from"../warehouse-stats-actions";
-import { isSuccess } from"@/lib/types";
-import { getInventoryItems } from"../item-actions";
-import { getStorageLocations } from"../storage-actions";
-import { getInventoryHistory } from"../history-actions";
-import { getInventoryCategories } from"../category-actions";
-import { InventoryItem, StorageLocation, Category } from"../types";
-import type { Session } from"@/lib/auth";
+import { useState, useCallback, useEffect } from "react";
+import { getSession, getAllUsers } from "../warehouse-stats-actions";
+import { isSuccess } from "@/lib/types";
+import { getInventoryItems } from "../item-actions";
+import { getStorageLocations } from "../storage-actions";
+import { getInventoryHistory } from "../history-actions";
+import { getInventoryCategories } from "../category-actions";
+import { getInventoryAttributeTypes } from "../attribute-actions";
+import { InventoryItem, StorageLocation, Category, AttributeType } from "../types";
+import type { Session } from "@/lib/auth";
 
 export interface HistoryEntry {
     id: string;
@@ -19,6 +20,7 @@ export function useWarehouseLayout(activeTab: string) {
     const [items, setItems] = useState<InventoryItem[]>([]);
     const [locations, setLocations] = useState<StorageLocation[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [attributeTypes, setAttributeTypes] = useState<AttributeType[]>([]);
     const [users, setUsers] = useState<{ id: string; name: string }[]>([]);
     const [session, setSession] = useState<Session | null>(null);
     const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -50,8 +52,9 @@ export function useWarehouseLayout(activeTab: string) {
             setHistory(('data' in h && h.data) ? h.data : []);
         }
         if (type === 'characteristics' && !categories.length) {
-            const c = await getInventoryCategories();
+            const [c, at] = await Promise.all([getInventoryCategories(), getInventoryAttributeTypes()]);
             setCategories(('data' in c && c.data) ? c.data : []);
+            setAttributeTypes(('data' in at && at.data) ? at.data as AttributeType[] : []);
         }
     }, [locations.length, history.length, categories.length]);
 
@@ -63,7 +66,7 @@ export function useWarehouseLayout(activeTab: string) {
 
     return {
         state: {
-            items, locations, categories, users, session, history,
+            items, locations, categories, attributeTypes, users, session, history,
             isScannerOpen, isClearHistoryOpen, isClearingHistory
         },
         actions: {

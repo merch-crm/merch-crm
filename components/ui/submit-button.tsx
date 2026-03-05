@@ -28,14 +28,17 @@ export function SubmitButton({
             type="submit"
             disabled={disabled || isLoadingState}
             className={cn("gap-2", className)}
+            suppressHydrationWarning
             {...props}
-        >{isLoadingState ? (
-            <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                {loadingText || text || children}
-            </>
-        ) : (
-            text || children
-        )}</Button>
+        >
+            {isLoadingState ? (
+                <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span suppressHydrationWarning>{loadingText || text || children}</span>
+                </>
+            ) : (
+                <span suppressHydrationWarning>{text || children}</span>
+            )}
+        </Button>
     );
 }

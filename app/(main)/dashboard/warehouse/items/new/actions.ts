@@ -1,13 +1,13 @@
 "use server";
 
-import { db } from"@/lib/db";
-import { storageLocations, inventoryAttributes } from"@/lib/schema";
-import { getSession } from"@/lib/auth";
-import { revalidatePath } from"next/cache";
+import { db } from "@/lib/db";
+import { storageLocations, inventoryAttributes } from "@/lib/schema";
+import { getSession } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
-import { logAction } from"@/lib/audit";
+import { logAction } from "@/lib/audit";
 
-import { z } from"zod";
+import { z } from "zod";
 
 const StorageLocationSchema = z.object({
     name: z.string().min(1,"Название обязательно"),

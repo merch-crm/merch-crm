@@ -1,16 +1,16 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from"react";
-import { Plus, Trash2, Loader2, Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from"lucide-react";
-import { ResponsiveModal } from"@/components/ui/responsive-modal";
-import { Button } from"@/components/ui/button";
-import { Session } from"@/lib/auth";
-import { AttributeType, type InventoryAttribute as Attribute, Category, AttributeMeta } from"../../types";
-import { type ValueFormState, type TypeFormState, type DeleteDialogState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
-import { getColorHex } from"@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
-import { SwitchRow } from"@/components/ui/switch-row";
-import { cn } from"@/lib/utils";
-import { ValueForm } from"./ValueForm";
-import { getCategoryIcon } from"../../category-utils";
+import React, { type Dispatch, type SetStateAction } from "react";
+import { Plus, Trash2, Loader2, Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from "lucide-react";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Session } from "@/lib/auth";
+import { AttributeType, type InventoryAttribute as Attribute, Category, AttributeMeta } from "../../types";
+import { type ValueFormState, type TypeFormState, type DeleteDialogState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import { getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+import { SwitchRow } from "@/components/ui/switch-row";
+import { cn } from "@/lib/utils";
+import { ValueForm } from "./ValueForm";
+import { getCategoryIcon } from "../../category-utils";
 
 
 
@@ -51,22 +51,21 @@ export function EditTypeDialog({
     const { form: valueForm, setForm: setValueForm } = valueState;
     const { openAddValue, openEditValue, setDeleteDialog, handleTypeUpdate, handleValueSave } = actions;
     const dataTypes = [
-        { id:"text", title:"Общая", icon: Shapes },
-        { id:"unit", title:"Единица измерения", icon: Ruler },
-        { id:"color", title:"Цвет", icon: Palette },
-        { id:"dimensions", title:"Габариты", icon: Box },
-        { id:"quantity", title:"Количество", icon: Hash },
+        { id: "text", title: "Общая", icon: Shapes },
+        { id: "unit", title: "Единица измерения", icon: Ruler },
+        { id: "color", title: "Цвет", icon: Palette },
+        { id: "dimensions", title: "Габариты", icon: Box },
 
-        { id:"composition", title:"Состав", icon: Component },
-        { id:"material", title:"Материал", icon: Layers },
-        { id:"size", title:"Размер", icon: Maximize },
-        { id:"brand", title:"Бренд", icon: Tag },
-        { id:"country", title:"Страна", icon: Globe },
-        { id:"density", title:"Плотность", icon: Waves },
-        { id:"weight", title:"Вес", icon: Weight },
-        { id:"volume", title:"Объем", icon: Droplets },
-        { id:"package", title:"Упаковка", icon: Package },
-        { id:"consumable", title:"Расходники", icon: Wrench },
+        { id: "composition", title: "Состав", icon: Component },
+        { id: "material", title: "Материал", icon: Layers },
+        { id: "size", title: "Размер", icon: Maximize },
+        { id: "brand", title: "Бренд", icon: Tag },
+        { id: "country", title: "Страна", icon: Globe },
+        { id: "density", title: "Плотность", icon: Waves },
+        { id: "weight", title: "Вес", icon: Weight },
+        { id: "volume", title: "Объем", icon: Droplets },
+        { id: "package", title: "Упаковка", icon: Package },
+        { id: "consumable", title: "Расходники", icon: Wrench },
     ] as const;
 
     const currentTypeMeta = dataTypes.find(t => t.id === typeForm.dataType) || dataTypes[0];
@@ -93,7 +92,7 @@ export function EditTypeDialog({
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">
-                                {typeForm.name ||"Новый раздел"}
+                                {typeForm.name || "Новый раздел"}
                             </h2>
                             <p className="text-sm font-medium text-slate-500 mt-0.5">
                                 Управление разделом «{currentTypeMeta.title}»
@@ -105,7 +104,7 @@ export function EditTypeDialog({
                     <div className="hidden sm:flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-50/80 border border-slate-100 shadow-sm backdrop-blur-sm">
                         {(() => {
                             const category = categories.find(c => c.id === typeForm.categoryId);
-                            const categoryName = category?.name ||"Без категории";
+                            const categoryName = category?.name || "Без категории";
                             const IconComp = category ? getCategoryIcon(category) : Layers;
                             return (
                                 <>
@@ -162,9 +161,9 @@ export function EditTypeDialog({
                                 </div>
 
                                 <div className={cn("flex-1 overflow-y-auto custom-scrollbar p-1 max-h-[350px]",
-                                    editingTypeLatest?.dataType ==="composition"
-                                        ?"grid grid-cols-1 gap-2 content-start items-stretch"
-                                        :"grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-2 content-start items-stretch"
+                                    editingTypeLatest?.dataType === "composition"
+                                        ? "grid grid-cols-1 gap-2 content-start items-stretch"
+                                        : "grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-2 content-start items-stretch"
                                 )}>
                                     {editingTypeValues.map(attr => (
                                         <div role="button" tabIndex={0}
@@ -173,11 +172,11 @@ export function EditTypeDialog({
                                             onClick={() => openEditValue(attr)}
                                             className={cn("h-full min-h-[52px] flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200 shadow-sm border group",
                                                 valueForm.isOpen && valueForm.editingAttribute?.id === attr.id
-                                                    ?"bg-primary/5 ring-1 ring-primary/20 border-primary/20"
-                                                    :"bg-white border-slate-100 hover:border-slate-200"
+                                                    ? "bg-primary/5 ring-1 ring-primary/20 border-primary/20"
+                                                    : "bg-white border-slate-100 hover:border-slate-200"
                                             )}
                                         >
-                                            {(editingTypeLatest?.dataType ==="color" || editingTypeLatest?.hasColor || (attr.meta as AttributeMeta)?.hex) ? (
+                                            {(editingTypeLatest?.dataType === "color" || editingTypeLatest?.hasColor || (attr.meta as AttributeMeta)?.hex) ? (
                                                 <div className={cn("w-6 h-6 rounded-full shadow-inner flex-shrink-0 border border-slate-200",
                                                 )} style={{ backgroundColor: getColorHex(attr.meta) }} />
                                             ) : (
@@ -190,7 +189,7 @@ export function EditTypeDialog({
                                                 <div className="flex items-center gap-1.5 px-1 truncate">
                                                     <span className="font-bold text-[13px] text-slate-700 leading-tight truncate">
                                                         {(attr.meta as AttributeMeta)?.fullName || attr.name}
-                                                        {editingTypeLatest?.dataType ==="density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") &&" г/м²"}
+                                                        {editingTypeLatest?.dataType === "density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") && " г/м²"}
                                                     </span>
                                                     {(attr.meta as AttributeMeta)?.isOversize && (
                                                         <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[11px] font-black border border-indigo-100/50">
@@ -210,7 +209,7 @@ export function EditTypeDialog({
                                         type="button"
                                         onClick={() => editingTypeLatest && openAddValue(editingTypeLatest.slug)}
                                         className={cn("h-full min-h-[52px] w-full bg-slate-50/50 hover:bg-slate-100/80 text-slate-600 text-[13px] font-bold border border-slate-200 border-dashed rounded-xl transition-all shadow-sm flex items-center justify-center",
-                                            editingTypeValues.length === 0 &&"col-span-full"
+                                            editingTypeValues.length === 0 && "col-span-full"
                                         )}
                                     >
                                         <Plus className="w-4 h-4 mr-2 text-slate-500" />
@@ -240,7 +239,7 @@ export function EditTypeDialog({
                         <Button
                             variant="ghost"
                             onClick={() => setDeleteDialog((prev: DeleteDialogState) => ({ ...prev, type: editingTypeLatest }))}
-                            disabled={editingTypeLatest.isSystem && user?.roleName !=="Администратор"}
+                            disabled={editingTypeLatest.isSystem && user?.roleName !== "Администратор"}
                             className="h-11 px-5 font-bold text-sm flex items-center gap-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale shrink-0"
                         >
                             <Trash2 className="w-4 h-4 shrink-0" />

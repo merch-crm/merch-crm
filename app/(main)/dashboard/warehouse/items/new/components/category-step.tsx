@@ -1,8 +1,8 @@
-import { LayoutGrid } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { CategorySelector } from"./category-selector";
-import { StepFooter } from"./step-footer";
-import { Category, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { LayoutGrid } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { CategorySelector } from "./category-selector";
+import { StepFooter } from "./step-footer";
+import { Category, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 
 interface CategoryStepProps {
     topLevelCategories: Category[];
@@ -43,16 +43,14 @@ export function CategoryStep({
 
     return (
         // Outer: flex-col, fills parent height, no overflow
-        <div className="flex flex-col h-full min-h-0">
-
-            {/* Content area — grows to fill space, no scroll */}
-            <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex flex-col h-full min-h-0 !overflow-visible">
+            <div className="flex-1 flex flex-col min-h-0 p-[var(--radius-padding)]">
 
                 {/* Top-level categories */}
-                <div className={cn("transition-all duration-700 ease-in-out min-h-0 flex flex-col",
+                <div className={cn("transition-all duration-700 ease-in-out min-h-0 flex flex-col !overflow-visible",
                     selectedCategory
-                        ?"flex-1 mb-3"
-                        :"flex-1 mb-2 sm:mb-4"
+                        ? "flex-1 mb-3"
+                        : "flex-1 mb-2 sm:mb-4"
                 )}>
                     <CategorySelector
                         categories={topLevelCategories}
@@ -110,7 +108,7 @@ export function CategoryStep({
             </div>
 
             {/* Footer — always at the bottom, never scrolls away */}
-            <div className="card-breakout card-breakout-bottom shrink-0 mt-2">
+            <div className="mt-auto shrink-0">
                 <StepFooter
                     onBack={onBack}
                     onNext={handleNextClick}

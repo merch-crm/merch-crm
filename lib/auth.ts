@@ -71,8 +71,12 @@ export async function getSession(): Promise<Session | null> {
 
     if (!session) return null;
 
-    const isBlacklisted = await redis.get(`blacklist:${session}`);
-    if (isBlacklisted) return null;
+    try {
+        const isBlacklisted = await redis.get(`blacklist:${session}`);
+        if (isBlacklisted) return null;
+    } catch {
+        console.warn("⚠️ Redis blacklist check failed, allowing session (network error)");
+    }
 
     try {
         return await decrypt(session);
@@ -106,7 +110,11 @@ export async function logout() {
     const session = cookieStore.get("session")?.value;
     if (session) {
         // Add to blacklist for 24 hours
-        await redis.set(`blacklist:${session}`, "1", "EX", 24 * 60 * 60);
+        try {
+            await redis.set(`blacklist:${session}`, "1", "EX", 24 * 60 * 60);
+        } catch {
+            console.warn("⚠️ Failed to blacklist session on logout (Redis error)");
+        }
     }
     cookieStore.delete("session");
 }

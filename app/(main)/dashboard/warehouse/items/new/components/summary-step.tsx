@@ -1,16 +1,16 @@
 "use client";
 
-import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from"@/app/(main)/dashboard/warehouse/types";
-import { StepFooter } from"./step-footer";
-import { useIsMobile } from"@/hooks/use-mobile";
+import { Category, ItemFormData, StorageLocation, InventoryAttribute, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
+import { StepFooter } from "./step-footer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-import { useSummaryLogic } from"./summary/hooks/useSummaryLogic";
-import { SummaryHeader } from"./summary/summary-header";
-import { AttributesSection } from"./summary/attributes-section";
-import { ImageGallery } from"./summary/image-gallery";
-import { StorageCard } from"./summary/storage-card";
-import { FinanceCard } from"./summary/finance-card";
-import { MobileEditSheet } from"./summary/mobile-edit-sheet";
+import { useSummaryLogic } from "./summary/hooks/useSummaryLogic";
+import { SummaryHeader } from "./summary/summary-header";
+import { AttributesSection } from "./summary/attributes-section";
+import { ImageGallery } from "./summary/image-gallery";
+import { StorageCard } from "./summary/storage-card";
+import { FinanceCard } from "./summary/finance-card";
+import { MobileEditSheet } from "./summary/mobile-edit-sheet";
 
 interface SummaryStepProps {
     category: Category;
@@ -31,7 +31,7 @@ export function SummaryStep({
     subCategories,
     storageLocations,
     dynamicAttributes,
-    // attributeTypes, // unused
+    attributeTypes,
     formData,
     updateFormData,
     onSubmit,
@@ -44,22 +44,26 @@ export function SummaryStep({
 
     return (
         <div className="flex flex-col h-full min-h-0">
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-0.5">
-                <div className="max-w-6xl mx-auto space-y-3 px-6 pb-10">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar mr-[8px]">
+                <div className="space-y-3 pb-10 pl-[var(--radius-padding)] pr-[8px] pt-[var(--radius-padding)]">
                     {/* Item Name & Status Header */}
                     <SummaryHeader
                         formData={formData}
                         category={category}
+                        attributeTypes={attributeTypes}
+                        dynamicAttributes={dynamicAttributes}
                         activeSubcategory={logic.activeSubcategory}
                         accentColor={logic.accentColor}
                         isMobile={isMobile}
-                        isEditingName={logic.isEditingName}
-                        tempName={logic.tempName ||""}
-                        onEditClick={() => logic.setIsEditingName(true)}
-                        onNameChange={logic.setTempName}
-                        onSaveName={logic.handleSaveName}
-                        onCancelName={logic.handleCancelName}
-                        onKeyDown={logic.handleKeyDown}
+                        nameEdit={{
+                            isEditing: logic.isEditingName,
+                            tempName: logic.tempName || "",
+                            onEditClick: () => logic.setIsEditingName(true),
+                            onNameChange: logic.setTempName,
+                            onSaveName: logic.handleSaveName,
+                            onCancelName: logic.handleCancelName,
+                            onKeyDown: logic.handleKeyDown,
+                        }}
                     />
 
                     {/* Bento Grid layout */}
@@ -69,6 +73,7 @@ export function SummaryStep({
                             <AttributesSection
                                 formData={formData}
                                 dynamicAttributes={dynamicAttributes}
+                                attributeTypes={attributeTypes}
                                 selectedColorName={logic.selectedColor?.name}
                                 selectedColorHex={logic.selectedColor?.hex}
                                 getAttrName={logic.getAttrName}
@@ -90,7 +95,7 @@ export function SummaryStep({
                 </div>
             </div>
 
-            <div className="card-breakout card-breakout-bottom mt-auto">
+            <div className="mt-auto shrink-0">
                 <StepFooter
                     onBack={onBack}
                     onNext={onSubmit}
@@ -103,7 +108,7 @@ export function SummaryStep({
             {/* Mobile Name Edit Sheet */}
             <MobileEditSheet
                 isOpen={logic.isEditingName && isMobile}
-                tempName={logic.tempName ||""}
+                tempName={logic.tempName || ""}
                 onClose={() => logic.setIsEditingName(false)}
                 onNameChange={logic.setTempName}
                 onSaveName={logic.handleSaveName}

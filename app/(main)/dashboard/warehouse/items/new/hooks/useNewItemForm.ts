@@ -1,21 +1,21 @@
-import { useState, useCallback } from"react";
-import { ItemFormData, Category } from"@/app/(main)/dashboard/warehouse/types";
+import { useState, useCallback } from "react";
+import { ItemFormData, Category } from "@/app/(main)/dashboard/warehouse/types";
 
 export const DEFAULT_FORM_DATA: ItemFormData = {
-    subcategoryId:"",
-    brandCode:"",
-    qualityCode:"",
-    materialCode:"",
-    attributeCode:"",
-    sizeCode:"",
-    itemName:"",
-    sku:"",
-    unit:"шт.",
-    description:"",
-    width:"",
-    height:"",
-    depth:"",
-    department:"",
+    subcategoryId: "",
+    brandCode: "",
+    qualityCode: "",
+    materialCode: "",
+    attributeCode: "",
+    sizeCode: "",
+    itemName: "",
+    sku: "",
+    unit: "шт.",
+    description: "",
+    width: "",
+    height: "",
+    depth: "",
+    department: "",
     imageFile: null,
     imageBackFile: null,
     imageSideFile: null,
@@ -25,13 +25,13 @@ export const DEFAULT_FORM_DATA: ItemFormData = {
     imageSidePreview: null,
     imageDetailsPreviews: [],
     thumbSettings: { zoom: 1, x: 0, y: 0 },
-    storageLocationId:"",
-    quantity:"0",
-    criticalStockThreshold:"0",
-    lowStockThreshold:"10",
-    costPrice:"0",
-    sellingPrice:"0",
-    responsibleUserId:"",
+    storageLocationId: "",
+    quantity: "0",
+    criticalStockThreshold: "0",
+    lowStockThreshold: "10",
+    costPrice: "0",
+    sellingPrice: "0",
+    responsibleUserId: "",
     attributes: {}
 };
 
@@ -43,8 +43,11 @@ export function useNewItemForm() {
     const [isSaving, setIsSaving] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const updateFormData = useCallback((updates: Partial<ItemFormData>) => {
-        setFormData((prev: ItemFormData) => ({ ...prev, ...updates }));
+    const updateFormData = useCallback((updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => {
+        setFormData((prev: ItemFormData) => {
+            const resolvedUpdates = typeof updates === 'function' ? updates(prev) : updates;
+            return { ...prev, ...resolvedUpdates };
+        });
     }, []);
 
     const resetForm = useCallback(() => {

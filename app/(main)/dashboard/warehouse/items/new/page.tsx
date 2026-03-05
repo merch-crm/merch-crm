@@ -1,9 +1,9 @@
-import { getInventoryCategories } from"../../category-actions";
-import { getStorageLocations } from"../../storage-actions";
-import { getMeasurementUnits } from"../../warehouse-shared.actions";
-import { getInventoryAttributes, getInventoryAttributeTypes } from"../../attribute-actions";;
-import { NewItemPageClient } from"./new-item-page-client";
-import { AttributeType } from"../../types";
+import { getInventoryCategories } from "../../category-actions";
+import { getStorageLocations } from "../../storage-actions";
+import { getMeasurementUnits } from "../../warehouse-shared.actions";
+import { getInventoryAttributes, getInventoryAttributeTypes } from "../../attribute-actions";;
+import { NewItemPageClient } from "./new-item-page-client";
+import { AttributeType } from "../../types";
 
 export const metadata = {
     title:"Склад | Новый товар",

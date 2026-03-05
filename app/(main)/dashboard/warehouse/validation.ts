@@ -1,58 +1,58 @@
-import { z } from"zod";
+import { z } from "zod";
 
 
 
 export const InventoryCategorySchema = z.object({
-    name: z.string().min(1,"Название обязательно"),
-    description: z.string().nullish().transform(v => v ??""),
-    parentId: z.string().uuid().nullish().or(z.literal("")).transform(v => (!v || v ==="") ? null : v),
-    color: z.string().nullish().transform(v => v ??""),
-    singularName: z.string().nullish().transform(v => v ??""),
-    pluralName: z.string().nullish().transform(v => v ??""),
-    gender: z.preprocess((val) => val ||"masculine", z.enum(["masculine","feminine","neuter"])).default("masculine"),
+    name: z.string().min(1, "Название обязательно"),
+    description: z.string().nullish().transform(v => v ?? ""),
+    parentId: z.string().uuid().nullish().or(z.literal("")).transform(v => (!v || v === "") ? null : v),
+    color: z.string().nullish().transform(v => v ?? ""),
+    singularName: z.string().nullish().transform(v => v ?? ""),
+    pluralName: z.string().nullish().transform(v => v ?? ""),
+    gender: z.preprocess((val) => val || "masculine", z.enum(["masculine", "feminine", "neuter"])).default("masculine"),
     sortOrder: z.coerce.number().int().default(0),
     isActive: z.coerce.boolean().default(true),
-    defaultUnit: z.string().nullish().transform(v => v ??""),
+    defaultUnit: z.string().nullish().transform(v => v ?? ""),
     showInSku: z.coerce.boolean().default(true),
     showInName: z.coerce.boolean().default(true),
-    prefix: z.string().nullish().transform(v => v ??""),
-    icon: z.string().nullish().transform(v => v ??""),
+    prefix: z.string().nullish().transform(v => v ?? ""),
+    icon: z.string().nullish().transform(v => v ?? ""),
 });
 
 export const InventoryItemSchema = z.object({
-    itemType: z.enum(["clothing","packaging","consumables"]).default("clothing"),
-    name: z.string().min(1,"Название обязательно"),
+    itemType: z.enum(["clothing", "packaging", "consumables"]).default("clothing"),
+    name: z.string().min(1, "Название обязательно"),
     sku: z.string().optional().or(z.literal("")),
     quantity: z.coerce.number().int().min(0).default(0),
     reservedQuantity: z.coerce.number().int().min(0).optional(),
     unit: z.string().default("шт."),
     lowStockThreshold: z.coerce.number().int().min(0).default(10),
     criticalStockThreshold: z.coerce.number().int().min(0).default(0),
-    categoryId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v ==="" ? null : v),
+    categoryId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v === "" ? null : v),
     description: z.string().optional().or(z.literal("")),
-    storageLocationId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v ==="" ? null : v),
+    storageLocationId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v === "" ? null : v),
 
     // Codes
-    qualityCode: z.string().optional().or(z.literal("")).transform(v => v ==="" ? null : v),
-    materialCode: z.string().optional().or(z.literal("")).transform(v => v ==="" ? null : v),
-    attributeCode: z.string().optional().or(z.literal("")).transform(v => v ==="" ? null : v),
-    sizeCode: z.string().optional().or(z.literal("")).transform(v => v ==="" ? null : v),
-    brandCode: z.string().optional().or(z.literal("")).transform(v => v ==="" ? null : v),
+    qualityCode: z.string().max(4, "Максимум 4 символа").optional().or(z.literal("")).transform(v => v === "" ? null : v),
+    materialCode: z.string().max(4, "Максимум 4 символа").optional().or(z.literal("")).transform(v => v === "" ? null : v),
+    attributeCode: z.string().max(4, "Максимум 4 символа").optional().or(z.literal("")).transform(v => v === "" ? null : v),
+    sizeCode: z.string().max(4, "Максимум 4 символа").optional().or(z.literal("")).transform(v => v === "" ? null : v),
+    brandCode: z.string().max(4, "Максимум 4 символа").optional().or(z.literal("")).transform(v => v === "" ? null : v),
 
     // Prices
     costPrice: z.preprocess(
-        (val) => (val ==="" || val === null ? null : val),
+        (val) => (val === "" || val === null ? null : val),
         z.coerce.number().min(0).nullable().optional()
     ),
     sellingPrice: z.preprocess(
-        (val) => (val ==="" || val === null ? null : val),
+        (val) => (val === "" || val === null ? null : val),
         z.coerce.number().min(0).nullable().optional()
     ),
 
     // JSONs
     attributes: z.preprocess(
         (val) => {
-            if (typeof val ==="string") {
+            if (typeof val === "string") {
                 try { return JSON.parse(val); } catch { return {}; }
             }
             return val;
@@ -61,7 +61,7 @@ export const InventoryItemSchema = z.object({
     ),
     thumbnailSettings: z.preprocess(
         (val) => {
-            if (typeof val ==="string") {
+            if (typeof val === "string") {
                 try { return JSON.parse(val); } catch { return null; }
             }
             return val;
@@ -70,7 +70,7 @@ export const InventoryItemSchema = z.object({
     ),
     materialComposition: z.preprocess(
         (val) => {
-            if (typeof val ==="string") {
+            if (typeof val === "string") {
                 try { return JSON.parse(val); } catch { return {}; }
             }
             return val;
@@ -89,7 +89,7 @@ export const InventoryItemSchema = z.object({
     minBatch: z.string().optional(),
     features: z.preprocess(
         (val) => {
-            if (typeof val ==="string") {
+            if (typeof val === "string") {
                 try { return JSON.parse(val); } catch { return []; }
             }
             return val;
@@ -101,28 +101,28 @@ export const InventoryItemSchema = z.object({
 
 export const AdjustStockSchema = z.object({
     itemId: z.string().uuid(),
-    amount: z.number().min(0,"Amount must be non-negative"),
-    type: z.enum(["in","out","set"]),
-    reason: z.string().min(1,"Reason is required"),
+    amount: z.number().min(0, "Amount must be non-negative"),
+    type: z.enum(["in", "out", "set"]),
+    reason: z.string().min(1, "Reason is required"),
     storageLocationId: z.string().uuid().optional().nullable(),
     costPrice: z.number().min(0).optional()
 });
 
 export const StorageLocationSchema = z.object({
-    name: z.string().min(1,"Название обязательно"),
-    address: z.string().min(1,"Адрес обязателен"),
+    name: z.string().min(1, "Название обязательно"),
+    address: z.string().min(1, "Адрес обязателен"),
     description: z.string().optional().or(z.literal("")),
-    responsibleUserId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v ==="" ? null : v),
-    type: z.enum(["warehouse","production","office"]).default("warehouse"),
+    responsibleUserId: z.string().uuid().optional().nullable().or(z.literal("")).transform(v => v === "" ? null : v),
+    type: z.enum(["warehouse", "production", "office"]).default("warehouse"),
     isDefault: z.coerce.boolean().default(false),
     isActive: z.coerce.boolean().default(true),
 });
 
 export const AttributeTypeSchema = z.object({
-    name: z.string().min(1,"Название обязательно"),
-    slug: z.string().min(1,"Slug обязателен"),
+    name: z.string().min(1, "Название обязательно"),
+    slug: z.string().min(1, "Slug обязателен"),
     category: z.string().optional().nullable(),
-    dataType: z.enum(["text","unit","color","dimensions","quantity","composition","material","size","brand","country","density","weight","volume","package","consumable"]).default("text"),
+    dataType: z.enum(["text", "unit", "color", "dimensions", "quantity", "composition", "material", "size", "brand", "country", "density", "weight", "volume", "package", "consumable"]).default("text"),
     isSystem: z.coerce.boolean().default(false),
     showInSku: z.coerce.boolean().default(true),
     showInName: z.coerce.boolean().default(true),
@@ -132,9 +132,10 @@ export const AttributeTypeSchema = z.object({
 });
 
 export const AttributeSchema = z.object({
-    type: z.string().min(1,"Тип обязателен"),
-    name: z.string().min(1,"Название обязательно"),
-    value: z.string().min(1,"Значение обязательно"),
+    type: z.string().min(1, "Тип обязателен"),
+    name: z.string().min(1, "Название обязательно"),
+    value: z.string().min(1, "Значение обязательно").regex(/^[A-Z0-9_]+$/, "Только латиница, цифры и подчеркивание").max(4, "Максимум 4 символа"),
+    categoryId: z.string().uuid().optional().nullable(),
     meta: z.record(z.string(), z.unknown()).optional().nullable(),
 });
 
@@ -171,7 +172,7 @@ export const InventoryFiltersSchema = z.object({
     limit: z.coerce.number().int().min(0).optional().default(0),
     search: z.string().optional().or(z.literal("")),
     categoryIds: z.array(z.string().uuid()).optional().default([]),
-    status: z.enum(["all","in","low","out"]).optional().default("all"),
+    status: z.enum(["all", "in", "low", "out"]).optional().default("all"),
     storageLocationId: z.string().uuid().optional().or(z.literal("all")).default("all"),
     sortBy: z.string().optional().default("createdAt"),
     showArchived: z.coerce.boolean().optional().default(false),

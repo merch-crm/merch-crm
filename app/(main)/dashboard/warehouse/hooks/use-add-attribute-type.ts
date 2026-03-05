@@ -3,7 +3,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 import { createInventoryAttributeType } from "../attribute-actions";;
 import { playSound } from "@/lib/sounds";
-import type { Category } from "../types";
+import type { Category, AttributeType } from "../types";
 
 export const transliterateToSlug = (text: string) => {
     const MAP: Record<string, string> = {
@@ -17,14 +17,13 @@ export const transliterateToSlug = (text: string) => {
 };
 
 
-export type DataTypeKey = "text" | "unit" | "color" | "dimensions" | "quantity" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
+export type DataTypeKey = "text" | "unit" | "color" | "dimensions" | "composition" | "material" | "size" | "brand" | "country" | "density" | "weight" | "volume" | "package" | "consumable";
 
 export const DATA_TYPE_META: Record<DataTypeKey, { name: string; slug: string }> = {
     text: { name: "Общая", slug: "text" },
     unit: { name: "Единица измерения", slug: "unit" },
     color: { name: "Цвет", slug: "color" },
     dimensions: { name: "Габариты", slug: "dimensions" },
-    quantity: { name: "Количество", slug: "quantity" },
 
     composition: { name: "Состав", slug: "composition" },
     material: { name: "Материал", slug: "material" },
@@ -40,9 +39,10 @@ export const DATA_TYPE_META: Record<DataTypeKey, { name: string; slug: string }>
 
 interface UseAddAttributeTypeProps {
     categories: Category[];
+    attributeTypes: AttributeType[];
 }
 
-export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
+export function useAddAttributeType({ categories, attributeTypes = [] }: UseAddAttributeTypeProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [dataTypes, setDataTypesRaw] = useState<DataTypeKey[]>([]);
@@ -59,6 +59,10 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
     const rootCategories = categories.filter(c => !c.parentId);
     const catParam = searchParams.get("cat");
     const [activeCategoryId, setActiveCategoryId] = useState<string>(catParam || (rootCategories.length > 0 ? rootCategories[0].id : "uncategorized"));
+
+    const existingTypesInActiveCategory = attributeTypes
+        .filter(t => (activeCategoryId === "uncategorized" ? !t.categoryId : t.categoryId === activeCategoryId))
+        .map(t => t.dataType);
 
     const toggleDataType = (type: DataTypeKey) => {
         setDataTypesRaw(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
@@ -91,7 +95,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
         setError(null);
         try {
             const catIdToSave = activeCategoryId === "uncategorized" ? undefined : activeCategoryId;
-            let allSuccess = true;
+            let isAllSuccess = true;
 
             for (const type of dataTypes) {
                 const name = DATA_TYPE_META[type].name;
@@ -103,7 +107,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
                 });
 
                 if (!res.success) {
-                    allSuccess = false;
+                    isAllSuccess = false;
                     const errorMsg = res.error || `Ошибка создания: ${name}`;
                     setError(errorMsg);
                     toast(errorMsg, "error");
@@ -112,7 +116,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
                 }
             }
 
-            if (allSuccess) {
+            if (isAllSuccess) {
                 toast(dataTypes.length > 1 ? "Разделы созданы" : "Новый раздел создан", "success");
                 playSound("notification_success");
                 setIsOpen(false);
@@ -135,6 +139,7 @@ export function useAddAttributeType({ categories }: UseAddAttributeTypeProps) {
         hasUnits, setHasUnits,
         hasComposition, setHasComposition,
         rootCategories,
+        existingTypesInActiveCategory,
         error, setError,
         handleOpen,
         handleCreate

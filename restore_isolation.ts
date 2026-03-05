@@ -13,9 +13,12 @@ async function main() {
     console.log(`Original attrs count: ${originalAttrs.length}`);
 
     // 1. Restore missing types
+    // Fetch all existing IDs in a single query to avoid N+1
+    const existingTypes = await db.select({ id: inventoryAttributeTypes.id }).from(inventoryAttributeTypes);
+    const existingTypeIds = new Set(existingTypes.map((t) => t.id));
+
     for (const t of originalTypes) {
-        const existing = await db.select().from(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, t.id));
-        if (existing.length === 0) {
+        if (!existingTypeIds.has(t.id)) {
             console.log(`Restoring type: "${t.name}" (Slug: ${t.slug}, Category: ${t.categoryId})`);
             await db.insert(inventoryAttributeTypes).values({
                 id: t.id,

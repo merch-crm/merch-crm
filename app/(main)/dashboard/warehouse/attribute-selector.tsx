@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect, useMemo } from"react";
-import { Settings2, ArrowRight } from"lucide-react";
-import { Select } from"@/components/ui/select";
-import { cn } from"@/lib/utils";
-import { Button } from"@/components/ui/button";
-import { createInventoryAttribute, getInventoryAttributes, getInventoryAttributeTypes } from"./attribute-actions";
-import { useToast } from"@/components/ui/toast";
-import { AttributeType } from"./types";
-import { AttributeCustomModal } from"./attribute-custom-modal";
-import { transliterateToSku } from"@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
-import { toAccusative } from"@/lib/pluralize";
+import { useState, useEffect, useMemo } from "react";
+import { Settings2, ArrowRight } from "lucide-react";
+import { Select } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { createInventoryAttribute, getInventoryAttributes, getInventoryAttributeTypes } from "./attribute-actions";
+import { useToast } from "@/components/ui/toast";
+import { AttributeType } from "./types";
+import { AttributeCustomModal } from "./attribute-custom-modal";
+import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+
 
 interface AttributeSelectorProps {
     type: string;
@@ -30,11 +30,13 @@ interface DbAttribute {
     name: string;
     value: string;
     meta: Record<string, unknown> | null;
+    categoryId?: string | null;
 }
 
 
 
-const UNIT_DISPLAY_NAMES: Record<string, string> = {"PCS":"шт","PAR":"пар","SET":"компл","PKG":"уп","ROL":"рул","L":"л","M":"м","MM":"мм","CM":"см","G":"г","KG":"кг","ML":"мл"
+const UNIT_DISPLAY_NAMES: Record<string, string> = {
+    "PCS": "шт", "PAR": "пар", "SET": "компл", "PKG": "уп", "ROL": "рул", "L": "л", "M": "м", "MM": "мм", "CM": "см", "G": "г", "KG": "кг", "ML": "мл"
 };
 
 export function AttributeSelector({
@@ -49,22 +51,22 @@ export function AttributeSelector({
 }: AttributeSelectorProps) {
     const [showCustom, setShowCustom] = useState(false);
     const [customForm, setCustomForm] = useState({
-        name:"",
-        hex:"#000000",
-        l:"",
-        w:"",
-        h:"",
-        u:"MM" as"MM" |"CM" |"M",
-        weightUnit:"G" as"G" |"KG",
-        volumeUnit:"ML" as"ML" |"L",
-        quantityUnit:"PCS" as string,
-        composition: [{ name:"", percent:"" }] as { name: string; percent: string }[],
-        fullName:"",
-        shortName:"",
-        code:"",
+        name: "",
+        hex: "#000000",
+        l: "",
+        w: "",
+        h: "",
+        u: "MM" as "MM" | "CM" | "M",
+        weightUnit: "G" as "G" | "KG",
+        volumeUnit: "ML" as "ML" | "L",
+        quantityUnit: "PCS" as string,
+        composition: [{ name: "", percent: "" }] as { name: string; percent: string }[],
+        fullName: "",
+        shortName: "",
+        code: "",
         isCodeManuallyEdited: false,
-        measureValue:"",
-        measureUnit:""
+        measureValue: "",
+        measureUnit: ""
     });
     const [isSaving, setIsSaving] = useState(false);
     const { toast } = useToast();
@@ -94,22 +96,24 @@ export function AttributeSelector({
 
             if (attrRes.success && attrRes.data) {
                 const allFetchedAttrs = attrRes.data as unknown as DbAttribute[];
-                setDbAttributes(allFetchedAttrs.filter(a => a.type === resolvedTypeSlug));
+                setDbAttributes(allFetchedAttrs.filter(a =>
+                    (a.type === resolvedTypeSlug || a.type === type) &&
+                    (a.categoryId === (categoryId || null) || a.categoryId === null)
+                ));
             }
         };
         fetchData();
-    }, [resolvedTypeSlug]);
+    }, [resolvedTypeSlug, categoryId, type]);
 
     const currentAttributeType = attributeTypes.find(t => t.slug === resolvedTypeSlug);
-    const isColorType = currentAttributeType?.dataType ==="color" || currentAttributeType?.hasColor || type ==="color";
-    const isDimensions = currentAttributeType?.dataType ==="dimensions";
-    const isWeight = currentAttributeType?.dataType ==="weight";
-    const isVolume = currentAttributeType?.dataType ==="volume";
-    const isDensity = currentAttributeType?.dataType ==="density";
-    const isComposition = currentAttributeType?.dataType ==="composition";
-    const isQuantity = currentAttributeType?.dataType ==="quantity";
+    const isColorType = currentAttributeType?.dataType === "color" || currentAttributeType?.hasColor || type === "color";
+    const isDimensions = currentAttributeType?.dataType === "dimensions";
+    const isWeight = currentAttributeType?.dataType === "weight";
+    const isVolume = currentAttributeType?.dataType === "volume";
+    const isDensity = currentAttributeType?.dataType === "density";
+    const isComposition = currentAttributeType?.dataType === "composition";
 
-    const sizeOrder = ["kids","s","s-m","m","l","xl"];
+    const sizeOrder = ["kids", "s", "s-m", "m", "l", "xl"];
     const sortSizes = (options: { name: string; code: string }[]) => {
         return [...options].sort((a, b) => {
             const indexA = sizeOrder.indexOf(a.name.toLowerCase());
@@ -123,17 +127,27 @@ export function AttributeSelector({
 
     let allOptions: { name: string; code: string; hex?: string }[] = [];
 
-    if (type ==="size") {
-        allOptions = dbAttributes.map(dbAttr => ({ name: dbAttr.name, code: dbAttr.value }));
+    if (type === "size") {
+        allOptions = dbAttributes.map(dbAttr => ({
+            name: (dbAttr.meta as { fullName?: string })?.fullName || dbAttr.name,
+            code: dbAttr.value
+        }));
         allOptions = sortSizes(allOptions);
     } else if (isColorType) {
         allOptions = dbAttributes.map(dbAttr => ({
-            name: dbAttr.name,
+            name: (dbAttr.meta as { fullName?: string })?.fullName || dbAttr.name,
             code: dbAttr.value,
-            hex: (dbAttr.meta as { hex?: string })?.hex ||"#000000"
+            hex: (dbAttr.meta as { hex?: string })?.hex || "#000000"
         }));
     } else {
-        allOptions = dbAttributes.map(dbAttr => ({ name: dbAttr.name, code: dbAttr.value }));
+        allOptions = dbAttributes.map(dbAttr => {
+            const baseName = (dbAttr.meta as { fullName?: string })?.fullName || dbAttr.name;
+            const name = isDensity && !baseName.includes("г/м²") ? `${baseName} г/м²` : baseName;
+            return {
+                name,
+                code: dbAttr.value
+            };
+        });
     }
 
     const CharacteristicsLink = () => (
@@ -142,9 +156,9 @@ export function AttributeSelector({
             variant="ghost"
             className="p-4 border border-slate-200/60 bg-slate-900/[0.03] hover:bg-primary/5 hover:border-primary/20 hover:bg-transparent shadow-none w-full h-auto mt-3 rounded-[var(--radius-inner)] transition-all group/link cursor-pointer flex items-center justify-between"
             onClick={() => {
-                const win = window.open("/dashboard/warehouse/characteristics","_blank");
+                const win = window.open("/dashboard/warehouse/characteristics", "_blank");
                 if (!win) {
-                    toast("Браузер заблокировал открытие справочника. Разрешите всплывающие окна.","error");
+                    toast("Браузер заблокировал открытие справочника. Разрешите всплывающие окна.", "error");
                 }
             }}
         >
@@ -163,8 +177,8 @@ export function AttributeSelector({
 
 
     const handleCustomSubmit = async () => {
-        let code ="";
-        let finalName ="";
+        let code = "";
+        let finalName = "";
         let meta: Record<string, unknown> | undefined = undefined;
 
         if (isDimensions) {
@@ -188,14 +202,10 @@ export function AttributeSelector({
             code = `${customForm.name}GSM`;
             finalName = `${customForm.name} г/м²`;
             meta = { density: customForm.name };
-        } else if (isQuantity) {
-            code = `${customForm.name}${customForm.quantityUnit}`;
-            finalName = `${customForm.name} ${UNIT_DISPLAY_NAMES[customForm.quantityUnit] || customForm.quantityUnit}`;
-            meta = { quantity: customForm.name, unit: customForm.quantityUnit };
         } else if (isComposition) {
             const sum = customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0);
             if (sum !== 100) {
-                toast("Сумма должна быть равна 100%","error");
+                toast("Сумма должна быть равна 100%", "error");
                 setIsSaving(false);
                 return;
             }
@@ -227,28 +237,28 @@ export function AttributeSelector({
         if (result.success) {
             const res = await getInventoryAttributes();
             if (res.success && res.data) {
-                setDbAttributes((res.data as unknown as DbAttribute[]).filter(a => a.type === type));
+                setDbAttributes((res.data as unknown as DbAttribute[]).filter(a => a.type === resolvedTypeSlug));
             }
             onChange(finalName, code);
             if (onCodeChange) onCodeChange(code);
             setShowCustom(false);
             setCustomForm({
-                name:"",
-                hex:"#000000",
-                l:"",
-                w:"",
-                h:"",
-                u:"MM",
-                weightUnit:"G",
-                volumeUnit:"ML",
-                quantityUnit:"PCS",
-                composition: [{ name:"", percent:"" }],
-                fullName:"",
-                shortName:"",
-                code:"",
+                name: "",
+                hex: "#000000",
+                l: "",
+                w: "",
+                h: "",
+                u: "MM",
+                weightUnit: "G",
+                volumeUnit: "ML",
+                quantityUnit: "PCS",
+                composition: [{ name: "", percent: "" }],
+                fullName: "",
+                shortName: "",
+                code: "",
                 isCodeManuallyEdited: false,
-                measureValue:"",
-                measureUnit:""
+                measureValue: "",
+                measureUnit: ""
             });
         }
     };
@@ -269,10 +279,10 @@ export function AttributeSelector({
 
     if (isColorType) {
         return (
-            <div className={cn("space-y-2 w-full relative", showCustom &&"z-50")}>
+            <div className={cn("space-y-2 w-full relative", showCustom && "z-50")}>
                 <div className="mb-2 flex items-start justify-between">
                     <h4 className="text-base font-bold text-slate-900">
-                        {label ||"Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
+                        {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
                     </h4>
                 </div>
                 <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-7 gap-2">
@@ -285,7 +295,7 @@ export function AttributeSelector({
                                 if (onCodeChange) onCodeChange(c.code);
                             }}
                             className={cn("group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[14px] border bg-white transition-all duration-300 shadow-sm p-0 w-auto cursor-pointer",
-                                value === c.code ?"border-slate-900 shadow-md z-10" :"border-slate-200"
+                                value === c.code ? "border-slate-900 shadow-md z-10" : "border-slate-200"
                             )}
                         >
                             <div
@@ -293,8 +303,8 @@ export function AttributeSelector({
                                 style={{ backgroundColor: c.hex }}
                             />
                             <span className={cn("text-xs font-bold truncate w-full px-2 text-center transition-colors duration-300",
-                                value === c.code ?"text-slate-900" :"text-slate-400 group-hover:text-slate-900"
-                            )}>{c.name}</span>
+                                value === c.code ? "text-slate-900" : "text-slate-400 group-hover:text-slate-900"
+                            )}>{c.name || c.code}</span>
                         </button>
                     ))}
                     {allowCustom && (
@@ -316,25 +326,22 @@ export function AttributeSelector({
     }
 
     const displayLabel = label || (
-        type ==="brand" ?"Бренд" :
-            type ==="material" ?"Материал" :
-                type ==="size" ?"Размер" :
-                    type ==="quality" ?"Качество ткани" : type
+        type === "brand" ? "Бренд" :
+            type === "material" ? "Материал" :
+                type === "size" ? "Размер" :
+                    type === "quality" ? "Качество ткани" : type
     );
 
-    const addLabel = type ==="brand" ?"Создать бренд" :
-        type ==="material" ?"Создать материал" :
-            type ==="size" ?"Создать размер" :
-                type ==="quality" ?"Создать качество" :
-                    label ? `Создать ${toAccusative(label.toLowerCase())}` :"Создать опцию";
+    const addLabel = "+ Добавить";
 
-    const placeholder = type ==="brand" ?"Выберите бренд..." :
-        type ==="material" ?"Выберите материал..." :
-            type ==="size" ?"Выберите размер..." :
-                type ==="quality" ?"Выберите качество..." : `Выберите ${displayLabel.toLowerCase()}...`;
+    const placeholder = type === "brand" ? "Выберите бренд..." :
+        type === "material" ? "Выберите материал..." :
+            type === "size" ? "Выберите размер..." :
+                type === "quality" ? "Выберите качество..." : `Выберите ${displayLabel.toLowerCase()}...`;
+
 
     return (
-        <div className={cn("space-y-2 relative w-full", showCustom &&"z-50")}>
+        <div className={cn("space-y-2 relative w-full", showCustom && "z-50")}>
             <div className="mb-2 flex items-baseline justify-between gap-3 overflow-hidden">
                 <h4 className="text-base font-bold text-slate-900 truncate">
                     {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
@@ -353,8 +360,11 @@ export function AttributeSelector({
             </div>
 
             <Select
-                options={allOptions.map(opt => ({ id: opt.code, title: opt.name }))}
-                value={value ||""}
+                options={Array.from(new Map(allOptions.map(opt => [
+                    opt.code,
+                    { id: opt.code, title: opt.name || String(opt.code) }
+                ])).values())}
+                value={value || ""}
                 onChange={(code) => {
                     const opt = allOptions.find(o => o.code === code);
                     if (opt) {
@@ -364,7 +374,7 @@ export function AttributeSelector({
                 }}
                 placeholder={placeholder}
                 autoLayout={true}
-                showSearch={type ==="brand"}
+                showSearch={type === "brand"}
             />
             <AttributeCustomModal {...sharedModalProps} />
         </div>

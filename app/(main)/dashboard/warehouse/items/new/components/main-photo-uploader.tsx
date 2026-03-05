@@ -1,7 +1,7 @@
-import { Plus, RefreshCcw, Trash2 } from"lucide-react";
-import Image from"next/image";
-import { Button } from"@/components/ui/button";
-import { cn } from"@/lib/utils";
+import { Plus, RefreshCcw, Trash2 } from "lucide-react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface MainPhotoUploaderProps {
     preview: string | null;
@@ -35,8 +35,8 @@ export function MainPhotoUploader({
     return (
         <div className="flex flex-col justify-start items-center w-full">
             <div
-                className={cn("relative w-full aspect-square rounded-3xl overflow-hidden border-2 border-dashed transition-all group shrink-0",
-                    preview ?"border-slate-200 bg-white" :"border-slate-200 bg-slate-50/50 hover:bg-white shadow-sm"
+                className={cn("relative w-full max-w-[360px] aspect-square rounded-3xl overflow-hidden border-2 border-dashed border-slate-300/60 transition-all group shrink-0",
+                    preview ? "bg-white shadow-sm" : "bg-slate-50/80 hover:bg-white shadow-sm"
                 )}>
                 <div ref={containerRef} className="absolute inset-0">
                     {uploading ? (
@@ -93,17 +93,16 @@ export function MainPhotoUploader({
                                 </div>
                             </div>
                             <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-3 z-50 backdrop-blur-[2px]">
-                                <label className="flex items-center gap-2 px-7 py-4 bg-white rounded-full cursor-pointer hover:bg-slate-50 transition-all shadow-xl group/btn active:scale-95">
-                                    <RefreshCcw className="w-5 h-5 text-primary group-hover/btn:rotate-180 transition-transform duration-500" />
+                                <label className="flex items-center gap-2 px-7 py-4 bg-white rounded-full cursor-pointer hover:bg-slate-50 transition-all shadow-xl group/btn active:scale-95 border border-slate-100">
+                                    <RefreshCcw className="w-5 h-5 text-indigo-600 group-hover/btn:rotate-180 transition-transform duration-500" />
                                     <span className="text-[12px] font-bold text-slate-900">Заменить</span>
                                     <input type="file" accept="image/*" className="hidden" onChange={onChange} />
                                 </label>
                                 <Button
                                     onClick={(e) => { e.preventDefault(); onRemove(); }}
-                                    variant="destructive"
-                                    className="flex items-center gap-2 px-7 py-6 rounded-full shadow-xl active:scale-95 h-auto"
+                                    className="flex items-center gap-2 px-7 py-4 bg-rose-500 hover:bg-rose-600 !text-white rounded-full shadow-xl shadow-rose-500/20 active:scale-95 h-auto border-none group/del"
                                 >
-                                    <Trash2 className="w-5 h-5 group-hover/btn:rotate-12 transition-transform" />
+                                    <Trash2 className="w-5 h-5 group-hover/del:rotate-12 transition-transform" />
                                     <span className="text-[12px] font-bold">Удалить</span>
                                 </Button>
                             </div>

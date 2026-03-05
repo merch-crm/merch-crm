@@ -1,11 +1,11 @@
-import { Images } from"lucide-react";
-import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
-import { StepFooter } from"./step-footer";
-import { useMediaLogic } from"../hooks/useMediaLogic";
-import { MainPhotoUploader } from"./main-photo-uploader";
-import { ImageThumbControls } from"./image-thumb-controls";
-import { CompactDropzone } from"./compact-dropzone";
-import { AdditionalPhotos } from"./additional-photos";
+import { Images } from "lucide-react";
+import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { StepFooter } from "./step-footer";
+import { useMediaLogic } from "../hooks/useMediaLogic";
+import { MainPhotoUploader } from "./main-photo-uploader";
+import { ImageThumbControls } from "./image-thumb-controls";
+import { AdditionalPhotos } from "./additional-photos";
+import { pluralize } from "@/lib/pluralize";
 
 interface MediaStepProps {
     formData: ItemFormData;
@@ -32,21 +32,17 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
         resetThumbSettings,
 
         handleMainImageChange,
-        handleBackImageChange,
-        handleSideImageChange,
         handleDetailImageChange,
         handleDetailImageReplace,
 
         removeMainImage,
-        removeBackImage,
-        removeSideImage,
         removeDetailImage
     } = useMediaLogic({ formData, updateFormData });
 
     return (
-        <div className="flex flex-col min-h-0 h-full overflow-hidden">
+        <div className="flex flex-col min-h-0 h-full !overflow-visible">
             <div className="flex-1 flex flex-col min-h-0">
-                <div className="max-w-6xl mx-auto w-full flex-1 flex flex-col min-h-0 space-y-3">
+                <div className="w-full flex-1 flex flex-col min-h-0 space-y-3 pl-[var(--radius-padding)] pr-[8px] pt-[var(--radius-padding)]">
                     {/* Header Area */}
                     <div className="flex items-center gap-3 shrink-0 relative">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
@@ -60,18 +56,21 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                         {isProcessing && (
                             <div className="flex items-center gap-2 bg-primary/5 px-3 py-1.5 rounded-full border border-primary/20 animate-pulse">
                                 <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                                <span className="text-xs font-bold  text-primary">Сжатие...</span>
+                                <span className="text-xs font-bold  text-primary">Загрузка...</span>
                             </div>
                         )}
                     </div>
 
                     {/* Unified Single Block Container */}
-                    <div className="flex-1 bg-white rounded-3xl flex flex-col min-h-0 overflow-hidden">
-                        <div className="flex-1 flex flex-col md:flex-row min-h-0">
+                    <div className="flex-1 flex flex-col min-h-0 !overflow-visible">
+                        <div className="flex-1 flex flex-col md:flex-row min-h-0 py-1 md:py-2 gap-3">
                             {/* LEFT: MAIN PHOTO */}
-                            <div className="w-full md:w-[45%] h-full flex flex-col min-h-0 bg-slate-50/20 px-4 md:pl-8 pt-6 pb-2 space-y-3">
-                                <div className="mb-2">
-                                    <h4 className="text-base font-bold text-slate-900">Основной ракурс <span className="text-rose-500">*</span></h4>
+                            <div className="w-full md:w-[360px] h-full flex flex-col min-h-0 shrink-0 space-y-1.5">
+                                <div>
+                                    <h4 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
+                                        Основной ракурс
+                                        <span className="text-rose-500">*</span>
+                                    </h4>
                                 </div>
 
                                 <MainPhotoUploader
@@ -102,57 +101,34 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                             </div>
 
                             {/* RIGHT: STORYBOARD & GALLERY */}
-                            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-                                <div className="flex flex-col min-h-0 space-y-3 pt-6 px-8 pb-8">
-                                    <div className="space-y-3 shrink-0">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[480px]">
-                                            <CompactDropzone
-                                                label={<>Вид со спины <span className="text-rose-500">*</span></>}
-                                                preview={formData.imageBackPreview ?? null}
-                                                onChange={handleBackImageChange}
-                                                onRemove={removeBackImage}
-                                                uploading={uploadStates.back?.uploading}
-                                                progress={uploadStates.back?.progress}
-                                            />
-                                            <CompactDropzone
-                                                label={<>Вид сбоку <span className="text-rose-500">*</span></>}
-                                                preview={formData.imageSidePreview ?? null}
-                                                onChange={handleSideImageChange}
-                                                onRemove={removeSideImage}
-                                                uploading={uploadStates.side?.uploading}
-                                                progress={uploadStates.side?.progress}
-                                            />
-                                        </div>
+                            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar mr-[8px]">
+                                <div className="space-y-3 flex-1 flex flex-col min-h-0 pt-0">
+                                    <div>
+                                        <h4 className="text-[14px] font-bold text-slate-900">Дополнительные фото</h4>
+                                        <p className="text-[11px] font-bold text-slate-700 opacity-60 mt-0.5">До 6-ти фотографий</p>
                                     </div>
-
-                                    <div className="space-y-3 flex-1 flex flex-col min-h-0">
-                                        <div className="mb-2">
-                                            <h4 className="text-base font-bold text-slate-900">Дополнительные фото</h4>
-                                            <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">До 3-х фотографий</p>
-                                        </div>
-                                        <AdditionalPhotos
-                                            previews={formData.imageDetailsPreviews}
-                                            uploading={uploadStates.details?.uploading}
-                                            loadingIndex={loadingIndex}
-                                            progress={uploadStates.details?.progress}
-                                            onChange={handleDetailImageChange}
-                                            onReplace={handleDetailImageReplace}
-                                            onRemove={removeDetailImage}
-                                        />
-                                    </div>
+                                    <AdditionalPhotos
+                                        previews={formData.imageDetailsPreviews}
+                                        uploading={uploadStates.details?.uploading}
+                                        loadingIndex={loadingIndex}
+                                        progress={uploadStates.details?.progress}
+                                        onChange={handleDetailImageChange}
+                                        onReplace={handleDetailImageReplace}
+                                        onRemove={removeDetailImage}
+                                    />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="card-breakout card-breakout-bottom mt-auto">
+            <div className="mt-auto mx-0 shrink-0 !overflow-visible">
                 <StepFooter
                     onBack={onBack}
                     onNext={onNext}
                     isNextDisabled={!isMinimumRequiredMet || isProcessing}
-                    validationError={!isMinimumRequiredMet ?"Загрузите обязательно 3 главных ракурса" : undefined}
-                    hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 3 ?"Вы можете добавить еще 3 дополнительных ракурса" : undefined}
+                    validationError={!isMinimumRequiredMet ? "Загрузите обязательное фото" : undefined}
+                    hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 6 ? `Вы можете добавить еще ${6 - (formData.imageDetailsPreviews?.length || 0)} ${pluralize(6 - (formData.imageDetailsPreviews?.length || 0), "дополнительный ракурс", "дополнительных ракурса", "дополнительных ракурсов")}` : undefined}
                 />
             </div>
         </div>

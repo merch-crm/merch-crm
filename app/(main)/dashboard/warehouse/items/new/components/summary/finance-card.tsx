@@ -1,6 +1,6 @@
-import { Banknote, Tag, Sparkles } from"lucide-react";
+import { Banknote, Tag, Sparkles } from "lucide-react";
 import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
-import { useBranding } from"@/components/branding-provider";
+import { useBranding } from "@/components/branding-provider";
 
 interface FinanceCardProps {
     formData: ItemFormData;

@@ -1,6 +1,6 @@
-import { useEffect } from"react";
-import { Category, InventoryAttribute, AttributeType, ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
-import { ICONS, getIconNameFromName } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { useEffect, useCallback } from "react";
+import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { ICONS, getIconNameFromName } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 interface UseBasicInfoLogicProps {
     category: Category;
@@ -19,9 +19,9 @@ export function useBasicInfoLogic({
     attributeTypes,
     dynamicAttributes
 }: UseBasicInfoLogicProps) {
-    const isClothing = category.name.toLowerCase().includes("одежда");
-    const isPackaging = category.name.toLowerCase().includes("упаковка");
-    const isConsumables = category.name.toLowerCase().includes("расходники");
+    const isClothing = category.name.toLowerCase().trim() === "одежда" || category.name.toLowerCase().trim().startsWith("одежда ");
+    const isPackaging = category.name.toLowerCase().trim().includes("упаковка");
+    const isConsumables = category.name.toLowerCase().trim().includes("расходники");
 
     const categoryAttributes = attributeTypes
         .filter(t => {
@@ -31,16 +31,32 @@ export function useBasicInfoLogic({
         })
         .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
 
-    const getCodeForSlug = (slug: string) => {
-        switch (slug) {
-            case 'brand': return formData.brandCode;
-            case 'quality': return formData.qualityCode;
-            case 'material': return formData.materialCode;
-            case 'color': return formData.attributeCode;
-            case 'size': return formData.sizeCode;
-            default: return formData.attributes?.[slug];
-        }
-    };
+    const getCodeForSlug = useCallback((slug: string, typeName?: string) => {
+        const cleanSlug = slug.toLowerCase().trim();
+        const cleanName = typeName?.toLowerCase().trim();
+
+        // 1. Try mirroring in attributes first (most accurate for dynamic/custom slugs)
+        if (formData.attributes?.[slug]) return formData.attributes[slug];
+        if (formData.attributes?.[cleanSlug]) return formData.attributes[cleanSlug];
+
+        // 2. Try direct slug match for standard fields
+        if (cleanSlug === 'brand') return formData.brandCode;
+        if (cleanSlug === 'quality') return formData.qualityCode;
+        if (cleanSlug === 'material') return formData.materialCode;
+        if (cleanSlug === 'color') return formData.attributeCode;
+        if (cleanSlug === 'size') return formData.sizeCode;
+        if (cleanSlug === 'unit') return formData.unit;
+
+        // 3. Try mapping by name if it's a known standard type
+        if (cleanName === 'бренд') return formData.brandCode;
+        if (cleanName === 'качество') return formData.qualityCode;
+        if (cleanName === 'материал') return formData.materialCode;
+        if (cleanName === 'размер') return formData.sizeCode;
+        if (cleanName === 'цвет') return formData.attributeCode;
+        if (cleanName === 'единица измерения') return formData.unit;
+
+        return undefined;
+    }, [formData]);
 
     const transliterate = (text: string) => {
         const map: Record<string, string> = {
@@ -62,7 +78,7 @@ export function useBasicInfoLogic({
             const activeCat = formData.subcategoryId ? subCategories.find(c => c.id === formData.subcategoryId) : category;
             const prefix = activeCat?.prefix;
 
-            // SKU Generation
+            // 1. SKU Generation
             const shouldShowInSku = (type: string, code?: string) => {
                 if (!code) return false;
                 const attrType = attributeTypes.find(t => t.slug === type);
@@ -74,58 +90,62 @@ export function useBasicInfoLogic({
             const skuParts: string[] = [];
             if (prefix && activeCat?.showInSku !== false) skuParts.push(prefix);
 
-            // Hardcoded order to preserve existing behavior for standard attributes
-            if (shouldShowInSku('brand', formData.brandCode)) skuParts.push(formData.brandCode!);
-            if (shouldShowInSku('quality', formData.qualityCode)) skuParts.push(formData.qualityCode!);
-            if (shouldShowInSku('material', formData.materialCode)) skuParts.push(formData.materialCode!);
-            if (shouldShowInSku('color', formData.attributeCode)) skuParts.push(formData.attributeCode!);
-            if (shouldShowInSku('size', formData.sizeCode)) skuParts.push(formData.sizeCode!);
-
-            categoryAttributes.forEach((type: AttributeType) => {
-                if (["brand","quality","material","size","color"].includes(type.slug)) return;
-                const code = formData.attributes?.[type.slug];
-                if (code && shouldShowInSku(type.slug, code)) {
-                    skuParts.push(code);
-                }
-            });
-
-            const generatedSku = transliterate(skuParts.join("-").toUpperCase());
-
-            if (generatedSku !== formData.sku) {
-                updateFormData({ sku: generatedSku });
-            }
-
-            const targetGender = activeCat?.gender ||"masculine";
-
+            // 2. Name Generation
+            const targetGender = activeCat?.gender || "masculine";
             const iconName = activeCat?.icon || (activeCat?.name ? getIconNameFromName(activeCat.name) : null);
             const iconLabel = iconName ? ICONS.find(i => i.name === iconName)?.label : null;
 
             const getSingularName = (name: string) => {
                 const n = name.toLowerCase();
-                if (n.includes("футболк")) return"Футболка";
-                if (n.includes("худи")) return"Худи";
-                if (n.includes("лонгслив")) return"Лонгслив";
-                if (n.includes("свитшот")) return"Свитшот";
-                if (n.includes("толстовк")) return"Толстовка";
-                if (n.includes("куртк")) return"Куртка";
-                if (n.includes("бомбер")) return"Бомбер";
-                if (n.includes("шорт")) return"Шорты";
-                if (n.includes("штан") || n.includes("брюк")) return"Штаны";
-                if (n.includes("кепк")) return"Кепка";
-                if (n.includes("шапк")) return"Шапка";
-                if (n.includes("поло")) return"Поло";
+                if (n.includes("футболк")) return "Футболка";
+                if (n.includes("худи")) return "Худи";
+                if (n.includes("лонгслив")) return "Лонгслив";
+                if (n.includes("свитшот")) return "Свитшот";
+                if (n.includes("толстовк")) return "Толстовка";
+                if (n.includes("куртк")) return "Куртка";
+                if (n.includes("бомбер")) return "Бомбер";
+                if (n.includes("шорт")) return "Шорты";
+                if (n.includes("штан") || n.includes("брюк")) return "Штаны";
+                if (n.includes("кепк")) return "Кепка";
+                if (n.includes("шапк")) return "Шапка";
+                if (n.includes("поло")) return "Поло";
                 return name;
             };
 
             const baseName = activeCat?.showInName !== false
-                ? (activeCat?.singularName || iconLabel || (activeCat?.name ? getSingularName(activeCat.name) :""))
-                :"";
+                ? (activeCat?.singularName || iconLabel || (activeCat?.name ? getSingularName(activeCat.name) : ""))
+                : "";
 
             const getAttrName = (type: string, code?: string) => {
-                const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
-                if (!attr) return code;
+                if (!code) return null;
+                let attr = dynamicAttributes.find(a => a.type === type && a.value === code);
 
-                const attrType = attributeTypes.find(t => t.slug === type);
+                if (!attr) {
+                    const standardNames: Record<string, string> = {
+                        brand: "бренд",
+                        quality: "качество",
+                        material: "материал",
+                        color: "цвет",
+                        size: "размер"
+                    };
+                    const targetName = standardNames[type];
+                    if (targetName) {
+                        const actualType = attributeTypes.find(t => t.name.toLowerCase() === targetName);
+                        if (actualType) {
+                            attr = dynamicAttributes.find(a => a.type === actualType.slug && a.value === code);
+                        }
+                    }
+                }
+
+                const attrType = attributeTypes.find(t => t.slug === (attr?.type || type));
+                const isUnit = type === 'unit' || attrType?.name.toLowerCase().includes('единица измерения');
+
+                if (!attr) {
+                    if (isUnit) return code.toLowerCase();
+                    // Capitalize first letter if it's just a raw code
+                    return code.charAt(0).toUpperCase() + code.slice(1).toLowerCase();
+                }
+
                 if (attrType && attrType.showInName === false) return null;
 
                 let meta: unknown = attr.meta;
@@ -138,37 +158,45 @@ export function useBasicInfoLogic({
                 const typedMeta = meta as { showInName?: boolean; fem?: string; neut?: string };
 
                 if (typedMeta?.showInName === false) return null;
-                if (targetGender ==="feminine" && typedMeta?.fem) return typedMeta.fem;
-                if (targetGender ==="neuter" && typedMeta?.neut) return typedMeta.neut;
+                let result = attr.name;
+                if (targetGender === "feminine" && typedMeta?.fem) result = typedMeta.fem;
+                else if (targetGender === "neuter" && typedMeta?.neut) result = typedMeta.neut;
 
-                return attr.name;
+                if (isUnit) return result.toLowerCase();
+
+                // Capitalize first letter for specific attributes (like Country) or if it's the beginning of a name part
+                if (attrType?.name.toLowerCase().includes("страна") || attrType?.name.toLowerCase().includes("country")) {
+                    return result.charAt(0).toUpperCase() + result.slice(1);
+                }
+
+                return result;
             };
 
-            const brandName = getAttrName("brand", formData.brandCode);
-            const colorName = getAttrName("color", formData.attributeCode);
-            const sizeName = getAttrName("size", formData.sizeCode);
-            const qualityName = getAttrName("quality", formData.qualityCode);
-            const materialName = getAttrName("material", formData.materialCode);
-
-            const nameParts = [
-                baseName,
-                brandName,
-                materialName,
-                qualityName,
-                colorName,
-                sizeName
-            ].filter(Boolean);
+            const nameParts: string[] = [baseName].filter(Boolean);
 
             categoryAttributes.forEach((type: AttributeType) => {
-                if (["brand","quality","material","size","color"].includes(type.slug)) return;
-                const code = formData.attributes?.[type.slug];
-                if (code) {
-                    const name = getAttrName(type.slug, code);
-                    if (name) nameParts.push(name);
+                // "Артикул" is typically the internal product ID or something, don't show it in name parts if requested
+                if (type.name === "Артикул" || type.slug === "article" || type.slug === "sku") return;
+
+                const code = getCodeForSlug(type.slug, type.name);
+                if (!code) return;
+
+                // Add to SKU
+                if (shouldShowInSku(type.slug, code)) {
+                    skuParts.push(code);
                 }
+
+                // Add to Name
+                const name = getAttrName(type.slug, code);
+                if (name) nameParts.push(name);
             });
 
-            const generatedName = nameParts.join("");
+            const generatedSku = transliterate(skuParts.join("-").toUpperCase());
+            const generatedName = nameParts.join(" ");
+
+            if (generatedSku !== formData.sku) {
+                updateFormData({ sku: generatedSku });
+            }
 
             if (generatedName && generatedName !== formData.itemName) {
                 updateFormData({ itemName: generatedName });
@@ -192,7 +220,8 @@ export function useBasicInfoLogic({
         categoryAttributes,
         formData.itemName,
         formData.sku,
-        updateFormData
+        updateFormData,
+        getCodeForSlug
     ]);
 
     return {

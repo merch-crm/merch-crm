@@ -1,10 +1,11 @@
-import { LayoutGrid, Tag, Ruler, CheckCircle2, Shirt, Scale, Box, Package, ExternalLink } from"lucide-react";
-import { formatUnit } from"@/lib/utils";
-import { ItemFormData, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
+import { LayoutGrid, Tag, Ruler, CheckCircle2, Shirt, Scale, Box, Package, ExternalLink } from "lucide-react";
+import { formatUnit } from "@/lib/utils";
+import { ItemFormData, InventoryAttribute, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
 
 interface AttributesSectionProps {
     formData: ItemFormData;
     dynamicAttributes: InventoryAttribute[];
+    attributeTypes: AttributeType[];
     selectedColorName?: string;
     selectedColorHex?: string;
     getAttrName: (type: string, code?: string) => string | null | undefined;
@@ -12,15 +13,12 @@ interface AttributesSectionProps {
 
 export function AttributesSection({
     formData,
+    dynamicAttributes,
+    attributeTypes,
     selectedColorName,
     selectedColorHex,
     getAttrName
 }: AttributesSectionProps) {
-    const predefinedAttributesKeys = ["Бренд","Цвет","Размер","Качество","Материал","width","height","depth","packagingType","supplierName","supplierLink","minBatch","weight","features"
-    ];
-
-    const hasCustomAttributes = formData.attributes && Object.keys(formData.attributes).some(k => !predefinedAttributesKeys.includes(k));
-
     return (
         <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
             <div className="p-6 sm:p-6 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
@@ -38,28 +36,28 @@ export function AttributesSection({
             <div className="p-4 sm:p-6">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-3">
                     {[
-                        { label:"Бренд", value: getAttrName("brand", formData.brandCode), icon: Tag },
-                        { label:"Цвет", value: selectedColorName, icon: () => <div className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
-                        { label:"Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
-                        { label:"Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
-                        { label:"Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
-                        { label:"Ед. изм.", value: formatUnit(formData.unit), icon: Scale },
+                        { label: "Бренд", value: getAttrName("brand", formData.brandCode), icon: Tag },
+                        { label: "Цвет", value: selectedColorName, icon: () => <div className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
+                        { label: "Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
+                        { label: "Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
+                        { label: "Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
+                        { label: "Ед. изм.", value: formatUnit(formData.unit), icon: Scale },
                         // Packaging specific
                         {
-                            label:"Габариты",
+                            label: "Габариты",
                             value: (formData.width && formData.height && formData.depth)
                                 ? `${formData.depth}x${formData.width}x${formData.height}`
                                 : null,
                             icon: Box
                         },
                         {
-                            label:"Вес (1 шт)",
+                            label: "Вес (1 шт)",
                             value: formData.weight ? `${formData.weight} гр` : null,
                             icon: Scale
                         },
                         {
-                            label:"Тип упаковки",
-                            value: formData.packagingType ? (formData.packagingType ==="transport" ?"Транспортная" :"Индивидуальная") : null,
+                            label: "Тип упаковки",
+                            value: formData.packagingType ? (formData.packagingType === "transport" ? "Транспортная" : "Индивидуальная") : null,
                             icon: Package
                         }
                     ].filter(i => i.value).map((item, idx) => {
@@ -129,21 +127,53 @@ export function AttributesSection({
                 )}
 
                 {/* Custom Extra Attributes if any */}
-                {hasCustomAttributes && (
-                    <div className="mt-8 pt-8 border-t border-slate-100">
-                        <div className="flex flex-wrap gap-3">
-                            {Object.entries(formData.attributes || {})
-                                .filter(([k]) => !predefinedAttributesKeys.includes(k))
-                                .map(([key, val]) => (
-                                    <div key={key} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-200/50 flex items-center gap-3 shadow-sm group hover:border-slate-300 transition-all">
+                {(() => {
+                    const predefinedKeys = ["brand", "color", "size", "quality", "material", "unit", "width", "height", "depth", "weight", "packagingType", "supplierName", "supplierLink", "minBatch", "features"];
+
+                    const filteredItems = Object.entries(formData.attributes || {})
+                        .map(([key, value]) => {
+                            if (!value || typeof value !== 'string') return null;
+                            if (predefinedKeys.includes(key.toLowerCase())) return null;
+                            if (/^[a-f0-9-]{36}$/.test(key) || /^[a-f0-9-]{36}$/.test(value)) return null;
+
+                            const type = attributeTypes?.find(t => t.slug === key);
+                            if (!type) return null;
+
+                            const attr = dynamicAttributes?.find(a => a.type === key && a.value === value);
+                            const displayValue = attr?.name || value;
+
+                            return {
+                                label: type.name,
+                                displayValue,
+                                slug: key,
+                                showInName: type.showInName !== false
+                            };
+                        })
+                        .filter((chip): chip is NonNullable<typeof chip> => {
+                            if (!chip) return false;
+                            if (!chip.showInName) return false;
+                            const lowerSlug = chip.slug.toLowerCase();
+                            if (lowerSlug.endsWith('code')) return false;
+                            if (["unit", "thumbnailsettings"].includes(lowerSlug)) return false;
+                            return true;
+                        });
+
+                    if (filteredItems.length === 0) return null;
+
+                    return (
+                        <div className="mt-8 pt-8 border-t border-slate-100">
+                            <div className="flex flex-wrap gap-3">
+                                {filteredItems.map((chip) => (
+                                    <div key={chip.slug} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-200/50 flex items-center gap-3 shadow-sm group hover:border-slate-300 transition-all">
                                         <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-slate-900 transition-colors" />
-                                        <span className="text-[11px] font-bold text-slate-700">{key}:</span>
-                                        <span className="text-sm font-bold text-slate-900">{String(val)}</span>
+                                        <span className="text-[11px] font-bold text-slate-700">{chip.label}:</span>
+                                        <span className="text-sm font-bold text-slate-900">{chip.displayValue}</span>
                                     </div>
                                 ))}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    );
+                })()}
             </div>
         </div>
     );

@@ -38,7 +38,6 @@ export interface ValueFormState {
     dimensionUnit: "мм" | "см" | "м";
     // General metadata
     fullName: string;
-    shortName: string;
     isOversize: boolean;
     // Composition
     compositionItems: CompositionItem[];
@@ -215,7 +214,6 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             height: typedMeta?.height || "",
             dimensionUnit: typedMeta?.dimensionUnit || "мм",
             fullName: initialFullName, // Full version
-            shortName: attr.name, // Also track shortName explicitly if needed for UI
             isOversize: typedMeta?.isOversize || false,
             compositionItems,
             consumableType: typedMeta?.consumableType || "краска",
@@ -270,6 +268,12 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         } else {
             if (!valueForm.name.trim()) { setValueForm(prev => ({ ...prev, error: "Введите название" })); return; }
             if (!valueForm.code.trim()) { setValueForm(prev => ({ ...prev, error: "Введите код" })); return; }
+
+            // Capitalize if it's a country
+            if (dataType === "country") {
+                effectiveName = effectiveName.trim();
+                effectiveName = effectiveName.charAt(0).toUpperCase() + effectiveName.slice(1);
+            }
         }
 
         const normalizedCode = effectiveCode.trim().toUpperCase();
@@ -291,7 +295,6 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
             height: isDimensions ? valueForm.height : undefined,
             dimensionUnit: isDimensions ? valueForm.dimensionUnit : undefined,
             fullName: valueForm.fullName,
-            shortName: valueForm.shortName,
             isOversize: (dataType === "size") ? valueForm.isOversize : undefined,
             items: (hasComposition || isComposition) ? filled : undefined,
             consumableType: isConsumable ? valueForm.consumableType : undefined,
@@ -304,10 +307,18 @@ export function useWarehouseCharacteristic({ attributes, attributeTypes, categor
         try {
             setValueForm(prev => ({ ...prev, isSaving: true }));
             let res;
+            const payload = {
+                type: valueForm.editingAttribute ? valueForm.editingAttribute.type : valueForm.targetTypeSlug,
+                name: effectiveName,
+                value: effectiveCode,
+                categoryId: activeCategoryId === "uncategorized" ? null : activeCategoryId,
+                meta
+            };
+
             if (valueForm.editingAttribute) {
-                res = await updateInventoryAttribute(valueForm.editingAttribute.id, { type: valueForm.editingAttribute.type, name: effectiveName, value: effectiveCode, meta });
+                res = await updateInventoryAttribute(valueForm.editingAttribute.id, payload);
             } else {
-                res = await createInventoryAttribute({ type: valueForm.targetTypeSlug, name: effectiveName, value: effectiveCode, meta });
+                res = await createInventoryAttribute(payload);
             }
 
             if (!res.success) {

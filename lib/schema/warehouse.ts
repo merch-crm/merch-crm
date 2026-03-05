@@ -11,6 +11,7 @@ export const inventoryAttributes = pgTable("inventory_attributes", {
     type: text("type").notNull(), // 'color' or 'material'
     name: text("name").notNull(),
     value: text("value").notNull(), // Code: 'BLK', 'KUL' etc
+    categoryId: uuid("category_id").references(() => inventoryCategories.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     meta: jsonb("meta"), // { hex: '#...' } for colors
@@ -18,11 +19,18 @@ export const inventoryAttributes = pgTable("inventory_attributes", {
     return {
         typeIdx: index("inv_attr_type_idx").on(table.type),
         valueIdx: index("inv_attr_value_idx").on(table.value),
+        categoryIdx: index("inv_attr_category_idx").on(table.categoryId),
+        // Composite index for category-scoped uniqueness check
+        typeValueCategoryIdx: uniqueIndex("inv_attr_type_value_category_idx").on(table.type, table.value, table.categoryId),
         createdIdx: index("inv_attr_created_idx").on(table.createdAt),
     }
 });
 
-export const inventoryAttributesRelations = relations(inventoryAttributes, ({ many }) => ({
+export const inventoryAttributesRelations = relations(inventoryAttributes, ({ one, many }) => ({
+    category: one(inventoryCategories, {
+        fields: [inventoryAttributes.categoryId],
+        references: [inventoryCategories.id],
+    }),
     itemAttributes: many(inventoryItemAttributes),
 }));
 
@@ -69,6 +77,7 @@ export const inventoryCategoriesRelations = relations(inventoryCategories, ({ on
         relationName: "category_parent",
     }),
     attributeTypes: many(inventoryAttributeTypes),
+    attributes: many(inventoryAttributes),
     items: many(inventoryItems),
 }));
 

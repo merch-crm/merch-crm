@@ -1,31 +1,33 @@
 "use client";
 
-import { Plus, Shapes, Ruler, Palette, Box, Hash, Layers, Maximize, Tag, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from "lucide-react";
+import { Plus, Shapes, Ruler, Palette, Box, Layers, Maximize, Tag, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SubmitButton } from "@/components/ui/submit-button";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { Category } from "./types";
+import { Category, AttributeType } from "./types";
 import { useAddAttributeType } from "./hooks/use-add-attribute-type";
 
 interface AddAttributeTypeDialogProps {
     categories: Category[];
+    attributeTypes?: AttributeType[];
     className?: string;
 }
 
 
-export function AddAttributeTypeDialog({ categories, className }: AddAttributeTypeDialogProps) {
+export function AddAttributeTypeDialog({ categories, attributeTypes = [], className }: AddAttributeTypeDialogProps) {
     const {
         isOpen, setIsOpen,
         isLoading,
         dataTypes: selectedDataTypes, toggleDataType,
         activeCategoryId, setActiveCategoryId,
         rootCategories,
+        existingTypesInActiveCategory,
         error,
         handleOpen,
         handleCreate
-    } = useAddAttributeType({ categories });
+    } = useAddAttributeType({ categories, attributeTypes });
 
     const activeCategoryName = activeCategoryId === "uncategorized"
         ? "Без категории"
@@ -36,7 +38,6 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
         { id: "unit", title: "Единица измерения", icon: Ruler },
         { id: "color", title: "Цвет", icon: Palette },
         { id: "dimensions", title: "Габариты", icon: Box },
-        { id: "quantity", title: "Количество", icon: Hash },
 
         { id: "composition", title: "Состав", icon: Component },
         { id: "material", title: "Материал", icon: Layers },
@@ -75,7 +76,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                     id="add-attribute-type-form"
                     onSubmit={(e) => {
                         e.preventDefault();
-                        if (selectedDataTypes.length === 0) return;
+                        if (!selectedDataTypes.length) return;
                         handleCreate();
                     }}
                     className="flex flex-col bg-white"
@@ -93,7 +94,7 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">Характеристика</h2>
                                 <p className="text-[11px] font-bold text-slate-500 mt-0.5">
-                                    Группа: <span className="text-primary font-bold">{activeCategoryName}</span>
+                                    Категория: <span className="text-primary font-bold">{activeCategoryName}</span>
                                 </p>
                             </div>
                         </div>
@@ -128,21 +129,41 @@ export function AddAttributeTypeDialog({ categories, className }: AddAttributeTy
                                 {dataTypes.map((type) => {
                                     const Icon = type.icon;
                                     const isSelected = selectedDataTypes.includes(type.id);
+                                    const isAlreadyExists = existingTypesInActiveCategory.includes(type.id);
+
                                     return (
                                         <button
                                             key={type.id}
                                             type="button"
-                                            onClick={() => toggleDataType(type.id)}
-                                            className={cn("flex flex-col items-center justify-center p-3 rounded-[var(--radius-inner)] border-2 transition-all gap-2",
+                                            onClick={() => !isAlreadyExists && toggleDataType(type.id)}
+                                            className={cn("flex flex-col items-center justify-center p-3 rounded-[var(--radius-inner)] border-2 transition-all gap-2 relative group-btn",
                                                 isSelected
                                                     ? "bg-primary/5 border-primary text-primary shadow-sm"
-                                                    : "bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100/80 hover:border-slate-200"
+                                                    : isAlreadyExists
+                                                        ? "bg-emerald-50/30 border-emerald-200 text-emerald-600/80 shadow-none cursor-not-allowed opacity-70"
+                                                        : "bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100/80 hover:border-slate-200"
                                             )}
                                         >
-                                            <Icon className={cn("w-5 h-5", isSelected ? "text-primary" : "text-slate-400")} />
-                                            <span className="text-xs font-bold tracking-tight text-center leading-none">
+                                            <div className="relative">
+                                                <Icon className={cn("w-5 h-5",
+                                                    isSelected ? "text-primary" : isAlreadyExists ? "text-emerald-500/70" : "text-slate-400"
+                                                )} />
+                                                {isAlreadyExists && (
+                                                    <div className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-emerald-400 flex items-center justify-center border-2 border-white shadow-sm">
+                                                        <Plus className="w-2 h-2 text-white rotate-45" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <span className={cn("text-xs font-bold tracking-tight text-center leading-none",
+                                                isAlreadyExists ? "text-emerald-600/80" : ""
+                                            )}>
                                                 {type.title}
                                             </span>
+                                            {isAlreadyExists && (
+                                                <div className="absolute inset-0 bg-white/20 rounded-[var(--radius-inner)] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <span className="text-xs font-black text-emerald-600 tracking-tighter bg-white px-1.5 py-0.5 rounded shadow-sm border border-emerald-100">Создано</span>
+                                                </div>
+                                            )}
                                         </button>
                                     );
                                 })}

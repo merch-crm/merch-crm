@@ -54,14 +54,14 @@ export function StandardFields({
     return (
         <div className="space-y-3">
             <div className="space-y-1.5">
-                <label className="text-sm font-bold text-slate-700 block ml-1">Полное (название назначения)</label>
+                <label className="text-sm font-bold text-slate-700 block ml-1">Название</label>
                 <Input
-                    value={valueForm.name}
+                    value={valueForm.fullName}
                     onChange={e => {
                         const val = e.target.value;
                         setValueForm(prev => ({
                             ...prev,
-                            name: val,
+                            fullName: val,
                             code: prev.isCodeManuallyEdited ? prev.code : transliterateToSku(val).toUpperCase()
                         }));
                     }}
@@ -73,10 +73,10 @@ export function StandardFields({
 
             {showShortName && (
                 <div className="space-y-1.5 pt-1">
-                    <label className="text-sm font-bold text-slate-700 block ml-1">Краткое название</label>
+                    <label className="text-sm font-bold text-slate-700 block ml-1">Сокращенное название (при необходимости)</label>
                     <Input
-                        value={valueForm.shortName}
-                        onChange={e => setValueForm(prev => ({ ...prev, shortName: e.target.value }))}
+                        value={valueForm.name}
+                        onChange={e => setValueForm(prev => ({ ...prev, name: e.target.value }))}
                         placeholder={placeholders.short}
                         className="h-11 rounded-xl bg-white border-slate-100 font-bold shadow-sm focus:border-primary transition-all placeholder:text-slate-300 placeholder:font-medium"
                     />

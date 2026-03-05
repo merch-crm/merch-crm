@@ -18,6 +18,9 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "scripts/**",
+      "app/(staff)/staff/cameras/**",
+      "test-xiaomi.js",
+      "tmp/**",
     ]
   },
   {

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from"react";
-import { compressImage } from"@/lib/image-processing";
-import { ItemFormData } from"@/app/(main)/dashboard/warehouse/types";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { compressImage } from "@/lib/image-processing";
+import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 
 export interface UploadState {
     uploading: boolean;
@@ -22,11 +22,8 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
     const [containerDims, setContainerDims] = useState<{ w: number, h: number } | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const isMinimumRequiredMet = !!(
-        formData.imagePreview &&
-        formData.imageBackPreview &&
-        formData.imageSidePreview
-    );
+    // Only main photo is mandatory now
+    const isMinimumRequiredMet = !!formData.imagePreview;
 
     const thumbSettings = useMemo(() =>
         (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 },
@@ -106,7 +103,7 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         try {
             return await compressImage(file, {
                 maxSizeMB: 1,
-                type:"image/webp",
+                type: "image/webp",
                 maxWidth: 1920,
                 maxHeight: 1920
             });
@@ -160,25 +157,6 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         }
     };
 
-    const handleBackImageChange = async (file: File | null) => {
-        if (!file) return;
-        const processed = await handleFileProcessing(file);
-        if (processed) {
-            simulateUpload("back", () => {
-                updateFormData({ imageBackFile: processed.file, imageBackPreview: processed.preview });
-            });
-        }
-    };
-
-    const handleSideImageChange = async (file: File | null) => {
-        if (!file) return;
-        const processed = await handleFileProcessing(file);
-        if (processed) {
-            simulateUpload("side", () => {
-                updateFormData({ imageSideFile: processed.file, imageSidePreview: processed.preview });
-            });
-        }
-    };
 
     const handleDetailImageChange = async (files: FileList | null) => {
         if (!files) return;
@@ -186,7 +164,7 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         const newPreviews = [...(formData.imageDetailsPreviews || [])];
 
         for (let i = 0; i < files.length; i++) {
-            if (newFiles.length >= 3) break;
+            if (newFiles.length >= 6) break;
             const idx = newFiles.length;
             setLoadingIndex(idx);
             const processed = await handleFileProcessing(files[i]);
@@ -250,29 +228,19 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
         // Handlers
         handleMainImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             handleMainImageChange(e.target.files?.[0] || null);
-            e.target.value ="";
-        },
-        handleBackImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            handleBackImageChange(e.target.files?.[0] || null);
-            e.target.value ="";
-        },
-        handleSideImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            handleSideImageChange(e.target.files?.[0] || null);
-            e.target.value ="";
+            e.target.value = "";
         },
         handleDetailImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
             handleDetailImageChange(e.target.files);
-            e.target.value ="";
+            e.target.value = "";
         },
         handleDetailImageReplace: (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
             handleDetailImageReplace(index, e.target.files?.[0] || null);
-            e.target.value ="";
+            e.target.value = "";
         },
 
         // Removers
         removeMainImage: () => updateFormData({ imageFile: null, imagePreview: null }),
-        removeBackImage: () => updateFormData({ imageBackFile: null, imageBackPreview: null }),
-        removeSideImage: () => updateFormData({ imageSideFile: null, imageSidePreview: null }),
         removeDetailImage: (index: number) => {
             const newFiles = [...(formData.imageDetailsFiles || [])];
             const newPreviews = [...(formData.imageDetailsPreviews || [])];

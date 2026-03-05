@@ -50,7 +50,7 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
             <PopoverTrigger asChild>
                 <button
                     type="button"
-                    className={cn("w-full h-full min-h-[80px] rounded-[var(--radius-inner)] border-2 border-dashed border-slate-200 hover:border-primary/40 bg-white hover:bg-primary/[0.02] transition-all duration-200 flex items-center justify-center group outline-none gap-3 px-4",
+                    className={cn("w-full h-full min-h-[94px] rounded-[20px] border-2 border-dashed border-slate-200 hover:border-primary/40 bg-white hover:bg-primary/[0.02] transition-all duration-200 flex items-center justify-center group outline-none gap-3 px-5",
                         isOpen && "border-primary/30",
                         className
                     )}
@@ -73,7 +73,7 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
             </PopoverTrigger>
 
             <PopoverContent
-                className="w-[var(--radix-popover-trigger-width)] flex flex-col p-0 overflow-hidden rounded-2xl border border-slate-200/80 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.18)] bg-white"
+                className="w-[var(--radix-popover-trigger-width)] flex flex-col p-0 overflow-hidden rounded-[32px] border border-slate-200/80 shadow-crm-xl bg-white"
                 align="start"
                 side="bottom"
                 sideOffset={8}
@@ -88,7 +88,7 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Поиск иконки..."
-                            className="w-full h-10 rounded-xl bg-slate-50 border border-slate-200 pl-9 pr-4 text-sm font-semibold text-slate-800 placeholder:text-slate-400 placeholder:font-normal outline-none focus:border-primary/30 focus:ring-2 focus:ring-primary/10 transition-all"
+                            className="w-full h-11 rounded-[16px] bg-slate-50 border border-slate-200 pl-10 pr-4 text-sm font-bold text-slate-800 placeholder:text-slate-400 placeholder:font-normal outline-none focus:border-primary/30 focus:ring-4 focus:ring-primary/5 transition-all"
                         />
                     </div>
                 </div>
@@ -174,10 +174,10 @@ function IconCell({
             type="button"
             onClick={() => onSelect(icon.name)}
             title={icon.label}
-            className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-xl transition-all duration-150 group/c",
+            className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-[18px] transition-all duration-150 group/c",
                 isSelected
                     ? cn("text-white shadow-sm")
-                    : "text-slate-500 hover:bg-slate-100 hover:text-slate-800 active:scale-95"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-800 active:scale-95 border border-transparent hover:border-slate-100"
             )}
             style={isSelected ? getDynamicGradient(color) : {}}
         >
