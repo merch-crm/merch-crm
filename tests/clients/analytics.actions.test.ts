@@ -14,7 +14,7 @@ import {
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockDb, queryMock, chainable } = vi.hoisted(() => {
+const { mockDb, chainable } = vi.hoisted(() => {
     const chainable = {
         where: vi.fn().mockReturnThis(),
         set: vi.fn().mockReturnThis(),
@@ -24,7 +24,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         limit: vi.fn().mockReturnThis(),
         leftJoin: vi.fn().mockReturnThis(),
         returning: vi.fn().mockResolvedValue([]),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -37,7 +37,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         update: vi.fn().mockReturnValue(chainable),
     };
 
-    return { mockDb, queryMock, chainable };
+    return { mockDb, chainable };
 });
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
@@ -48,7 +48,7 @@ vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 describe('Analytics Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
     describe('Overview Analytics', () => {
@@ -66,7 +66,7 @@ describe('Analytics Actions', () => {
                 b2cCount: 70,
                 b2bCount: 30
             }];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockStats));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockStats) => void) => cb(mockStats));
 
             const result = await getClientAnalyticsOverview();
 
@@ -84,8 +84,8 @@ describe('Analytics Actions', () => {
             ];
             const mockTotalBefore = [{ totalBefore: 50 }];
 
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockMonthly));
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockTotalBefore));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockMonthly) => void) => cb(mockMonthly));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockTotalBefore) => void) => cb(mockTotalBefore));
 
             const result = await getClientGrowthData(2);
 
@@ -103,7 +103,7 @@ describe('Analytics Actions', () => {
                 { stage: 'lead', count: 50 },
                 { stage: 'negotiation', count: 30 }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockStages));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockStages) => void) => cb(mockStages));
 
             const result = await getFunnelAnalytics();
 
@@ -120,7 +120,7 @@ describe('Analytics Actions', () => {
             const mockManagers = [
                 { managerId: 'm1', managerName: 'Admin', clientCount: 10, totalRevenue: 100000, regularClients: 5 }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockManagers));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockManagers) => void) => cb(mockManagers));
 
             const result = await getManagerPerformance();
 
@@ -134,7 +134,7 @@ describe('Analytics Actions', () => {
             const mockTop = [
                 { id: '1', lastName: 'Top', firstName: 'Client', totalOrdersAmount: 1000000 }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockTop));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockTop) => void) => cb(mockTop));
 
             const result = await getTopClients(5);
 
