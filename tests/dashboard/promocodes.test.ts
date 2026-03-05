@@ -66,6 +66,7 @@ describe('getPromocodes', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает список промокодов', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const promos = [{ id: 'p1', code: 'SUMMER10', discountType: 'percentage', value: '10' }];
         mockSelect.mockReturnValue({
             from: vi.fn().mockReturnValue({
@@ -79,6 +80,7 @@ describe('getPromocodes', () => {
     });
 
     it('возвращает ошибку при сбое БД', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockSelect.mockReturnValue({
             from: vi.fn().mockReturnValue({
                 orderBy: vi.fn().mockReturnValue({

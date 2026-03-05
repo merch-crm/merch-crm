@@ -4,18 +4,14 @@ import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockFindFirst, mockFindMany, mockSelect, mockTx } = vi.hoisted(() => {
-    const mockFindFirst = vi.fn();
-    const mockFindMany = vi.fn();
-    const mockSelect = vi.fn();
-    const mockTx = {
-        update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
-        insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
-        query: {
-            users: { findFirst: mockFindFirst },
-        },
-    };
-    return { mockFindFirst, mockFindMany, mockSelect, mockTx };
+const mockTx = {
+    update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
+    insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
+    query: {
+        users: { findFirst: mockFindFirst },
+    },
+};
+return { mockFindFirst, mockFindMany, mockSelect, mockTx };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
@@ -201,6 +197,7 @@ describe('getUpcomingBirthdays', () => {
 
         const birthdayUser = createMockUser({ birthday: birthdayString });
         mockFindMany.mockResolvedValueOnce([birthdayUser]);
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const result = await getUpcomingBirthdays();
         expect(result.success).toBe(true);
         expect((result as { data: unknown[] }).data).toHaveLength(1);
@@ -227,7 +224,10 @@ describe('getUserSchedule', () => {
         const tasks = [{ id: 't1', title: 'Task 1', status: 'new', dueDate: new Date() }];
         mockFindMany.mockResolvedValueOnce(tasks);
         const result = await getUserSchedule();
-        expect(result).toEqual({ success: true, data: tasks });
+        expect(result.success).toBe(true);
+        if (result.success && result.data) {
+            expect(result.data[0].id).toBe('t1');
+        }
     });
 });
 

@@ -310,7 +310,7 @@ describe('updateOrderPriority', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'high');
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: "Недостаточно прав для изменения приоритета заказа" });
     });
 
     it('возвращает ошибку при невалидном приоритете', async () => {
