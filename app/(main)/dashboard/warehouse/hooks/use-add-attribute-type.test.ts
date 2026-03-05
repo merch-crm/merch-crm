@@ -3,7 +3,7 @@ import { useAddAttributeType, transliterateToSlug } from './use-add-attribute-ty
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useToast } from '@/components/ui/toast';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { createInventoryAttributeType } from '../attribute-actions';
+import { createInventoryAttributeType } from '../attributes/actions/type.actions';
 import { playSound } from '@/lib/sounds';
 import type { Category } from '@/lib/types';
 
@@ -17,7 +17,7 @@ vi.mock('@/components/ui/toast', () => ({
     useToast: vi.fn()
 }));
 
-vi.mock('../attribute-actions', () => ({
+vi.mock('../attributes/actions/type.actions', () => ({
     createInventoryAttributeType: vi.fn()
 }));
 

@@ -1,5 +1,5 @@
 import { Images } from "lucide-react";
-import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { Category, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 import { StepFooter } from "./step-footer";
 import { useMediaLogic } from "../hooks/useMediaLogic";
 import { MainPhotoUploader } from "./main-photo-uploader";
@@ -8,13 +8,14 @@ import { AdditionalPhotos } from "./additional-photos";
 import { pluralize } from "@/lib/pluralize";
 
 interface MediaStepProps {
+    category: Category | null;
     formData: ItemFormData;
     updateFormData: (updates: Partial<ItemFormData>) => void;
     onNext: () => void;
     onBack: () => void;
 }
 
-export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaStepProps) {
+export function MediaStep({ category, formData, updateFormData, onNext, onBack }: MediaStepProps) {
     const {
         isProcessing,
         uploadStates,
@@ -69,11 +70,11 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                                 <div>
                                     <h4 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
                                         Основной ракурс
-                                        <span className="text-rose-500">*</span>
                                     </h4>
                                 </div>
 
                                 <MainPhotoUploader
+                                    category={category}
                                     preview={formData.imagePreview ?? null}
                                     uploading={uploadStates.front?.uploading && loadingIndex === 0}
                                     progress={uploadStates.front?.progress}
@@ -126,8 +127,8 @@ export function MediaStep({ formData, updateFormData, onNext, onBack }: MediaSte
                 <StepFooter
                     onBack={onBack}
                     onNext={onNext}
-                    isNextDisabled={!isMinimumRequiredMet || isProcessing}
-                    validationError={!isMinimumRequiredMet ? "Загрузите обязательное фото" : undefined}
+                    isNextDisabled={isProcessing}
+                    validationError={undefined}
                     hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 6 ? `Вы можете добавить еще ${6 - (formData.imageDetailsPreviews?.length || 0)} ${pluralize(6 - (formData.imageDetailsPreviews?.length || 0), "дополнительный ракурс", "дополнительных ракурса", "дополнительных ракурсов")}` : undefined}
                 />
             </div>

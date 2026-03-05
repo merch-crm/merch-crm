@@ -169,6 +169,7 @@ describe('checkClientDuplicates', () => {
         const chainObj: Record<string, unknown> = {};
         chainObj.from = vi.fn().mockReturnValue(chainObj);
         chainObj.where = vi.fn().mockReturnValue(chainObj);
+        chainObj.orderBy = vi.fn().mockReturnValue(chainObj);
         chainObj.limit = vi.fn().mockReturnValue(chainObj);
         chainObj.then = (resolve: (val: unknown) => void, reject: (reason: unknown) => void) => Promise.resolve(existing).then(resolve, reject);
         vi.mocked(db.select).mockImplementationOnce(() => chainObj as unknown as ReturnType<typeof db.select>);

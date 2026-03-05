@@ -2,8 +2,11 @@ import { Plus, RefreshCcw, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Category } from "@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon } from "@/app/(main)/dashboard/warehouse/category/icons";
 
 interface MainPhotoUploaderProps {
+    category: Category | null;
     preview: string | null;
     uploading?: boolean;
     progress?: number;
@@ -19,6 +22,7 @@ interface MainPhotoUploaderProps {
 }
 
 export function MainPhotoUploader({
+    category,
     preview,
     uploading,
     progress,
@@ -32,6 +36,7 @@ export function MainPhotoUploader({
     onChange,
     onRemove
 }: MainPhotoUploaderProps) {
+    const CategoryIcon = getCategoryIcon(category || {});
     return (
         <div className="flex flex-col justify-start items-center w-full">
             <div
@@ -108,11 +113,19 @@ export function MainPhotoUploader({
                             </div>
                         </>
                     ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
-                            <div className="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm transition-all group-hover:bg-primary/5 group-hover:border-primary/20">
-                                <Plus className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none transition-all duration-300">
+                            <div className="relative">
+                                <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                    <CategoryIcon className="w-10 h-10 text-slate-300 group-hover:text-primary/40 transition-colors" />
+                                </div>
+                                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm transition-all group-hover:bg-primary group-hover:border-primary">
+                                    <Plus className="w-3.5 h-3.5 text-slate-400 group-hover:text-white transition-colors" />
+                                </div>
                             </div>
-                            <span className="text-xs font-bold text-slate-700 group-hover:text-primary transition-colors">Добавить</span>
+                            <div className="flex flex-col items-center">
+                                <span className="text-xs font-bold text-slate-700 group-hover:text-primary transition-colors">Добавить фото</span>
+                                <span className="text-xs font-bold text-slate-400">или оставить иконку</span>
+                            </div>
                         </div>
                     )}
                 </div>

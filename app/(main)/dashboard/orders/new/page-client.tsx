@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from"react";
-import { useRouter } from"next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
     Check,
     ShoppingCart,
@@ -9,20 +9,20 @@ import {
     Package,
     Clock,
     ChevronRight
-} from"lucide-react";
-import { Breadcrumbs } from"@/components/ui/breadcrumbs";
-import { createOrder, searchClients } from"../actions/core.actions";
-import { ActionResult, Client, ClientType } from"@/lib/types";
-import { validatePromocode } from"../../finance/actions";
-import { useToast } from"@/components/ui/toast";
-import { playSound } from"@/lib/sounds";
-import { Button } from"@/components/ui/button";
-import { useBranding } from"@/components/branding-provider";
-import { OrderSidebar } from"./components/OrderSidebar";
-import { StepClientSelection } from"./components/StepClientSelection";
-import { StepItemSelection } from"./components/StepItemSelection";
-import { StepOrderDetails } from"./components/StepOrderDetails";
-import { StepConfirmation } from"./components/StepConfirmation";
+} from "lucide-react";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { createOrder, searchClients } from "../actions/core.actions";
+import { ActionResult, Client, ClientType } from "@/lib/types";
+import { validatePromocode } from "../../finance/actions";
+import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
+import { Button } from "@/components/ui/button";
+import { useBranding } from "@/components/branding-provider";
+import { OrderSidebar } from "./components/OrderSidebar";
+import { StepClientSelection } from "./components/StepClientSelection";
+import { StepItemSelection } from "./components/StepItemSelection";
+import { StepOrderDetails } from "./components/StepOrderDetails";
+import { StepConfirmation } from "./components/StepConfirmation";
 
 interface OrderInventoryItem {
     id: string;
@@ -41,14 +41,14 @@ interface CreateOrderPageClientProps {
 
 export function CreateOrderPageClient({ initialInventory, userRoleName }: CreateOrderPageClientProps) {
     const branding = useBranding();
-    const currencySymbol = branding?.currencySymbol ||"₽";
+    const currencySymbol = branding?.currencySymbol || "₽";
     const router = useRouter();
     const { toast } = useToast();
     // Consolidated UI & Process state
     const [uiState, setUiState] = useState({
         step: 0,
         loading: false,
-        validationError:"",
+        validationError: "",
         isSearching: false,
         isApplyingPromo: false,
         showHistory: false
@@ -59,12 +59,12 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         selectedClient: null as Client | null,
         selectedItems: [] as OrderInventoryItem[],
         details: {
-            priority:"medium",
+            priority: "medium",
             isUrgent: false,
-            deadline:"",
-            advanceAmount:"0",
-            promocodeId:"",
-            paymentMethod:"cash",
+            deadline: "",
+            advanceAmount: "0",
+            promocodeId: "",
+            paymentMethod: "cash",
             appliedPromo: null as {
                 id: string;
                 code: string;
@@ -74,12 +74,12 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                 calculatedDiscount?: number;
             } | null
         },
-        promoInput:""
+        promoInput: ""
     });
 
     // Consolidated Search state
     const [searchState, setSearchState] = useState({
-        query:"",
+        query: "",
         results: [] as Client[],
         history: [] as string[]
     });
@@ -96,7 +96,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         setUiState(prev => ({ ...prev, isApplyingPromo: false }));
 
         if (!res.success) {
-            toast(res.error ||"Промокод не найден","error");
+            toast(res.error || "Промокод не найден", "error");
         } else if (res.success && res.data) {
             const data = res.data;
             setOrderData(prev => ({
@@ -104,18 +104,18 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                 details: {
                     ...prev.details,
                     appliedPromo: {
-                        id: String(data.id ||""),
-                        code: String(data.code ||""),
-                        discountType: String(data.discountType ||"percentage"),
-                        value: String(data.value ||"0"),
+                        id: String(data.id || ""),
+                        code: String(data.code || ""),
+                        discountType: String(data.discountType || "percentage"),
+                        value: String(data.value || "0"),
                         message: data.message as string | undefined,
                         calculatedDiscount: data.calculatedDiscount as number | undefined
                     },
-                    promocodeId: String(data.id ||"")
+                    promocodeId: String(data.id || "")
                 }
             }));
             const message = data.message || `Промокод ${orderData.promoInput} применен!`;
-            toast(message,"success");
+            toast(message, "success");
         }
     };
 
@@ -130,12 +130,12 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                         ...prev,
                         results: (data || []).map((c) => ({
                             ...c,
-                            type: (c.clientType ==="b2b" ?"b2b" :"b2c") as ClientType,
-                            status:"active",
-                            firstName: c.firstName ||"",
-                            lastName: c.lastName ||"",
-                            displayName: c.name || [c.lastName, c.firstName].filter(Boolean).join(' ') ||"Unnamed",
-                            fullName: [c.lastName, c.firstName].filter(Boolean).join(' ') ||"Unnamed",
+                            type: (c.clientType === "b2b" ? "b2b" : "b2c") as ClientType,
+                            status: "active",
+                            firstName: c.firstName || "",
+                            lastName: c.lastName || "",
+                            displayName: c.name || [c.lastName, c.firstName].filter(Boolean).join(' ') || "Unnamed",
+                            fullName: [c.lastName, c.firstName].filter(Boolean).join(' ') || "Unnamed",
                             company: c.company ? (typeof c.company === 'object' ? c.company : { name: String(c.company) }) : undefined,
                         } as unknown as Client))
                     }));
@@ -156,13 +156,13 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     };
 
     const validateStep = (s: number) => {
-        setUiState(prev => ({ ...prev, validationError:"" }));
+        setUiState(prev => ({ ...prev, validationError: "" }));
         if (s === 0 && !orderData.selectedClient) {
-            setUiState(prev => ({ ...prev, validationError:"Выберите клиента" }));
+            setUiState(prev => ({ ...prev, validationError: "Выберите клиента" }));
             return false;
         }
         if (s === 1 && orderData.selectedItems.length === 0) {
-            setUiState(prev => ({ ...prev, validationError:"Добавьте хотя бы один товар" }));
+            setUiState(prev => ({ ...prev, validationError: "Добавьте хотя бы один товар" }));
             return false;
         }
         if (s === 2 && orderData.details.deadline) {
@@ -171,7 +171,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (d < today) {
-                setUiState(prev => ({ ...prev, validationError:"Дедлайн не может быть в прошлом" }));
+                setUiState(prev => ({ ...prev, validationError: "Дедлайн не может быть в прошлом" }));
                 return false;
             }
         }
@@ -188,13 +188,13 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
 
         const formData = new FormData();
         if (!orderData.selectedClient) {
-            toast("Выберите клиента","destructive");
+            toast("Выберите клиента", "destructive");
             setUiState(prev => ({ ...prev, loading: false }));
             return;
         }
         formData.append("clientId", orderData.selectedClient.id);
         formData.append("priority", orderData.details.priority);
-        formData.append("isUrgent", orderData.details.isUrgent ?"true" :"false");
+        formData.append("isUrgent", orderData.details.isUrgent ? "true" : "false");
         formData.append("advanceAmount", orderData.details.advanceAmount);
         formData.append("paymentMethod", orderData.details.paymentMethod);
         formData.append("promocodeId", orderData.details.promocodeId);
@@ -203,18 +203,18 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             inventoryId: item.id,
             quantity: item.orderQuantity || 0,
             price: item.price || 0,
-            description: item.name ||""
+            description: item.name || ""
         }))));
 
         const res: ActionResult = await createOrder(formData);
         setUiState(prev => ({ ...prev, loading: false }));
 
         if (!res.success) {
-            toast(res.error,"error");
+            toast(res.error, "error");
             playSound("notification_error");
         } else {
             playSound("order_created");
-            toast("Заказ успешно создан","success");
+            toast("Заказ успешно создан", "success");
             router.push("/dashboard/orders");
             router.refresh();
         }
@@ -267,10 +267,10 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
     };
 
     const steps = [
-        { id: 0, title:"Клиент", desc:"Кто заказывает", icon: User },
-        { id: 1, title:"Товары", desc:"Что заказывают", icon: Package },
-        { id: 2, title:"Детали", desc:"Сроки и оплата", icon: Clock },
-        { id: 3, title:"Обзор", desc:"Проверка данных", icon: Check }
+        { id: 0, title: "Клиент", desc: "Кто заказывает", icon: User },
+        { id: 1, title: "Товары", desc: "Что заказывают", icon: Package },
+        { id: 2, title: "Детали", desc: "Сроки и оплата", icon: Clock },
+        { id: 3, title: "Обзор", desc: "Проверка данных", icon: Check }
     ];
 
     return (
@@ -280,8 +280,8 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             <div className="px-8 pt-6 shrink-0">
                 <Breadcrumbs
                     items={[
-                        { label:"Заказы", href:"/dashboard/orders", icon: ShoppingCart },
-                        { label:"Новый заказ" }
+                        { label: "Заказы", href: "/dashboard/orders", icon: ShoppingCart },
+                        { label: "Новый заказ" }
                     ]}
                 />
             </div>
@@ -293,11 +293,11 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                     currentStep={uiState.step}
                     onStepClick={(sid) => {
                         if (sid < uiState.step || validateStep(uiState.step)) {
-                            setUiState(prev => ({ ...prev, step: sid, validationError:"" }));
+                            setUiState(prev => ({ ...prev, step: sid, validationError: "" }));
                         }
                     }}
                     onBack={handleBack}
-                    selectedClientName={orderData.selectedClient ? (orderData.selectedClient.displayName || orderData.selectedClient.fullName) :""}
+                    selectedClientName={(orderData.selectedClient ? (orderData.selectedClient.displayName || orderData.selectedClient.fullName || "") : "") as string}
                 />
 
                 {/* Main Content Area */}
@@ -312,7 +312,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     selectedClient={orderData.selectedClient}
                                     onSelectClient={(client) => {
                                         setOrderData(prev => ({ ...prev, selectedClient: client }));
-                                        setSearchState(prev => ({ ...prev, query:"", results: [] }));
+                                        setSearchState(prev => ({ ...prev, query: "", results: [] }));
                                     }}
                                     showHistory={uiState.showHistory}
                                     searchHistory={searchState.history}
@@ -372,7 +372,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     </Button>
                                 ) : (
                                     <Button type="button" onClick={handleSubmit} disabled={uiState.loading} variant="btn-dark" className="px-12 shadow-lg">
-                                        {uiState.loading ?"Создание..." :"Подтвердить и создать"}
+                                        {uiState.loading ? "Создание..." : "Подтвердить и создать"}
                                     </Button>
                                 )}
                             </div>

@@ -23,6 +23,9 @@ export type InventoryAttribute = InferSelectModel<typeof inventoryAttributes>;
  * Get all inventory attributes
  */
 export async function getInventoryAttributes(): Promise<ActionResult<InventoryAttribute[]>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const attributes = await db.query.inventoryAttributes.findMany({
             orderBy: (attributes, { asc }) => [asc(attributes.name)],

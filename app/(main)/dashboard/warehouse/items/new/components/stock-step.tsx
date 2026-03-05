@@ -7,7 +7,11 @@ import {
     Minus,
     Check,
     Tag,
-    Banknote
+    Banknote,
+    Package,
+    Bell,
+    User,
+    MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Category, StorageLocation, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
@@ -54,240 +58,257 @@ export function StockStep({
     return (
         <div className="flex flex-col h-full !overflow-visible">
             <div className="flex-1 !overflow-visible min-h-0 flex flex-col">
-                <div className="space-y-3 flex-1 flex flex-col min-h-0 w-full pl-[var(--radius-padding)] pr-[8px] pt-[var(--radius-padding)]">
-                    <div className="flex items-center gap-3 shrink-0">
-                        <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
-                            <Warehouse className="w-6 h-6 text-white" />
+                <div className="space-y-1 flex flex-col min-h-0 w-full px-6 pt-3">
+                    <div className="flex items-center gap-3 shrink-0 mb-1">
+                        <div className="w-10 h-10 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                            <Warehouse className="w-5 h-5 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-slate-900">Складской учет</h2>
-                            <p className="text-xs font-bold text-slate-700 opacity-60">Укажите место хранения и начальные остатки позиции</p>
+                            <h2 className="text-lg font-bold text-slate-900">Складской учет</h2>
+                            <p className="text-xs font-bold text-slate-700 opacity-60 tracking-tight">Место хранения и начальные остатки</p>
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-12 gap-3 sm:gap-3 flex-1 overflow-y-auto custom-scrollbar pb-10 mr-[8px] pr-[8px]">
-                        {/* FIRST ROW */}
-                        {/* BENTO BLOCK 1: MAIN QUANTITY */}
-                        <div className="col-span-12 md:col-span-5 xl:col-span-5 crm-card  !rounded-[28px] transition-all duration-300 flex flex-col items-start text-left">
-                            <div className="mb-6">
-                                <h3 className="text-base font-bold text-slate-900">Количество</h3>
-                                <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Укажите начальный остаток</p>
-                            </div>
-
-                            <div className="w-full">
-                                <div className="flex items-stretch gap-2 transition-all duration-300 group/widget w-full">
-                                    <div className="flex-1 bg-slate-50 rounded-[22px] px-6 py-3 border border-slate-100 flex flex-col items-start gap-1">
-                                        <div className="flex items-baseline gap-1">
-                                            <Input
-                                                type="number"
-                                                value={formData.quantity || "0"}
-                                                onChange={(e) => updateFormData({ quantity: e.target.value })}
-                                                className="text-4xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-auto shadow-none"
-                                                style={{ width: `${Math.max(1, (formData.quantity || "0").toString().length) * 22}px`, minWidth: '40px' }}
-                                            />
-                                            <span className="text-sm font-black text-primary tracking-[0.15em] mb-1.5 shrink-0">
-                                                {formData.unit}
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center gap-2 opacity-40 group-hover/widget:opacity-100 transition-opacity">
-                                            <div className="w-1 h-1 rounded-full bg-primary" />
-                                            <span className="text-xs font-black text-slate-700">Текущий остаток</span>
-                                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-[1fr_1px_1fr] gap-0 overflow-y-auto custom-scrollbar pb-0">
+                        {/* LEFT COLUMN */}
+                        <div className="flex flex-col gap-2 pr-6">
+                            {/* BENTO BLOCK 1: MAIN QUANTITY */}
+                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col items-start text-left">
+                                <div className="flex items-center gap-2.5 mb-3">
+                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                        <Package className="w-4 h-4" strokeWidth={2} />
                                     </div>
-
-                                    <div className="w-16 flex flex-col gap-1">
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            onClick={() => adjustValue('quantity', 1)}
-                                            className="flex-1 rounded-[20px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:border-emerald-200 hover:bg-emerald-50/50 transition-all active:scale-95 group/plus h-auto p-0"
-                                        >
-                                            <Plus className="w-5 h-5 transition-transform group-hover/plus:scale-110" strokeWidth={3} />
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            onClick={() => adjustValue('quantity', -1)}
-                                            className="flex-1 rounded-[20px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50/50 transition-all active:scale-95 group/minus h-auto p-0"
-                                        >
-                                            <Minus className="w-5 h-5 transition-transform group-hover/minus:scale-110" strokeWidth={3} />
-                                        </Button>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Количество</h3>
+                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Начальный остаток</p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        {/* BENTO BLOCK 2: FINANCIALS */}
-                        <div className="col-span-12 md:col-span-7 xl:col-span-7 crm-card  !rounded-[28px] transition-all duration-300 flex flex-col">
-                            <div className="mb-6">
-                                <h3 className="text-base font-bold text-slate-900">Финансы</h3>
-                                <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Себестоимость и цена продажи</p>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative">
-                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2 hidden sm:block" />
-
-                                <div className="space-y-3 min-w-0">
-                                    <div className="flex flex-col gap-2.5">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center text-violet-500">
-                                                <Tag className="w-3.5 h-3.5" />
+                                <div className="w-full">
+                                    <div className="flex items-stretch gap-2 transition-all duration-300 group/widget w-full">
+                                        <div className="flex-1 bg-slate-50 rounded-[18px] px-5 py-2.5 border border-slate-100 flex flex-col items-start gap-1">
+                                            <div className="flex items-baseline gap-1">
+                                                <Input
+                                                    type="number"
+                                                    value={formData.quantity || "0"}
+                                                    onChange={(e) => updateFormData({ quantity: e.target.value })}
+                                                    className="text-3xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-auto shadow-none"
+                                                    style={{ width: `${Math.max(1, (formData.quantity || "0").toString().length) * 18}px`, minWidth: '32px' }}
+                                                />
+                                                <span className="text-[11px] font-black text-primary tracking-[0.1em] mb-1.5 shrink-0">
+                                                    шт
+                                                </span>
                                             </div>
-                                            <span className="text-xs font-black text-slate-700">Себестоимость</span>
-                                        </div>
-                                        <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
-                                            <Input
-                                                type="number"
-                                                value={formData.costPrice || "0"}
-                                                onChange={(e) => updateFormData({ costPrice: e.target.value })}
-                                                className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
-                                            />
-                                            <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">{currencySymbol}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3 min-w-0">
-                                    <div className="flex flex-col gap-2.5">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-500">
-                                                <Banknote className="w-3.5 h-3.5" />
+                                            <div className="flex items-center gap-1.5 opacity-40 group-hover/widget:opacity-100 transition-opacity">
+                                                <div className="w-1 h-1 rounded-full bg-primary" />
+                                                <span className="text-xs font-black text-slate-700">Текущий остаток</span>
                                             </div>
-                                            <span className="text-xs font-black text-slate-700">Цена продажи</span>
                                         </div>
-                                        <div className="relative bg-slate-50 rounded-xl px-4 py-3 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
-                                            <Input
-                                                type="number"
-                                                value={formData.sellingPrice || "0"}
-                                                onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
-                                                className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
-                                            />
-                                            <span className="absolute right-4 bottom-3 text-sm font-bold text-slate-300">{currencySymbol}</span>
+
+                                        <div className="w-14 flex flex-col gap-1">
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                onClick={() => adjustValue('quantity', 1)}
+                                                className="flex-1 rounded-[16px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:border-emerald-200 transition-all active:scale-95 h-auto p-0"
+                                            >
+                                                <Plus className="w-4 h-4" strokeWidth={3} />
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                onClick={() => adjustValue('quantity', -1)}
+                                                className="flex-1 rounded-[16px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 h-auto p-0"
+                                            >
+                                                <Minus className="w-4 h-4" strokeWidth={3} />
+                                            </Button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* SECOND ROW */}
-                        <div className="col-span-12 md:col-span-5 xl:col-span-5 flex flex-col gap-3">
                             {/* BENTO BLOCK 3: THRESHOLDS */}
-                            <div className="crm-card  !rounded-[28px] transition-all duration-300 flex flex-col gap-3 shrink-0">
-                                <div className="mb-6">
-                                    <h3 className="text-base font-bold text-slate-900">Уведомления</h3>
-                                    <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Настройка лимитов</p>
+                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col gap-2 shrink-0">
+                                <div className="flex items-center gap-2.5 mb-3">
+                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                        <Bell className="w-4 h-4" strokeWidth={2} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Уведомления</h3>
+                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Лимиты</p>
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 relative">
-                                    <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-50 -translate-x-1/2 hidden sm:block" />
-
-                                    <div className="space-y-3 min-w-0">
+                                <div className="grid grid-cols-2 gap-2.5 relative">
+                                    <div className="space-y-2 min-w-0">
                                         <div className="flex flex-col">
-                                            <div className="text-[28px] font-black text-slate-900 flex items-center gap-2 bg-slate-50 rounded-xl px-4 py-2 border border-slate-100/50 w-full">
+                                            <div className="bg-slate-50 rounded-xl px-3 py-1.5 border border-slate-100/50 w-full flex items-center gap-1.5">
                                                 <Input
                                                     type="number"
                                                     value={formData.lowStockThreshold || "10"}
                                                     onChange={(e) => updateFormData({ lowStockThreshold: e.target.value })}
-                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-[28px] font-black"
+                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-xl font-black"
                                                 />
-                                                <span className="text-[12px] text-slate-700 font-bold shrink-0">{formData.unit}</span>
+                                                <span className="text-xs text-slate-700 font-bold shrink-0">шт</span>
                                             </div>
-                                            <span className="text-xs font-black text-amber-500  mt-2 px-0.5">Предупреждение</span>
+                                            <span className="text-xs font-black text-amber-500 mt-1.5 px-0.5">Предупреждение</span>
                                         </div>
                                     </div>
-                                    <div className="space-y-3 min-w-0">
+                                    <div className="space-y-2 min-w-0">
                                         <div className="flex flex-col">
-                                            <div className="text-[28px] font-black text-slate-900 flex items-center gap-2 bg-slate-50 rounded-xl px-4 py-2 border border-slate-100/50 w-full">
+                                            <div className="bg-slate-50 rounded-xl px-3 py-1.5 border border-slate-100/50 w-full flex items-center gap-1.5">
                                                 <Input
                                                     type="number"
                                                     value={formData.criticalStockThreshold || "0"}
                                                     onChange={(e) => updateFormData({ criticalStockThreshold: e.target.value })}
-                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-[28px] font-black"
+                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-xl font-black"
                                                 />
-                                                <span className="text-[12px] text-slate-700 font-bold shrink-0">{formData.unit}</span>
+                                                <span className="text-xs text-slate-700 font-bold shrink-0">шт</span>
                                             </div>
-                                            <span className="text-xs font-black text-rose-500  mt-2 px-0.5">Критический лимит</span>
+                                            <span className="text-xs font-black text-rose-500 mt-1.5 px-0.5">Критический лимит</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
                             {/* BENTO BLOCK 4: RESPONSIBLE PERSON */}
-                            <div className="crm-card  !rounded-[28px] transition-all duration-300 flex flex-col gap-3 flex-1">
-                                <div className="mb-6">
-                                    <h3 className="text-base font-bold text-slate-900">Ответственный</h3>
-                                    <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Кто создал позицию</p>
+                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col gap-2">
+                                <div className="flex items-center gap-2.5 mb-3">
+                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                        <User className="w-4 h-4" strokeWidth={2} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Ответственный</h3>
+                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Создатель</p>
+                                    </div>
                                 </div>
 
                                 <Select
                                     options={(users || []).map(u => ({ id: u.id, title: u.name }))}
                                     value={(formData.responsibleUserId as string) || ""}
                                     onChange={(val) => updateFormData({ responsibleUserId: val })}
-                                    placeholder="Выберите сотрудника..."
-                                    className="w-full"
+                                    placeholder="Сотрудник..."
+                                    className="w-full text-sm h-9"
                                 />
                             </div>
                         </div>
 
-                        {/* STORAGE LOCATIONS CARD */}
-                        <div className="col-span-12 md:col-span-7 xl:col-span-7 crm-card !p-0 !rounded-[28px] shadow-sm flex flex-col min-h-0">
-                            <div className="p-6 pb-2">
-                                <h3 className="text-base font-bold text-slate-900">Размещение товара</h3>
-                                <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Выберите склад для хранения</p>
+                        {/* VERTICAL DIVIDER */}
+                        <div className="hidden md:block w-px bg-slate-100 self-stretch my-2" />
+
+                        {/* RIGHT COLUMN */}
+                        <div className="flex flex-col gap-2 pl-6">
+                            {/* BENTO BLOCK 2: FINANCIALS */}
+                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col">
+                                <div className="flex items-center gap-2.5 mb-3">
+                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                        <Banknote className="w-4 h-4" strokeWidth={2} />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Финансы</h3>
+                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Стоимость</p>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-3 relative">
+                                    <div className="space-y-1.5 min-w-0">
+                                        <div className="flex flex-col gap-1.5">
+                                            <div className="flex items-center gap-1.5">
+                                                <Tag className="w-3 h-3 text-violet-400" />
+                                                <span className="text-xs font-black text-slate-700">Себестоимость</span>
+                                            </div>
+                                            <div className="relative bg-slate-50 rounded-xl px-3 py-2 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
+                                                <Input
+                                                    type="number"
+                                                    value={formData.costPrice || "0"}
+                                                    onChange={(e) => updateFormData({ costPrice: e.target.value })}
+                                                    className="w-full text-lg font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-6 min-w-0 h-auto shadow-none"
+                                                />
+                                                <span className="absolute right-3 bottom-2 text-xs font-bold text-slate-300">{currencySymbol}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5 min-w-0">
+                                        <div className="flex flex-col gap-1.5">
+                                            <div className="flex items-center gap-1.5">
+                                                <Banknote className="w-3 h-3 text-emerald-400" />
+                                                <span className="text-xs font-black text-slate-700">Продажа</span>
+                                            </div>
+                                            <div className="relative bg-slate-50 rounded-xl px-3 py-2 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
+                                                <Input
+                                                    type="number"
+                                                    value={formData.sellingPrice || "0"}
+                                                    onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
+                                                    className="w-full text-lg font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-6 min-w-0 h-auto shadow-none"
+                                                />
+                                                <span className="absolute right-3 bottom-2 text-xs font-bold text-slate-300">{currencySymbol}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="flex-1 flex flex-col px-6 pb-6 pt-0">
-                                <div className="px-4 pt-1 pb-1 -mx-4">
-                                    {(storageLocations || []).length === 0 ? (
-                                        <div className="p-6 rounded-[var(--radius)] bg-amber-50 border border-amber-100 text-amber-600 text-[11px] font-bold  flex items-center gap-3">
-                                            <AlertTriangle className="w-5 h-5 shrink-0" />
-                                            Склады не найдены. Сначала настройте склад.
+                            {/* STORAGE LOCATIONS CARD */}
+                            <div className="crm-card !p-0 !rounded-[24px] shadow-sm flex flex-col min-h-0">
+                                <div className="p-5 pb-2">
+                                    <div className="flex items-center gap-2.5 mb-2">
+                                        <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                            <MapPin className="w-4 h-4" strokeWidth={2} />
                                         </div>
-                                    ) : (
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                            {(storageLocations || []).map(loc => (
-                                                <Button
-                                                    key={loc.id}
-                                                    type="button"
-                                                    variant="ghost"
-                                                    onClick={() => updateFormData({ storageLocationId: loc.id })}
-                                                    className={cn("p-3.5 rounded-[20px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
-                                                        formData.storageLocationId === loc.id
-                                                            ? "bg-primary/5 border-primary text-primary shadow-md hover:bg-primary/10"
-                                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-400 hover:shadow-md hover:bg-white"
-                                                    )}
-                                                >
-                                                    <div className="flex items-center gap-3 truncate relative z-10 w-full">
-                                                        <div className={cn("w-10 h-10 rounded-[14px] flex items-center justify-center shrink-0 transition-all duration-300",
-                                                            formData.storageLocationId === loc.id ? "bg-primary/10" : "bg-slate-100 border border-slate-200/50"
-                                                        )}>
-                                                            <Warehouse className={cn("w-5 h-5", formData.storageLocationId === loc.id ? "text-primary" : "text-slate-400")} />
-                                                        </div>
-                                                        <div className="truncate text-left flex-1">
-                                                            <div className="font-bold text-sm leading-tight truncate px-0.5">{loc.name}</div>
-                                                            <div className={cn("text-xs font-black mt-0.5 opacity-60 px-0.5", formData.storageLocationId === loc.id ? "text-primary/70" : "text-slate-700")}>
-                                                                Склад активен
-                                                            </div>
-                                                        </div>
-                                                        {formData.storageLocationId === loc.id && (
-                                                            <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-lg">
-                                                                <Check className="w-3.5 h-3.5 text-white" strokeWidth={4} />
-                                                            </div>
+                                        <div className="flex flex-col">
+                                            <h3 className="text-sm font-bold text-slate-800 leading-tight">Размещение</h3>
+                                            <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Склад</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col px-5 pb-5 pt-0">
+                                    <div className="px-3 pt-1 pb-1 -mx-3">
+                                        {(storageLocations || []).length === 0 ? (
+                                            <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 text-xs font-bold flex items-center gap-2">
+                                                <AlertTriangle className="w-4 h-4 shrink-0" />
+                                                Сначала настройте склад.
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 gap-2">
+                                                {(storageLocations || []).map(loc => (
+                                                    <Button
+                                                        key={loc.id}
+                                                        type="button"
+                                                        variant="ghost"
+                                                        onClick={() => updateFormData({ storageLocationId: loc.id })}
+                                                        className={cn("p-2.5 rounded-[16px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
+                                                            formData.storageLocationId === loc.id
+                                                                ? "bg-primary/5 border-primary text-primary shadow-sm"
+                                                                : "bg-white border-slate-100 text-slate-600 hover:border-slate-300"
                                                         )}
-                                                    </div>
-                                                </Button>
-                                            ))}
-                                            <AddStorageLocationDialog
-                                                users={users}
-                                                trigger={
-                                                    <div className="p-3.5 rounded-[20px] border-2 border-dashed border-slate-200 bg-slate-50/50 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 flex items-center gap-3 h-[74px] group cursor-pointer">
-                                                        <div className="w-10 h-10 rounded-[14px] bg-white flex items-center justify-center shrink-0 border-2 border-dashed border-slate-200 group-hover:border-primary/30 group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-primary">
-                                                            <Plus className="w-5 h-5" />
+                                                    >
+                                                        <div className="flex items-center gap-2 truncate relative z-10 w-full">
+                                                            <div className={cn("w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 transition-all duration-300",
+                                                                formData.storageLocationId === loc.id ? "bg-primary/10" : "bg-slate-50 border border-slate-100/50"
+                                                            )}>
+                                                                <Warehouse className={cn("w-4 h-4", formData.storageLocationId === loc.id ? "text-primary" : "text-slate-400")} />
+                                                            </div>
+                                                            <div className="truncate text-left flex-1 min-w-0">
+                                                                <div className="font-bold text-[11px] leading-tight truncate">{loc.name}</div>
+                                                            </div>
+                                                            {formData.storageLocationId === loc.id && (
+                                                                <Check className="w-3 h-3 text-primary" strokeWidth={4} />
+                                                            )}
                                                         </div>
-                                                        <div className="font-black text-[11px] text-slate-400 group-hover:text-primary">Добавить новый склад</div>
-                                                    </div>
-                                                }
-                                            />
-                                        </div>
-                                    )}
+                                                    </Button>
+                                                ))}
+                                                <AddStorageLocationDialog
+                                                    users={users}
+                                                    trigger={
+                                                        <div className="p-2.5 rounded-[16px] border border-dashed border-slate-200 bg-slate-50/30 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 flex items-center gap-2 h-[46px] group cursor-pointer">
+                                                            <Plus className="w-3.5 h-3.5" />
+                                                            <div className="font-black text-xs text-slate-400 group-hover:text-primary tracking-tight">Новый склад</div>
+                                                        </div>
+                                                    }
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -295,7 +316,7 @@ export function StockStep({
                 </div>
             </div>
 
-            <div className="mt-auto shrink-0">
+            <div className="shrink-0">
                 <StepFooter
                     onBack={onBack}
                     onNext={onNext}

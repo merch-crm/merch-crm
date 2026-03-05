@@ -1,20 +1,22 @@
 "use server";
 
-import { db } from"@/lib/db";
-import * as schema from"@/lib/schema";
-import { revalidatePath } from"next/cache";
-import { eq } from"drizzle-orm";
-import { getSession } from"@/lib/auth";
-import { logAction } from"@/lib/audit";
-import { logError } from"@/lib/error-logger";
-import { AddPaymentSchema, RefundOrderSchema } from"../validation";
-import { ActionResult } from"@/lib/types";
+import { db } from "@/lib/db";
+import * as schema from "@/lib/schema";
+import { revalidatePath } from "next/cache";
+import { eq } from "drizzle-orm";
+import { getSession } from "@/lib/auth";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
+import { AddPaymentSchema, RefundOrderSchema } from "../validation";
+import { ActionResult } from "@/lib/types";
 
 const { orders, payments } = schema;
 
 export async function refundOrder(orderId: string, amount: number, reason: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав для оформления возврата" };
+    }
 
     try {
         const validated = RefundOrderSchema.safeParse({ orderId, amount, reason });
@@ -29,12 +31,12 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
             await tx.insert(payments).values({
                 orderId,
                 amount: String(refundAmount),
-                method:"cash",
+                method: "cash",
                 isAdvance: false,
                 comment: `Возврат: ${validated.data.reason}`
             });
 
-            await logAction("Оформлен возврат","order", orderId, {
+            await logAction("Оформлен возврат", "order", orderId, {
                 amount: refundAmount,
                 reason: validated.data.reason
             }, tx);
@@ -44,14 +46,16 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch (error) {
-        await logError({ error, path:"/dashboard/orders/refund", method:"refundOrder" });
-        return { success: false, error: error instanceof Error ? error.message :"Ошибка" };
+        await logError({ error, path: "/dashboard/orders/refund", method: "refundOrder" });
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
     }
 }
 
 export async function addPayment(orderId: string, amount: number, method: string, isAdvance: boolean, comment?: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав для добавления оплаты" };
+    }
 
     try {
         const validated = AddPaymentSchema.safeParse({ orderId, amount, method, isAdvance, comment });
@@ -63,10 +67,10 @@ export async function addPayment(orderId: string, amount: number, method: string
                 amount: String(validated.data.amount),
                 method: validated.data.method,
                 isAdvance: validated.data.isAdvance,
-                comment: validated.data.comment || (validated.data.isAdvance ?"Аванс" :"Оплата")
+                comment: validated.data.comment || (validated.data.isAdvance ? "Аванс" : "Оплата")
             });
 
-            await logAction(validated.data.isAdvance ?"Внесен аванс" :"Внесена оплата","order", orderId, {
+            await logAction(validated.data.isAdvance ? "Внесен аванс" : "Внесена оплата", "order", orderId, {
                 amount: validated.data.amount,
                 method: validated.data.method,
                 isAdvance: validated.data.isAdvance
@@ -77,7 +81,7 @@ export async function addPayment(orderId: string, amount: number, method: string
         revalidatePath(`/dashboard/orders/${orderId}`);
         return { success: true };
     } catch (error) {
-        await logError({ error, path:"/dashboard/orders/payment", method:"addPayment" });
-        return { success: false, error:"Ошибка" };
+        await logError({ error, path: "/dashboard/orders/payment", method: "addPayment" });
+        return { success: false, error: "Ошибка" };
     }
 }

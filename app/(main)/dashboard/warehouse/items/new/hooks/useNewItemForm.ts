@@ -10,7 +10,6 @@ export const DEFAULT_FORM_DATA: ItemFormData = {
     sizeCode: "",
     itemName: "",
     sku: "",
-    unit: "шт.",
     description: "",
     width: "",
     height: "",

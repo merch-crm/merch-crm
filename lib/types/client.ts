@@ -28,18 +28,18 @@ export type ClientSegment = "vip" | "regular" | "new" | "churned";
 
 export interface Client extends BaseEntity {
     // Основная информация
-    clientType: ClientType;
-    status: ClientStatus;
+    clientType?: ClientType;
+    status?: ClientStatus;
     segment?: ClientSegment;
     source?: ClientSource;
 
     // Персональные данные
-    firstName: string;
-    lastName: string;
+    firstName?: string;
+    lastName?: string;
     patronymic?: string; // Совместимость
     middleName?: string;
-    fullName: string;
-    displayName: string;
+    fullName?: string;
+    displayName?: string;
 
     // Контакты
     phone: string;
@@ -58,27 +58,34 @@ export interface Client extends BaseEntity {
     acquisitionSource?: string;
     isArchived?: boolean;
 
-    // Компания (для B2B)
-    company?: {
-        name: string;
-        inn?: string;
-        kpp?: string;
-        ogrn?: string;
-        legalAddress?: string;
-        actualAddress?: string;
-        bankDetails?: BankDetails;
-    };
+    // Воронка
+    funnelStage?: string | null;
+    funnelStageChangedAt?: Date | string | null;
+    lostAt?: Date | string | null;
+    lostReason?: string | null;
 
-    // Адреса
-    addresses?: ClientAddress[];
-    defaultAddressId?: string;
+    // Лояльность
+    loyaltyLevelId?: string | null;
+    loyaltyLevelSetManually?: boolean;
+    loyaltyLevelChangedAt?: Date | string | null;
+
+    // Компания
+    company?: string | null;
 
     // Менеджер
-    managerId?: string;
-    managerName?: string;
+    managerId?: string | null;
+    managerName?: string | null;
 
-    // Финансы
-    discount?: number; // процент скидки
+    // Статистика (денормализованная из БД)
+    totalOrdersCount?: number | null;
+    totalOrdersAmount?: number | string | null;
+    averageCheck?: number | string | null;
+    lastOrderAt?: Date | string | null;
+    firstOrderAt?: Date | string | null;
+    daysSinceLastOrder?: number | null;
+
+    // Финансы (старые поля, оставляем для совместимости)
+    discount?: number;
     creditLimit?: number;
     balance?: number;
     totalOrders?: number;
@@ -135,13 +142,21 @@ export interface ClientFormData {
 
 // Фильтры клиентов
 export interface ClientFilters {
-    type?: ClientType;
-    status?: ClientStatus;
-    segment?: ClientSegment;
-    source?: ClientSource;
+    page?: number;
+    limit?: number;
+    search?: string;
+    sortBy?: string;
+    period?: "all" | "month" | "quarter" | "year";
+    orderCount?: "any" | "0" | "1-5" | "5+";
+    region?: string;
+    status?: string;
+    showArchived?: boolean;
+    clientType?: ClientType | "all";
     managerId?: string;
-    tags?: string[];
-    hasOrders?: boolean;
+    acquisitionSource?: string;
+    activityStatus?: "all" | "active" | "attention" | "at_risk" | "inactive";
+    rfmSegment?: string;
+    loyaltyLevelId?: string;
     minSpent?: number;
     maxSpent?: number;
     createdFrom?: Date;
@@ -177,6 +192,10 @@ export interface ClientSummary {
     totalSpent: number;
     lastOrderDate?: string | null; // Совместимость
     isVip: boolean;
+    funnelStage?: string | null;
+    loyaltyLevelId?: string | null;
+    loyaltyLevelSetManually?: boolean;
+    daysSinceLastOrder?: number | null;
 }
 
 // Статистика по клиентам
@@ -223,6 +242,33 @@ export interface ClientDetails {
     type?: ClientType; // Совместимость
     isArchived: boolean;
     createdAt: Date | string;
+
+    // Воронка
+    funnelStage: string | null;
+    funnelStageChangedAt?: Date | string | null;
+    lostAt?: Date | string | null;
+    lostReason?: string | null;
+
+    // Лояльность
+    loyaltyLevelId: string | null;
+    loyaltyLevelSetManually: boolean;
+    loyaltyLevelChangedAt: Date | string | null;
+
+    // === НОВОЕ: Денормализованная статистика ===
+    totalOrdersCount?: number;
+    totalOrdersAmount?: number | string;
+    averageCheck?: number | string;
+    lastOrderAt: Date | string | null;
+    firstOrderAt?: Date | string | null;
+    daysSinceLastOrder: number | null;
+
+    // === НОВОЕ: RFM-анализ ===
+    rfmRecency?: number | null;
+    rfmFrequency?: number | null;
+    rfmMonetary?: number | null;
+    rfmScore?: string | null;
+    rfmSegment?: string | null;
+    rfmCalculatedAt?: Date | string | null;
 
     // Статистика (консолидированная)
     totalOrders: number;

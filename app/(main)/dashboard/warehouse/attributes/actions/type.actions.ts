@@ -23,6 +23,9 @@ export type AttributeType = InferSelectModel<typeof inventoryAttributeTypes>;
  * Get all inventory attribute types
  */
 export async function getInventoryAttributeTypes(): Promise<ActionResult<AttributeType[]>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const types = await db.select().from(inventoryAttributeTypes)
             .orderBy(asc(inventoryAttributeTypes.sortOrder), asc(inventoryAttributeTypes.createdAt))

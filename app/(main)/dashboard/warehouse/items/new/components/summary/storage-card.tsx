@@ -1,6 +1,5 @@
 import { Warehouse, AlertCircle } from "lucide-react";
-import { formatUnit } from "@/lib/utils";
-import { ItemFormData, StorageLocation } from"@/app/(main)/dashboard/warehouse/types";
+import { ItemFormData, StorageLocation } from "@/app/(main)/dashboard/warehouse/types";
 
 interface StorageCardProps {
     formData: ItemFormData;
@@ -29,7 +28,7 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
                     </div>
                     <div className="text-right">
                         <div className="text-xs font-black text-white/40 mb-1">Остаток</div>
-                        <div className="text-3xl font-black leading-none">{formData.quantity} <span className="text-sm text-white/50">{formatUnit(formData.unit)}</span></div>
+                        <div className="text-3xl font-black leading-none">{formData.quantity} <span className="text-sm text-white/50">шт</span></div>
                     </div>
                 </div>
 

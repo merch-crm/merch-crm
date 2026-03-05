@@ -11,3 +11,7 @@ export * from "./tasks";
 export * from "./system";
 export * from "./wiki";
 export * from "./presence";
+export * from "./client-contacts";
+export * from "./loyalty-levels";
+export * from "./communications";
+

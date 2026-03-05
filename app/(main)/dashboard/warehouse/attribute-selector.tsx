@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Settings2, ArrowRight } from "lucide-react";
+import {
+    Settings2, ArrowRight,
+    Tag, Hash, Shapes, Palette, Box, Layers, Maximize,
+    Globe, Droplets, Package, Component, Waves, Wrench, Paperclip, Scale
+} from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,6 +14,34 @@ import { useToast } from "@/components/ui/toast";
 import { AttributeType } from "./types";
 import { AttributeCustomModal } from "./attribute-custom-modal";
 import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+
+
+const DATA_TYPE_ICONS: Record<string, React.ElementType> = {
+    text: Shapes, unit: Paperclip, color: Palette, dimensions: Box, quantity: Hash,
+    composition: Component, material: Layers, size: Maximize, brand: Tag,
+    country: Globe, density: Waves, weight: Scale, volume: Droplets,
+    package: Package, consumable: Wrench,
+};
+
+const _DATA_TYPE_GRADIENTS: Record<string, string> = {
+    text: "from-slate-400 to-slate-500 shadow-slate-500/20",
+    unit: "from-sky-400 to-blue-500 shadow-sky-500/20",
+    color: "from-rose-400 to-red-500 shadow-rose-500/20",
+    dimensions: "from-violet-500 to-purple-600 shadow-violet-500/20",
+    quantity: "from-indigo-500 to-blue-600 shadow-indigo-500/20",
+    composition: "from-cyan-400 to-blue-500 shadow-cyan-500/20",
+    material: "from-emerald-500 to-teal-500 shadow-emerald-500/20",
+    size: "from-blue-500 to-indigo-600 shadow-blue-500/20",
+    brand: "from-amber-400 to-orange-500 shadow-amber-500/20",
+    country: "from-blue-400 to-indigo-500 shadow-blue-500/20",
+    density: "from-teal-400 to-emerald-500 shadow-teal-500/20",
+    weight: "from-orange-400 to-rose-500 shadow-orange-500/20",
+    volume: "from-cyan-400 to-sky-500 shadow-cyan-500/20",
+    package: "from-violet-400 to-purple-500 shadow-violet-500/20",
+    consumable: "from-amber-500 to-orange-600 shadow-amber-500/20",
+};
+
+
 
 
 interface AttributeSelectorProps {
@@ -22,6 +54,7 @@ interface AttributeSelectorProps {
     description?: string;
     required?: boolean;
     categoryId?: string;
+    initialAttributeType?: AttributeType;
 }
 
 interface DbAttribute {
@@ -47,7 +80,8 @@ export function AttributeSelector({
     allowCustom = true,
     label,
     required,
-    categoryId
+    categoryId,
+    initialAttributeType
 }: AttributeSelectorProps) {
     const [showCustom, setShowCustom] = useState(false);
     const [customForm, setCustomForm] = useState({
@@ -72,16 +106,17 @@ export function AttributeSelector({
     const { toast } = useToast();
 
     const [dbAttributes, setDbAttributes] = useState<DbAttribute[]>([]);
-    const [attributeTypes, setAttributeTypes] = useState<AttributeType[]>([]);
+    const [attributeTypes, setAttributeTypes] = useState<AttributeType[]>(initialAttributeType ? [initialAttributeType] : []);
 
     const resolvedTypeSlug = useMemo(() => {
+        if (initialAttributeType) return initialAttributeType.slug;
         if (!categoryId) return type;
         const specificType = attributeTypes.find(t =>
             t.categoryId === categoryId &&
             (t.slug === type || (type === 'color' && t.dataType === 'color'))
         );
         return specificType ? specificType.slug : type;
-    }, [type, categoryId, attributeTypes]);
+    }, [type, categoryId, attributeTypes, initialAttributeType]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -280,12 +315,17 @@ export function AttributeSelector({
     if (isColorType) {
         return (
             <div className={cn("space-y-2 w-full relative", showCustom && "z-50")}>
-                <div className="mb-2 flex items-start justify-between">
-                    <h4 className="text-base font-bold text-slate-900">
-                        {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
-                    </h4>
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                            <Palette className="w-4 h-4 text-slate-500" />
+                        </div>
+                        <h4 className="text-[13px] font-bold text-slate-800">
+                            {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
+                        </h4>
+                    </div>
                 </div>
-                <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-5 lg:grid-cols-7 gap-2">
+                <div className="grid grid-cols-[repeat(auto-fit,minmax(74px,1fr))] gap-3 w-full">
                     {allOptions.map(c => (
                         <button
                             key={c.name}
@@ -294,16 +334,16 @@ export function AttributeSelector({
                                 onChange(c.name, c.code);
                                 if (onCodeChange) onCodeChange(c.code);
                             }}
-                            className={cn("group relative h-[94px] flex flex-col items-center justify-center gap-1 rounded-[14px] border bg-white transition-all duration-300 shadow-sm p-0 w-auto cursor-pointer",
-                                value === c.code ? "border-slate-900 shadow-md z-10" : "border-slate-200"
+                            className={cn("group relative w-full h-[78px] shrink-0 flex flex-col items-center justify-center gap-1 rounded-[12px] bg-white transition-all shadow-sm p-0 cursor-pointer overflow-hidden",
+                                value === c.code ? "border-[1.5px] border-slate-900 shadow-md scale-[1.02] z-10" : "border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                             )}
                         >
                             <div
-                                className="w-11 h-11 rounded-full border border-black/5 shadow-inner shrink-0 transition-all duration-300"
+                                className="w-[32px] h-[32px] rounded-[10px] border border-black/5 shadow-inner shrink-0 transition-transform mt-1"
                                 style={{ backgroundColor: c.hex }}
                             />
-                            <span className={cn("text-xs font-bold truncate w-full px-2 text-center transition-colors duration-300",
-                                value === c.code ? "text-slate-900" : "text-slate-400 group-hover:text-slate-900"
+                            <span className={cn("text-xs font-bold truncate w-full px-1 text-center transition-colors mb-0.5",
+                                value === c.code ? "text-slate-900" : "text-slate-500 group-hover:text-slate-700"
                             )}>{c.name || c.code}</span>
                         </button>
                     ))}
@@ -311,17 +351,17 @@ export function AttributeSelector({
                         <button
                             type="button"
                             onClick={() => setShowCustom(true)}
-                            className="group h-[94px] flex flex-col items-center justify-center gap-1.5 rounded-[14px] border-2 border-dashed border-slate-200 bg-slate-50/50 text-slate-400 hover:border-slate-300 hover:text-slate-600 hover:bg-slate-100/50 transition-all shadow-none p-0 w-auto cursor-pointer"
+                            className="group relative w-full h-[78px] shrink-0 flex flex-col items-center justify-center gap-1 rounded-[12px] border-[1.5px] border-dashed border-slate-300 hover:border-slate-400 bg-slate-50/30 hover:bg-white transition-all p-0 cursor-pointer text-slate-400 hover:text-slate-600 overflow-hidden"
                         >
-                            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white border border-slate-200 text-slate-400 shadow-sm transition-all group-hover:scale-105 group-hover:text-slate-600 group-hover:border-slate-300">
-                                <span className="text-lg leading-none mb-0.5">+</span>
+                            <div className="w-[32px] h-[32px] rounded-[10px] flex items-center justify-center bg-white border border-slate-200 shadow-sm transition-all group-hover:scale-[1.02] mt-1">
+                                <span className="text-xl leading-none font-light mb-0.5 text-slate-400 group-hover:text-slate-500">+</span>
                             </div>
-                            <span className="text-[11px] font-bold">Добавить</span>
+                            <span className="text-xs font-bold mb-0.5">Добавить</span>
                         </button>
                     )}
                 </div>
                 <AttributeCustomModal {...sharedModalProps} />
-            </div>
+            </div >
         );
     }
 
@@ -332,7 +372,7 @@ export function AttributeSelector({
                     type === "quality" ? "Качество ткани" : type
     );
 
-    const addLabel = "+ Добавить";
+    const _addLabel = "+ Добавить";
 
     const placeholder = type === "brand" ? "Выберите бренд..." :
         type === "material" ? "Выберите материал..." :
@@ -342,19 +382,32 @@ export function AttributeSelector({
 
     return (
         <div className={cn("space-y-2 relative w-full", showCustom && "z-50")}>
-            <div className="mb-2 flex items-baseline justify-between gap-3 overflow-hidden">
-                <h4 className="text-base font-bold text-slate-900 truncate">
-                    {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
-                </h4>
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2 min-w-0">
+                    {(() => {
+                        const dataType = currentAttributeType?.dataType || type;
+                        const Icon = DATA_TYPE_ICONS[dataType] || DATA_TYPE_ICONS.text;
+
+                        return (
+                            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                <Icon className="w-4 h-4 text-slate-500" />
+                            </div>
+                        );
+                    })()}
+                    <h4 className="text-[13px] font-bold text-slate-800 truncate">
+                        {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
+                    </h4>
+                </div>
                 {allowCustom && (
                     <Button
                         type="button"
                         variant="ghost"
                         size="sm"
                         onClick={() => setShowCustom(true)}
-                        className="flex items-center py-1 text-slate-400 hover:text-slate-900 transition-all shrink-0 h-auto"
+                        className="h-auto p-0 text-slate-400 hover:text-slate-900 transition-colors"
                     >
-                        <span className="text-xs font-bold whitespace-nowrap">{addLabel}</span>
+                        <span className="text-[11px] font-bold mr-1">+</span>
+                        <span className="text-[11px] font-bold">Добавить</span>
                     </Button>
                 )}
             </div>
@@ -374,7 +427,9 @@ export function AttributeSelector({
                 }}
                 placeholder={placeholder}
                 autoLayout={true}
+                gridColumns={type === "size" ? 3 : undefined}
                 showSearch={type === "brand"}
+                className="h-11 rounded-xl border-slate-200 bg-white shadow-none"
             />
             <AttributeCustomModal {...sharedModalProps} />
         </div>

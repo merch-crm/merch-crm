@@ -1,0 +1,542 @@
+[
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/analytics/loyalty/loyalty-settings-client.tsx",
+    "messages": [
+      {
+        "line": 15,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Check' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 17,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'GripVertical' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 18,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'AlertCircle' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 19,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Edit' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 20,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Save' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 21,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Info' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 30,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'playSound' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 38,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'getLoyaltyLevels' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 181,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'handleSaveStatus' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/analytics/rfm/page.tsx",
+    "messages": [
+      {
+        "line": 3,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'db' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'BarChart3' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/analytics.actions.ts",
+    "messages": [
+      {
+        "line": 4,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'orders' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 6,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'lte' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 6,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'sum' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 6,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'avg' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 6,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'ne' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/contacts.actions.ts",
+    "messages": [
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'and' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/core.actions.ts",
+    "messages": [
+      {
+        "line": 3,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'gt' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 79,
+        "ruleId": "@typescript-eslint/ban-ts-comment",
+        "message": "Use \"@ts-expect-error\" instead of \"@ts-ignore\", as \"@ts-ignore\" will do nothing if the following line is error-free."
+      },
+      {
+        "line": 81,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'period' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 81,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'orderCount' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 81,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'status' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/export.actions.ts",
+    "messages": [
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'desc' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/loyalty.actions.ts",
+    "messages": [
+      {
+        "line": 32,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 50,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/rfm.actions.ts",
+    "messages": [
+      {
+        "line": 11,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'rfmSegments' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 11,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'rfmSegmentDescriptions' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/actions/stats.actions.ts",
+    "messages": [
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'asc' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'lt' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'ne' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/analytics/components/client-growth-chart.tsx",
+    "messages": [
+      {
+        "line": 35,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'b2cHeight' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/analytics/loyalty/loyalty-settings-client.tsx",
+    "messages": [
+      {
+        "line": 4,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'motion' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 137,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'error' is defined but never used. Allowed unused caught errors must match /^_/u."
+      },
+      {
+        "line": 152,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'error' is defined but never used. Allowed unused caught errors must match /^_/u."
+      },
+      {
+        "line": 166,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'error' is defined but never used. Allowed unused caught errors must match /^_/u."
+      },
+      {
+        "line": 181,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'error' is defined but never used. Allowed unused caught errors must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/client-profile-drawer.tsx",
+    "messages": [
+      {
+        "line": 6,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'TrendingUp' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 20,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'ModernStatCard' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 23,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'LoyaltyLevelBadge' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 65,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 199,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 217,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 218,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/clients-list.tsx",
+    "messages": [
+      {
+        "line": 11,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'exportToCSV' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 18,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Filter' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 71,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 138,
+        "ruleId": "react-hooks/exhaustive-deps",
+        "message": "React Hook useEffect has a missing dependency: 'fetchActivityCounts'. Either include it or remove the dependency array."
+      },
+      {
+        "line": 169,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 170,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 185,
+        "ruleId": "react-hooks/exhaustive-deps",
+        "message": "React Hook useCallback has a missing dependency: 'filters'. Either include it or remove the dependency array."
+      },
+      {
+        "line": 278,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/client-contacts-list.tsx",
+    "messages": [
+      {
+        "line": 73,
+        "ruleId": "react-hooks/exhaustive-deps",
+        "message": "React Hook useEffect has a missing dependency: 'loadContacts'. Either include it or remove the dependency array."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/client-filter-panel.tsx",
+    "messages": [
+      {
+        "line": 67,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'getManagerName' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 278,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 365,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 446,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/client-table.tsx",
+    "messages": [
+      {
+        "line": 103,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 106,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 129,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/contact-edit-dialog.tsx",
+    "messages": [
+      {
+        "line": 93,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 97,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/duplicate-warning-modal.tsx",
+    "messages": [
+      {
+        "line": 4,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'AnimatePresence' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'X' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/components/export-dialog.tsx",
+    "messages": [
+      {
+        "line": 27,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 130,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 151,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'error' is defined but never used. Allowed unused caught errors must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/clients/funnel/funnel-board-client.tsx",
+    "messages": [
+      {
+        "line": 236,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'setStats' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/communications/communications-client.tsx",
+    "messages": [
+      {
+        "line": 124,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'error' is defined but never used. Allowed unused caught errors must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/attribute-selector.tsx",
+    "messages": [
+      {
+        "line": 6,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Ruler' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 7,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Weight' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 19,
+        "ruleId": "@typescript-eslint/no-explicit-any",
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "line": 26,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'DATA_TYPE_GRADIENTS' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 375,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'addLabel' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/components/characteristic/SortableCharacteristicCard.tsx",
+    "messages": [
+      {
+        "line": 7,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Ruler' is defined but never used. Allowed unused vars must match /^_/u."
+      },
+      {
+        "line": 8,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'Weight' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/[id]/components/ItemImagePreview.tsx",
+    "messages": [
+      {
+        "line": 5,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'ImageIcon' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/category-selector.tsx",
+    "messages": [
+      {
+        "line": 4,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'AnimatePresence' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/components/summary/attributes-section.tsx",
+    "messages": [
+      {
+        "line": 2,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'formatUnit' is defined but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/hooks/useNewItemLogic.ts",
+    "messages": [
+      {
+        "line": 91,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'isClothing' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  },
+  {
+    "filePath": "/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/page.tsx",
+    "messages": [
+      {
+        "line": 34,
+        "ruleId": "@typescript-eslint/no-unused-vars",
+        "message": "'measurementUnits' is assigned a value but never used. Allowed unused vars must match /^_/u."
+      }
+    ]
+  }
+]

@@ -6,11 +6,11 @@ import { NewItemPageClient } from "./new-item-page-client";
 import { AttributeType } from "../../types";
 
 export const metadata = {
-    title:"Склад | Новый товар",
-    description:"Создание нового товара в складской системе",
+    title: "Склад | Новый товар",
+    description: "Создание нового товара в складской системе",
 };
 
-export const dynamic ="force-dynamic";
+export const dynamic = "force-dynamic";
 
 export default async function NewItemPage({
     searchParams
@@ -31,7 +31,7 @@ export default async function NewItemPage({
 
     const categories = (categoriesRes.success && 'data' in categoriesRes && categoriesRes.data) ? categoriesRes.data : [];
     const storageLocations = (locationsRes.success && 'data' in locationsRes && locationsRes.data) ? locationsRes.data : [];
-    const measurementUnits = (unitsRes.success && 'data' in unitsRes && unitsRes.data) ? unitsRes.data : [];
+    const _measurementUnits = (unitsRes.success && 'data' in unitsRes && unitsRes.data) ? unitsRes.data : [];
     const dynamicAttributes = (attributesRes.success && 'data' in attributesRes && attributesRes.data) ? attributesRes.data : [];
     const attributeTypes = (typesRes.success && 'data' in typesRes && typesRes.data) ? typesRes.data : [];
     const users = (usersRes.success && 'data' in usersRes && usersRes.data) ? usersRes.data : [];
@@ -40,7 +40,6 @@ export default async function NewItemPage({
         <NewItemPageClient
             categories={categories}
             storageLocations={storageLocations}
-            measurementUnits={measurementUnits}
             dynamicAttributes={dynamicAttributes}
             attributeTypes={attributeTypes as AttributeType[]}
             users={users}

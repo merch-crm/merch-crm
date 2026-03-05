@@ -1,17 +1,17 @@
 "use server";
 
-import { db } from"@/lib/db";
-import * as schema from"@/lib/schema";
+import { db } from "@/lib/db";
+import * as schema from "@/lib/schema";
 const { tasks, taskHistory } = schema;
-import { NodePgDatabase } from"drizzle-orm/node-postgres";
-import { getSession } from"@/lib/auth";
-import { eq, desc } from"drizzle-orm";
-import { revalidatePath } from"next/cache";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { getSession } from "@/lib/auth";
+import { eq, desc } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 
 
-import { logAction } from"@/lib/audit";
-import { logError } from"@/lib/error-logger";
-import { CreateTaskSchema, UpdateTaskSchema, TaskIdSchema, TaskContentSchema, ChecklistItemSchema } from"./validation";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
+import { CreateTaskSchema, UpdateTaskSchema, TaskIdSchema, TaskContentSchema, ChecklistItemSchema } from "./validation";
 
 
 
@@ -32,11 +32,11 @@ async function logTaskActivity(taskId: string, userId: string, type: string, old
     }
 }
 
-import { ActionResult } from"@/lib/types";
+import { ActionResult } from "@/lib/types";
 
 export async function getTasks(): Promise<ActionResult<(typeof tasks.$inferSelect)[]>> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const allTasks = await db.query.tasks.findMany({
@@ -74,16 +74,16 @@ export async function getTasks(): Promise<ActionResult<(typeof tasks.$inferSelec
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"getTasks"
+            path: "/dashboard/tasks",
+            method: "getTasks"
         });
-        return { success: false, error:"Не удалось загрузить задачи" };
+        return { success: false, error: "Не удалось загрузить задачи" };
     }
 }
 
 export async function createTask(formData: FormData): Promise<ActionResult<typeof tasks.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validation = CreateTaskSchema.safeParse(Object.fromEntries(formData));
 
@@ -116,10 +116,10 @@ export async function createTask(formData: FormData): Promise<ActionResult<typeo
                 assignedToDepartmentId,
                 createdBy: session.id,
                 dueDate,
-                status:"new",
+                status: "new",
             }).returning();
 
-            await logTaskActivity(newTask.id, session.id,"created", null, null, tx);
+            await logTaskActivity(newTask.id, session.id, "created", null, null, tx);
             return [newTask];
         });
 
@@ -128,17 +128,17 @@ export async function createTask(formData: FormData): Promise<ActionResult<typeo
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"createTask",
+            path: "/dashboard/tasks",
+            method: "createTask",
             details: { title, priority }
         });
-        return { success: false, error:"Не удалось создать задачу" };
+        return { success: false, error: "Не удалось создать задачу" };
     }
 }
 
 export async function updateTask(taskId: string, data: Partial<typeof tasks.$inferInsert>): Promise<ActionResult<typeof tasks.$inferSelect>> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validatedId = TaskIdSchema.safeParse({ taskId });
     if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
@@ -158,7 +158,7 @@ export async function updateTask(taskId: string, data: Partial<typeof tasks.$inf
                 .returning();
 
             if (validatedData.data.status && oldTask && oldTask.status !== validatedData.data.status) {
-                await logTaskActivity(taskId, session.id,"status_change", oldTask.status, validatedData.data.status, tx);
+                await logTaskActivity(taskId, session.id, "status_change", oldTask.status, validatedData.data.status, tx);
             }
             return updatedTask;
         });
@@ -166,19 +166,19 @@ export async function updateTask(taskId: string, data: Partial<typeof tasks.$inf
         revalidatePath("/dashboard/tasks");
         return { success: true, data: result };
     } catch (error) {
-        await logError({ error, path:"/dashboard/tasks", method:"updateTask", details: { taskId, data } });
-        return { success: false, error:"Не удалось обновить задачу" };
+        await logError({ error, path: "/dashboard/tasks", method: "updateTask", details: { taskId, data } });
+        return { success: false, error: "Не удалось обновить задачу" };
     }
 }
 
 export async function toggleTaskStatus(taskId: string, currentStatus: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validatedId = TaskIdSchema.safeParse({ taskId });
     if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
 
-    const newStatus = currentStatus ==="done" ?"new" :"done";
+    const newStatus = currentStatus === "done" ? "new" : "done";
 
     try {
         await db.transaction(async (tx) => {
@@ -186,7 +186,7 @@ export async function toggleTaskStatus(taskId: string, currentStatus: string): P
                 .set({ status: newStatus as (typeof tasks.$inferInsert)["status"], updatedAt: new Date() })
                 .where(eq(tasks.id, taskId));
 
-            await logTaskActivity(taskId, session.id,"status_toggle", currentStatus, newStatus, tx);
+            await logTaskActivity(taskId, session.id, "status_toggle", currentStatus, newStatus, tx);
         });
 
         revalidatePath("/dashboard/tasks");
@@ -194,25 +194,31 @@ export async function toggleTaskStatus(taskId: string, currentStatus: string): P
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"toggleTaskStatus",
+            path: "/dashboard/tasks",
+            method: "toggleTaskStatus",
             details: { taskId, currentStatus }
         });
-        return { success: false, error:"Не удалось обновить статус задачи" };
+        return { success: false, error: "Не удалось обновить статус задачи" };
     }
 }
 
 export async function deleteTask(taskId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validatedId = TaskIdSchema.safeParse({ taskId });
     if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
 
     try {
+        // Проверяем права: автор задачи или Администратор/Руководство
+        const task = await db.query.tasks.findFirst({ where: eq(tasks.id, taskId), columns: { createdBy: true } });
+        if (task && task.createdBy !== session.id && !["Администратор", "Руководство"].includes(session.roleName)) {
+            return { success: false, error: "Недостаточно прав для удаления задачи" };
+        }
+
         await db.transaction(async (tx) => {
             await tx.delete(tasks).where(eq(tasks.id, taskId));
-            await logAction("Удалена задача","task", taskId, undefined, tx);
+            await logAction("Удалена задача", "task", taskId, undefined, tx);
         });
         revalidatePath("/dashboard/tasks");
         return { success: true };
@@ -220,19 +226,19 @@ export async function deleteTask(taskId: string): Promise<ActionResult> {
         await logError({
             error,
             path: `/dashboard/tasks/${taskId}`,
-            method:"deleteTask",
+            method: "deleteTask",
             details: { taskId }
         });
-        return { success: false, error:"Не удалось удалить задачу" };
+        return { success: false, error: "Не удалось удалить задачу" };
     }
 }
 
 export async function uploadTaskFile(taskId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const file = formData.get("file") as File;
-    if (!file) return { success: false, error:"Файл не предоставлен" };
+    if (!file) return { success: false, error: "Файл не предоставлен" };
 
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -252,7 +258,7 @@ export async function uploadTaskFile(taskId: string, formData: FormData): Promis
                 createdBy: session.id,
             });
 
-            await logAction("Загружен файл задачи","s3_storage", taskId, {
+            await logAction("Загружен файл задачи", "s3_storage", taskId, {
                 fileName: file.name,
                 fileKey: key,
                 taskId,
@@ -266,17 +272,17 @@ export async function uploadTaskFile(taskId: string, formData: FormData): Promis
         await logError({
             error,
             path: `/dashboard/tasks/${taskId}`,
-            method:"uploadTaskFile",
+            method: "uploadTaskFile",
             details: { taskId, fileName: file.name }
         });
         console.error("Error uploading task file:", error);
-        return { success: false, error:"Не удалось upload file" };
+        return { success: false, error: "Не удалось upload file" };
     }
 }
 
 export async function addTaskComment(taskId: string, content: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validatedId = TaskIdSchema.safeParse({ taskId });
     if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
@@ -293,7 +299,7 @@ export async function addTaskComment(taskId: string, content: string): Promise<A
                 content: validatedContent.data.content,
             });
 
-            await logTaskActivity(taskId, session.id,"comment_added", null,"New comment", tx);
+            await logTaskActivity(taskId, session.id, "comment_added", null, "New comment", tx);
         });
 
         revalidatePath("/dashboard/tasks");
@@ -301,17 +307,17 @@ export async function addTaskComment(taskId: string, content: string): Promise<A
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"addTaskComment",
+            path: "/dashboard/tasks",
+            method: "addTaskComment",
             details: { taskId }
         });
-        return { success: false, error:"Не удалось добавить комментарий" };
+        return { success: false, error: "Не удалось добавить комментарий" };
     }
 }
 
 export async function addTaskChecklistItem(taskId: string, content: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validatedId = TaskIdSchema.safeParse({ taskId });
     if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
@@ -328,7 +334,7 @@ export async function addTaskChecklistItem(taskId: string, content: string): Pro
                 isCompleted: false,
             });
 
-            await logTaskActivity(taskId, session.id,"checklist_item_added", null, validatedContent.data.content, tx);
+            await logTaskActivity(taskId, session.id, "checklist_item_added", null, validatedContent.data.content, tx);
         });
 
         revalidatePath("/dashboard/tasks");
@@ -336,17 +342,17 @@ export async function addTaskChecklistItem(taskId: string, content: string): Pro
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"addTaskChecklistItem",
+            path: "/dashboard/tasks",
+            method: "addTaskChecklistItem",
             details: { taskId }
         });
-        return { success: false, error:"Не удалось добавить пункт чеклиста" };
+        return { success: false, error: "Не удалось добавить пункт чеклиста" };
     }
 }
 
 export async function toggleChecklistItem(itemId: string, isCompleted: boolean): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = ChecklistItemSchema.safeParse({ itemId });
     if (!validated.success) return { success: false, error: validated.error.issues[0].message };
@@ -362,23 +368,32 @@ export async function toggleChecklistItem(itemId: string, isCompleted: boolean):
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"toggleChecklistItem",
+            path: "/dashboard/tasks",
+            method: "toggleChecklistItem",
             details: { itemId, isCompleted }
         });
-        return { success: false, error:"Не удалось обновить пункт чеклиста" };
+        return { success: false, error: "Не удалось обновить пункт чеклиста" };
     }
 }
 
 export async function deleteChecklistItem(itemId: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = ChecklistItemSchema.safeParse({ itemId });
     if (!validated.success) return { success: false, error: validated.error.issues[0].message };
 
     try {
+        // Проверяем права: только Администратор или Руководство могут удалять чеклисты
         const { taskChecklists } = await import("@/lib/schema");
+        const item = await db.query.taskChecklists.findFirst({ where: eq(taskChecklists.id, itemId) });
+        if (item) {
+            const task = await db.query.tasks.findFirst({ where: eq(tasks.id, item.taskId), columns: { createdBy: true } });
+            if (task && task.createdBy !== session.id && !["Администратор", "Руководство"].includes(session.roleName)) {
+                return { success: false, error: "Недостаточно прав" };
+            }
+        }
+
         await db.delete(taskChecklists).where(eq(taskChecklists.id, itemId));
 
         revalidatePath("/dashboard/tasks");
@@ -386,10 +401,10 @@ export async function deleteChecklistItem(itemId: string): Promise<ActionResult>
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/tasks",
-            method:"deleteChecklistItem",
+            path: "/dashboard/tasks",
+            method: "deleteChecklistItem",
             details: { itemId }
         });
-        return { success: false, error:"Не удалось удалить пункт чеклиста" };
+        return { success: false, error: "Не удалось удалить пункт чеклиста" };
     }
 }

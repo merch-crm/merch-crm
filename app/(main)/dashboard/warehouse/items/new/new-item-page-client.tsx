@@ -15,7 +15,6 @@ import { useEffect } from "react";
 interface NewItemPageClientProps {
     categories: Category[];
     storageLocations: StorageLocation[];
-    measurementUnits: { id: string; name: string }[];
     dynamicAttributes: InventoryAttribute[];
     initialCategoryId?: string;
     initialSubcategoryId?: string;
@@ -26,7 +25,6 @@ interface NewItemPageClientProps {
 export function NewItemPageClient({
     categories,
     storageLocations,
-    measurementUnits,
     dynamicAttributes,
     initialCategoryId,
     initialSubcategoryId,
@@ -81,7 +79,7 @@ export function NewItemPageClient({
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-160px)] gap-2 xl:gap-2 w-full">
+            <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-160px)] gap-3 xl:gap-3 w-full">
                 <NewItemSidebar
                     step={step}
                     steps={steps}
@@ -125,7 +123,6 @@ export function NewItemPageClient({
                                     <PackagingBasicInfoStep
                                         category={selectedCategory}
                                         subCategories={subCategories}
-                                        measurementUnits={measurementUnits}
                                         dynamicAttributes={dynamicAttributes}
                                         attributeTypes={attributeTypes}
                                         formData={formData}
@@ -138,7 +135,6 @@ export function NewItemPageClient({
                                     <BasicInfoStep
                                         category={selectedCategory}
                                         subCategories={subCategories}
-                                        measurementUnits={measurementUnits}
                                         dynamicAttributes={dynamicAttributes}
                                         attributeTypes={attributeTypes}
                                         formData={formData}
@@ -152,6 +148,7 @@ export function NewItemPageClient({
 
                             {step === 3 && (
                                 <MediaStep
+                                    category={selectedCategory}
                                     formData={formData}
                                     updateFormData={updateFormData}
                                     onNext={handleNext}

@@ -76,3 +76,5 @@ export interface MonthlyReport {
         totalEarlyDepartures: number
     }
 }
+
+export type ReportType = 'daily' | 'weekly' | 'monthly'

@@ -22,8 +22,8 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
     const [containerDims, setContainerDims] = useState<{ w: number, h: number } | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Only main photo is mandatory now
-    const isMinimumRequiredMet = !!formData.imagePreview;
+    // Product photo is now optional
+    const isMinimumRequiredMet = true;
 
     const thumbSettings = useMemo(() =>
         (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 },

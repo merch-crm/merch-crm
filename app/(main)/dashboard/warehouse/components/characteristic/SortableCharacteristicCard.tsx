@@ -4,18 +4,37 @@ import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import {
     GripVertical, Settings,
-    Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize,
-    Globe, Weight, Droplets, Package, LucideIcon, Component, Waves, Wrench,
+    Tag, Hash, Shapes, Ruler as _Ruler, Palette, Box, Layers, Maximize,
+    Globe, Weight as _Weight, Droplets, Package, LucideIcon, Component, Waves, Wrench, Paperclip, Scale,
+    Edit2 as _Edit2, Trash2 as _Trash2
 } from "lucide-react";
 import { type InventoryAttribute as Attribute, type AttributeType, type AttributeMeta } from "../../types";
 import { sortAttributeValues, getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 // ─── Icon map ──────────────────────────────────────────────────────────────
 const DATA_TYPE_ICONS: Record<string, LucideIcon> = {
-    text: Shapes, unit: Ruler, color: Palette, dimensions: Box, quantity: Hash,
+    text: Shapes, unit: Paperclip, color: Palette, dimensions: Box, quantity: Hash,
     composition: Component, material: Layers, size: Maximize, brand: Tag,
-    country: Globe, density: Waves, weight: Weight, volume: Droplets,
+    country: Globe, density: Waves, weight: Scale, volume: Droplets,
     package: Package, consumable: Wrench,
+};
+
+const DATA_TYPE_GRADIENTS: Record<string, string> = {
+    text: "from-slate-400 to-slate-500 shadow-slate-500/20",
+    unit: "from-sky-400 to-blue-500 shadow-sky-500/20",
+    color: "from-rose-400 to-red-500 shadow-rose-500/20",
+    dimensions: "from-violet-500 to-purple-600 shadow-violet-500/20",
+    quantity: "from-indigo-500 to-blue-600 shadow-indigo-500/20",
+    composition: "from-cyan-400 to-blue-500 shadow-cyan-500/20",
+    material: "from-emerald-500 to-teal-500 shadow-emerald-500/20",
+    size: "from-blue-500 to-indigo-600 shadow-blue-500/20",
+    brand: "from-amber-400 to-orange-500 shadow-amber-500/20",
+    country: "from-blue-400 to-indigo-500 shadow-blue-500/20",
+    density: "from-teal-400 to-emerald-500 shadow-teal-500/20",
+    weight: "from-orange-400 to-rose-500 shadow-orange-500/20",
+    volume: "from-cyan-400 to-sky-500 shadow-cyan-500/20",
+    package: "from-violet-400 to-purple-500 shadow-violet-500/20",
+    consumable: "from-amber-500 to-orange-600 shadow-amber-500/20",
 };
 
 // ─── Shared card content ───────────────────────────────────────────────────
@@ -55,9 +74,12 @@ export function CharacteristicCardContent({
             {/* Header */}
             <div className="flex items-center justify-between mb-5 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-[14px] bg-gradient-to-br from-indigo-500 to-violet-500 text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0 group-hover:scale-110 transition-transform">
+                    <div className={cn(
+                        "w-12 h-12 rounded-[14px] bg-gradient-to-br text-white flex items-center justify-center shadow-lg shrink-0 group-hover:scale-110 transition-transform",
+                        DATA_TYPE_GRADIENTS[type.dataType || ""] || DATA_TYPE_GRADIENTS.text
+                    )}>
                         {TypeIcon
-                            ? <TypeIcon className="w-6 h-6" />
+                            ? <TypeIcon className="w-6 h-6 stroke-[2.5]" />
                             : <span className="font-bold text-xl leading-none pt-0.5">{type.name[0]}</span>}
                     </div>
                     <div>

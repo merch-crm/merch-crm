@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 interface PackagingBasicInfoStepProps {
     category: Category;
     subCategories: Category[];
-    measurementUnits: { id: string; name: string }[];
     dynamicAttributes: InventoryAttribute[];
     attributeTypes: AttributeType[];
     formData: ItemFormData;
@@ -27,7 +26,6 @@ interface PackagingBasicInfoStepProps {
 export function PackagingBasicInfoStep({
     category,
     subCategories,
-    measurementUnits,
     dynamicAttributes,
     formData,
     updateFormData,
@@ -155,8 +153,8 @@ export function PackagingBasicInfoStep({
 
     return (
         <div className="flex flex-col h-full !overflow-visible">
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar mr-[8px]">
-                <div className="space-y-3 pb-10 pl-[var(--radius-padding)] pr-[8px] pt-[var(--radius-padding)]">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-1">
+                <div className="max-w-[800px] mx-auto space-y-3 pb-10 px-[var(--radius-padding)] pt-[var(--radius-padding)] pr-[calc(var(--radius-padding)-4px)]">
 
                     {/* Header */}
                     <div className="flex items-center gap-3 shrink-0">
@@ -263,6 +261,7 @@ export function PackagingBasicInfoStep({
                                         value={formData.sizeCode || ""}
                                         onChange={(val) => updateFormData({ sizeCode: val })}
                                         placeholder="Не выбрано"
+                                        gridColumns={3}
                                     />
                                 </div>
                             </div>
@@ -371,16 +370,6 @@ export function PackagingBasicInfoStep({
 
                             {renderInput("Мин. партия", formData.minBatch, "minBatch", "100", <SlidersHorizontal className="w-3 h-3" />, "шт", "number")}
 
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-bold text-slate-700 ml-1">Ед. измерения</label>
-                                <Select
-                                    label=""
-                                    placeholder=""
-                                    options={measurementUnits.map(u => ({ id: u.id, title: u.name }))}
-                                    value={formData.unit || "шт."}
-                                    onChange={(val) => updateFormData({ unit: val })}
-                                />
-                            </div>
                         </div>
                     </section>
 

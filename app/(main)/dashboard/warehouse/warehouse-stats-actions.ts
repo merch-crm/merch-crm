@@ -1,17 +1,17 @@
 "use server";
 
-import { eq, sql, gte, and, desc, inArray, isNull, isNotNull, count } from"drizzle-orm";
-import { db } from"@/lib/db";
+import { eq, sql, gte, and, desc, inArray, isNull, isNotNull, count } from "drizzle-orm";
+import { db } from "@/lib/db";
 import {
     inventoryItems,
     inventoryTransactions,
     inventoryCategories,
     storageLocations
-} from"@/lib/schema";
-import { logError } from"@/lib/error-logger";
-import { z } from"zod";
-import { getSession as getAuthSession } from"@/lib/auth";
-import { getBrandingSettings } from"@/lib/branding";
+} from "@/lib/schema";
+import { logError } from "@/lib/error-logger";
+import { z } from "zod";
+import { getSession as getAuthSession } from "@/lib/auth";
+import { getBrandingSettings } from "@/lib/branding";
 
 export async function getSession() {
     try {
@@ -19,21 +19,21 @@ export async function getSession() {
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/warehouse-stats-actions",
-            method:"getSession"
+            path: "/dashboard/warehouse/warehouse-stats-actions",
+            method: "getSession"
         });
         return null; // Return null on error as session might be unavailable
     }
 }
 
-import { type ActionResult } from"@/lib/types";
+import { type ActionResult } from "@/lib/types";
 
 /**
  * Defined transaction type for the warehouse dashboard
  */
 export interface RecentTransaction {
     id: string;
-    type:"in" |"out" |"transfer" |"attribute_change" |"archive" |"restore" |"stock_in" |"stock_out" |"adjustment";
+    type: "in" | "out" | "transfer" | "attribute_change" | "archive" | "restore" | "stock_in" | "stock_out" | "adjustment";
     createdAt: Date;
     changeAmount: number;
     item?: {
@@ -101,6 +101,9 @@ interface WarehouseStats {
 }
 
 export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>> {
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -254,7 +257,7 @@ export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>>
             else if (row.type === 'transfer') activity.transfers += Number(row.count);
             else if (row.type === 'adjustment') activity.adjustments += Number(row.count);
             else if (row.type === 'out') {
-                const reason = row.reason ||"";
+                const reason = row.reason || "";
                 const isWaste = reason.toLowerCase().includes('брак') || reason.toLowerCase().includes('списание');
                 if (isWaste) activity.waste += Number(row.count);
                 else activity.usage += Number(row.count);
@@ -292,14 +295,17 @@ export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>>
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/warehouse-stats-actions",
-            method:"getWarehouseStats"
+            path: "/dashboard/warehouse/warehouse-stats-actions",
+            method: "getWarehouseStats"
         });
-        return { success: false, error:"Не удалось загрузить статистику склада" };
+        return { success: false, error: "Не удалось загрузить статистику склада" };
     }
 }
 
 export async function findItemBySKU(sku: string): Promise<string | null> {
+    const session = await getAuthSession();
+    if (!session) return null;
+
     const validation = z.string().min(1).max(100).safeParse(sku);
     if (!validation.success) return null;
 
@@ -312,8 +318,8 @@ export async function findItemBySKU(sku: string): Promise<string | null> {
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/warehouse-stats-actions",
-            method:"findItemBySKU",
+            path: "/dashboard/warehouse/warehouse-stats-actions",
+            method: "findItemBySKU",
             details: { sku }
         });
         return null;
@@ -324,6 +330,9 @@ export async function findItemBySKU(sku: string): Promise<string | null> {
  * Get all users with names and IDs
  */
 export async function getAllUsers(): Promise<ActionResult<{ id: string; name: string }[]>> {
+    const session = await getAuthSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const allUsers = await db.query.users.findMany({
             columns: { id: true, name: true },
@@ -334,9 +343,9 @@ export async function getAllUsers(): Promise<ActionResult<{ id: string; name: st
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/warehouse-stats-actions",
-            method:"getAllUsers"
+            path: "/dashboard/warehouse/warehouse-stats-actions",
+            method: "getAllUsers"
         });
-        return { success: false, error:"Не удалось загрузить список пользователей" };
+        return { success: false, error: "Не удалось загрузить список пользователей" };
     }
 }

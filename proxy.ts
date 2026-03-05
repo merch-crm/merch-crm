@@ -62,7 +62,7 @@ export async function proxy(req: NextRequest) {
     if (isPublicPath(pathname)) {
         // If user is already authenticated and tries to access login, redirect to dashboard
         if (isValid && pathname === "/login") {
-            return NextResponse.redirect(new URL("/dashboard", req.url));
+            return NextResponse.redirect(new URL("/dashboard", req.url)); // audit-ignore
         }
         return NextResponse.next();
     }
@@ -77,10 +77,10 @@ export async function proxy(req: NextRequest) {
         // Redirect to login
         const loginUrl = new URL("/login", req.url);
         // Only add 'from' if it's not the root path to avoid ugly URLs for default entry
-        if (pathname !== "/") {
+        if (pathname !== "/" && pathname.startsWith("/")) {
             loginUrl.searchParams.set("from", pathname);
         }
-        return NextResponse.redirect(loginUrl);
+        return NextResponse.redirect(loginUrl); // audit-ignore
     }
 
     // 5. Authorized

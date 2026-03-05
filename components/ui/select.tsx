@@ -137,34 +137,33 @@ export function Select({
                         disabled={disabled}
                         aria-haspopup="listbox"
                         aria-expanded={open}
-                        className={cn("w-full px-4 h-10 bg-slate-50/50 border border-slate-200/60 rounded-xl text-left transition-all focus:outline-none group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
+                        className={cn("w-full px-4 h-12 bg-slate-50/80 hover:bg-white border border-slate-200 hover:border-slate-300 rounded-[12px] text-left transition-colors focus:outline-none group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
                             (center || variant === "minimal") ? "justify-center" : "justify-between",
                             variant === "default" ? [
-                                compact ? "h-9 px-3 text-[12px]" : "h-10 text-[13px] font-semibold",
-                                open ? "border-indigo-500 bg-white ring-4 ring-indigo-500/5 shadow-sm" : "hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm"
-                            ] : ["bg-slate-50/50 rounded-xl h-10 border border-transparent hover:border-slate-200 shadow-sm",
-                                open && "ring-4 ring-indigo-500/10 border-indigo-500/40 bg-white"
+                                compact ? "h-9 px-3 text-[13px]" : "h-12 text-[14px] font-semibold text-slate-900",
+                                open ? "border-slate-300 bg-white" : ""
+                            ] : ["bg-slate-50/50 rounded-[12px] h-12 border border-transparent hover:border-slate-200",
+                                open && "bg-white border-slate-300"
                             ],
                             triggerClassName
                         )}
                     >
                         <div className="flex items-center gap-2 overflow-hidden items-center w-full">
                             {selectedOption?.icon && !compact && variant !== "minimal" && (
-                                <div className={cn("shrink-0 transition-colors", open ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-500")}>
+                                <div className={cn("shrink-0 transition-colors", open ? "text-slate-800" : "text-slate-400 group-hover:text-slate-600")}>
                                     {selectedOption.icon}
                                 </div>
                             )}
                             {selectedOption?.icon && compact && (
-                                <div className={cn("shrink-0 transition-colors", open ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-500")}>
+                                <div className={cn("shrink-0 transition-colors", open ? "text-slate-800" : "text-slate-400 group-hover:text-slate-600")}>
                                     {selectedOption.icon}
                                 </div>
                             )}
                             {selectedOption ? (
                                 <div className="flex min-w-0 w-full flex-col truncate">
                                     <div className="flex items-center gap-2 min-w-0">
-                                        <span className={cn("font-bold transition-colors truncate",
-                                            compact ? "text-xs" : "text-[13px]",
-                                            open ? "text-slate-900" : "text-slate-700 group-hover:text-slate-900"
+                                        <span className={cn("transition-colors truncate",
+                                            compact ? "text-xs font-bold" : "text-[14px] font-semibold text-slate-900"
                                         )}>
                                             {selectedOption.title}
                                         </span>
@@ -181,23 +180,23 @@ export function Select({
                                     )}
                                 </div>
                             ) : (
-                                <span className={cn("font-bold transition-colors truncate",
-                                    compact ? "text-xs" : "text-[13px] text-slate-400/80"
+                                <span className={cn("transition-colors truncate",
+                                    compact ? "text-xs" : "text-[14px] text-slate-400 font-semibold"
                                 )}>
                                     {placeholder}
                                 </span>
                             )}
                         </div>
-                        <ChevronDown className={cn("transition-transform duration-200 shrink-0 ml-1.5",
+                        <ChevronDown className={cn("shrink-0 transition-transform duration-300",
                             variant === "minimal" ? "w-3 h-3" : "w-4 h-4",
-                            open ? "rotate-180 text-indigo-600 font-black" : "text-slate-300 group-hover:text-slate-400"
-                        )} strokeWidth={3} />
+                            open ? "rotate-180" : ""
+                        )} />
                     </button>
                 </PopoverTrigger>
                 <AnimatePresence>
                     {open && (
                         <PopoverContent
-                            className="p-0 bg-white border-none shadow-2xl w-auto overflow-visible duration-0 data-[state=open]:animate-none data-[state=closed]:animate-none"
+                            className="!p-0 !bg-white !border !border-slate-200 !shadow-lg !w-auto !rounded-[12px] !ring-0 !overflow-hidden !duration-0 data-[state=open]:!animate-none data-[state=closed]:!animate-none"
                             align={align}
                             alignOffset={alignOffset}
                             sideOffset={6}
@@ -213,10 +212,12 @@ export function Select({
                                     duration: 0.2,
                                     ease: [0.23, 1, 0.32, 1]
                                 }}
-                                className={cn("rounded-xl bg-white border border-slate-200/80 overflow-hidden shadow-[0_15px_45px_-12px_rgba(0,0,0,0.1)] z-50",
+                                className={cn("z-50",
                                     variant === "minimal" ? "min-w-[140px]" : "min-w-[var(--radix-popover-trigger-width)]"
                                 )}>
-                                <div className="p-1 flex flex-col max-h-[350px] w-full h-full">
+                                <div className={cn("flex flex-col max-h-[350px] w-full h-full custom-scrollbar",
+                                    !effectiveGridColumns && "py-1"
+                                )}>
                                     {effectiveShowSearch && (
                                         <div className="pb-2 border-b border-slate-100 mb-2 block px-1 pt-1">
                                             <div className="relative">
@@ -227,18 +228,18 @@ export function Select({
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
                                                     aria-label={searchPlaceholder}
-                                                    className="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200/60 shadow-none text-xs font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-indigo-500/5 focus-visible:border-indigo-400 transition-all placeholder:text-slate-400"
+                                                    className="w-full h-10 pl-9 pr-3 rounded-[10px] bg-slate-50 border border-slate-200/60 shadow-none text-xs font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-slate-100 focus-visible:border-slate-300 transition-all placeholder:text-slate-400"
                                                 />
                                             </div>
                                         </div>
                                     )}
 
-                                    <div className="overflow-y-auto scrollbar-hide flex-1 px-1" role="listbox">
+                                    <div className={cn("overflow-y-auto scrollbar-hide flex-1", !effectiveGridColumns && "px-1")} role="listbox">
                                         {filteredOptions.length > 0 ? (
                                             <div className={cn("w-full",
-                                                effectiveGridColumns ? ["grid gap-1.5",
+                                                effectiveGridColumns ? ["grid gap-1.5 p-1.5",
                                                     effectiveGridColumns === 2 ? "grid-cols-2" : "grid-cols-3"
-                                                ] : "flex flex-col space-y-0.5"
+                                                ] : "flex flex-col gap-0.5"
                                             )}>
                                                 {filteredOptions.map((option, index) => {
                                                     const isSelected = option.id === value;
@@ -251,12 +252,12 @@ export function Select({
                                                             role="option"
                                                             aria-selected={isSelected}
                                                             onClick={() => handleSelect(option.id)}
-                                                            className={cn("transition-all relative text-left outline-none cursor-pointer focus:outline-none group/item",
-                                                                effectiveGridColumns ? ["h-10 rounded-lg text-xs font-bold flex items-center justify-center",
+                                                            className={cn("transition-colors relative text-left outline-none cursor-pointer focus:outline-none group/item",
+                                                                effectiveGridColumns ? ["h-10 rounded-[8px] text-xs font-bold flex items-center justify-center",
                                                                     isLastOdd ? "col-span-2" : "",
-                                                                    isSelected ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/10" : "bg-white border border-slate-200/60 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                                                                ] : ["flex items-center justify-between gap-3 px-3 py-2 rounded-lg",
-                                                                    isSelected ? "bg-indigo-50/80 text-indigo-900 shadow-sm" : "hover:bg-slate-50 focus:bg-slate-50 text-slate-700 hover:text-slate-900"
+                                                                    isSelected ? "bg-slate-100 border-slate-300 text-slate-900 shadow-sm" : "bg-white border border-slate-200/60 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                                                                ] : ["flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-[14px] font-medium text-slate-700 rounded-[8px]",
+                                                                    isSelected ? "bg-slate-100 !font-semibold text-slate-900" : ""
                                                                 ]
                                                             )}
                                                         >
@@ -264,7 +265,7 @@ export function Select({
                                                             {effectiveGridColumns && (
                                                                 <div className="flex items-center justify-center gap-1.5 px-2 max-w-full">
                                                                     <span className="truncate">{option.title}</span>
-                                                                    {isSelected && <Check className="w-3 h-3 text-white/90 stroke-[3] shrink-0" />}
+                                                                    {isSelected && <Check className="w-3 h-3 text-slate-900 stroke-[3] shrink-0" />}
                                                                 </div>
                                                             )}
 
@@ -274,8 +275,8 @@ export function Select({
                                                                     <div className="flex items-center gap-3 min-w-0">
                                                                         {/* Style indicator based on type */}
                                                                         {(option.color || option.icon) ? (
-                                                                            <div className={cn("w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all border",
-                                                                                isSelected ? "bg-white border-indigo-200 text-indigo-600 shadow-sm" : "bg-slate-100 border-slate-200/50 text-slate-500 group-hover/item:border-slate-300 group-hover/item:bg-white",
+                                                                            <div className={cn("w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 transition-all border",
+                                                                                isSelected ? "bg-white border-slate-200 text-slate-900 shadow-[0_1px_3px_rgba(0,0,0,0.05)]" : "bg-slate-50 border-slate-200/50 text-slate-500 group-hover/item:border-slate-300 group-hover/item:bg-white",
                                                                                 option.color && "p-0 border-black/5 overflow-hidden ring-1 ring-inset ring-black/5"
                                                                             )}>
                                                                                 {option.color ? (
@@ -288,7 +289,7 @@ export function Select({
 
                                                                         <div className="flex flex-col min-w-0">
                                                                             <div className="flex items-center gap-2">
-                                                                                <span className={cn("text-[13px] font-bold truncate", isSelected ? "text-indigo-900" : "")}>
+                                                                                <span className={cn("text-[14px] truncate w-full", isSelected ? "font-bold text-slate-900" : "font-medium text-slate-700")}>
                                                                                     {option.title}
                                                                                 </span>
                                                                                 {option.badge && (
@@ -300,18 +301,13 @@ export function Select({
                                                                                 )}
                                                                             </div>
                                                                             {option.description && (
-                                                                                <div className={cn("text-[11px] font-medium leading-tight truncate mt-0.5", isSelected ? "text-indigo-600/80" : "text-slate-400")}>
+                                                                                <div className={cn("text-[11px] font-medium leading-tight truncate mt-0.5", isSelected ? "text-slate-500" : "text-slate-400")}>
                                                                                     {option.description}
                                                                                 </div>
                                                                             )}
                                                                         </div>
                                                                     </div>
-                                                                    {/* Checkmark for list view */}
-                                                                    {isSelected && (
-                                                                        <div className="w-5 h-5 rounded-full bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/20">
-                                                                            <Check className="w-3 h-3 text-white stroke-[3] shrink-0" />
-                                                                        </div>
-                                                                    )}
+
                                                                 </>
                                                             )}
                                                         </button>

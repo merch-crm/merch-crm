@@ -1,24 +1,24 @@
 "use server";
 
-import { db } from"@/lib/db";
-import { auditLogs, securityEvents, systemErrors, users, systemSettings } from"@/lib/schema";
-import { getSession, encrypt } from"@/lib/auth";
-import { requireAdmin } from"@/lib/admin";
-import { logSecurityEvent } from"@/lib/security-logger";
-import { logError } from"@/lib/error-logger";
-import { logAction } from"@/lib/audit";
-import { eq, desc, and, gte, sql, count, ilike, lte } from"drizzle-orm";
-import { revalidatePath } from"next/cache";
-import { cookies } from"next/headers";
+import { db } from "@/lib/db";
+import { auditLogs, securityEvents, systemErrors, users, systemSettings } from "@/lib/schema";
+import { getSession, encrypt } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin";
+import { logSecurityEvent } from "@/lib/security-logger";
+import { logError } from "@/lib/error-logger";
+import { logAction } from "@/lib/audit";
+import { eq, desc, and, gte, sql, count, ilike, lte } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
-import { z } from"zod";
+import { z } from "zod";
 
 
 // Audit Logs
 export async function getAuditLogs(
     page = 1,
     limit = 20,
-    search ="",
+    search = "",
     userId?: string | null,
     entityType?: string | null,
     startDate?: string | null,
@@ -29,8 +29,11 @@ export async function getAuditLogs(
         await requireAdmin(session);
         const offset = (page - 1) * limit;
 
+        // Security risk fix: prevent DB DoS via extremely long search strings
+        const safeSearch = search.slice(0, 100);
+
         const conditions = [];
-        if (search) conditions.push(ilike(auditLogs.action, `%${search}%`));
+        if (safeSearch) conditions.push(ilike(auditLogs.action, `%${safeSearch}%`));
         if (userId) conditions.push(eq(auditLogs.userId, userId));
         if (entityType) conditions.push(eq(auditLogs.entityType, entityType));
         if (startDate) conditions.push(gte(auditLogs.createdAt, new Date(startDate)));
@@ -55,7 +58,7 @@ export async function getAuditLogs(
             pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
         };
     } catch {
-        return { success: false, error:"Не удалось загрузить логи аудита" };
+        return { success: false, error: "Не удалось загрузить логи аудита" };
     }
 }
 
@@ -65,19 +68,19 @@ export async function clearAuditLogs() {
         const currentUser = await requireAdmin(session);
         await db.transaction(async (tx) => {
             await tx.delete(auditLogs);
-            await logAction("Логи аудита очищены","system", currentUser.id, undefined, tx);
+            await logAction("Логи аудита очищены", "system", currentUser.id, undefined, tx);
         });
         revalidatePath("/admin-panel/audit");
         return { success: true };
     } catch {
-        return { success: false, error:"Не удалось очистить логи" };
+        return { success: false, error: "Не удалось очистить логи" };
     }
 }
 
 // Impersonation
 export async function impersonateUser(userId: string) {
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         await requireAdmin(session);
@@ -88,16 +91,16 @@ export async function impersonateUser(userId: string) {
             with: { role: true, department: true }
         });
 
-        if (!targetUser) return { success: false, error:"Пользователь не найден" };
+        if (!targetUser) return { success: false, error: "Пользователь не найден" };
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
         const newSessionData = {
             id: targetUser.id,
             email: targetUser.email,
-            roleId: targetUser.roleId ||"",
-            roleName: targetUser.role?.name ||"User",
-            departmentName: targetUser.department?.name ||"",
-            name: targetUser.name ||"",
+            roleId: targetUser.roleId || "",
+            roleName: targetUser.role?.name || "User",
+            departmentName: targetUser.department?.name || "",
+            name: targetUser.name || "",
             impersonatorId: session.impersonatorId || session.id,
             impersonatorName: session.impersonatorName || session.name,
             expires,
@@ -107,16 +110,16 @@ export async function impersonateUser(userId: string) {
         (await cookies()).set("session", encryptedSession, {
             expires,
             httpOnly: true,
-            secure: process.env.NODE_ENV ==="production",
-            sameSite:"lax",
-            path:"/",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         });
 
         await logSecurityEvent({
-            eventType:"admin_impersonation_start",
+            eventType: "admin_impersonation_start",
             userId: session.id,
-            severity:"warning",
-            entityType:"user",
+            severity: "warning",
+            entityType: "user",
             entityId: targetUser.id,
             details: { adminId: session.id!, targetUserId: targetUser.id }
         });
@@ -124,13 +127,13 @@ export async function impersonateUser(userId: string) {
         revalidatePath("/");
         return { success: true };
     } catch {
-        return { success: false, error:"Ошибка при смене пользователя" };
+        return { success: false, error: "Ошибка при смене пользователя" };
     }
 }
 
 export async function stopImpersonating() {
     const session = await getSession();
-    if (!session || !session.impersonatorId) return { success: false, error:"Нет активной сессии" };
+    if (!session || !session.impersonatorId) return { success: false, error: "Нет активной сессии" };
 
     try {
         const adminUser = await db.query.users.findFirst({
@@ -138,16 +141,16 @@ export async function stopImpersonating() {
             with: { role: true, department: true }
         });
 
-        if (!adminUser) return { success: false, error:"Администратор не найден" };
+        if (!adminUser) return { success: false, error: "Администратор не найден" };
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
         const originalSessionData = {
             id: adminUser.id,
             email: adminUser.email,
-            roleId: adminUser.roleId ||"",
-            roleName: adminUser.role?.name ||"User",
-            departmentName: adminUser.department?.name ||"",
-            name: adminUser.name ||"",
+            roleId: adminUser.roleId || "",
+            roleName: adminUser.role?.name || "User",
+            departmentName: adminUser.department?.name || "",
+            name: adminUser.name || "",
             expires,
         };
 
@@ -155,23 +158,23 @@ export async function stopImpersonating() {
         (await cookies()).set("session", encryptedSession, {
             expires,
             httpOnly: true,
-            secure: process.env.NODE_ENV ==="production",
-            sameSite:"lax",
-            path:"/",
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            path: "/",
         });
 
         await logSecurityEvent({
-            eventType:"admin_impersonation_stop",
+            eventType: "admin_impersonation_stop",
             userId: adminUser.id,
-            severity:"info",
-            entityType:"user",
+            severity: "info",
+            entityType: "user",
             details: { adminId: adminUser.id }
         });
 
         revalidatePath("/");
         return { success: true };
     } catch {
-        return { success: false, error:"Не удалось вернуться в режим администратора" };
+        return { success: false, error: "Не удалось вернуться в режим администратора" };
     }
 }
 
@@ -216,7 +219,7 @@ export async function getMonitoringStats() {
             }
         };
     } catch {
-        return { success: false, error:"Ошибка получения данных мониторинга" };
+        return { success: false, error: "Ошибка получения данных мониторинга" };
     }
 }
 
@@ -256,13 +259,13 @@ export async function getSecurityStats() {
             }
         };
     } catch {
-        return { success: false, error:"Ошибка получения данных безопасности" };
+        return { success: false, error: "Ошибка получения данных безопасности" };
     }
 }
 
 export async function toggleMaintenanceMode(enabled: boolean) {
     const session = await getSession();
-    if (!session || session.roleName !=="Администратор") return { success: false, error:"Доступ запрещен" };
+    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
 
     try {
         const { enabled: validEnabled } = z.object({ enabled: z.boolean() }).parse({ enabled });
@@ -275,16 +278,16 @@ export async function toggleMaintenanceMode(enabled: boolean) {
             });
 
         await logSecurityEvent({
-            eventType:"maintenance_mode_toggle",
+            eventType: "maintenance_mode_toggle",
             userId: session.id,
-            severity:"critical",
-            entityType:"system_settings",
+            severity: "critical",
+            entityType: "system_settings",
             details: { enabled, toggledBy: session.name }
         });
         revalidatePath("/");
         return { success: true };
     } catch {
-        return { success: false, error:"Ошибка переключения режима" };
+        return { success: false, error: "Ошибка переключения режима" };
     }
 }
 
@@ -301,8 +304,11 @@ export async function getSecurityEvents(
         await requireAdmin(session);
         const offset = (page - 1) * limit;
 
+        // Security risk fix: prevent DB DoS via extremely long eventType strings
+        const safeEventType = eventType?.slice(0, 100);
+
         const conditions = [];
-        if (eventType) conditions.push(eq(securityEvents.eventType, eventType as typeof securityEvents.$inferSelect.eventType));
+        if (safeEventType) conditions.push(eq(securityEvents.eventType, safeEventType as typeof securityEvents.$inferSelect.eventType));
         if (severity) conditions.push(eq(securityEvents.severity, severity as typeof securityEvents.$inferSelect.severity));
         if (startDate) conditions.push(gte(securityEvents.createdAt, startDate));
         if (endDate) conditions.push(sql`${securityEvents.createdAt} <= ${endDate}`);
@@ -332,8 +338,8 @@ export async function getSecurityEvents(
             }
         };
     } catch (error) {
-        await logError({ error, path:"/admin-panel/security/events", method:"getSecurityEvents" });
-        return { success: false, error:"Ошибка получения событий безопасности" };
+        await logError({ error, path: "/admin-panel/security/events", method: "getSecurityEvents" });
+        return { success: false, error: "Ошибка получения событий безопасности" };
     }
 }
 
@@ -355,13 +361,13 @@ export async function getSecurityEventsSummary() {
 
         const totals = {
             loginAttempts: eventCounts.filter(e => e.eventType.startsWith("login_")).reduce((sum, e) => sum + Number(e.count), 0),
-            successfulLogins: eventCounts.filter(e => e.eventType ==="login_success").reduce((sum, e) => sum + Number(e.count), 0),
+            successfulLogins: eventCounts.filter(e => e.eventType === "login_success").reduce((sum, e) => sum + Number(e.count), 0),
             permissionChanges: eventCounts.filter(e => e.eventType.includes("permission") || e.eventType.includes("role")).reduce((sum, e) => sum + Number(e.count), 0),
-            criticalEvents: eventCounts.filter(e => e.severity ==="critical").reduce((sum, e) => sum + Number(e.count), 0)
+            criticalEvents: eventCounts.filter(e => e.severity === "critical").reduce((sum, e) => sum + Number(e.count), 0)
         };
 
         const recentCritical = await db.query.securityEvents.findMany({
-            where: and(eq(securityEvents.severity,"critical"), gte(securityEvents.createdAt, last24h)),
+            where: and(eq(securityEvents.severity, "critical"), gte(securityEvents.createdAt, last24h)),
             with: { user: { columns: { name: true, email: true } } },
             orderBy: [desc(securityEvents.createdAt)],
             limit: 5
@@ -372,7 +378,7 @@ export async function getSecurityEventsSummary() {
             data: { summary: totals, recentCritical }
         };
     } catch {
-        return { success: false, error:"Ошибка получения сводки безопасности" };
+        return { success: false, error: "Ошибка получения сводки безопасности" };
     }
 }
 
@@ -399,7 +405,7 @@ export async function clearSecurityErrors() {
         revalidatePath("/admin-panel/security");
         return { success: true };
     } catch {
-        return { success: false, error:"Не удалось очистить ошибки системы" };
+        return { success: false, error: "Не удалось очистить ошибки системы" };
     }
 }
 
@@ -407,10 +413,10 @@ export async function clearFailedLogins() {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        await db.delete(securityEvents).where(eq(securityEvents.eventType,"login_failed"));
+        await db.delete(securityEvents).where(eq(securityEvents.eventType, "login_failed"));
         revalidatePath("/admin-panel/security");
         return { success: true };
     } catch {
-        return { success: false, error:"Не удалось очистить историю входов" };
+        return { success: false, error: "Не удалось очистить историю входов" };
     }
 }

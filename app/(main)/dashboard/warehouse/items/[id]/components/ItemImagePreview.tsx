@@ -1,10 +1,11 @@
 "use client";
 
-import React from"react";
-import Image from"next/image";
-import { Image as ImageIcon } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
+import React from "react";
+import Image from "next/image";
+import { Trash2 as _Trash2, Heart as _Heart, HeartOff as _HeartOff, Plus as _Plus } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { InventoryItem, Category } from "@/app/(main)/dashboard/warehouse/types";
+import { getCategoryIcon } from "@/app/(main)/dashboard/warehouse/category/icons";
 
 interface ItemImagePreviewProps {
     item: InventoryItem;
@@ -29,7 +30,7 @@ export function ItemImagePreview({
         <div className="group relative w-full aspect-square crm-card rounded-3xl overflow-hidden">
             <div role="button" tabIndex={0}
                 className={cn("absolute inset-0 bg-muted/50 overflow-hidden",
-                    isEditing ?"cursor-grab active:cursor-grabbing" :"cursor-pointer"
+                    isEditing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                 )}
                 onMouseDown={handleMainMouseDown}
                 onKeyDown={(e) => {
@@ -59,10 +60,17 @@ export function ItemImagePreview({
                     />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground/30 bg-muted/50">
-                        <div className="w-20 h-20 rounded-3xl bg-card shadow-inner flex items-center justify-center mb-4">
-                            <ImageIcon className="w-10 h-10 opacity-30" aria-label="No image" />
-                        </div>
-                        <p className="text-xs font-bold text-muted-foreground/50">Нет фото</p>
+                        {(() => {
+                            const CategoryIcon = getCategoryIcon(item.category as Partial<Category> || {});
+                            return (
+                                <>
+                                    <div className="w-20 h-20 rounded-3xl bg-card shadow-inner flex items-center justify-center mb-4">
+                                        <CategoryIcon className="w-10 h-10 opacity-30" aria-label="No image" />
+                                    </div>
+                                    <p className="text-xs font-bold text-muted-foreground/50">Нет фото</p>
+                                </>
+                            );
+                        })()}
                     </div>
                 )}
             </div>

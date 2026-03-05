@@ -45,7 +45,6 @@ export function useBasicInfoLogic({
         if (cleanSlug === 'material') return formData.materialCode;
         if (cleanSlug === 'color') return formData.attributeCode;
         if (cleanSlug === 'size') return formData.sizeCode;
-        if (cleanSlug === 'unit') return formData.unit;
 
         // 3. Try mapping by name if it's a known standard type
         if (cleanName === 'бренд') return formData.brandCode;
@@ -53,7 +52,6 @@ export function useBasicInfoLogic({
         if (cleanName === 'материал') return formData.materialCode;
         if (cleanName === 'размер') return formData.sizeCode;
         if (cleanName === 'цвет') return formData.attributeCode;
-        if (cleanName === 'единица измерения') return formData.unit;
 
         return undefined;
     }, [formData]);
@@ -138,10 +136,7 @@ export function useBasicInfoLogic({
                 }
 
                 const attrType = attributeTypes.find(t => t.slug === (attr?.type || type));
-                const isUnit = type === 'unit' || attrType?.name.toLowerCase().includes('единица измерения');
-
                 if (!attr) {
-                    if (isUnit) return code.toLowerCase();
                     // Capitalize first letter if it's just a raw code
                     return code.charAt(0).toUpperCase() + code.slice(1).toLowerCase();
                 }
@@ -162,8 +157,6 @@ export function useBasicInfoLogic({
                 if (targetGender === "feminine" && typedMeta?.fem) result = typedMeta.fem;
                 else if (targetGender === "neuter" && typedMeta?.neut) result = typedMeta.neut;
 
-                if (isUnit) return result.toLowerCase();
-
                 // Capitalize first letter for specific attributes (like Country) or if it's the beginning of a name part
                 if (attrType?.name.toLowerCase().includes("страна") || attrType?.name.toLowerCase().includes("country")) {
                     return result.charAt(0).toUpperCase() + result.slice(1);
@@ -176,7 +169,7 @@ export function useBasicInfoLogic({
 
             categoryAttributes.forEach((type: AttributeType) => {
                 // "Артикул" is typically the internal product ID or something, don't show it in name parts if requested
-                if (type.name === "Артикул" || type.slug === "article" || type.slug === "sku") return;
+                if (type.name === "Артикул" || type.slug === "article" || type.slug === "sku" || type.slug === "unit" || type.name.toLowerCase().includes("единица измерения")) return;
 
                 const code = getCodeForSlug(type.slug, type.name);
                 if (!code) return;

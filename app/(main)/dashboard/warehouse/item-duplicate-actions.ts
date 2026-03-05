@@ -1,21 +1,25 @@
 "use server";
 
-import { eq } from"drizzle-orm";
-import Fuse from"fuse.js";
-import { db } from"@/lib/db";
-import { inventoryItems } from"@/lib/schema";
-import { logError } from"@/lib/error-logger";
-import { CheckDuplicateItemSchema } from"./validation";
+import { eq } from "drizzle-orm";
+import Fuse from "fuse.js";
+import { db } from "@/lib/db";
+import { inventoryItems } from "@/lib/schema";
+import { logError } from "@/lib/error-logger";
+import { getSession } from "@/lib/auth";
+import { CheckDuplicateItemSchema } from "./validation";
 
 /**
  * Check for duplicate items by name or SKU
  */
 export async function checkDuplicateItem(name: string, sku?: string, currentItemId?: string): Promise<{
     duplicate: { id: string; name: string; sku: string | null } | null;
-    type?:"sku_exact" |"name_fuzzy";
+    type?: "sku_exact" | "name_fuzzy";
     isArchived?: boolean;
     score?: number;
 }> {
+    const session = await getSession();
+    if (!session) return { duplicate: null };
+
     const validation = CheckDuplicateItemSchema.safeParse({ name, sku, currentItemId });
 
     if (!validation.success) {
@@ -30,7 +34,7 @@ export async function checkDuplicateItem(name: string, sku?: string, currentItem
 
         const otherItems = currentItemId ? allItems.filter(i => i.id !== currentItemId) : allItems;
 
-        if (sku && sku !=="") {
+        if (sku && sku !== "") {
             const exactSku = otherItems.find(i => i.sku?.toUpperCase() === sku.toUpperCase());
             if (exactSku) {
                 const res = await db.query.inventoryItems.findFirst({
@@ -39,7 +43,7 @@ export async function checkDuplicateItem(name: string, sku?: string, currentItem
                 });
                 return {
                     duplicate: exactSku,
-                    type:"sku_exact",
+                    type: "sku_exact",
                     isArchived: res?.isArchived || false
                 };
             }
@@ -53,15 +57,15 @@ export async function checkDuplicateItem(name: string, sku?: string, currentItem
 
         const results = fuse.search(name);
         if ((results?.length ?? 0) > 0 && (results[0].score ?? 1) < 0.2) {
-            return { duplicate: results[0].item, type:"name_fuzzy", score: results[0].score ?? undefined };
+            return { duplicate: results[0].item, type: "name_fuzzy", score: results[0].score ?? undefined };
         }
 
         return { duplicate: null };
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/item-duplicate-actions",
-            method:"checkDuplicateItem",
+            path: "/dashboard/warehouse/item-duplicate-actions",
+            method: "checkDuplicateItem",
             details: { name, sku }
         });
         return { duplicate: null };

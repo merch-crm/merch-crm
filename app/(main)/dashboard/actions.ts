@@ -1,9 +1,9 @@
 "use server";
 
-import { db } from"@/lib/db";
-import { orders, clients, notifications } from"@/lib/schema";
-import { count, sum, inArray, and, gte, lte, eq, desc } from"drizzle-orm";
-import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { db } from "@/lib/db";
+import { orders, clients, notifications } from "@/lib/schema";
+import { count, sum, inArray, and, gte, lte, eq, desc } from "drizzle-orm";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
 import {
     startOfDay,
     endOfDay,
@@ -11,41 +11,41 @@ import {
     startOfMonth,
     endOfMonth,
     startOfQuarter
-} from"date-fns";
-import { getSession } from"@/lib/auth";
-import { logError } from"@/lib/error-logger";
-import { z } from"zod";
+} from "date-fns";
+import { getSession } from "@/lib/auth";
+import { logError } from "@/lib/error-logger";
+import { z } from "zod";
 
-const DashboardPeriodSchema = z.enum(["today","week","month","quarter","all"]).default("month");
+const DashboardPeriodSchema = z.enum(["today", "week", "month", "quarter", "all"]).default("month");
 const NotificationLimitSchema = z.number().int().min(1).max(50).default(5);
 
-export async function getDashboardStatsByPeriod(period: string ="month") {
+export async function getDashboardStatsByPeriod(period: string = "month") {
     try {
         const session = await getSession();
         if (!session) throw new Error("Unauthorized");
 
         const validated = DashboardPeriodSchema.safeParse(period);
-        const finalPeriod = validated.success ? validated.data :"month";
+        const finalPeriod = validated.success ? validated.data : "month";
 
         const now = new Date();
         let startDate: Date;
         let endDate: Date = endOfDay(now);
 
         switch (finalPeriod) {
-            case"today":
+            case "today":
                 startDate = startOfDay(now);
                 break;
-            case"week":
+            case "week":
                 startDate = startOfWeek(now, { weekStartsOn: 1 });
                 break;
-            case"month":
+            case "month":
                 startDate = startOfMonth(now);
                 endDate = endOfMonth(now);
                 break;
-            case"quarter":
+            case "quarter":
                 startDate = startOfQuarter(now);
                 break;
-            case"all":
+            case "all":
                 startDate = new Date(2000, 0, 1);
                 endDate = new Date(2100, 0, 1);
                 break;
@@ -58,12 +58,12 @@ export async function getDashboardStatsByPeriod(period: string ="month") {
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard",
-            method:"getDashboardStatsByPeriod"
+            path: "/dashboard",
+            method: "getDashboardStatsByPeriod"
         });
 
-        const branding = await getBrandingSettings().catch(() => ({ currencySymbol:"₽" }));
-        const currencySymbol = branding?.currencySymbol ||"₽";
+        const branding = await getBrandingSettings().catch(() => ({ currencySymbol: "₽" }));
+        const currencySymbol = branding?.currencySymbol || "₽";
 
         return {
             totalClients: 0,
@@ -78,6 +78,11 @@ export async function getDashboardStatsByPeriod(period: string ="month") {
 }
 
 export async function getDashboardStats(startDate?: Date, endDate?: Date) {
+    const session = await getSession();
+    if (!session) {
+        return { totalClients: 0, newClients: 0, totalOrders: 0, inProduction: 0, revenue: "0 ₽", averageCheck: "0 ₽", rawRevenue: 0 };
+    }
+
     try {
         // Default to current month if dates not provided
         if (!startDate || !endDate) {
@@ -115,7 +120,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
         // 4. In Production count (Current snapshot)
         const inProductionResult = await db.select({ value: count() })
             .from(orders)
-            .where(inArray(orders.status, ["new","design","production"]))
+            .where(inArray(orders.status, ["new", "design", "production"]))
             .limit(1);
         const inProduction = inProductionResult[0].value;
 
@@ -133,12 +138,12 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
         const averageCheck = totalOrders > 0 ? (rawRevenue / totalOrders) : 0;
 
         const branding = await getBrandingSettings();
-        const currencySymbol = branding?.currencySymbol ||"₽";
+        const currencySymbol = branding?.currencySymbol || "₽";
 
         const formatCondensed = (val: number) => {
-            if (val >= 1000000) return (val / 1000000).toFixed(1) +"M" + currencySymbol;
-            if (val >= 1000) return (val / 1000).toFixed(1) +"K" + currencySymbol;
-            return val.toLocaleString('ru-RU') +"" + currencySymbol;
+            if (val >= 1000000) return (val / 1000000).toFixed(1) + "M" + currencySymbol;
+            if (val >= 1000) return (val / 1000).toFixed(1) + "K" + currencySymbol;
+            return val.toLocaleString('ru-RU') + "" + currencySymbol;
         };
 
         return {
@@ -153,13 +158,13 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard",
-            method:"getDashboardStats"
+            path: "/dashboard",
+            method: "getDashboardStats"
         });
         console.error("Error fetching dashboard stats:", error);
 
-        const branding = await getBrandingSettings().catch(() => ({ currencySymbol:"₽" }));
-        const currencySymbol = branding?.currencySymbol ||"₽";
+        const branding = await getBrandingSettings().catch(() => ({ currencySymbol: "₽" }));
+        const currencySymbol = branding?.currencySymbol || "₽";
 
         return {
             totalClients: 0,
@@ -199,8 +204,8 @@ export async function getDashboardNotifications(limit = 5) {
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard",
-            method:"getDashboardNotifications"
+            path: "/dashboard",
+            method: "getDashboardNotifications"
         });
         console.error("Error fetching notifications:", error);
         return [];

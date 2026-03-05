@@ -1,10 +1,10 @@
 "use client";
 
-import React from"react";
-import { Search, RotateCcw } from"lucide-react";
-import { Input } from"@/components/ui/input";
-import { Button } from"@/components/ui/button";
-import { Client } from"@/lib/types";
+import React from "react";
+import { Search, RotateCcw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Client } from "@/lib/types";
 
 interface StepClientSelectionProps {
     searchQuery: string;
@@ -82,11 +82,11 @@ export function StepClientSelection({
                             onClick={() => onSelectClient(client)}
                             className="w-full flex items-center gap-3 px-6 py-4 hover:bg-muted transition-colors rounded-none border-b border-border last:border-0 h-auto"
                         >
-                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground font-bold shrink-0">{(client.displayName || client.firstName ||"?")?.charAt(0)}</div>
+                            <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-foreground font-bold shrink-0">{(client.displayName || client.firstName || "?")?.charAt(0)}</div>
                             <div className="text-left min-w-0 flex-1">
-                                <p className="font-bold text-foreground truncate">{client.displayName ||"Без имени"}</p>
+                                <p className="font-bold text-foreground truncate">{client.displayName || "Без имени"}</p>
                                 <p className="text-xs text-muted-foreground truncate">
-                                    {(client.company && typeof client.company === 'object' && 'name' in client.company ? client.company.name : String(client.company ||"")) ||""} • {["Печатник","Дизайнер"].includes(userRoleName ||"") ?"HIDDEN" : (client.phone ||"Нет телефона")}
+                                    {(client.company && typeof client.company === 'object' ? (client.company as { name: string }).name : String(client.company || "")) || ""} • {["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : (client.phone || "Нет телефона")}
                                 </p>
                             </div>
                         </Button>
@@ -97,13 +97,13 @@ export function StepClientSelection({
             {selectedClient && (
                 <div className="p-6 rounded-2xl bg-primary text-primary-foreground flex items-center justify-between shadow-lg shadow-primary/20">
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-xl">{(selectedClient.displayName ||"?").charAt(0)}</div>
+                        <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center font-bold text-xl">{(selectedClient.displayName || "?").charAt(0)}</div>
                         <div>
-                            <p className="font-bold">{selectedClient.displayName ||"Unnamed Client"}</p>
+                            <p className="font-bold">{selectedClient.displayName || "Unnamed Client"}</p>
                             <p className="text-xs text-primary-foreground/60">{
-                                (selectedClient.company && typeof selectedClient.company === 'object' && 'name' in selectedClient.company)
-                                    ? selectedClient.company.name
-                                    : String(selectedClient.company ||"Личный заказ")
+                                (selectedClient.company && typeof selectedClient.company === 'object')
+                                    ? (selectedClient.company as { name: string }).name
+                                    : String(selectedClient.company || "Личный заказ")
                             }</p>
                         </div>
                     </div>

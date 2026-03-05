@@ -1,7 +1,8 @@
 import { render, screen, within, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ClientFilterPanel, ClientUiState } from './client-filter-panel' // Need to export ClientUiState from component if not already
-import { ClientFilters } from"../actions";
+import { ClientFilterPanel } from './client-filter-panel'
+import { ClientUiState } from "../hooks/use-clients-state";
+import { ClientFilters } from "../actions";
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
 
 // Mock Select to simplify
@@ -37,6 +38,8 @@ describe('ClientFilterPanel', () => {
         region: 'all',
         status: 'all',
         showArchived: false,
+        clientType: 'all',
+        activityStatus: 'all',
     }
 
     const defaultUiState: ClientUiState = {
@@ -45,6 +48,7 @@ describe('ClientFilterPanel', () => {
         showManagerSelect: false,
         showDeleteConfirm: false,
         isBulkUpdating: false,
+        showExportDialog: false,
         searchHistory: [],
     }
 
@@ -64,6 +68,8 @@ describe('ClientFilterPanel', () => {
         setFilters?: typeof setFiltersMock;
         setUiState?: typeof setUiStateMock;
         regions?: string[];
+        managers?: { id: string; name: string }[];
+        sources?: string[];
         onAddToHistory?: typeof onAddToHistoryMock;
     } = {}) => {
         return render(
@@ -73,6 +79,8 @@ describe('ClientFilterPanel', () => {
                 uiState={{ ...defaultUiState, ...overrides.uiState }}
                 setUiState={overrides.setUiState ?? setUiStateMock}
                 regions={overrides.regions ?? []}
+                managers={overrides.managers ?? []}
+                sources={overrides.sources ?? []}
                 onAddToHistory={overrides.onAddToHistory ?? onAddToHistoryMock}
             />
         )
@@ -182,13 +190,19 @@ describe('ClientFilterPanel', () => {
         expect(setFiltersMock).toHaveBeenCalledWith({
             page: 1,
             limit: 50,
-            search:"",
-            sortBy:"alphabet",
-            period:"all",
-            orderCount:"any",
-            region:"all",
-            status:"all",
-            showArchived: false
+            search: "",
+            sortBy: "alphabet",
+            period: "all",
+            orderCount: "any",
+            region: "all",
+            status: "all",
+            showArchived: false,
+            clientType: 'all',
+            managerId: 'all',
+            acquisitionSource: 'all',
+            activityStatus: 'all',
+            rfmSegment: 'all',
+            loyaltyLevelId: 'all',
         })
     })
 

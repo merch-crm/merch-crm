@@ -1,23 +1,23 @@
 "use server";
 
-import { revalidatePath } from"next/cache";
-import { eq, sql, and, type InferSelectModel } from"drizzle-orm";
-import { db } from"@/lib/db";
+import { revalidatePath } from "next/cache";
+import { eq, sql, and, type InferSelectModel } from "drizzle-orm";
+import { db } from "@/lib/db";
 import {
     inventoryItems,
     inventoryTransactions,
     inventoryStocks,
     inventoryTransfers,
     storageLocations,
-} from"@/lib/schema";
-import { invalidateCache } from"@/lib/redis";
-import { logAction } from"@/lib/audit";
-import { logError } from"@/lib/error-logger";
-import { getSession } from"@/lib/auth";
-import { checkItemStockAlerts } from"@/lib/notifications";
-import { AdjustStockSchema, TransferStockSchema, MoveItemSchema } from"./validation";
+} from "@/lib/schema";
+import { invalidateCache } from "@/lib/redis";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
+import { getSession } from "@/lib/auth";
+import { checkItemStockAlerts } from "@/lib/notifications";
+import { AdjustStockSchema, TransferStockSchema, MoveItemSchema } from "./validation";
 
-import { type ActionResult } from"@/lib/types";
+import { type ActionResult } from "@/lib/types";
 
 /**
  * Adjust stock of an item (in, out, or set)
@@ -25,7 +25,7 @@ import { type ActionResult } from"@/lib/types";
 export async function adjustInventoryStock(
     itemId: string,
     amount: number,
-    type:"in" |"out" |"set",
+    type: "in" | "out" | "set",
     reason: string,
     storageLocationId?: string,
     costPrice?: number
@@ -39,7 +39,9 @@ export async function adjustInventoryStock(
     }
 
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав для корректировки остатков" };
+    }
 
     try {
         await db.transaction(async (tx) => {
@@ -47,9 +49,9 @@ export async function adjustInventoryStock(
             if (!item) throw new Error("Item not found");
 
             let netChange = 0;
-            let effectiveType:"in" |"out" ="in";
+            let effectiveType: "in" | "out" = "in";
 
-            if (type ==="set") {
+            if (type === "set") {
                 let currentQty = 0;
                 if (storageLocationId) {
                     const [existingStock] = await tx
@@ -65,13 +67,13 @@ export async function adjustInventoryStock(
                     currentQty = item.quantity;
                 }
                 netChange = amount - currentQty;
-                effectiveType = netChange >= 0 ?"in" :"out";
+                effectiveType = netChange >= 0 ? "in" : "out";
             } else {
-                netChange = amount * (type ==="in" ? 1 : -1);
+                netChange = amount * (type === "in" ? 1 : -1);
                 effectiveType = type;
             }
 
-            if (netChange === 0 && type ==="set") return;
+            if (netChange === 0 && type === "set") return;
 
             if (storageLocationId) {
                 const [existingStock] = await tx
@@ -127,14 +129,14 @@ export async function adjustInventoryStock(
                 itemId,
                 changeAmount: netChange,
                 type: effectiveType,
-                reason: type ==="set" ? `Корректировка остатка: ${reason}` : reason,
+                reason: type === "set" ? `Корректировка остатка: ${reason}` : reason,
                 storageLocationId: storageLocationId || null,
                 costPrice: costPrice !== undefined ? costPrice.toString() : null,
                 createdBy: session.id,
             });
 
             await logAction(
-                type ==="set" ?"Корректировка" : (effectiveType ==="in" ?"Поставка" :"Списание"),"inventory_item",
+                type === "set" ? "Корректировка" : (effectiveType === "in" ? "Поставка" : "Списание"), "inventory_item",
                 itemId,
                 {
                     name: item.name,
@@ -157,10 +159,10 @@ export async function adjustInventoryStock(
         await logError({
             error,
             path: `/dashboard/warehouse/adjust/${itemId}`,
-            method:"adjustInventoryStock",
+            method: "adjustInventoryStock",
             details: { itemId, amount, type, reason, storageLocationId }
         });
-        return { success: false, error: error instanceof Error ? error.message :"Не удалось скорректировать остаток" };
+        return { success: false, error: error instanceof Error ? error.message : "Не удалось скорректировать остаток" };
     }
 }
 
@@ -174,9 +176,11 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
     }
 
     const session = await getSession();
-    if (!session) return { success: false, error:"Не авторизован" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав для перемещения товаров" };
+    }
 
-    if (fromLocationId === toLocationId) return { success: false, error:"Точка отправления и назначения должны быть разными" };
+    if (fromLocationId === toLocationId) return { success: false, error: "Точка отправления и назначения должны быть разными" };
 
     try {
         await db.transaction(async (tx) => {
@@ -185,8 +189,8 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
                 tx.select().from(storageLocations).where(eq(storageLocations.id, toLocationId)).limit(1)
             ]);
 
-            const fromName = fromLoc[0]?.name ||"Неизвестный склад";
-            const toName = toLoc[0]?.name ||"Неизвестный склад";
+            const fromName = fromLoc[0]?.name || "Неизвестный склад";
+            const toName = toLoc[0]?.name || "Неизвестный склад";
 
             const [sourceStock] = await tx
                 .select()
@@ -229,14 +233,14 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
             await tx.insert(inventoryTransactions).values({
                 itemId,
                 changeAmount: amount,
-                type:"transfer",
+                type: "transfer",
                 reason: `Перемещение со склада «${fromName}» на «${toName}». Причина: ${reason}`,
                 storageLocationId: toLocationId,
                 fromStorageLocationId: fromLocationId,
                 createdBy: session.id,
             });
 
-            await logAction("Перемещение","inventory_item", itemId, {
+            await logAction("Перемещение", "inventory_item", itemId, {
                 from: fromLocationId,
                 to: toLocationId,
                 amount,
@@ -249,7 +253,7 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
         revalidatePath(`/dashboard/warehouse/items/${itemId}`);
         return { success: true };
     } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message :"Не удалось переместить товары" };
+        return { success: false, error: error instanceof Error ? error.message : "Не удалось переместить товары" };
     }
 }
 
@@ -260,6 +264,9 @@ type InventoryStock = InferSelectModel<typeof inventoryStocks>;
 type StorageLocation = InferSelectModel<typeof storageLocations>;
 
 export async function getItemStocks(itemId: string): Promise<ActionResult<(InventoryStock & { storageLocation: StorageLocation })[]>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const stocks = await db.query.inventoryStocks.findMany({
             where: eq(inventoryStocks.itemId, itemId),
@@ -272,11 +279,11 @@ export async function getItemStocks(itemId: string): Promise<ActionResult<(Inven
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/stock-actions",
-            method:"getItemStocks",
+            path: "/dashboard/warehouse/stock-actions",
+            method: "getItemStocks",
             details: { itemId }
         });
-        return { success: false, error:"Не удалось загрузить остатки" };
+        return { success: false, error: "Не удалось загрузить остатки" };
     }
 }
 
@@ -285,7 +292,9 @@ export async function getItemStocks(itemId: string): Promise<ActionResult<(Inven
  */
 export async function moveInventoryItem(formData: FormData): Promise<ActionResult> {
     const session = await getSession();
-    if (!session) return { success: false, error:"Not authorized" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав для перемещения товаров" };
+    }
 
     const validation = MoveItemSchema.safeParse(Object.fromEntries(formData));
     if (!validation.success) {
@@ -295,7 +304,7 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
     const { itemId, fromLocationId, toLocationId, quantity, comment } = validation.data;
 
     if (fromLocationId === toLocationId) {
-        return { success: false, error:"Source and destination cannot be the same" };
+        return { success: false, error: "Source and destination cannot be the same" };
     }
 
     try {
@@ -309,7 +318,7 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
 
             const fromName = fromLocation.name;
             const toName = toLocation.name;
-            const logMessage = `Перемещение со склада «${fromName}» на «${toName}»${comment ? `. Причина: ${comment}` :""}`;
+            const logMessage = `Перемещение со склада «${fromName}» на «${toName}»${comment ? `. Причина: ${comment}` : ""}`;
 
             const sourceStock = await tx.query.inventoryStocks.findFirst({
                 where: and(
@@ -368,7 +377,7 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
             await tx.insert(inventoryTransactions).values({
                 itemId,
                 changeAmount: quantity,
-                type:"transfer",
+                type: "transfer",
                 reason: logMessage,
                 storageLocationId: toLocationId,
                 fromStorageLocationId: fromLocationId,
@@ -389,16 +398,16 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
                 .where(eq(inventoryItems.id, itemId));
         });
 
-        revalidatePath("/dashboard/warehouse","layout");
+        revalidatePath("/dashboard/warehouse", "layout");
         await checkItemStockAlerts(itemId);
         return { success: true };
     } catch (error: unknown) {
         await logError({
             error,
-            path:"/dashboard/warehouse/move",
-            method:"moveInventoryItem",
+            path: "/dashboard/warehouse/move",
+            method: "moveInventoryItem",
             details: { itemId, fromLocationId, toLocationId, quantity }
         });
-        return { success: false, error: (error as Error).message ||"Failed to move inventory" };
+        return { success: false, error: (error as Error).message || "Failed to move inventory" };
     }
 }

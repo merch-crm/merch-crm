@@ -1,6 +1,6 @@
-import { useState } from"react";
-import type { ClientSummary as Client } from"@/lib/types";
-import { ClientFilters } from"../actions";
+import { useState } from "react";
+import type { ClientSummary as Client } from "@/lib/types";
+import { ClientFilters } from "../actions";
 
 export interface ClientUiState {
     showFilters: boolean;
@@ -8,7 +8,22 @@ export interface ClientUiState {
     showManagerSelect: boolean;
     showDeleteConfirm: boolean;
     isBulkUpdating: boolean;
+    showExportDialog: boolean;
     searchHistory: string[];
+}
+
+export interface ClientTypeCounts {
+    all: number;
+    b2c: number;
+    b2b: number;
+}
+
+export interface ActivityCounts {
+    active: number;
+    attention: number;
+    atRisk: number;
+    inactive: number;
+    total: number;
 }
 
 export function useClientsState() {
@@ -22,13 +37,18 @@ export function useClientsState() {
     const [filters, setFilters] = useState<ClientFilters>(() => ({
         page: 1,
         limit: 50,
-        search:"",
-        sortBy:"alphabet",
-        period:"all",
-        orderCount:"any",
-        region:"all",
-        status:"all",
-        showArchived: false
+        search: "",
+        sortBy: "alphabet",
+        period: "all",
+        orderCount: "any",
+        region: "all",
+        status: "all",
+        showArchived: false,
+        clientType: "all",
+        managerId: "all",
+        acquisitionSource: "all",
+        activityStatus: "all",
+        rfmSegment: "all",
     }));
 
     const [uiState, setUiState] = useState<ClientUiState>(() => ({
@@ -37,6 +57,7 @@ export function useClientsState() {
         showManagerSelect: false,
         showDeleteConfirm: false,
         isBulkUpdating: false,
+        showExportDialog: false,
         searchHistory: []
     }));
 
@@ -50,6 +71,10 @@ export function useClientsState() {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
     const [regions, setRegions] = useState<string[]>([]);
+    const [sources, setSources] = useState<string[]>([]);
+
+    const [typeCounts, setTypeCounts] = useState<ClientTypeCounts>({ all: 0, b2c: 0, b2b: 0 });
+    const [activityCounts, setActivityCounts] = useState<ActivityCounts | null>(null);
 
     return {
         viewState, setViewState,
@@ -58,6 +83,9 @@ export function useClientsState() {
         dialogs, setDialogs,
         selectedIds, setSelectedIds,
         managers, setManagers,
-        regions, setRegions
+        regions, setRegions,
+        sources, setSources,
+        typeCounts, setTypeCounts,
+        activityCounts, setActivityCounts,
     };
 }

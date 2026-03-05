@@ -1,23 +1,23 @@
 "use server";
 
-import { revalidatePath } from"next/cache";
-import { eq, sql, isNull, and, asc, type InferSelectModel } from"drizzle-orm";
-import { db } from"@/lib/db";
+import { revalidatePath } from "next/cache";
+import { eq, sql, isNull, and, asc, type InferSelectModel } from "drizzle-orm";
+import { db } from "@/lib/db";
 import {
     inventoryCategories,
     inventoryItems,
-} from"@/lib/schema";
-import { invalidateCache } from"@/lib/redis";
-import { logAction } from"@/lib/audit";
-import { logError } from"@/lib/error-logger";
-import { getSession } from"@/lib/auth";
-import { generateCategoryPrefix } from"./category-utils";
-import { getCategoryFullPath, updateChildrenPaths, isDescendant } from"./actions-utils";
-import { InventoryCategorySchema } from"./validation";
-import { z } from"zod";
+} from "@/lib/schema";
+import { invalidateCache } from "@/lib/redis";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
+import { getSession } from "@/lib/auth";
+import { generateCategoryPrefix } from "./category-utils";
+import { getCategoryFullPath, updateChildrenPaths, isDescendant } from "./actions-utils";
+import { InventoryCategorySchema } from "./validation";
+import { z } from "zod";
 
 
-import { type ActionResult } from"@/lib/types";
+import { type ActionResult } from "@/lib/types";
 
 /**
  * Get all inventory categories
@@ -31,6 +31,9 @@ export interface CategoryWithStats extends InventoryCategory {
 }
 
 export async function getInventoryCategories(): Promise<ActionResult<CategoryWithStats[]>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const categories = await db.select({
             id: inventoryCategories.id,
@@ -72,10 +75,10 @@ export async function getInventoryCategories(): Promise<ActionResult<CategoryWit
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/category-actions",
-            method:"getInventoryCategories"
+            path: "/dashboard/warehouse/category-actions",
+            method: "getInventoryCategories"
         });
-        return { success: false, error:"Не удалось загрузить категории" };
+        return { success: false, error: "Не удалось загрузить категории" };
     }
 }
 
@@ -83,6 +86,9 @@ export async function getInventoryCategories(): Promise<ActionResult<CategoryWit
  * Get count of items without category
  */
 export async function getOrphanedItemStats(): Promise<ActionResult<{ count: number, totalCost: number }>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const result = await db.select({
             count: sql<number>`count(*)`,
@@ -104,10 +110,10 @@ export async function getOrphanedItemStats(): Promise<ActionResult<{ count: numb
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/category-actions",
-            method:"getOrphanedItemStats"
+            path: "/dashboard/warehouse/category-actions",
+            method: "getOrphanedItemStats"
         });
-        return { success: false, error:"Не удалось получить количество товаров без категории" };
+        return { success: false, error: "Не удалось получить количество товаров без категории" };
     }
 }
 
@@ -116,8 +122,8 @@ export async function getOrphanedItemStats(): Promise<ActionResult<{ count: numb
  */
 export async function addInventoryCategory(formData: FormData): Promise<ActionResult<InventoryCategory>> {
     const session = await getSession();
-    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     const validatedFields = InventoryCategorySchema.safeParse({
@@ -143,16 +149,16 @@ export async function addInventoryCategory(formData: FormData): Promise<ActionRe
             name,
             description: description || null,
             parentId: parentId || null,
-            icon: icon ||"box",
-            color: color ||"primary",
+            icon: icon || "box",
+            color: color || "primary",
             prefix: finalPrefix,
-            gender: gender ||"masculine"
+            gender: gender || "masculine"
         }).returning();
 
         const fullPath = await getCategoryFullPath(category.id);
         await db.update(inventoryCategories).set({ fullPath }).where(eq(inventoryCategories.id, category.id));
 
-        await logAction("Создана категория","inventory_category", category.id, { name: category.name });
+        await logAction("Создана категория", "inventory_category", category.id, { name: category.name });
         invalidateCache("warehouse:categories");
         revalidatePath("/dashboard/warehouse");
 
@@ -160,10 +166,10 @@ export async function addInventoryCategory(formData: FormData): Promise<ActionRe
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/category-actions",
-            method:"addInventoryCategory",
+            path: "/dashboard/warehouse/category-actions",
+            method: "addInventoryCategory",
         });
-        return { success: false, error:"Не удалось создать категорию" };
+        return { success: false, error: "Не удалось создать категорию" };
     }
 }
 
@@ -172,8 +178,8 @@ export async function addInventoryCategory(formData: FormData): Promise<ActionRe
  */
 export async function updateInventoryCategory(id: string, formData: FormData): Promise<ActionResult<InventoryCategory>> {
     const session = await getSession();
-    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     const validatedFields = InventoryCategorySchema.safeParse({
@@ -194,7 +200,7 @@ export async function updateInventoryCategory(id: string, formData: FormData): P
 
     try {
         if (parentId && await isDescendant(parentId, id)) {
-            return { success: false, error:"Нельзя переместить категорию в своего потомка" };
+            return { success: false, error: "Нельзя переместить категорию в своего потомка" };
         }
 
         const [category] = await db.update(inventoryCategories)
@@ -204,7 +210,7 @@ export async function updateInventoryCategory(id: string, formData: FormData): P
                 parentId: parentId || null,
                 icon,
                 color,
-                gender: gender ||"masculine",
+                gender: gender || "masculine",
                 prefix,
                 updatedAt: new Date()
             })
@@ -216,7 +222,7 @@ export async function updateInventoryCategory(id: string, formData: FormData): P
 
         await updateChildrenPaths(id);
 
-        await logAction("Обновлена категория","inventory_category", id, { name });
+        await logAction("Обновлена категория", "inventory_category", id, { name });
         invalidateCache("warehouse:categories");
         revalidatePath("/dashboard/warehouse");
 
@@ -224,11 +230,11 @@ export async function updateInventoryCategory(id: string, formData: FormData): P
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/category-actions",
-            method:"updateInventoryCategory",
+            path: "/dashboard/warehouse/category-actions",
+            method: "updateInventoryCategory",
             details: { id }
         });
-        return { success: false, error:"Не удалось обновить категорию" };
+        return { success: false, error: "Не удалось обновить категорию" };
     }
 }
 
@@ -238,29 +244,29 @@ export async function updateInventoryCategory(id: string, formData: FormData): P
 export async function deleteInventoryCategory(id: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error:"Некорректный ID категории" };
+        return { success: false, error: "Некорректный ID категории" };
     }
 
     const session = await getSession();
-    if (!session || !["Администратор","Руководство"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
         // Check if has items
         const itemsCount = await db.select({ count: sql`count(*)` }).from(inventoryItems).where(eq(inventoryItems.categoryId, id)).limit(1);
         if (Number(itemsCount[0].count) > 0) {
-            return { success: false, error:"Нельзя удалить категорию, в которой есть товары" };
+            return { success: false, error: "Нельзя удалить категорию, в которой есть товары" };
         }
 
         // Check if has children
         const childrenCount = await db.select({ count: sql`count(*)` }).from(inventoryCategories).where(eq(inventoryCategories.parentId, id)).limit(1);
         if (Number(childrenCount[0].count) > 0) {
-            return { success: false, error:"Нельзя удалить категорию, у которой есть подкатегории" };
+            return { success: false, error: "Нельзя удалить категорию, у которой есть подкатегории" };
         }
 
         await db.delete(inventoryCategories).where(eq(inventoryCategories.id, id));
-        await logAction("Удалена категория","inventory_category", id);
+        await logAction("Удалена категория", "inventory_category", id);
 
         invalidateCache("warehouse:categories");
         revalidatePath("/dashboard/warehouse");
@@ -269,11 +275,11 @@ export async function deleteInventoryCategory(id: string): Promise<ActionResult>
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/category-actions",
-            method:"deleteInventoryCategory",
+            path: "/dashboard/warehouse/category-actions",
+            method: "deleteInventoryCategory",
             details: { id }
         });
-        return { success: false, error:"Не удалось удалить категорию" };
+        return { success: false, error: "Не удалось удалить категорию" };
     }
 }
 
@@ -287,7 +293,12 @@ export async function updateInventoryCategoriesOrder(items: { id: string; sortOr
     })).safeParse(items);
 
     if (!validation.success) {
-        return { success: false, error:"Неверный формат данных" };
+        return { success: false, error: "Неверный формат данных" };
+    }
+
+    const session = await getSession();
+    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -305,10 +316,10 @@ export async function updateInventoryCategoriesOrder(items: { id: string; sortOr
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/category-actions",
-            method:"updateInventoryCategoriesOrder",
+            path: "/dashboard/warehouse/category-actions",
+            method: "updateInventoryCategoriesOrder",
             details: { itemsCount: items?.length }
         });
-        return { success: false, error:"Не удалось обновить порядок категорий" };
+        return { success: false, error: "Не удалось обновить порядок категорий" };
     }
 }

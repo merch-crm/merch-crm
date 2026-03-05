@@ -88,11 +88,10 @@ export function useNewItemLogic({
                 const subCat = categories.find(c => c.id === resolvedSubId);
                 const cleanSubName = subCat?.name.toLowerCase().trim() || "";
                 const cleanInitialName = initialCat?.name.toLowerCase().trim() || "";
-                const isClothing = cleanSubName.includes(CATEGORY_TYPES.clothing) || cleanInitialName.includes(CATEGORY_TYPES.clothing);
+                const _isClothing = cleanSubName.includes(CATEGORY_TYPES.clothing) || cleanInitialName.includes(CATEGORY_TYPES.clothing);
                 initialForm = {
                     ...initialForm,
-                    subcategoryId: resolvedSubId,
-                    unit: isClothing ? "шт." : initialForm.unit
+                    subcategoryId: resolvedSubId
                 };
             }
         } else {
@@ -175,6 +174,7 @@ export function useNewItemLogic({
         ? sortCategories(categories.filter(c => c.parentId === selectedCategory.id))
         : [];
 
+    const __isClothing = selectedCategory?.slug === "clothing";
     const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
 
     const topLevelCategories = sortCategories(
@@ -196,13 +196,22 @@ export function useNewItemLogic({
             attributeCode: "",
             sizeCode: "",
             itemName: "",
-            unit: category.name.toLowerCase().includes(CATEGORY_TYPES.clothing) ? "шт." : prev.unit || "шт."
+            attributes: {}
         }));
     };
 
     const handleSubCategorySelect = (subCategory: Category) => {
+        if (subCategory.id === formData.subcategoryId) return;
         setValidationError("");
-        updateFormData({ subcategoryId: subCategory.id });
+        updateFormData({
+            subcategoryId: subCategory.id,
+            attributes: {},
+            brandCode: "",
+            qualityCode: "",
+            materialCode: "",
+            attributeCode: "",
+            sizeCode: ""
+        });
     };
 
     const handleBack = () => {
@@ -269,9 +278,11 @@ export function useNewItemLogic({
             }
         }
 
-        if (currentStep === 3) {
-            if (!formData.imagePreview) {
-                setValidationError("Загрузите хотя бы основное фото товара");
+
+
+        if (currentStep === 4) {
+            if (!formData.storageLocationId) {
+                setValidationError("Выберите склад для хранения");
                 return false;
             }
         }
@@ -309,7 +320,6 @@ export function useNewItemLogic({
             submitFormData.append("name", formData.itemName || "");
             submitFormData.append("categoryId", formData.subcategoryId || selectedCategory?.id || "");
             submitFormData.append("sku", formData.sku || "");
-            submitFormData.append("unit", formData.unit || "шт.");
             submitFormData.append("description", formData.description || "");
             submitFormData.append("quantity", String(formData.quantity) || "0");
             submitFormData.append("criticalStockThreshold", String(formData.criticalStockThreshold) || "0");
@@ -383,17 +393,24 @@ export function useNewItemLogic({
             setValidationError("");
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            if (validateStep(step)) {
-                if (targetStep > 2 && step < 2) {
-                    if (validateStep(2)) {
-                        setStep(targetStep);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }
-                } else {
-                    setStep(targetStep);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Validate intermediate steps when jumping forward
+            const allSteps = [0, 2, 3, 4, 5];
+            const currentIndex = allSteps.indexOf(step);
+            const targetIndex = allSteps.indexOf(targetStep);
+
+            if (targetIndex === -1) return;
+
+            // Validate from current step up to target - 1
+            for (let i = currentIndex; i < targetIndex; i++) {
+                const sId = allSteps[i];
+                if (!validateStep(sId)) {
+                    // validateStep will set the error message
+                    return;
                 }
             }
+
+            setStep(targetStep);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 

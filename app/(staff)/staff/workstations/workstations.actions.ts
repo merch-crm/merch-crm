@@ -7,8 +7,12 @@ import { eq, asc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { CreateWorkstationSchema, UpdateWorkstationSchema, DeleteWorkstationSchema } from '../validation'
 import { type WorkstationInput } from './types'
+import { getSession } from '@/lib/auth'
 
 export async function getWorkstations() {
+    const session = await getSession()
+    if (!session) return { success: false, error: 'Не авторизован' }
+
     try {
         const data = await db.query.workstations.findMany({
             limit: 1000,
@@ -36,6 +40,9 @@ export async function getWorkstations() {
 }
 
 export async function getCameras() {
+    const session = await getSession()
+    if (!session) return { success: false, error: 'Не авторизован' }
+
     try {
         const data = await db.query.cameras.findMany({
             limit: 1000,
@@ -54,6 +61,9 @@ export async function getCameras() {
 }
 
 export async function getUsers() {
+    const session = await getSession()
+    if (!session) return { success: false, error: 'Не авторизован' }
+
     try {
         const data = await db.query.users.findMany({
             limit: 1000,
@@ -71,6 +81,9 @@ export async function getUsers() {
 }
 
 export async function createWorkstation(data: WorkstationInput) {
+    const session = await getSession()
+    if (!session || !['Администратор', 'Руководство'].includes(session.roleName)) return { success: false, error: 'Недостаточно прав' }
+
     try {
         const parsed = CreateWorkstationSchema.safeParse(data)
         if (!parsed.success) {
@@ -91,6 +104,9 @@ export async function createWorkstation(data: WorkstationInput) {
 }
 
 export async function updateWorkstation(id: string, data: Partial<WorkstationInput>) {
+    const session = await getSession()
+    if (!session || !['Администратор', 'Руководство'].includes(session.roleName)) return { success: false, error: 'Недостаточно прав' }
+
     try {
         const parsed = UpdateWorkstationSchema.safeParse(data)
         if (!parsed.success) {
@@ -119,6 +135,9 @@ export async function updateWorkstation(id: string, data: Partial<WorkstationInp
 }
 
 export async function deleteWorkstation(id: string) {
+    const session = await getSession()
+    if (!session || session.roleName !== 'Администратор') return { success: false, error: 'Недостаточно прав' }
+
     try {
         const parsed = DeleteWorkstationSchema.safeParse({ id })
         if (!parsed.success) {

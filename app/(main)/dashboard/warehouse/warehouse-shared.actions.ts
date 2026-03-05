@@ -8,10 +8,15 @@ import { type ActionResult } from "@/lib/types";
 // Schema for actions without parameters
 const VoidSchema = z.void();
 
+import { getSession } from "@/lib/auth";
+
 /**
  * Standardized refresh for warehouse data across different layouts
  */
 export async function refreshWarehouse() {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     VoidSchema.parse(undefined);
     try {
         revalidatePath("/dashboard/warehouse", "layout");
@@ -29,6 +34,9 @@ export async function refreshWarehouse() {
  * Get available measurement units for inventory items
  */
 export async function getMeasurementUnits(): Promise<ActionResult<{ id: string; name: string }[]>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     VoidSchema.parse(undefined);
     try {
         return {

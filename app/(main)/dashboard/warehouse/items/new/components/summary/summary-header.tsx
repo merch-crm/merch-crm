@@ -1,5 +1,6 @@
 import { createElement } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { CheckCircle2, Pencil, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -64,8 +65,22 @@ export function SummaryHeader({
                 <div className="relative z-10 flex items-start justify-between gap-3 sm:gap-3">
                     <div className="flex-1 min-w-0 space-y-3">
                         <div className="flex items-center gap-2">
-                            <div className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 flex items-center gap-1.5 shadow-sm">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <div className="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 flex items-center gap-1.5 shadow-sm ring-4 ring-emerald-50/30">
+                                <div className="relative flex items-center justify-center w-3 h-3">
+                                    <motion.div
+                                        animate={{
+                                            scale: [1, 1.6, 1],
+                                            opacity: [0.4, 0.1, 0.4],
+                                        }}
+                                        transition={{
+                                            duration: 2.2,
+                                            repeat: Infinity,
+                                            ease: "easeInOut"
+                                        }}
+                                        className="absolute inset-0 rounded-full bg-emerald-400"
+                                    />
+                                    <div className="relative w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]" />
+                                </div>
                                 <span className="text-xs font-black text-emerald-600 leading-none">Готово к созданию</span>
                             </div>
                             <div className="text-xs font-black text-slate-300 px-1">ID: DRAFT</div>
@@ -171,7 +186,7 @@ export function SummaryHeader({
 
                                         const lowerSlug = chip.slug.toLowerCase();
                                         if (lowerSlug.endsWith('code')) return false;
-                                        if (["unit", "thumbnailsettings"].includes(lowerSlug)) return false;
+                                        if (["thumbnailsettings"].includes(lowerSlug)) return false;
 
                                         return true;
                                     }).sort((a, b) => a.sortOrder - b.sortOrder);

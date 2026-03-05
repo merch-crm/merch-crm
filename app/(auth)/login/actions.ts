@@ -102,6 +102,8 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             department = deptResult.rows[0] || null;
         }
 
+        const ua = headersList.get("user-agent") || "unknown";
+
         const sessionData = {
             id: user[0].id,
             email: user[0].email,
@@ -109,6 +111,7 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             roleName: role?.name || "User",
             departmentName: department?.name || "",
             name: user[0].name || "",
+            ua,
             expires,
         };
 

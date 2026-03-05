@@ -106,6 +106,7 @@ export function NewItemSidebar({
                     {steps.map((s, idx) => {
                         const isActive = step === s.id;
                         const isCompleted = step > s.id;
+                        const isLocked = step < s.id; // Cannot click future steps directly unless current is valid
 
                         if (s.id === 1 && !hasSubCategories && step !== 1) return null;
 
@@ -113,9 +114,11 @@ export function NewItemSidebar({
                             <Button
                                 key={idx}
                                 variant={isActive ? "default" : "ghost"}
-                                onClick={() => onStepClick(s.id)}
+                                onClick={() => !isLocked && onStepClick(s.id)}
+                                disabled={isLocked}
                                 className={cn("relative w-full text-left py-4 pl-4 pr-4 rounded-[var(--radius)] h-auto transition-all duration-300 flex items-center justify-start gap-3 group",
-                                    isActive ? "bg-primary text-white shadow-md shadow-black/10 hover:bg-primary" : "text-slate-400 hover:bg-slate-50 shadow-none"
+                                    isActive ? "bg-primary text-white shadow-md shadow-black/10 hover:bg-primary" : "text-slate-400 hover:bg-slate-50 shadow-none",
+                                    isLocked && "opacity-40 cursor-not-allowed"
                                 )}
                             >
                                 <div className={cn("w-10 h-10 rounded-[var(--radius)] flex items-center justify-center shrink-0 border-2 transition-all duration-300",
@@ -128,10 +131,14 @@ export function NewItemSidebar({
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <div className={cn("text-sm font-bold leading-none mb-1.5 transition-colors", isActive ? "text-white" : "text-slate-400 group-hover:text-slate-600")}>
+                                    <div className={cn("text-sm font-bold leading-none mb-1.5 transition-colors",
+                                        isActive ? "text-white" : isCompleted ? "text-slate-900" : "text-slate-400 group-hover:text-slate-600"
+                                    )}>
                                         {s.title}
                                     </div>
-                                    <div className={cn("text-[11px] font-bold truncate transition-colors", isActive ? "text-white/60" : "text-slate-400/60 group-hover:text-slate-400")}>
+                                    <div className={cn("text-[11px] font-bold truncate transition-colors",
+                                        isActive ? "text-white/60" : isCompleted ? "text-slate-500" : "text-slate-400/60 group-hover:text-slate-400"
+                                    )}>
                                         {s.desc}
                                     </div>
                                 </div>

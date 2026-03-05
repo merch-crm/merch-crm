@@ -1,16 +1,16 @@
 "use server";
 
-import { revalidatePath } from"next/cache";
-import { eq, inArray, and, lt } from"drizzle-orm";
-import { db } from"@/lib/db";
-import { inventoryItems, inventoryStocks, inventoryTransactions, storageLocations } from"@/lib/schema";
-import { invalidateCache } from"@/lib/redis";
-import { logAction } from"@/lib/audit";
-import { logError } from"@/lib/error-logger";
-import { getSession } from"@/lib/auth";
+import { revalidatePath } from "next/cache";
+import { eq, inArray, and, lt } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { inventoryItems, inventoryStocks, inventoryTransactions, storageLocations } from "@/lib/schema";
+import { invalidateCache } from "@/lib/redis";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
+import { getSession } from "@/lib/auth";
 
-import { type ActionResult } from"@/lib/types";
-import { BulkActionSchema, BulkMoveSchema, BulkUpdateCategorySchema } from"./validation";
+import { type ActionResult } from "@/lib/types";
+import { BulkActionSchema, BulkMoveSchema, BulkUpdateCategorySchema } from "./validation";
 
 
 /**
@@ -24,8 +24,8 @@ export async function archiveInventoryItems(ids: string[], reason: string): Prom
 
     const session = await getSession();
 
-    if (!session || !["Администратор","Руководство","Склад"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -39,7 +39,7 @@ export async function archiveInventoryItems(ids: string[], reason: string): Prom
             })
             .where(inArray(inventoryItems.id, ids));
 
-        await logAction("Архивация товаров","inventory_item_bulk", ids.join(","), { count: ids.length, reason });
+        await logAction("Архивация товаров", "inventory_item_bulk", ids.join(","), { count: ids.length, reason });
         invalidateCache("warehouse:*");
         revalidatePath("/dashboard/warehouse");
 
@@ -47,11 +47,11 @@ export async function archiveInventoryItems(ids: string[], reason: string): Prom
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/bulk-actions",
-            method:"archiveInventoryItems",
+            path: "/dashboard/warehouse/bulk-actions",
+            method: "archiveInventoryItems",
             details: { ids, reason }
         });
-        return { success: false, error:"Не удалось архивировать товары" };
+        return { success: false, error: "Не удалось архивировать товары" };
     }
 }
 
@@ -66,8 +66,8 @@ export async function restoreInventoryItems(ids: string[], reason: string): Prom
 
     const session = await getSession();
 
-    if (!session || !["Администратор","Руководство","Склад"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -81,7 +81,7 @@ export async function restoreInventoryItems(ids: string[], reason: string): Prom
             })
             .where(inArray(inventoryItems.id, ids));
 
-        await logAction("Восстановление товаров","inventory_item_bulk", ids.join(","), { count: ids.length, reason });
+        await logAction("Восстановление товаров", "inventory_item_bulk", ids.join(","), { count: ids.length, reason });
         invalidateCache("warehouse:*");
         revalidatePath("/dashboard/warehouse");
 
@@ -89,11 +89,11 @@ export async function restoreInventoryItems(ids: string[], reason: string): Prom
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/bulk-actions",
-            method:"restoreInventoryItems",
+            path: "/dashboard/warehouse/bulk-actions",
+            method: "restoreInventoryItems",
             details: { ids, reason }
         });
-        return { success: false, error:"Не удалось восстановить товары" };
+        return { success: false, error: "Не удалось восстановить товары" };
     }
 }
 
@@ -108,8 +108,8 @@ export async function deleteInventoryItems(ids: string[]): Promise<ActionResult>
 
     const session = await getSession();
 
-    if (!session || session.roleName !=="Администратор") {
-        return { success: false, error:"Только администратор может удалять товары навсегда" };
+    if (!session || session.roleName !== "Администратор") {
+        return { success: false, error: "Только администратор может удалять товары навсегда" };
     }
 
     // Optional password check logic could be here if needed, 
@@ -117,7 +117,7 @@ export async function deleteInventoryItems(ids: string[]): Promise<ActionResult>
 
     try {
         await db.delete(inventoryItems).where(inArray(inventoryItems.id, ids));
-        await logAction("Удаление товаров","inventory_item_bulk", ids.join(","), { count: ids.length });
+        await logAction("Удаление товаров", "inventory_item_bulk", ids.join(","), { count: ids.length });
         invalidateCache("warehouse:*");
         revalidatePath("/dashboard/warehouse");
 
@@ -125,11 +125,11 @@ export async function deleteInventoryItems(ids: string[]): Promise<ActionResult>
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/bulk-actions",
-            method:"deleteInventoryItems",
+            path: "/dashboard/warehouse/bulk-actions",
+            method: "deleteInventoryItems",
             details: { ids }
         });
-        return { success: false, error:"Не удалось удалить товары" };
+        return { success: false, error: "Не удалось удалить товары" };
     }
 }
 
@@ -137,6 +137,9 @@ export async function deleteInventoryItems(ids: string[]): Promise<ActionResult>
  * Automatically archive items with 0 stock that haven't been updated for 3 months
  */
 export async function autoArchiveStaleItems(): Promise<ActionResult<{ archivedCount: number }>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const threeMonthsAgo = new Date();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
@@ -156,7 +159,7 @@ export async function autoArchiveStaleItems(): Promise<ActionResult<{ archivedCo
         }
 
         const ids = staleItems.map(i => i.id);
-        const res = await archiveInventoryItems(ids,"Автоматическая архивация (остаток 0 более 3 месяцев)");
+        const res = await archiveInventoryItems(ids, "Автоматическая архивация (остаток 0 более 3 месяцев)");
 
         if (res.success) {
             return {
@@ -167,15 +170,15 @@ export async function autoArchiveStaleItems(): Promise<ActionResult<{ archivedCo
 
         return {
             success: false,
-            error: res.error ||"Не удалось запустить авто-архивацию"
+            error: res.error || "Не удалось запустить авто-архивацию"
         };
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/bulk-actions",
-            method:"autoArchiveStaleItems"
+            path: "/dashboard/warehouse/bulk-actions",
+            method: "autoArchiveStaleItems"
         });
-        return { success: false, error:"Не удалось запустить авто-архивацию" };
+        return { success: false, error: "Не удалось запустить авто-архивацию" };
     }
 }
 
@@ -190,8 +193,8 @@ export async function bulkMoveInventoryItems(ids: string[], targetLocationId: st
 
     const session = await getSession();
 
-    if (!session || !["Администратор","Руководство","Склад"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -207,7 +210,7 @@ export async function bulkMoveInventoryItems(ids: string[], targetLocationId: st
                 .where(eq(storageLocations.id, targetLocationId))
                 .limit(1);
 
-            const targetName = targetLoc?.name ||"Неизвестный склад";
+            const targetName = targetLoc?.name || "Неизвестный склад";
             const logMessage = `Массовое перемещение: ${reason} (на ${targetName})`;
 
             // 3. Group quantities by itemId in memory
@@ -238,7 +241,7 @@ export async function bulkMoveInventoryItems(ids: string[], targetLocationId: st
                 newTransactions.push({
                     itemId: id,
                     changeAmount: totalQty,
-                    type:"transfer" as const,
+                    type: "transfer" as const,
                     reason: logMessage,
                     storageLocationId: targetLocationId,
                     createdBy: session.id
@@ -265,11 +268,11 @@ export async function bulkMoveInventoryItems(ids: string[], targetLocationId: st
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/bulk-actions",
-            method:"bulkMoveInventoryItems",
+            path: "/dashboard/warehouse/bulk-actions",
+            method: "bulkMoveInventoryItems",
             details: { ids, targetLocationId }
         });
-        return { success: false, error:"Не удалось переместить товары" };
+        return { success: false, error: "Не удалось переместить товары" };
     }
 }
 
@@ -284,8 +287,8 @@ export async function bulkUpdateInventoryCategory(ids: string[], categoryId: str
 
     const session = await getSession();
 
-    if (!session || !["Администратор","Руководство","Склад"].includes(session.roleName)) {
-        return { success: false, error:"Недостаточно прав" };
+    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
+        return { success: false, error: "Недостаточно прав" };
     }
 
     try {
@@ -299,10 +302,10 @@ export async function bulkUpdateInventoryCategory(ids: string[], categoryId: str
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/bulk-actions",
-            method:"bulkUpdateInventoryCategory",
+            path: "/dashboard/warehouse/bulk-actions",
+            method: "bulkUpdateInventoryCategory",
             details: { ids, categoryId }
         });
-        return { success: false, error:"Не удалось обновить категорию" };
+        return { success: false, error: "Не удалось обновить категорию" };
     }
 }

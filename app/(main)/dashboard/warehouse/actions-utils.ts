@@ -1,27 +1,27 @@
 "use server";
 
-import { z } from"zod";
+import { z } from "zod";
 
-import fs from"fs";
-import path from"path";
-import sharp from"sharp";
-import { eq } from"drizzle-orm";
-import { db } from"@/lib/db";
-import { inventoryCategories } from"@/lib/schema";
-import { logError } from"@/lib/error-logger";
-import { LOCAL_STORAGE_ROOT } from"@/lib/local-storage";
-import { sanitizeFileName } from"./shared-utils";
+import fs from "fs";
+import path from "path";
+import sharp from "sharp";
+import { eq } from "drizzle-orm";
+import { db } from "@/lib/db";
+import { inventoryCategories } from "@/lib/schema";
+import { logError } from "@/lib/error-logger";
+import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
+import { sanitizeFileName } from "./shared-utils";
 
 /**
  * Builds a category hierarchy path (text format for display/search, e.g.,"Category > Subcategory").
  */
 export async function getCategoryFullPath(categoryId: string | null): Promise<string> {
     const validation = z.string().uuid().nullable().optional().or(z.literal("")).safeParse(categoryId);
-    if (!validation.success) return"";
+    if (!validation.success) return "";
     const cleanId = validation.data || null;
 
     try {
-        if (!cleanId) return"";
+        if (!cleanId) return "";
 
         const paths: string[] = [];
         let currentId: string | null = cleanId;
@@ -44,11 +44,11 @@ export async function getCategoryFullPath(categoryId: string | null): Promise<st
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/actions-utils",
-            method:"getCategoryFullPath",
+            path: "/dashboard/warehouse/actions-utils",
+            method: "getCategoryFullPath",
             details: { categoryId }
         });
-        return"";
+        return "";
     }
 }
 
@@ -57,11 +57,11 @@ export async function getCategoryFullPath(categoryId: string | null): Promise<st
  */
 export async function getCategoryPath(categoryId: string | null): Promise<string> {
     const validation = z.string().uuid().nullable().optional().or(z.literal("")).safeParse(categoryId);
-    if (!validation.success) return"Uncategorized";
+    if (!validation.success) return "Uncategorized";
     const cleanId = validation.data || null;
 
     try {
-        if (!cleanId) return"Uncategorized";
+        if (!cleanId) return "Uncategorized";
 
         const paths: string[] = [];
         let currentId: string | null = cleanId;
@@ -84,11 +84,11 @@ export async function getCategoryPath(categoryId: string | null): Promise<string
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/actions-utils",
-            method:"getCategoryPath",
+            path: "/dashboard/warehouse/actions-utils",
+            method: "getCategoryPath",
             details: { categoryId }
         });
-        return"Uncategorized";
+        return "Uncategorized";
     }
 }
 
@@ -122,8 +122,8 @@ export async function isDescendant(nodeId: string, possibleAncestorId: string): 
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/actions-utils",
-            method:"isDescendant",
+            path: "/dashboard/warehouse/actions-utils",
+            method: "isDescendant",
             details: { nodeId, possibleAncestorId }
         });
         return false;
@@ -162,13 +162,13 @@ export async function updateChildrenPaths(parentId: string) {
 
         const parent = allCategories.find(c => c.id === parentId);
         if (parent) {
-            await updateBatch(parentId, parent.fullPath ||"");
+            await updateBatch(parentId, parent.fullPath || "");
         }
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/actions-utils",
-            method:"updateChildrenPaths",
+            path: "/dashboard/warehouse/actions-utils",
+            method: "updateChildrenPaths",
             details: { parentId }
         });
     }
@@ -180,11 +180,30 @@ export async function updateChildrenPaths(parentId: string) {
 export async function saveFile(file: File | null, directoryPath: string): Promise<string | null> {
     if (!file || file.size === 0) return null;
 
-    let buffer: Buffer = Buffer.from(await file.arrayBuffer());
-    const MAX_SIZE = 700 * 1024; // 700KB
-    let extension = path.extname(file.name) ||".jpg";
+    // Security check: Limit file size to 10MB to prevent memory OOM
+    const ABSOLUTE_MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > ABSOLUTE_MAX_SIZE) {
+        console.warn(`File size ${file.size} exceeds maximum limit of ${ABSOLUTE_MAX_SIZE}`);
+        return null;
+    }
 
-    if (file.type.startsWith("image/") && buffer.length > MAX_SIZE) {
+    // Security check: Only allow specific image types
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+        console.warn(`File type ${file.type} is not allowed`);
+        return null;
+    }
+
+    let buffer: Buffer = Buffer.from(await file.arrayBuffer());
+    const COMPRESSION_THRESHOLD = 700 * 1024; // 700KB
+    let extension = path.extname(file.name).toLowerCase();
+
+    // Normalize extension and ensure it's safe
+    if (![".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"].includes(extension)) {
+        extension = ".jpg";
+    }
+
+    if (file.type.startsWith("image/") && buffer.length > COMPRESSION_THRESHOLD && file.type !== "image/svg+xml") {
         try {
             buffer = await sharp(buffer)
                 .rotate()
@@ -195,12 +214,12 @@ export async function saveFile(file: File | null, directoryPath: string): Promis
                 .webp({ quality: 80 })
                 .toBuffer();
 
-            extension =".webp";
+            extension = ".webp";
         } catch (e) {
             await logError({
                 error: e,
-                path:"/dashboard/warehouse/actions-utils",
-                method:"saveFile",
+                path: "/dashboard/warehouse/actions-utils",
+                method: "saveFile",
                 details: { filename: file.name }
             });
         }
@@ -222,8 +241,8 @@ export async function saveFile(file: File | null, directoryPath: string): Promis
     } catch (error) {
         await logError({
             error,
-            path:"/dashboard/warehouse/actions-utils",
-            method:"saveFile",
+            path: "/dashboard/warehouse/actions-utils",
+            method: "saveFile",
             details: { directoryPath }
         });
         return null;

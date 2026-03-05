@@ -419,7 +419,7 @@ export function AttributeCustomModal({
                         ) : (
                             <div className="flex items-center gap-2">
                                 <Plus className="w-5 h-5" />
-                                <span>Добавить опцию</span>
+                                <span>Добавить характеристику</span>
                             </div>
                         )}
                     </Button>

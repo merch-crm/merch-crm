@@ -1,18 +1,18 @@
 "use client";
 
-import React from"react";
+import React from "react";
 import {
     Pencil,
     Plus,
     X,
-} from"lucide-react";
-import { getColorHex, isLightColor, getParamConfig } from"./item-ui-utils";
-import { CLOTHING_QUALITIES } from"@/app/(main)/dashboard/warehouse/category-utils";
-import { Select } from"@/components/ui/select";
-import { InventoryItem, AttributeType, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
-import { Session } from"@/lib/auth";
-import { cn } from"@/lib/utils";
-import { Button } from"@/components/ui/button";
+} from "lucide-react";
+import { getColorHex, isLightColor, getParamConfig } from "./item-ui-utils";
+import { CLOTHING_QUALITIES } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { Select } from "@/components/ui/select";
+import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
+import { Session } from "@/lib/auth";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface ItemDataProps {
     item: InventoryItem;
@@ -46,9 +46,16 @@ export const ItemGeneralInfo = React.memo(({
 }: ItemGeneralInfoProps) => {
     // Helper to get descriptive name for a code
     const getAttrLabel = (typeSlug: string, value: string | number | null | undefined): string => {
-        if (!value) return"—";
+        if (!value) return "—";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
-        return attr ? attr.name : String(value);
+        let label = attr ? attr.name : String(value);
+
+        // Страна всегда с большой буквы
+        if (typeSlug === 'country' && label && label !== '—') {
+            label = label.charAt(0).toUpperCase() + label.slice(1);
+        }
+
+        return label;
     };
 
     // Filter dynamic attributes
@@ -56,24 +63,24 @@ export const ItemGeneralInfo = React.memo(({
     const dynamicEntries = Object.entries(dynamicAttributeValues).filter(([key, val]) =>
         val !== undefined &&
         val !== null &&
-        (isEditing || val !=="") && // Show empty values while editing
+        (isEditing || val !== "") && // Show empty values while editing
         typeof val !== 'object' &&
         key !== 'thumbnailSettings'
     );
 
     // Core SKU parameters
     const skuParams = [
-        { label:"Качество", slug:"quality", code: isEditing ? editData.qualityCode : item.qualityCode },
-        { label:"Бренд", slug:"brand", code: isEditing ? editData.brandCode : item.brandCode },
-        { label:"Материал", slug:"material", code: isEditing ? editData.materialCode : item.materialCode },
-        { label:"Размер", slug:"size", code: isEditing ? editData.sizeCode : item.sizeCode },
-        { label:"Цвет", slug:"color", code: isEditing ? editData.attributeCode : item.attributeCode },
+        { label: "Качество", slug: "quality", code: isEditing ? editData.qualityCode : item.qualityCode },
+        { label: "Бренд", slug: "brand", code: isEditing ? editData.brandCode : item.brandCode },
+        { label: "Материал", slug: "material", code: isEditing ? editData.materialCode : item.materialCode },
+        { label: "Размер", slug: "size", code: isEditing ? editData.sizeCode : item.sizeCode },
+        { label: "Цвет", slug: "color", code: isEditing ? editData.attributeCode : item.attributeCode },
     ].filter(p => p.code !== null); // Only filter out explicitly null (removed) values
 
     // Filter dynamic entries to avoid duplicates
     // List of all reserved SKU slugs that should NEVER appear as dynamic attributes
-    const reservedSkuSlugs = ["brand","quality","material","size","color"];
-    const skuLabels = ["Бренд","Качество","Материал","Размер","Цвет"];
+    const reservedSkuSlugs = ["brand", "quality", "material", "size", "color"];
+    const skuLabels = ["Бренд", "Качество", "Материал", "Размер", "Цвет"];
 
     const nonSkuDynamicEntries = dynamicEntries.filter(([key]) => {
         // Always exclude reserved slugs from dynamic attributes
@@ -114,7 +121,7 @@ export const ItemGeneralInfo = React.memo(({
                             >
                                 <div
                                     className={cn("w-8 h-8 shrink-0 flex items-center justify-center relative rounded-lg",
-                                        !config.customHex ?"bg-muted text-muted-foreground" :"text-white"
+                                        !config.customHex ? "bg-muted text-muted-foreground" : "text-white"
                                     )}
                                     style={config.customHex ? {
                                         backgroundColor: config.customHex,
@@ -122,7 +129,7 @@ export const ItemGeneralInfo = React.memo(({
                                     } : undefined}
                                 >
                                     <Icon className={cn("w-4 h-4 z-10",
-                                        config.customHex && isLightColor(config.customHex) ?"text-foreground/40" :""
+                                        config.customHex && isLightColor(config.customHex) ? "text-foreground/40" : ""
                                     )} />
                                 </div>
                                 <div className="flex flex-col min-w-0 flex-1 leading-tight">
@@ -132,7 +139,7 @@ export const ItemGeneralInfo = React.memo(({
                                     <div className="text-sm font-bold text-foreground truncate">
                                         {isEditing ? (
                                             <Select
-                                                value={(param.code as string) ||""}
+                                                value={(param.code as string) || ""}
                                                 onChange={(val) => {
                                                     onUpdateAttribute(param.slug, val);
                                                     if (param.slug === 'quality') onUpdateField('qualityCode', val);
@@ -191,36 +198,36 @@ export const ItemGeneralInfo = React.memo(({
                         // With row-span-1, we might want it even denser. 
                         // Let's stick to the current col counts but make items smaller.
                         const xlRemainder = total % 3;
-                        let xlSpan ="xl:col-span-2";
+                        let xlSpan = "xl:col-span-2";
                         if (xlRemainder === 1 && idx === total - 1) {
-                            xlSpan ="xl:col-span-6";
+                            xlSpan = "xl:col-span-6";
                         } else if (xlRemainder === 2 && idx >= total - 2) {
-                            xlSpan ="xl:col-span-3";
+                            xlSpan = "xl:col-span-3";
                         }
 
                         // MD Logic (2 cols base = spans of 3)
                         const mdRemainder = total % 2;
-                        let mdSpan ="md:col-span-3";
+                        let mdSpan = "md:col-span-3";
                         if (mdRemainder === 1 && idx === total - 1) {
-                            mdSpan ="md:col-span-6";
+                            mdSpan = "md:col-span-6";
                         }
 
                         const colorVariants: Record<string, { light: string, solid: string, rgb: string }> = {
-                            quality: { light:"bg-violet-100", solid:"bg-violet-500", rgb:"139, 92, 246" },
-                            brand: { light:"bg-blue-100", solid:"bg-blue-500", rgb:"59, 130, 246" },
-                            material: { light:"bg-emerald-100", solid:"bg-emerald-500", rgb:"16, 185, 129" },
-                            size: { light:"bg-amber-100", solid:"bg-amber-500", rgb:"245, 158, 11" },
-                            color: { light:"bg-rose-100", solid:"bg-rose-500", rgb:"244, 63, 94" },
+                            quality: { light: "bg-violet-100", solid: "bg-violet-500", rgb: "139, 92, 246" },
+                            brand: { light: "bg-blue-100", solid: "bg-blue-500", rgb: "59, 130, 246" },
+                            material: { light: "bg-emerald-100", solid: "bg-emerald-500", rgb: "16, 185, 129" },
+                            size: { light: "bg-amber-100", solid: "bg-amber-500", rgb: "245, 158, 11" },
+                            color: { light: "bg-rose-100", solid: "bg-rose-500", rgb: "244, 63, 94" },
                         };
-                        const variant = colorVariants[param.slug] || { light:"bg-muted", solid:"bg-muted-foreground", rgb:"148, 163, 184" };
-                        const iconColor = config.customHex ?"" : variant.solid.replace('bg-', 'text-');
+                        const variant = colorVariants[param.slug] || { light: "bg-muted", solid: "bg-muted-foreground", rgb: "148, 163, 184" };
+                        const iconColor = config.customHex ? "" : variant.solid.replace('bg-', 'text-');
 
                         return (
                             <div
                                 key={param.slug}
                                 className={cn("group bg-card/40 rounded-2xl p-5 border border-border transition-all flex flex-col justify-between min-h-[110px] h-full relative overflow-hidden col-span-6",
                                     mdSpan,
-                                    xlSpan,"hover:bg-card hover:border-border/80"
+                                    xlSpan, "hover:bg-card hover:border-border/80"
                                 )}
                             >
 
@@ -229,7 +236,7 @@ export const ItemGeneralInfo = React.memo(({
                                     <div className="flex items-center gap-2.5">
                                         <div
                                             className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-all duration-300",
-                                                !config.customHex ? variant.light : (isLightColor(config.customHex) ?"bg-muted/80 border border-border/50" :"")
+                                                !config.customHex ? variant.light : (isLightColor(config.customHex) ? "bg-muted/80 border border-border/50" : "")
                                             )}
                                             style={config.customHex && !isLightColor(config.customHex) ? {
                                                 backgroundColor: config.customHex + '15', // very light bg for custom colors
@@ -238,7 +245,7 @@ export const ItemGeneralInfo = React.memo(({
                                         >
                                             <Icon
                                                 className={cn("w-4 h-4 transition-transform",
-                                                    !config.customHex ? iconColor : (isLightColor(config.customHex) ?"text-muted-foreground" :"")
+                                                    !config.customHex ? iconColor : (isLightColor(config.customHex) ? "text-muted-foreground" : "")
                                                 )}
                                                 style={config.customHex && !isLightColor(config.customHex) ? { color: config.customHex } : undefined}
                                             />
@@ -282,7 +289,7 @@ export const ItemGeneralInfo = React.memo(({
 
                                 {/* Watermark Background Icon */}
                                 <Icon className={cn("absolute -right-4 -bottom-4 w-32 h-32 transition-transform duration-700 group-hover:scale-110 group-hover:rotate-6 pointer-events-none z-0",
-                                    !config.customHex ? [iconColor,"opacity-[0.03]"] : (isLightColor(config.customHex) ?"text-foreground opacity-[0.05]" :"opacity-[0.04]")
+                                    !config.customHex ? [iconColor, "opacity-[0.03]"] : (isLightColor(config.customHex) ? "text-foreground opacity-[0.05]" : "opacity-[0.04]")
                                 )} style={config.customHex && !isLightColor(config.customHex) ? { color: config.customHex } : undefined} />
 
                                 {/* Value: Bottom Aligned */}
@@ -290,7 +297,7 @@ export const ItemGeneralInfo = React.memo(({
                                     {isEditing ? (
                                         <div className="mt-1">
                                             <Select
-                                                value={(param.code as string) ||""}
+                                                value={(param.code as string) || ""}
                                                 onChange={(val) => {
                                                     onUpdateAttribute(param.slug, val);
                                                     if (param.slug === 'quality') onUpdateField('qualityCode', val);
@@ -359,11 +366,11 @@ export const ItemGeneralInfo = React.memo(({
                                             // Count available options (System + Dynamic)
                                             (() => {
                                                 const systemSkuTypes = [
-                                                    { slug:"brand", name:"Бренд" },
-                                                    { slug:"quality", name:"Качество" },
-                                                    { slug:"material", name:"Материал" },
-                                                    { slug:"size", name:"Размер" },
-                                                    { slug:"color", name:"Цвет" }
+                                                    { slug: "brand", name: "Бренд" },
+                                                    { slug: "quality", name: "Качество" },
+                                                    { slug: "material", name: "Материал" },
+                                                    { slug: "size", name: "Размер" },
+                                                    { slug: "color", name: "Цвет" }
                                                 ];
                                                 const allOptions = [...systemSkuTypes, ...attributeTypes];
                                                 // Deduplicate by slug
@@ -379,17 +386,17 @@ export const ItemGeneralInfo = React.memo(({
                                 value=""
                                 onChange={(slug) => {
                                     if (slug) {
-                                        onUpdateAttribute(slug,"");
+                                        onUpdateAttribute(slug, "");
                                     }
                                 }}
                                 className="absolute inset-0 w-full h-full z-10"
                                 options={(() => {
                                     const systemSkuTypes = [
-                                        { slug:"brand", name:"Бренд" },
-                                        { slug:"quality", name:"Качество" },
-                                        { slug:"material", name:"Материал" },
-                                        { slug:"size", name:"Размер" },
-                                        { slug:"color", name:"Цвет" }
+                                        { slug: "brand", name: "Бренд" },
+                                        { slug: "quality", name: "Качество" },
+                                        { slug: "material", name: "Материал" },
+                                        { slug: "size", name: "Размер" },
+                                        { slug: "color", name: "Цвет" }
                                     ];
                                     const allOptions = [...systemSkuTypes, ...attributeTypes];
                                     const uniqueOptions = Array.from(new Map(allOptions.map(item => [item.slug, item])).values());
@@ -417,4 +424,4 @@ export const ItemGeneralInfo = React.memo(({
     );
 });
 
-ItemGeneralInfo.displayName ="ItemGeneralInfo";
+ItemGeneralInfo.displayName = "ItemGeneralInfo";

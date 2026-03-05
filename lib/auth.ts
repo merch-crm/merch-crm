@@ -15,6 +15,7 @@ export interface Session extends JWTPayload {
     roleName: string;
     roleId: string;
     departmentName: string;
+    ua?: string; // User-Agent hash/string for session binding
     impersonatorId?: string; // ID of the admin who is impersonating
     impersonatorName?: string; // Name of the admin who is impersonating
     expires?: Date;
@@ -58,6 +59,7 @@ export async function decrypt(input: string): Promise<Session> {
         roleName: session.roleName || "",
         roleId: session.roleId || "",
         departmentName: session.departmentName || "",
+        ua: session.ua,
         impersonatorId: session.impersonatorId,
         impersonatorName: session.impersonatorName,
         expires: session.expires,
@@ -79,7 +81,17 @@ export async function getSession(): Promise<Session | null> {
     }
 
     try {
-        return await decrypt(session);
+        const parsed = await decrypt(session);
+
+        // Security check: Verify User-Agent to prevent session hijacking
+        const { headers } = await import("next/headers");
+        const currentUa = (await headers()).get("user-agent") || "unknown";
+        if (parsed.ua && parsed.ua !== currentUa) {
+            console.warn(`[Auth] Session Hijacking attempt detected! UA mismatch. User: ${parsed.email}`);
+            return null;
+        }
+
+        return parsed;
     } catch {
         return null;
     }

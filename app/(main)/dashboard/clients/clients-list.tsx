@@ -1,40 +1,31 @@
 "use client";
 
-import { useEffect, useCallback, useMemo } from"react";
-import { getClients, getManagers, updateClientField, getRegions } from"./actions/core.actions";
-import { bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients } from"./actions/bulk.actions";
-import { useDebounce } from"@/hooks/use-debounce";
-import { undoLastAction } from"../undo-actions";
-import { exportToCSV } from"@/lib/export-utils";
+import { useEffect, useCallback, useMemo, useState } from "react";
 import {
-    Users as UsersIcon,
-    Download,
-    Archive,
-    Trash2,
-    X
-} from"lucide-react";
-import { motion, AnimatePresence } from"framer-motion";
-import { useToast } from"@/components/ui/toast";
-import { playSound } from"@/lib/sounds";
-import { cn } from"@/lib/utils";
-import { ClientProfileDrawer } from"./client-profile-drawer";
-import { EditClientDialog } from"./edit-client-dialog";
-import { useSearchParams } from"next/navigation";
-import { createPortal } from"react-dom";
-import { Pagination } from"@/components/ui/pagination";
-import { useBranding } from"@/components/branding-provider";
-import { Button } from"@/components/ui/button";
-import type { ClientSummary as Client } from"@/lib/types";
-import { ConfirmDialog } from"@/components/ui/confirm-dialog";
-import { ClientFilterPanel } from"./components/client-filter-panel";
-import { ClientTable } from"./components/client-table";
+    getClients, getManagers, updateClientField, getRegions,
+    getClientTypeCounts, getAcquisitionSources, getActivityStats,
+    ClientFilters
+} from "./actions";
+import { useDebounce } from "@/hooks/use-debounce";
+import { ExportDialog } from "./components/export-dialog";
+import { useToast } from "@/components/ui/toast";
+import { ClientProfileDrawer } from "./client-profile-drawer";
+import { EditClientDialog } from "./edit-client-dialog";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Pagination } from "@/components/ui/pagination";
+import { useBranding } from "@/components/branding-provider";
+import type { ClientSummary as Client } from "@/lib/types";
+import { ClientTable } from "./components/client-table";
+import { ClientBulkActions } from "./components/client-bulk-actions";
+import { ClientListHeader } from "./components/client-list-header";
 
-
-import { useClientsState } from"./hooks/use-clients-state";
+import { useClientsState } from "./hooks/use-clients-state";
 
 export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: string | null, showFinancials?: boolean }) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
     const branding = useBranding();
-    const currencySymbol = branding.currencySymbol ||"₽";
+    const currencySymbol = branding.currencySymbol || "₽";
 
     const {
         viewState, setViewState,
@@ -43,13 +34,64 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         dialogs, setDialogs,
         selectedIds, setSelectedIds,
         managers, setManagers,
-        regions, setRegions
+        regions, setRegions,
+        sources, setSources,
+        typeCounts, setTypeCounts,
+        activityCounts, setActivityCounts
     } = useClientsState();
 
+    const [showAtRiskBanner, setShowAtRiskBanner] = useState(true);
+
     const debouncedSearch = useDebounce(filters.search, 400);
-    const searchParams = useSearchParams();
     const currentPage = Number(searchParams.get("page")) || 1;
     const { toast } = useToast();
+
+    // Синхронизация clientType и activityStatus с URL
+    useEffect(() => {
+        const typeFromUrl = searchParams.get("type") as "all" | "b2c" | "b2b" | null;
+        if (typeFromUrl && typeFromUrl !== filters.clientType) {
+            setFilters(prev => ({ ...prev, clientType: typeFromUrl }));
+        }
+
+        const activityFromUrl = searchParams.get("activityStatus") as ClientFilters['activityStatus'] | null;
+        if (activityFromUrl && ["all", "active", "attention", "at_risk", "inactive"].includes(activityFromUrl) && activityFromUrl !== filters.activityStatus) {
+            setFilters(prev => ({ ...prev, activityStatus: activityFromUrl as ClientFilters['activityStatus'] }));
+        }
+    }, [searchParams, filters.clientType, filters.activityStatus, setFilters]);
+
+    // Обработчик смены таба
+    const handleClientTypeChange = useCallback((type: "all" | "b2c" | "b2b") => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (type === "all") {
+            params.delete("type");
+        } else {
+            params.set("type", type);
+        }
+
+        // Сброс на первую страницу при смене фильтра
+        params.delete("page");
+
+        router.replace(`?${params.toString()}`, { scroll: false });
+        setFilters(prev => ({ ...prev, clientType: type, page: 1 }));
+    }, [router, searchParams, setFilters]);
+
+    // === НОВОЕ: Загрузка счётчиков ===
+    const fetchTypeCounts = useCallback(() => {
+        getClientTypeCounts(filters.showArchived).then(res => {
+            if (res.success && res.data) {
+                setTypeCounts(res.data);
+            }
+        });
+    }, [filters.showArchived, setTypeCounts]);
+
+    const fetchActivityCounts = useCallback(() => {
+        getActivityStats().then(res => {
+            if (res.success && res.data) {
+                setActivityCounts(res.data);
+            }
+        });
+    }, [setActivityCounts]);
 
     // Hydration after mount
     useEffect(() => {
@@ -70,9 +112,19 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         getRegions().then(res => {
             if (res.success && res.data) setRegions(res.data);
         });
+        getAcquisitionSources().then(res => {
+            if (res.success && res.data) setSources(res.data);
+        });
+
+        fetchTypeCounts();
+        fetchActivityCounts();
 
         return () => clearTimeout(t);
-    }, [setManagers, setRegions, setUiState, setViewState]);
+    }, [setManagers, setRegions, setSources, setUiState, setViewState, fetchTypeCounts, fetchActivityCounts]);
+
+    useEffect(() => {
+        fetchTypeCounts();
+    }, [filters.showArchived, fetchTypeCounts]);
 
     const addToHistory = useCallback((query: string) => {
         if (!query || query.length < 2) return;
@@ -94,7 +146,14 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             orderCount: filters.orderCount,
             region: filters.region,
             status: filters.status,
-            showArchived: filters.showArchived
+            showArchived: filters.showArchived,
+            clientType: filters.clientType,
+            managerId: filters.managerId,
+            acquisitionSource: filters.acquisitionSource,
+            activityStatus: filters.activityStatus,
+            minTotalAmount: (filters as Record<string, unknown>).minTotalAmount,
+            maxTotalAmount: (filters as Record<string, unknown>).maxTotalAmount,
+            rfmSegment: filters.rfmSegment,
         }).then(res => {
             if (res.success && res.data) {
                 setViewState(prev => ({
@@ -102,11 +161,13 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                     data: res.data as unknown as { clients: Client[], total: number, totalPages: number, currentPage: number },
                     loading: false
                 }));
+                fetchTypeCounts();
+                fetchActivityCounts();
             } else {
                 setViewState(prev => ({ ...prev, loading: false }));
             }
         });
-    }, [currentPage, debouncedSearch, filters.sortBy, filters.period, filters.orderCount, filters.region, filters.status, filters.showArchived, setViewState]);
+    }, [currentPage, debouncedSearch, filters, setViewState, fetchTypeCounts, fetchActivityCounts]);
 
     useEffect(() => {
         // Use a microtask/timeout to avoid synchronous state update warning
@@ -114,54 +175,13 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         return () => clearTimeout(t);
     }, [fetchClients]);
 
-    const handleBulkDelete = async () => {
-        setUiState(prev => ({ ...prev, isBulkUpdating: true, showDeleteConfirm: false }));
-        const res = await bulkDeleteClients(selectedIds);
-        setUiState(prev => ({ ...prev, isBulkUpdating: false }));
-        if (res.success) {
-            toast("Удалено:" + selectedIds.length,"success", {
-                action: {
-                    label:"Отменить",
-                    onClick: async () => {
-                        const undoRes = await undoLastAction();
-                        if (undoRes.success) {
-                            toast("Действие отменено","success");
-                            playSound("notification_success");
-                            fetchClients();
-                        } else {
-                            toast(undoRes.error ||"Ошибка","error");
-                        }
-                    }
-                }
-            });
-            playSound("client_deleted");
-            setSelectedIds([]);
-            fetchClients();
-        } else {
-            toast(res.error ||"Ошибка","error");
-        }
-    };
-
     const handleUpdateField = async (clientId: string, field: string, value: string | number | boolean | null) => {
         const res = await updateClientField(clientId, field, value);
         if (res?.success) {
-            toast("Обновлено","success", { mutation: true });
+            toast("Обновлено", "success", { mutation: true });
             fetchClients();
         } else {
-            toast(res?.error ||"Ошибка","error");
-        }
-    };
-
-    const handleBulkArchive = async () => {
-        setUiState(prev => ({ ...prev, isBulkUpdating: true }));
-        const res = await bulkArchiveClients(selectedIds, !filters.showArchived);
-        setUiState(prev => ({ ...prev, isBulkUpdating: false }));
-        if (res?.success) {
-            toast(filters.showArchived ?"Восстановлено" :"Архивировано","success");
-            setSelectedIds([]);
-            fetchClients();
-        } else {
-            toast(res?.error ||"Ошибка","error");
+            toast(res?.error || "Ошибка", "error");
         }
     };
 
@@ -186,39 +206,55 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         );
     }, [setSelectedIds]);
 
-    const handleExport = useCallback(() => {
-        const selectedClients = (viewState.data?.clients || []).filter(c => selectedIds.includes(c.id));
-        exportToCSV(selectedClients,"clients_export", [
-            { header:"Фамилия", key:"lastName" },
-            { header:"Имя", key:"firstName" },
-            { header:"Компания", key:"company" },
-            { header:"Телефон", key:"phone" },
-            { header:"Email", key:"email" }
-        ]);
-        toast("Экспорт завершен","success");
-        playSound("notification_success");
-    }, [viewState.data, selectedIds, toast]);
+    const handleActivityStatusChange = useCallback((status: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (status === "all") {
+            params.delete("activityStatus");
+        } else {
+            params.set("activityStatus", status);
+        }
+
+        // Сброс на первую страницу при смене фильтра
+        params.delete("page");
+
+        router.replace(`?${params.toString()}`, { scroll: false });
+        setFilters(prev => ({ ...prev, activityStatus: status as "all" | "active" | "attention" | "at_risk" | "inactive", page: 1 }));
+    }, [router, searchParams, setFilters]);
+
+    const handleExportClick = useCallback(() => {
+        setUiState(prev => ({ ...prev, showExportDialog: true }));
+    }, [setUiState]);
 
     if (viewState.loading && !viewState.data) {
-        return <div className="text-slate-400 p-[--padding-xl] text-center font-bold text-[11px]">Загрузка...</div>;
+        return <div className="text-slate-400 p-[--padding-xl] text-center font-bold text-xs">Загрузка...</div>;
     }
 
     return (
-        <div className="space-y-3" data-testid="clients-list">
-            <ClientFilterPanel
+        <div className="space-y-3">
+            <ClientListHeader
                 filters={filters}
                 setFilters={setFilters}
+                typeCounts={typeCounts}
+                activityCounts={activityCounts}
+                showAtRiskBanner={showAtRiskBanner}
                 uiState={uiState}
                 setUiState={setUiState}
-                regions={regions}
-                onAddToHistory={addToHistory}
+                referenceData={{ regions, managers, sources }}
+                handlers={{
+                    onClientTypeChange: handleClientTypeChange,
+                    onActivityStatusChange: handleActivityStatusChange,
+                    onDismissAtRiskBanner: () => setShowAtRiskBanner(false),
+                    onExportClick: handleExportClick,
+                    addToHistory,
+                }}
             />
 
             <div className="px-1 flex items-center justify-between">
-                <p className="text-[11px] font-bold text-slate-500">
+                <p className="text-xs font-bold text-slate-500">
                     Найдено: <span className="text-slate-900">{viewState.data?.total || 0}</span>
                 </p>
-                <div className="text-[11px] font-black text-slate-300">
+                <div className="text-xs font-bold text-slate-300">
                     Sync: {new Date().toLocaleTimeString()}
                 </div>
             </div>
@@ -240,23 +276,27 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 now={viewState.now}
             />
 
-            {clientsList.length === 0 && (
-                <div className="text-center py-20">
-                    <p className="text-sm font-bold text-slate-400 leading-loose">Ничего не найдено</p>
-                </div>
-            )}
+            {
+                clientsList.length === 0 && (
+                    <div className="text-center py-20">
+                        <p className="text-sm font-bold text-slate-400 leading-loose">Ничего не найдено</p>
+                    </div>
+                )
+            }
 
-            {(viewState.data?.total || 0) > 0 && (
-                <Pagination
-                    totalItems={viewState.data?.total || 0}
-                    pageSize={10}
-                    currentPage={currentPage}
-                    itemNames={['клиент', 'клиента', 'клиентов']}
-                />
-            )}
+            {
+                (viewState.data?.total || 0) > 0 && (
+                    <Pagination
+                        totalItems={viewState.data?.total || 0}
+                        pageSize={10}
+                        currentPage={currentPage}
+                        itemNames={['клиент', 'клиента', 'клиентов']}
+                    />
+                )
+            }
 
             <ClientProfileDrawer
-                clientId={dialogs.selectedClientId ||""}
+                clientId={dialogs.selectedClientId || ""}
                 isOpen={!!dialogs.selectedClientId}
                 onClose={() => setDialogs(prev => ({ ...prev, selectedClientId: null }))}
                 onEdit={() => {
@@ -269,124 +309,45 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 userRoleName={userRoleName}
             />
 
-            {dialogs.editingClient && (
-                <EditClientDialog
-                    client={dialogs.editingClient}
-                    isOpen={!!dialogs.editingClient}
-                    onClose={() => {
-                        setDialogs(prev => ({ ...prev, editingClient: null }));
-                        fetchClients();
-                    }}
-                />
-            )}
+            {
+                dialogs.editingClient && (
+                    <EditClientDialog
+                        client={dialogs.editingClient}
+                        isOpen={!!dialogs.editingClient}
+                        onClose={() => {
+                            setDialogs(prev => ({ ...prev, editingClient: null }));
+                            fetchClients();
+                        }}
+                    />
+                )
+            }
 
-            <AnimatePresence>
-                {selectedIds.length > 0 && viewState.mounted && createPortal(
-                    <motion.div
-                        initial={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, x:"-50%", scale: 1 }}
-                        exit={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
-                        className="fixed bottom-10 left-1/2 z-[100] flex items-center bg-white p-2.5 px-8 gap-3 rounded-full shadow-2xl border border-slate-200"
-                    >
-                        <div className="flex items-center gap-3 px-2">
-                            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-xs font-black text-white">
-                                {selectedIds.length}
-                            </div>
-                        </div>
-
-                        <div className="w-px h-6 bg-slate-200 mx-1" />
-
-                        <div className="flex items-center gap-1">
-                            {["Администратор","Управляющий","Отдел продаж"].includes(userRoleName ||"") && (
-                                <Button type="button" variant="ghost" onClick={handleExport} className="h-9 px-4 rounded-full text-[11px] font-bold">
-                                    <Download className="w-3.5 h-3.5 mr-2" /> Экспорт
-                                </Button>
-                            )}
-
-                            <div className="relative">
-                                <Button
-                                    type="button"
-                                    onClick={() => setUiState(prev => ({ ...prev, showManagerSelect: !prev.showManagerSelect }))}
-                                    className={cn("h-9 px-4 rounded-full text-[11px] font-bold", uiState.showManagerSelect ?"bg-slate-900 text-white" :"bg-slate-50 text-slate-600")}
-                                >
-                                    <UsersIcon className="w-3.5 h-3.5 mr-2" /> Менеджер
-                                </Button>
-
-                                {uiState.showManagerSelect && (
-                                    <div className="absolute bottom-full left-0 mb-4 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 z-[110]">
-                                        <div className="px-3 py-2 text-[11px] font-black text-slate-400">Выбор менеджера</div>
-                                        <div className="max-h-60 overflow-y-auto">
-                                            <button
-                                                type="button"
-                                                onClick={async () => {
-                                                    const res = await bulkUpdateClientManager(selectedIds,"");
-                                                    if (res.success) {
-                                                        toast("Обновлено","success");
-                                                        setSelectedIds([]);
-                                                        fetchClients();
-                                                    }
-                                                    setUiState(prev => ({ ...prev, showManagerSelect: false }));
-                                                }}
-                                                className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-bold"
-                                            >
-                                                Без менеджера
-                                            </button>
-                                            {managers.map(m => (
-                                                <button
-                                                    key={m.id}
-                                                    type="button"
-                                                    onClick={async () => {
-                                                        const res = await bulkUpdateClientManager(selectedIds, m.id);
-                                                        if (res.success) {
-                                                            toast(`Назначен: ${m.name}`,"success");
-                                                            setSelectedIds([]);
-                                                            fetchClients();
-                                                        }
-                                                        setUiState(prev => ({ ...prev, showManagerSelect: false }));
-                                                    }}
-                                                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-slate-50 text-xs font-bold"
-                                                >
-                                                    {m.name}
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-
-                            {["Администратор","Управляющий"].includes(userRoleName ||"") && (
-                                <Button type="button" variant="ghost" onClick={handleBulkArchive} className="h-9 px-4 rounded-full text-[11px] font-bold hover:bg-amber-50 text-amber-600">
-                                    <Archive className="w-3.5 h-3.5 mr-2" /> В архив
-                                </Button>
-                            )}
-
-                            {userRoleName ==="Администратор" && (
-                                <Button type="button" variant="ghost" onClick={() => setUiState(prev => ({ ...prev, showDeleteConfirm: true }))} className="h-9 px-4 rounded-full text-[11px] font-bold text-rose-500 hover:bg-rose-50">
-                                    <Trash2 className="w-3.5 h-3.5 mr-2" /> Удалить
-                                </Button>
-                            )}
-
-                            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-                            <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedIds([])} className="w-9 h-9 rounded-full bg-slate-100">
-                                <X className="w-4 h-4" />
-                            </Button>
-                        </div>
-                    </motion.div>,
-                    document.body
-                )}
-            </AnimatePresence>
-
-            <ConfirmDialog
-                isOpen={uiState.showDeleteConfirm}
-                onClose={() => setUiState(prev => ({ ...prev, showDeleteConfirm: false }))}
-                onConfirm={handleBulkDelete}
-                title="Удаление записей"
-                description={`Вы уверены что хотите удалить выбраных клиентов? Это действие нельзя отменить.`}
-                variant="destructive"
-                confirmText="Удалить"
-                isLoading={uiState.isBulkUpdating}
+            <ClientBulkActions
+                selectedIds={selectedIds}
+                setSelectedIds={setSelectedIds}
+                managers={managers}
+                userRoleName={userRoleName}
+                fetchClients={fetchClients}
+                handleExportClick={handleExportClick}
+                showArchived={filters.showArchived}
+                mounted={viewState.mounted}
             />
-        </div>
+
+            <ExportDialog
+                open={uiState.showExportDialog}
+                onClose={() => setUiState(prev => ({ ...prev, showExportDialog: false }))}
+                selectedIds={selectedIds.length > 0 ? selectedIds : undefined}
+                filters={{
+                    clientType: filters.clientType,
+                    managerId: filters.managerId,
+                    acquisitionSource: filters.acquisitionSource,
+                    funnelStage: filters.status === "lost" ? "lost" : undefined,
+                    activityStatus: filters.activityStatus,
+                    rfmSegment: filters.rfmSegment,
+                    search: debouncedSearch,
+                }}
+                totalCount={viewState.data?.total || 0}
+            />
+        </div >
     );
 }

@@ -1,5 +1,4 @@
 import { LayoutGrid, Tag, Ruler, CheckCircle2, Shirt, Scale, Box, Package, ExternalLink } from "lucide-react";
-import { formatUnit } from "@/lib/utils";
 import { ItemFormData, InventoryAttribute, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
 
 interface AttributesSectionProps {
@@ -41,7 +40,6 @@ export function AttributesSection({
                         { label: "Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
                         { label: "Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
                         { label: "Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
-                        { label: "Ед. изм.", value: formatUnit(formData.unit), icon: Scale },
                         // Packaging specific
                         {
                             label: "Габариты",
@@ -128,7 +126,7 @@ export function AttributesSection({
 
                 {/* Custom Extra Attributes if any */}
                 {(() => {
-                    const predefinedKeys = ["brand", "color", "size", "quality", "material", "unit", "width", "height", "depth", "weight", "packagingType", "supplierName", "supplierLink", "minBatch", "features"];
+                    const predefinedKeys = ["brand", "color", "size", "quality", "material", "width", "height", "depth", "weight", "packagingType", "supplierName", "supplierLink", "minBatch", "features"];
 
                     const filteredItems = Object.entries(formData.attributes || {})
                         .map(([key, value]) => {
@@ -140,7 +138,13 @@ export function AttributesSection({
                             if (!type) return null;
 
                             const attr = dynamicAttributes?.find(a => a.type === key && a.value === value);
-                            const displayValue = attr?.name || value;
+                            let displayValue = attr?.name || value;
+
+                            // Страна всегда с большой буквы
+                            const isCountry = type.slug === 'country' || type.name.toLowerCase().includes('страна');
+                            if (isCountry && displayValue) {
+                                displayValue = displayValue.charAt(0).toUpperCase() + displayValue.slice(1);
+                            }
 
                             return {
                                 label: type.name,
@@ -154,7 +158,7 @@ export function AttributesSection({
                             if (!chip.showInName) return false;
                             const lowerSlug = chip.slug.toLowerCase();
                             if (lowerSlug.endsWith('code')) return false;
-                            if (["unit", "thumbnailsettings"].includes(lowerSlug)) return false;
+                            if (["thumbnailsettings"].includes(lowerSlug)) return false;
                             return true;
                         });
 
