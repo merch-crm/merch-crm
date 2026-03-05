@@ -7,7 +7,7 @@ import { useDuplicateCheck } from '@/app/(main)/dashboard/clients/hooks/use-dupl
 const mockCheckClientDuplicates = vi.fn();
 
 vi.mock('@/app/(main)/dashboard/clients/actions/core.actions', () => ({
-    checkClientDuplicates: (...args: any[]) => mockCheckClientDuplicates(...args),
+    checkClientDuplicates: (...args: Parameters<typeof mockCheckClientDuplicates>) => mockCheckClientDuplicates(...args),
 }));
 
 describe('useDuplicateCheck', () => {
