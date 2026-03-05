@@ -76,36 +76,39 @@ import {
 describe('getInventoryItems', () => {
     beforeEach(() => vi.clearAllMocks());
 
-    it('возвращает список товаров без фильтров', async () => {
-        const items = [{ id: 'i1', name: 'Item 1', quantity: 10 }];
-        mockFindMany.mockResolvedValueOnce(items);
-        mockSelect.mockReturnValue({
-            from: vi.fn().mockReturnValue({
-                where: vi.fn().mockReturnValue({
-                    limit: vi.fn().mockResolvedValue([{ count: 1 }]),
-                }),
+    vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+    const items = [{ id: 'i1', name: 'Item 1', quantity: 10 }];
+    mockFindMany.mockResolvedValueOnce(items);
+    mockSelect.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+                limit: vi.fn().mockResolvedValue([{ count: 1 }]),
             }),
-        });
-        const result = await getInventoryItems();
-        expect(result.success).toBe(true);
+        }),
     });
+    const result = await getInventoryItems();
+    expect(result.success).toBe(true);
+});
 
-    it('возвращает ошибку при сбое БД', async () => {
-        mockFindMany.mockRejectedValueOnce(new Error('DB error'));
-        const result = await getInventoryItems();
-        expect(result).toEqual({ success: false, error: 'Не удалось загрузить товары' });
-    });
+it('возвращает ошибку при сбое БД', async () => {
+    vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+    mockFindMany.mockRejectedValueOnce(new Error('DB error'));
+    const result = await getInventoryItems();
+    expect(result).toEqual({ success: false, error: 'Не удалось загрузить товары' });
+});
 });
 
 describe('getInventoryItem', () => {
     beforeEach(() => vi.clearAllMocks());
 
     it('возвращает ошибку при невалидном UUID', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const result = await getInventoryItem('not-a-uuid');
         expect(result).toEqual({ success: false, error: 'Некорректный ID товара' });
     });
 
     it('возвращает товар при валидном UUID', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const item = { id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', name: 'Test Item', quantity: 10 };
         mockFindFirst.mockResolvedValueOnce(item);
         const result = await getInventoryItem('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
@@ -145,12 +148,14 @@ describe('checkDuplicateItem', () => {
     beforeEach(() => vi.clearAllMocks());
 
     it('возвращает null если нет дубликатов', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindMany.mockResolvedValueOnce([]);
         const result = await checkDuplicateItem('Unique Item Name');
         expect(result.duplicate).toBeNull();
     });
 
     it('находит дубликат по SKU', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const existingItem = { id: 'i1', name: 'Existing Item', sku: 'SKU-001' };
         mockFindMany.mockResolvedValueOnce([existingItem]);
         mockFindFirst.mockResolvedValueOnce({ isArchived: false });
