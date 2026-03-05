@@ -129,7 +129,7 @@ describe('updatePromocode', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await updatePromocode('p1-uuid', validPromocodeData);
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('обновляет промокод', async () => {
@@ -204,7 +204,7 @@ describe('deletePromocode', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await deletePromocode('p1');
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: 'Недостаточно прав для удаления промокода' });
     });
 
     it('возвращает ошибку при пустом ID', async () => {

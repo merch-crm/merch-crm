@@ -208,6 +208,7 @@ describe('getUpcomingBirthdays', () => {
     });
 
     it('возвращает пустой массив если именинников нет', async () => {
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindMany.mockResolvedValueOnce([createMockUser({ birthday: '1990-06-15' })]);
         const result = await getUpcomingBirthdays();
         expect(result.success).toBe(true);

@@ -94,6 +94,7 @@ describe('getManagers', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает список менеджеров', async () => {
+        vi.mocked(getSession).mockResolvedValue(mockSession());
         const managers = [{ id: 'u1', name: 'Manager 1', roleName: 'Менеджер' }];
         mockFindMany.mockResolvedValueOnce(managers);
         const result = await getManagers();

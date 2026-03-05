@@ -176,6 +176,12 @@ describe('deleteChecklistItem', () => {
 
     it('удаляет пункт чеклиста', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        // deleteChecklistItem checks permissions:
+        // 1. find item to get taskId
+        mockFindFirst.mockResolvedValueOnce({ id: 'item1', taskId: 'task1' });
+        // 2. find task to get creator
+        mockFindFirst.mockResolvedValueOnce({ createdBy: 'u1' });
+
         const result = await deleteChecklistItem('88888888-8888-4888-8888-888888888888');
         expect(result).toEqual({ success: true });
     });
