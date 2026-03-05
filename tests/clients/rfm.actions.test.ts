@@ -17,7 +17,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         orderBy: vi.fn().mockReturnThis(),
         limit: vi.fn().mockReturnThis(),
         returning: vi.fn().mockResolvedValue([]),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -48,8 +48,8 @@ import { mockSession } from '../helpers/mocks';
 describe('RFM Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        vi.mocked(getSession).mockResolvedValue(mockSession() as ReturnType<typeof mockSession>);
+        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
     describe('calculateClientRFM', () => {
@@ -87,7 +87,7 @@ describe('RFM Actions', () => {
                 { id: '1', daysSinceLastOrder: 10, totalOrdersCount: 20, totalOrdersAmount: 200000 },
                 { id: '2', daysSinceLastOrder: 300, totalOrdersCount: 1, totalOrdersAmount: 1000 }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockClients));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockClients) => void) => cb(mockClients));
 
             const result = await calculateAllClientsRFM();
 
@@ -105,7 +105,7 @@ describe('RFM Actions', () => {
                 { segment: 'champions', count: 5, avgRevenue: 100000 },
                 { segment: 'potential', count: 10, avgRevenue: 50000 }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockSegmentData));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockSegmentData) => void) => cb(mockSegmentData));
 
             const result = await getRFMStats();
 
@@ -123,9 +123,9 @@ describe('RFM Actions', () => {
             const mockClientsInSegment = [
                 { id: '1', lastName: 'Test', firstName: 'One', company: 'Co', rfmScore: '555', totalOrdersAmount: 100000, daysSinceLastOrder: 5 }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockClientsInSegment));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockClientsInSegment) => void) => cb(mockClientsInSegment));
 
-            const result = await getClientsByRFMSegment('champions' as any);
+            const result = await getClientsByRFMSegment('champions' as Parameters<typeof getClientsByRFMSegment>[0]);
 
             expect(result.success).toBe(true);
             if (result.success && result.data) {

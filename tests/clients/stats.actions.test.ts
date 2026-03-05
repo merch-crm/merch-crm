@@ -4,7 +4,6 @@ import {
     recalculateAllClientsStats,
     getClientsAtRisk,
     getClientsStatsOverview,
-    getOrdersDistribution,
     getActivityStats
 } from '@/app/(main)/dashboard/clients/actions/stats.actions';
 
@@ -51,7 +50,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Stats Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as ReturnType<typeof mockSession>);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
@@ -93,7 +92,7 @@ describe('Stats Actions', () => {
         });
 
         it('should block non-admins', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Manager' }) as any);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Manager' }) as ReturnType<typeof mockSession>);
             const result = await recalculateAllClientsStats();
             expect(result.success).toBe(false);
             if (!result.success) {
