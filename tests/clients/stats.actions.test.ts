@@ -20,7 +20,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         limit: vi.fn().mockReturnThis(),
         leftJoin: vi.fn().mockReturnThis(),
         returning: vi.fn().mockResolvedValue([]),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -52,7 +52,7 @@ describe('Stats Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
     describe('recalculateClientStats', () => {
@@ -65,7 +65,7 @@ describe('Stats Actions', () => {
                 lastOrder: new Date('2026-01-01'),
                 firstOrder: new Date('2025-01-01')
             }];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockStats));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockStats) => void) => cb(mockStats));
 
             const result = await recalculateClientStats(clientId);
 
@@ -82,7 +82,7 @@ describe('Stats Actions', () => {
             queryMock.clients.findMany.mockResolvedValueOnce([{ id: '1' }, { id: '2' }]);
 
             // Re-mocking for each client call
-            chainable.then.mockImplementation((cb: any) => cb([{ totalCount: 0 }]));
+            chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([{ totalCount: 0 }]));
 
             const result = await recalculateAllClientsStats();
 
@@ -96,7 +96,9 @@ describe('Stats Actions', () => {
             vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Manager' }) as any);
             const result = await recalculateAllClientsStats();
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Недостаточно прав");
+            if (!result.success) {
+                expect(result.error).toBe("Недостаточно прав");
+            }
         });
     });
 
@@ -118,11 +120,11 @@ describe('Stats Actions', () => {
         it('should return overall activity summary', async () => {
             // total, active, atRisk, new, avg (5 select calls)
             vi.mocked(chainable.then)
-                .mockImplementationOnce((cb: any) => cb([{ count: 10 }])) // total
-                .mockImplementationOnce((cb: any) => cb([{ count: 5 }]))  // active
-                .mockImplementationOnce((cb: any) => cb([{ count: 3 }]))  // atRisk
-                .mockImplementationOnce((cb: any) => cb([{ count: 2 }]))  // new
-                .mockImplementationOnce((cb: any) => cb([{ avgOrders: '5', avgRevenue: '5000' }])); // avg
+                .mockImplementationOnce((cb: (arg: { count: number }[]) => void) => cb([{ count: 10 }])) // total
+                .mockImplementationOnce((cb: (arg: { count: number }[]) => void) => cb([{ count: 5 }]))  // active
+                .mockImplementationOnce((cb: (arg: { count: number }[]) => void) => cb([{ count: 3 }]))  // atRisk
+                .mockImplementationOnce((cb: (arg: { count: number }[]) => void) => cb([{ count: 2 }]))  // new
+                .mockImplementationOnce((cb: (arg: { avgOrders: string, avgRevenue: string }[]) => void) => cb([{ avgOrders: '5', avgRevenue: '5000' }])); // avg
 
             queryMock.clients.findMany.mockResolvedValueOnce([{ id: '1', lastName: 'T', firstName: 'C', totalOrdersAmount: 1000 }]); // top
 
@@ -149,7 +151,7 @@ describe('Stats Actions', () => {
                 atRisk: 3,
                 inactive: 2
             }];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockBuckets));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockBuckets) => void) => cb(mockBuckets));
 
             const result = await getActivityStats();
 

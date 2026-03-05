@@ -13,7 +13,7 @@ const { mockDb, chainable } = vi.hoisted(() => {
         from: vi.fn().mockReturnThis(),
         orderBy: vi.fn().mockReturnThis(),
         leftJoin: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
     const mockDb = {
@@ -37,7 +37,7 @@ describe('Export Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(getSession).mockResolvedValue(mockSession() as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
     describe('getExportData', () => {
@@ -53,7 +53,7 @@ describe('Export Actions', () => {
                 { lastName: 'Ivanov', firstName: 'Ivan', phone: '123' },
                 { lastName: 'Petrov', firstName: 'Petr', phone: '456' }
             ];
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockData));
+            chainable.then.mockImplementationOnce((cb: (arg: typeof mockData) => void) => cb(mockData));
 
             const result = await getExportData(validParams);
 

@@ -4,8 +4,7 @@ import {
     getClientGrowthData
 } from '@/app/(main)/dashboard/clients/actions/analytics/overview';
 import {
-    getFunnelAnalytics,
-    getRFMDistribution
+    getFunnelAnalytics
 } from '@/app/(main)/dashboard/clients/actions/analytics/distribution';
 import {
     getManagerPerformance,

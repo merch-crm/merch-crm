@@ -19,7 +19,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         returning: vi.fn().mockResolvedValue([]),
         delete: vi.fn().mockReturnThis(),
         values: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -33,7 +33,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         update: vi.fn().mockReturnValue(chainable),
         insert: vi.fn().mockReturnValue(chainable),
         delete: vi.fn().mockReturnValue(chainable),
-        transaction: vi.fn().mockImplementation(async (cb: any) => cb(mockDb)),
+        transaction: vi.fn().mockImplementation(async (cb: (arg: typeof mockDb) => Promise<unknown>) => cb(mockDb)),
     };
 
     return { mockDb, queryMock, chainable };
@@ -54,7 +54,7 @@ describe('Contacts Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(getSession).mockResolvedValue(mockSession() as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
     describe('getClientContacts', () => {
