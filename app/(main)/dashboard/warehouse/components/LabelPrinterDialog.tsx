@@ -1,16 +1,16 @@
 "use client";
-import React, { useState, useCallback, useMemo } from"react";
-import { InventoryItem, AttributeType, InventoryAttribute } from"../types";
-import { ResponsiveModal } from"@/components/ui/responsive-modal";
-import { useMediaQuery } from"@/hooks/use-media-query";
-import { useBranding } from"@/components/branding-provider";
-import { useToast } from"@/components/ui/toast";
-import { Printer } from"lucide-react";
-import { PrinterConfig, DisplayOptions } from"./label-printer/label-printer-types";
-import { LabelPrinterSettings } from"./label-printer/LabelPrinterSettings";
-import { LabelPrinterPreview } from"./label-printer/LabelPrinterPreview";
-import { LabelPrinterActions } from"./label-printer/LabelPrinterActions";
-import { getPrintSize, getSizeDimensions } from"./label-printer/label-printer-utils";
+import React, { useState, useCallback, useMemo } from "react";
+import { InventoryItem, AttributeType, InventoryAttribute } from "../types";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { useBranding } from "@/components/branding-provider";
+import { useToast } from "@/components/ui/toast";
+import { Printer } from "lucide-react";
+import { PrinterConfig, DisplayOptions } from "./label-printer/label-printer-types";
+import { LabelPrinterSettings } from "./label-printer/LabelPrinterSettings";
+import { LabelPrinterPreview } from "./label-printer/LabelPrinterPreview";
+import { LabelPrinterActions } from "./label-printer/LabelPrinterActions";
+import { getPrintSize, getSizeDimensions } from "./label-printer/label-printer-utils";
 
 interface LabelPrinterDialogProps {
     isOpen: boolean;
@@ -33,7 +33,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
         layoutStyle: 'side-by-side',
         isLandscape: false,
         quantity: 1,
-        customText:""
+        customText: ""
     });
 
     const [displayOptions, setDisplayOptions] = useState<DisplayOptions>({
@@ -53,24 +53,24 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     });
 
     const getAttrLabel = useCallback((typeSlug: string, value: string | number | boolean | null | undefined): string => {
-        if (!value) return"";
+        if (!value) return "";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
         return attr ? attr.name : String(value);
     }, [allAttributes]);
 
     const resolvedParams = useMemo(() => {
         if (!item) return [];
-        const skuTechnicalSlugs = ["quality","brand","material","size","color"];
+        const skuTechnicalSlugs = ["quality", "brand", "material", "size", "color"];
         const coreParams = [
-            { label:"Бренд", slug:"brand", code: item.brandCode, show: displayOptions.brand },
-            { label:"Качество", slug:"quality", code: item.qualityCode, show: displayOptions.quality },
-            { label:"Материал", slug:"material", code: item.materialCode, show: displayOptions.material },
-            { label:"Размер", slug:"size", code: item.sizeCode, show: displayOptions.size },
-            { label:"Цвет", slug:"color", code: item.attributeCode, show: displayOptions.color },
+            { label: "Бренд", slug: "brand", code: item.brandCode, show: displayOptions.brand },
+            { label: "Качество", slug: "quality", code: item.qualityCode, show: displayOptions.quality },
+            { label: "Материал", slug: "material", code: item.materialCode, show: displayOptions.material },
+            { label: "Размер", slug: "size", code: item.sizeCode, show: displayOptions.size },
+            { label: "Цвет", slug: "color", code: item.attributeCode, show: displayOptions.color },
         ].filter(p => p.code);
 
         const extraParams = Object.entries(item.attributes || {})
-            .filter(([key, val]) => val !== undefined && val !=="" && val !== null && typeof val !== 'object' && key !== 'thumbnailSettings' && !skuTechnicalSlugs.includes(key))
+            .filter(([key, val]) => val !== undefined && val !== "" && val !== null && typeof val !== 'object' && key !== 'thumbnailSettings' && !skuTechnicalSlugs.includes(key))
             .map(([slug, value]) => ({
                 label: attributeTypes.find(t => t.slug === slug)?.name || slug,
                 slug,
@@ -86,7 +86,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
-            toast("Браузер заблокировал всплывающее окно","error");
+            toast("Браузер заблокировал всплывающее окно", "error");
             return;
         }
 
@@ -109,8 +109,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
     return (
         <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Печать" showVisualTitle={false} hideClose={true} footer={isMobile ? <LabelPrinterActions config={config} setConfig={setConfig} handlePrint={handlePrint} /> : undefined} desktopBreakpoint={1280} className="sm:max-w-[1240px]">
-            <div className="flex flex-col md:flex-row flex-1 overflow-y-auto md:overflow-hidden">
-                <div className="w-full md:w-[380px] lg:w-[420px] bg-white border-r border-slate-200 flex flex-col shrink-0">
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden h-full">
+                <div className="w-full md:w-[380px] lg:w-[420px] bg-white border-r border-slate-200 flex flex-col shrink-0 min-h-0 overflow-hidden">
                     {!isMobile && (
                         <div className="px-6 py-5 border-b border-slate-200 bg-white">
                             <div className="text-xl font-bold text-slate-900 flex items-center gap-3">

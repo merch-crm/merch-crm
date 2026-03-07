@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
     DATABASE_URL: z.string().url(),
-    JWT_SECRET_KEY: z.string().min(10),
+    JWT_SECRET_KEY: z.string().min(32),
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
     // Добавьте другие переменные, которые критичны для работы
     S3_ACCESS_KEY: z.string().optional(),

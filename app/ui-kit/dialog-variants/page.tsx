@@ -295,7 +295,7 @@ const Variant3 = () => {
 export default function DialogVariantsPage() {
     return (
         <div className="min-h-screen bg-slate-100/50 p-8 md:p-12">
-            <div className="max-w-[1400px] mx-auto space-y-24">
+            <div className="max-w-[1480px] mx-auto space-y-24">
                 <div className="mb-12 text-center">
                     <h1 className="text-4xl font-extrabold text-slate-900 mb-2">Варианты дизайна модального окна</h1>
                     <p className="text-slate-600">Три концептуальных подхода к созданию интерфейса модального окна для складской системы</p>

@@ -80,7 +80,11 @@ export function useBasicInfoLogic({
             const shouldShowInSku = (type: string, code?: string) => {
                 if (!code) return false;
                 const attrType = attributeTypes.find(t => t.slug === type);
+                // Respect explicit showInSku flag from AttributeType
                 if (attrType && attrType.showInSku === false) return false;
+                if (attrType && attrType.showInSku === true) return true;
+
+                // Fallback to legacy meta check if flag is missing
                 const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
                 return (attr?.meta as { showInSku?: boolean })?.showInSku ?? true;
             };
@@ -137,27 +141,27 @@ export function useBasicInfoLogic({
 
                 const attrType = attributeTypes.find(t => t.slug === (attr?.type || type));
                 if (!attr) {
-                    // Capitalize first letter if it's just a raw code
                     return code.charAt(0).toUpperCase() + code.slice(1).toLowerCase();
                 }
 
+                // Respect explicit showInName flag from AttributeType
                 if (attrType && attrType.showInName === false) return null;
 
-                let meta: unknown = attr.meta;
-                if (typeof meta === 'string') {
-                    try { meta = JSON.parse(meta); } catch { meta = {}; }
-                } else if (!meta) {
-                    meta = {};
+                let meta: { showInName?: boolean; fem?: string; neut?: string;[key: string]: unknown } = {};
+                const rawMeta = attr.meta;
+                if (typeof rawMeta === 'string') {
+                    try { meta = JSON.parse(rawMeta); } catch { meta = {}; }
+                } else if (rawMeta && typeof rawMeta === 'object') {
+                    meta = rawMeta as Record<string, unknown>;
                 }
 
-                const typedMeta = meta as { showInName?: boolean; fem?: string; neut?: string };
+                if (meta?.showInName === false) return null;
 
-                if (typedMeta?.showInName === false) return null;
                 let result = attr.name;
-                if (targetGender === "feminine" && typedMeta?.fem) result = typedMeta.fem;
-                else if (targetGender === "neuter" && typedMeta?.neut) result = typedMeta.neut;
+                // Gender matching for adjectives (like colors)
+                if (targetGender === "feminine" && meta?.fem) result = meta.fem;
+                else if (targetGender === "neuter" && meta?.neut) result = meta.neut;
 
-                // Capitalize first letter for specific attributes (like Country) or if it's the beginning of a name part
                 if (attrType?.name.toLowerCase().includes("страна") || attrType?.name.toLowerCase().includes("country")) {
                     return result.charAt(0).toUpperCase() + result.slice(1);
                 }
@@ -165,10 +169,10 @@ export function useBasicInfoLogic({
                 return result;
             };
 
-            const nameParts: string[] = [baseName].filter(Boolean);
+            const mainNameParts: string[] = [baseName].filter(Boolean);
+            const secondaryNameParts: string[] = []; // For size, etc. to be at the end
 
             categoryAttributes.forEach((type: AttributeType) => {
-                // "Артикул" is typically the internal product ID or something, don't show it in name parts if requested
                 if (type.name === "Артикул" || type.slug === "article" || type.slug === "sku" || type.slug === "unit" || type.name.toLowerCase().includes("единица измерения")) return;
 
                 const code = getCodeForSlug(type.slug, type.name);
@@ -180,12 +184,21 @@ export function useBasicInfoLogic({
                 }
 
                 // Add to Name
-                const name = getAttrName(type.slug, code);
-                if (name) nameParts.push(name);
+                if (type.showInName !== false) {
+                    const namePart = getAttrName(type.slug, code);
+                    if (namePart) {
+                        // Push size to secondary parts to keep it at the end
+                        if (type.slug === 'size' || type.dataType === 'size' || type.name.toLowerCase().includes('размер')) {
+                            secondaryNameParts.push(namePart);
+                        } else {
+                            mainNameParts.push(namePart);
+                        }
+                    }
+                }
             });
 
             const generatedSku = transliterate(skuParts.join("-").toUpperCase());
-            const generatedName = nameParts.join(" ");
+            const generatedName = [...mainNameParts, ...secondaryNameParts].join(" ");
 
             if (generatedSku !== formData.sku) {
                 updateFormData({ sku: generatedSku });

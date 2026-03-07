@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from"react";
-import { useToast } from"@/components/ui/toast";
-import { escapeHtml } from"@/lib/utils";
-import { InventoryItem, AttributeType, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useToast } from "@/components/ui/toast";
+import { escapeHtml } from "@/lib/utils";
+import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
 
 export type PaperSize = '58x40' | '58x60' | '75x120' | 'a4' | 'custom';
 export type LayoutStyle = 'standard' | 'side-by-side' | 'inline' | 'minimal';
@@ -64,13 +64,13 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
         showPrice: true,
         showBarcode: true,
         showComposition: true,
-        showBrand: false,
+        showBrand: true,
         showSize: true,
-        showMaterial: false,
+        showMaterial: true,
         showColor: true,
-        showQuality: false,
-        showCategory: false,
-        customText:""
+        showQuality: true,
+        showCategory: true,
+        customText: ""
     });
 
     const [extraAttributesToggles, setExtraAttributesToggles] = useState<Record<string, boolean>>({});
@@ -112,25 +112,25 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
 
     // =============== COMPUTATIONS ===============
     const getAttrLabel = useCallback((typeSlug: string, value: string | number | null | undefined): string => {
-        if (!value) return"";
+        if (!value) return "";
         const attr = allAttributes.find(a => a.type === typeSlug && a.value === value);
         return attr ? attr.name : String(value);
     }, [allAttributes]);
 
     const resolvedParams = useMemo(() => {
         if (!item) return [];
-        const skuTechnicalSlugs = ["quality","brand","material","size","color"];
+        const skuTechnicalSlugs = ["quality", "brand", "material", "size", "color"];
 
         const coreParams = [
-            { label:"Бренд", slug:"brand", code: item.brandCode, show: contentSettings.showBrand },
-            { label:"Качество", slug:"quality", code: item.qualityCode, show: contentSettings.showQuality },
-            { label:"Материал", slug:"material", code: item.materialCode, show: contentSettings.showMaterial },
-            { label:"Размер", slug:"size", code: item.sizeCode, show: contentSettings.showSize },
-            { label:"Цвет", slug:"color", slugType:"color", code: item.attributeCode, show: contentSettings.showColor },
+            { label: "Бренд", slug: "brand", code: item.brandCode, show: contentSettings.showBrand },
+            { label: "Качество", slug: "quality", code: item.qualityCode, show: contentSettings.showQuality },
+            { label: "Материал", slug: "material", code: item.materialCode, show: contentSettings.showMaterial },
+            { label: "Размер", slug: "size", code: item.sizeCode, show: contentSettings.showSize },
+            { label: "Цвет", slug: "color", slugType: "color", code: item.attributeCode, show: contentSettings.showColor },
         ].filter(p => p.code);
 
         const dynamicEntries = Object.entries(item.attributes || {}).filter(([key, val]) =>
-            val !== undefined && val !=="" && val !== null && typeof val !== 'object' && key !== 'thumbnailSettings'
+            val !== undefined && val !== "" && val !== null && typeof val !== 'object' && key !== 'thumbnailSettings'
         );
 
         const extraParams = dynamicEntries.filter(([key]) => {
@@ -244,7 +244,7 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
     const handlePrint = useCallback(() => {
         const printWindow = window.open('', '_blank');
         if (!printWindow) {
-            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.","error");
+            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.", "error");
             return;
         }
 
@@ -298,7 +298,7 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
         printWindow.document.write(`
             <html>
                 <head>
-                    <title>Печать этикеток - ${escapeHtml(item.name ||"")}</title>
+                    <title>Печать этикеток - ${escapeHtml(item.name || "")}</title>
                     <style>${styles}</style>
                 </head>
                 <body>

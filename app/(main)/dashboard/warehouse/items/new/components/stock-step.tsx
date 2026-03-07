@@ -10,12 +10,10 @@ import {
     Banknote,
     Package,
     Bell,
-    User,
     MapPin
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Category, StorageLocation, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
-import { Select } from "@/components/ui/select";
 import { useBranding } from "@/components/branding-provider";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,7 +23,7 @@ import { StepFooter } from "./step-footer";
 interface StockStepProps {
     category: Category;
     storageLocations: StorageLocation[];
-    users: { id: string; name: string }[];
+    users: { id: string; name: string; roleName?: string }[];
     formData: ItemFormData;
     updateFormData: (updates: Partial<ItemFormData>) => void;
     onNext: () => void;
@@ -55,262 +53,343 @@ export function StockStep({
         updateFormData({ [field]: Math.max(0, current + delta).toString() });
     };
 
+    const selectedUnit = formData.unit || "шт.";
+
     return (
         <div className="flex flex-col h-full !overflow-visible">
-            <div className="flex-1 !overflow-visible min-h-0 flex flex-col">
-                <div className="space-y-1 flex flex-col min-h-0 w-full px-6 pt-3">
-                    <div className="flex items-center gap-3 shrink-0 mb-1">
-                        <div className="w-10 h-10 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
-                            <Warehouse className="w-5 h-5 text-white" />
+            <div className="flex-1 !overflow-visible min-h-0 flex flex-col custom-scrollbar pr-1 overflow-y-auto">
+                <div className="space-y-3 flex flex-col w-full p-8 pb-12">
+
+                    {/* ROW 1: Остатки и лимиты & Финансы */}
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_1px_1fr] gap-3">
+                        {/* LEFT COLUMN: ОСТАТКИ */}
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                                    <Package className="w-6 h-6 text-white" strokeWidth={2} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-slate-900 leading-tight">Остатки и лимиты</h3>
+                                    <p className="text-xs font-bold text-slate-700 opacity-60">Количество и уведомления</p>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col gap-3">
+                                {/* Quantity */}
+                                <div className="space-y-2.5">
+                                    <div className="flex items-center justify-between px-1">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                                <Warehouse className="w-4 h-4 text-slate-500" />
+                                            </div>
+                                            <span className="text-sm font-black text-slate-700">Начальный остаток</span>
+                                        </div>
+                                        {/* Unit Selector */}
+                                        <div className="flex items-center gap-1 bg-slate-100/50 p-0.5 rounded-lg border border-slate-200/50">
+                                            {["шт.", "см", "м", "гр", "кг", "мл", "л"].map((u) => (
+                                                <button
+                                                    key={u}
+                                                    type="button"
+                                                    onClick={() => updateFormData({ unit: u })}
+                                                    className={cn(
+                                                        "px-2 py-0.5 rounded-md text-[11px] font-black transition-all",
+                                                        formData.unit === u
+                                                            ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200"
+                                                            : "text-slate-400 hover:text-slate-600"
+                                                    )}
+                                                >
+                                                    {u.toLowerCase()}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="bg-slate-50 border border-slate-100/80 hover:border-slate-200 transition-colors rounded-[20px] p-1.5 flex items-center w-full">
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={() => adjustValue('quantity', -1)}
+                                            className="w-12 h-12 rounded-[14px] bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all active:scale-95 shrink-0 p-0"
+                                        >
+                                            <Minus className="w-5 h-5" strokeWidth={3} />
+                                        </Button>
+
+                                        <div className="flex-1 flex justify-center items-center gap-1.5">
+                                            <Input
+                                                type="text"
+                                                inputMode="decimal"
+                                                value={formData.quantity}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                    updateFormData({ quantity: val });
+                                                }}
+                                                onFocus={(e) => {
+                                                    if (e.target.value === "0") updateFormData({ quantity: "" });
+                                                }}
+                                                onBlur={(e) => {
+                                                    if (e.target.value === "") updateFormData({ quantity: "0" });
+                                                }}
+                                                className="w-auto text-center text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 h-auto shadow-none px-2"
+                                                style={{ width: `${Math.max(2, (formData.quantity || "0").toString().length) * 18}px`, minWidth: '40px' }}
+                                            />
+                                            <span className="text-[11px] font-black text-slate-400 mt-1 select-none">
+                                                {selectedUnit}
+                                            </span>
+                                        </div>
+
+                                        <Button
+                                            type="button"
+                                            variant="ghost"
+                                            onClick={() => adjustValue('quantity', 1)}
+                                            className="w-12 h-12 rounded-[14px] bg-white shadow-sm border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all active:scale-95 shrink-0 p-0"
+                                        >
+                                            <Plus className="w-5 h-5" strokeWidth={3} />
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                {/* Thresholds */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="space-y-2.5">
+                                        <div className="flex flex-col px-1">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                                    <Bell className="w-4 h-4 text-slate-500" />
+                                                </div>
+                                                <span className="text-sm font-black text-slate-700 truncate">Предупреждение</span>
+                                            </div>
+                                        </div>
+                                        <div className="bg-amber-50 border border-amber-200/80 hover:border-amber-300 transition-colors rounded-[18px] px-5 py-3.5 flex items-center justify-between">
+                                            <Input
+                                                type="text"
+                                                inputMode="decimal"
+                                                value={formData.lowStockThreshold}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                    updateFormData({ lowStockThreshold: val });
+                                                }}
+                                                onFocus={(e) => {
+                                                    if (e.target.value === "0" || e.target.value === "10") updateFormData({ lowStockThreshold: "" });
+                                                }}
+                                                onBlur={(e) => {
+                                                    if (e.target.value === "") updateFormData({ lowStockThreshold: "10" });
+                                                }}
+                                                className="flex-1 text-xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 h-auto shadow-none px-1"
+                                            />
+                                            <span className="text-xs font-bold text-amber-500/70 ml-2 shrink-0">{selectedUnit}</span>
+                                        </div>
+                                        <p className="text-[11px] font-bold text-slate-400 px-1 leading-tight">Пришлем уведомление, когда остаток станет меньше этого числа</p>
+                                    </div>
+
+                                    <div className="space-y-2.5">
+                                        <div className="flex flex-col px-1">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                                    <AlertTriangle className="w-4 h-4 text-slate-500" />
+                                                </div>
+                                                <span className="text-sm font-black text-slate-700 truncate">Критический лимит</span>
+                                            </div>
+                                        </div>
+                                        <div className="bg-rose-50 border border-rose-200/80 hover:border-rose-300 transition-colors rounded-[18px] px-5 py-3.5 flex items-center justify-between">
+                                            <Input
+                                                type="text"
+                                                inputMode="decimal"
+                                                value={formData.criticalStockThreshold}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                    updateFormData({ criticalStockThreshold: val });
+                                                }}
+                                                onFocus={(e) => {
+                                                    if (e.target.value === "0") updateFormData({ criticalStockThreshold: "" });
+                                                }}
+                                                onBlur={(e) => {
+                                                    if (e.target.value === "") updateFormData({ criticalStockThreshold: "0" });
+                                                }}
+                                                className="flex-1 text-xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 h-auto shadow-none px-1"
+                                            />
+                                            <span className="text-xs font-bold text-rose-500/70 ml-2 shrink-0">{selectedUnit}</span>
+                                        </div>
+                                        <p className="text-[11px] font-bold text-slate-400 px-1 leading-tight">Метка дефицита и повторные алерты при достижении порога</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-lg font-bold text-slate-900">Складской учет</h2>
-                            <p className="text-xs font-bold text-slate-700 opacity-60 tracking-tight">Место хранения и начальные остатки</p>
+
+
+                        {/* DIVIDER */}
+                        <div className="hidden lg:block w-px bg-slate-200/80 self-stretch" />
+
+                        {/* RIGHT COLUMN: ФИНАНСЫ */}
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200 text-white shrink-0">
+                                    <Banknote className="w-6 h-6" strokeWidth={2} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <h3 className="text-xl font-bold text-slate-900 leading-tight">Финансы</h3>
+                                    <p className="text-xs font-bold text-slate-700 opacity-60">Стоимость позиции</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 gap-3">
+                                <div className="space-y-2.5">
+                                    <div className="flex items-center gap-2 px-1">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                            <Tag className="w-4 h-4 text-slate-500" />
+                                        </div>
+                                        <span className="text-sm font-black text-slate-700">Себестоимость</span>
+                                        <span className="text-rose-500 font-bold">*</span>
+                                    </div>
+                                    <div className="relative bg-slate-50 rounded-[18px] px-5 py-4 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            value={formData.costPrice}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                updateFormData({ costPrice: val });
+                                            }}
+                                            onFocus={(e) => {
+                                                if (e.target.value === "0") updateFormData({ costPrice: "" });
+                                            }}
+                                            onBlur={(e) => {
+                                                if (e.target.value === "") updateFormData({ costPrice: "0" });
+                                            }}
+                                            className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none px-1"
+                                        />
+                                        <span className="absolute right-5 bottom-4 text-sm font-bold text-slate-300">{currencySymbol}</span>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2.5">
+                                    <div className="flex items-baseline gap-2 px-1">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 self-center">
+                                            <Banknote className="w-4 h-4 text-slate-500" />
+                                        </div>
+                                        <span className="text-sm font-black text-slate-700">Продажа</span>
+                                        <span className="text-[11px] font-bold text-slate-400 ml-1 whitespace-nowrap leading-none">(Необязательно)</span>
+                                    </div>
+                                    <div className="relative bg-slate-50 rounded-[18px] px-5 py-4 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
+                                        <Input
+                                            type="text"
+                                            inputMode="decimal"
+                                            value={formData.sellingPrice}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                updateFormData({ sellingPrice: val });
+                                            }}
+                                            onFocus={(e) => {
+                                                if (e.target.value === "0") updateFormData({ sellingPrice: "" });
+                                            }}
+                                            onBlur={(e) => {
+                                                if (e.target.value === "") updateFormData({ sellingPrice: "0" });
+                                            }}
+                                            className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none px-1"
+                                        />
+                                        <span className="absolute right-5 bottom-4 text-sm font-bold text-slate-300">{currencySymbol}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-[1fr_1px_1fr] gap-0 overflow-y-auto custom-scrollbar pb-0">
-                        {/* LEFT COLUMN */}
-                        <div className="flex flex-col gap-2 pr-6">
-                            {/* BENTO BLOCK 1: MAIN QUANTITY */}
-                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col items-start text-left">
-                                <div className="flex items-center gap-2.5 mb-3">
-                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                        <Package className="w-4 h-4" strokeWidth={2} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Количество</h3>
-                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Начальный остаток</p>
-                                    </div>
-                                </div>
 
-                                <div className="w-full">
-                                    <div className="flex items-stretch gap-2 transition-all duration-300 group/widget w-full">
-                                        <div className="flex-1 bg-slate-50 rounded-[18px] px-5 py-2.5 border border-slate-100 flex flex-col items-start gap-1">
-                                            <div className="flex items-baseline gap-1">
-                                                <Input
-                                                    type="number"
-                                                    value={formData.quantity || "0"}
-                                                    onChange={(e) => updateFormData({ quantity: e.target.value })}
-                                                    className="text-3xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none h-auto shadow-none"
-                                                    style={{ width: `${Math.max(1, (formData.quantity || "0").toString().length) * 18}px`, minWidth: '32px' }}
-                                                />
-                                                <span className="text-[11px] font-black text-primary tracking-[0.1em] mb-1.5 shrink-0">
-                                                    шт
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center gap-1.5 opacity-40 group-hover/widget:opacity-100 transition-opacity">
-                                                <div className="w-1 h-1 rounded-full bg-primary" />
-                                                <span className="text-xs font-black text-slate-700">Текущий остаток</span>
-                                            </div>
-                                        </div>
 
-                                        <div className="w-14 flex flex-col gap-1">
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                onClick={() => adjustValue('quantity', 1)}
-                                                className="flex-1 rounded-[16px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:border-emerald-200 transition-all active:scale-95 h-auto p-0"
-                                            >
-                                                <Plus className="w-4 h-4" strokeWidth={3} />
-                                            </Button>
-                                            <Button
-                                                type="button"
-                                                variant="ghost"
-                                                onClick={() => adjustValue('quantity', -1)}
-                                                className="flex-1 rounded-[16px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-200 transition-all active:scale-95 h-auto p-0"
-                                            >
-                                                <Minus className="w-4 h-4" strokeWidth={3} />
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
+                    {/* DIVIDER HORIZONTAL */}
+                    <div className="h-px bg-slate-200/80 w-full my-4" />
+
+                    {/* ROW 2: Размещение */}
+                    <div className="flex flex-col gap-3 w-full mt-2">
+                        <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                                <MapPin className="w-6 h-6 text-white" strokeWidth={2} />
                             </div>
-
-                            {/* BENTO BLOCK 3: THRESHOLDS */}
-                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col gap-2 shrink-0">
-                                <div className="flex items-center gap-2.5 mb-3">
-                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                        <Bell className="w-4 h-4" strokeWidth={2} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Уведомления</h3>
-                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Лимиты</p>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-2 gap-2.5 relative">
-                                    <div className="space-y-2 min-w-0">
-                                        <div className="flex flex-col">
-                                            <div className="bg-slate-50 rounded-xl px-3 py-1.5 border border-slate-100/50 w-full flex items-center gap-1.5">
-                                                <Input
-                                                    type="number"
-                                                    value={formData.lowStockThreshold || "10"}
-                                                    onChange={(e) => updateFormData({ lowStockThreshold: e.target.value })}
-                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-xl font-black"
-                                                />
-                                                <span className="text-xs text-slate-700 font-bold shrink-0">шт</span>
-                                            </div>
-                                            <span className="text-xs font-black text-amber-500 mt-1.5 px-0.5">Предупреждение</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-2 min-w-0">
-                                        <div className="flex flex-col">
-                                            <div className="bg-slate-50 rounded-xl px-3 py-1.5 border border-slate-100/50 w-full flex items-center gap-1.5">
-                                                <Input
-                                                    type="number"
-                                                    value={formData.criticalStockThreshold || "0"}
-                                                    onChange={(e) => updateFormData({ criticalStockThreshold: e.target.value })}
-                                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 outline-none p-0 text-slate-900 min-w-0 h-auto shadow-none text-xl font-black"
-                                                />
-                                                <span className="text-xs text-slate-700 font-bold shrink-0">шт</span>
-                                            </div>
-                                            <span className="text-xs font-black text-rose-500 mt-1.5 px-0.5">Критический лимит</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* BENTO BLOCK 4: RESPONSIBLE PERSON */}
-                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col gap-2">
-                                <div className="flex items-center gap-2.5 mb-3">
-                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                        <User className="w-4 h-4" strokeWidth={2} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Ответственный</h3>
-                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Создатель</p>
-                                    </div>
-                                </div>
-
-                                <Select
-                                    options={(users || []).map(u => ({ id: u.id, title: u.name }))}
-                                    value={(formData.responsibleUserId as string) || ""}
-                                    onChange={(val) => updateFormData({ responsibleUserId: val })}
-                                    placeholder="Сотрудник..."
-                                    className="w-full text-sm h-9"
-                                />
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900 leading-tight">Размещение</h3>
+                                <p className="text-xs font-bold text-slate-700 opacity-60">Склад</p>
                             </div>
                         </div>
 
-                        {/* VERTICAL DIVIDER */}
-                        <div className="hidden md:block w-px bg-slate-100 self-stretch my-2" />
-
-                        {/* RIGHT COLUMN */}
-                        <div className="flex flex-col gap-2 pl-6">
-                            {/* BENTO BLOCK 2: FINANCIALS */}
-                            <div className="crm-card !rounded-[24px] !p-5 transition-all duration-300 flex flex-col">
-                                <div className="flex items-center gap-2.5 mb-3">
-                                    <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                        <Banknote className="w-4 h-4" strokeWidth={2} />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <h3 className="text-sm font-bold text-slate-800 leading-tight">Финансы</h3>
-                                        <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Стоимость</p>
-                                    </div>
+                        <div className="flex flex-col grow">
+                            {(storageLocations || []).length === 0 ? (
+                                <div className="p-6 rounded-[22px] bg-amber-50 border border-amber-100 text-amber-600 text-sm font-bold flex items-center gap-3">
+                                    <AlertTriangle className="w-5 h-5 shrink-0" />
+                                    Сначала настройте склад.
                                 </div>
-                                <div className="grid grid-cols-2 gap-3 relative">
-                                    <div className="space-y-1.5 min-w-0">
-                                        <div className="flex flex-col gap-1.5">
-                                            <div className="flex items-center gap-1.5">
-                                                <Tag className="w-3 h-3 text-violet-400" />
-                                                <span className="text-xs font-black text-slate-700">Себестоимость</span>
-                                            </div>
-                                            <div className="relative bg-slate-50 rounded-xl px-3 py-2 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
-                                                <Input
-                                                    type="number"
-                                                    value={formData.costPrice || "0"}
-                                                    onChange={(e) => updateFormData({ costPrice: e.target.value })}
-                                                    className="w-full text-lg font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-6 min-w-0 h-auto shadow-none"
-                                                />
-                                                <span className="absolute right-3 bottom-2 text-xs font-bold text-slate-300">{currencySymbol}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                            ) : (
+                                <div className="max-h-[160px] overflow-y-auto custom-scrollbar pr-2">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                                        {(storageLocations || []).map(loc => {
+                                            const isSelected = formData.storageLocationId === loc.id;
+                                            const typeColors = {
+                                                warehouse: {
+                                                    selected: "bg-indigo-50/30 border-indigo-200 shadow-sm",
+                                                    icon: isSelected ? "bg-indigo-100/50 text-indigo-600" : "bg-slate-50 border border-slate-100/50 text-slate-400",
+                                                    check: "text-indigo-500"
+                                                },
+                                                production: {
+                                                    selected: "bg-amber-50/30 border-amber-200 shadow-sm",
+                                                    icon: isSelected ? "bg-amber-100/50 text-amber-600" : "bg-slate-50 border border-slate-100/50 text-slate-400",
+                                                    check: "text-amber-500"
+                                                },
+                                                office: {
+                                                    selected: "bg-emerald-50/30 border-emerald-200 shadow-sm",
+                                                    icon: isSelected ? "bg-emerald-100/50 text-emerald-600" : "bg-slate-50 border border-slate-100/50 text-slate-400",
+                                                    check: "text-emerald-500"
+                                                }
+                                            };
+                                            const currentType = (loc.type as keyof typeof typeColors) || "office";
+                                            const styles = typeColors[currentType];
 
-                                    <div className="space-y-1.5 min-w-0">
-                                        <div className="flex flex-col gap-1.5">
-                                            <div className="flex items-center gap-1.5">
-                                                <Banknote className="w-3 h-3 text-emerald-400" />
-                                                <span className="text-xs font-black text-slate-700">Продажа</span>
-                                            </div>
-                                            <div className="relative bg-slate-50 rounded-xl px-3 py-2 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
-                                                <Input
-                                                    type="number"
-                                                    value={formData.sellingPrice || "0"}
-                                                    onChange={(e) => updateFormData({ sellingPrice: e.target.value })}
-                                                    className="w-full text-lg font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-6 min-w-0 h-auto shadow-none"
-                                                />
-                                                <span className="absolute right-3 bottom-2 text-xs font-bold text-slate-300">{currencySymbol}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* STORAGE LOCATIONS CARD */}
-                            <div className="crm-card !p-0 !rounded-[24px] shadow-sm flex flex-col min-h-0">
-                                <div className="p-5 pb-2">
-                                    <div className="flex items-center gap-2.5 mb-2">
-                                        <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0">
-                                            <MapPin className="w-4 h-4" strokeWidth={2} />
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <h3 className="text-sm font-bold text-slate-800 leading-tight">Размещение</h3>
-                                            <p className="text-xs font-medium text-slate-400 mt-0.5 tracking-tight">Склад</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col px-5 pb-5 pt-0">
-                                    <div className="px-3 pt-1 pb-1 -mx-3">
-                                        {(storageLocations || []).length === 0 ? (
-                                            <div className="p-4 rounded-xl bg-amber-50 border border-amber-100 text-amber-600 text-xs font-bold flex items-center gap-2">
-                                                <AlertTriangle className="w-4 h-4 shrink-0" />
-                                                Сначала настройте склад.
-                                            </div>
-                                        ) : (
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {(storageLocations || []).map(loc => (
-                                                    <Button
-                                                        key={loc.id}
-                                                        type="button"
-                                                        variant="ghost"
-                                                        onClick={() => updateFormData({ storageLocationId: loc.id })}
-                                                        className={cn("p-2.5 rounded-[16px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
-                                                            formData.storageLocationId === loc.id
-                                                                ? "bg-primary/5 border-primary text-primary shadow-sm"
-                                                                : "bg-white border-slate-100 text-slate-600 hover:border-slate-300"
-                                                        )}
-                                                    >
-                                                        <div className="flex items-center gap-2 truncate relative z-10 w-full">
-                                                            <div className={cn("w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 transition-all duration-300",
-                                                                formData.storageLocationId === loc.id ? "bg-primary/10" : "bg-slate-50 border border-slate-100/50"
+                                            return (
+                                                <Button
+                                                    key={loc.id}
+                                                    type="button"
+                                                    variant="ghost"
+                                                    onClick={() => updateFormData({ storageLocationId: loc.id })}
+                                                    className={cn("p-4 rounded-xl sm:rounded-[22px] text-left border transition-all duration-300 flex items-center justify-between group relative h-auto",
+                                                        isSelected ? styles.selected : "bg-white border-slate-100 text-slate-600 hover:border-slate-300"
+                                                    )}
+                                                >
+                                                    <div className="flex items-center gap-3 truncate relative z-10 w-full">
+                                                        <div className={cn("w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 transition-all duration-300", styles.icon)}>
+                                                            <Warehouse className="w-5 h-5" />
+                                                        </div>
+                                                        <div className="truncate text-left flex-1 min-w-0">
+                                                            <div className="font-bold text-[13px] leading-tight truncate text-slate-900">{loc.name}</div>
+                                                            <div className={cn(
+                                                                "inline-flex items-center px-1.5 py-0.5 rounded-md text-[11px] font-black mt-1 items-center gap-1",
+                                                                loc.type === "warehouse" ? "bg-indigo-50/80 text-indigo-500" :
+                                                                    loc.type === "production" ? "bg-amber-50/80 text-amber-600" :
+                                                                        "bg-emerald-50/80 text-emerald-600"
                                                             )}>
-                                                                <Warehouse className={cn("w-4 h-4", formData.storageLocationId === loc.id ? "text-primary" : "text-slate-400")} />
+                                                                {loc.type === "warehouse" ? "склад" :
+                                                                    loc.type === "production" ? "производство" :
+                                                                        "офис"}
                                                             </div>
-                                                            <div className="truncate text-left flex-1 min-w-0">
-                                                                <div className="font-bold text-[11px] leading-tight truncate">{loc.name}</div>
-                                                            </div>
-                                                            {formData.storageLocationId === loc.id && (
-                                                                <Check className="w-3 h-3 text-primary" strokeWidth={4} />
-                                                            )}
                                                         </div>
-                                                    </Button>
-                                                ))}
-                                                <AddStorageLocationDialog
-                                                    users={users}
-                                                    trigger={
-                                                        <div className="p-2.5 rounded-[16px] border border-dashed border-slate-200 bg-slate-50/30 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 flex items-center gap-2 h-[46px] group cursor-pointer">
-                                                            <Plus className="w-3.5 h-3.5" />
-                                                            <div className="font-black text-xs text-slate-400 group-hover:text-primary tracking-tight">Новый склад</div>
-                                                        </div>
-                                                    }
-                                                />
-                                            </div>
-                                        )}
+                                                        {isSelected && (
+                                                            <Check className={cn("w-4 h-4", styles.check)} strokeWidth={4} />
+                                                        )}
+                                                    </div>
+                                                </Button>
+                                            );
+                                        })}
+                                        <AddStorageLocationDialog
+                                            users={users}
+                                            trigger={
+                                                <div className="p-4 rounded-xl sm:rounded-[22px] border border-dashed border-slate-200 bg-slate-50/30 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-300 flex items-center gap-3 h-[72px] group cursor-pointer">
+                                                    <div className="w-10 h-10 rounded-[12px] border border-dashed border-slate-200 flex items-center justify-center shrink-0 group-hover:border-primary/50 transition-colors">
+                                                        <Plus className="w-5 h-5" />
+                                                    </div>
+                                                    <div className="font-black text-sm text-slate-400 group-hover:text-primary tracking-tight">Новый склад</div>
+                                                </div>
+                                            }
+                                        />
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -326,6 +405,6 @@ export function StockStep({
                     validationError={validationError}
                 />
             </div>
-        </div>
+        </div >
     );
 }

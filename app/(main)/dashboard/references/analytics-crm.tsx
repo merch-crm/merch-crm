@@ -45,7 +45,7 @@ export default function AnalyticsCRM() {
                 {/* EXPENSES (Dark Card) */}
                 <div className="lg:col-span-4 bg-slate-900 rounded-[var(--radius-outer)] p-6 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20 min-h-[400px] flex flex-col">
                     {/* Purple Glow */}
-                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[#5d00ff]/30 rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-[var(--primary)]/30 rounded-full blur-3xl pointer-events-none" />
 
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-8">
@@ -60,7 +60,7 @@ export default function AnalyticsCRM() {
                             <div className="relative w-48 h-48">
                                 <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
                                     <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="20" />
-                                    <circle cx="100" cy="100" r="80" fill="none" stroke="#5d00ff" strokeWidth="20" strokeDasharray="251 502" strokeLinecap="round" />
+                                    <circle cx="100" cy="100" r="80" fill="none" stroke="var(--primary)" strokeWidth="20" strokeDasharray="251 502" strokeLinecap="round" />
                                     <circle cx="100" cy="100" r="80" fill="none" stroke="#a78bfa" strokeWidth="20" strokeDasharray="125 502" strokeDashoffset="-251" strokeLinecap="round" />
                                 </svg>
                                 <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -87,7 +87,7 @@ export default function AnalyticsCRM() {
                     </div>
 
                     {/* Credit Card Visual */}
-                    <div className="relative w-full h-[180px] bg-gradient-to-br from-[#5d00ff] to-[#3a0099] rounded-[var(--radius-outer)] p-6 mb-6 shadow-xl shadow-[#5d00ff]/20">
+                    <div className="relative w-full h-[180px] bg-gradient-to-br from-[var(--primary)] to-[#3a0099] rounded-[var(--radius-outer)] p-6 mb-6 shadow-xl shadow-[var(--primary)]/20">
                         <div className="flex justify-between items-start mb-8">
                             <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md" />
                             <Apple className="w-8 h-8 text-white" />
@@ -131,7 +131,7 @@ export default function AnalyticsCRM() {
                                     <span className="text-sm font-bold text-slate-400">{person.amount}</span>
                                 </div>
                                 <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                                    <div className="h-full bg-[#5d00ff] rounded-full" style={{ width: `${person.percent}%` }} />
+                                    <div className="h-full bg-[var(--primary)] rounded-full" style={{ width: `${person.percent}%` }} />
                                 </div>
                             </div>
                         ))}
@@ -203,7 +203,7 @@ export default function AnalyticsCRM() {
                         <motion.path
                             d="M 0 50 Q 50 20, 100 50 T 200 50 T 300 50 T 400 50"
                             fill="none"
-                            stroke="#5d00ff"
+                            stroke="var(--primary)"
                             strokeWidth="2"
                             variants={{
                                 initial: { pathLength: 0, opacity: 0 },
@@ -227,8 +227,8 @@ export default function AnalyticsCRM() {
                         />
                         <defs>
                             <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                <stop offset="0%" stopColor="#5d00ff" />
-                                <stop offset="100%" stopColor="#5d00ff" stopOpacity="0" />
+                                <stop offset="0%" stopColor="var(--primary)" />
+                                <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
                             </linearGradient>
                         </defs>
                     </motion.svg>

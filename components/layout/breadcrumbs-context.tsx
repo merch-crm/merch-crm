@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useMemo } from "react";
 
 interface BreadcrumbItem {
     label: string;
@@ -20,8 +20,15 @@ export function BreadcrumbsProvider({ children }: { children: ReactNode }) {
     const [labels, setLabels] = useState<Map<string, string>>(new Map());
     const [customTrail, setCustomTrail] = useState<BreadcrumbItem[] | null>(null);
 
+    const value = useMemo(() => ({
+        labels,
+        customTrail,
+        setLabels,
+        setCustomTrail
+    }), [labels, customTrail]);
+
     return (
-        <BreadcrumbsContext.Provider value={{ labels, customTrail, setLabels, setCustomTrail }}>
+        <BreadcrumbsContext.Provider value={value}>
             {children}
         </BreadcrumbsContext.Provider>
     );

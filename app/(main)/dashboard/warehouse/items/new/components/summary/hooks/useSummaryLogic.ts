@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { ItemFormData, Category, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
-import { CLOTHING_COLORS } from"@/app/(main)/dashboard/warehouse/category-utils";
+import { ItemFormData, Category, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
+import { CLOTHING_COLORS } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 interface UseSummaryLogicProps {
     formData: ItemFormData;

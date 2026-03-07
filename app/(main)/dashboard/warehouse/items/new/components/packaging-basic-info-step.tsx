@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check } from "lucide-react";
+import { AlertCircle, Box, Scale, Ruler, ExternalLink, SlidersHorizontal, Package, Check, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
@@ -154,16 +154,16 @@ export function PackagingBasicInfoStep({
     return (
         <div className="flex flex-col h-full !overflow-visible">
             <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-1">
-                <div className="max-w-[800px] mx-auto space-y-3 pb-10 px-[var(--radius-padding)] pt-[var(--radius-padding)] pr-[calc(var(--radius-padding)-4px)]">
+                <div className="max-w-[800px] mx-auto space-y-3 pb-10 p-8">
 
                     {/* Header */}
-                    <div className="flex items-center gap-3 shrink-0">
+                    <div className="flex items-center gap-3 shrink-0 mb-4">
                         <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                             <Package className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Упаковка</h2>
-                            <p className="text-xs font-bold text-slate-500 opacity-60">Параметры и характеристики</p>
+                            <h2 className="text-xl font-bold text-slate-900">Упаковка</h2>
+                            <p className="text-xs font-bold text-slate-700 opacity-60">Параметры и характеристики</p>
                         </div>
                     </div>
 
@@ -182,10 +182,15 @@ export function PackagingBasicInfoStep({
                     )}
 
                     {/* Section 1: Type & Brand */}
-                    <section className="space-y-3">
-                        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                            <span className="w-6 h-6 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs font-bold">1</span>
-                            <h3 className="text-sm font-bold text-slate-900">Основное</h3>
+                    <section className="space-y-3 pb-4">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200 text-white shrink-0">
+                                <Box className="w-6 h-6" strokeWidth={2} />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-xl font-bold text-slate-900 leading-tight">Основное</h3>
+                                <p className="text-xs font-bold text-slate-700 opacity-60">Тип и принадлежность</p>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -231,10 +236,15 @@ export function PackagingBasicInfoStep({
                     </section>
 
                     {/* Section 2: Dimensions & Specs */}
-                    <section className="space-y-3">
-                        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                            <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center text-xs font-bold">2</span>
-                            <h3 className="text-sm font-bold text-slate-900">Габариты и Характеристики</h3>
+                    <section className="space-y-3 pb-4">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200 text-white shrink-0">
+                                <Scale className="w-6 h-6" strokeWidth={2} />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-xl font-bold text-slate-900 leading-tight">Габариты и Характеристики</h3>
+                                <p className="text-xs font-bold text-slate-700 opacity-60">Размеры, вес и материалы</p>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-12 gap-3">
@@ -346,10 +356,15 @@ export function PackagingBasicInfoStep({
                     </section>
 
                     {/* Section 3: Logistics */}
-                    <section className="space-y-3">
-                        <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                            <span className="w-6 h-6 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center text-xs font-bold">3</span>
-                            <h3 className="text-sm font-bold text-slate-900">Закупка и Логистика</h3>
+                    <section className="space-y-3 pb-4">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200 text-white shrink-0">
+                                <Truck className="w-6 h-6" strokeWidth={2} />
+                            </div>
+                            <div className="flex flex-col">
+                                <h3 className="text-xl font-bold text-slate-900 leading-tight">Закупка и Логистика</h3>
+                                <p className="text-xs font-bold text-slate-700 opacity-60">Поставщик и условия поставки</p>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

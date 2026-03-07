@@ -76,7 +76,7 @@ export function BackupsTab({
                                                     <a
                                                         href={`/uploads/backups/${backup.name}`}
                                                         download
-                                                        className="p-2 hover:text-[#5d00ff] hover:bg-indigo-50 rounded-[18px] transition-all"
+                                                        className="p-2 hover:text-[var(--primary)] hover:bg-indigo-50 rounded-[18px] transition-all"
                                                         title="Скачать"
                                                     >
                                                         <Download size={16} />

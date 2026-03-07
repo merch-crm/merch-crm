@@ -1,5 +1,5 @@
-import React from"react";
-import { Activity, ArrowUpRight, ShoppingBag, Trash2, ArrowLeftRight, RefreshCw } from"lucide-react";
+import React from "react";
+import { Activity, ArrowUpRight, ShoppingBag, Trash2, ArrowLeftRight, RefreshCw } from "lucide-react";
 
 interface ActivityStatItemProps {
     icon: React.ComponentType<{ className?: string }>;
@@ -71,7 +71,7 @@ export const ActivityTrend = React.memo(({ activity }: ActivityTrendProps) => {
                 />
                 <ActivityStatItem
                     icon={Trash2}
-                    label="Списания"
+                    label="Расход"
                     value={activity.waste}
                     hoverColor="group-hover/item:text-rose-500"
                 />
@@ -92,4 +92,4 @@ export const ActivityTrend = React.memo(({ activity }: ActivityTrendProps) => {
     );
 });
 
-ActivityTrend.displayName ="ActivityTrend";
+ActivityTrend.displayName = "ActivityTrend";

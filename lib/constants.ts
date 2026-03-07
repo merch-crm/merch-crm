@@ -12,7 +12,7 @@ export const DEPARTMENT_COLORS = [
 
 export function getDepartmentColorHex(color: string) {
     const map: Record<string, string> = {
-        indigo: "#5d00ff",
+        indigo: "var(--primary)",
         purple: "#a855f7",
         rose: "#f43f5e",
         orange: "#f97316",

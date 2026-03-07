@@ -5,8 +5,8 @@ import { StepFooter } from "./step-footer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 import { useSummaryLogic } from "./summary/hooks/useSummaryLogic";
-import { SummaryHeader } from "./summary/summary-header";
-import { AttributesSection } from "./summary/attributes-section";
+import { LivePreviewCard } from "./live-preview-card";
+
 import { ImageGallery } from "./summary/image-gallery";
 import { StorageCard } from "./summary/storage-card";
 import { FinanceCard } from "./summary/finance-card";
@@ -42,12 +42,13 @@ export function SummaryStep({
     const isMobile = useIsMobile();
     const logic = useSummaryLogic({ formData, updateFormData, subCategories, dynamicAttributes });
 
+
     return (
         <div className="flex flex-col h-full min-h-0">
             <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-1">
-                <div className="space-y-3 pb-10 px-[var(--radius-padding)] pt-[var(--radius-padding)] pr-[calc(var(--radius-padding)-4px)]">
+                <div className="space-y-3 sm:space-y-3 pb-2 p-4 sm:p-6 lg:p-8">
                     {/* Item Name & Status Header */}
-                    <SummaryHeader
+                    <LivePreviewCard
                         formData={formData}
                         category={category}
                         attributeTypes={attributeTypes}
@@ -66,32 +67,18 @@ export function SummaryStep({
                         }}
                     />
 
-                    {/* Bento Grid layout */}
-                    <div className="grid grid-cols-12 gap-3 sm:gap-3">
-                        {/* Left Column: Attributes & Gallery */}
-                        <div className="col-span-12 lg:col-span-7 space-y-3 sm:space-y-3">
-                            <AttributesSection
-                                formData={formData}
-                                dynamicAttributes={dynamicAttributes}
-                                attributeTypes={attributeTypes}
-                                selectedColorName={logic.selectedColor?.name}
-                                selectedColorHex={logic.selectedColor?.hex}
-                                getAttrName={logic.getAttrName}
-                            />
+                    {/* Finance & Storage — 2 equal columns on desktop, 1 on mobile */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-3 items-stretch">
+                        <FinanceCard formData={formData} />
 
-                            <ImageGallery formData={formData} />
-                        </div>
-
-                        {/* Right Column: Inventory & Financials Section */}
-                        <div className="col-span-12 lg:col-span-5 space-y-3">
-                            <StorageCard
-                                formData={formData}
-                                storageLocations={storageLocations}
-                            />
-
-                            <FinanceCard formData={formData} />
-                        </div>
+                        <StorageCard
+                            formData={formData}
+                            storageLocations={storageLocations}
+                        />
                     </div>
+
+                    {/* Photo Gallery */}
+                    <ImageGallery formData={formData} />
                 </div>
             </div>
 

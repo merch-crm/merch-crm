@@ -38,9 +38,9 @@ export function MainPhotoUploader({
 }: MainPhotoUploaderProps) {
     const CategoryIcon = getCategoryIcon(category || {});
     return (
-        <div className="flex flex-col justify-start items-center w-full">
+        <div className="flex flex-col justify-start items-center w-full flex-1 min-h-0">
             <div
-                className={cn("relative w-full max-w-[360px] aspect-square rounded-3xl overflow-hidden border-2 border-dashed border-slate-300/60 transition-all group shrink-0",
+                className={cn("relative w-full max-w-[400px] flex-1 min-h-[200px] rounded-3xl overflow-hidden border-2 border-dashed border-slate-300/60 transition-all group",
                     preview ? "bg-white shadow-sm" : "bg-slate-50/80 hover:bg-white shadow-sm"
                 )}>
                 <div ref={containerRef} className="absolute inset-0">
@@ -73,11 +73,11 @@ export function MainPhotoUploader({
                     ) : preview ? (
                         <>
                             <div
-                                className="relative w-full h-full flex items-center justify-center overflow-hidden"
+                                className="relative w-full h-full flex items-center justify-center overflow-hidden transition-transform duration-100 ease-out"
                                 style={{ transform: `scale(${Number(zoom) * Number(baseScale)})` }}
                             >
                                 <div
-                                    className="relative w-full h-full"
+                                    className="relative w-full h-full transition-transform duration-100 ease-out"
                                     style={{
                                         transform: `translate(${x}%, ${y}%)`,
                                         aspectRatio: aspectRatio ? `${aspectRatio}` : 'auto'
@@ -88,6 +88,7 @@ export function MainPhotoUploader({
                                         alt="Main product image preview"
                                         fill
                                         priority
+                                        unoptimized
                                         className="object-contain"
                                         onLoad={(e) => {
                                             const img = e.target as HTMLImageElement;
@@ -105,7 +106,7 @@ export function MainPhotoUploader({
                                 </label>
                                 <Button
                                     onClick={(e) => { e.preventDefault(); onRemove(); }}
-                                    className="flex items-center gap-2 px-7 py-4 bg-rose-500 hover:bg-rose-600 !text-white rounded-full shadow-xl shadow-rose-500/20 active:scale-95 h-auto border-none group/del"
+                                    className="flex items-center gap-2 px-7 py-4 bg-[#FF2D55] hover:bg-[#EF234B] !text-white rounded-full shadow-xl shadow-[#FF2D55]/20 active:scale-95 h-auto border-none group/del"
                                 >
                                     <Trash2 className="w-5 h-5 group-hover/del:rotate-12 transition-transform" />
                                     <span className="text-[12px] font-bold">Удалить</span>
@@ -132,8 +133,13 @@ export function MainPhotoUploader({
                 <input
                     type="file"
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={onChange}
+                    onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                            onChange(e);
+                        }
+                    }}
                     accept="image/*"
+                    multiple
                     disabled={!!preview}
                 />
             </div>

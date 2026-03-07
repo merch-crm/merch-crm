@@ -159,6 +159,7 @@ export async function autoArchiveStaleItems(): Promise<ActionResult<{ archivedCo
         }
 
         const ids = staleItems.map(i => i.id);
+        await logAction("Запуск авто-архивации", "inventory_item_bulk", "auto", { count: ids.length });
         const res = await archiveInventoryItems(ids, "Автоматическая архивация (остаток 0 более 3 месяцев)");
 
         if (res.success) {

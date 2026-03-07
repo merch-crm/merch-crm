@@ -1,6 +1,6 @@
-import React from"react";
-import { CircleDollarSign, Clock, Trash2 } from"lucide-react";
-import { cn } from"@/lib/utils";
+import React from "react";
+import { CircleDollarSign, Clock, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Financials {
     totalCostValue: number;
@@ -82,20 +82,20 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
                 </div>
             </div>
 
-            {/* 4. Списания за 30 дней */}
+            {/* 4. Расход за 30 дней */}
             <div className="crm-card bg-gradient-to-b from-rose-50/60 to-white flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-[12px] bg-rose-500 text-white flex items-center justify-center shrink-0">
                         <Trash2 className="w-5 h-5" />
                     </div>
                     <div className="min-w-0">
-                        <h4 className="text-[15px] font-bold text-slate-900 leading-tight">Списания</h4>
+                        <h4 className="text-[15px] font-bold text-slate-900 leading-tight">Расход</h4>
                         <p className="text-xs font-medium text-slate-500 mt-0.5 hidden sm:block">За 30 дней</p>
                     </div>
                 </div>
                 <div className="mt-auto pt-2 border-t border-slate-100">
                     <span className={cn("text-xl sm:text-2xl font-black tabular-nums",
-                        financials.writeOffValue30d > 0 ?"text-rose-500" :"text-slate-400"
+                        financials.writeOffValue30d > 0 ? "text-rose-500" : "text-slate-400"
                     )}>
                         {formatMoney(financials.writeOffValue30d, currencySymbol)}
                     </span>
@@ -105,4 +105,4 @@ export const FinancialBento = React.memo(({ financials, currencySymbol }: Financ
     );
 });
 
-FinancialBento.displayName ="FinancialBento";
+FinancialBento.displayName = "FinancialBento";

@@ -47,7 +47,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       # Password matching the production DB
-      POSTGRES_PASSWORD: da1c8fe9f308039384edeecbe252fdda51f305d59cae0c94
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data

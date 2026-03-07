@@ -17,7 +17,7 @@ interface ColorPickerProps {
     presets?: string[];
 }
 
-const DEFAULT_PRESETS = ["#5d00ff", // Brand Primary"#0F172A", // Slate 900"#64748B", // Slate 500"#F43F5E", // Rose 500"#10B981", // Emerald 500"#F59E0B", // Amber 500"#3B82F6", // Blue 500"#8B5CF6", // Violet 500"#EC4899", // Pink 500"#FFFFFF", // White
+const DEFAULT_PRESETS = ["var(--primary)", // Brand Primary"#0F172A", // Slate 900"#64748B", // Slate 500"#F43F5E", // Rose 500"#10B981", // Emerald 500"#F59E0B", // Amber 500"#3B82F6", // Blue 500"#8B5CF6", // Violet 500"#EC4899", // Pink 500"#FFFFFF", // White
 ];
 
 export function ColorPicker({

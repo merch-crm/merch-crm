@@ -97,7 +97,7 @@ export default function UIKitPage() {
         <div className="min-h-screen bg-slate-100">
             {/* Header */}
             <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
-                <div className="max-w-[1800px] mx-auto px-6 py-4">
+                <div className="max-w-[1480px] mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-black text-slate-900">UI Kit</h1>
@@ -107,6 +107,12 @@ export default function UIKitPage() {
                         </div>
                         <div className="flex items-center gap-6">
                             <div className="flex items-center gap-3">
+                                <a href="/ui-kit/headers" className="text-xs font-bold text-indigo-500 hover:text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-lg transition-all">
+                                    Варианты Хэдеров (10)
+                                </a>
+                                <a href="/ui-kit/footers" className="text-xs font-bold text-sky-500 hover:text-sky-600 bg-sky-50 px-3 py-1.5 rounded-lg transition-all">
+                                    Варианты Футеров (10)
+                                </a>
                                 <a href="/ui-kit/category-variants" className="text-xs font-bold text-primary hover:underline bg-primary/10 px-3 py-1.5 rounded-lg transition-all">
                                     Карточки категорий (10 вариантов)
                                 </a>
@@ -118,6 +124,9 @@ export default function UIKitPage() {
                                 </a>
                                 <a href="/ui-kit/dropdowns" className="text-xs font-bold text-sky-500 hover:text-sky-600 bg-sky-50 px-3 py-1.5 rounded-lg transition-all">
                                     Дропдауны Kit (13 вариантов)
+                                </a>
+                                <a href="/ui-kit/pagination-variants" className="text-xs font-bold text-emerald-500 hover:text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg transition-all">
+                                    Пагинация (30 вариантов)
                                 </a>
                             </div>
                             <div className="relative">
@@ -134,7 +143,7 @@ export default function UIKitPage() {
                 </div>
             </header>
 
-            <div className="max-w-[1800px] mx-auto flex">
+            <div className="max-w-[1480px] mx-auto flex">
                 {/* Sidebar */}
                 <aside className="w-64 shrink-0 sticky top-[73px] h-[calc(100vh-73px)] border-r border-slate-200 bg-white overflow-y-auto hidden md:block">
                     <nav className="p-4 space-y-1">

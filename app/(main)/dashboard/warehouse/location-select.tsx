@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo } from"react";
-import { MapPin } from"lucide-react";
-import { StorageLocation } from"./storage-locations-tab";
-import { Select, SelectOption } from"@/components/ui/select";
+import { useMemo } from "react";
+import { MapPin, Warehouse, Printer, Briefcase } from "lucide-react";
+import { StorageLocation } from "./storage-locations-tab";
+import { Select, SelectOption } from "@/components/ui/select";
 
 interface LocationSelectProps {
     locations: StorageLocation[];
@@ -15,19 +15,30 @@ interface LocationSelectProps {
     label?: string;
     className?: string;
     stocks?: Map<string, number>;
+    error?: boolean;
 }
 
 export function LocationSelect({
     locations,
     value,
     onChange,
-    placeholder ="Выберите склад",
+    placeholder = "Выберите склад",
     disabled,
     excludeId,
     label,
     className,
-    stocks
+    stocks,
+    error
 }: LocationSelectProps) {
+    const getIcon = (type?: string) => {
+        switch (type) {
+            case "warehouse": return <Warehouse className="w-4 h-4 opacity-50" />;
+            case "production": return <Printer className="w-4 h-4 opacity-50" />;
+            case "office": return <Briefcase className="w-4 h-4 opacity-50" />;
+            default: return <MapPin className="w-4 h-4 opacity-50" />;
+        }
+    };
+
     const safeOptions = useMemo(() => {
         return locations
             .filter(l => l.id !== excludeId)
@@ -36,7 +47,7 @@ export function LocationSelect({
                 return {
                     id: loc.id,
                     title: loc.name,
-                    icon: <MapPin className="w-4 h-4 opacity-50" />,
+                    icon: getIcon(loc.type),
                     badge: qty !== undefined ? `${qty} шт` : undefined,
                 } as SelectOption;
             });
@@ -55,8 +66,9 @@ export function LocationSelect({
                 onChange={onChange}
                 placeholder={placeholder}
                 disabled={disabled}
-                autoLayout
+                autoLayout={false}
                 showSearch={locations.length > 5}
+                error={error}
             />
         </div>
     );

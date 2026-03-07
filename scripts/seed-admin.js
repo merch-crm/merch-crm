@@ -33,7 +33,7 @@ async function seed() {
         }
 
         // 2. Hash Password
-        const salt = await bcrypt.genSalt(10);
+        const salt = await bcrypt.genSalt(12);
         const hash = await bcrypt.hash('password', salt);
 
         // 3. Create User

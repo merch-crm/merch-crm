@@ -11,6 +11,7 @@ import { InventoryAttribute, AttributeType, Category, StorageLocation } from "..
 import { useNewItemLogic } from "./hooks/useNewItemLogic";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface NewItemPageClientProps {
     categories: Category[];
@@ -19,7 +20,7 @@ interface NewItemPageClientProps {
     initialCategoryId?: string;
     initialSubcategoryId?: string;
     attributeTypes: AttributeType[];
-    users: { id: string; name: string }[];
+    users: { id: string; name: string; roleName?: string }[];
 }
 
 export function NewItemPageClient({
@@ -43,6 +44,7 @@ export function NewItemPageClient({
 
     const {
         step,
+        maxStep,
         selectedCategory,
         formData,
         validationError,
@@ -79,9 +81,10 @@ export function NewItemPageClient({
 
     return (
         <div className="flex flex-col w-full">
-            <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-160px)] gap-3 xl:gap-3 w-full">
+            <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-160px)] gap-3 w-full">
                 <NewItemSidebar
                     step={step}
+                    maxStep={maxStep}
                     steps={steps}
                     isSaving={isSaving}
                     hasSubCategories={hasSubCategories}
@@ -90,101 +93,148 @@ export function NewItemPageClient({
                     onStepClick={handleSidebarClick}
                 />
 
-                <div className="flex-1 min-w-0 relative h-full flex flex-col gap-2 !overflow-visible">
+                <div className="flex-1 min-w-0 relative h-full flex flex-col !overflow-visible">
                     <div className="relative flex-1 min-w-0 flex flex-col min-h-0 !overflow-visible">
-                        <div className="crm-card !rounded-3xl shadow-sm transition-all duration-300 flex flex-col h-full min-h-0 relative !overflow-visible !p-0">
-                            {step === 0 && (
-                                <CategoryStep
-                                    topLevelCategories={topLevelCategories}
-                                    subCategories={subCategories}
-                                    selectedCategory={selectedCategory}
-                                    formData={formData}
-                                    validationError={validationError}
-                                    onCategorySelect={handleCategorySelect}
-                                    onSubCategorySelect={handleSubCategorySelect}
-                                    onNext={() => {
-                                        if (!selectedCategory) {
-                                            setValidationError("Выберите категорию");
-                                            return;
-                                        }
-                                        if (subCategories.length > 0 && !formData.subcategoryId) {
-                                            setValidationError("Выберите подкатегорию");
-                                            return;
-                                        }
-                                        handleNext();
-                                    }}
-                                    onBack={handleBack}
-                                    setValidationError={setValidationError}
-                                />
-                            )}
+                        <div className="crm-card !rounded-3xl shadow-sm transition-all duration-300 flex flex-col h-full min-h-0 relative !p-0">
+                            <AnimatePresence mode="wait">
+                                {step === 0 && (
+                                    <motion.div
+                                        key="step-0"
+                                        initial={{ opacity: 0, x: 10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="h-full w-full flex flex-col"
+                                    >
+                                        <CategoryStep
+                                            topLevelCategories={topLevelCategories}
+                                            subCategories={subCategories}
+                                            selectedCategory={selectedCategory}
+                                            formData={formData}
+                                            validationError={validationError}
+                                            onCategorySelect={handleCategorySelect}
+                                            onSubCategorySelect={handleSubCategorySelect}
+                                            onNext={() => {
+                                                if (!selectedCategory) {
+                                                    setValidationError("Выберите категорию");
+                                                    return;
+                                                }
+                                                if (subCategories.length > 0 && !formData.subcategoryId) {
+                                                    setValidationError("Выберите подкатегорию");
+                                                    return;
+                                                }
+                                                handleNext();
+                                            }}
+                                            onBack={handleBack}
+                                            setValidationError={setValidationError}
+                                        />
+                                    </motion.div>
+                                )}
 
-                            {step === 2 && selectedCategory && (
-                                isPackaging ? (
-                                    <PackagingBasicInfoStep
-                                        category={selectedCategory}
-                                        subCategories={subCategories}
-                                        dynamicAttributes={dynamicAttributes}
-                                        attributeTypes={attributeTypes}
-                                        formData={formData}
-                                        updateFormData={updateFormData}
-                                        onNext={handleNext}
-                                        onBack={handleBack}
-                                        validationError={validationError}
-                                    />
-                                ) : (
-                                    <BasicInfoStep
-                                        category={selectedCategory}
-                                        subCategories={subCategories}
-                                        dynamicAttributes={dynamicAttributes}
-                                        attributeTypes={attributeTypes}
-                                        formData={formData}
-                                        updateFormData={updateFormData}
-                                        onNext={handleNext}
-                                        onBack={handleBack}
-                                        validationError={validationError}
-                                    />
-                                )
-                            )}
+                                {step === 2 && selectedCategory && (
+                                    <motion.div
+                                        key="step-2"
+                                        initial={{ opacity: 0, x: 10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="h-full w-full flex flex-col"
+                                    >
+                                        {isPackaging ? (
+                                            <PackagingBasicInfoStep
+                                                category={selectedCategory}
+                                                subCategories={subCategories}
+                                                dynamicAttributes={dynamicAttributes}
+                                                attributeTypes={attributeTypes}
+                                                formData={formData}
+                                                updateFormData={updateFormData}
+                                                onNext={handleNext}
+                                                onBack={handleBack}
+                                                validationError={validationError}
+                                            />
+                                        ) : (
+                                            <BasicInfoStep
+                                                category={selectedCategory}
+                                                subCategories={subCategories}
+                                                dynamicAttributes={dynamicAttributes}
+                                                attributeTypes={attributeTypes}
+                                                formData={formData}
+                                                updateFormData={updateFormData}
+                                                onNext={handleNext}
+                                                onBack={handleBack}
+                                                validationError={validationError}
+                                            />
+                                        )}
+                                    </motion.div>
+                                )}
 
-                            {step === 3 && (
-                                <MediaStep
-                                    category={selectedCategory}
-                                    formData={formData}
-                                    updateFormData={updateFormData}
-                                    onNext={handleNext}
-                                    onBack={handleBack}
-                                />
-                            )}
+                                {step === 3 && (
+                                    <motion.div
+                                        key="step-3"
+                                        initial={{ opacity: 0, x: 10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="h-full w-full flex flex-col"
+                                    >
+                                        <MediaStep
+                                            category={selectedCategory}
+                                            formData={formData}
+                                            updateFormData={updateFormData}
+                                            onNext={handleNext}
+                                            onBack={handleBack}
+                                        />
+                                    </motion.div>
+                                )}
 
-                            {step === 4 && selectedCategory && (
-                                <StockStep
-                                    category={selectedCategory}
-                                    storageLocations={storageLocations}
-                                    users={users}
-                                    formData={formData}
-                                    updateFormData={updateFormData}
-                                    onNext={handleNext}
-                                    onBack={handleBack}
-                                    validationError={validationError}
-                                    isSubmitting={isSubmitting}
-                                />
-                            )}
+                                {step === 4 && selectedCategory && (
+                                    <motion.div
+                                        key="step-4"
+                                        initial={{ opacity: 0, x: 10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="h-full w-full flex flex-col"
+                                    >
+                                        <StockStep
+                                            category={selectedCategory}
+                                            storageLocations={storageLocations}
+                                            users={users}
+                                            formData={formData}
+                                            updateFormData={updateFormData}
+                                            onNext={handleNext}
+                                            onBack={handleBack}
+                                            validationError={validationError}
+                                            isSubmitting={isSubmitting}
+                                        />
+                                    </motion.div>
+                                )}
 
-                            {step === 5 && selectedCategory && (
-                                <SummaryStep
-                                    category={selectedCategory}
-                                    subCategories={subCategories}
-                                    storageLocations={storageLocations}
-                                    dynamicAttributes={dynamicAttributes}
-                                    attributeTypes={attributeTypes}
-                                    formData={formData}
-                                    updateFormData={updateFormData}
-                                    onSubmit={handleSubmit}
-                                    onBack={handleBack}
-                                    validationError={validationError}
-                                    isSubmitting={isSubmitting}
-                                />
-                            )}
+                                {step === 5 && selectedCategory && (
+                                    <motion.div
+                                        key="step-5"
+                                        initial={{ opacity: 0, x: 10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -10 }}
+                                        transition={{ duration: 0.2, ease: "easeOut" }}
+                                        className="h-full w-full flex flex-col"
+                                    >
+                                        <SummaryStep
+                                            category={selectedCategory}
+                                            subCategories={subCategories}
+                                            storageLocations={storageLocations}
+                                            dynamicAttributes={dynamicAttributes}
+                                            attributeTypes={attributeTypes}
+                                            formData={formData}
+                                            updateFormData={updateFormData}
+                                            onSubmit={handleSubmit}
+                                            onBack={handleBack}
+                                            validationError={validationError}
+                                            isSubmitting={isSubmitting}
+                                        />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>

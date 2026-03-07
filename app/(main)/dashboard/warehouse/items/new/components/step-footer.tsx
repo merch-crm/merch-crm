@@ -32,7 +32,7 @@ export function StepFooter({
     className
 }: StepFooterProps) {
     return (
-        <div className={cn("h-[88px] shrink-0 bg-white border-t border-slate-200 z-30 p-[var(--radius-padding)] flex items-center rounded-b-3xl relative", className)}>
+        <div className={cn("h-[88px] shrink-0 bg-white border-t border-slate-200 z-30 px-8 flex items-center rounded-b-3xl relative", className)}>
             <div className="flex items-center justify-between w-full gap-3 sm:gap-0">
                 <Button
                     type="button"
@@ -64,10 +64,10 @@ export function StepFooter({
                     {onNext && (
                         <Button
                             type="button"
-                            variant="default"
+                            variant="ghost"
                             onClick={onNext}
                             disabled={isNextDisabled || isSubmitting}
-                            className="h-10 sm:h-11 pl-4 pr-3 sm:pl-8 sm:pr-6 rounded-[var(--radius)] font-bold text-xs sm:text-sm shadow-xl shadow-primary/20 transition-all w-auto"
+                            className="h-10 sm:h-11 pl-4 pr-3 sm:pl-8 sm:pr-6 rounded-[var(--radius)] font-bold text-xs sm:text-sm bg-slate-900 text-white shadow-xl shadow-black/10 transition-all w-auto hover:bg-slate-800 hover:text-white"
                         >
                             <div className="flex items-center justify-end sm:justify-center gap-2 sm:gap-2.5">
                                 {isSubmitting ? (

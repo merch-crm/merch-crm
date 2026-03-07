@@ -33,7 +33,7 @@ export function CompactDropzone({ label, preview, onChange, onRemove, uploading,
                     </div>
                 ) : preview ? (
                     <>
-                        <Image src={preview} alt="Image preview" fill className="object-cover" />
+                        <Image src={preview} alt="Image preview" fill unoptimized className="object-cover" />
                         <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-3 z-50 backdrop-blur-[2px]">
                             <label className="flex items-center gap-2 px-6 py-3 bg-white rounded-full cursor-pointer hover:bg-slate-50 transition-all shadow-xl group/btn active:scale-95">
                                 <RefreshCcw className="w-4 h-4 text-primary group-hover/btn:rotate-180 transition-transform duration-500" />

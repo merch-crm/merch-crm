@@ -1,5 +1,17 @@
-import { Warehouse, AlertCircle } from "lucide-react";
+import { Warehouse, MapPin } from "lucide-react";
 import { ItemFormData, StorageLocation } from "@/app/(main)/dashboard/warehouse/types";
+
+const typeLabels: Record<string, string> = {
+    warehouse: "Склад",
+    production: "Производство",
+    office: "Офис",
+};
+
+const typeBadgeStyles: Record<string, string> = {
+    warehouse: "bg-indigo-50 text-indigo-600 border-indigo-100",
+    production: "bg-amber-50 text-amber-600 border-amber-100",
+    office: "bg-emerald-50 text-emerald-600 border-emerald-100",
+};
 
 interface StorageCardProps {
     formData: ItemFormData;
@@ -7,49 +19,71 @@ interface StorageCardProps {
 }
 
 export function StorageCard({ formData, storageLocations }: StorageCardProps) {
-    const locationName = storageLocations.find(l => l.id === formData.storageLocationId)?.name || 'Не выбран';
+    const location = storageLocations.find(l => l.id === formData.storageLocationId);
+    const locationName = location?.name || 'Не выбран';
+    const locationType = location?.type || 'warehouse';
+    const typeLabel = typeLabels[locationType] || locationType;
+    const badgeStyle = typeBadgeStyles[locationType] || typeBadgeStyles.warehouse;
 
     return (
-        <div className="bg-slate-900 rounded-[32px] p-6 text-white shadow-2xl shadow-slate-900/10 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-150 transition-transform duration-1000" />
+        <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm p-4 sm:p-6 lg:p-8 flex flex-col gap-3 h-full">
 
-            <div className="relative z-10 flex flex-col h-full gap-3">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10">
-                            <Warehouse className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                            <h4 className="text-xs font-black text-white/40 leading-none mb-1">Склад</h4>
-                            <p className="text-sm font-bold text-white leading-none">
-                                {locationName}
-                            </p>
-                        </div>
+            {/* Header */}
+            <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                        <Warehouse className="w-6 h-6 text-white" strokeWidth={2} />
                     </div>
-                    <div className="text-right">
-                        <div className="text-xs font-black text-white/40 mb-1">Остаток</div>
-                        <div className="text-3xl font-black leading-none">{formData.quantity} <span className="text-sm text-white/50">шт</span></div>
+                    <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight">Склад</h3>
+                        <p className="text-[11px] sm:text-[11px] font-bold text-slate-700 opacity-60">Остатки и хранение</p>
                     </div>
                 </div>
+                <div className="flex flex-col items-end gap-0.5">
+                    <div className="text-[11px] font-black text-slate-400">остаток</div>
+                    <div className="flex items-baseline gap-1">
+                        <div className="text-2xl sm:text-[28px] font-black text-slate-900 leading-none tracking-tight">{formData.quantity}</div>
+                        <span className="text-[11px] font-bold text-slate-400">шт</span>
+                    </div>
+                </div>
+            </div>
 
-                <div className="h-px bg-white/10 w-full" />
+            <div className="space-y-3">
+                {/* Location row */}
+                <div className="flex items-center justify-between p-3 sm:p-4 rounded-[16px] bg-[#F8FAFC] border border-slate-200/60 shadow-sm transition-all group">
+                    <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-[10px] bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:border-slate-300 transition-colors shadow-sm">
+                            <MapPin className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs sm:text-[13px] font-bold text-slate-600 truncate max-w-[120px] sm:max-w-none">{locationName}</span>
+                    </div>
+                    <span className={`text-[11px] font-black px-2 py-0.5 rounded-full border shrink-0 ${badgeStyle}`}>
+                        {typeLabel.toLowerCase()}
+                    </span>
+                </div>
 
-                <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="flex flex-col p-4 rounded-2xl bg-white/5 border border-white/5 group-hover:border-white/10 transition-colors">
-                            <div className="flex items-center gap-2 mb-2">
-                                <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-                                <span className="text-xs font-bold text-white/30 truncate">Порог (Низко):</span>
+                {/* Compact Thresholds Row */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="flex items-center justify-between p-4 rounded-[16px] bg-[#F8FAFC] border border-slate-200/60 transition-all">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-[10px] bg-white border border-slate-200 flex items-center justify-center shadow-sm relative">
+                                <div className="w-2 h-2 rounded-full bg-amber-500 relative z-10" />
+                                <div className="absolute inset-0 w-2 h-2 m-auto rounded-full bg-amber-500 animate-ping opacity-40" />
                             </div>
-                            <div className="text-xl font-bold">{formData.lowStockThreshold || 0}</div>
+                            <span className="text-[12px] font-bold text-slate-500">Низко:</span>
                         </div>
-                        <div className="flex flex-col p-4 rounded-2xl bg-white/5 border border-white/5 group-hover:border-white/10 transition-colors">
-                            <div className="flex items-center gap-2 mb-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-rose-500" />
-                                <span className="text-xs font-bold text-white/30 truncate">Порог (Критично):</span>
+                        <span className="text-lg font-black text-slate-900">{formData.lowStockThreshold || 0}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-4 rounded-[16px] bg-[#F8FAFC] border border-slate-200/60 transition-all">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-[10px] bg-white border border-slate-200 flex items-center justify-center shadow-sm relative">
+                                <div className="w-2 h-2 rounded-full bg-rose-500 relative z-10" />
+                                <div className="absolute inset-0 w-2 h-2 m-auto rounded-full bg-rose-500 animate-ping opacity-40" />
                             </div>
-                            <div className="text-xl font-bold">{formData.criticalStockThreshold || 0}</div>
+                            <span className="text-[12px] font-bold text-slate-500">Крит:</span>
                         </div>
+                        <span className="text-lg font-black text-slate-900">{formData.criticalStockThreshold || 0}</span>
                     </div>
                 </div>
             </div>

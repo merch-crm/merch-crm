@@ -82,8 +82,24 @@ export async function POST(request: Request) {
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
+        // Generate a secure DB session
+        const crypto = await import("crypto");
+        const sessionId = crypto.randomUUID();
+
+        try {
+            const { pool } = await import('@/lib/db');
+            await pool.query(
+                'INSERT INTO sessions (id, user_id, user_agent, expires_at) VALUES ($1, $2, $3, $4)',
+                [sessionId, user.id, request.headers.get("user-agent") || "unknown", expires]
+            );
+        } catch (dbError) {
+            console.error("[Login] Failed to create DB session:", dbError);
+            // Fallback: Proceed with just JWT if DB fails (or we could block login)
+        }
+
         const sessionData = {
             id: user.id,
+            sessionId,
             email: user.email,
             roleId: user.roleId || "",
             roleName: user.role?.name || "User",

@@ -1,12 +1,13 @@
 "use client";
 
-import * as React from"react";
-import { MapPin } from"lucide-react";
-import { Select, SelectOption } from"./select";
+import * as React from "react";
+import { MapPin, Warehouse, Printer, Briefcase } from "lucide-react";
+import { Select, SelectOption } from "./select";
 
 interface LocationOption {
     id: string;
     name: string;
+    type?: "warehouse" | "production" | "office";
 }
 
 interface StorageLocationSelectProps {
@@ -27,14 +28,23 @@ export function StorageLocationSelect({ value, onChange, options, stocks, classN
         return new Map(stocks.map(s => [s.storageLocationId, s.quantity]));
     }, [stocks]);
 
+    const getIcon = (type?: string) => {
+        switch (type) {
+            case "warehouse": return <Warehouse className="w-4 h-4" />;
+            case "production": return <Printer className="w-4 h-4" />;
+            case "office": return <Briefcase className="w-4 h-4" />;
+            default: return <MapPin className="w-4 h-4" />;
+        }
+    };
+
     const safeOptions = React.useMemo(() =>
         (Array.isArray(options) ? options : []).map(opt => {
             const qty = stocksMap.get(opt.id);
             return {
                 id: opt.id,
                 title: opt.name,
-                badge: qty !== undefined ? `${qty} шт` : undefined,
-                icon: <MapPin className="sr-only" />
+                badge: `${qty || 0} шт`,
+                icon: getIcon(opt.type)
             } as SelectOption;
         })
         , [options, stocksMap]);
@@ -46,9 +56,10 @@ export function StorageLocationSelect({ value, onChange, options, stocks, classN
                 options={safeOptions}
                 value={value}
                 onChange={onChange}
-                placeholder={placeholder ||"Выберите склад..."}
+                placeholder={placeholder || "Выберите склад..."}
                 variant="default"
-                autoLayout
+                gridColumns={undefined}
+                autoLayout={false}
             />
         </div>
     );

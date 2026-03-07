@@ -39,7 +39,6 @@ export async function addXiaomiAccountByToken(formData: {
 
         const { email, userId, serviceToken, ssecurity, region } = formData
 
-        console.log(`[Xiaomi Token Auth] Adding account for ${email}, region: ${region}`)
 
         // Шифруем токены
         const encryptedToken = encrypt(JSON.stringify({
@@ -170,14 +169,12 @@ async function xiaomiLogin(username: string, password: string, _region: string):
 
         if (pendingSession) {
             // Используем сохранённые данные сессии
-            console.log(`[Xiaomi Login] Reusing pending session for ${username}`)
             cookies = pendingSession.cookies
             sign = pendingSession.sign
             sid = pendingSession.sid
             callback = pendingSession.callback
         } else {
             // Шаг 1: Получаем начальные cookies
-            console.log(`[Xiaomi Login] Step 1: Getting session cookies for ${username}`)
             const step1Response = await fetch(`${baseUrl}/pass/serviceLogin?sid=xiaomiio&_json=true`, {
                 method: 'GET',
                 headers: {
@@ -210,7 +207,6 @@ async function xiaomiLogin(username: string, password: string, _region: string):
             '_json': 'true'
         })
 
-        console.log(`[Xiaomi Login] Step 2: Authenticating ${username}`)
         const step2Response = await fetch(`${baseUrl}/pass/serviceLoginAuth2`, {
             method: 'POST',
             headers: {
@@ -222,13 +218,10 @@ async function xiaomiLogin(username: string, password: string, _region: string):
         })
 
         const step2Text = await step2Response.text()
-        console.log(`[Xiaomi Login] Step 2 Raw Response: ${step2Text}`)
         const step2Json = JSON.parse(step2Text.replace('&&&START&&&', ''))
-        console.log(`[Xiaomi Login] Step 2 JSON:`, JSON.stringify(step2Json, null, 2))
 
         if (step2Json.notificationUrl) {
             // Сохраняем сессию для следующей попытки (после верификации)
-            console.log(`[Xiaomi Login] Saving pending session and returning verification URL`)
             await savePendingSession(username, { cookies, sign, sid, callback, baseUrl, passwordHash })
             return {
                 success: false,
@@ -252,7 +245,6 @@ async function xiaomiLogin(username: string, password: string, _region: string):
                 [-32]: 'Слишком много попыток, попробуйте позже'
             }
 
-            console.log(`[Xiaomi Login] Auth failed with code: ${step2Json.code}`)
             return {
                 success: false,
                 error: errorMessages[step2Json.code] || `Ошибка авторизации (код: ${step2Json.code})`
@@ -264,7 +256,6 @@ async function xiaomiLogin(username: string, password: string, _region: string):
         const location = step2Json.location
         const nickname = step2Json.nick || step2Json.nickname
 
-        console.log(`[Xiaomi Login] Step 2 params: ssecurity=${!!ssecurity}, userId=${userId}, location=${!!location}`)
 
         if (!ssecurity || !userId) {
             console.error(`[Xiaomi Login] Missing critical params in Step 2 JSON`)
@@ -272,7 +263,6 @@ async function xiaomiLogin(username: string, password: string, _region: string):
         }
 
         // Шаг 3: Получаем serviceToken
-        console.log(`[Xiaomi Login] Step 3: Fetching serviceToken from location`)
         const step3Response = await fetch(location, {
             method: 'GET',
             headers: {
@@ -282,7 +272,6 @@ async function xiaomiLogin(username: string, password: string, _region: string):
         })
 
         const step3Cookies = step3Response.headers.get('set-cookie') || ''
-        console.log(`[Xiaomi Login] Step 3 Cookies: ${step3Cookies}`)
         const serviceTokenMatch = step3Cookies.match(/serviceToken=([^;]+)/)
         const serviceToken = serviceTokenMatch ? serviceTokenMatch[1] : null
 
@@ -370,7 +359,6 @@ export async function syncXiaomiDevices(accountId: string) {
             cameraModels.some(model => d.model?.startsWith(model))
         )
 
-        console.log(`[Sync] Found ${cameraDevices.length} cameras out of ${devices.devices!.length} devices`)
 
         // Синхронизируем
         let addedCount = 0

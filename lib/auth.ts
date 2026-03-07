@@ -9,7 +9,8 @@ if (!SECRET_KEY) throw new Error("JWT_SECRET_KEY is required");
 const key = new TextEncoder().encode(SECRET_KEY);
 
 export interface Session extends JWTPayload {
-    id: string;
+    id: string; // user ID
+    sessionId: string; // DB session ID
     email: string;
     name: string;
     roleName: string;
@@ -36,7 +37,7 @@ export async function encrypt(payload: Session) {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("24h")
+        .setExpirationTime("7d")
         .sign(key);
 }
 
@@ -54,6 +55,7 @@ export async function decrypt(input: string): Promise<Session> {
     return {
         ...payload,
         id: session.id,
+        sessionId: session.sessionId || "",
         email: session.email,
         name: session.name || "",
         roleName: session.roleName || "",
@@ -91,6 +93,23 @@ export async function getSession(): Promise<Session | null> {
             return null;
         }
 
+        // Database Session Verification
+        if (parsed.sessionId) {
+            try {
+                const { pool } = await import('@/lib/db');
+                const result = await pool.query(
+                    'SELECT id FROM sessions WHERE id = $1 LIMIT 1',
+                    [parsed.sessionId]
+                );
+                if (!result || !result?.rows || result?.rows?.length === 0) {
+                    console.warn(`[Auth] DB Session missing or revoked. User: ${parsed.email}`);
+                    return null; // Session revoked
+                }
+            } catch (dbError) {
+                console.warn("[Auth] DB check failed (network). Allowing JWT fallback.", dbError);
+            }
+        }
+
         return parsed;
     } catch {
         return null;
@@ -104,8 +123,7 @@ export async function updateSession() {
 
     try {
         const parsed = await decrypt(sessionValue);
-        const newExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        parsed.expires = newExpires;
+        const newExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
         // Re-encrypt with new expiration instead of reusing old token
         const newToken = await encrypt(parsed);
@@ -126,6 +144,16 @@ export async function logout() {
             await redis.set(`blacklist:${session}`, "1", "EX", 24 * 60 * 60);
         } catch {
             console.warn("⚠️ Failed to blacklist session on logout (Redis error)");
+        }
+
+        try {
+            const parsed = await decrypt(session);
+            if (parsed.sessionId) {
+                const { pool } = await import('@/lib/db');
+                await pool.query('DELETE FROM sessions WHERE id = $1', [parsed.sessionId]);
+            }
+        } catch {
+            // Decryption failed or DB unreachable, continue deletion from cookies
         }
     }
     cookieStore.delete("session");

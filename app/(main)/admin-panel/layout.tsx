@@ -19,7 +19,7 @@ export default async function AdminLayout({
     const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
         companyName:"",
         logoUrl: null,
-        primaryColor:"#5d00ff",
+        primaryColor:"var(--primary)",
         faviconUrl: null,
         backgroundColor:"#f2f2f2",
         currencySymbol:"₽"

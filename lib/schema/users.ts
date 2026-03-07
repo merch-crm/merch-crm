@@ -104,4 +104,26 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     systemErrors: many(systemErrors),
     managedClients: many(clients),
     wikiPages: many(wikiPages),
+    sessions: many(sessions),
+}));
+
+export const sessions = pgTable("sessions", {
+    id: text("id").primaryKey(), // Using text because we'll insert our secure session hash
+    userId: uuid("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    userAgent: text("user_agent"),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("sessions_user_idx").on(table.userId),
+        expiresIdx: index("sessions_expires_idx").on(table.expiresAt),
+        createdIdx: index("sessions_created_idx").on(table.createdAt),
+    }
+});
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+    user: one(users, {
+        fields: [sessions.userId],
+        references: [users.id],
+    }),
 }));

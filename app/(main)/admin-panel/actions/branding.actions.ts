@@ -18,7 +18,7 @@ export async function getBrandingAction(): Promise<ActionResult<BrandingSettings
     const defaultBranding: BrandingSettings = {
         companyName:"MerchCRM",
         logoUrl: null,
-        primaryColor:"#5d00ff",
+        primaryColor:"var(--primary)",
         faviconUrl: null,
         radiusOuter: 24,
         radiusInner: 14,
@@ -31,7 +31,7 @@ export async function getBrandingAction(): Promise<ActionResult<BrandingSettings
         crmBackgroundUrl: null,
         crmBackgroundBlur: 0,
         crmBackgroundBrightness: 100,
-        emailPrimaryColor:"#5d00ff",
+        emailPrimaryColor:"var(--primary)",
         emailContrastColor:"#ffffff",
         emailFooter:"С уважением, команда MerchCRM",
         emailSignature:"Управляйте вашим мерчем эффективно",
@@ -53,7 +53,7 @@ export async function getBrandingAction(): Promise<ActionResult<BrandingSettings
             data: {
                 ...defaultBranding,
                 ...val,
-                primaryColor: (val.primaryColor as string) || (val.primary_color as string) ||"#5d00ff",
+                primaryColor: (val.primaryColor as string) || (val.primary_color as string) ||"var(--primary)",
                 logoUrl: (val.logoUrl as string) || (val.system_logo as string) || (val.logo_url as string) || null,
                 faviconUrl: (val.faviconUrl as string) || (val.favicon_url as string) || null,
                 radiusOuter: (val.radiusOuter as number) || (val.radius_outer as number) || 24,
@@ -78,7 +78,7 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
         return res.success ? (res.data || {} as BrandingSettings) : {
             companyName:"MerchCRM",
             logoUrl: null,
-            primaryColor:"#5d00ff",
+            primaryColor:"var(--primary)",
             faviconUrl: null,
             backgroundColor:"#f2f2f2",
             currencySymbol:"₽"
@@ -87,7 +87,7 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
         return {
             companyName:"MerchCRM",
             logoUrl: null,
-            primaryColor:"#5d00ff",
+            primaryColor:"var(--primary)",
             faviconUrl: null,
             backgroundColor:"#f2f2f2",
             currencySymbol:"₽"

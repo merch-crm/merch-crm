@@ -10,7 +10,7 @@ export function ClientSideMain({ children }: { children: ReactNode }) {
 
     return (
         <main className={cn(
-            "flex-1 px-4 pt-4 max-w-[1480px] mx-auto w-full",
+            "flex-1 px-4 pt-8 max-w-[1480px] mx-auto w-full",
             isFocusedPage ? "pb-0" : "pb-4"
         )}>
             {children}

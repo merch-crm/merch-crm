@@ -49,7 +49,7 @@ export function StorageManager() {
                         className={cn(
                             "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold transition-all h-auto",
                             activeTab === "s3"
-                                ? "bg-white text-[#5d00ff] shadow-sm border border-slate-200 hover:bg-white hover:text-[#5d00ff]"
+                                ? "bg-white text-[var(--primary)] shadow-sm border border-slate-200 hover:bg-white hover:text-[var(--primary)]"
                                 : "text-slate-400 hover:text-slate-600 bg-transparent"
                         )}
                     >
@@ -75,7 +75,7 @@ export function StorageManager() {
                     variant="outline"
                     size="icon"
                     onClick={() => setIsSettingsOpen(true)}
-                    className="bg-white text-slate-500 hover:text-[#5d00ff] hover:bg-slate-50 rounded-[18px] border-slate-200 shadow-sm h-11 w-11"
+                    className="bg-white text-slate-500 hover:text-[var(--primary)] hover:bg-slate-50 rounded-[18px] border-slate-200 shadow-sm h-11 w-11"
                     title="Настройки лимитов"
                 >
                     <Settings2 size={20} />

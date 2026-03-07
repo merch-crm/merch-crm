@@ -1,7 +1,6 @@
 "use client";
 
 import { createElement, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
 import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getCategoryCardStyles, getHexColor } from "@/app/(main)/dashboard/warehouse/category-utils";
@@ -148,17 +147,17 @@ export function CategorySelector({
     const mobileRows = Math.ceil(count / mobileCols);
 
     return (
-        <div className="w-full h-full xl:h-full flex flex-col min-h-0 overflow-hidden">
+        <div className="w-full h-full xl:h-full flex flex-col min-h-0 !overflow-visible">
             {/* Title */}
             {!hideTitle && (
-                <div className="flex items-start justify-between gap-3 shrink-0 mb-3 sm:mb-4">
+                <div className="flex items-start justify-between gap-3 shrink-0 mb-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
-                            <LayoutGrid className="w-5 h-5 text-white" />
+                        <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                            <LayoutGrid className="w-6 h-6 text-white" />
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-900">Выберите категорию</h2>
-                            <p className="text-[11px] font-bold text-slate-500 opacity-60 mt-1">От категории зависят доступные поля и характеристики</p>
+                            <p className="text-xs font-bold text-slate-700 opacity-60">От категории зависят доступные поля и характеристики</p>
                         </div>
                     </div>
                     {rightElement}
@@ -172,9 +171,9 @@ export function CategorySelector({
                 onMouseLeave={handleMouseLeave}
                 onMouseUp={handleMouseUp}
                 onMouseMove={handleMouseMove}
-                className={cn("w-full min-w-0 min-h-0 transition-all",
-                    "xl:flex xl:h-full xl:flex-row xl:items-start xl:overflow-x-auto xl:snap-x xl:snap-mandatory xl:hide-scrollbar xl:gap-3 xl:overscroll-x-none xl:touch-pan-x xl:pb-4", // Clean horizontal scroll
-                    "grid gap-2 sm:gap-3 flex-1 h-full"
+                className={cn("w-full min-w-0 min-h-0 transition-all py-2 -my-2 pl-1 pr-1",
+                    "xl:flex xl:h-full xl:flex-row xl:items-start xl:overflow-x-auto xl:snap-x xl:snap-mandatory xl:hide-scrollbar xl:gap-3 xl:overscroll-x-none xl:touch-pan-x xl:pb-8", // Clean horizontal scroll
+                    "grid gap-2 sm:gap-3 flex-1 h-full pb-8"
                 )}
                 style={{
                     // Mobile/tablet: adaptive grid
@@ -191,10 +190,7 @@ export function CategorySelector({
                     if (variant === "compact") {
                         // Desktop: horizontal scroll with compact SQUARE tiles
                         return (
-                            <motion.button
-                                layout
-                                whileHover={{ scale: 1.05, y: -2 }}
-                                whileTap={{ scale: 0.95 }}
+                            <button
                                 type="button"
                                 key={category.id}
                                 data-category-id={category.id}
@@ -228,7 +224,7 @@ export function CategorySelector({
                                 <h3 className="text-[11px] font-bold text-slate-900 leading-tight text-center w-full break-words">
                                     {category.name}
                                 </h3>
-                            </motion.button>
+                            </button>
                         );
                     }
 
@@ -241,10 +237,7 @@ export function CategorySelector({
                         : (mobileRows >= 3 ? "w-4 h-4 sm:w-7 sm:h-7 xl:w-6 xl:h-6" : "w-5 h-5 sm:w-8 sm:h-8 xl:w-6 xl:h-6");
 
                     return (
-                        <motion.button
-                            layout
-                            whileHover={{ y: -4, scale: 1.01 }}
-                            whileTap={{ scale: 0.98 }}
+                        <button
                             type="button"
                             key={category.id}
                             data-category-id={category.id}
@@ -269,7 +262,7 @@ export function CategorySelector({
                             <div className={cn("relative rounded-full flex items-center justify-center shrink-0 mb-0.5 sm:mb-1", iconSize)}>
                                 <div
                                     className="absolute inset-0 rounded-full transition-opacity duration-500"
-                                    style={{ background: `${getHexColor(category.color)}22`, opacity: isSelected ? 0 : 1 }}
+                                    style={{ background: getHexColor(category.color), opacity: isSelected ? 0 : 1 }}
                                 />
                                 <div
                                     className="absolute inset-0 rounded-full transition-opacity duration-500"
@@ -279,8 +272,7 @@ export function CategorySelector({
                                     }}
                                 />
                                 <div
-                                    className="relative z-10 transition-colors duration-500"
-                                    style={{ color: isSelected ? "#fff" : getHexColor(category.color) }}
+                                    className="relative z-10 transition-colors duration-500 text-white"
                                 >
                                     {createElement(IconComponent, { className: iconInnerSize, strokeWidth: 1.5 })}
                                 </div>
@@ -328,7 +320,7 @@ export function CategorySelector({
                                     </div>
                                 </div>
                             </div>
-                        </motion.button>
+                        </button>
                     );
                 })}
                 {/* Right edge spacer to prevent clipping */}

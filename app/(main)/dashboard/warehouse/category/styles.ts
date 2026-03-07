@@ -70,7 +70,7 @@ export const getCategoryCardStyles = (color: string | null | undefined) => {
 export const getGradientStyles = (color: string | null | undefined) => {
     const c = color ||"slate";
     const styles: Record<string, string> = {
-        primary:"from-[#5d00ff] to-[#8b4aff] shadow-indigo-500/25",
+        primary:"from-[var(--primary)] to-[#8b4aff] shadow-indigo-500/25",
         blue:"from-blue-500 to-indigo-500 shadow-blue-500/25",
         emerald:"from-emerald-500 to-teal-500 shadow-emerald-500/25",
         amber:"from-amber-500 to-orange-500 shadow-orange-500/25",

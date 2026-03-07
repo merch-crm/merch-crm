@@ -1,6 +1,6 @@
 "use client";
 
-import React from"react";
+import React from "react";
 import {
     History,
     Search,
@@ -9,22 +9,22 @@ import {
     ArrowUpCircle,
     ArrowDownCircle,
     ArrowRightLeft,
-    Book,
-    Clock,
     Package,
     Layers,
     User,
     Calendar,
-    Building2
-} from"lucide-react";
-import { cn } from"@/lib/utils";
-import { ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
-import { format } from"date-fns";
-import { ru } from"date-fns/locale";
-import { motion, AnimatePresence } from"framer-motion";
-import { Pagination } from"@/components/ui/pagination";
-import { Button } from"@/components/ui/button";
-import { Input } from"@/components/ui/input";
+    Building2,
+    RefreshCw
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { motion, AnimatePresence } from "framer-motion";
+import { Pagination } from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tooltip, TooltipProvider } from "@/components/ui/tooltip";
 
 interface ItemHistorySectionProps {
     history: ItemHistoryTransaction[];
@@ -34,12 +34,22 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     const [searchQuery, setSearchQuery] = React.useState("");
     const [filterType, setFilterType] = React.useState<string | null>(null);
     const [currentPage, setCurrentPage] = React.useState(1);
-    const pageSize = 10;
+    const pageSize = 5;
+
+    const getTransactionCategory = (tx: ItemHistoryTransaction) => {
+        const reason = tx.reason?.toLowerCase() || "";
+        if (tx.orderId || reason.includes("отгрузка") || reason.includes("заказ")) return "order";
+        if (reason.includes("корректировка") || tx.type === "adjustment") return "adjustment";
+        if (tx.type === "in") return "in";
+        if (tx.type === "out") return "out";
+        if (tx.type === "transfer") return "transfer";
+        return "other";
+    };
 
     const filteredHistory = React.useMemo(() => {
         let result = history;
         if (filterType) {
-            result = result.filter(tx => tx.type === filterType);
+            result = result.filter(tx => getTransactionCategory(tx) === filterType);
         }
         if (searchQuery) {
             result = result.filter(tx =>
@@ -60,142 +70,148 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
     const renderEmpty = () => (
         <div className="table-empty py-16">
             <History />
-            <p>{searchQuery || filterType ?"Ничего не найдено" :"Операций не найдено"}</p>
+            <p>{searchQuery || filterType ? "Ничего не найдено" : "Операций не найдено"}</p>
         </div>
     );
 
     const renderTableView = () => (
         <>
-            {/* Desktop Table View */}
-            <div className="table-container hidden md:block">
-                <table className="crm-table">
-                    <thead className="crm-thead">
-                        <tr>
-                            <th className="crm-th">
-                                <div className="crm-th-content">
-                                    <Layers className="w-3.5 h-3.5" />
-                                    <span>ТИП</span>
-                                </div>
-                            </th>
-                            <th className="crm-th">
-                                <div className="crm-th-content">
-                                    <ArrowRightLeft className="w-3.5 h-3.5" />
-                                    <span>ИЗМЕНЕНИЕ</span>
-                                </div>
-                            </th>
-                            <th className="crm-th">
-                                <div className="crm-th-content">
-                                    <Building2 className="w-3.5 h-3.5" />
-                                    <span>СКЛАД</span>
-                                </div>
-                            </th>
-                            <th className="crm-th">
-                                <div className="crm-th-content">
-                                    <Book className="w-3.5 h-3.5" />
-                                    <span>ПРИЧИНА</span>
-                                </div>
-                            </th>
-                            <th className="crm-th">
-                                <div className="crm-th-content">
-                                    <User className="w-3.5 h-3.5" />
-                                    <span>АВТОР</span>
-                                </div>
-                            </th>
-                            <th className="crm-th text-right">
-                                <div className="crm-th-content justify-end">
-                                    <Calendar className="w-3.5 h-3.5" />
-                                    <span>ДАТА</span>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="crm-tbody">
-                        {paginatedHistory.map((tx, idx) => {
-                            const isPositive = tx.changeAmount > 0;
-                            return (
-                                <tr key={tx.id || idx} className="crm-tr-clickable group">
-                                    <td className="crm-td">
-                                        <div className="flex items-center gap-3">
-                                            <div className={cn("w-10 h-10 rounded-[var(--radius-inner)] flex items-center justify-center shadow-sm transition-transform",
-                                                tx.type ==="transfer"
-                                                    ?"bg-primary/5 text-primary border border-primary/20"
-                                                    : tx.type ==="attribute_change"
-                                                        ?"bg-amber-50 text-amber-600 border border-amber-100"
-                                                        : tx.type ==="archive"
-                                                            ?"bg-rose-50 text-rose-600 border border-rose-100"
-                                                            : tx.type ==="restore"
-                                                                ?"bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                : tx.type === 'in'
-                                                                    ?"bg-emerald-50 text-emerald-600 border border-emerald-100"
-                                                                    :"bg-rose-50 text-rose-600 border border-rose-100"
-                                            )}>
-                                                {tx.type === 'in' && <ArrowDownCircle className="w-5 h-5" />}
-                                                {tx.type === 'out' && <ArrowUpCircle className="w-5 h-5" />}
-                                                {tx.type === 'transfer' && <ArrowRightLeft className="w-5 h-5" />}
-                                                {tx.type === 'attribute_change' && <Book className="w-4 h-4" />}
-                                                {tx.type === 'archive' && <Clock className="w-4 h-4" />}
-                                                {tx.type === 'restore' && <Package className="w-4 h-4" />}
-                                            </div>
-                                            <span className="hidden lg:inline text-[13px] font-bold text-foreground">
-                                                {tx.type ==="in" ?"Приход" : tx.type ==="out" ?"Расход" : tx.type ==="transfer" ?"Перемещение" :"Обновление"}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td className="crm-td">
-                                        <span className={cn("text-[13px] font-bold",
-                                            isPositive ?"text-emerald-600" :"text-rose-600"
-                                        )}>
-                                            {isPositive ?"+" :""}{tx.changeAmount}
-                                        </span>
-                                    </td>
-                                    <td className="crm-td">
-                                        <span className="text-[13px] font-bold text-muted-foreground">{tx.storageLocation?.name ||"—"}</span>
-                                    </td>
-                                    <td className="crm-td min-w-[120px] max-w-[240px]">
-                                        <div className="text-[12px] font-bold text-muted-foreground leading-snug">
-                                            {(() => {
-                                                const transferMatch = tx.reason?.match(/(?:Перемещение|Получено) со склада"(.+)" на"(.+)"(?:\. Причина: (.+))?/);
+            {/* Desktop Card-Row View */}
+            <div className="hidden md:block bg-muted/30 rounded-[22px] p-4 border border-border shadow-sm">
 
-                                                if (transferMatch) {
-                                                    const from = transferMatch[1];
-                                                    const to = transferMatch[2];
-                                                    const comment = transferMatch[3];
+                {/* Column Headers — styled as a subtle card */}
+                <div className="flex items-center px-6 py-3 mb-1 bg-card/60 rounded-xl border border-border/30 text-[11px] font-bold tracking-wider text-muted-foreground/50 select-none">
+                    <div className="w-[200px] shrink-0 flex items-center gap-2">
+                        <Layers className="w-3.5 h-3.5" /> ТИП
+                    </div>
+                    <div className="w-[100px] shrink-0 flex items-center justify-center gap-2 mr-16">
+                        <ArrowRightLeft className="w-3.5 h-3.5" /> ИЗМЕНЕНИЕ
+                    </div>
+                    <div className="flex-1 flex items-center gap-2 min-w-0 pr-4">
+                        <Building2 className="w-3.5 h-3.5" /> СКЛАД
+                    </div>
+                    <div className="flex-1 flex items-center gap-2 min-w-0 pr-4">
+                        <RefreshCw className="w-3.5 h-3.5" /> ПРИЧИНА
+                    </div>
+                    <div className="w-[160px] shrink-0 flex items-center gap-2">
+                        <User className="w-3.5 h-3.5" /> АВТОР
+                    </div>
+                    <div className="w-[100px] shrink-0 flex items-center gap-2 justify-end">
+                        <Calendar className="w-3.5 h-3.5" /> ДАТА
+                    </div>
+                </div>
 
-                                                    return (
-                                                        <div className="flex flex-col gap-0.5">
-                                                            <div className="font-bold text-foreground flex items-center gap-1.5">
-                                                                {from} <ArrowRight className="w-3 h-3 text-muted-foreground" /> {to}
-                                                            </div>
-                                                            {comment && <div className="text-muted-foreground font-medium truncate">{comment}</div>}
-                                                        </div>
-                                                    );
-                                                }
-                                                return tx.reason ||"—";
-                                            })()}
-                                        </div>
-                                    </td>
-                                    <td className="crm-td">
-                                        <span className="text-[13px] font-bold text-muted-foreground">
-                                            {tx.creator?.name ||"Система"}
-                                        </span>
-                                    </td>
-                                    <td className="crm-td text-right">
+                {/* Card Rows */}
+                <div className="space-y-2.5">
+                    {paginatedHistory.map((tx, idx) => {
+                        const isPositive = tx.changeAmount > 0;
+                        const category = getTransactionCategory(tx);
+
+                        return (
+                            <div key={tx.id || idx} className="bg-card px-6 py-4 rounded-xl shadow-sm border border-border/60 flex items-center transition-all hover:shadow-md hover:border-border cursor-default group">
+                                {/* Icon + Type */}
+                                <div className="flex items-center gap-3 w-[200px] shrink-0">
+                                    <div className={cn("w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-105",
+                                        category === "order"
+                                            ? "bg-indigo-50 text-indigo-600"
+                                            : category === "in"
+                                                ? "bg-emerald-50 text-emerald-600"
+                                                : category === "out"
+                                                    ? "bg-rose-50 text-rose-600"
+                                                    : category === "adjustment"
+                                                        ? "bg-purple-50 text-purple-600"
+                                                        : category === "transfer"
+                                                            ? "bg-blue-50 text-blue-600"
+                                                            : "bg-muted text-muted-foreground"
+                                    )}>
+                                        {category === "order" && <Package className="w-4 h-4" />}
+                                        {category === "in" && <ArrowDownCircle className="w-4 h-4" />}
+                                        {category === "out" && <ArrowUpCircle className="w-4 h-4" />}
+                                        {category === "adjustment" && <RefreshCw className="w-4 h-4" />}
+                                        {category === "transfer" && <ArrowRightLeft className="w-4 h-4" />}
+                                        {category === "other" && <Layers className="w-4 h-4" />}
+                                    </div>
+                                    <span className="text-[14px] font-bold text-foreground">
+                                        {category === "order" ? "Продажи" :
+                                            category === "in" ? "Приход" :
+                                                category === "out" ? "Расход" :
+                                                    category === "adjustment" ? "Корректировка" :
+                                                        category === "transfer" ? "Перемещение" : "Другое"}
+                                    </span>
+                                </div>
+
+                                {/* Change Badge */}
+                                <div className="w-[100px] shrink-0 mr-16 flex justify-center">
+                                    <span className={cn("inline-flex items-center justify-center px-3 py-1 rounded-lg text-[13px] font-bold font-mono",
+                                        isPositive
+                                            ? "bg-emerald-50 text-emerald-600"
+                                            : "bg-rose-50 text-rose-600"
+                                    )}>
+                                        {isPositive ? "+" : ""}{tx.changeAmount}
+                                    </span>
+                                </div>
+
+                                {/* Warehouse */}
+                                <div className="flex-1 flex items-center gap-2.5 text-[14px] text-muted-foreground font-semibold min-w-0 pr-4">
+                                    <div className="w-1 h-1 rounded-full bg-muted-foreground/30 shrink-0"></div>
+                                    <span className="truncate">
                                         {(() => {
-                                            const d = new Date(tx.createdAt);
-                                            if (isNaN(d.getTime())) return <span className="text-xs font-bold text-muted-foreground/30">—</span>;
-                                            return (
-                                                <div className="flex flex-col items-end">
-                                                    <span className="text-[12px] font-bold text-foreground">{format(d,"dd.MM.yy", { locale: ru })}</span>
-                                                    <span className="text-xs font-bold text-muted-foreground">{format(d,"HH:mm", { locale: ru })}</span>
-                                                </div>
-                                            );
+                                            const transferMatch = tx.reason?.match(/(?:Перемещение|Получено)\s+со склада\s+["«](.+)["»]\s+на\s+["«](.+)["»](?:\.\s+Причина:\s+(.+))?/i);
+                                            if (transferMatch) {
+                                                return (
+                                                    <span className="flex items-center gap-1.5">
+                                                        <span>{transferMatch[1]}</span>
+                                                        <ArrowRight className="w-3 h-3 opacity-40 shrink-0" />
+                                                        <span>{transferMatch[2]}</span>
+                                                    </span>
+                                                );
+                                            }
+                                            return tx.storageLocation?.name || "—";
                                         })()}
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                    </span>
+                                </div>
+
+                                {/* Reason */}
+                                <div className="flex-1 text-[14px] text-muted-foreground/70 font-medium min-w-0 pr-4">
+                                    <span className="truncate block">
+                                        {(() => {
+                                            const transferMatch = tx.reason?.match(/(?:Перемещение|Получено)\s+со склада\s+["«](.+)["»]\s+на\s+["«](.+)["»](?:\.\s+Причина:\s+(.+))?/i);
+                                            if (transferMatch) {
+                                                const comment = transferMatch[3];
+                                                if (comment && comment.toLowerCase().trim() !== "перемещение") {
+                                                    return comment;
+                                                }
+                                                return "Перемещение";
+                                            }
+                                            return (tx.reason || "—")
+                                                .replace(/^Корректировка остатка:\s*/i, "")
+                                                .replace(/\.?\s*Причина:\s*перемещение$/i, "");
+                                        })()}
+                                    </span>
+                                </div>
+
+                                {/* Author */}
+                                <div className="w-[160px] shrink-0 text-[14px] text-muted-foreground font-semibold">
+                                    {tx.creator?.name || "Система"}
+                                </div>
+
+                                {/* Date & Time */}
+                                <div className="w-[100px] shrink-0 flex flex-col items-end justify-center">
+                                    {(() => {
+                                        const d = new Date(tx.createdAt);
+                                        if (isNaN(d.getTime())) return <span className="text-xs font-bold text-muted-foreground/30">—</span>;
+                                        return (
+                                            <>
+                                                <span className="text-[12px] font-bold text-foreground leading-tight">{format(d, "dd.MM.yy", { locale: ru })}</span>
+                                                <span className="text-[11px] font-bold text-muted-foreground leading-tight mt-0.5">{format(d, "HH:mm", { locale: ru })}</span>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
             {filteredHistory.length === 0 && renderEmpty()}
 
@@ -240,39 +256,62 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                 {/* Filters - Right Aligned */}
                 <div className="flex items-center gap-3 shrink-0">
                     <div className="w-px h-6 bg-border mx-1" />
-                    {[
-                        { id: null, label: 'Все', icon: Layers },
-                        { id: 'in', label: 'Приход', icon: ArrowDownCircle },
-                        { id: 'out', label: 'Расход', icon: ArrowUpCircle },
-                        { id: 'transfer', label: 'Перемещение', icon: ArrowRightLeft }
-                    ].map((btn) => {
-                        const isActive = filterType === btn.id;
-                        return (
-                            <Button
-                                key={String(btn.id)}
-                                variant="ghost"
-                                onClick={() => {
-                                    setFilterType(btn.id);
-                                    setCurrentPage(1);
-                                }}
-                                className={cn("crm-filter-tab",
-                                    isActive &&"active"
-                                )}
-                            >
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="activeItemHistoryTab"
-                                        className="absolute inset-0 bg-primary rounded-[10px] z-0"
-                                        transition={{ type:"spring", bounce: 0, duration: 0.4 }}
-                                    />
-                                )}
-                                <div className="relative z-10 flex items-center justify-center gap-2">
-                                    <btn.icon className={cn("w-3.5 h-3.5", isActive ?"text-white" :"text-muted-foreground")} />
-                                    <span className="hidden sm:inline">{btn.label}</span>
-                                </div>
-                            </Button>
-                        );
-                    })}
+                    <TooltipProvider delayDuration={5000}>
+                        {[
+                            { id: null, label: 'Все', icon: Layers },
+                            { id: 'order', label: 'Продажи', icon: Package },
+                            { id: 'in', label: 'Приход', icon: ArrowDownCircle },
+                            { id: 'out', label: 'Расход', icon: ArrowUpCircle },
+                            { id: 'transfer', label: 'Перемещение', icon: ArrowRightLeft },
+                            { id: 'adjustment', label: 'Корректировка', icon: RefreshCw }
+                        ].map((btn) => {
+                            const isActive = filterType === btn.id;
+                            const button = (
+                                <Button
+                                    variant="ghost"
+                                    onClick={() => {
+                                        setFilterType(btn.id);
+                                        setCurrentPage(1);
+                                    }}
+                                    className={cn("crm-filter-tab px-3",
+                                        isActive && "active"
+                                    )}
+                                >
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="activeItemHistoryTab"
+                                            className="absolute inset-0 bg-primary rounded-2xl z-0"
+                                            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                        />
+                                    )}
+                                    <div className="relative z-10 flex items-center justify-center gap-2">
+                                        <btn.icon className={cn("w-3.5 h-3.5", isActive ? "text-white" : "text-muted-foreground")} />
+                                        {isActive && (
+                                            <motion.span
+                                                initial={{ opacity: 0, x: -5 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                className="hidden sm:inline text-white"
+                                            >
+                                                {btn.label}
+                                            </motion.span>
+                                        )}
+                                    </div>
+                                </Button>
+                            );
+
+                            return (
+                                <React.Fragment key={String(btn.id)}>
+                                    {isActive ? (
+                                        button
+                                    ) : (
+                                        <Tooltip content={btn.label} side="bottom">
+                                            {button}
+                                        </Tooltip>
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
+                    </TooltipProvider>
                 </div>
             </div>
 
@@ -288,7 +327,7 @@ export function ItemHistorySection({ history }: ItemHistorySectionProps) {
                         pageSize={pageSize}
                         onPageChange={setCurrentPage}
                         itemNames={['операция', 'операции', 'операций']}
-                        variant="light"
+                        variant="card"
                     />
                 </div>
             )}
@@ -307,7 +346,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
             {history.map((tx, idx) => {
                 const isPositive = tx.changeAmount > 0;
                 const isExpanded = expandedId === (tx.id || String(idx));
-                const typeLabel = tx.type ==="in" ?"Приход" : tx.type ==="out" ?"Расход" : tx.type ==="transfer" ?"Перемещ." :"Обновл.";
+                const typeLabel = tx.type === "in" ? "Приход" : tx.type === "out" ? "Расход" : tx.type === "transfer" ? "Перемещ." : "Обновл.";
 
                 return (
                     <div key={tx.id || idx} className="bg-card">
@@ -318,10 +357,10 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                         >
                             {/* Type Indicator */}
                             <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                                tx.type === 'in' ?"bg-emerald-50" : tx.type === 'out' ?"bg-rose-50" :"bg-primary/10"
+                                tx.type === 'in' ? "bg-emerald-50" : tx.type === 'out' ? "bg-rose-50" : "bg-primary/10"
                             )}>
                                 <div className={cn("w-2 h-2 rounded-full",
-                                    tx.type === 'in' ?"bg-emerald-500" : tx.type === 'out' ?"bg-rose-500" :"bg-primary"
+                                    tx.type === 'in' ? "bg-emerald-500" : tx.type === 'out' ? "bg-rose-500" : "bg-primary"
                                 )} />
                             </div>
 
@@ -330,16 +369,16 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                 <div className="flex items-center justify-between">
                                     <span className="font-bold text-sm text-foreground">{typeLabel}</span>
                                     <span className={cn("font-bold text-sm tabular-nums",
-                                        isPositive ?"text-emerald-600" :"text-rose-600"
+                                        isPositive ? "text-emerald-600" : "text-rose-600"
                                     )}>
-                                        {isPositive ?"+" :""}{tx.changeAmount}
+                                        {isPositive ? "+" : ""}{tx.changeAmount}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                     <span className="text-xs font-bold text-muted-foreground">
                                         {(() => {
                                             const d = new Date(tx.createdAt);
-                                            return isNaN(d.getTime()) ?"—" : format(d,"d MMM, HH:mm", { locale: ru });
+                                            return isNaN(d.getTime()) ? "—" : format(d, "d MMM, HH:mm", { locale: ru });
                                         })()}
                                     </span>
                                     {tx.storageLocation?.name && (
@@ -359,7 +398,7 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                             {isExpanded && (
                                 <motion.div
                                     initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height:"auto", opacity: 1 }}
+                                    animate={{ height: "auto", opacity: 1 }}
                                     exit={{ height: 0, opacity: 0 }}
                                     transition={{ duration: 0.2 }}
                                     className="overflow-hidden"
@@ -369,14 +408,14 @@ function MobileItemHistoryList({ history }: { history: ItemHistoryTransaction[] 
                                             {/* Author */}
                                             <div className="flex items-center justify-between border-b border-border/60 pb-2">
                                                 <span className="text-xs font-bold text-muted-foreground">Автор</span>
-                                                <span className="text-xs font-bold text-foreground">{tx.creator?.name ||"Система"}</span>
+                                                <span className="text-xs font-bold text-foreground">{tx.creator?.name || "Система"}</span>
                                             </div>
 
                                             {/* Reason */}
                                             {tx.reason && (
                                                 <div className="flex flex-col gap-1">
                                                     <span className="text-xs font-bold text-muted-foreground">Причина</span>
-                                                    <p className="text-xs text-foreground leading-normal">{tx.reason}</p>
+                                                    <p className="text-xs text-foreground leading-normal">{tx.reason.replace(/^Корректировка остатка:\s*/i, "")}</p>
                                                 </div>
                                             )}
                                         </div>

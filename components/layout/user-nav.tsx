@@ -41,21 +41,20 @@ export function UserNav({ user, branding }: {
                 variant="ghost"
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-3 p-1.5 h-auto rounded-[var(--radius-inner)] hover:bg-slate-50 transition-all duration-200 group hover:shadow-sm"
+                className="flex items-center gap-2 p-0 h-auto rounded-none hover:bg-transparent transition-all duration-200 group"
             >
                 <div className="relative shrink-0">
-                    <div className="h-10 w-10 rounded-[var(--radius-inner)] bg-indigo-50 flex items-center justify-center text-indigo-400 border border-indigo-100/50 overflow-hidden shadow-sm">
+                    <div className="h-8 w-8 rounded-[var(--radius-inner)] bg-transparent flex items-center justify-center text-slate-400 border border-slate-200 overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
                         {user.avatar ? (
-                            <Image src={user.avatar} alt={user.name} width={40} height={40} className="w-full h-full object-cover" />
+                            <Image src={user.avatar} alt={user.name} width={32} height={32} className="w-full h-full object-cover" />
                         ) : (
-                            <User className="h-5.5 w-5.5" />
+                            <User className="h-4 w-4" />
                         )}
                     </div>
                     <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full translate-x-0.5 translate-y-0.5 animate-crm-blink shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
                 </div>
-                <div className="hidden lg:block text-left">
+                <div className="hidden lg:block text-left pr-1">
                     <div className="text-sm font-bold text-slate-900 leading-tight">{user.name}</div>
-                    <div className="text-[12px] text-slate-400 font-medium">{user.roleName}</div>
                 </div>
                 <ChevronDown className={cn("h-4 w-4 text-slate-300 transition-all duration-300", isOpen && "rotate-180 text-primary")} />
             </Button>

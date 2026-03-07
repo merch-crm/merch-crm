@@ -142,13 +142,19 @@ export const SortableCategoryCard = React.memo(({
         zIndex: isDragging ? 50 : undefined,
     };
 
+    const hexColor = getHexColor(category.color || "slate");
+
     return (
         <div
             ref={(node) => {
                 setNodeRef(node);
                 cardRef.current = node;
             }}
-            style={style}
+            style={{
+                ...style,
+                "--category-color": hexColor,
+                "--category-color-alpha": `${hexColor}14` // 0.08 opacity hex equivalent
+            } as React.CSSProperties}
             role="button"
             tabIndex={0}
             onClick={() => router.push(`/dashboard/warehouse/categories/${category.id}`)}
@@ -158,10 +164,22 @@ export const SortableCategoryCard = React.memo(({
                     router.push(`/dashboard/warehouse/categories/${category.id}`);
                 }
             }}
-            className={cn("group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-shadow duration-300", "hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80",
-                isDragging ? "shadow-2xl ring-2 ring-primary/20 border-primary/30" : "shadow-sm", "h-full flex flex-col"
+            className={cn("group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-all duration-500",
+                "hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] cursor-pointer",
+                isDragging ? "shadow-2xl ring-2 ring-primary/20 border-primary/30" : "shadow-sm",
+                "h-full flex flex-col"
             )}
+            onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = hexColor + "66"; // 0.4 opacity
+            }}
+            onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "";
+            }}
         >
+            {/* Soft Corner Glow on Hover */}
+            <div className="absolute -bottom-12 -right-12 w-48 h-48 opacity-0 transition-opacity duration-500 group-hover:opacity-100 blur-[60px] rounded-full pointer-events-none"
+                style={{ backgroundColor: `${hexColor}1A` }} // 10% opacity
+            />
             <CategoryCardContent
                 category={category}
                 isDragging={isDragging}
@@ -250,7 +268,7 @@ export const CategoryCardContent = React.memo(({
                         >
                             <IconComponent className="w-8 h-8 stroke-[1.5]" />
                         </div>
-                        <h3 className="text-[20px] font-black text-slate-900 leading-tight mb-1 text-center">
+                        <h3 className="text-[20px] font-black text-slate-900 leading-tight mb-1 text-center transition-colors duration-300 group-hover:text-[var(--category-color)]">
                             {category.name}
                         </h3>
                         <p className="text-[11px] font-semibold text-slate-400 text-center">

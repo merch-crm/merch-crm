@@ -37,6 +37,7 @@ interface AuditSummary {
     severityCounts: Record<string, number>;
     score: number;
     grade: string;
+    totalCategories: number;
 }
 
 // ============================================
@@ -450,6 +451,7 @@ function auditSecrets(): Finding[] {
         { regex: /token\s*[:=]\s*["'][A-Za-z0-9_\-]{20,}["']/gi, name: "Токен в коде", exclude: /csrf|session|cookie|jwt/i },
         { regex: /private[_-]?key\s*[:=]\s*["'][^"']+["']/gi, name: "Приватный ключ в коде" },
         { regex: /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/g, name: "PEM ключ в коде" },
+        { regex: /process\.env\.([^ \t\n\r.;,(){}[\]]+)/g, name: "Доступ к env напрямую (не через lib/env)" },
     ];
 
     let issues = 0;
@@ -1117,6 +1119,218 @@ function auditDataExposure(): Finding[] {
 }
 
 // ============================================
+// 18. AUTH CONFIG (SESSION LIFESPAN, ALGORITHMS)
+// ============================================
+
+function auditAuthConfig(): Finding[] {
+    check("18. Настройки авторизации");
+    const findings: Finding[] = [];
+
+    const authFile = "lib/auth.ts";
+    if (fs.existsSync(authFile)) {
+        const content = fs.readFileSync(authFile, "utf-8");
+
+        // Rule 1: Session lifespan (max 7 days)
+        const expMatch = content.match(/\.setExpirationTime\("([^"]+)"\)/);
+        if (expMatch) {
+            const time = expMatch[1];
+            const isTooLong = /days|d|week/i.test(time) && (parseInt(time) > 7 || time.includes("8") || time.includes("9"));
+            if (isTooLong || /month|y/i.test(time)) {
+                findings.push({
+                    file: authFile,
+                    severity: "HIGH",
+                    category: "Auth Config",
+                    title: "Слишком большой срок жизни JWT",
+                    detail: `Срок жизни сессии установлен на "${time}". Правило 1 рекомендует максимум 7 дней.`,
+                    recommendation: "Установи .setExpirationTime(\"7d\") или меньше.",
+                });
+            }
+        }
+
+        // Rule 2: Auth Provider (Check for homegrown auth)
+        if (content.includes("SignJWT") && !content.includes("clerk") && !content.includes("supabase") && !content.includes("auth0")) {
+            findings.push({
+                file: authFile,
+                severity: "INFO",
+                category: "Auth Config",
+                title: "Используется кастомная JWT авторизация",
+                detail: "Правило 2 рекомендует использовать готовые решения (Clerk, Supabase Auth, Auth0) вместо самописных.",
+            });
+        }
+    }
+
+    if (findings.length === 0) ok("Настройки авторизации в норме");
+    else warn(`${findings.length} замечаний к конфигурации авторизации`);
+
+    return findings;
+}
+
+// ============================================
+// 19. CONSOLE LOGS CLEANUP
+// ============================================
+
+function auditConsoleLogs(): Finding[] {
+    check("19. Очистка console.log");
+    const findings: Finding[] = [];
+
+    const files = getAllFiles("app", [".ts", ".tsx"]).concat(getAllFiles("components", [".ts", ".tsx"]));
+    let issues = 0;
+
+    for (const file of files) {
+        if (file.includes(".test.") || file.includes(".spec.")) continue;
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes("console.log(") && !line.includes("// audit-ignore")) {
+                issues++;
+                findings.push({
+                    file,
+                    line: i + 1,
+                    severity: "LOW",
+                    category: "Logging",
+                    title: "Обнаружен console.log",
+                    detail: "В production коде не должно быть console.log (Правило 11).",
+                    recommendation: "Удали логи перед релизом или используй Winston/Pino.",
+                });
+            }
+        }
+    }
+
+    if (issues === 0) ok("console.log не обнаружены в приложении");
+    else info(`Найдено ${issues} вызовов console.log`);
+
+    return findings;
+}
+
+// ============================================
+// 20. WEBHOOK SECURITY
+// ============================================
+
+function auditWebhookSecurity(): Finding[] {
+    check("20. Проверка подписей Webhook");
+    const findings: Finding[] = [];
+
+    const webhookFiles = getAllFiles("app/api/webhooks", [".ts"]);
+    let unchecked = 0;
+
+    for (const file of webhookFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        const hasSignatureCheck =
+            content.includes("verifySignature") ||
+            content.includes("stripe.webhooks.constructEvent") ||
+            content.includes("svix") ||
+            content.includes("crypto.createHmac") ||
+            content.includes("verifyWebhookSignature");
+
+        if (!hasSignatureCheck) {
+            unchecked++;
+            findings.push({
+                file,
+                severity: "CRITICAL",
+                category: "Webhooks",
+                title: "Вебхук без проверки подписи",
+                detail: "Эндпоинт вебхука не проверяет подпись запроса (Правило 21). Любой может отправить фейковые данные.",
+                recommendation: "Реализуй проверку HMAC или используй SDK провайдера (Stripe, Svix).",
+                cwe: "CWE-353",
+            });
+        }
+    }
+
+    if (unchecked === 0) ok("Все вебхуки имеют проверку подписи");
+    else fail(`${unchecked} вебхуков без защиты`);
+
+    return findings;
+}
+
+// ============================================
+// 21. CORS & REDIRECT POLICIES
+// ============================================
+
+function auditPolicies(): Finding[] {
+    check("21. Политики CORS и Redirect");
+    const findings: Finding[] = [];
+
+    const middlewareFile = "middleware.ts";
+    if (fs.existsSync(middlewareFile)) {
+        const content = fs.readFileSync(middlewareFile, "utf-8");
+        if (content.includes("Access-Control-Allow-Origin") && /Access-Control-Allow-Origin['"],\s*['"]\*(['"])/.test(content)) {
+            findings.push({
+                file: middlewareFile,
+                severity: "HIGH",
+                category: "CORS",
+                title: "CORS Wildcard (*)",
+                detail: "Разрешен доступ с любых доменов. Правило 12 рекомендует разрешать только production-домен.",
+                recommendation: "Замени '*' на конкретный URL (env.NEXT_PUBLIC_APP_URL).",
+                cwe: "CWE-942",
+            });
+        }
+    }
+
+    if (findings.length === 0) ok("Политики CORS и Redirect соответствуют стандартам");
+    else warn(`${findings.length} нарушений политик`);
+
+    return findings;
+}
+
+// ============================================
+// 22. CRITICAL ACTIONS LOGGING
+// ============================================
+
+function auditActionLogging(): Finding[] {
+    check("22. Логирование критических действий");
+    const findings: Finding[] = [];
+
+    const actionFiles = getAllFiles("app", [".ts"]).filter(f => f.endsWith("actions.ts"));
+    let issues = 0;
+
+    const CRITICAL_KEYWORDS = ["delete", "remove", "updateRole", "refund", "export", "archive"];
+
+    for (const file of actionFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+
+        while ((match = funcRegex.exec(content)) !== null) {
+            const funcName = match[2];
+            if (CRITICAL_KEYWORDS.some(k => funcName.toLowerCase().includes(k.toLowerCase()))) {
+                const funcStart = match.index;
+                const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+                const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+                const hasLogging =
+                    funcBody.includes("auditLogs") ||
+                    funcBody.includes("logAction") ||
+                    funcBody.includes("createLog") ||
+                    funcBody.includes("db.insert(logs)") ||
+                    funcBody.includes("db.insert(auditLogs)") ||
+                    funcBody.includes("recordActivity");
+
+                if (!hasLogging) {
+                    issues++;
+                    findings.push({
+                        file,
+                        line: lineAt(content, funcStart),
+                        severity: "MEDIUM",
+                        category: "Auditing",
+                        title: `Критическое действие ${funcName} без логирования`,
+                        detail: "Удаление, смена ролей или экспорт должны записываться в системный лог (Правило 26).",
+                        recommendation: "Добавь запись в таблицу audit_logs.",
+                        cwe: "CWE-778",
+                    });
+                }
+            }
+        }
+    }
+
+    if (issues === 0) ok("Критические действия логируются");
+    else info(`${issues} действий требуют внедрения логирования`);
+
+    return findings;
+}
+
+// ============================================
 // ГЕНЕРАЦИЯ ОТЧЁТА
 // ============================================
 
@@ -1173,7 +1387,7 @@ function generateReport(summary: AuditSummary): string {
     if (infos.length > 0) md += `## ℹ️ Информация (${infos.length})\n\n${formatFindings(infos)}`;
 
     if (summary.findings.length === 0) {
-        md += `## ✅ Уязвимостей не обнаружено\n\nВсе 17 проверок прошли успешно.\n`;
+        md += `## ✅ Уязвимостей не обнаружено\n\nВсе ${summary.totalCategories} проверок прошли успешно.\n`;
     }
 
     return md;
@@ -1185,9 +1399,8 @@ function generateReport(summary: AuditSummary): string {
 
 function main() {
     const startTime = Date.now();
-
-    log(C.bold("\n🛡️  MerchCRM Security Audit v1.0\n"));
-    log(C.gray("17 категорий проверок безопасности\n"));
+    log(C.bold("\n🛡️  MerchCRM Security Audit v1.1\n"));
+    log(C.gray("22 категории проверок безопасности\n"));
 
     const allFiles = getAllFiles(".", [".ts", ".tsx"]).filter(f => !isSelfScript(f) && !f.includes(".test.") && !f.includes(".spec."));
     let totalLines = 0;
@@ -1195,7 +1408,8 @@ function main() {
         totalLines += fs.readFileSync(file, "utf-8").split("\n").length;
     }
 
-    section(`ПРОВЕРКИ (17)`);
+    const TOTAL_CATEGORIES = 22;
+    section(`ПРОВЕРКИ (${TOTAL_CATEGORIES})`);
 
     const findings: Finding[] = [];
     findings.push(...auditServerActionAuth());
@@ -1215,6 +1429,11 @@ function main() {
     findings.push(...auditMassAssignment());
     findings.push(...auditOpenRedirect());
     findings.push(...auditDataExposure());
+    findings.push(...auditAuthConfig());
+    findings.push(...auditConsoleLogs());
+    findings.push(...auditWebhookSecurity());
+    findings.push(...auditPolicies());
+    findings.push(...auditActionLogging());
 
     // Подсчёт
     const categoryCounts: Record<string, number> = {};
@@ -1248,6 +1467,7 @@ function main() {
         severityCounts,
         score,
         grade,
+        totalCategories: TOTAL_CATEGORIES,
     };
 
     // Отчёт

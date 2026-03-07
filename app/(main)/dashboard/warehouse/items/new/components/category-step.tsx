@@ -44,7 +44,7 @@ export function CategoryStep({
     return (
         // Outer: flex-col, fills parent height, no overflow
         <div className="flex flex-col h-full min-h-0 !overflow-visible">
-            <div className="flex-1 flex flex-col min-h-0 p-[var(--radius-padding)]">
+            <div className="flex-1 flex flex-col min-h-0 p-8">
 
                 {/* Top-level categories */}
                 <div className={cn("transition-all duration-700 ease-in-out min-h-0 flex flex-col !overflow-visible",
@@ -72,20 +72,20 @@ export function CategoryStep({
                 {selectedCategory && (
                     <div className="flex flex-col animate-in fade-in slide-in-from-top-4 duration-500 pt-2 sm:pt-4 border-t border-slate-100">
                         {/* Subcategory header */}
-                        <div className="mb-2 sm:mb-3 flex items-center gap-2 sm:gap-3 shrink-0">
-                            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-[var(--radius-inner)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
-                                <LayoutGrid className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                        <div className="mb-4 flex items-center gap-3 shrink-0">
+                            <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
+                                <LayoutGrid className="w-6 h-6 text-white" />
                             </div>
                             <div className="min-w-0 flex-1">
-                                <h4 className="text-base sm:text-xl font-bold text-slate-900 leading-tight">Выберите подкатегорию</h4>
-                                <p className="text-xs sm:text-[11px] text-slate-500 font-bold opacity-60 mt-0.5 sm:mt-1 truncate">Для категории «{selectedCategory.name}»</p>
+                                <h4 className="text-xl font-bold text-slate-900 leading-tight">Выберите подкатегорию</h4>
+                                <p className="text-xs font-bold text-slate-700 opacity-60 truncate">Для категории «{selectedCategory.name}»</p>
                             </div>
                         </div>
 
                         {/* Subcategory cards */}
                         <div
                             key={selectedCategory?.id}
-                            className="min-h-0 min-h-[80px] xl:min-h-[100px] overflow-hidden animate-in fade-in duration-300"
+                            className="min-h-0 min-h-[80px] xl:min-h-[100px] !overflow-visible animate-in fade-in duration-300"
                         >
                             {subCategories.length > 0 ? (
                                 <CategorySelector
@@ -97,9 +97,9 @@ export function CategoryStep({
                                     isCompact={false}
                                 />
                             ) : (
-                                <div className="h-full flex flex-col items-center justify-center py-4 px-6 border-2 border-dashed border-slate-200 rounded-[20px] bg-slate-50/50">
+                                <div className="h-[100px] xl:h-[114px] w-full flex flex-col items-center justify-center py-4 px-6 border-2 border-dashed border-slate-200 rounded-[20px] bg-slate-50/50">
                                     <h3 className="text-xs sm:text-sm font-bold text-slate-400 mb-1 text-center">Нет подкатегорий</h3>
-                                    <p className="text-xs sm:text-xs text-slate-400 font-medium text-center">Вы можете продолжить выбор</p>
+                                    <p className="text-[11px] sm:text-xs text-slate-400 font-medium text-center">Вы можете продолжить выбор</p>
                                 </div>
                             )}
                         </div>

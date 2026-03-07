@@ -1,10 +1,10 @@
 "use client";
 
-import React from"react";
-import { ShoppingBag } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { ActiveOrderItem } from"@/app/(main)/dashboard/warehouse/types";
-import { ItemActiveOrdersSection } from"./ItemActiveOrdersSection";
+import React from "react";
+import { ShoppingBag } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ActiveOrderItem } from "@/app/(main)/dashboard/warehouse/types";
+import { ItemActiveOrdersSection } from "./ItemActiveOrdersSection";
 
 interface ItemActiveOrdersWrapperProps {
     activeOrders: ActiveOrderItem[];
@@ -19,11 +19,13 @@ export function ItemActiveOrdersWrapper({
     displayUnit,
     tabletTab
 }: ItemActiveOrdersWrapperProps) {
+    if (activeOrders.length === 0 && reservedQuantity === 0 && tabletTab !== 'placement' && tabletTab !== 'characteristic') return null;
+
     return (
         <div className={cn("md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-6 flex flex-col space-y-3",
-            tabletTab === 'placement' ?"flex" :"hidden","xl:flex"
+            (tabletTab === 'placement' || tabletTab === 'characteristic') ? "flex" : "hidden", "xl:flex"
         )}>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-8">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                         <ShoppingBag className="w-6 h-6" />

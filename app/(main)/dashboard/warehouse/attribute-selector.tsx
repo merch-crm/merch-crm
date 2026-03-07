@@ -324,6 +324,20 @@ export function AttributeSelector({
                             {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
                         </h4>
                     </div>
+                    {value && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                                onChange("", "");
+                                if (onCodeChange) onCodeChange("");
+                            }}
+                            className="h-auto p-0 text-slate-400 hover:text-rose-500 transition-colors"
+                        >
+                            <span className="text-[11px] font-bold">Сбросить</span>
+                        </Button>
+                    )}
                 </div>
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(74px,1fr))] gap-3 w-full">
                     {allOptions.map(c => (
@@ -419,6 +433,11 @@ export function AttributeSelector({
                 ])).values())}
                 value={value || ""}
                 onChange={(code) => {
+                    if (!code) {
+                        onChange("", "");
+                        if (onCodeChange) onCodeChange("");
+                        return;
+                    }
                     const opt = allOptions.find(o => o.code === code);
                     if (opt) {
                         onChange(opt.name, opt.code);
@@ -429,6 +448,7 @@ export function AttributeSelector({
                 autoLayout={true}
                 gridColumns={type === "size" ? 3 : undefined}
                 showSearch={type === "brand"}
+                clearable={true}
                 className="h-11 rounded-xl border-slate-200 bg-white shadow-none"
             />
             <AttributeCustomModal {...sharedModalProps} />

@@ -114,7 +114,7 @@ export function GlobalSearch() {
                                     >
                                         <div className={cn(
                                             "w-10 h-10 rounded-[18px] flex items-center justify-center shrink-0 transition-transform group-hover:scale-110",
-                                            result.type === 'order' ? 'bg-indigo-50 text-[#5d00ff]' :
+                                            result.type === 'order' ? 'bg-indigo-50 text-[var(--primary)]' :
                                                 result.type === 'client' ? 'bg-emerald-50 text-emerald-600' :
                                                     result.type === 'item' ? 'bg-amber-50 text-amber-600' :
                                                         result.type === 'user' ? 'bg-blue-50 text-blue-600' :

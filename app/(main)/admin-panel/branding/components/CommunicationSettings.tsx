@@ -50,7 +50,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                         <div className="grid grid-cols-2 gap-3">
                             <ColorPicker
                                 label="Цвет кнопок и ссылок"
-                                color={formData.emailPrimaryColor ||"#5d00ff"}
+                                color={formData.emailPrimaryColor ||"var(--primary)"}
                                 onChange={(c) => setFormData(prev => ({ ...prev, emailPrimaryColor: c }))}
                             />
                             <ColorPicker
@@ -148,7 +148,7 @@ export function CommunicationSettings({ formData, setFormData, ui, handleFileUpl
                                     <div className="h-4 w-full bg-slate-100 rounded-full" />
                                     <div className="h-4 w-1/2 bg-slate-100 rounded-full" />
                                     <div className="pt-4 flex justify-center">
-                                        <div className="px-6 py-2.5 rounded-xl font-bold text-sm shadow-md" style={{ backgroundColor: formData.emailPrimaryColor ||"#5d00ff", color: formData.emailContrastColor ||"#ffffff" }}>
+                                        <div className="px-6 py-2.5 rounded-xl font-bold text-sm shadow-md" style={{ backgroundColor: formData.emailPrimaryColor ||"var(--primary)", color: formData.emailContrastColor ||"#ffffff" }}>
                                             Действие
                                         </div>
                                     </div>

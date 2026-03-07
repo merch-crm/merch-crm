@@ -1,19 +1,19 @@
 "use client";
 
-import { useMemo } from"react";
-import { ArrowLeft, Plus, SearchX, Package } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { useMediaQuery } from"@/hooks/use-media-query";
+import { useMemo } from "react";
+import { ArrowLeft, Plus, SearchX, Package } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
-import { Button } from"@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
-import { updateInventoryCategoriesOrder } from"../../category-actions";
-import { Pagination } from"@/components/ui/pagination";
-import { StorageLocation } from"../../storage-locations-tab";
+import { updateInventoryCategoriesOrder } from "../../category-actions";
+import { Pagination } from "@/components/ui/pagination";
+import { StorageLocation } from "../../storage-locations-tab";
 
-import { useBranding } from"@/components/branding-provider";
-import { Session } from"@/lib/auth";
-import { pluralize } from"@/lib/pluralize";
+import { useBranding } from "@/components/branding-provider";
+import { Session } from "@/lib/auth";
+import { pluralize } from "@/lib/pluralize";
 
 import {
     DndContext,
@@ -26,27 +26,27 @@ import {
     TouchSensor,
     DragOverlay,
     DragStartEvent,
-} from"@dnd-kit/core";
+} from "@dnd-kit/core";
 import {
     arrayMove,
     SortableContext,
     sortableKeyboardCoordinates,
     rectSortingStrategy,
-} from"@dnd-kit/sortable";
+} from "@dnd-kit/sortable";
 
 import type {
     InventoryItem, Category, InventoryAttribute, AttributeType,
     MeasurementUnit, ItemStock, ItemHistoryTransaction, ActiveOrderItem,
     InventoryFilters, ThumbnailSettings
-} from"../../types";
+} from "../../types";
 
-import { SortableSubCategoryCard, SubCategoryCardContent } from"./components/SubCategoryCard";
-import { CategoryFilters } from"./components/CategoryFilters";
-import { CategoryItemsList } from"./components/CategoryItemsList";
-import { MassActionsBar } from"./components/MassActionsBar";
+import { SortableSubCategoryCard, SubCategoryCardContent } from "./components/SubCategoryCard";
+import { CategoryFilters } from "./components/CategoryFilters";
+import { CategoryItemsList } from "./components/CategoryItemsList";
+import { MassActionsBar } from "./components/MassActionsBar";
 
-import { useCategoryDetail } from"./hooks/use-category-detail";
-import dynamic from"next/dynamic";
+import { useCategoryDetail } from "./hooks/use-category-detail";
+import dynamic from "next/dynamic";
 
 const AdjustStockDialog = dynamic(() => import("../../adjust-stock-dialog").then(m => m.AdjustStockDialog), { ssr: false });
 const EditCategoryDialog = dynamic(() => import("../../edit-category-dialog").then(m => m.EditCategoryDialog), { ssr: false });
@@ -146,11 +146,11 @@ export function CategoryDetailClient({
 
                 const res = await updateInventoryCategoriesOrder(updateItems);
                 if (!res.success) {
-                    toast(res.error ||"Ошибка","error");
+                    toast(res.error || "Ошибка", "error");
                     setSubCategories(initialSubCategories);
                 }
             } catch {
-                toast("Ошибка при сохранении порядка","error");
+                toast("Ошибка при сохранении порядка", "error");
                 setSubCategories(initialSubCategories);
             }
         }
@@ -206,7 +206,7 @@ export function CategoryDetailClient({
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                    {category.id !=="orphaned" && !category.parentId && ui.mounted && (
+                    {category.id !== "orphaned" && !category.parentId && ui.mounted && (
                         <AddCategoryDialog
                             parentId={category.id}
                             buttonText="Добавить подкатегорию"
@@ -285,6 +285,7 @@ export function CategoryDetailClient({
                                         pageSize={subsPerPage}
                                         onPageChange={(page) => setUi(prev => ({ ...prev, subCurrentPage: page }))}
                                         itemNames={['подкатегория', 'подкатегории', 'подкатегорий']}
+                                        variant="card"
                                     />
                                 </div>
                             )}
@@ -333,7 +334,7 @@ export function CategoryDetailClient({
                             toggleSelectAll={toggleSelectAll}
                             toggleSelectItem={(id) => toggleSelectItem(id)}
                             canSeeCost={!!canSeeCost}
-                            currencySymbol={currencySymbol ||""}
+                            currencySymbol={currencySymbol || ""}
                             storageLocations={storageLocations}
                             handlePrintLabel={handlePrintLabel}
                             handleOpenAdjust={handleOpenAdjust}
@@ -355,12 +356,12 @@ export function CategoryDetailClient({
                             {filters.search ? <SearchX className="w-10 h-10" /> : <Package className="w-10 h-10" />}
                         </div>
                         <h2 className="text-xl font-bold text-slate-900 mb-2">
-                            {filters.search ?"Ничего не найдено" :"Категория пуста"}
+                            {filters.search ? "Ничего не найдено" : "Категория пуста"}
                         </h2>
                         <p className="text-slate-500 max-w-[280px] font-medium leading-relaxed">
                             {filters.search
                                 ? `По запросу «${filters.search}» товаров не найдено. Попробуйте изменить параметры поиска.`
-                                :"В этой категории пока нет товаров. Нажмите «Добавить позицию», чтобы начать."}
+                                : "В этой категории пока нет товаров. Нажмите «Добавить позицию», чтобы начать."}
                         </p>
                     </div>
                 )}
@@ -373,7 +374,7 @@ export function CategoryDetailClient({
                         onClose={() => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, ids: [] } }))}
                         onConfirm={() => handleDeleteItems(dialogs.delete.ids)}
                         title={"Удаление" + pluralize(dialogs.delete.ids.length, 'позиции', 'позиций', 'позиций')}
-                        description={"Вы уверены, что хотите удалить" + pluralize(dialogs.delete.ids.length, 'выбранную позицию', 'выбранные позиции', 'выбранные позиции') +" (" + dialogs.delete.ids.length +")? Это действие нельзя отменить."}
+                        description={"Вы уверены, что хотите удалить" + pluralize(dialogs.delete.ids.length, 'выбранную позицию', 'выбранные позиции', 'выбранные позиции') + " (" + dialogs.delete.ids.length + ")? Это действие нельзя отменить."}
                         confirmText="Удалить"
                         variant="destructive"
                         isLoading={ui.isDeleting}

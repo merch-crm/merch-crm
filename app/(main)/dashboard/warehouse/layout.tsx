@@ -57,11 +57,11 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                         <Link
                             href="/dashboard/warehouse/items/new"
                             className={cn(
-                                buttonVariants({ variant: "default" }), "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
+                                buttonVariants({ variant: "default" }), "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl border-none shadow-lg shadow-primary/20 transition-all active:scale-95 gap-2"
                             )}
                         >
-                            <Plus className="w-5 h-5 text-white" />
-                            <span className="hidden sm:inline">Добавить позицию</span>
+                            <Plus className="w-4 h-4 text-white" />
+                            <span className="hidden sm:inline">Создать позицию</span>
                         </Link>
                     </>
                 );
@@ -115,6 +115,18 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                             </Button>
                         )}
                     </div>
+                );
+            case "overview":
+                return (
+                    <Link
+                        href="/dashboard/warehouse/items/new"
+                        className={cn(
+                            buttonVariants({ variant: "default" }), "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl border-none shadow-lg shadow-primary/20 transition-all active:scale-95 gap-2"
+                        )}
+                    >
+                        <Plus className="w-4 h-4 text-white" />
+                        <span className="hidden sm:inline">Создать позицию</span>
+                    </Link>
                 );
             default:
                 return null;

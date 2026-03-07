@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html lang="ru"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec37",
+                        "background-light": "#F9FAFB",
+                        "background-dark": "#102213",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "1.5rem", // 24px as requested
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .donut-chart {
+            background: conic-gradient(#13ec37 0% 75%, #e2e8f0 75% 100%);
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .donut-chart::after {
+            content: "";
+            background: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .donut-inner {
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50">
+<div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">inventory_2</span>
+<span class="font-bold text-xl tracking-tight">CRM Склад</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Товары</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Склады</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Продажи</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Отчеты</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="bg-slate-100 dark:bg-slate-800 border-none rounded-full pl-10 pr-4 py-2 text-sm w-64 focus:ring-2 focus:ring-primary" placeholder="Поиск товара..." type="text"/>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined text-xl text-slate-600">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border-2 border-primary/20">
+<img alt="Profile" data-alt="User avatar administrator profile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCa0XUxBGjflx9sxoLEiIOSF-D-oX22O8rn4Or8HNFZwKGK_MaW5qtK99bNoDjNHnXm6lduI3DD1MSmRafgcXaEiqQl20nIdo8N8f5yAxm3KKLM-LdyD-TUmGX6_uiVgumrr7k9a4vMC1JnHsRED0uwsBBkccyd7waOL_aQg2wHLd9IqOBwD1NQm_FK-hmgU4m8JAKcvoyJA8Mf4_vUbBcb5nTLfCyaDDIapAylzV_iTaRNVAanl6GUhe9l1ml1Mg6UCefafs-yDQ"/>
+</div>
+</div>
+</div>
+</nav>
+<main class="max-w-7xl mx-auto px-6 py-8">
+<section class="bg-white dark:bg-slate-900 rounded-lg p-8 mb-8 flex flex-col md:flex-row justify-between items-center shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex flex-col gap-4">
+<h1 class="text-4xl font-bold text-slate-900 dark:text-white">Свитшот синий S</h1>
+<div class="flex items-center gap-3">
+<span class="px-4 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-500 rounded-full text-sm font-medium">SKU: SW-BLU-S</span>
+<span class="flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-emerald-800 dark:text-primary rounded-full text-sm font-medium">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+                        В наличии
+                    </span>
+</div>
+</div>
+<div class="mt-6 md:mt-0 bg-white dark:bg-slate-800 p-4 rounded-full shadow-lg border border-slate-100 dark:border-slate-700 flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
+<img class="w-full h-full object-cover" data-alt="Small thumbnail of a blue sweatshirt" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHFxq4hW5ySc9W9D_zIOUvcEWP6gPJfxQ1CnWBDFZ_7WAbTBLD4Im8wLA6xCzF4jFIrulMVLqF9DCRsYnDDkJMajE7vcbYBNYQm4sY180eBnCBNSFknATCImk7ZZrZ1pl3pAeDwuCImaunD6IPFjSNtTcwhCzNHVDCM_4L5ZJDM8AmxzYDQiiHi5U6hLpdu9kSDF7f31LIeR1gLN0MeBj-CYUuUBN1HLxzviLlgN54gogiIJ9paKj10_vkeoNehlUjRsLGQzcstg"/>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">edit</span>
+                        Редактировать
+                    </button>
+<button class="px-4 py-2 rounded-full border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">print</span>
+                        Печать
+                    </button>
+<button class="w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center justify-center transition-all">
+<span class="material-symbols-outlined text-lg">archive</span>
+</button>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-10">
+<div class="lg:col-span-8 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
+<h3 class="text-xl font-bold mb-6">Характеристики</h3>
+<div class="flex flex-col md:flex-row gap-8">
+<div class="w-full md:w-64 aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg overflow-hidden flex items-center justify-center border border-slate-200 dark:border-slate-700">
+<img class="w-full h-full object-cover" data-alt="Blue sweatshirt product photo with high quality fabric" src="https://lh3.googleusercontent.com/aida-public/AB6AXuADBryvZO8JwnjpPcVhnic5UZdk3THCEixBTYSdHVcqHMgbifQRcKuXouWaRNDY2g2FGL7wvo7WmZm9wibOVKG7QCLVmTsI6QRCH6wITWEguMGV8Qb0K-F8dOHrh094g6Vcj8OWJ0bBf-YHID_zxGdNW2AE9BgQabr5wrn_vIE-7BKczARM3YRItb1r9bl2oaMcQse5fUi4ghTt1IEs9jmsMoRfsnHh7que6eI6rlblMUVeDnE01oKa6D4b0SOd3mDETzqPEkniZQ"/>
+</div>
+<div class="flex-1">
+<div class="grid grid-cols-2 gap-y-6 gap-x-8 mb-8">
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Категория</p>
+<p class="text-base font-medium">Одежда</p>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Бренд</p>
+<p class="text-base font-medium">Basic Wear</p>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Материал</p>
+<p class="text-base font-medium">Хлопок 100%</p>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Цвет</p>
+<p class="text-base font-medium">Синий</p>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Размер</p>
+<p class="text-base font-medium">S</p>
+</div>
+<div>
+<p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Страна</p>
+<p class="text-base font-medium">Россия</p>
+</div>
+</div>
+<p class="text-slate-500 text-sm leading-relaxed">
+                            Базовая модель свитшота свободного кроя. Выполнена из высококачественного хлопкового футера. Идеально подходит для повседневной носки и брендирования.
+                        </p>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-8 shadow-sm flex flex-col justify-between">
+<h3 class="text-xl font-bold mb-4">Общий остаток</h3>
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-baseline gap-2">
+<span class="text-6xl font-black text-slate-900 dark:text-white">189</span>
+<span class="text-xl font-medium text-slate-400">шт.</span>
+</div>
+<p class="text-slate-500 mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">home_storage</span>
+                            На 3 активных складах
+                        </p>
+</div>
+<div class="donut-chart">
+<div class="donut-inner flex flex-col items-center">
+<span class="text-xl font-bold">75%</span>
+</div>
+</div>
+</div>
+<div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-sm text-slate-500">Себестоимость</span>
+<span class="font-bold">1 200 ₽</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-slate-500">Цена продажи</span>
+<span class="font-bold">3 490 ₽</span>
+</div>
+<div class="flex justify-between items-center text-primary">
+<span class="text-sm font-medium">Маржа</span>
+<span class="font-bold">2 290 ₽ (65%)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section class="mb-10">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined">history</span>
+                История операций
+            </h3>
+<div class="space-y-3">
+<div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between group hover:border-primary/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+<span class="material-symbols-outlined">sync_alt</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Футболка Muse красный хлопок...</h4>
+<div class="flex items-center gap-3 text-sm text-slate-400 mt-1">
+<span>14.05.2024, 12:45</span>
+<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+<span class="flex items-center gap-1">
+                                    Из <span class="text-slate-600 dark:text-slate-300 font-medium">Леонид</span> в <span class="text-slate-600 dark:text-slate-300 font-medium">Одежда</span>
+</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="Admin user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvCdwY_sPUVYMuSZLvoaVsaqi-HOOBBOe3Pkg2VQlxsiJTN2drBYC1I6hkYwUOqDeIPF0jFgLIurgIfe_Hg2o-iUw4FaHDYADdxaE9WnlaYp5WrNJGSNMchZ_KoDFBU1xFnK1j4u5C3eRE5yAiKs7aHFHtksrXHJe-fGxHkLgoO1qJj3juzVhQWg8rFltWbbYJFxUnDhK63rWbJaMBJtSm3ZAelREN8b1zHumebsVxlgGQJsETTBcgQMmmUbiOu52IPhnYmOQRUA"/>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300">АД Администратор</span>
+</div>
+<span class="text-xl font-bold text-emerald-500 tracking-tight">+1 шт.</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between group hover:border-primary/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Поступление товара от поставщика</h4>
+<div class="flex items-center gap-3 text-sm text-slate-400 mt-1">
+<span>13.05.2024, 09:15</span>
+<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+<span class="flex items-center gap-1">
+                                    На склад <span class="text-slate-600 dark:text-slate-300 font-medium">Одежда</span>
+</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="Manager user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBo5OwRlRfDHplHg5lCp-Mt5P4kJuKCxAoPCcPFbrox20qqpIdqxFZRt0UzKjVG-Wf5CElmxmuJY6yCCx4nypoX_tPnBI6ZjlC2QNQ2N71eqmKTPK8EB_ZAxwSvNjMc8Id2WNNCbFvjtKMszkcaDsoq2otCpiAWN6xtZryELBo-G51rCmXoq8ubi7FxiOb9OS3M35Yn9cma5ZTkK6DdEVpvEzPJsphejE6vd2sV443Os06Nlg7F1elZ1Eq5Oml93uB0Z9M4zATyag"/>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300">МН Менеджер</span>
+</div>
+<span class="text-xl font-bold text-emerald-500 tracking-tight">+5 шт.</span>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between group hover:border-primary/50 transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600">
+<span class="material-symbols-outlined">sell</span>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Продажа розница #8492</h4>
+<div class="flex items-center gap-3 text-sm text-slate-400 mt-1">
+<span>12.05.2024, 18:30</span>
+<span class="w-1 h-1 rounded-full bg-slate-300"></span>
+<span class="flex items-center gap-1">
+                                    Со склада <span class="text-slate-600 dark:text-slate-300 font-medium">Леонид</span>
+</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full" data-alt="Admin user avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCWnxSeLIjU66CV96KpdpdaIR5X9mIQfOSHtC2uH49gVUFVgv4w0ocxmiOcY7N3YOFhSvOrxmIglsXO2GjMAV_5TSaPuxm2h5Xe5aBMs8b_1ut04BkTjrRhCO7RjRjCRX1LUNd7hOQMxlRCWlgfxyRFP8iVkOBMc_z9yNJzFhgrvxlmPs9hNpbkzajDe1CtkTlIBWbT5tkYkTOjF0Pf3Y0FZWkEey-1-Q1lXZCKSZ9QYn3iquHrSNcFsCmGG5OxmM5gtpm49NdbA"/>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300">АД Администратор</span>
+</div>
+<span class="text-xl font-bold text-slate-400 tracking-tight">-2 шт.</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

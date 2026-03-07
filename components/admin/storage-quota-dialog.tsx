@@ -106,9 +106,9 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                                 step="5"
                                 value={settings.warningThreshold * 100}
                                 onChange={e => setSettings({ ...settings, warningThreshold: parseInt(e.target.value) / 100 })}
-                                className="flex-1 accent-#5d00ff h-2 bg-slate-200 rounded-[18px] appearance-none cursor-pointer"
+                                className="flex-1 accent-var(--primary) h-2 bg-slate-200 rounded-[18px] appearance-none cursor-pointer"
                             />
-                            <span className="font-bold text-#5d00ff w-12 text-right text-lg">
+                            <span className="font-bold text-var(--primary) w-12 text-right text-lg">
                                 {Math.round(settings.warningThreshold * 100)}%
                             </span>
                         </div>
@@ -117,7 +117,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                         <Button
                             onClick={handleSave}
                             disabled={saving || loading}
-                            className="w-full bg-#5d00ff hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold text-xs shadow-lg shadow-indigo-200"
+                            className="w-full bg-var(--primary) hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold text-xs shadow-lg shadow-indigo-200"
                         >
                             {saving ? "Сохранение..." : "Сохранить настройки"}
                         </Button>

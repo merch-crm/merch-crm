@@ -35,12 +35,21 @@ export const DEFAULT_FORM_DATA: ItemFormData = {
 };
 
 export function useNewItemForm() {
-    const [step, setStep] = useState(0);
+    const [step, _setStep] = useState(0);
+    const [maxStep, setMaxStep] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [formData, setFormData] = useState<ItemFormData>(DEFAULT_FORM_DATA);
     const [validationError, setValidationError] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const setStep = useCallback((val: number | ((prev: number) => number)) => {
+        _setStep(prev => {
+            const next = typeof val === 'function' ? val(prev) : val;
+            setMaxStep(m => Math.max(m, next));
+            return next;
+        });
+    }, []);
 
     const updateFormData = useCallback((updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => {
         setFormData((prev: ItemFormData) => {
@@ -51,7 +60,8 @@ export function useNewItemForm() {
 
     const resetForm = useCallback(() => {
         setFormData(DEFAULT_FORM_DATA);
-        setStep(0);
+        _setStep(0);
+        setMaxStep(0);
         setSelectedCategory(null);
         setValidationError("");
     }, []);
@@ -59,6 +69,8 @@ export function useNewItemForm() {
     return {
         step,
         setStep,
+        maxStep,
+        setMaxStep,
         selectedCategory,
         setSelectedCategory,
         formData,

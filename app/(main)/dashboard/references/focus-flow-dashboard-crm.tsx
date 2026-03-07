@@ -119,12 +119,12 @@ export default function FocusFlowDashboardCRM() {
                             {/* Large Wave Graph Visual */}
                             <div className="relative h-48 flex items-end">
                                 <svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
-                                    <path d="M0 80 C 100 80, 150 20, 200 50 S 300 10, 400 60" fill="none" stroke="#5d00ff" strokeWidth="4" strokeLinecap="round" />
+                                    <path d="M0 80 C 100 80, 150 20, 200 50 S 300 10, 400 60" fill="none" stroke="var(--primary)" strokeWidth="4" strokeLinecap="round" />
                                     <path d="M0 80 C 100 80, 150 20, 200 50 S 300 10, 400 60 L 400 100 L 0 100 Z" fill="url(#focus-grad)" opacity="0.1" />
                                     <defs>
                                         <linearGradient id="focus-grad" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="0%" stopColor="#5d00ff" />
-                                            <stop offset="100%" stopColor="#5d00ff" stopOpacity="0" />
+                                            <stop offset="0%" stopColor="var(--primary)" />
+                                            <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
                                         </linearGradient>
                                     </defs>
                                 </svg>
@@ -183,7 +183,7 @@ export default function FocusFlowDashboardCRM() {
                                 <div className="relative w-40 h-40 mx-auto">
                                     <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                                         <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0,0,0,0.03)" strokeWidth="10" />
-                                        <circle cx="50" cy="50" r="45" fill="none" stroke="#5d00ff" strokeWidth="10" strokeDasharray="212 282" strokeLinecap="round" className="drop-shadow-[0_0_8px_rgba(93,0,255,0.4)]" />
+                                        <circle cx="50" cy="50" r="45" fill="none" stroke="var(--primary)" strokeWidth="10" strokeDasharray="212 282" strokeLinecap="round" className="drop-shadow-[0_0_8px_rgba(93,0,255,0.4)]" />
                                     </svg>
                                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                                         <div className="text-4xl font-bold text-slate-900">576</div>

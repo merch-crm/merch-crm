@@ -31,7 +31,7 @@ export function ActivityGraph({ monitoringData }: ActivityGraphProps) {
                         Действия за последние 24 часа
                     </CardDescription>
                 </div>
-                <div className="text-2xl font-bold text-[#5d00ff]">
+                <div className="text-2xl font-bold text-[var(--primary)]">
                     {monitoringData
                         ? monitoringData.activityStats.reduce(
                             (acc, curr) => acc + curr.count,

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from"react";
-import { format } from"date-fns";
-import { ru } from"date-fns/locale";
-import { ArrowLeftRight, ArrowUpRight, Layers } from"lucide-react";
-import { cn, formatUnit } from"@/lib/utils";
-import { Pagination } from"@/components/ui/pagination";
-import Image from"next/image";
+import { useState } from "react";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { ArrowLeftRight, ArrowUpRight, Layers } from "lucide-react";
+import { cn, formatUnit } from "@/lib/utils";
+import { Pagination } from "@/components/ui/pagination";
+import Image from "next/image";
 
-import { RecentTransaction } from"./warehouse-stats-actions";
+import { RecentTransaction } from "./warehouse-stats-actions";
 
 export function RecentTransactionsClient({ transactions = [] }: { transactions: RecentTransaction[] }) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -23,7 +23,7 @@ export function RecentTransactionsClient({ transactions = [] }: { transactions: 
     if (filtered.length === 0) return null;
 
     return (
-        <div className="crm-card shadow-sm hover:shadow-md transition-shadow duration-300 bg-white flex flex-col mt-4">
+        <div className="crm-card shadow-sm hover:shadow-md transition-shadow duration-300 bg-white flex flex-col">
             <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-[12px] bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
                     <ArrowLeftRight className="w-5 h-5" />
@@ -41,31 +41,31 @@ export function RecentTransactionsClient({ transactions = [] }: { transactions: 
                     <div key={tx.id} className="group p-3 sm:p-4 rounded-[var(--radius-inner)] bg-slate-50 border border-slate-100 hover:bg-white hover:border-slate-300 transition-colors flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-                                tx.type === 'in' ?"bg-emerald-100 text-emerald-600" :"bg-indigo-100 text-indigo-600"
+                                tx.type === 'in' ? "bg-emerald-100 text-emerald-600" : "bg-indigo-100 text-indigo-600"
                             )}>
                                 {tx.type === 'in' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowLeftRight className="w-5 h-5" />}
                             </div>
                             <div>
                                 <div className="font-bold text-[14px] text-slate-900 line-clamp-1">
-                                    {tx.item?.name ||"Неизвестный товар"}
+                                    {tx.item?.name || "Неизвестный товар"}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-2 mt-1 text-[12px] font-medium text-slate-500">
                                     <div className="flex items-center gap-1">
                                         <Layers className="w-3.5 h-3.5" />
-                                        {format(new Date(tx.createdAt),"dd MMM HH:mm", { locale: ru })}
+                                        {format(new Date(tx.createdAt), "dd MMM HH:mm", { locale: ru })}
                                     </div>
                                     <span className="w-1 h-1 rounded-full bg-slate-300" />
                                     {tx.type === 'in' ? (
                                         <div className="flex items-center gap-1 text-emerald-600">
                                             <span>Поставка на</span>
-                                            <span className="font-bold">{tx.storageLocation?.name ||"Склад"}</span>
+                                            <span className="font-bold">{tx.storageLocation?.name || "Склад"}</span>
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-1 text-indigo-600 line-clamp-1">
                                             <span>Из</span>
-                                            <span className="font-bold">{tx.fromStorageLocation?.name ||"Склада"}</span>
+                                            <span className="font-bold">{tx.fromStorageLocation?.name || "Склада"}</span>
                                             <span>в</span>
-                                            <span className="font-bold">{tx.storageLocation?.name ||"Склад"}</span>
+                                            <span className="font-bold">{tx.storageLocation?.name || "Склад"}</span>
                                         </div>
                                     )}
                                 </div>
@@ -88,15 +88,15 @@ export function RecentTransactionsClient({ transactions = [] }: { transactions: 
                                             {tx.creator.name.substring(0, 2).toUpperCase()}
                                         </div>
                                     )}
-                                    <span className="text-[12px] font-medium text-slate-600 hidden sm:block truncate max-w-[80px]">
-                                        {tx.creator.name.split(' ')[0]}
+                                    <span className="text-[12px] font-medium text-slate-600 hidden sm:block">
+                                        {tx.creator.name}
                                     </span>
                                 </div>
                             )}
 
                             <div className="flex items-center gap-1">
                                 <span className={cn("text-[15px] font-black tabular-nums whitespace-nowrap",
-                                    tx.type === 'in' ?"text-emerald-600" :"text-indigo-600"
+                                    tx.type === 'in' ? "text-emerald-600" : "text-indigo-600"
                                 )}>
                                     +{tx.changeAmount} {tx.item ? formatUnit(tx.item.unit) : 'шт'}
                                 </span>

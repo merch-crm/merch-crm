@@ -36,6 +36,7 @@ export function useNewItemLogic({
 
     const {
         step, setStep,
+        maxStep, setMaxStep,
         selectedCategory, setSelectedCategory,
         formData, setFormData,
         validationError, setValidationError,
@@ -60,6 +61,7 @@ export function useNewItemLogic({
 
         // 1. Initial params
         let initialStep = 0;
+        let initialMax = 0;
         let initialCat: Category | null = null;
         let initialForm = { ...DEFAULT_FORM_DATA };
 
@@ -101,6 +103,7 @@ export function useNewItemLogic({
                 try {
                     const draft = JSON.parse(saved);
                     initialStep = draft.step || 0;
+                    initialMax = draft.maxStep ?? initialStep;
                     if (draft.selectedCategoryId) {
                         initialCat = categories.find(c => c.id === draft.selectedCategoryId) || null;
                     }
@@ -122,10 +125,11 @@ export function useNewItemLogic({
 
         Promise.resolve().then(() => {
             setStep(initialStep);
+            setMaxStep(Math.max(initialMax, initialStep));
             setSelectedCategory(initialCat);
             setFormData(initialForm);
         });
-    }, [categories, initialCategoryId, initialSubcategoryId, setFormData, setSelectedCategory, setStep]);
+    }, [categories, initialCategoryId, initialSubcategoryId, setFormData, setSelectedCategory, setStep, setMaxStep]);
 
     // Save draft on changes
     useEffect(() => {
@@ -147,6 +151,7 @@ export function useNewItemLogic({
                     imageDetailsPreviews: []
                 },
                 step,
+                maxStep,
                 selectedCategoryId: selectedCategory?.id
             };
             if (typeof window !== "undefined") {
@@ -156,7 +161,7 @@ export function useNewItemLogic({
         }, 1000);
 
         return () => clearTimeout(timer);
-    }, [formData, step, selectedCategory, isMounted, setIsSaving]);
+    }, [formData, step, maxStep, selectedCategory, isMounted, setIsSaving]);
 
     const clearDraft = () => {
         if (typeof window !== "undefined") {
@@ -281,6 +286,10 @@ export function useNewItemLogic({
 
 
         if (currentStep === 4) {
+            if (!formData.costPrice || parseFloat(formData.costPrice) <= 0) {
+                setValidationError("Введите себестоимость позиции");
+                return false;
+            }
             if (!formData.storageLocationId) {
                 setValidationError("Выберите склад для хранения");
                 return false;
@@ -416,6 +425,7 @@ export function useNewItemLogic({
 
     return {
         step,
+        maxStep,
         selectedCategory,
         formData,
         validationError,

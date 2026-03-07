@@ -301,7 +301,7 @@ export function SystemStats() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-slate-50 rounded-bl-full -z-10 opacity-50" />
 
         <div className="flex items-center gap-3 relative z-10">
-          <div className="p-3 bg-indigo-50 text-[#5d00ff] rounded-[24px] shadow-sm shadow-indigo-100">
+          <div className="p-3 bg-indigo-50 text-[var(--primary)] rounded-[24px] shadow-sm shadow-indigo-100">
             <ActivityIcon size={32} />
           </div>
           <div>
@@ -319,7 +319,7 @@ export function SystemStats() {
             <Button
               onClick={handleCreateBackup}
               disabled={backups.creating}
-              className="rounded-[18px] bg-[#5d00ff] hover:bg-[#4b00cc] text-white shadow-lg shadow-indigo-200 font-bold transition-all active:scale-95"
+              className="rounded-[18px] bg-[var(--primary)] hover:bg-[#4b00cc] text-white shadow-lg shadow-indigo-200 font-bold transition-all active:scale-95"
             >
               <Download size={16} className={cn("mr-2", backups.creating && "animate-bounce")} />
               {backups.creating ? "Создание..." : "Создать бэкап"}
@@ -337,7 +337,7 @@ export function SystemStats() {
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "monitoring"
-                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                ? "bg-white text-[var(--primary)] shadow-sm hover:bg-white hover:text-[var(--primary)]"
                 : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
@@ -349,7 +349,7 @@ export function SystemStats() {
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "diagnostics"
-                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                ? "bg-white text-[var(--primary)] shadow-sm hover:bg-white hover:text-[var(--primary)]"
                 : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
@@ -361,7 +361,7 @@ export function SystemStats() {
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "backups"
-                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                ? "bg-white text-[var(--primary)] shadow-sm hover:bg-white hover:text-[var(--primary)]"
                 : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
@@ -373,7 +373,7 @@ export function SystemStats() {
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "security"
-                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                ? "bg-white text-[var(--primary)] shadow-sm hover:bg-white hover:text-[var(--primary)]"
                 : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
@@ -385,7 +385,7 @@ export function SystemStats() {
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "action_log"
-                ? "bg-white text-[#5d00ff] shadow-sm hover:bg-white hover:text-[#5d00ff]"
+                ? "bg-white text-[var(--primary)] shadow-sm hover:bg-white hover:text-[var(--primary)]"
                 : "text-slate-500 hover:text-slate-700 bg-transparent"
             )}
           >
@@ -449,9 +449,9 @@ export function SystemStats() {
           <div className="bg-white p-6 rounded-[18px] shadow-2xl max-w-md w-full text-center space-y-3">
             <div className="relative w-20 h-20 mx-auto">
               <div className="absolute inset-0 rounded-full border-4 border-slate-200"></div>
-              <div className="absolute inset-0 rounded-full border-4 border-[#5d00ff] border-t-transparent animate-spin"></div>
+              <div className="absolute inset-0 rounded-full border-4 border-[var(--primary)] border-t-transparent animate-spin"></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <Server className="w-8 h-8 text-[#5d00ff]" />
+                <Server className="w-8 h-8 text-[var(--primary)]" />
               </div>
             </div>
             <div>

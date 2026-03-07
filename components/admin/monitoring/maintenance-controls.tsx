@@ -19,7 +19,7 @@ export function MaintenanceControls({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="p-5 rounded-[18px] bg-white border border-slate-200/60 shadow-sm flex items-center justify-between group hover:border-indigo-100 transition-all">
                 <div className="flex items-center gap-3">
-                    <div className="p-3 rounded-[18px] bg-indigo-50 text-[#5d00ff] group-hover:bg-[#5d00ff] group-hover:text-white transition-all shadow-sm">
+                    <div className="p-3 rounded-[18px] bg-indigo-50 text-[var(--primary)] group-hover:bg-[var(--primary)] group-hover:text-white transition-all shadow-sm">
                         <Zap size={20} />
                     </div>
                     <div>
@@ -35,7 +35,7 @@ export function MaintenanceControls({
                     variant="ghost"
                     onClick={onClearRam}
                     disabled={isClearingRam}
-                    className="bg-slate-50 text-slate-600 rounded-[18px] hover:bg-indigo-50 hover:text-[#5d00ff] border border-slate-200 h-9 text-[11px] font-bold px-5"
+                    className="bg-slate-50 text-slate-600 rounded-[18px] hover:bg-indigo-50 hover:text-[var(--primary)] border border-slate-200 h-9 text-[11px] font-bold px-5"
                 >
                     {isClearingRam ? "Очистка..." : "Очистить"}
                 </Button>

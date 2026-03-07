@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useMemo } from"react";
-import { ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
-import { useItemAnalytics } from"./use-item-analytics";
-import { ItemAnalyticsChart } from"./item-analytics-chart";
-import { StockTimeline } from"./stock-timeline";
+import React, { useMemo } from "react";
+import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
+import { useItemAnalytics } from "./use-item-analytics";
+import { ItemAnalyticsChart } from "./item-analytics-chart";
+import { StockTimeline } from "./stock-timeline";
 
 interface ItemAnalyticsSectionProps {
     history: ItemHistoryTransaction[];
@@ -18,9 +18,9 @@ export function ItemAnalyticsSection({ history, currentQuantity, unit, lowStockT
     const analytics = useItemAnalytics({ history, currentQuantity, lowStockThreshold, criticalStockThreshold });
 
     const chartLines = useMemo(() => [
-        { data: analytics.ordersData, color:"#5d00ff", label:"Заказы", id:"orders", total: analytics.totalOut, growth: analytics.ordersGrowth, invert: false },
-        { data: analytics.suppliesData, color:"#10b981", label:"Поставки", id:"supplies", total: analytics.totalIn, growth: analytics.inGrowth, invert: false },
-        { data: analytics.wastageData, color:"#f43f5e", label:"Списания", id:"wastage", total: analytics.totalWastage, growth: analytics.wastageGrowth, invert: true }
+        { data: analytics.ordersData, color: "var(--primary)", label: "Заказы", id: "orders", total: analytics.totalOut, growth: analytics.ordersGrowth, invert: false },
+        { data: analytics.suppliesData, color: "#10b981", label: "Поставки", id: "supplies", total: analytics.totalIn, growth: analytics.inGrowth, invert: false },
+        { data: analytics.wastageData, color: "#f43f5e", label: "Расход", id: "wastage", total: analytics.totalWastage, growth: analytics.wastageGrowth, invert: true }
     ], [analytics]);
 
     return (

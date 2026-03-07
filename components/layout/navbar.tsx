@@ -7,12 +7,15 @@ import {
     Users,
     Palette,
     Settings,
-    Printer,
     CheckSquare,
-    BookOpen
+    BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
+import { HeaderSearch } from "./header-search";
+import Image from "next/image";
+import { UserNav } from "./user-nav";
+import { NotificationCenter } from "@/components/notifications/notification-center";
+import type { Notification, BrandingSettings } from "@/lib/types";
 
 const navigation = [
     { name: "Заказы", href: "/dashboard/orders", icon: ShoppingCart },
@@ -38,11 +41,6 @@ const navigation = [
     { name: "База знаний", href: "/dashboard/knowledge-base", icon: BookOpen },
 ];
 
-import Image from "next/image";
-import { UserNav } from "./user-nav";
-import { NotificationCenter } from "@/components/notifications/notification-center";
-import type { Notification, BrandingSettings } from "@/lib/types";
-
 export function Navbar({ user, branding, notifications, unreadCount }: {
     user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
     branding: BrandingSettings;
@@ -57,29 +55,27 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
     });
 
     return (
-        <header data-testid="desktop-navbar" className="hidden md:block sticky top-0 z-50 p-3 md:p-4 md:px-6">
-            <div className="max-w-[1440px] mx-auto glass-panel !p-0 h-16 md:h-20 flex items-center">
-                <div className="w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-                    {/* Left: Logo */}
-                    <div className="flex items-center shrink-0">
-                        <Link href="/dashboard" className="flex items-center gap-3 group">
-                            <div className="bg-primary rounded-[18px] w-11 h-11 p-1.5 flex items-center justify-center shadow-sm transition-all duration-500">
-                                {branding.logoUrl ? (
-                                    <div className="relative h-8 w-8">
-                                        <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
-                                    </div>
-                                ) : (
-                                    <Printer className="h-8 w-8 text-white" />
-                                )}
+        <header data-testid="desktop-navbar" className="hidden md:block sticky top-0 z-50 bg-white border-b border-slate-200 h-16 shadow-sm">
+            <div className="px-4 h-full flex items-center justify-between max-w-[1480px] mx-auto w-full">
+                <div className="flex items-center gap-3">
+                    {/* Logo */}
+                    <Link href="/dashboard" className="flex items-center gap-2 group shrink-0">
+                        {branding.logoUrl ? (
+                            <div className="relative h-6 w-6">
+                                <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
                             </div>
-                            <span className="text-xl md:text-2xl font-bold text-slate-900  group-hover:text-primary transition-colors">
-                                {branding.companyName}
-                            </span>
-                        </Link>
-                    </div>
+                        ) : (
+                            <div className="w-6 h-6 bg-gradient-to-tr from-slate-900 to-slate-700 rounded-md border-b-2 border-slate-950 flex items-center justify-center text-white text-[11px] font-black shadow-inner shadow-slate-900/50">
+                                {branding.companyName ? branding.companyName.charAt(0).toUpperCase() + "." : "M."}
+                            </div>
+                        )}
+                        <span className="font-bold text-lg text-slate-800 tracking-tight hidden lg:block ml-1">
+                            {branding.companyName || "MerchCRM"}
+                        </span>
+                    </Link>
 
-                    {/* Center: Nav Links */}
-                    <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 mx-auto pointer-events-auto transition-all duration-300">
+                    {/* Nav Links */}
+                    <nav className="flex items-center gap-3 text-[14px] font-semibold">
                         {filteredNavigation.map((item) => {
                             const isActive = item.href === "/dashboard"
                                 ? pathname === "/dashboard"
@@ -89,24 +85,28 @@ export function Navbar({ user, branding, notifications, unreadCount }: {
                                     key={item.name}
                                     href={item.href}
                                     className={cn(
-                                        "flex items-center gap-2.5 px-4 py-2 rounded-lg text-[13px] font-bold transition-all duration-300 whitespace-nowrap",
+                                        "transition-colors whitespace-nowrap",
                                         isActive
-                                            ? "text-primary bg-primary/10 shadow-inner"
-                                            : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                                            ? "text-primary cursor-default"
+                                            : "text-slate-400 hover:text-slate-900 cursor-pointer"
                                     )}
                                 >
-                                    <item.icon className={cn("h-4 w-4 shrink-0", isActive ? "text-primary" : "text-slate-400")} />
-                                    <span className="relative z-10 hidden xl:inline-block">{item.name}</span>
+                                    {item.name}
                                 </Link>
                             );
                         })}
                     </nav>
+                </div>
+
+                <div className="flex items-center gap-3 ml-auto">
+                    {/* Search */}
+                    <HeaderSearch />
+
+                    <div className="w-px h-5 bg-slate-200 hidden sm:block"></div>
 
                     {/* Right Side: Notifications & Profile */}
-                    <div className="flex items-center justify-end gap-2 md:gap-3 shrink-0">
+                    <div className="flex items-center justify-end gap-3 shrink-0">
                         <NotificationCenter notifications={notifications} unreadCount={unreadCount} branding={branding} />
-
-                        <div className="h-6 w-px bg-slate-200 mx-1 md:mx-2" />
 
                         <UserNav user={user} branding={branding} />
                     </div>

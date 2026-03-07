@@ -149,13 +149,25 @@ export async function adjustInventoryStock(
             );
         });
 
-        invalidateCache("warehouse:*");
+
+        try {
+            await invalidateCache("warehouse:*");
+        } catch (cacheError) {
+            console.error("[AdjustStock] Cache invalidation failed (non-critical):", cacheError);
+        }
+
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/items/${itemId}`);
-        await checkItemStockAlerts(itemId);
+
+        try {
+            await checkItemStockAlerts(itemId);
+        } catch (alertError) {
+            console.error("[AdjustStock] Stock alerts check failed (non-critical):", alertError);
+        }
 
         return { success: true };
     } catch (error) {
+        console.error(`[AdjustStock] CRITICAL ERROR for item ${itemId}:`, error);
         await logError({
             error,
             path: `/dashboard/warehouse/adjust/${itemId}`,

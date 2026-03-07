@@ -1,14 +1,14 @@
-import { notFound, redirect } from"next/navigation";
-import { cache } from"react";
-import { Metadata } from"next";
-import { getInventoryItem } from"../../item-actions";
-import { getStorageLocations } from"../../storage-actions";
-import { getInventoryCategories } from"../../category-actions";
-import { getInventoryAttributeTypes, getInventoryAttributes } from"../../attribute-actions";;
-import { ItemDetailClient } from"./item-detail-client";
-import { getSession } from"@/lib/auth";
-import { serializeForClient, type Serialized } from"@/lib/serialize";
-import type { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from"../../types";
+import { notFound, redirect } from "next/navigation";
+import { cache } from "react";
+import { Metadata } from "next";
+import { getInventoryItem } from "../../item-actions";
+import { getStorageLocations } from "../../storage-actions";
+import { getInventoryCategories } from "../../category-actions";
+import { getInventoryAttributeTypes, getInventoryAttributes } from "../../attribute-actions";;
+import { ItemDetailClient } from "./item-detail-client";
+import { getSession } from "@/lib/auth";
+import { serializeForClient, type Serialized } from "@/lib/serialize";
+import type { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from "../../types";
 
 type PageParams = {
     params: Promise<{ id: string }>;
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: PageParams): Promise<Metadata
         return { title: `Склад | ${itemRes.data.name}` };
     }
 
-    return { title:"Склад | Товар" };
+    return { title: "Склад | Товар" };
 }
 
 export default async function ItemPage({ params }: PageParams) {
@@ -66,7 +66,7 @@ export default async function ItemPage({ params }: PageParams) {
     const attributes = serializeForClient('data' in attrsRes && attrsRes.data ? attrsRes.data : []) as Serialized<InventoryAttribute[]>;
 
     return (
-        <div className="p-1">
+        <div>
             <ItemDetailClient
                 item={item as InventoryItem}
                 storageLocations={locations as StorageLocation[]}

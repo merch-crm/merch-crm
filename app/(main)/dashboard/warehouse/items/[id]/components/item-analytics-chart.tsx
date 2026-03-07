@@ -72,7 +72,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
     const lines = (chartLines || []).map(line => ({
         ...line,
         data: line.data || [],
-        color: line.id === 'orders' ? '#5d00ff' : line.color
+        color: line.id === 'orders' ? 'var(--primary)' : line.color
     }));
 
     return (
@@ -143,7 +143,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                 y1={paddingTop}
                                 x2={forecastSplitX}
                                 y2={height - paddingBottom}
-                                stroke="#5d00ff"
+                                stroke="var(--primary)"
                                 strokeWidth="1"
                                 strokeDasharray="4 2"
                                 opacity="0.3"
@@ -153,7 +153,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                 x={forecastSplitX}
                                 y={paddingTop - 5}
                                 textAnchor="middle"
-                                className="text-[6px] font-bold fill-[#5d00ff] opacity-40"
+                                className="text-[6px] font-bold fill-[var(--primary)] opacity-40"
                             >
                                 Сегодня
                             </text>
@@ -184,7 +184,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                     );
                                 }
                                 labels.push(
-                                    <text key="today" x={forecastSplitX} y={height - 5} textAnchor="middle" className="text-[7px] font-black fill-[#5d00ff] opacity-80">
+                                    <text key="today" x={forecastSplitX} y={height - 5} textAnchor="middle" className="text-[7px] font-black fill-[var(--primary)] opacity-80">
                                         Сегодня
                                     </text>
                                 );
@@ -315,7 +315,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                 <line
                                     x1={hoveredData.x} y1={15}
                                     x2={hoveredData.x} y2={height - 25}
-                                    stroke="#5d00ff" strokeWidth="1" strokeDasharray="4 4"
+                                    stroke="var(--primary)" strokeWidth="1" strokeDasharray="4 4"
                                     className="opacity-30"
                                 />
                             )}

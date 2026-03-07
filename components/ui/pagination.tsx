@@ -1,9 +1,9 @@
 "use client";
 
-import React from"react";
-import { ChevronLeft, ChevronRight } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { usePathname, useRouter, useSearchParams } from"next/navigation";
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 
 interface PaginationProps {
@@ -14,7 +14,7 @@ interface PaginationProps {
     className?: string;
     itemName?: string;
     itemNames?: [string, string, string];
-    variant?:"default" |"light";
+    variant?: "default" | "light" | "card";
 }
 
 export function Pagination({
@@ -23,8 +23,9 @@ export function Pagination({
     pageSize,
     onPageChange,
     className,
-    itemName ="позиций",
+    itemName = "позиций",
     itemNames,
+    variant = "default",
 }: PaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -94,7 +95,11 @@ export function Pagination({
         : itemName;
 
     return (
-        <div className={cn("pagination pagination-with-info", className)}>
+        <div className={cn(
+            variant === "default" && "pagination pagination-with-info",
+            variant === "card" && "bg-card shadow-sm rounded-2xl sm:rounded-[var(--radius)] py-4 px-6 flex items-center justify-between w-full pagination-with-info crm-card",
+            className
+        )}>
             <div className="pagination-info">
                 Показано <strong>{Math.min((currentPage - 1) * pageSize + 1, totalItems)}</strong> - <strong>{Math.min(currentPage * pageSize, totalItems)}</strong> из <strong>{totalItems}</strong> {genitiveItemName}
             </div>
@@ -120,8 +125,8 @@ export function Pagination({
                                 onClick={() => typeof page === 'number' ? handlePageChange(page) : undefined}
                                 disabled={typeof page !== 'number'}
                                 className={cn(
-                                    page ==="..." ?"pagination-ellipsis" :"pagination-item",
-                                    page === currentPage &&"active"
+                                    page === "..." ? "pagination-ellipsis" : "pagination-item",
+                                    page === currentPage && "active"
                                 )}
                             >
                                 {page}

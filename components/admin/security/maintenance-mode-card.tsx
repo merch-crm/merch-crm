@@ -25,7 +25,7 @@ export function MaintenanceModeCard({
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="p-2.5 bg-indigo-50 text-[#5d00ff] rounded-[18px]">
+                        <div className="p-2.5 bg-indigo-50 text-[var(--primary)] rounded-[18px]">
                             <Shield size={20} />
                         </div>
                         <div>

@@ -43,7 +43,14 @@ export default function LoginPage() {
             }
 
             if (data.success) {
-                window.location.href = "/dashboard";
+                const params = new URLSearchParams(window.location.search);
+                const from = params.get("from");
+                // Rule 13: Only allow relative paths (starting with / and not //) to prevent Open Redirect
+                if (from && from.startsWith("/") && !from.startsWith("//")) {
+                    window.location.href = from;
+                } else {
+                    window.location.href = "/dashboard";
+                }
             } else {
                 setError(data.error || "Неизвестная ошибка");
                 setIsLoading(false);
@@ -55,7 +62,7 @@ export default function LoginPage() {
         }
     }
 
-    const primaryColor = branding?.primaryColor || "#5d00ff";
+    const primaryColor = branding?.primaryColor || "var(--primary)";
     const logoUrl = branding?.logoUrl;
     const bgUrl = branding?.loginBackgroundUrl;
     const slogan = branding?.loginSlogan || "Система управления производством";

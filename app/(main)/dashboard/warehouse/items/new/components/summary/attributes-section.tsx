@@ -19,24 +19,24 @@ export function AttributesSection({
     getAttrName
 }: AttributesSectionProps) {
     return (
-        <div className="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            <div className="p-6 sm:p-6 flex items-center justify-between border-b border-slate-50 bg-slate-50/30">
+        <div className="bg-white rounded-[32px] border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden flex flex-col">
+            <div className="px-8 py-8 sm:py-8 flex items-center justify-between border-b border-slate-100/60">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200">
+                    <div className="w-12 h-12 rounded-[14px] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-900/10">
                         <LayoutGrid className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900">Характеристики</h3>
-                        <p className="text-xs font-bold text-slate-700">Атрибуты позиции</p>
+                        <h3 className="text-xl font-black text-slate-900 leading-tight">Характеристики</h3>
+                        <p className="text-xs font-bold text-slate-500 mt-0.5">Атрибуты позиции</p>
                     </div>
                 </div>
             </div>
 
-            <div className="p-4 sm:p-6">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-3">
+            <div className="p-8 sm:p-8">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {[
                         { label: "Бренд", value: getAttrName("brand", formData.brandCode), icon: Tag },
-                        { label: "Цвет", value: selectedColorName, icon: () => <div className="w-2.5 h-2.5 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
+                        { label: "Цвет", value: selectedColorName, icon: () => <div className="w-4 h-4 rounded-full border border-black/10" style={{ backgroundColor: selectedColorHex }} /> },
                         { label: "Размер", value: getAttrName("size", formData.sizeCode), icon: Ruler },
                         { label: "Качество", value: getAttrName("quality", formData.qualityCode), icon: CheckCircle2 },
                         { label: "Материал", value: getAttrName("material", formData.materialCode), icon: Shirt },
@@ -44,7 +44,7 @@ export function AttributesSection({
                         {
                             label: "Габариты",
                             value: (formData.width && formData.height && formData.depth)
-                                ? `${formData.depth}x${formData.width}x${formData.height}`
+                                ? `${formData.depth}×${formData.width}×${formData.height}`
                                 : null,
                             icon: Box
                         },
@@ -61,14 +61,14 @@ export function AttributesSection({
                     ].filter(i => i.value).map((item, idx) => {
                         const Icon = item.icon;
                         return (
-                            <div key={idx} className="flex flex-col p-4 rounded-2xl bg-slate-50/50 border border-slate-100 hover:bg-white hover:border-slate-200 transition-all group">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <div className="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-slate-900 transition-colors">
+                            <div key={idx} className="flex flex-col p-5 rounded-[24px] bg-white border border-slate-200/60 shadow-sm hover:shadow-md transition-all group">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="w-7 h-7 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 group-hover:text-slate-900 transition-colors">
                                         <Icon className="w-3.5 h-3.5" />
                                     </div>
-                                    <span className="text-xs font-black text-slate-700">{item.label}</span>
+                                    <span className="text-[11px] font-black text-slate-400">{item.label}</span>
                                 </div>
-                                <span className="text-sm font-bold text-slate-900">{item.value}</span>
+                                <span className="text-base font-black text-slate-900 leading-tight">{item.value}</span>
                             </div>
                         )
                     })}

@@ -120,6 +120,20 @@
       "when": 1772686879646,
       "tag": "0016_next_krista_starr",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1772756267457,
+      "tag": "0017_luxuriant_magma",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1772872804714,
+      "tag": "0018_mature_slipstream",
+      "breakpoints": true
     }
   ]
 }

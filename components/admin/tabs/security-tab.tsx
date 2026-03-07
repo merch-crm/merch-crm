@@ -49,7 +49,7 @@ export function SecurityTab({
                         variant="outline"
                         size="icon"
                         onClick={() => onRefresh(true)}
-                        className="bg-white border-slate-200 text-slate-400 hover:text-[#5d00ff] hover:bg-indigo-50/50 rounded-[18px] h-9 w-9"
+                        className="bg-white border-slate-200 text-slate-400 hover:text-[var(--primary)] hover:bg-indigo-50/50 rounded-[18px] h-9 w-9"
                         title="Обновить данные"
                     >
                         <RefreshCw size={16} />

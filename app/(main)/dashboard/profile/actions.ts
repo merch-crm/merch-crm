@@ -25,7 +25,10 @@ const ProfileSchema = z.object({
 
 const PasswordSchema = z.object({
     currentPassword: z.string().min(1, "Введите текущий пароль"),
-    newPassword: z.string().min(6, "Новый пароль должен быть не менее 6 символов"),
+    newPassword: z.string()
+        .min(8, "Новый пароль должен быть не менее 8 символов")
+        .regex(/[A-Za-z]/, "Новый пароль должен содержать хотя бы одну букву")
+        .regex(/[0-9]/, "Новый пароль должен содержать хотя бы одну цифру"),
     confirmPassword: z.string().min(1, "Подтвердите новый пароль"),
 }).refine(data => data.newPassword === data.confirmPassword, {
     message: "Пароли не совпадают",

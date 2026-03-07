@@ -329,17 +329,18 @@ export async function findItemBySKU(sku: string): Promise<string | null> {
 /**
  * Get all users with names and IDs
  */
-export async function getAllUsers(): Promise<ActionResult<{ id: string; name: string }[]>> {
+export async function getAllUsers(): Promise<ActionResult<{ id: string; name: string; roleName?: string }[]>> {
     const session = await getAuthSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
         const allUsers = await db.query.users.findMany({
             columns: { id: true, name: true },
+            with: { role: { columns: { name: true } } },
             orderBy: (users, { asc }) => [asc(users.name)],
             limit: 1000
         });
-        return { success: true, data: allUsers };
+        return { success: true, data: allUsers.map(u => ({ id: u.id, name: u.name, roleName: u.role?.name })) };
     } catch (error) {
         await logError({
             error,

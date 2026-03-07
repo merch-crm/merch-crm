@@ -3,8 +3,29 @@ import { getSession } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { v4 as uuidv4 } from "uuid";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
+import { RATE_LIMITS } from "@/lib/rate-limit-config";
+
+function getExtensionFromMagicBytes(buffer: Buffer): string | null {
+    if (buffer.length < 12) return null;
+    const header = buffer.toString('hex', 0, 12).toUpperCase();
+
+    if (header.startsWith('FFD8FF')) return 'jpg';
+    if (header.startsWith('89504E470D0A1A0A')) return 'png';
+    if (header.startsWith('474946383761') || header.startsWith('474946383961')) return 'gif';
+    if (header.startsWith('52494646') && header.substring(16, 24) === '57454250') return 'webp';
+
+    return null;
+}
 
 export async function POST(req: NextRequest) {
+    const ip = getClientIP(req);
+    const rlResult = await rateLimit(`upload:${ip}`, RATE_LIMITS.upload.limit, RATE_LIMITS.upload.windowSec);
+
+    if (!rlResult.success) {
+        return NextResponse.json({ success: false, error: RATE_LIMITS.upload.message }, { status: 429 });
+    }
+
     const session = await getSession();
     if (!session) {
         return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
@@ -17,15 +38,15 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 });
         }
 
-        // Валидация MIME-типа
-        const mimeMatch = file.match(/^data:(image\/(jpeg|png|gif|webp|svg\+xml));base64,/);
-        if (!mimeMatch) {
-            return NextResponse.json({ success: false, error: "Разрешены только изображения (JPEG, PNG, GIF, WebP, SVG)" }, { status: 400 });
-        }
-
-        // Обработка base64
-        const base64Data = file.replace(/^data:image\/\w+(\+\w+)?;base64,/, "");
+        // Обработка base64 (извлекаем данные, игнорируя заголовок data URI)
+        const base64Data = file.replace(/^data:.*?;base64,/, "");
         const buffer = Buffer.from(base64Data, 'base64');
+
+        // Валидация по magic bytes
+        const ext = getExtensionFromMagicBytes(buffer);
+        if (!ext) {
+            return NextResponse.json({ success: false, error: "Недопустимый формат файла (разрешены только JPEG, PNG, GIF, WebP)" }, { status: 400 });
+        }
 
         // Ограничение размера (10MB)
         const MAX_SIZE = 10 * 1024 * 1024;
@@ -40,7 +61,7 @@ export async function POST(req: NextRequest) {
         const uploadDir = join(process.cwd(), "public", "uploads", sanitizedFolder);
         await mkdir(uploadDir, { recursive: true });
 
-        const fileName = `${uuidv4()}.jpg`;
+        const fileName = `${uuidv4()}.${ext}`;
         const filePath = join(uploadDir, fileName);
 
         await writeFile(filePath, buffer);

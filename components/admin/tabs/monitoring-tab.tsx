@@ -54,7 +54,7 @@ export function MonitoringTab({
                         size="icon"
                         onClick={() => onRefresh(true)}
                         disabled={loading}
-                        className="bg-white border-slate-200 text-slate-600 hover:text-[#5d00ff] hover:bg-indigo-50/30 rounded-[18px] h-10 w-10"
+                        className="bg-white border-slate-200 text-slate-600 hover:text-[var(--primary)] hover:bg-indigo-50/30 rounded-[18px] h-10 w-10"
                     >
                         <RefreshCw className={cn("w-5 h-5", loading && "animate-spin")} />
                     </Button>

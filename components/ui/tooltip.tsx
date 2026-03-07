@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from"react";
-import * as TooltipPrimitive from"@radix-ui/react-tooltip";
-import { cn } from"@/lib/utils";
+import * as React from "react";
+import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import { cn } from "@/lib/utils";
 
 const TooltipProvider = TooltipPrimitive.Provider;
 
@@ -17,7 +17,7 @@ const TooltipContent = React.forwardRef<
     <TooltipPrimitive.Content
         ref={ref}
         sideOffset={sideOffset}
-        className={cn("z-50 overflow-hidden rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        className={cn("z-50 overflow-hidden rounded-md bg-slate-900 px-3 py-1.5 text-xs font-medium text-white shadow-md animate-in fade-in-0 zoom-in-95 duration-500 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
             className
         )}
         {...props}
@@ -29,8 +29,8 @@ TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 interface TooltipProps {
     content: React.ReactNode;
     children: React.ReactNode;
-    side?:"top" |"right" |"bottom" |"left";
-    align?:"start" |"center" |"end";
+    side?: "top" | "right" | "bottom" | "left";
+    align?: "start" | "center" | "end";
     delayDuration?: number;
     className?: string;
 }
@@ -38,8 +38,8 @@ interface TooltipProps {
 function Tooltip({
     content,
     children,
-    side ="top",
-    align ="center",
+    side = "top",
+    align = "center",
     delayDuration = 200,
     className,
 }: TooltipProps) {
@@ -60,8 +60,8 @@ interface TooltipRichProps {
     title: string;
     description?: string;
     children: React.ReactNode;
-    side?:"top" |"right" |"bottom" |"left";
-    align?:"start" |"center" |"end";
+    side?: "top" | "right" | "bottom" | "left";
+    align?: "start" | "center" | "end";
     delayDuration?: number;
 }
 
@@ -69,8 +69,8 @@ function TooltipRich({
     title,
     description,
     children,
-    side ="top",
-    align ="center",
+    side = "top",
+    align = "center",
     delayDuration = 200,
 }: TooltipRichProps) {
     return (
@@ -102,8 +102,8 @@ interface TooltipListProps {
     title?: string;
     items: TooltipListItem[];
     children: React.ReactNode;
-    side?:"top" |"right" |"bottom" |"left";
-    align?:"start" |"center" |"end";
+    side?: "top" | "right" | "bottom" | "left";
+    align?: "start" | "center" | "end";
     delayDuration?: number;
 }
 
@@ -111,8 +111,8 @@ function TooltipList({
     title,
     items = [],
     children,
-    side ="top",
-    align ="center",
+    side = "top",
+    align = "center",
     delayDuration = 200,
 }: TooltipListProps) {
     return (
@@ -148,12 +148,12 @@ function TooltipList({
 // Иконка с подсказкой (часто используется для информации)
 interface TooltipIconProps {
     content: React.ReactNode;
-    side?:"top" |"right" |"bottom" |"left";
+    side?: "top" | "right" | "bottom" | "left";
     className?: string;
     iconClassName?: string;
 }
 
-function TooltipIcon({ content, side ="top", className, iconClassName }: TooltipIconProps) {
+function TooltipIcon({ content, side = "top", className, iconClassName }: TooltipIconProps) {
     return (
         <Tooltip content={content} side={side}>
             <button
@@ -185,14 +185,14 @@ interface TooltipDisabledProps {
     content: React.ReactNode;
     children: React.ReactNode;
     disabled?: boolean;
-    side?:"top" |"right" |"bottom" |"left";
+    side?: "top" | "right" | "bottom" | "left";
 }
 
 function TooltipDisabled({
     content,
     children,
     disabled = false,
-    side ="top",
+    side = "top",
 }: TooltipDisabledProps) {
     // Если не disabled, просто рендерим детей без тултипа (или можно сделать чтобы тултип был всегда? Обычно disabled поясняют почему)
     // В ТЗ:"Tooltip на disabled элементах". Скорее всего имеется в виду, что если disabled, то ПОКАЗЫВАТЬ тултип.

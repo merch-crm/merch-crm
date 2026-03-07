@@ -1,11 +1,11 @@
 "use client";
 
-import React from"react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from"@/components/ui/dialog";
-import { InventoryItem, AttributeType, InventoryAttribute } from"@/app/(main)/dashboard/warehouse/types";
-import { useLabelPrinterLogic } from"./label-printer/hooks/useLabelPrinterLogic";
-import { LabelPrinterSettings } from"./label-printer/label-printer-settings";
-import { LabelPrinterPreview } from"./label-printer/label-printer-preview";
+import React from "react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
+import { useLabelPrinterLogic } from "./label-printer/hooks/useLabelPrinterLogic";
+import { LabelPrinterSettings } from "./label-printer/label-printer-settings";
+import { LabelPrinterPreview } from "./label-printer/label-printer-preview";
 
 interface LabelPrinterDialogProps {
     isOpen: boolean;
@@ -20,7 +20,7 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-5xl h-[90vh] p-0 gap-0 overflow-hidden bg-white rounded-3xl flex flex-col [&>button]:hidden">
+            <DialogContent className="max-w-5xl h-[90vh] p-0 gap-0 !overflow-hidden bg-white rounded-3xl flex flex-col overflow-y-hidden [&>button]:hidden">
                 <DialogTitle className="sr-only">Печать этикеток</DialogTitle>
                 <DialogDescription className="sr-only">Настройка параметров печати этикеток для товара</DialogDescription>
 

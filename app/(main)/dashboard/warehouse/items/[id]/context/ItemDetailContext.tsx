@@ -1,7 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useMemo, useCallback } from"react";
-import { useRouter } from"next/navigation";
+import React, { createContext, useContext, useMemo, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
     InventoryItem,
     Category,
@@ -13,18 +13,18 @@ import {
     ItemHistoryTransaction,
     DialogState,
     ThumbnailSettings
-} from"@/app/(main)/dashboard/warehouse/types";
-import { formatUnit } from"@/lib/utils";
+} from "@/app/(main)/dashboard/warehouse/types";
+import { formatUnit } from "@/lib/utils";
 
-import { useItemDetailData } from"../hooks/useItemDetailData";
-import { useItemDialogs } from"../hooks/useItemDialogs";
-import { useItemThumbnail } from"../hooks/useItemThumbnail";
-import { useItemGallery } from"../hooks/useItemGallery";
-import { useItemImages } from"../hooks/useItemImages";
-import { useItemDetailController, TabletTab } from"../hooks/useItemDetailController";
-import { useItemOperations } from"../hooks/useItemOperations";
-import { Session } from"@/lib/auth";
-import { type UploadState } from"../components/ItemMediaSection";
+import { useItemDetailData } from "../hooks/useItemDetailData";
+import { useItemDialogs } from "../hooks/useItemDialogs";
+import { useItemThumbnail } from "../hooks/useItemThumbnail";
+import { useItemGallery } from "../hooks/useItemGallery";
+import { useItemImages } from "../hooks/useItemImages";
+import { useItemDetailController, TabletTab } from "../hooks/useItemDetailController";
+import { useItemOperations } from "../hooks/useItemOperations";
+import { Session } from "@/lib/auth";
+import { type UploadState } from "../components/ItemMediaSection";
 
 interface ItemDetailContextType {
     // Data
@@ -38,6 +38,7 @@ interface ItemDetailContextType {
     hasChanges: boolean;
     history: ItemHistoryTransaction[];
     stocks: ItemStock[];
+    stocksQuantity: number;
     activeOrders: ActiveOrderItem[];
     reservedQuantity: number;
     displayUnit: string;
@@ -47,10 +48,10 @@ interface ItemDetailContextType {
     setDialogs: React.Dispatch<React.SetStateAction<DialogState>>;
     tabletTab: TabletTab;
     setTabletTab: (tab: TabletTab) => void;
-    timeframe:"all" |"month" |"quarter" |"half-year" |"year";
-    setTimeframe: (t:"all" |"month" |"quarter" |"half-year" |"year") => void;
-    adjustType:"in" |"out" |"set" | null;
-    setAdjustType: (type:"in" |"out" |"set" | null) => void;
+    timeframe: "all" | "month" | "quarter" | "half-year" | "year";
+    setTimeframe: (t: "all" | "month" | "quarter" | "half-year" | "year") => void;
+    adjustType: "in" | "out" | "set" | null;
+    setAdjustType: (type: "in" | "out" | "set" | null) => void;
     isMounted: boolean;
     isOnline: boolean;
 
@@ -72,9 +73,9 @@ interface ItemDetailContextType {
     openGallery: (src: string) => void;
     uploads: { states: Record<string, UploadState> };
     isAnyUploading: boolean;
-    handleImageUpdate: (file: File | null, type:"front" |"back" |"side" |"details", index?: number) => void;
-    handleImageRemove: (type:"front" |"back" |"side" |"details", index?: number) => void;
-    handleSetMain: (type:"front" |"back" |"side" |"details", index?: number) => void;
+    handleImageUpdate: (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => void;
+    handleImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
+    handleSetMain: (type: "front" | "back" | "side" | "details", index?: number) => void;
 
     // Actions
     fetchData: () => Promise<void>;
@@ -180,6 +181,7 @@ export function ItemDetailProvider({
     } = useItemImages(item, setItem);
 
     const reservedQuantity = useMemo(() => activeOrders.reduce((acc, order) => acc + order.quantity, 0), [activeOrders]);
+    const stocksQuantity = useMemo(() => stocks.reduce((acc, s) => acc + s.quantity, 0), [stocks]);
     const displayUnit = useMemo(() => formatUnit(item.unit), [item.unit]);
 
     // Controller Hook
@@ -221,6 +223,10 @@ export function ItemDetailProvider({
         if (ordersRes.success && ordersRes.data) setActiveOrders(ordersRes.data);
     }, [item.id, setHistory, setStocks, setActiveOrders]);
 
+    React.useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
     // Operations Hook
     const {
         handleSave,
@@ -240,69 +246,19 @@ export function ItemDetailProvider({
         history,
         categories,
         storageLocations,
+        stocksQuantity,
         setIsSaving,
         setIsEditing,
         setEditData,
         setDialogs,
+        setItem,
         resetUploads,
         fetchData
     });
 
     const value = useMemo(() => ({
-        item, setItem,
-        isEditing, setIsEditing,
-        isSaving,
-        editData, setEditData,
-        hasChanges,
-        history,
-        stocks,
-        activeOrders,
-        reservedQuantity,
-        displayUnit,
-        dialogs, setDialogs,
-        tabletTab, setTabletTab,
-        timeframe, setTimeframe,
-        adjustType, setAdjustType,
-        isMounted,
-        isOnline,
-        thumbSettings,
-        baseScale,
-        maxBounds,
-        handleMainMouseDown,
-        setAspectRatio,
-        updateThumb,
-        resetThumbSettings,
-        currentGalleryIndex, setCurrentGalleryIndex,
-        isMainImageZoomed, setIsMainImageZoomed,
-        allGalleryImages,
-        openGallery,
-        uploads,
-        isAnyUploading,
-        handleImageUpdate,
-        handleImageRemove,
-        handleSetMain,
-        fetchData,
-        handleSave,
-        handleArchive,
-        handleRestore,
-        handleDelete,
-        handleDownload,
-        handleExportHistory,
-        handleStartEdit,
-        handleAttributeChange,
-        handleRemoveAttribute,
-        handleScan,
-        handleCancelEdit,
-        user,
-        storageLocations,
-        categories,
-        attributeTypes,
-        allAttributes,
-        pendingDraft,
-        pendingExitAction, setPendingExitAction
-    }), [
         item, setItem, isEditing, setIsEditing, isSaving, editData, setEditData, hasChanges,
-        history, stocks, activeOrders, reservedQuantity, displayUnit, dialogs, setDialogs,
+        history, stocks, stocksQuantity, activeOrders, reservedQuantity, displayUnit, dialogs, setDialogs,
         tabletTab, setTabletTab, timeframe, setTimeframe, adjustType, setAdjustType,
         isMounted, isOnline, thumbSettings, baseScale, maxBounds, handleMainMouseDown,
         setAspectRatio, updateThumb, resetThumbSettings, currentGalleryIndex, setCurrentGalleryIndex,
@@ -312,6 +268,19 @@ export function ItemDetailProvider({
         handleExportHistory, handleStartEdit, handleAttributeChange, handleRemoveAttribute,
         handleScan, handleCancelEdit, user, storageLocations, categories, attributeTypes,
         allAttributes, pendingDraft, pendingExitAction, setPendingExitAction
+    }), [
+        item, isEditing, isSaving, editData, hasChanges,
+        history, stocks, stocksQuantity, activeOrders, reservedQuantity, displayUnit, dialogs,
+        tabletTab, timeframe, adjustType,
+        isMounted, isOnline, thumbSettings, baseScale, maxBounds, handleMainMouseDown,
+        setAspectRatio, updateThumb, resetThumbSettings, currentGalleryIndex,
+        isMainImageZoomed, allGalleryImages, openGallery, uploads,
+        isAnyUploading, handleImageUpdate, handleImageRemove, handleSetMain, fetchData,
+        handleSave, handleArchive, handleRestore, handleDelete, handleDownload,
+        handleExportHistory, handleStartEdit, handleAttributeChange, handleRemoveAttribute,
+        handleScan, handleCancelEdit, user, storageLocations, categories, attributeTypes,
+        allAttributes, pendingDraft, pendingExitAction,
+        setItem, setIsEditing, setEditData, setDialogs, setTabletTab, setTimeframe, setAdjustType, setCurrentGalleryIndex, setIsMainImageZoomed, setPendingExitAction
     ]);
 
     return (

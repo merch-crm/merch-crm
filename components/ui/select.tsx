@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useId } from "react";
-import { ChevronDown, Check, Search } from "lucide-react";
+import { ChevronDown, Check, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
 import { AnimatePresence, motion } from "framer-motion";
@@ -64,6 +64,8 @@ export interface SelectProps extends SelectAppearance, SelectSearch {
     gridColumns?: 2 | 3;
     autoLayout?: boolean;
     name?: string;
+    clearable?: boolean;
+    error?: boolean;
 }
 
 export function Select({
@@ -84,7 +86,9 @@ export function Select({
     triggerClassName,
     name,
     align = "start",
-    alignOffset = 0
+    alignOffset = 0,
+    clearable = false,
+    error = false
 }: SelectProps) {
     const triggerId = useId();
     const [open, setOpen] = useState(false);
@@ -116,6 +120,12 @@ export function Select({
         setSearchQuery("");
     };
 
+    const handleClear = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onChange("");
+        setSearchQuery("");
+    };
+
     return (
         <div className={cn("relative", variant === "default" && "space-y-1.5", className)}>
             {label && (
@@ -141,14 +151,16 @@ export function Select({
                             (center || variant === "minimal") ? "justify-center" : "justify-between",
                             variant === "default" ? [
                                 compact ? "h-9 px-3 text-[13px]" : "h-12 text-[14px] font-semibold text-slate-900",
-                                open ? "border-slate-300 bg-white" : ""
+                                open ? "border-slate-300 bg-white" : "",
+                                error && "border-rose-500 bg-rose-50/30 ring-4 ring-rose-500/10"
                             ] : ["bg-slate-50/50 rounded-[12px] h-12 border border-transparent hover:border-slate-200",
-                                open && "bg-white border-slate-300"
+                                open && "bg-white border-slate-300",
+                                error && "border-rose-500 bg-rose-50/30"
                             ],
                             triggerClassName
                         )}
                     >
-                        <div className="flex items-center gap-2 overflow-hidden items-center w-full">
+                        <div className="flex items-center gap-2 overflow-hidden w-full">
                             {selectedOption?.icon && !compact && variant !== "minimal" && (
                                 <div className={cn("shrink-0 transition-colors", open ? "text-slate-800" : "text-slate-400 group-hover:text-slate-600")}>
                                     {selectedOption.icon}
@@ -187,10 +199,21 @@ export function Select({
                                 </span>
                             )}
                         </div>
-                        <ChevronDown className={cn("shrink-0 transition-transform duration-300",
-                            variant === "minimal" ? "w-3 h-3" : "w-4 h-4",
-                            open ? "rotate-180" : ""
-                        )} />
+                        <div className="flex items-center gap-1 shrink-0 ml-2">
+                            {clearable && value && (
+                                <button
+                                    type="button"
+                                    onClick={handleClear}
+                                    className="p-1 rounded-md hover:bg-slate-200/60 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
+                            )}
+                            <ChevronDown className={cn("shrink-0 transition-transform duration-300",
+                                variant === "minimal" ? "w-3 h-3" : "w-4 h-4",
+                                open ? "rotate-180" : ""
+                            )} />
+                        </div>
                     </button>
                 </PopoverTrigger>
                 <AnimatePresence>
@@ -219,16 +242,16 @@ export function Select({
                                     !effectiveGridColumns && "py-1"
                                 )}>
                                     {effectiveShowSearch && (
-                                        <div className="pb-2 border-b border-slate-100 mb-2 block px-1 pt-1">
+                                        <div className="pb-2 border-b border-slate-100/60 mb-1 block px-1.5 pt-1.5 bg-white sticky top-0 z-10">
                                             <div className="relative">
-                                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                                                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                                 <Input
                                                     autoFocus
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
                                                     aria-label={searchPlaceholder}
-                                                    className="w-full h-10 pl-9 pr-3 rounded-[10px] bg-slate-50 border border-slate-200/60 shadow-none text-xs font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-slate-100 focus-visible:border-slate-300 transition-all placeholder:text-slate-400"
+                                                    className="w-full h-11 pl-10 pr-3 rounded-[14px] bg-slate-50/50 border border-slate-200/60 shadow-none text-[13px] font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-slate-100 focus-visible:border-slate-300 transition-all placeholder:text-slate-400"
                                                 />
                                             </div>
                                         </div>
@@ -253,18 +276,28 @@ export function Select({
                                                             aria-selected={isSelected}
                                                             onClick={() => handleSelect(option.id)}
                                                             className={cn("transition-colors relative text-left outline-none cursor-pointer focus:outline-none group/item",
-                                                                effectiveGridColumns ? ["h-10 rounded-[8px] text-xs font-bold flex items-center justify-center",
+                                                                effectiveGridColumns ? [
+                                                                    "h-10 rounded-[8px] text-xs font-bold flex items-center px-2",
                                                                     isLastOdd ? "col-span-2" : "",
                                                                     isSelected ? "bg-slate-100 border-slate-300 text-slate-900 shadow-sm" : "bg-white border border-slate-200/60 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                                                                ] : ["flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-[14px] font-medium text-slate-700 rounded-[8px]",
-                                                                    isSelected ? "bg-slate-100 !font-semibold text-slate-900" : ""
+                                                                ] : [
+                                                                    "flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-[14px] font-medium text-slate-700 rounded-[10px]",
+                                                                    isSelected ? "bg-slate-100 !font-semibold text-slate-900 shadow-sm" : ""
                                                                 ]
                                                             )}
                                                         >
                                                             {/* Grid layout content */}
                                                             {effectiveGridColumns && (
-                                                                <div className="flex items-center justify-center gap-1.5 px-2 max-w-full">
-                                                                    <span className="truncate">{option.title}</span>
+                                                                <div className="flex items-center gap-2 w-full min-w-0">
+                                                                    {option.icon && <div className="shrink-0 opacity-70 group-hover/item:opacity-100 transition-opacity">{option.icon}</div>}
+                                                                    <span className="truncate flex-1">{option.title}</span>
+                                                                    {option.badge && (
+                                                                        <span className={cn("text-[11px] font-black px-1.5 py-0.5 rounded-full shrink-0",
+                                                                            isSelected ? "bg-white text-indigo-600 shadow-sm" : "bg-slate-100 text-slate-500 group-hover/item:bg-slate-200"
+                                                                        )}>
+                                                                            {option.badge}
+                                                                        </span>
+                                                                    )}
                                                                     {isSelected && <Check className="w-3 h-3 text-slate-900 stroke-[3] shrink-0" />}
                                                                 </div>
                                                             )}
@@ -275,21 +308,21 @@ export function Select({
                                                                     <div className="flex items-center gap-3 min-w-0">
                                                                         {/* Style indicator based on type */}
                                                                         {(option.color || option.icon) ? (
-                                                                            <div className={cn("w-8 h-8 rounded-[10px] flex items-center justify-center shrink-0 transition-all border",
+                                                                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all border",
                                                                                 isSelected ? "bg-white border-slate-200 text-slate-900 shadow-[0_1px_3px_rgba(0,0,0,0.05)]" : "bg-slate-50 border-slate-200/50 text-slate-500 group-hover/item:border-slate-300 group-hover/item:bg-white",
                                                                                 option.color && "p-0 border-black/5 overflow-hidden ring-1 ring-inset ring-black/5"
                                                                             )}>
                                                                                 {option.color ? (
-                                                                                    <div className="w-full h-full rounded-[7px] scale-90 shadow-sm" style={{ backgroundColor: option.color }} />
+                                                                                    <div className="w-full h-full rounded-xl scale-90 shadow-sm" style={{ backgroundColor: option.color }} />
                                                                                 ) : (
-                                                                                    <div className="[&>svg]:w-4 [&>svg]:h-4">{option.icon}</div>
+                                                                                    <div className="flex items-center justify-center">{option.icon}</div>
                                                                                 )}
                                                                             </div>
                                                                         ) : null}
 
-                                                                        <div className="flex flex-col min-w-0">
-                                                                            <div className="flex items-center gap-2">
-                                                                                <span className={cn("text-[14px] truncate w-full", isSelected ? "font-bold text-slate-900" : "font-medium text-slate-700")}>
+                                                                        <div className="flex flex-col min-w-0 flex-1">
+                                                                            <div className="flex items-center justify-between gap-2">
+                                                                                <span className={cn("text-[14px] truncate", isSelected ? "font-bold text-slate-900" : "font-medium text-slate-700")}>
                                                                                     {option.title}
                                                                                 </span>
                                                                                 {option.badge && (
@@ -326,7 +359,7 @@ export function Select({
                     )}
                 </AnimatePresence>
             </Popover>
-        </div>
+        </div >
     );
 }
 

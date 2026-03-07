@@ -153,7 +153,7 @@ export default function SmartHomeDashboardCRM() {
                         <div className="relative w-48 h-48 mb-6">
                             <svg className="w-full h-full -rotate-180" viewBox="0 0 100 100">
                                 <path d="M 15 50 A 35 35 0 1 1 85 50" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" strokeLinecap="round" />
-                                <path d="M 15 50 A 35 35 0 1 1 65 20" fill="none" stroke="#5d00ff" strokeWidth="8" strokeLinecap="round" strokeDasharray="110" strokeDashoffset="0" className="drop-shadow-[0_0_8px_rgba(93,0,255,0.8)]" />
+                                <path d="M 15 50 A 35 35 0 1 1 65 20" fill="none" stroke="var(--primary)" strokeWidth="8" strokeLinecap="round" strokeDasharray="110" strokeDashoffset="0" className="drop-shadow-[0_0_8px_rgba(93,0,255,0.8)]" />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                                 <div className="text-4xl font-bold">24.5°</div>

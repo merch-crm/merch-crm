@@ -204,7 +204,7 @@ export default function DropdownsPage() {
                 </div>
             </header>
 
-            <main className="max-w-[1400px] mx-auto px-6 pt-12">
+            <main className="max-w-[1480px] mx-auto px-6 pt-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-[440px]">
 
                     {/* ══ SECTION 1: List / Menu dropdowns ══════════════════════════════════ */}

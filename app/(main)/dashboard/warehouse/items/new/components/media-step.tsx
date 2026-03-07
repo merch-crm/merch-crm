@@ -1,4 +1,4 @@
-import { Images } from "lucide-react";
+import { Images, PlusSquare } from "lucide-react";
 import { Category, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 import { StepFooter } from "./step-footer";
 import { useMediaLogic } from "../hooks/useMediaLogic";
@@ -42,16 +42,16 @@ export function MediaStep({ category, formData, updateFormData, onNext, onBack }
 
     return (
         <div className="flex flex-col min-h-0 h-full !overflow-visible">
-            <div className="flex-1 flex flex-col min-h-0">
-                <div className="w-full flex-1 flex flex-col min-h-0 space-y-3 pl-[var(--radius-padding)] pr-[8px] pt-[var(--radius-padding)]">
+            <div className="flex-1 flex flex-col min-h-0 custom-scrollbar pr-1 overflow-y-auto">
+                <div className="w-full flex flex-col min-h-0 h-full p-8 pb-2">
                     {/* Header Area */}
-                    <div className="flex items-center gap-3 shrink-0 relative">
-                        <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg">
+                    <div className="flex items-center gap-3 shrink-0 mb-4 relative">
+                        <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                             <Images className="w-6 h-6 text-white" aria-label="Images" />
                         </div>
                         <div className="flex-1">
                             <h2 className="text-xl font-bold text-slate-900">Галерея фотографий</h2>
-                            <p className="text-xs text-slate-700 font-bold opacity-60">Визуализация карточки товара</p>
+                            <p className="text-xs font-bold text-slate-700 opacity-60">Визуализация карточки товара</p>
                         </div>
 
                         {isProcessing && (
@@ -66,18 +66,19 @@ export function MediaStep({ category, formData, updateFormData, onNext, onBack }
                     <div className="flex-1 flex flex-col min-h-0 !overflow-visible">
                         <div className="flex-1 flex flex-col md:flex-row min-h-0 py-1 md:py-2 gap-3">
                             {/* LEFT: MAIN PHOTO */}
-                            <div className="w-full md:w-[360px] h-full flex flex-col min-h-0 shrink-0 space-y-1.5">
-                                <div>
-                                    <h4 className="text-[14px] font-bold text-slate-900 flex items-center gap-2">
-                                        Основной ракурс
-                                    </h4>
+                            <div className="w-full md:w-[400px] h-full flex flex-col min-h-0 shrink-0 space-y-1.5">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                        <Images className="w-4 h-4 text-slate-500" />
+                                    </div>
+                                    <h4 className="text-[13px] font-bold text-slate-800">Основной ракурс</h4>
                                 </div>
 
                                 <MainPhotoUploader
                                     category={category}
                                     preview={formData.imagePreview ?? null}
-                                    uploading={uploadStates.front?.uploading && loadingIndex === 0}
-                                    progress={uploadStates.front?.progress}
+                                    uploading={loadingIndex === 0}
+                                    progress={uploadStates.front?.progress ?? 0}
                                     zoom={thumbSettings.zoom ?? 1}
                                     x={thumbSettings.x ?? 0}
                                     y={thumbSettings.y ?? 0}
@@ -102,17 +103,18 @@ export function MediaStep({ category, formData, updateFormData, onNext, onBack }
                             </div>
 
                             {/* RIGHT: STORYBOARD & GALLERY */}
-                            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar mr-[8px]">
-                                <div className="space-y-3 flex-1 flex flex-col min-h-0 pt-0">
-                                    <div>
-                                        <h4 className="text-[14px] font-bold text-slate-900">Дополнительные фото</h4>
-                                        <p className="text-[11px] font-bold text-slate-700 opacity-60 mt-0.5">До 6-ти фотографий</p>
+                            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-[4px]">
+                                <div className="space-y-3 flex-1 flex flex-col min-h-0 pt-0 pb-12">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                                            <PlusSquare className="w-4 h-4 text-slate-500" />
+                                        </div>
+                                        <h4 className="text-[13px] font-bold text-slate-800">Дополнительные фото</h4>
                                     </div>
                                     <AdditionalPhotos
                                         previews={formData.imageDetailsPreviews}
-                                        uploading={uploadStates.details?.uploading}
                                         loadingIndex={loadingIndex}
-                                        progress={uploadStates.details?.progress}
+                                        progress={uploadStates.details?.progress ?? 0}
                                         onChange={handleDetailImageChange}
                                         onReplace={handleDetailImageReplace}
                                         onRemove={removeDetailImage}
@@ -129,7 +131,7 @@ export function MediaStep({ category, formData, updateFormData, onNext, onBack }
                     onNext={onNext}
                     isNextDisabled={isProcessing}
                     validationError={undefined}
-                    hint={isMinimumRequiredMet && (formData.imageDetailsPreviews?.length || 0) < 6 ? `Вы можете добавить еще ${6 - (formData.imageDetailsPreviews?.length || 0)} ${pluralize(6 - (formData.imageDetailsPreviews?.length || 0), "дополнительный ракурс", "дополнительных ракурса", "дополнительных ракурсов")}` : undefined}
+                    hint={isMinimumRequiredMet && ((formData.imageDetailsPreviews?.length || 0) + (formData.imagePreview ? 1 : 0)) < 7 ? `Вы можете добавить еще ${7 - ((formData.imageDetailsPreviews?.length || 0) + (formData.imagePreview ? 1 : 0))} ${pluralize(7 - ((formData.imageDetailsPreviews?.length || 0) + (formData.imagePreview ? 1 : 0)), "ракурс", "ракурса", "ракурсов")}` : undefined}
                 />
             </div>
         </div>

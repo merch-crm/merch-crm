@@ -104,8 +104,24 @@ export async function loginAction(prevState: unknown, formData: FormData) {
 
         const ua = headersList.get("user-agent") || "unknown";
 
+        // Generate a secure DB session
+        const crypto = await import("crypto");
+        const sessionId = crypto.randomUUID();
+
+        try {
+            const { pool } = await import('@/lib/db');
+            await pool.query(
+                'INSERT INTO sessions (id, user_id, user_agent, expires_at) VALUES ($1, $2, $3, $4)',
+                [sessionId, user[0].id, ua, expires]
+            );
+        } catch (dbError) {
+            console.error("[Login] Failed to create DB session:", dbError);
+            // Fallback: Proceed with just JWT if DB fails (or we could block login)
+        }
+
         const sessionData = {
             id: user[0].id,
+            sessionId,
             email: user[0].email,
             roleId: user[0].role_id || "",
             roleName: role?.name || "User",

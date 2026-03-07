@@ -30,7 +30,7 @@ const subCategories = [
 export default function CategoryBentoUiKit() {
     return (
         <div className="min-h-screen bg-slate-50 p-8 font-sans">
-            <div className="max-w-[1400px] mx-auto space-y-24">
+            <div className="max-w-[1480px] mx-auto space-y-24">
 
                 {/* Header */}
                 <div>

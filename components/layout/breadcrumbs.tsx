@@ -55,7 +55,8 @@ export function Breadcrumbs() {
 
     const breadcrumbItems = paths.slice(1)
         .map((path, index) => {
-            const href = `/${paths.slice(0, index + 2).join("/")}`;
+            let href = `/${paths.slice(0, index + 2).join("/")}`;
+            if (path === 'warehouse') href = "/dashboard/warehouse/overview";
             const label = labels.get(path) || routeLabels[path] || path;
             const isLast = index === paths.length - 2;
             return { href, label, isLast, path };

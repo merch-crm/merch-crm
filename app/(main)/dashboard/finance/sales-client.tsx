@@ -11,11 +11,11 @@ import {
     ArrowUpRight,
     ArrowDownRight,
     Package
-} from"lucide-react";
-import { cn } from"@/lib/utils";
-import { pluralize } from"@/lib/pluralize";
-import { useBranding } from"@/components/branding-provider";
-import { FinancialStats } from"./actions";;
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { pluralize } from "@/lib/pluralize";
+import { useBranding } from "@/components/branding-provider";
+import { FinancialStats } from "./actions";;
 
 interface SalesClientProps {
     salesData: FinancialStats;
@@ -25,78 +25,78 @@ export function SalesClient({ salesData }: SalesClientProps) {
     const { currencySymbol } = useBranding();
     const statsCards = [
         {
-            label:"Общая выручка",
+            label: "Общая выручка",
             value: Number(salesData.summary.totalRevenue || 0).toLocaleString('ru-RU'),
             suffix: currencySymbol,
             icon: DollarSign,
-            color:"text-emerald-600",
-            bgIcon:"bg-emerald-100",
-            trend:"+12.5%",
+            color: "text-emerald-600",
+            bgIcon: "bg-emerald-100",
+            trend: "+12.5%",
             trendIcon: ArrowUpRight,
-            trendColor:"text-emerald-600"
+            trendColor: "text-emerald-600"
         },
         {
-            label:"Чистая прибыль",
+            label: "Чистая прибыль",
             value: Number(salesData.summary.netProfit || 0).toLocaleString('ru-RU'),
             suffix: currencySymbol,
             icon: TrendingUp,
-            color:"text-primary",
-            bgIcon:"bg-primary/10",
-            trend:"+8.3%",
+            color: "text-primary",
+            bgIcon: "bg-primary/10",
+            trend: "+8.3%",
             trendIcon: ArrowUpRight,
-            trendColor:"text-primary"
+            trendColor: "text-primary"
         },
         {
-            label:"Средний чек",
+            label: "Средний чек",
             value: Math.round(Number(salesData.summary.avgOrderValue || 0)).toLocaleString('ru-RU'),
             suffix: currencySymbol,
             icon: CreditCard,
-            color:"text-amber-600",
-            bgIcon:"bg-amber-100",
-            trend:"-2.1%",
+            color: "text-amber-600",
+            bgIcon: "bg-amber-100",
+            trend: "-2.1%",
             trendIcon: ArrowDownRight,
-            trendColor:"text-rose-500"
+            trendColor: "text-rose-500"
         },
         {
-            label:"Количество заказов",
+            label: "Количество заказов",
             value: Number(salesData.summary.orderCount || 0),
-            suffix:"шт.",
+            suffix: "шт.",
             icon: ShoppingBag,
-            color:"text-blue-600",
-            bgIcon:"bg-blue-100",
-            trend:"+5.2%",
+            color: "text-blue-600",
+            bgIcon: "bg-blue-100",
+            trend: "+5.2%",
             trendIcon: ArrowUpRight,
-            trendColor:"text-blue-600"
+            trendColor: "text-blue-600"
         },
         {
-            label:"Средняя с/с изделия",
+            label: "Средняя с/с изделия",
             value: Math.round(Number(salesData.summary.averageCost || 0)).toLocaleString('ru-RU'),
             suffix: currencySymbol,
             icon: Tags,
-            color:"text-violet-600",
-            bgIcon:"bg-violet-100",
-            trend:"~0%",
+            color: "text-violet-600",
+            bgIcon: "bg-violet-100",
+            trend: "~0%",
             trendIcon: Activity,
-            trendColor:"text-slate-500"
+            trendColor: "text-slate-500"
         },
         {
-            label:"Списания",
+            label: "Расход",
             value: Math.round(Number(salesData.summary.writeOffs || 0)).toLocaleString('ru-RU'),
             suffix: currencySymbol,
             icon: Trash2,
-            color:"text-rose-600",
-            bgIcon:"bg-rose-100",
-            trend:"+1.2%",
+            color: "text-rose-600",
+            bgIcon: "bg-rose-100",
+            trend: "+1.2%",
             trendIcon: ArrowUpRight,
-            trendColor:"text-rose-500"
+            trendColor: "text-rose-500"
         }
     ];
 
     const categoryLabels: Record<string, { label: string, color: string }> = {
-        print: { label:"Печать", color:"bg-primary" },
-        embroidery: { label:"Вышивка", color:"bg-purple-500" },
-        merch: { label:"Мерч", color:"bg-emerald-500" },
-        other: { label:"Прочее", color:"bg-slate-500" }
+        print: { label: "Печать", color: "bg-primary" },
+        embroidery: { label: "Вышивка", color: "bg-purple-500" },
+        merch: { label: "Мерч", color: "bg-emerald-500" },
+        other: { label: "Прочее", color: "bg-slate-500" }
     };
 
     return (
@@ -112,7 +112,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
                                 <card.icon className={cn("h-5 w-5", card.color)} />
                             </div>
                             <div className={cn("flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-bold",
-                                card.trendColor.replace('text-', 'bg-') +"/10",
+                                card.trendColor.replace('text-', 'bg-') + "/10",
                                 card.trendColor
                             )}>
                                 <card.trendIcon className="w-3 h-3" />
@@ -140,7 +140,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
                         <div key={i} className="crm-card p-6 bg-white flex flex-col justify-between hover:scale-[1.02] transition-all duration-500 group border-none shadow-sm relative overflow-hidden h-full">
                             <div className="flex justify-between items-start mb-6">
                                 <div className={cn("h-11 w-11 rounded-[var(--radius-inner)] flex items-center justify-center font-bold shadow-inner transition-transform duration-500 group-hover:scale-110",
-                                    config.color.replace('bg-', 'bg-') +"/10"
+                                    config.color.replace('bg-', 'bg-') + "/10"
                                 )}>
                                     <Package className={cn("h-5 w-5", config.color.replace('bg-', 'text-'))} />
                                 </div>

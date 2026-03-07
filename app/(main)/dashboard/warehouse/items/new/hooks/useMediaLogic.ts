@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback, useLayoutEffect } from "react";
 import { compressImage } from "@/lib/image-processing";
 import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 
@@ -28,6 +28,16 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
     const thumbSettings = useMemo(() =>
         (formData.thumbSettings as { zoom: number; x: number; y: number }) || { zoom: 1, x: 0, y: 0 },
         [formData.thumbSettings]);
+
+    // Keep a mutable ref so the bounds-clamping effect can read
+    // the LATEST thumbSettings without re-running every time they change.
+    // Must be declared AFTER thumbSettings.
+    const thumbSettingsRef = useRef(thumbSettings);
+
+    // Sync the ref whenever thumbSettings changes (synchronous, before paint)
+    useLayoutEffect(() => {
+        thumbSettingsRef.current = thumbSettings;
+    }, [thumbSettings]);
 
     // Container Resize Observer
     useEffect(() => {
@@ -61,10 +71,13 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
     }, [aspectRatio, thumbSettings.zoom, baseScale]);
 
     // Bounds Clamping
+    // IMPORTANT: thumbSettings is intentionally NOT in the dependency array.
+    // We read it via thumbSettingsRef to avoid an infinite loop:
+    //   maxBounds changes → effect runs → updateFormData called → thumbSettings changes → maxBounds changes → ...
     useEffect(() => {
         if (!aspectRatio) return;
 
-        const { x, y } = thumbSettings;
+        const { x, y, zoom } = thumbSettingsRef.current;
         let newX = x;
         let newY = y;
 
@@ -79,14 +92,10 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
 
         if (newX !== x || newY !== y) {
             updateFormData({
-                thumbSettings: {
-                    zoom: thumbSettings.zoom,
-                    x: newX,
-                    y: newY
-                }
+                thumbSettings: { zoom, x: newX, y: newY }
             });
         }
-    }, [maxBounds, thumbSettings, updateFormData, aspectRatio]);
+    }, [maxBounds, aspectRatio, updateFormData]);
 
     const updateThumb = useCallback((settings: Partial<{ zoom: number; x: number; y: number }>) => {
         updateFormData({ thumbSettings: { ...thumbSettings, ...settings } });
@@ -122,7 +131,7 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
 
         let progress = 0;
         const interval = setInterval(() => {
-            progress += Math.floor(Math.random() * 20) + 15;
+            progress += Math.floor(Math.random() * 30) + 20; // 20-50% steps
             if (progress >= 100) {
                 progress = 100;
                 clearInterval(interval);
@@ -130,49 +139,66 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
                     ...prev,
                     [type]: { uploading: false, progress: 100, uploaded: true }
                 }));
-                setIsProcessing(false);
+                // Don't call setIsProcessing(false) here, handleMultiImageUpload does it at the end
                 onComplete();
             } else {
                 setUploadStates(prev => ({ ...prev, [type]: { ...prev[type], progress } }));
             }
-        }, 150);
+        }, 80); // 80ms instead of 150ms
     };
 
-    // Main Methods
-    const handleMainImageChange = async (file: File | null) => {
-        if (!file) return;
-        setLoadingIndex(0);
-        const processed = await handleFileProcessing(file);
-        if (processed) {
-            simulateUpload("front", () => {
-                updateFormData({
-                    imageFile: processed.file,
-                    imagePreview: processed.preview,
-                    thumbSettings: { zoom: 1, x: 0, y: 0 }
-                });
-                setLoadingIndex(null);
-            });
-        } else {
-            setLoadingIndex(null);
-        }
-    };
+    // Unified Multi-Upload Processing
+    const handleMultiImageUpload = async (files: FileList | null) => {
+        if (!files || files.length === 0) return;
 
+        // Calculate how many more we can add (max total 7: 1 main + 6 details)
+        const currentDetailsCount = formData.imageDetailsPreviews?.length || 0;
+        const hasMain = !!formData.imagePreview;
+        const maxTotal = 7;
+        const currentTotal = (hasMain ? 1 : 0) + currentDetailsCount;
+        const remainingSlots = maxTotal - currentTotal;
 
-    const handleDetailImageChange = async (files: FileList | null) => {
-        if (!files) return;
-        const newFiles = [...(formData.imageDetailsFiles || [])];
-        const newPreviews = [...(formData.imageDetailsPreviews || [])];
+        if (remainingSlots <= 0) return;
 
-        for (let i = 0; i < files.length; i++) {
-            if (newFiles.length >= 6) break;
-            const idx = newFiles.length;
-            setLoadingIndex(idx);
-            const processed = await handleFileProcessing(files[i]);
+        const filesToProcess = Array.from(files).slice(0, remainingSlots);
+
+        const localFiles = [...(formData.imageDetailsFiles || [])];
+        const localPreviews = [...(formData.imageDetailsPreviews || [])];
+        let localMainFile = formData.imageFile;
+        let localMainPreview = formData.imagePreview;
+
+        setIsProcessing(true);
+
+        for (let i = 0; i < filesToProcess.length; i++) {
+            const file = filesToProcess[i];
+
+            // Re-read condition for targeting main at EACH step
+            const isTargetingMain = !localMainPreview;
+            const targetIdx = isTargetingMain ? 0 : localPreviews.length + 1; // Offset by 1 for Main
+            setLoadingIndex(targetIdx);
+
+            const processed = await handleFileProcessing(file);
             if (processed) {
+                const type = isTargetingMain ? "front" : "details";
                 await new Promise<void>((resolve) => {
-                    simulateUpload("details", () => {
-                        newFiles.push(processed.file);
-                        newPreviews.push(processed.preview);
+                    simulateUpload(type, () => {
+                        if (isTargetingMain) {
+                            localMainFile = processed.file;
+                            localMainPreview = processed.preview;
+                        } else {
+                            localFiles.push(processed.file);
+                            localPreviews.push(processed.preview);
+                        }
+
+                        // Update UI IMMEDIATELY for this photo
+                        updateFormData({
+                            imageFile: localMainFile,
+                            imagePreview: localMainPreview,
+                            imageDetailsFiles: [...localFiles],
+                            imageDetailsPreviews: [...localPreviews],
+                            ...(isTargetingMain ? { thumbSettings: { zoom: 1, x: 0, y: 0 } } : {})
+                        });
+
                         setLoadingIndex(null);
                         resolve();
                     });
@@ -181,12 +207,22 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
                 setLoadingIndex(null);
             }
         }
-        updateFormData({ imageDetailsFiles: newFiles, imageDetailsPreviews: newPreviews });
+
+        setIsProcessing(false);
+    };
+
+    // Main Methods
+    const handleMainImageChange = async (files: FileList | null) => {
+        handleMultiImageUpload(files);
+    };
+
+    const handleDetailImageChange = async (files: FileList | null) => {
+        handleMultiImageUpload(files);
     };
 
     const handleDetailImageReplace = async (index: number, file: File | null) => {
         if (!file) return;
-        setLoadingIndex(index);
+        setLoadingIndex(index + 1); // Offset by 1 for Main
         const processed = await handleFileProcessing(file);
         if (processed) {
             simulateUpload("details", () => {
@@ -227,7 +263,7 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
 
         // Handlers
         handleMainImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-            handleMainImageChange(e.target.files?.[0] || null);
+            handleMainImageChange(e.target.files);
             e.target.value = "";
         },
         handleDetailImageChange: (e: React.ChangeEvent<HTMLInputElement>) => {

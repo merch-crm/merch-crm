@@ -274,6 +274,7 @@ export async function getExportColumns(): Promise<{
         if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
             return { success: false, error: "Недостаточно прав" };
         }
+        await logAction("Запрос колонок экспорта", "client", "config");
         return { success: true, data: EXPORT_COLUMNS };
     } catch (error) {
         await logError({ error, path: "/dashboard/clients/export", method: "getExportColumns" });
@@ -317,6 +318,7 @@ export async function getExportPresets() {
             },
         ];
 
+        await logAction("Запрос пресетов экспорта", "client", "config");
         return { success: true, data: presets };
     } catch (error) {
         await logError({ error, path: "/dashboard/clients/export", method: "getExportPresets" });

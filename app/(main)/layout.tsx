@@ -1,28 +1,29 @@
 
-import { Breadcrumbs } from"@/components/layout/breadcrumbs";
-import { BreadcrumbsProvider } from"@/components/layout/breadcrumbs-context";
-import { Navbar as DesktopHeader } from"@/components/layout/navbar";
-import { MobileHeader } from"@/components/layout/mobile-header";
-import { MobileBottomNav } from"@/components/layout/mobile-bottom-nav";
-import { getSession } from"@/lib/auth";
-import { db } from"@/lib/db";
-import { systemSettings } from"@/lib/schema";
-import { eq } from"drizzle-orm";
-import { redirect } from"next/navigation";
-import { ActivityTracker } from"@/components/layout/activity-tracker";
-import { getNotifications } from"@/components/notifications/actions";
-import { getBrandingAction } from"@/app/(main)/admin-panel/actions";
-import { BrandingSettings } from"@/lib/types";
-import { NotificationManager } from"@/components/notifications/notification-manager";
-import { CommandMenu } from"@/components/layout/command-menu";
-import { checkAndRunNotifications } from"@/app/(main)/dashboard/notifications-actions";
-import { PullToRefresh } from"@/components/pull-to-refresh";
-import { GlobalUndo } from"@/components/global-undo";
-import { ImpersonationBanner } from"@/components/layout/impersonation-banner";
-import { FloatingSearch } from"@/components/layout/floating-search";
-import { MobileSearchSheet } from"@/components/layout/mobile-search-sheet";
-import { LayoutShell } from"@/components/layout/layout-shell";
-import { ClientSideMain } from"@/components/layout/client-side-main";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { BreadcrumbsProvider } from "@/components/layout/breadcrumbs-context";
+import { Navbar as DesktopHeader } from "@/components/layout/navbar";
+import { MobileHeader } from "@/components/layout/mobile-header";
+import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
+import { getSession } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { systemSettings } from "@/lib/schema";
+import { eq } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import { ActivityTracker } from "@/components/layout/activity-tracker";
+import { getNotifications } from "@/components/notifications/actions";
+import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
+import { BrandingSettings } from "@/lib/types";
+import { NotificationManager } from "@/components/notifications/notification-manager";
+import { CommandMenu } from "@/components/layout/command-menu";
+import { checkAndRunNotifications } from "@/app/(main)/dashboard/notifications-actions";
+import { PullToRefresh } from "@/components/pull-to-refresh";
+import { GlobalUndo } from "@/components/global-undo";
+import { ImpersonationBanner } from "@/components/layout/impersonation-banner";
+import { FloatingSearch } from "@/components/layout/floating-search";
+import { MobileSearchSheet } from "@/components/layout/mobile-search-sheet";
+import { LayoutShell } from "@/components/layout/layout-shell";
+import { ClientSideMain } from "@/components/layout/client-side-main";
+import { Footer } from "@/components/layout/footer";
 
 
 export default async function DashboardLayout({
@@ -70,8 +71,8 @@ export default async function DashboardLayout({
         name: userData.name,
         email: userData.email,
         avatar: userData.avatar,
-        roleName: userData.role?.name ||"Пользователь",
-        departmentName: userData.department?.name ||""
+        roleName: userData.role?.name || "Пользователь",
+        departmentName: userData.department?.name || ""
     };
 
     // Fetch notifications
@@ -81,24 +82,24 @@ export default async function DashboardLayout({
     // Fetch branding settings
     const brandingRes = await getBrandingAction();
     const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
-        companyName:"",
+        companyName: "",
         logoUrl: null,
-        primaryColor:"#5d00ff",
+        primaryColor: "#5d00ff",
         faviconUrl: null,
-        backgroundColor:"#f2f2f2",
+        backgroundColor: "#f2f2f2",
         crmBackgroundUrl: null,
         crmBackgroundBlur: 0,
         crmBackgroundBrightness: 100,
-        currencySymbol:"₽",
+        currencySymbol: "₽",
     } as BrandingSettings;
 
     // Maintenance Mode Check
     try {
         const maintenanceSetting = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key,"maintenance_mode")
+            where: eq(systemSettings.key, "maintenance_mode")
         });
 
-        if (maintenanceSetting?.value === true && user.roleName !=="Администратор") {
+        if (maintenanceSetting?.value === true && user.roleName !== "Администратор") {
             return (
                 <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
                     <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-[--padding-xl] space-y-3 animate-in zoom-in-95 duration-700">
@@ -126,14 +127,9 @@ export default async function DashboardLayout({
 
     return (
         <BreadcrumbsProvider>
-            {/* Dynamic Branding Styles */}
-            <style>
-                {`
-                    :root { 
-                        --primary: ${branding.primaryColor}; 
-                        --background: ${branding.backgroundColor ||"#f2f2f2"};
-                    }
-                    ${branding.crmBackgroundUrl ? `
+            {branding.crmBackgroundUrl && (
+                <style>
+                    {`
                         .crm-background {
                             position: fixed;
                             top: 0;
@@ -148,15 +144,15 @@ export default async function DashboardLayout({
                             filter: blur(${branding.crmBackgroundBlur || 0}px) brightness(${branding.crmBackgroundBrightness || 100}%);
                             transform: scale(1.1); /* To avoid white edges when blurred */
                         }
-                    ` :""}
-                `}
-            </style>
+                    `}
+                </style>
+            )}
 
             <PullToRefresh>
                 <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
                     {session?.impersonatorId && (
                         <ImpersonationBanner
-                            impersonatorName={session.impersonatorName ||"Admin"}
+                            impersonatorName={session.impersonatorName || "Admin"}
                             targetName={user.name}
                         />
                     )}
@@ -184,6 +180,9 @@ export default async function DashboardLayout({
                         <Breadcrumbs />
                         {children}
                     </ClientSideMain>
+
+                    {/* Global Footer */}
+                    <Footer branding={branding} />
                 </LayoutShell>
             </PullToRefresh>
         </BreadcrumbsProvider>

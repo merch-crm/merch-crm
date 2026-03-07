@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, useRef, useEffect } from "react";
-import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star } from "lucide-react";
+import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star, Warehouse, Printer, Briefcase } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -48,7 +48,7 @@ export const LocationCardContent = memo(({
     const total = Object.values(grouped).reduce((sum: number, i: { count: number }) => sum + i.count, 0) || 1;
 
     return (
-        <div className={cn("group relative flex flex-col transition-all duration-300 h-full min-h-[380px] p-6 lg:p-8",
+        <div className={cn("group relative flex flex-col transition-all duration-300 h-full min-h-[380px] p-6 lg:p-8 overflow-hidden",
             !loc.isActive && loc.isActive !== undefined && "opacity-60 grayscale-[0.5]",
             isOverlay ? "!border-primary !shadow-crm-xl z-[100]" :
                 isDefault
@@ -57,7 +57,16 @@ export const LocationCardContent = memo(({
                         ? "!bg-rose-50/30 !border-rose-100"
                         : ""
         )}>
-            <div className="flex items-start justify-between gap-2 mb-2">
+            {/* Soft Corner Glow on Hover */}
+            <div className={cn(
+                "absolute -bottom-12 -right-12 w-48 h-48 opacity-0 transition-opacity duration-500 group-hover:opacity-100 blur-[60px] rounded-full pointer-events-none",
+                loc.type === "warehouse" ? "bg-purple-500/10" :
+                    loc.type === "production" ? "bg-orange-500/10" :
+                        loc.type === "office" ? "bg-emerald-500/10" :
+                            "bg-primary/10"
+            )} />
+
+            <div className="flex items-start justify-between gap-2 mb-2 relative z-10">
                 <div className="flex items-center gap-1 sm:gap-3 min-w-0">
                     <div role="button" tabIndex={0}
                         {...dragHandleProps}
@@ -79,11 +88,18 @@ export const LocationCardContent = memo(({
                 <div className={cn("w-7 h-7 sm:w-12 sm:h-12 rounded-[var(--radius-inner)] flex items-center justify-center transition-all duration-500 shrink-0",
                     isDefault ? "bg-primary/10 text-primary" : "bg-slate-50 text-slate-400"
                 )}>
-                    <MapPin className="w-3.5 h-3.5 sm:w-6 sm:h-6" />
+                    {(() => {
+                        switch (loc.type) {
+                            case "warehouse": return <Warehouse className="w-3.5 h-3.5 sm:w-6 sm:h-6" />;
+                            case "production": return <Printer className="w-3.5 h-3.5 sm:w-6 sm:h-6" />;
+                            case "office": return <Briefcase className="w-3.5 h-3.5 sm:w-6 sm:h-6" />;
+                            default: return <MapPin className="w-3.5 h-3.5 sm:w-6 sm:h-6" />;
+                        }
+                    })()}
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col justify-center py-1 sm:py-4">
+            <div className="flex-1 flex flex-col justify-center py-1 sm:py-4 relative z-10">
                 <div className="text-3xl sm:text-6xl font-bold text-slate-900 tabular-nums">
                     {totalItemsInLoc}
                 </div>
@@ -93,10 +109,15 @@ export const LocationCardContent = memo(({
                 </div>
             </div>
 
-            <div className="space-y-3 sm:space-y-3 mt-auto">
+            <div className="space-y-3 sm:space-y-3 mt-auto relative z-10">
                 <div className="space-y-0.5 sm:space-y-2">
                     <div className="flex items-center gap-1.5">
-                        <h3 className="text-base sm:text-2xl font-bold text-slate-900 leading-tight truncate">
+                        <h3 className={cn(
+                            "text-base sm:text-2xl font-bold text-slate-900 leading-tight truncate transition-colors duration-300",
+                            loc.type === "warehouse" ? "group-hover:text-purple-600" :
+                                loc.type === "production" ? "group-hover:text-orange-600" :
+                                    loc.type === "office" ? "group-hover:text-emerald-600" : "group-hover:text-primary"
+                        )}>
                             {loc.name} {(!loc.isActive && loc.isActive !== undefined) && <span className="text-slate-400 text-xs sm:text-sm font-medium">(Арх)</span>}
                         </h3>
 
@@ -237,7 +258,12 @@ export const SortableLocationCard = memo(({
             onClick={onClick}
             role="button"
             tabIndex={0}
-            className={cn("group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-all duration-300 h-full", "hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.08)] hover:border-slate-300/80 cursor-pointer",
+            className={cn("group relative bg-white border border-slate-200/60 rounded-[28px] sm:rounded-[32px] overflow-hidden transition-all duration-500 h-full",
+                "hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] cursor-pointer",
+                loc.type === "warehouse" ? "hover:border-purple-400/40" :
+                    loc.type === "production" ? "hover:border-orange-400/40" :
+                        loc.type === "office" ? "hover:border-emerald-400/40" :
+                            "hover:border-primary/40",
                 isDragging ? "shadow-2xl ring-2 ring-primary/20 scale-[1.02] z-50 border-primary/30" : "shadow-sm"
             )}
             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}

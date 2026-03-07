@@ -1,11 +1,12 @@
-import { useRouter } from"next/navigation";
-import { useToast } from"@/components/ui/toast";
-import { playSound } from"@/lib/sounds";
-import { format } from"date-fns";
-import { ru } from"date-fns/locale";
-import { InventoryItem, ItemHistoryTransaction, Category, StorageLocation, DialogState } from"@/app/(main)/dashboard/warehouse/types";
-import { archiveInventoryItems, restoreInventoryItems, updateInventoryItem, checkDuplicateItem } from"@/app/(main)/dashboard/warehouse/actions";
-import { createItemFormData, ItemUploads, ThumbnailSettings } from"@/app/(main)/dashboard/warehouse/items/[id]/utils/form-utils";
+import { useRouter } from "next/navigation";
+import { useCallback } from "react";
+import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { InventoryItem, ItemHistoryTransaction, Category, StorageLocation, DialogState } from "@/app/(main)/dashboard/warehouse/types";
+import { archiveInventoryItems, restoreInventoryItems, updateInventoryItem, checkDuplicateItem } from "@/app/(main)/dashboard/warehouse/actions";
+import { createItemFormData, ItemUploads, ThumbnailSettings } from "@/app/(main)/dashboard/warehouse/items/[id]/utils/form-utils";
 
 interface UseItemOperationsProps {
     item: InventoryItem;
@@ -15,10 +16,12 @@ interface UseItemOperationsProps {
     history: ItemHistoryTransaction[];
     categories: Category[];
     storageLocations: StorageLocation[];
+    stocksQuantity: number;
     setIsSaving: (loading: boolean) => void;
     setIsEditing: (editing: boolean) => void;
     setEditData: React.Dispatch<React.SetStateAction<InventoryItem>>;
     setDialogs: React.Dispatch<React.SetStateAction<DialogState>>;
+    setItem: React.Dispatch<React.SetStateAction<InventoryItem>>;
     resetUploads: () => void;
     fetchData: () => Promise<void>;
 }
@@ -31,17 +34,19 @@ export function useItemOperations({
     history,
     categories,
     storageLocations,
+    stocksQuantity,
     setIsSaving,
     setIsEditing,
     setEditData,
     setDialogs,
+    setItem,
     resetUploads,
     fetchData
 }: UseItemOperationsProps) {
     const router = useRouter();
     const { toast } = useToast();
 
-    const handleSave = async (forceDuplicate = false) => {
+    const handleSave = useCallback(async (forceDuplicate = false) => {
         if (!editData || !uploads || !thumbSettings || !setIsEditing || !resetUploads) {
             console.error("Missing required props for handleSave");
             return;
@@ -51,7 +56,7 @@ export function useItemOperations({
         try {
             // Duplicate Detection
             if (!forceDuplicate && (editData.name !== item.name || editData.sku !== item.sku)) {
-                const dup = await checkDuplicateItem(editData.name ||"", editData.sku || undefined, item.id);
+                const dup = await checkDuplicateItem(editData.name || "", editData.sku || undefined, item.id);
                 if (dup.duplicate) {
                     setDialogs((prev: DialogState) => ({ ...prev, duplicateConfirm: { open: true, item: dup.duplicate as { id: string; name: string; sku: string | null } } }));
                     setIsSaving(false);
@@ -63,102 +68,115 @@ export function useItemOperations({
 
             const res = await updateInventoryItem(item.id, formData);
             if (res.success) {
-                toast("Товар успешно обновлен","success");
+                toast("Товар успешно обновлен", "success");
                 playSound("item_updated");
                 setIsEditing(false);
                 localStorage.removeItem(`item_draft_${item.id}`);
                 if (navigator.vibrate) navigator.vibrate(50);
+
+                // Immediate local state sync
+                if (res.data) {
+                    setItem(res.data as InventoryItem);
+                } else {
+                    setItem(prev => ({
+                        ...prev,
+                        ...editData,
+                        updatedAt: new Date().toISOString()
+                    }));
+                }
+
                 await fetchData();
             } else {
-                toast(res.error ||"Ошибка при обновлении товара","error");
+                toast(res.error || "Ошибка при обновлении товара", "error");
                 playSound("notification_error");
             }
             resetUploads();
             router.refresh();
         } catch (error) {
             console.error("Save error:", error);
-            const errorMessage = error instanceof Error ? error.message :"Неизвестная ошибка";
-            toast(`Ошибка при сохранении: ${errorMessage}`,"error");
+            const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка";
+            toast(`Ошибка при сохранении: ${errorMessage}`, "error");
             playSound("notification_error");
         } finally {
             setIsSaving(false);
         }
-    };
+    }, [editData, uploads, thumbSettings, setIsEditing, resetUploads, item, setIsSaving, setDialogs, toast, fetchData, router, setItem]);
 
-    const handleArchive = async (reason: string) => {
+    const handleArchive = useCallback(async (reason: string) => {
         setIsSaving(true);
         try {
-            const res = await archiveInventoryItems([item.id], reason ||"Ручная архивация");
+            const res = await archiveInventoryItems([item.id], reason || "Ручная архивация");
             if (res.success) {
-                toast("Товар перемещен в архив","success");
+                toast("Товар перемещен в архив", "success");
                 playSound("notification_success");
                 setDialogs((prev: DialogState) => ({ ...prev, archiveReason: false }));
                 await fetchData();
             } else {
-                toast(res.error ||"Ошибка при архивации","error");
+                toast(res.error || "Ошибка при архивации", "error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Ошибка при архивации","error");
+            toast("Ошибка при архивации", "error");
             playSound("notification_error");
         } finally {
             setIsSaving(false);
         }
-    };
+    }, [item.id, setIsSaving, toast, setDialogs, fetchData]);
 
-    const handleRestore = async () => {
+    const handleRestore = useCallback(async () => {
         setIsSaving(true);
         try {
-            const res = await restoreInventoryItems([item.id],"Восстановление из архива");
+            const res = await restoreInventoryItems([item.id], "Восстановление из архива");
             if (res.success) {
-                toast("Товар восстановлен из архива","success");
+                toast("Товар восстановлен из архива", "success");
                 playSound("notification_success");
                 await fetchData();
             } else {
-                toast(res.error ||"Ошибка при восстановлении","error");
+                toast(res.error || "Ошибка при восстановлении", "error");
                 playSound("notification_error");
             }
         } catch {
-            toast("Ошибка при восстановлении","error");
+            toast("Ошибка при восстановлении", "error");
             playSound("notification_error");
         } finally {
             setIsSaving(false);
         }
-    };
+    }, [item.id, setIsSaving, toast, fetchData]);
 
-    const handleDelete = async () => {
-        if (item.quantity > 0) {
-            toast("Нельзя архивировать товар с остатком > 0","error");
+    const handleDelete = useCallback(async () => {
+        const currentQty = stocksQuantity > 0 ? stocksQuantity : item.quantity;
+        if (currentQty > 0) {
+            toast("Нельзя архивировать товар с остатком > 0", "error");
             return;
         }
         setDialogs((prev: DialogState) => ({ ...prev, archiveReason: true }));
-    };
+    }, [item.quantity, stocksQuantity, toast, setDialogs]);
 
-    const handleDownload = () => {
-        toast("Формирование Excel файла...","info");
+    const handleDownload = useCallback(() => {
+        toast("Формирование Excel файла...", "info");
 
         // Prepare CSV content
-        const headers = ["ID","Название","Артикул (SKU)","Категория","Количество","Ед. изм.","Себестоимость","Склад","Описание"];
-        const categoryName = item.category ? item.category.name : (categories.find(c => c.id === item.categoryId)?.name ||"");
+        const headers = ["ID", "Название", "Артикул (SKU)", "Категория", "Количество", "Ед. изм.", "Себестоимость", "Склад", "Описание"];
+        const categoryName = item.category ? item.category.name : (categories.find(c => c.id === item.categoryId)?.name || "");
         const locationName = item.stocks && item.stocks.length > 0 && item.stocks[0]
-            ? storageLocations.find(l => l.id === item.stocks![0].storageLocationId)?.name ||""
-            :"";
+            ? storageLocations.find(l => l.id === item.stocks![0].storageLocationId)?.name || ""
+            : "";
 
         const row = [
             item.id,
             `"${item.name.replace(/"/g, '""')}"`,
-            item.sku ||"",
+            item.sku || "",
             `"${categoryName.replace(/"/g, '""')}"`,
             item.quantity,
             item.unit,
             item.costPrice || 0,
             `"${locationName.replace(/"/g, '""')}"`,
-            `"${(item.description ||"").replace(/"/g, '""')}"`
+            `"${(item.description || "").replace(/"/g, '""')}"`
         ];
 
-        const csvContent ="\uFEFF" + headers.join(";") +"\n" + row.join(";");
+        const csvContent = "\uFEFF" + headers.join(";") + "\n" + row.join(";");
 
-        const blob = new Blob([csvContent], { type:"text/csv;charset=utf-8;" });
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
@@ -167,43 +185,43 @@ export function useItemOperations({
         link.click();
         document.body.removeChild(link);
 
-        toast("Файл загружен","success");
-    };
+        toast("Файл загружен", "success");
+    }, [item, categories, storageLocations, toast]);
 
-    const handleExportHistory = () => {
+    const handleExportHistory = useCallback(() => {
         if (!history || history.length === 0) {
-            toast("История пуста","error");
+            toast("История пуста", "error");
             return;
         }
 
-        const headers = ["ID","Дата","Тип","Изменение","Локация","Причина","Автор","Роль"];
+        const headers = ["ID", "Дата", "Тип", "Изменение", "Локация", "Причина", "Автор", "Роль"];
         const rows = history.map(h => {
             const typeMap = {
-                in:"Приход",
-                out:"Расход",
-                transfer:"Перемещение",
-                attribute_change:"Обновление",
-                archive:"Архив",
-                restore:"Восстановление"
+                in: "Приход",
+                out: "Расход",
+                transfer: "Перемещение",
+                attribute_change: "Обновление",
+                archive: "Архив",
+                restore: "Восстановление"
             };
 
             return [
                 h.id,
                 (() => {
                     const d = new Date(h.createdAt);
-                    return isNaN(d.getTime()) ?"—" : format(d,"dd.MM.yyyy HH:mm", { locale: ru });
+                    return isNaN(d.getTime()) ? "—" : format(d, "dd.MM.yyyy HH:mm", { locale: ru });
                 })(),
                 typeMap[h.type as keyof typeof typeMap] || h.type,
                 h.changeAmount,
-                h.storageLocation?.name ||"—",
-                h.reason ||"—",
-                h.creator?.name ||"Система",
-                (h.creator as { role?: { name?: string } } | null)?.role?.name || (h.creator ?"Оператор" :"Система")
-            ].map(cell => `"${(cell ||"").toString().replace(/"/g, '""')}"`).join(";");
+                h.storageLocation?.name || "—",
+                h.reason || "—",
+                h.creator?.name || "Система",
+                (h.creator as { role?: { name?: string } } | null)?.role?.name || (h.creator ? "Оператор" : "Система")
+            ].map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(";");
         });
 
-        const csvContent ="\uFEFF" + headers.join(";") +"\n" + rows.join("\n");
-        const blob = new Blob([csvContent], { type:"text/csv;charset=utf-8;" });
+        const csvContent = "\uFEFF" + headers.join(";") + "\n" + rows.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.setAttribute("href", url);
@@ -212,21 +230,21 @@ export function useItemOperations({
         link.click();
         document.body.removeChild(link);
 
-        toast("История операций загружена","success");
-    };
+        toast("История операций загружена", "success");
+    }, [history, toast, item.sku, item.id]);
 
-    const handleStartEdit = () => {
+    const handleStartEdit = useCallback(() => {
         setEditData({
             ...item,
-            sku: item.sku ||"",
-            description: item.description ||"",
+            sku: item.sku || "",
+            description: item.description || "",
             attributes: (item.attributes as Record<string, string>) || {},
-            categoryId: item.categoryId ||"",
-            qualityCode: item.qualityCode ||"",
-            attributeCode: item.attributeCode ||"",
-            sizeCode: item.sizeCode ||"",
-            materialCode: item.materialCode ||"",
-            brandCode: item.brandCode ||"",
+            categoryId: item.categoryId || "",
+            qualityCode: item.qualityCode || "",
+            attributeCode: item.attributeCode || "",
+            sizeCode: item.sizeCode || "",
+            materialCode: item.materialCode || "",
+            brandCode: item.brandCode || "",
             thumbnailSettings: item.thumbnailSettings || { zoom: 1, x: 0, y: 0 },
             costPrice: item.costPrice !== null ? Number(item.costPrice) : 0,
             sellingPrice: Number(item.sellingPrice) || 0,
@@ -234,9 +252,9 @@ export function useItemOperations({
             materialComposition: item.materialComposition || {},
         });
         setIsEditing(true);
-    };
+    }, [item, setEditData, setIsEditing]);
 
-    const handleAttributeChange = (key: string, value: string) => {
+    const handleAttributeChange = useCallback((key: string, value: string) => {
         const skuFieldMap: Record<string, string> = {
             'quality': 'qualityCode',
             'brand': 'brandCode',
@@ -262,9 +280,9 @@ export function useItemOperations({
                 attributes: { ...prev.attributes, [key]: value }
             };
         });
-    };
+    }, [setEditData]);
 
-    const handleRemoveAttribute = (key: string) => {
+    const handleRemoveAttribute = useCallback((key: string) => {
         const skuFieldMap: Record<string, string> = {
             'quality': 'qualityCode',
             'brand': 'brandCode',
@@ -292,7 +310,7 @@ export function useItemOperations({
                 attributes: newAttributes
             };
         });
-    };
+    }, [setEditData]);
 
     return {
         handleSave,

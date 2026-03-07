@@ -156,6 +156,8 @@ export async function getArchivedItems(filters: InventoryFilters = {}): Promise<
     const validated = InventoryFiltersSchema.safeParse(filters || {});
     const baseFilters = validated.success ? validated.data : (InventoryFiltersSchema.parse({}));
 
+    await logAction("Просмотр архива товаров", "inventory_item", "list");
+
     return getInventoryItems({
         ...baseFilters,
         showArchived: true,
@@ -290,11 +292,17 @@ export async function addInventoryItem(formData: FormData): Promise<ActionResult
                 imageDetails: detailImageUrls,
                 costPrice: costPrice?.toString() || "0",
                 sellingPrice: sellingPrice?.toString() || "0",
+                qualityCode,
+                materialCode,
+                brandCode,
+                attributeCode,
+                sizeCode,
                 attributes,
-                thumbnailSettings: thumbnailSettings ? (typeof thumbnailSettings === 'string' ? JSON.parse(thumbnailSettings) : thumbnailSettings) : null
+                thumbnailSettings: thumbnailSettings ? (typeof thumbnailSettings === 'string' ? JSON.parse(thumbnailSettings) : thumbnailSettings) : null,
+                createdBy: session.id
             }).returning();
 
-            if (storageLocationId && Number(quantity) > 0) {
+            if (storageLocationId) {
                 await tx.insert(inventoryStocks).values({
                     itemId: item.id,
                     storageLocationId,
@@ -306,7 +314,7 @@ export async function addInventoryItem(formData: FormData): Promise<ActionResult
                     type: "in",
                     changeAmount: Number(quantity),
                     storageLocationId: storageLocationId,
-                    reason: "Начальный остаток при создании",
+                    reason: "Создание позиции",
                     createdBy: session.id
                 });
             }

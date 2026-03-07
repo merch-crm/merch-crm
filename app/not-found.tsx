@@ -3,9 +3,19 @@
 import { FileSearch, Home, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function NotFound() {
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return <div className="min-h-screen bg-slate-50" />;
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 font-sans p-6">
@@ -19,17 +29,13 @@ export default function NotFound() {
                 </div>
 
                 <div className="flex-1 w-full flex flex-col items-center relative z-10">
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
-                        Страница не найдена
-                    </h2>
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">Страница не найдена</h2>
                     <p className="text-sm font-medium text-slate-500 mb-8 max-w-[320px]">
                         Запрашиваемый ресурс был удален, перемещен или никогда не существовал.
                     </p>
 
                     <div className="w-full bg-slate-50 rounded-2xl border border-slate-100/80 p-5 mb-8 text-left shadow-inner">
-                        <div className="text-[13px] font-mono text-amber-600/90 break-all leading-relaxed font-semibold">
-                            Error 404: The requested URL could not be found on this server.
-                        </div>
+                        <div className="text-[13px] font-mono text-amber-600/90 break-all leading-relaxed font-semibold">Error 404: The requested URL could not be found on this server.</div>
                     </div>
                 </div>
 

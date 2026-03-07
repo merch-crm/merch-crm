@@ -83,13 +83,13 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                 size="icon"
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "relative h-12 w-12 rounded-2xl transition-all duration-300 group",
-                    isOpen ? "bg-primary text-white shadow-lg shadow-primary/25" : "text-slate-400 hover:text-primary hover:bg-white hover:shadow-md hover:shadow-slate-200/50"
+                    "relative transition-all duration-300 group rounded-xl h-9 w-9",
+                    isOpen ? "bg-slate-100 text-slate-900" : "text-slate-400 hover:text-slate-700 hover:bg-slate-50 border border-transparent hover:border-slate-200"
                 )}
             >
-                <Bell className={cn("w-6 h-6 transition-transform duration-500", isOpen ? "rotate-12" : "group-hover:scale-110")} />
+                <Bell className={cn("w-5 h-5 transition-transform duration-500", isOpen ? "rotate-12" : "group-hover:scale-110")} />
                 {unreadCount > 0 && (
-                    <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
+                    <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white animate-pulse" />
                 )}
             </Button>
 

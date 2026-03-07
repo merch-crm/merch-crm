@@ -1,18 +1,18 @@
 "use client";
 
-import React from"react";
-import { Banknote, TrendingUp } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { useBranding } from"@/components/branding-provider";
-import { InventoryItem, ItemHistoryTransaction } from"@/app/(main)/dashboard/warehouse/types";
-import { Session } from"@/lib/auth";
+import React from "react";
+import { Banknote, TrendingUp } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useBranding } from "@/components/branding-provider";
+import { InventoryItem, ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
+import { Session } from "@/lib/auth";
 
-import { useItemFinancials } from"./useItemFinancials";
-import { Timeframe } from"./types";
-import { FinancialMetricsGrid } from"./FinancialMetricsGrid";
-import { PriceAnalyticsSummary } from"./PriceAnalyticsSummary";
-import { PriceHistoryChart } from"./PriceHistoryChart";
-import { TimeframeTabs } from"./TimeframeTabs";
+import { useItemFinancials } from "./useItemFinancials";
+import { Timeframe } from "./types";
+import { FinancialMetricsGrid } from "./FinancialMetricsGrid";
+import { PriceAnalyticsSummary } from "./PriceAnalyticsSummary";
+import { PriceHistoryChart } from "./PriceHistoryChart";
+import { TimeframeTabs } from "./TimeframeTabs";
 
 interface ItemFinancialSectionProps {
     item: InventoryItem;
@@ -55,10 +55,10 @@ export const ItemFinancialSection = React.memo(({
         )}>
             {/* Main Header */}
             <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
-                    <Banknote className="w-6 h-6" />
+                <div className="w-11 h-11 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
+                    <Banknote className="w-5 h-5" />
                 </div>
-                <h3 className="text-xl font-black text-foreground">Стоимость</h3>
+                <h3 className="text-[18px] font-black text-slate-900">Стоимость</h3>
             </div>
 
             {/* SECTION 1: Metrics Grid */}
@@ -116,4 +116,4 @@ export const ItemFinancialSection = React.memo(({
     );
 });
 
-ItemFinancialSection.displayName ="ItemFinancialSection";
+ItemFinancialSection.displayName = "ItemFinancialSection";

@@ -21,7 +21,7 @@ export default function TwistyCRM() {
             {/* --- HEADER --- */}
             <header className="flex flex-col md:flex-row items-center justify-between mb-8 gap-3">
                 <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-[#5d00ff] flex items-center justify-center text-white font-bold text-lg">
+                    <div className="w-8 h-8 rounded-full bg-[var(--primary)] flex items-center justify-center text-white font-bold text-lg">
                         T
                     </div>
                     <span className="font-bold text-lg">TWISTY</span>
@@ -89,7 +89,7 @@ export default function TwistyCRM() {
                                         {/* Dot */}
                                         <div
                                             className={cn("w-2.5 h-2.5 rounded-full transition-all duration-300 z-10 mb-[calc(100%-5px)]",
-                                                item.active ?"bg-[#5d00ff] scale-125" :"bg-slate-300 group-hover:bg-[#5d00ff]"
+                                                item.active ?"bg-[var(--primary)] scale-125" :"bg-slate-300 group-hover:bg-[var(--primary)]"
                                             )}
                                             style={{ marginBottom: item.h }}
                                         />
@@ -103,19 +103,19 @@ export default function TwistyCRM() {
 
                                         {/* Active Background Pill */}
                                         {item.active && (
-                                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#5d00ff]/5 to-[#5d00ff]/10 rounded-[var(--radius-inner)] w-12 mx-auto -z-0 border border-[#5d00ff]/10" />
+                                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--primary)]/5 to-[var(--primary)]/10 rounded-[var(--radius-inner)] w-12 mx-auto -z-0 border border-[var(--primary)]/10" />
                                         )}
                                     </div>
 
                                     <span className={cn("w-8 h-8 flex items-center justify-center rounded-full text-xs font-bold z-10 transition-colors",
-                                        item.active ?"bg-[#5d00ff] text-white" :"text-slate-400 bg-slate-50 group-hover:text-[#5d00ff]"
+                                        item.active ?"bg-[var(--primary)] text-white" :"text-slate-400 bg-slate-50 group-hover:text-[var(--primary)]"
                                     )}>{item.day}</span>
                                 </div>
                             ))}
                         </div>
 
                         <div className="absolute bottom-8 left-8">
-                            <div className="text-3xl font-bold text-[#5d00ff] mb-1">+20%</div>
+                            <div className="text-3xl font-bold text-[var(--primary)] mb-1">+20%</div>
                             <div className="text-xs text-slate-400 font-medium">This week&apos;s income is<br />higher than last week&apos;s</div>
                         </div>
                     </div>
@@ -130,7 +130,7 @@ export default function TwistyCRM() {
                             </div>
                             <div className="space-y-3">
                                 {[
-                                    { name:"Randy Gouse", role:"Cybersecurity specialist", tag:"Senior", bg:"bg-[#5d00ff]" },
+                                    { name:"Randy Gouse", role:"Cybersecurity specialist", tag:"Senior", bg:"bg-[var(--primary)]" },
                                     { name:"Giana Schleifer", role:"UX/UI Designer", tag:"Middle", bg:"bg-blue-400" },
                                 ].map((user, idx) => (
                                     <div key={idx} className="flex items-center justify-between p-1">
@@ -155,7 +155,7 @@ export default function TwistyCRM() {
                         </div>
 
                         {/* Unlock Premium */}
-                        <div className="bg-gradient-to-br from-[#5d00ff] to-[#3a0099] rounded-[var(--radius-outer)] p-6 shadow-xl shadow-[#5d00ff]/20 relative overflow-hidden flex flex-col justify-between">
+                        <div className="bg-gradient-to-br from-[var(--primary)] to-[#3a0099] rounded-[var(--radius-outer)] p-6 shadow-xl shadow-[var(--primary)]/20 relative overflow-hidden flex flex-col justify-between">
                             {/* Mesh effect simulation */}
                             <div className="absolute inset-0 opacity-20">
                                 <div className="absolute top-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl" />
@@ -170,7 +170,7 @@ export default function TwistyCRM() {
                                 </p>
                             </div>
 
-                            <button type="button" className="relative z-10 bg-white text-[#5d00ff] text-xs font-bold py-3 px-4 rounded-[var(--radius-inner)] flex items-center justify-between mt-6 shadow-sm hover:shadow-md transition-all group">
+                            <button type="button" className="relative z-10 bg-white text-[var(--primary)] text-xs font-bold py-3 px-4 rounded-[var(--radius-inner)] flex items-center justify-between mt-6 shadow-sm hover:shadow-md transition-all group">
                                 <span>Upgrade now</span>
                                 <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                             </button>
@@ -188,7 +188,7 @@ export default function TwistyCRM() {
                         {/* Project 1 */}
                         <div className="crm-card p-6 hover:shadow-crm-lg transition-shadow cursor-pointer">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-[#5d00ff] flex items-center justify-center text-white">
+                                <div className="w-10 h-10 rounded-[var(--radius-inner)] bg-[var(--primary)] flex items-center justify-center text-white">
                                     <Code className="w-5 h-5" />
                                 </div>
                                 <MoreHorizontal className="text-slate-300 w-5 h-5" />
@@ -241,7 +241,7 @@ export default function TwistyCRM() {
                         <div className="flex justify-between items-center">
                             <h4 className="font-bold text-sm">Proposals</h4>
                         </div>
-                        <div className="text-3xl font-bold text-[#5d00ff] mt-2">64</div>
+                        <div className="text-3xl font-bold text-[var(--primary)] mt-2">64</div>
                     </div>
 
                 </div>

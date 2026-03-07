@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ClipboardList, Settings2, Ruler, Wrench, Printer, Shirt, Scissors } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { StepFooter } from "./step-footer";
 import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-selector";
 import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
@@ -11,7 +10,7 @@ import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 import { useBasicInfoLogic } from "./basic-info/hooks/useBasicInfoLogic";
-
+import { LivePreviewCard } from "./live-preview-card";
 
 interface BasicInfoStepProps {
     category: Category;
@@ -89,128 +88,28 @@ export function BasicInfoStep({
 
     return (
         <div className="flex flex-col h-full min-h-0 !overflow-visible">
-            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
-                <div className="flex flex-col min-h-full pb-10 pl-8 pr-[26px] pt-10">
+            <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-1">
+                <div className="flex flex-col min-h-full pb-10 p-8">
 
-                    {/* Preview Header Block (Split Utility Variant) */}
-                    <div className="relative mb-6 bg-white rounded-[24px] p-6 lg:p-8 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-stretch gap-3 group hover:border-indigo-100 transition-colors">
-                        <div className="absolute top-6 left-6 lg:top-7 lg:left-7 flex items-center gap-2">
-                            <div className="relative flex items-center justify-center w-4 h-4 rounded-full bg-indigo-50">
-                                <motion.div
-                                    animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.1, 0.3] }}
-                                    transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                                    className="absolute inset-0 rounded-full bg-indigo-400"
-                                />
-                                <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                            </div>
-                            <span className="text-xs font-bold text-indigo-600/80 tracking-wider">Превью</span>
-                        </div>
-
-                        <div className="md:w-[55%] pt-8 flex flex-col justify-center gap-2">
-                            <div className="text-[20px] lg:text-[22px] font-black text-slate-900 leading-[1.3] tracking-tight min-h-[1.3em]">
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={formData.itemName || "empty"}
-                                        initial={{ opacity: 0, y: 2 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -2 }}
-                                        transition={{ duration: 0.15 }}
-                                    >
-                                        {formData.itemName || <span className="text-slate-300 italic text-[18px] lg:text-[20px] font-bold">Название позиции...</span>}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </div>
-                            <div className="inline-flex self-start">
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={formData.sku || "empty-sku"}
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="text-[12px] font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded border border-indigo-100/50 tracking-wide break-all"
-                                    >
-                                        {formData.sku || "—"}
-                                    </motion.div>
-                                </AnimatePresence>
-                            </div>
-                        </div>
-
-                        <div className="hidden md:block w-px bg-gradient-to-b from-slate-50 via-slate-200 to-slate-50 shrink-0" />
-
-                        <div className="md:w-[45%] flex flex-col justify-center pt-2 md:pt-0 gap-2 min-w-0">
-                            {(() => {
-                                const filteredEntries = Object.entries(formData.attributes || {}).map(([key, value]) => {
-                                    if (!value || typeof value !== 'string') return null;
-                                    if (/^[a-f0-9-]{36}$/.test(value) || /^[a-f0-9-]{36}$/.test(key)) return null;
-
-                                    const type = attributeTypes?.find(t => t.slug === key);
-                                    if (!type) return null;
-
-                                    const attr = dynamicAttributes?.find(a => a.type === key && a.value === value);
-                                    let displayValue = attr?.name || value;
-
-                                    // Страна всегда с большой буквы
-                                    const isCountry = type.slug === 'country' || type.name.toLowerCase().includes('страна');
-                                    if (isCountry && displayValue) {
-                                        displayValue = displayValue.charAt(0).toUpperCase() + displayValue.slice(1);
-                                    }
-
-                                    const label = type.name === "Единица измерения" ? "Ед. измерения" : type.name;
-
-                                    return {
-                                        label,
-                                        displayValue,
-                                        slug: key,
-                                        sortOrder: type.sortOrder || 0,
-                                        showInName: type.showInName !== false
-                                    };
-                                }).filter((chip): chip is NonNullable<typeof chip> => {
-                                    if (!chip) return false;
-                                    if (!chip.showInName) return false;
-                                    const lowerSlug = chip.slug.toLowerCase();
-                                    if (lowerSlug.endsWith('code')) return false;
-                                    if (["unit", "thumbnailsettings"].includes(lowerSlug)) return false;
-                                    return true;
-                                }).sort((a, b) => a.sortOrder - b.sortOrder);
-
-                                if (filteredEntries.length === 0) {
-                                    return (
-                                        <div className="flex flex-col gap-2 opacity-50 w-full pt-8 md:pt-0">
-                                            {[100, 70, 80].map((w, i) => (
-                                                <div key={i} className="flex justify-between items-center w-full">
-                                                    <div className="h-[12px] rounded bg-slate-200 animate-pulse w-10 shrink-0" />
-                                                    <div className="h-px flex-1 mx-3 border-b border-dashed border-slate-200" />
-                                                    <div className="h-[14px] rounded bg-slate-200 animate-pulse shrink-0" style={{ width: `${w}px` }} />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    );
-                                }
-
-                                return (
-                                    <div className="w-full grid grid-cols-2 gap-x-2 gap-y-2 pt-4 md:pt-0">
-                                        {filteredEntries.map((chip) => (
-                                            <div key={chip.slug} className="flex justify-between items-center group/chip w-full overflow-hidden gap-1 hover:bg-slate-50/50 px-1.5 py-0.5 rounded transition-colors">
-                                                <span className="text-xs font-bold text-slate-500 whitespace-nowrap shrink-0 max-w-[50%] truncate pr-1" title={chip.label}>{chip.label}</span>
-                                                <div className="h-px flex-1 min-w-[8px] border-b border-dashed border-slate-200 group-hover/chip:border-slate-300 transition-colors self-center mt-1" />
-                                                <span className="text-[12px] font-bold text-slate-900 truncate shrink-0 max-w-[50%] pl-1 text-right" title={chip.displayValue}>{chip.displayValue}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                );
-                            })()}
-                        </div>
-                    </div>
+                    {/* Preview Header Block (New Light Theme) */}
+                    <LivePreviewCard
+                        formData={formData}
+                        category={category}
+                        attributeTypes={attributeTypes}
+                        dynamicAttributes={dynamicAttributes}
+                        activeSubcategory={formData.subcategoryId ? subCategories.find(s => s.id === formData.subcategoryId) : undefined}
+                        className="mb-6"
+                    />
 
                     {/* Header */}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                                 <ClipboardList className="w-6 h-6 text-white" />
                             </div>
                             <div>
                                 <h2 className="text-xl font-bold text-slate-900">Основная информация</h2>
-                                <p className="text-xs font-bold text-slate-700 opacity-60 mt-1">Заполните ключевые характеристики вашей позиции</p>
+                                <p className="text-xs font-bold text-slate-700 opacity-60">Заполните ключевые характеристики вашей позиции</p>
                             </div>
                         </div>
                     </div>
@@ -222,7 +121,7 @@ export function BasicInfoStep({
 
                             <div>
                                 {categoryAttributes.length > 0 ? (
-                                    <div className="crm-card bg-white shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-slate-200/80 rounded-[24px] p-6 lg:p-8 space-y-3">
+                                    <div className="flex flex-col space-y-3 pt-2">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 grid-flow-row-dense w-full">
                                             {categoryAttributes.map((attr) => {
                                                 const isFullWidth = attr.dataType === 'color';
@@ -244,7 +143,7 @@ export function BasicInfoStep({
                                 ) : (
                                     !isClothing && (
                                         <div className="flex-1 flex items-center justify-center py-10">
-                                            <div className="crm-card bg-white shadow-sm border-slate-100 rounded-[24px] p-10 flex flex-col items-center text-center space-y-3 overflow-hidden relative group max-w-2xl w-full">
+                                            <div className="bg-white shadow-sm border border-slate-100 rounded-[24px] px-[var(--radius-padding)] py-10 flex flex-col items-center text-center space-y-3 overflow-hidden relative group max-w-2xl w-full">
                                                 <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                                                 <div className="relative w-24 h-24 flex items-center justify-center">
@@ -276,14 +175,14 @@ export function BasicInfoStep({
 
                             {/* Дополнительно */}
                             {(isPackaging || isConsumables) && (
-                                <div className="crm-card bg-white shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] border border-slate-200/80 rounded-[20px] p-6 lg:p-8 space-y-3">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className="w-10 h-10 rounded-[12px] bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white shrink-0">
-                                            {isPackaging ? <Ruler className="w-5 h-5 stroke-[2.5]" /> : <Wrench className="w-5 h-5 stroke-[2.5]" />}
+                                <div className="flex flex-col space-y-3 pt-6">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200 text-white shrink-0">
+                                            {isPackaging ? <Ruler className="w-6 h-6" /> : <Wrench className="w-6 h-6" />}
                                         </div>
                                         <div>
-                                            <h4 className="text-[17px] font-bold text-slate-900 leading-tight">Технические параметры</h4>
-                                            <p className="text-xs font-medium text-slate-500 mt-0.5">Размеры и назначение</p>
+                                            <h4 className="text-xl font-bold text-slate-900 leading-tight">Технические параметры</h4>
+                                            <p className="text-xs font-bold text-slate-700 opacity-60">Размеры и назначение</p>
                                         </div>
                                     </div>
 

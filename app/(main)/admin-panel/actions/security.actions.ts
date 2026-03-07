@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auditLogs, securityEvents, systemErrors, users, systemSettings } from "@/lib/schema";
+import { auditLogs, securityEvents, systemErrors, users, systemSettings, sessions } from "@/lib/schema";
 import { getSession, encrypt } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logSecurityEvent } from "@/lib/security-logger";
@@ -9,7 +9,8 @@ import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { eq, desc, and, gte, sql, count, ilike, lte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { v4 as uuidv4 } from "uuid";
 
 import { z } from "zod";
 
@@ -94,8 +95,19 @@ export async function impersonateUser(userId: string) {
         if (!targetUser) return { success: false, error: "Пользователь не найден" };
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const sessionId = uuidv4();
+        const userAgent = (await headers()).get("user-agent") || "unknown";
+
+        await db.insert(sessions).values({
+            id: sessionId,
+            userId: targetUser.id,
+            expiresAt: expires,
+            userAgent: userAgent,
+        });
+
         const newSessionData = {
             id: targetUser.id,
+            sessionId,
             email: targetUser.email,
             roleId: targetUser.roleId || "",
             roleName: targetUser.role?.name || "User",
@@ -144,8 +156,19 @@ export async function stopImpersonating() {
         if (!adminUser) return { success: false, error: "Администратор не найден" };
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const sessionId = uuidv4();
+        const userAgent = (await headers()).get("user-agent") || "unknown";
+
+        await db.insert(sessions).values({
+            id: sessionId,
+            userId: adminUser.id,
+            expiresAt: expires,
+            userAgent: userAgent,
+        });
+
         const originalSessionData = {
             id: adminUser.id,
+            sessionId,
             email: adminUser.email,
             roleId: adminUser.roleId || "",
             roleName: adminUser.role?.name || "User",

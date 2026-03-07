@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from"react";
-import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle } from"lucide-react";
-import { transferInventoryStock } from"../../stock-actions";
-import { StorageLocation } from"../../types";
-import { useToast } from"@/components/ui/toast";
-import { playSound } from"@/lib/sounds";
-import { cn, formatUnit } from"@/lib/utils";
-import { LocationSelect } from"../../location-select";
-import { ResponsiveModal } from"@/components/ui/responsive-modal";
-import { Button } from"@/components/ui/button";
-import { Input } from"@/components/ui/input";
-import { SubmitButton } from"@/components/ui/submit-button";
+import React, { useState, useMemo, useEffect } from "react";
+import { Minus, Package, ArrowRightLeft, ArrowRight, Plus, AlertCircle } from "lucide-react";
+import { transferInventoryStock } from "../../stock-actions";
+import { StorageLocation } from "../../types";
+import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
+import { cn, formatUnit } from "@/lib/utils";
+import { LocationSelect } from "../../location-select";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/ui/submit-button";
 
 interface ItemStock {
     storageLocationId: string;
@@ -54,7 +54,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
             if (amount > available) {
                 setAmount(available);
                 if (available > 0) {
-                    toast(`Количество скорректировано: макс. ${available}`,"info");
+                    toast(`Количество скорректировано: макс. ${available}`, "info");
                 }
             } else if (amount <= 0 && available > 0) {
                 setAmount(1);
@@ -64,23 +64,33 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
 
     const handleIncrement = () => {
         if (!fromLocationId) {
-            toast("Выберите склад-источник","info");
+            toast("Выберите склад-источник", "info");
+            playSound("notification_error");
             return;
         }
         if (amount >= fromStock) {
-            toast(`На складе всего ${fromStock} ${formatUnit(item.unit)}`,"warning");
+            toast(`На складе всего ${fromStock} ${formatUnit(item.unit)}`, "warning");
+            playSound("notification_error");
             return;
         }
         setAmount(prev => prev + 1);
     };
 
     const handleDecrement = () => {
+        if (amount <= 1) {
+            playSound("notification_error");
+            return;
+        }
         setAmount(prev => Math.max(1, prev - 1));
     };
 
     const handleSubmit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         setError("");
+
+        if (!fromLocationId || !toLocationId || fromLocationId === toLocationId || amount <= 0 || !reason.trim()) {
+            playSound("notification_error");
+        }
 
         if (!fromLocationId) return setError("Выберите склад отправитель");
         if (!toLocationId) return setError("Выберите склад получатель");
@@ -96,11 +106,11 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
         try {
             const res = await transferInventoryStock(item.id, fromLocationId, toLocationId, amount, reason);
             if (res.success) {
-                toast("Перемещение выполнено успешно","success");
+                toast("Перемещение выполнено успешно", "success");
                 playSound("stock_replenished");
                 onClose();
             } else {
-                setError(res.error ||"Ошибка при перемещении");
+                setError(res.error || "Ошибка при перемещении");
                 playSound("notification_error");
             }
         } catch {
@@ -113,8 +123,8 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
 
     if (!item) return null;
 
-    const fromLocationName = locations.find(l => l.id === fromLocationId)?.name ||"Источник";
-    const toLocationName = locations.find(l => l.id === toLocationId)?.name ||"Получатель";
+    const fromLocationName = locations.find(l => l.id === fromLocationId)?.name || "Источник";
+    const toLocationName = locations.find(l => l.id === toLocationId)?.name || "Получатель";
     const fromStock = stockMap.get(fromLocationId) || 0;
     const toStock = stockMap.get(toLocationId) || 0;
 
@@ -135,7 +145,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                     </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="px-6 py-4 pt-2 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
+                <form id="transfer-item-form" onSubmit={handleSubmit} className="px-6 py-4 pt-2 flex flex-col gap-3 overflow-y-auto custom-scrollbar flex-1">
                     <div className="space-y-3">
                         {/* 1. Source & Destination selection */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -217,9 +227,9 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                             </div>
                         </div>
 
-                        {/* 3. Inputs: Amount */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div className="space-y-2">
+                        {/* 3. Inputs: Amount & Max button aligned */}
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-end gap-3">
+                            <div className="flex-1 space-y-2">
                                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Количество</label>
                                 <div className="bg-slate-50 border border-slate-200 rounded-2xl flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
                                     <Button
@@ -243,7 +253,8 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                                 const val = Number(e.target.value);
                                                 if (val > fromStock) {
                                                     setAmount(fromStock);
-                                                    toast(`Максимально доступно: ${fromStock}`,"warning");
+                                                    toast(`Максимально доступно: ${fromStock}`, "warning");
+                                                    playSound("notification_error");
                                                 } else {
                                                     setAmount(val);
                                                 }
@@ -267,17 +278,16 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-sm font-bold text-transparent select-none ml-1">Максимум</label>
+                            <div className="flex-1">
                                 {fromLocationId && fromStock > 0 ? (
                                     <Button
                                         type="button"
                                         variant="ghost"
                                         onClick={() => {
                                             setAmount(fromStock);
-                                            toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`,"info");
+                                            toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`, "info");
                                         }}
-                                        className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-[11px] font-black hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
+                                        className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-sm font-black hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
                                     >
                                         Переместить всё ({fromStock})
                                     </Button>
@@ -290,8 +300,8 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         </div>
 
                         {/* 4. Reason */}
-                        <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500">*</span></label>
+                        <div className="space-y-2 mt-2">
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Причина <span className="text-rose-500">*</span></label>
                             <textarea
                                 value={reason}
                                 required
@@ -320,11 +330,12 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         Отмена
                     </Button>
                     <SubmitButton
+                        form="transfer-item-form"
                         isLoading={isSubmitting}
                         text="Переместить"
                         loadingText="Перемещение..."
                         variant="btn-dark"
-                        disabled={isSubmitting || amount <= 0 || !reason.trim()}
+                        disabled={isSubmitting || !fromLocationId || !toLocationId || !reason.trim() || amount <= 0}
                         className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                     />
                 </div>

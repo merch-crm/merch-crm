@@ -395,6 +395,7 @@ export async function deleteChecklistItem(itemId: string): Promise<ActionResult>
         }
 
         await db.delete(taskChecklists).where(eq(taskChecklists.id, itemId));
+        await logAction("Удален пункт чеклиста", "task", itemId);
 
         revalidatePath("/dashboard/tasks");
         return { success: true };

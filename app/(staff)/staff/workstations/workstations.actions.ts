@@ -145,6 +145,7 @@ export async function deleteWorkstation(id: string) {
         }
 
         await db.delete(workstations).where(eq(workstations.id, parsed.data.id))
+        await (await import("@/lib/audit")).logAction("Удалено рабочее место", "workstation", parsed.data.id)
         revalidatePath('/staff/workstations')
         return { success: true }
     } catch {

@@ -166,25 +166,28 @@
     padding: 3rem 1rem;
     color: var(--muted-foreground);
     text-align: center;
-    background-color: #f8fafc;
-    border: 2px dashed var(--border);
-    border-radius: 24px;
+    background-color: transparent;
+    border: 2px dashed rgba(0, 0, 0, 0.15);
+    border-radius: 28px;
     transition: all 0.3s ease;
 
     &>svg {
         width: 3rem;
         height: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.3;
+        margin-bottom: 1.25rem;
+        opacity: 0.2;
+        color: var(--foreground);
     }
 
     & p {
         font-size: 0.875rem;
         font-weight: 700;
+        opacity: 0.6;
     }
 
     &:hover {
-        border-color: var(--primary);
+        border-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.02);
     }
 }
 
@@ -334,28 +337,24 @@
     background-color: white;
     border-radius: 9999px;
     /* Pill */
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     transition: all 0.2s;
     cursor: pointer;
     user-select: none;
     border: none;
 
     &:hover:not(:disabled) {
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         color: #0f172a;
-        /* Removed transform: translateY(-1px) */
+        background-color: rgba(0, 0, 0, 0.02);
     }
 
     &:active:not(:disabled) {
-        /* Removed transform reset as it's not needed without hover transform */
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        background-color: rgba(0, 0, 0, 0.05);
     }
 
     &:disabled {
         opacity: 0.5;
         cursor: not-allowed;
         background-color: transparent;
-        box-shadow: none;
     }
 
     & svg {

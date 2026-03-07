@@ -1,10 +1,10 @@
 "use client";
 
-import { useMediaQuery } from"@/hooks/use-media-query";
-import { cn } from"@/lib/utils";
-import { ChevronRight, Home } from"lucide-react";
-import Link from"next/link";
-import React from"react";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
+import { ChevronRight, Home } from "lucide-react";
+import Link from "next/link";
+import React from "react";
 
 export interface BreadcrumbItem {
     label: string;
@@ -26,22 +26,17 @@ export function Breadcrumbs({
     items = [],
     className,
     showHome = true,
-    homeHref ="/dashboard",
+    homeHref = "/dashboard",
 }: BreadcrumbsProps) {
     const safeItems = Array.isArray(items) ? items : [];
     const isMobile = useMediaQuery("(max-width: 1023px)");
 
     // Handle mobile truncation automatically if items > 2
     // We only truncate if none of the items are already marked as ellipsis
-    const hasEllipsis = safeItems.some(i => i.isEllipsis);
-    const shouldTruncate = isMobile && safeItems.length > 2 && !hasEllipsis;
 
-    const displayItems = shouldTruncate
-        ? [
-            { label:"...", isEllipsis: true, href:"#" },
-            safeItems[safeItems.length - 2],
-            safeItems[safeItems.length - 1]
-        ]
+
+    const displayItems = isMobile && safeItems.length > 0
+        ? [safeItems[safeItems.length - 1]]
         : safeItems;
 
     if (safeItems.length === 0 && !showHome) return null;
@@ -101,9 +96,9 @@ export function Breadcrumbs({
                                 ) : (
                                     <span
                                         className={cn("flex items-center gap-1.5 text-[12px] font-bold  transition-all truncate",
-                                            isLast ?"text-slate-900" :"text-slate-400"
+                                            isLast ? "text-slate-900" : "text-slate-400"
                                         )}
-                                        aria-current={isLast ?"page" : undefined}
+                                        aria-current={isLast ? "page" : undefined}
                                     >
                                         {Icon && <Icon className="w-3.5 h-3.5 opacity-70" />}
                                         <span className="truncate">{item.label}</span>

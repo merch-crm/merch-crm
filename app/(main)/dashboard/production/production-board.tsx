@@ -1,17 +1,17 @@
 "use client";
 
-import { useState } from"react";
-import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon, Maximize } from"lucide-react";
-import { cn } from"@/lib/utils";
-import Image from"next/image";
-import { updateProductionStageAction } from"./actions";
-import { useRouter } from"next/navigation";
-import { DefectDialog } from"./defect-dialog";
-import { ImageLightbox } from"@/components/image-lightbox";
+import { useState } from "react";
+import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon, Maximize } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { updateProductionStageAction } from "./actions";
+import { useRouter } from "next/navigation";
+import { DefectDialog } from "./defect-dialog";
+import { ModernImageGallery } from "@/components/ui/modern-image-gallery";
 
-import { pluralize } from"@/lib/pluralize";
-import { Button } from"@/components/ui/button";
-import { useToast } from"@/components/ui/toast";
+import { pluralize } from "@/lib/pluralize";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 interface OrderItem {
     id: string;
@@ -63,9 +63,9 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
         setLoading(null);
 
         if (!result.success) {
-            toast(result.error,"error");
+            toast(result.error, "error");
         } else {
-            toast("Статус успешно обновлен","success");
+            toast("Статус успешно обновлен", "success");
             router.refresh();
         }
     };
@@ -105,7 +105,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                         <div
                                             key={item.id}
                                             className={cn("bg-white rounded-[var(--radius)] p-4 md:p-5 border transition-all hover:shadow-lg cursor-pointer group touch-manipulation",
-                                                isUrgent ?"border-rose-200 bg-rose-50/30" :"border-slate-200"
+                                                isUrgent ? "border-rose-200 bg-rose-50/30" : "border-slate-200"
                                             )}
                                         >
                                             {/* Order Info */}
@@ -115,7 +115,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                         {item.order.orderNumber}
                                                     </div>
                                                     <div className="text-sm md:text-lg font-bold text-slate-900 truncate leading-tight">
-                                                        {item.order.client?.name ||"Без имени"}
+                                                        {item.order.client?.name || "Без имени"}
                                                     </div>
                                                 </div>
                                                 {isUrgent && (
@@ -148,7 +148,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
 
                                             {/* Item Description */}
                                             <div className="text-xs md:text-sm font-medium text-slate-600 mb-4 line-clamp-3 leading-relaxed">
-                                                {item.description ||"Без описания"}
+                                                {item.description || "Без описания"}
                                             </div>
 
                                             {/* Quantity */}
@@ -182,7 +182,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                 <DefectDialog
                                                     orderItemId={item.id}
                                                     maxQuantity={item.quantity}
-                                                    itemName={item.description ||"Товар"}
+                                                    itemName={item.description || "Товар"}
                                                 />
                                             </div>
                                         </div>
@@ -194,10 +194,11 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                 );
             })}
 
-            <ImageLightbox
-                src={lightboxImage ||""}
+            <ModernImageGallery
+                images={[{ src: lightboxImage, label: "Вложение" }]}
                 isOpen={!!lightboxImage}
                 onClose={() => setLightboxImage(null)}
+                itemName="Макет"
             />
         </div>
     );

@@ -26,7 +26,7 @@ export function ImageThumbControls({
 }: ImageThumbControlsProps) {
     return (
         <div
-            className={cn("mt-0 pb-4 pt-1 transition-all duration-500",
+            className={cn("mt-auto pb-0 pt-0 transition-all duration-500",
                 disabled && "opacity-40 pointer-events-none grayscale"
             )}
             style={{ width: containerDims ? containerDims.w : '100%' }}
@@ -46,7 +46,7 @@ export function ImageThumbControls({
                             onValueChange={([val]) => onUpdatePitch({ zoom: val })}
                             min={1}
                             max={3}
-                            step={0.05}
+                            step={0.01}
                             className="flex-1"
                         />
                         <Button
@@ -71,7 +71,7 @@ export function ImageThumbControls({
                             onValueChange={([val]) => onUpdatePitch({ x: val })}
                             min={-Math.max(1, maxBounds.x)}
                             max={Math.max(1, maxBounds.x)}
-                            step={1}
+                            step={0.5}
                             className={cn(maxBounds.x <= 0 && "opacity-50")}
                         />
                     </div>
@@ -84,7 +84,7 @@ export function ImageThumbControls({
                             onValueChange={([val]) => onUpdatePitch({ y: val })}
                             min={-Math.max(1, maxBounds.y)}
                             max={Math.max(1, maxBounds.y)}
-                            step={1}
+                            step={0.5}
                             className={cn(maxBounds.y <= 0 && "opacity-50")}
                         />
                     </div>

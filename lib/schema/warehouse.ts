@@ -143,6 +143,7 @@ export const inventoryItems = pgTable("inventory_items", {
     zeroStockSince: timestamp("zero_stock_since"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    createdBy: uuid("created_by").references(() => users.id),
     attributes: jsonb("attributes").default("{}"),
     imageDetails: jsonb("image_details").default("[]"),
     materialComposition: jsonb("material_composition").default("{}"),
@@ -154,6 +155,7 @@ export const inventoryItems = pgTable("inventory_items", {
         typeIdx: index("inv_items_type_idx").on(table.itemType),
         archivedIdx: index("inv_items_archived_idx").on(table.isArchived),
         createdIdx: index("inv_items_created_idx").on(table.createdAt),
+        createdByIdx: index("inv_items_created_by_idx").on(table.createdBy),
     }
 });
 
@@ -161,6 +163,10 @@ export const inventoryItemsRelations = relations(inventoryItems, ({ one, many })
     category: one(inventoryCategories, {
         fields: [inventoryItems.categoryId],
         references: [inventoryCategories.id],
+    }),
+    creator: one(users, {
+        fields: [inventoryItems.createdBy],
+        references: [users.id],
     }),
     archivedBy: one(users, {
         fields: [inventoryItems.archivedBy],

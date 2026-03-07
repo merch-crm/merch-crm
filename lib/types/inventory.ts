@@ -116,6 +116,7 @@ export interface ItemHistoryTransaction {
     id: string;
     type: "in" | "out" | "transfer" | "attribute_change" | "archive" | "restore" | "stock_in" | "stock_out" | "adjustment";
     changeAmount: number;
+    orderId: string | null;
     reason: string | null;
     createdAt: Date;
     costPrice?: number | string | null;
@@ -192,6 +193,7 @@ export interface InventoryItem {
     isArchived: boolean;
     archivedAt?: Date | string | null;
     createdAt: Date | string;
+    updatedAt?: Date | string | null;
     archiveReason?: string | null;
     materialComposition: Record<string, number>;
     categoryName?: string;

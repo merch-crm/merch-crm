@@ -44,7 +44,7 @@ export default function CardsCRM() {
             {/* --- HERO: DIGITAL CARDS --- */}
             <section className="bg-slate-900 rounded-[var(--radius-outer)] p-2 overflow-hidden text-white relative shadow-2xl shadow-slate-900/20">
                 {/* Purple Glow */}
-                <div className="absolute top-[20%] left-[20%] w-[300px] h-[300px] bg-[#5d00ff]/30 rounded-full blur-[100px] pointer-events-none" />
+                <div className="absolute top-[20%] left-[20%] w-[300px] h-[300px] bg-[var(--primary)]/30 rounded-full blur-[100px] pointer-events-none" />
 
                 <div className="flex flex-col xl:flex-row gap-3 p-6 md:p-6">
                     {/* Left Text Block */}
@@ -67,13 +67,13 @@ export default function CardsCRM() {
                         </button>
 
                         {/* Card 1 */}
-                        <div className="min-w-[340px] h-[200px] rounded-[var(--radius-outer)] bg-white/10 backdrop-blur-md border border-white/10 relative p-6 flex flex-col justify-between group cursor-pointer transition-all hover:shadow-[#5d00ff]/20 hover:shadow-xl">
+                        <div className="min-w-[340px] h-[200px] rounded-[var(--radius-outer)] bg-white/10 backdrop-blur-md border border-white/10 relative p-6 flex flex-col justify-between group cursor-pointer transition-all hover:shadow-[var(--primary)]/20 hover:shadow-xl">
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 bg-[#5d00ff] rounded-sm flex items-center justify-center">
+                                    <div className="w-5 h-5 bg-[var(--primary)] rounded-sm flex items-center justify-center">
                                         <div className="w-2 h-2 bg-white rounded-full" />
                                     </div>
-                                    <span className="font-bold text-[#5d00ff]">CRM</span>
+                                    <span className="font-bold text-[var(--primary)]">CRM</span>
                                 </div>
                                 <div className="flex -space-x-3">
                                     <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/10" />
@@ -101,13 +101,13 @@ export default function CardsCRM() {
                         </div>
 
                         {/* Card 2 */}
-                        <div className="min-w-[340px] h-[200px] rounded-[var(--radius-outer)] bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-md border border-white/10 relative p-6 flex flex-col justify-between group cursor-pointer transition-all hover:shadow-[#5d00ff]/20 hover:shadow-xl">
+                        <div className="min-w-[340px] h-[200px] rounded-[var(--radius-outer)] bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-md border border-white/10 relative p-6 flex flex-col justify-between group cursor-pointer transition-all hover:shadow-[var(--primary)]/20 hover:shadow-xl">
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-5 h-5 bg-[#5d00ff] rounded-sm flex items-center justify-center">
+                                    <div className="w-5 h-5 bg-[var(--primary)] rounded-sm flex items-center justify-center">
                                         <div className="w-2 h-2 bg-white rounded-full" />
                                     </div>
-                                    <span className="font-bold text-[#5d00ff]">CRM</span>
+                                    <span className="font-bold text-[var(--primary)]">CRM</span>
                                 </div>
                                 <div className="flex -space-x-3">
                                     <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/10" />
@@ -164,7 +164,7 @@ export default function CardsCRM() {
                     </div>
 
                     {/* Vertical Card Preview */}
-                    <div className="self-end mt-4 relative w-[140px] h-[220px] bg-gradient-to-b from-[#5d00ff] to-[#3a0099] rounded-[var(--radius-outer)] shadow-2xl shadow-[#5d00ff]/30 transform rotate-6 hover:rotate-0 transition-all duration-500 p-4 flex flex-col justify-between">
+                    <div className="self-end mt-4 relative w-[140px] h-[220px] bg-gradient-to-b from-[var(--primary)] to-[#3a0099] rounded-[var(--radius-outer)] shadow-2xl shadow-[var(--primary)]/30 transform rotate-6 hover:rotate-0 transition-all duration-500 p-4 flex flex-col justify-between">
                         <div className="flex justify-between items-start">
                             <div className="w-6 h-6 rounded-full bg-white/30 backdrop-blur-md" />
                             <div className="w-6 h-8 bg-black/20 rounded-sm" />
@@ -196,7 +196,7 @@ export default function CardsCRM() {
                         ].map((item, idx) => (
                             <div key={idx} className="bg-slate-50/50 rounded-[var(--radius-inner)] p-4 flex gap-3 hover:bg-slate-100/50 transition-colors cursor-pointer border border-white/60">
                                 <div className="w-12 h-12 rounded-full bg-slate-900 flex items-center justify-center shrink-0">
-                                    <span className="text-[#5d00ff] text-xs font-bold">{item.icon}</span>
+                                    <span className="text-[var(--primary)] text-xs font-bold">{item.icon}</span>
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold leading-tight mb-2">{item.text}</p>
@@ -212,14 +212,14 @@ export default function CardsCRM() {
 
                     {/* 3 Small Widgets */}
                     <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-[#5d00ff] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
+                        <div className="bg-[var(--primary)] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
                             <Megaphone className="w-6 h-6 text-white z-10" />
                             <div className="z-10 text-xs font-bold  leading-tight text-white">Referral<br />program</div>
                             <div className="absolute -right-4 -top-4 w-16 h-16 bg-white/10 rounded-full" />
                         </div>
 
-                        <div className="bg-[#5d00ff] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
-                            <div className="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[#5d00ff] mb-2">
+                        <div className="bg-[var(--primary)] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
+                            <div className="w-8 h-8 bg-white rounded-2xl flex items-center justify-center text-[var(--primary)] mb-2">
                                 <Crown className="w-4 h-4" />
                             </div>
                             <div className="flex items-center justify-between">
@@ -228,9 +228,9 @@ export default function CardsCRM() {
                             </div>
                         </div>
 
-                        <div className="bg-[#5d00ff] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
+                        <div className="bg-[var(--primary)] rounded-[var(--radius-inner)] p-4 h-[120px] flex flex-col justify-between relative overflow-hidden group cursor-pointer hover:bg-[#4a00cc] transition-colors">
                             <div className="absolute top-2 right-2 w-10 h-10 bg-white rounded-2xl rotate-12 flex items-center justify-center">
-                                <span className="text-[#5d00ff] text-xs font-bold">20%</span>
+                                <span className="text-[var(--primary)] text-xs font-bold">20%</span>
                             </div>
                             <Smartphone className="w-6 h-6 text-white mt-1" />
                             <div className="text-xs font-bold  leading-tight mt-auto text-white">Cashback<br />up to 20%</div>
