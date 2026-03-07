@@ -42,6 +42,7 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
+import { type Session } from '@/lib/auth';
 import { getSession } from '@/lib/auth';
 import { logAction } from '@/lib/audit';
 import { mockSession } from '../helpers/mocks';
@@ -49,7 +50,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Funnel Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as ReturnType<typeof mockSession>);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 

@@ -52,6 +52,7 @@ vi.mock('@/lib/crypto', () => ({ encrypt: mockEncrypt, decrypt: mockDecrypt }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
+import { type Session } from '@/lib/auth';
 import { getSession } from '@/lib/auth';
 import { requireAdmin } from '@/lib/admin';
 import { mockSession } from '../helpers/mocks';
@@ -61,7 +62,7 @@ describe('Xiaomi Actions', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as never);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
         vi.mocked(requireAdmin).mockResolvedValue(undefined as never);
         chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
         global.fetch = vi.fn();

@@ -51,6 +51,7 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
+import { type Session } from '@/lib/auth';
 import { getSession } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { logAction } from '@/lib/audit';
@@ -60,7 +61,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Loyalty Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as ReturnType<typeof mockSession>);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
 
         mockDb.insert().values().returning.mockResolvedValue([]);
         mockDb.update().set?.().where?.().returning?.mockResolvedValue([]);
@@ -112,7 +113,7 @@ describe('Loyalty Actions', () => {
         });
 
         it('should deny access if not admin', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as ReturnType<typeof mockSession>);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as Session);
 
             const result = await createLoyaltyLevel({} as Parameters<typeof createLoyaltyLevel>[0]);
 

@@ -3,21 +3,15 @@
  * Import from this file to get consistent mock objects.
  */
 import { vi } from 'vitest';
+import { type Session } from '@/lib/auth';
 import { Task } from '@/app/(main)/dashboard/tasks/types';
 
 // ─── Session ─────────────────────────────────────────────────────────────────
 
-export function mockSession(overrides: Partial<{
-    id: string;
-    email: string;
-    name: string;
-    roleId: string;
-    roleName: string;
-    departmentName: string;
-    expires: Date;
-}> = {}) {
+export function mockSession(overrides: Partial<Session> = {}): Session {
     return {
         id: '11111111-1111-4111-8111-111111111111',
+        sessionId: 'session-uuid-1234',
         email: 'admin@test.com',
         name: 'Test Admin',
         roleId: 'role-uuid-1234',

@@ -28,13 +28,14 @@ vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
+import { type Session } from '@/lib/auth';
 import { getSession } from '@/lib/session';
 import { mockSession } from '../helpers/mocks';
 
 describe('Reports Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as never);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
     });
 
     describe('getDailyReport', () => {

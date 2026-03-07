@@ -87,6 +87,7 @@ vi.mock('@/lib/admin', () => ({
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
+import { type Session } from '@/lib/auth';
 import { getSession } from '@/lib/auth';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';
@@ -105,7 +106,7 @@ function setupMocks() {
     mockQuery.roles.findMany.mockResolvedValue([]);
     mockQuery.departments.findMany.mockResolvedValue([]);
     mockQuery.auditLogs.findMany.mockResolvedValue([]);
-    vi.mocked(getSession).mockResolvedValue(mockSession());
+    vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
     vi.mocked(performDatabaseBackup).mockResolvedValue({ success: true, fileName: 'backup.json' });
 }
 
