@@ -5,6 +5,7 @@ import { dailyWorkStats } from '@/lib/schema/presence'
 import { eq, and, gte, lte } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { logError } from '@/lib/error-logger'
+import { logAction } from '@/lib/audit'
 import { z } from 'zod'
 
 const DailyReportSchema = z.object({
@@ -429,7 +430,6 @@ export async function exportReport(type: 'daily' | 'weekly' | 'monthly', params:
             }
         }
 
-        const { logAction } = await import("@/lib/audit");
         await logAction("Экспорт отчета присутствия", "report", type, params);
 
         return {

@@ -143,7 +143,7 @@ describe('updatePassword', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindFirst.mockResolvedValueOnce(createMockUser());
         vi.mocked(comparePassword).mockResolvedValueOnce(false);
-        const result = await updatePassword(createFormData({ currentPassword: 'wrongold', newPassword: 'new123', confirmPassword: 'new123' })); // Safe
+        const result = await updatePassword(createFormData({ currentPassword: 'wrongold1', newPassword: 'newpass123', confirmPassword: 'newpass123' })); // Safe
         expect(result).toEqual({ success: false, error: 'Текущий пароль указан неверно' });
     });
 

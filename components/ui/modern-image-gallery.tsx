@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -58,7 +59,7 @@ export function ModernImageGallery({
 
     if (!isOpen || !fullscreen) return null;
 
-    return (
+    const content = (
         <div
             ref={lightboxRef}
             tabIndex={0}
@@ -172,4 +173,7 @@ export function ModernImageGallery({
             )}
         </div>
     );
+
+    if (typeof document === "undefined") return null;
+    return createPortal(content, document.body);
 }
