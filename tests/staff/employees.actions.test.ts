@@ -18,7 +18,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         limit: vi.fn().mockReturnThis(),
         returning: vi.fn().mockResolvedValue([]),
         values: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (args: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -52,9 +52,9 @@ import { mockSession } from '../helpers/mocks';
 describe('Employees Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as never);
         vi.mocked(checkIsAdmin).mockResolvedValue(true);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
     });
 
     describe('getEmployeesWithFaces', () => {
@@ -131,7 +131,7 @@ describe('Employees Actions', () => {
     describe('deleteEmployeeFace', () => {
         it('should soft delete face by setting isActive false', async () => {
             const validSession = mockSession();
-            vi.mocked(getSession).mockResolvedValue(validSession as any);
+            vi.mocked(getSession).mockResolvedValue(validSession as never);
             vi.mocked(checkIsAdmin).mockResolvedValue(true);
 
             const result = await deleteEmployeeFace('55555555-5555-4555-8555-000000000001');

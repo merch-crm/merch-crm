@@ -3,10 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import {
-    Building, Mail, Phone, MapPin,
+    Mail, Phone, MapPin,
     Twitter, Github, Linkedin, Instagram,
-    Shield, FileText, Globe, CheckCircle2,
-    ChevronRight, ArrowRight, Heart
+    Shield, Globe, CheckCircle2,
+    ArrowRight, Heart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -131,7 +131,7 @@ export default function FootersUIKit() {
                         </div>
 
                         <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
-                            <p className="text-sm text-slate-400 font-medium">© 2026 ООО "Мерч Системс". Все права защищены.</p>
+                            <p className="text-sm text-slate-400 font-medium">&copy; 2026 ООО &quot;Мерч Системс&quot;. Все права защищены.</p>
                             <div className="flex gap-6">
                                 <Link href="#" className="text-sm text-slate-400 font-medium hover:text-slate-900">Политика конфиденциальности</Link>
                                 <Link href="#" className="text-sm text-slate-400 font-medium hover:text-slate-900">Оферта</Link>

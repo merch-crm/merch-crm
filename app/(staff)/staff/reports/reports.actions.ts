@@ -429,7 +429,8 @@ export async function exportReport(type: 'daily' | 'weekly' | 'monthly', params:
             }
         }
 
-        await require("@/lib/audit").logAction("Экспорт отчета присутствия", "report", type, params);
+        const { logAction } = await import("@/lib/audit");
+        await logAction("Экспорт отчета присутствия", "report", type, params);
 
         return {
             success: true,

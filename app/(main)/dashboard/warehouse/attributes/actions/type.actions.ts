@@ -278,7 +278,8 @@ export async function deleteInventoryAttributeType(id: string, password?: string
             createdBy: session.id,
         });
 
-        await require("@/lib/audit").logAction("Удален тип атрибута", "inventory_attribute_type", id, { name: type.name });
+        const { logAction } = await import("@/lib/audit");
+        await logAction("Удален тип атрибута", "inventory_attribute_type", id, { name: type.name });
 
         refreshWarehouse();
         return { success: true };

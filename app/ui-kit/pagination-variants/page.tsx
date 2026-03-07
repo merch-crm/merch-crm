@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { ChevronLeft, ChevronRight, MoreHorizontal, ArrowLeft, ArrowRight, RefreshCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export default function PaginationVariantsPage() {

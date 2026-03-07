@@ -3,9 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import {
-    Search, Bell, User, ChevronDown, Plus, Moon, Sun,
+    Search, Bell, User, ChevronDown, Plus, Sun,
     MapPin, Command, Home, Box, CreditCard, Settings, LayoutDashboard
 } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -257,8 +258,8 @@ export default function HeadersUIKit() {
                                 <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
                             </button>
                             <div className="h-10 px-3 pr-4 bg-white border border-sky-100 rounded-full flex items-center gap-2 cursor-pointer hover:shadow-sm transition-all ml-2 hover:scale-105">
-                                <div className="w-6 h-6 rounded-full bg-sky-100 overflow-hidden ring-1 ring-sky-200">
-                                    <img src="https://i.pravatar.cc/150?u=a" alt="Avatar" />
+                                <div className="w-6 h-6 rounded-full bg-sky-100 overflow-hidden ring-1 ring-sky-200 relative">
+                                    <Image src="https://i.pravatar.cc/150?u=a" alt="Avatar" fill className="object-cover" />
                                 </div>
                                 <ChevronDown className="w-3 h-3 text-sky-600" />
                             </div>
