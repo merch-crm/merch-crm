@@ -13,7 +13,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         set: vi.fn().mockReturnThis(),
         from: vi.fn().mockReturnThis(),
         limit: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (args: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -23,7 +23,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
     const mockDb = {
         query: queryMock,
         update: vi.fn().mockReturnValue(chainable),
-        transaction: vi.fn().mockImplementation(async (cb: any) => cb(mockDb)),
+        transaction: vi.fn().mockImplementation(async (cb: (db: unknown) => Promise<unknown>) => cb(mockDb)),
     };
 
     return { mockDb, queryMock, chainable };
@@ -45,9 +45,9 @@ import { mockSession } from '../helpers/mocks';
 describe('Settings Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
-        vi.mocked(requireAdmin).mockResolvedValue(undefined as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as never);
+        vi.mocked(requireAdmin).mockResolvedValue(undefined as never);
+        chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
     });
 
     describe('getPresenceSettings', () => {

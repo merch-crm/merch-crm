@@ -34,7 +34,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Reports Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as any);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as never);
     });
 
     describe('getDailyReport', () => {

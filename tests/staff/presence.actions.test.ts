@@ -3,8 +3,7 @@ import {
     recordPresenceEvent,
     getCurrentPresenceStatus,
     getDailyReport,
-    getWeeklyReport,
-    getMonthlyReport
+    getWeeklyReport
 } from '@/app/(main)/staff/actions/presence.actions';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
@@ -19,7 +18,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         returning: vi.fn().mockResolvedValue([]),
         values: vi.fn().mockReturnThis(),
         leftJoin: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (args: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -34,7 +33,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
         select: vi.fn().mockReturnValue(chainable),
         update: vi.fn().mockReturnValue(chainable),
         insert: vi.fn().mockReturnValue(chainable),
-        transaction: vi.fn().mockImplementation(async (cb: any) => cb(mockDb)),
+        transaction: vi.fn().mockImplementation(async (cb: (db: unknown) => Promise<unknown>) => cb(mockDb)),
     };
 
     return { mockDb, queryMock, chainable };
@@ -54,9 +53,9 @@ import { mockSession } from '../helpers/mocks';
 describe('Presence Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
-        vi.mocked(requireAdmin).mockResolvedValue(undefined as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as never);
+        vi.mocked(requireAdmin).mockResolvedValue(undefined as never);
+        chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
     });
 
     describe('recordPresenceEvent', () => {
@@ -94,7 +93,7 @@ describe('Presence Actions', () => {
             const mockStats = [{ userId: 'u1', workSeconds: 3600, date: new Date() }];
             const mockCameras = [{ id: 'c1', name: 'Front Desk' }];
 
-            chainable.then.mockImplementationOnce((cb: any) => cb(mockLogs));
+            chainable.then.mockImplementationOnce((cb: (args: unknown[]) => void) => cb(mockLogs));
             queryMock.users.findMany.mockResolvedValueOnce(mockUsers);
             queryMock.dailyWorkStats.findMany.mockResolvedValueOnce(mockStats);
             queryMock.cameras.findMany.mockResolvedValueOnce(mockCameras);

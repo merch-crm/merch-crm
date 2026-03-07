@@ -19,7 +19,7 @@ const { mockDb, queryMock, chainable, mockEncrypt, mockDecrypt } = vi.hoisted(()
         returning: vi.fn().mockResolvedValue([]),
         values: vi.fn().mockReturnThis(),
         onConflictDoUpdate: vi.fn().mockReturnThis(),
-        then: vi.fn().mockImplementation((cb: any) => cb([])),
+        then: vi.fn().mockImplementation((cb: (args: unknown[]) => void) => cb([])),
     };
 
     const queryMock = {
@@ -61,9 +61,9 @@ describe('Xiaomi Actions', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as any);
-        vi.mocked(requireAdmin).mockResolvedValue(undefined as any);
-        chainable.then.mockImplementation((cb: any) => cb([]));
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as never);
+        vi.mocked(requireAdmin).mockResolvedValue(undefined as never);
+        chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
         global.fetch = vi.fn();
     });
 
