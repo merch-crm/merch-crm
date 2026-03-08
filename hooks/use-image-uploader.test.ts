@@ -9,7 +9,7 @@
  *   5. Отмена загрузки
  */
 
-import { renderHook, act, waitFor } from "@testing-library/react";
+import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useImageUploader } from "./use-image-uploader";
 
@@ -339,9 +339,8 @@ describe("useImageUploader", () => {
         currentXhrInstance.send = vi.fn();
 
         // Запускаем processFiles без await — он ждёт XHR
-        let processingPromise: Promise<unknown[]>;
         act(() => {
-            processingPromise = result.current.processFiles([makeFile("cancel.jpg", 100 * 1024)], 0);
+            result.current.processFiles([makeFile("cancel.jpg", 100 * 1024)], 0);
         });
 
         // Tick: дать хуку дойти до xhr.send
