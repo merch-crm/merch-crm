@@ -74,7 +74,7 @@ export function ItemPlacementWrapper({
                 <button
                     type="button"
                     onClick={() => setDialogs(prev => ({ ...prev, label: true }))}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-3.5 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-9 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
                 >
                     <Printer className="w-4 h-4 text-muted-foreground group-hover:text-violet-600 transition-colors" strokeWidth={2.5} />
                     <span className="text-[11px] font-bold tracking-wider text-foreground group-hover:text-violet-700 transition-colors">Печать QR</span>
@@ -83,7 +83,7 @@ export function ItemPlacementWrapper({
                 <button
                     type="button"
                     onClick={handleDownload}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-3.5 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-9 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
                 >
                     <Download className="w-4 h-4 text-muted-foreground group-hover:text-emerald-600 transition-colors" strokeWidth={2.5} />
                     <span className="text-[11px] font-bold tracking-wider text-foreground group-hover:text-emerald-700 transition-colors">Скачать</span>
@@ -92,7 +92,7 @@ export function ItemPlacementWrapper({
                 <button
                     type="button"
                     onClick={handleDelete}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-3.5 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
+                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-9 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
                 >
                     <Archive className="w-4 h-4 text-muted-foreground group-hover:text-rose-600 transition-colors" strokeWidth={2.5} />
                     <span className="text-[11px] font-bold tracking-wider text-foreground group-hover:text-rose-700 transition-colors">Архив</span>

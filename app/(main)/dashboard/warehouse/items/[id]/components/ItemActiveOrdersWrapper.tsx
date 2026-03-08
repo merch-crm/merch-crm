@@ -22,7 +22,7 @@ export function ItemActiveOrdersWrapper({
     if (activeOrders.length === 0 && reservedQuantity === 0 && tabletTab !== 'placement' && tabletTab !== 'characteristic') return null;
 
     return (
-        <div className={cn("md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-6 flex flex-col space-y-3",
+        <div className={cn("crm-card rounded-3xl p-4 sm:p-6 flex flex-col space-y-3",
             (tabletTab === 'placement' || tabletTab === 'characteristic') ? "flex" : "hidden", "xl:flex"
         )}>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">

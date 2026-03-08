@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback, useLayoutEffect } from "react";
-import { compressImage } from "@/lib/image-processing";
+import { useImageUploader } from "@/hooks/use-image-uploader";
 import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
+import { useToast } from "@/components/ui/toast";
 
 export interface UploadState {
     uploading: boolean;
@@ -14,9 +15,34 @@ interface UseMediaLogicProps {
 }
 
 export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) {
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [uploadStates, setUploadStates] = useState<Record<string, UploadState>>({});
+    const { toast } = useToast();
+    const { isProcessing, uploadStates: genericUploadStates, processFiles } = useImageUploader({
+        maxFiles: 7,
+        maxSizeMB: 1,
+        type: "image/webp",
+        maxWidth: 1920,
+        maxHeight: 1920,
+        maxOriginalSizeMB: 20
+    });
+
     const [loadingIndex, setLoadingIndex] = useState<number | null>(null);
+
+    // Map generic numerical upload states back to the legacy 'front' and 'details' keys for the UI
+    const uploadStates = useMemo(() => {
+        const states: Record<string, UploadState> = {};
+
+        // Find which index is currently uploading
+        const activeEntry = Object.entries(genericUploadStates).find(([_, state]) => state.uploading);
+        if (activeEntry) {
+            const idx = Number(activeEntry[0]);
+            if (loadingIndex === 0 || (!formData.imagePreview && idx === 0)) {
+                states.front = activeEntry[1];
+            } else {
+                states.details = activeEntry[1];
+            }
+        }
+        return states;
+    }, [genericUploadStates, loadingIndex, formData.imagePreview]);
 
     const [aspectRatio, setAspectRatio] = useState<number | null>(null);
     const [containerDims, setContainerDims] = useState<{ w: number, h: number } | null>(null);
@@ -107,108 +133,57 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
 
 
     // Upload Processing
-    const handleFileProcessing = async (file: File) => {
-        setIsProcessing(true);
-        try {
-            return await compressImage(file, {
-                maxSizeMB: 1,
-                type: "image/webp",
-                maxWidth: 1920,
-                maxHeight: 1920
-            });
-        } catch (error) {
-            console.error("Compression error:", error);
-            setIsProcessing(false);
-            return null;
-        }
-    };
-
-    const simulateUpload = (type: string, onComplete: () => void) => {
-        setUploadStates(prev => ({
-            ...prev,
-            [type]: { uploading: true, progress: 0, uploaded: false }
-        }));
-
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.floor(Math.random() * 30) + 20; // 20-50% steps
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                setUploadStates(prev => ({
-                    ...prev,
-                    [type]: { uploading: false, progress: 100, uploaded: true }
-                }));
-                // Don't call setIsProcessing(false) here, handleMultiImageUpload does it at the end
-                onComplete();
-            } else {
-                setUploadStates(prev => ({ ...prev, [type]: { ...prev[type], progress } }));
-            }
-        }, 80); // 80ms instead of 150ms
-    };
-
     // Unified Multi-Upload Processing
     const handleMultiImageUpload = async (files: FileList | null) => {
         if (!files || files.length === 0) return;
 
-        // Calculate how many more we can add (max total 7: 1 main + 6 details)
         const currentDetailsCount = formData.imageDetailsPreviews?.length || 0;
         const hasMain = !!formData.imagePreview;
-        const maxTotal = 7;
         const currentTotal = (hasMain ? 1 : 0) + currentDetailsCount;
-        const remainingSlots = maxTotal - currentTotal;
-
-        if (remainingSlots <= 0) return;
-
-        const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
         const localFiles = [...(formData.imageDetailsFiles || [])];
         const localPreviews = [...(formData.imageDetailsPreviews || [])];
         let localMainFile = formData.imageFile;
         let localMainPreview = formData.imagePreview;
 
-        setIsProcessing(true);
+        // Set the initial loading index
+        // Assume first processing file maps to the next available slot
+        const isInitialTargetingMain = !localMainPreview;
+        setLoadingIndex(isInitialTargetingMain ? 0 : localPreviews.length + 1);
 
-        for (let i = 0; i < filesToProcess.length; i++) {
-            const file = filesToProcess[i];
+        await processFiles(
+            files,
+            currentTotal,
+            (processed, _globalIndex) => {
+                const isTargetingMain = !localMainPreview;
 
-            // Re-read condition for targeting main at EACH step
-            const isTargetingMain = !localMainPreview;
-            const targetIdx = isTargetingMain ? 0 : localPreviews.length + 1; // Offset by 1 for Main
-            setLoadingIndex(targetIdx);
+                if (isTargetingMain) {
+                    localMainFile = processed.file;
+                    localMainPreview = processed.preview;
+                } else {
+                    localFiles.push(processed.file);
+                    localPreviews.push(processed.preview);
+                }
 
-            const processed = await handleFileProcessing(file);
-            if (processed) {
-                const type = isTargetingMain ? "front" : "details";
-                await new Promise<void>((resolve) => {
-                    simulateUpload(type, () => {
-                        if (isTargetingMain) {
-                            localMainFile = processed.file;
-                            localMainPreview = processed.preview;
-                        } else {
-                            localFiles.push(processed.file);
-                            localPreviews.push(processed.preview);
-                        }
-
-                        // Update UI IMMEDIATELY for this photo
-                        updateFormData({
-                            imageFile: localMainFile,
-                            imagePreview: localMainPreview,
-                            imageDetailsFiles: [...localFiles],
-                            imageDetailsPreviews: [...localPreviews],
-                            ...(isTargetingMain ? { thumbSettings: { zoom: 1, x: 0, y: 0 } } : {})
-                        });
-
-                        setLoadingIndex(null);
-                        resolve();
-                    });
+                // Update UI IMMEDIATELY for this photo
+                updateFormData({
+                    imageFile: localMainFile,
+                    imagePreview: localMainPreview,
+                    imageDetailsFiles: [...localFiles],
+                    imageDetailsPreviews: [...localPreviews],
+                    ...(isTargetingMain ? { thumbSettings: { zoom: 1, x: 0, y: 0 } } : {})
                 });
-            } else {
-                setLoadingIndex(null);
-            }
-        }
 
-        setIsProcessing(false);
+                // Set loading index for the *next* potential file
+                const isNextTargetingMain = !localMainPreview;
+                setLoadingIndex(isNextTargetingMain ? 0 : localPreviews.length + 1);
+            },
+            (errorMsg) => {
+                toast(errorMsg, "destructive");
+            }
+        );
+
+        setLoadingIndex(null);
     };
 
     // Main Methods
@@ -223,9 +198,11 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
     const handleDetailImageReplace = async (index: number, file: File | null) => {
         if (!file) return;
         setLoadingIndex(index + 1); // Offset by 1 for Main
-        const processed = await handleFileProcessing(file);
-        if (processed) {
-            simulateUpload("details", () => {
+
+        await processFiles(
+            [file],
+            index + 1,
+            (processed) => {
                 const newFiles = [...(formData.imageDetailsFiles || [])];
                 const newPreviews = [...(formData.imageDetailsPreviews || [])];
 
@@ -237,10 +214,14 @@ export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) 
 
                 updateFormData({ imageDetailsFiles: newFiles, imageDetailsPreviews: newPreviews });
                 setLoadingIndex(null);
-            });
-        } else {
-            setLoadingIndex(null);
-        }
+            },
+            (errorMsg) => {
+                toast(errorMsg, "destructive");
+                setLoadingIndex(null);
+            }
+        );
+
+        setLoadingIndex(null);
     };
 
     return {

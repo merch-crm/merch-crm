@@ -76,6 +76,17 @@ export function ItemDetailsMainContent() {
                     setTimeframe={setTimeframe}
                 />
 
+                <div className={
+                    cn("crm-card rounded-3xl p-4 sm:p-6 flex flex-col flex-1",
+                        tabletTab === 'characteristic' ? "flex" : "hidden", "xl:flex"
+                    )}>
+                    <ItemMediaSection
+                        item={item}
+                        isEditing={isEditing}
+                        onImageChange={handleImageUpdate}
+                        onImageRemove={handleImageRemove}
+                    />
+                </div>
             </div>
 
             {/* RIGHT COLUMN/SIDEBAR: Placement, Alerts */}
@@ -92,21 +103,7 @@ export function ItemDetailsMainContent() {
                         tabletTab === 'placement' ? "flex" : "hidden"
                     )}
                 />
-            </div>
 
-            <div className={
-                cn("md:col-span-2 xl:col-span-12 crm-card rounded-3xl p-4 sm:p-6 flex flex-col",
-                    tabletTab === 'characteristic' ? "flex" : "hidden", "xl:flex"
-                )}>
-                <ItemMediaSection
-                    item={item}
-                    isEditing={isEditing}
-                    onImageChange={handleImageUpdate}
-                    onImageRemove={handleImageRemove}
-                />
-            </div>
-
-            <div className="md:col-span-2 xl:col-span-12">
                 <ItemActiveOrdersWrapper
                     activeOrders={activeOrders}
                     reservedQuantity={reservedQuantity}
@@ -115,13 +112,11 @@ export function ItemDetailsMainContent() {
                 />
             </div>
 
-            <div className="md:col-span-2 xl:col-span-12">
-                <ItemHistoryWrapper
-                    history={history}
-                    onExport={handleExportHistory}
-                    tabletTab={tabletTab}
-                />
-            </div>
+            <ItemHistoryWrapper
+                history={history}
+                onExport={handleExportHistory}
+                tabletTab={tabletTab}
+            />
         </>
     );
 }

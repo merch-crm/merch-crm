@@ -1,120 +1,116 @@
 import { useState, useCallback, useMemo } from "react";
 import { useToast } from "@/components/ui/toast";
-import { compressImage } from "@/lib/image-processing";
 import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { useImageUploader } from "@/hooks/use-image-uploader";
 
 export function useItemImages(
     item: InventoryItem,
     setItem: React.Dispatch<React.SetStateAction<InventoryItem>>
 ) {
     const { toast } = useToast();
-    const [uploads, setUploads] = useState({
+
+    const { uploadStates, processFiles, cancelUpload } = useImageUploader({
+        folder: "items",
+        maxSizeMB: 1,
+        maxWidth: 1920,
+        maxHeight: 1920,
+        maxOriginalSizeMB: 20
+    });
+
+    // We keep a shadow state for local Files if needed, but for the detail page
+    // we primarily care about the URLs returned by the uploader to update the Item record.
+    const [localFiles, setLocalFiles] = useState({
         front: null as File | null,
         back: null as File | null,
         side: null as File | null,
         details: [] as File[],
-        states: {} as Record<string, { uploading: boolean, progress: number, uploaded: boolean }>
     });
 
-    const simulateUpload = useCallback((type: string, fileName: string, onComplete?: () => void) => {
-        setUploads(prev => ({
-            ...prev,
-            states: {
-                ...prev.states,
-                [type]: { uploading: true, progress: 0, uploaded: false }
-            }
-        }));
-
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += Math.floor(Math.random() * 20) + 10;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(interval);
-                setUploads(prev => ({
-                    ...prev,
-                    states: {
-                        ...prev.states,
-                        [type]: { uploading: false, progress: 100, uploaded: true }
-                    }
-                }));
-                toast(`Файл ${fileName} готов`, "success");
-                if (onComplete) onComplete();
-            } else {
-                setUploads(prev => ({
-                    ...prev,
-                    states: {
-                        ...prev.states,
-                        [type]: { ...prev.states[type], progress }
-                    }
-                }));
-            }
-        }, 300);
-    }, [toast]);
+    // Mapping slots to indices for useImageUploader
+    const getTypeIndex = (type: "front" | "back" | "side" | "details", index?: number) => {
+        if (type === "front") return 0;
+        if (type === "back") return 1;
+        if (type === "side") return 2;
+        if (type === "details") return 3 + (index ?? 0);
+        return 0;
+    };
 
     const handleImageUpdate = useCallback(async (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => {
         if (!file) return;
 
-        try {
-            const { file: compressedFile, preview } = await compressImage(file, {
-                maxWidth: 1920,
-                maxHeight: 1920,
-                maxSizeMB: 0.7
-            });
+        const globalIndex = getTypeIndex(type, index);
 
-            if (type === "details") {
-                const currentCount = (item.imageDetails?.length || 0);
-                const isAdding = typeof index !== 'number' || index >= currentCount;
+        await processFiles(
+            [file],
+            globalIndex,
+            (processed) => {
+                // Once uploaded to server, we get the URL in processed.preview
+                const url = processed.preview;
 
-                if (isAdding && currentCount >= 3) {
-                    toast("Максимальное количество дополнительных фото — 3", "error");
-                    return;
-                }
-
-                setUploads(prev => ({ ...prev, details: [...prev.details, compressedFile] }));
-
-                simulateUpload("details", compressedFile.name, () => {
-                    setItem(prev => {
-                        const newDetails = [...(prev.imageDetails || [])];
-                        if (typeof index === 'number' && index < 3) {
-                            while (newDetails.length <= index) newDetails.push("");
-                            newDetails[index] = preview;
-                        } else {
-                            newDetails.push(preview);
-                        }
-                        return { ...prev, imageDetails: newDetails.filter(Boolean) };
-                    });
-                });
-                return;
-            }
-
-            if (type === "front") setUploads(prev => ({ ...prev, front: compressedFile }));
-            else if (type === "back") setUploads(prev => ({ ...prev, back: compressedFile }));
-            else if (type === "side") setUploads(prev => ({ ...prev, side: compressedFile }));
-
-            simulateUpload(type, compressedFile.name, () => {
                 setItem(prev => {
-                    if (type === "front") return { ...prev, image: preview };
-                    if (type === "back") return { ...prev, imageBack: preview };
-                    if (type === "side") return { ...prev, imageSide: preview };
-                    return prev;
+                    const next = { ...prev };
+                    if (type === "front") next.image = url;
+                    else if (type === "back") next.imageBack = url;
+                    else if (type === "side") next.imageSide = url;
+                    else if (type === "details") {
+                        const newDetails = [...(prev.imageDetails || [])];
+                        if (typeof index === 'number') {
+                            while (newDetails.length <= index) newDetails.push("");
+                            newDetails[index] = url;
+                        } else {
+                            newDetails.push(url);
+                        }
+                        next.imageDetails = newDetails.filter(Boolean);
+                    }
+                    return next;
                 });
-            });
-        } catch (error) {
-            console.error("Compression failed:", error);
-            toast("Ошибка при обработке изображения", "error");
-        }
-    }, [item.imageDetails?.length, toast, setItem, simulateUpload]);
+
+                // Update local files just in case other logic needs the originals
+                setLocalFiles(prev => {
+                    const next = { ...prev };
+                    if (type === "front") next.front = processed.file;
+                    else if (type === "back") next.back = processed.file;
+                    else if (type === "side") next.side = processed.file;
+                    else if (type === "details") {
+                        const newFiles = [...prev.details];
+                        if (typeof index === 'number') {
+                            newFiles[index] = processed.file;
+                        } else {
+                            newFiles.push(processed.file);
+                        }
+                        next.details = newFiles;
+                    }
+                    return next;
+                });
+
+                toast(`Файл загружен`, "success");
+            },
+            (errorMsg) => {
+                toast(errorMsg, "destructive");
+            }
+        );
+    }, [setItem, processFiles, toast]);
 
     const handleImageRemove = useCallback((type: string, index?: number) => {
         if (type === "details" && typeof index === "number") {
-            const newDetails = [...(item.imageDetails || [])];
-            newDetails.splice(index, 1);
-            setItem(prev => ({ ...prev, imageDetails: newDetails }));
+            setItem(prev => {
+                const newDetails = [...(prev.imageDetails || [])];
+                newDetails.splice(index, 1);
+                return { ...prev, imageDetails: newDetails };
+            });
+            setLocalFiles(prev => {
+                const newFiles = [...prev.details];
+                newFiles.splice(index, 1);
+                return { ...prev, details: newFiles };
+            });
         } else {
-            setItem(prev => ({ ...prev, [type === "front" ? "image" : type === "back" ? "imageBack" : "imageSide"]: null }));
+            const field = type === "front" ? "image" : type === "back" ? "imageBack" : "imageSide";
+            setItem(prev => ({ ...prev, [field]: null }));
+
+            const localField = type === "front" ? "front" : type === "back" ? "back" : "side";
+            setLocalFiles(prev => ({ ...prev, [localField]: null }));
         }
-    }, [item.imageDetails, setItem]);
+    }, [setItem]);
 
     const handleSetMain = useCallback((type: "front" | "back" | "side" | "details", index?: number) => {
         const currentMain = item.image;
@@ -142,19 +138,23 @@ export function useItemImages(
     }, [item, setItem, toast]);
 
     const resetUploads = useCallback(() => {
-        setUploads(prev => ({ ...prev, front: null, back: null, side: null, details: [], states: {} }));
+        setLocalFiles({ front: null, back: null, side: null, details: [] });
     }, []);
 
     const isAnyUploading = useMemo(() =>
-        Object.values(uploads.states).some(s => s.uploading)
-        , [uploads.states]);
+        Object.values(uploadStates).some(s => s.uploading)
+        , [uploadStates]);
 
     return {
-        uploads,
+        uploads: {
+            ...localFiles,
+            states: uploadStates
+        },
         handleImageUpdate,
         handleImageRemove,
         handleSetMain,
         resetUploads,
-        isAnyUploading
+        isAnyUploading,
+        cancelUpload
     };
 }

@@ -31,10 +31,10 @@ export function ItemImagePreview({
     const currentSettings = thumbSettings || { zoom: 1, x: 0, y: 0 };
 
     return (
-        <div className="flex flex-col gap-3">
-            <div className="group relative w-full aspect-square crm-card rounded-3xl overflow-hidden">
+        <div className="flex flex-col gap-0 h-full">
+            <div className="group relative w-full h-full aspect-square xl:aspect-auto overflow-hidden rounded-[24px]">
                 <div role="button" tabIndex={0}
-                    className={cn("absolute inset-0 overflow-hidden",
+                    className={cn("absolute inset-0 overflow-hidden rounded-[24px]",
                         !item.image && "bg-muted/50",
                         isEditing ? "cursor-grab active:cursor-grabbing" : "cursor-pointer"
                     )}
@@ -48,12 +48,12 @@ export function ItemImagePreview({
                     onClick={() => !isEditing && item.image && openGallery(item.image)}
                 >
                     {item.image ? (
-                        <div className="absolute inset-0 rounded-3xl overflow-hidden">
+                        <div className="absolute inset-0 overflow-hidden">
                             <Image
                                 src={item.image}
                                 alt={item.name}
                                 fill
-                                className="object-contain transition-transform duration-500 ease-out select-none pointer-events-none"
+                                className="object-cover transition-transform duration-500 ease-out select-none pointer-events-none"
                                 unoptimized
                                 priority
                                 style={{

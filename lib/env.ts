@@ -17,7 +17,7 @@ const result = envSchema.safeParse(process.env);
 
 if (!result.success) {
     console.error("❌ Invalid environment variables:", JSON.stringify(result.error.format(), null, 2));
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "production" && process.env.SKIP_ENV_VALIDATION !== "true") {
         throw new Error("Invalid environment variables");
     }
 }

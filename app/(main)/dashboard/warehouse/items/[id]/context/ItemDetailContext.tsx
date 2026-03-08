@@ -24,7 +24,7 @@ import { useItemImages } from "../hooks/useItemImages";
 import { useItemDetailController, TabletTab } from "../hooks/useItemDetailController";
 import { useItemOperations } from "../hooks/useItemOperations";
 import { Session } from "@/lib/auth";
-import { type UploadState } from "../components/ItemMediaSection";
+import { UploadState } from "@/hooks/use-image-uploader";
 
 interface ItemDetailContextType {
     // Data
@@ -75,6 +75,7 @@ interface ItemDetailContextType {
     isAnyUploading: boolean;
     handleImageUpdate: (file: File | null, type: "front" | "back" | "side" | "details", index?: number) => void;
     handleImageRemove: (type: "front" | "back" | "side" | "details", index?: number) => void;
+    cancelUpload: (index: number) => void;
     handleSetMain: (type: "front" | "back" | "side" | "details", index?: number) => void;
 
     // Actions
@@ -177,7 +178,8 @@ export function ItemDetailProvider({
         handleImageUpdate,
         handleImageRemove,
         handleSetMain,
-        resetUploads
+        resetUploads,
+        cancelUpload
     } = useItemImages(item, setItem);
 
     const reservedQuantity = useMemo(() => activeOrders.reduce((acc, order) => acc + order.quantity, 0), [activeOrders]);
@@ -256,14 +258,14 @@ export function ItemDetailProvider({
         fetchData
     });
 
-    const value = useMemo(() => ({
+    const value = useMemo<ItemDetailContextType>(() => ({
         item, setItem, isEditing, setIsEditing, isSaving, editData, setEditData, hasChanges,
         history, stocks, stocksQuantity, activeOrders, reservedQuantity, displayUnit, dialogs, setDialogs,
         tabletTab, setTabletTab, timeframe, setTimeframe, adjustType, setAdjustType,
         isMounted, isOnline, thumbSettings, baseScale, maxBounds, handleMainMouseDown,
         setAspectRatio, updateThumb, resetThumbSettings, currentGalleryIndex, setCurrentGalleryIndex,
         isMainImageZoomed, setIsMainImageZoomed, allGalleryImages, openGallery, uploads,
-        isAnyUploading, handleImageUpdate, handleImageRemove, handleSetMain, fetchData,
+        isAnyUploading, handleImageUpdate, handleImageRemove, cancelUpload, handleSetMain, fetchData,
         handleSave, handleArchive, handleRestore, handleDelete, handleDownload,
         handleExportHistory, handleStartEdit, handleAttributeChange, handleRemoveAttribute,
         handleScan, handleCancelEdit, user, storageLocations, categories, attributeTypes,
@@ -275,7 +277,7 @@ export function ItemDetailProvider({
         isMounted, isOnline, thumbSettings, baseScale, maxBounds, handleMainMouseDown,
         setAspectRatio, updateThumb, resetThumbSettings, currentGalleryIndex,
         isMainImageZoomed, allGalleryImages, openGallery, uploads,
-        isAnyUploading, handleImageUpdate, handleImageRemove, handleSetMain, fetchData,
+        isAnyUploading, handleImageUpdate, handleImageRemove, cancelUpload, handleSetMain, fetchData,
         handleSave, handleArchive, handleRestore, handleDelete, handleDownload,
         handleExportHistory, handleStartEdit, handleAttributeChange, handleRemoveAttribute,
         handleScan, handleCancelEdit, user, storageLocations, categories, attributeTypes,

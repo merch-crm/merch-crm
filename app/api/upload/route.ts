@@ -32,15 +32,34 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const { file, folder = "uploads" } = await req.json();
+        const contentType = req.headers.get("content-type") || "";
+        let buffer: Buffer;
+        let folder = "uploads";
 
-        if (!file) {
-            return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 });
+        if (contentType.includes("multipart/form-data")) {
+            const formData = await req.formData();
+            const file = formData.get("file") as File;
+            const folderParam = formData.get("folder") as string;
+
+            if (!file) {
+                return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 });
+            }
+            if (folderParam) folder = folderParam;
+
+            const arrayBuffer = await file.arrayBuffer();
+            buffer = Buffer.from(arrayBuffer);
+        } else if (contentType.includes("application/json")) {
+            const data = await req.json();
+            if (!data.file) {
+                return NextResponse.json({ success: false, error: "No file provided" }, { status: 400 });
+            }
+            if (data.folder) folder = data.folder;
+
+            const base64Data = data.file.replace(/^data:.*?;base64,/, "");
+            buffer = Buffer.from(base64Data, 'base64');
+        } else {
+            return NextResponse.json({ success: false, error: "Unsupported content type" }, { status: 415 });
         }
-
-        // Обработка base64 (извлекаем данные, игнорируя заголовок data URI)
-        const base64Data = file.replace(/^data:.*?;base64,/, "");
-        const buffer = Buffer.from(base64Data, 'base64');
 
         // Валидация по magic bytes
         const ext = getExtensionFromMagicBytes(buffer);
@@ -57,16 +76,25 @@ export async function POST(req: NextRequest) {
         // Защита от path traversal
         const sanitizedFolder = folder.replace(/\.\./g, "").replace(/[^a-zA-Z0-9_-]/g, "");
 
-        // Путь для сохранения
-        const uploadDir = join(process.cwd(), "public", "uploads", sanitizedFolder);
-        await mkdir(uploadDir, { recursive: true });
+        // Determine save location. 
+        // Certain folders go to the root 'local-storage' directory, others to public/uploads
+        const isLocalStorage = ["avatars", "branding", "items", "sku"].includes(sanitizedFolder);
 
         const fileName = `${uuidv4()}.${ext}`;
-        const filePath = join(uploadDir, fileName);
+        let publicUrl = "";
 
-        await writeFile(filePath, buffer);
-
-        const publicUrl = `/uploads/${sanitizedFolder}/${fileName}`;
+        if (isLocalStorage) {
+            const { saveLocalFile } = await import("@/lib/local-storage");
+            const storagePath = `${sanitizedFolder}/${fileName}`;
+            await saveLocalFile(storagePath, buffer);
+            publicUrl = `/api/storage/local/${storagePath}`;
+        } else {
+            const uploadDir = join(process.cwd(), "public", "uploads", sanitizedFolder);
+            await mkdir(uploadDir, { recursive: true });
+            const filePath = join(uploadDir, fileName);
+            await writeFile(filePath, buffer);
+            publicUrl = `/uploads/${sanitizedFolder}/${fileName}`;
+        }
 
         return NextResponse.json({
             success: true,

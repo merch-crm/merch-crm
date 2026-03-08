@@ -7,7 +7,7 @@ import {
     X,
     LayoutGrid,
 } from "lucide-react";
-import { getColorHex } from "./item-ui-utils";
+import { getColorHex, getParamConfig } from "./item-ui-utils";
 import { CLOTHING_QUALITIES } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { Select } from "@/components/ui/select";
 import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
@@ -166,7 +166,7 @@ export const ItemGeneralInfo = React.memo(({
     return (
         <div className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-1000">
             {/* Characteristics Grid */}
-            <div className="grid grid-cols-2 gap-x-3 mt-4">
+            <div className="grid grid-cols-2 gap-3 mt-2">
                 {allParams.map((param) => {
                     const attrLabel = getAttrLabel(param.slug, param.code as string | number | null);
                     const hexColor = getColorHex(attrLabel);
@@ -178,20 +178,26 @@ export const ItemGeneralInfo = React.memo(({
                         <div
                             key={param.slug}
                             className={cn(
-                                "flex flex-col gap-1.5 py-3 group min-w-0"
+                                "flex flex-col gap-1.5 group min-w-0"
                             )}
                         >
-                            <span className="text-[11px] font-bold tracking-wider text-slate-400/70">
-                                {param.label}
-                            </span>
-                            <div className="flex items-center gap-2.5 min-w-0">
+                            {(() => {
+                                const { icon: ParamIcon } = getParamConfig(param.slug, hexColor, param.label, param.dataType);
+                                return (
+                                    <span className="flex items-center gap-1.5 text-xs font-bold text-[#8a99a8]">
+                                        <ParamIcon className="w-3 h-3 shrink-0" />
+                                        {param.label}
+                                    </span>
+                                );
+                            })()}
+                            <div className="flex items-center gap-2.5 min-w-0 mt-0.5">
                                 {param.slug === 'color' && hexColor && (
                                     <div
                                         className="w-4 h-4 rounded-full shrink-0 border border-slate-200 shadow-sm"
                                         style={{ backgroundColor: hexColor }}
                                     />
                                 )}
-                                <div className="text-base font-bold text-slate-900 truncate flex-1">
+                                <div className="text-[15px] font-bold text-slate-900 truncate flex-1">
                                     {isEditing ? (
                                         <Select
                                             value={(param.code as string) || ""}
@@ -245,12 +251,12 @@ export const ItemGeneralInfo = React.memo(({
                 {/* Add Characteristic Button in Edit Mode */}
                 {isEditing && (
                     <div className="flex flex-col gap-1.5 py-4 min-w-0">
-                        <span className="text-[11px] font-bold tracking-wider text-slate-400/70 mb-1">
+                        <span className="text-xs font-bold text-slate-400/70 mb-1">
                             Новое поле
                         </span>
                         <div className="relative h-11 w-full border-2 border-dashed border-slate-200 bg-slate-50/50 rounded-2xl hover:border-slate-300 hover:bg-slate-100/50 transition-all flex items-center justify-center overflow-hidden cursor-pointer group">
                             <Plus className="w-4 h-4 text-slate-400 mr-2" />
-                            <span className="text-[12px] font-bold text-slate-400">Добавить характеристику</span>
+                            <span className="text-xs font-bold text-slate-400">Добавить характеристику</span>
                             <Select
                                 value=""
                                 onChange={(slug) => {

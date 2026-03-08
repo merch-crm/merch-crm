@@ -29,7 +29,8 @@ COPY . .
 
 # Skip env validation during build
 ARG DATABASE_URL="postgresql://build:build@localhost:5432/build"
-ARG JWT_SECRET_KEY="super-secret-key-for-build-process-min-10-chars"
+ARG BUILD_JWT_SECRET="dummy-key-for-build-process-at-least-32-chars-long"
+ENV JWT_SECRET_KEY=$BUILD_JWT_SECRET
 ENV SKIP_ENV_VALIDATION="true"
 
 RUN npm run build

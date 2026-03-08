@@ -1,7 +1,7 @@
 import { useItemDetail } from "../context/ItemDetailContext";
 import { ItemGeneralInfo } from "./ItemGeneralInfo";
 import { ItemImagePreview } from "./ItemImagePreview";
-import { Book, LayoutGrid } from "lucide-react";
+import { Book } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -34,14 +34,14 @@ export function ItemCharacteristicSection({ className }: { className?: string })
 
     return (
         <div className={
-            cn("crm-card rounded-[32px] p-4 sm:p-6 bg-card flex flex-col",
+            cn("crm-card rounded-[32px] p-4 sm:p-6 bg-white flex flex-col",
                 tabletTab === 'characteristic' ? "flex" : "hidden", "xl:flex",
                 className
             )}>
 
-            <div className="flex flex-col xl:flex-row gap-3">
+            <div className="flex flex-col xl:flex-row gap-3 min-h-[400px]">
                 {/* IMAGE SECTION - Visible on all screens but styled differently */}
-                <div className="w-full xl:w-[40%] xl:min-w-[280px] shrink-0 space-y-3">
+                <div className="w-full xl:w-[40%] xl:min-w-[280px] shrink-0 xl:border-r border-slate-100 flex flex-col relative h-[300px] xl:h-auto pr-0 xl:pr-3">
                     <ItemImagePreview
                         item={item}
                         isEditing={isEditing}
@@ -96,10 +96,7 @@ export function ItemCharacteristicSection({ className }: { className?: string })
                 <div className="flex-1 flex flex-col min-w-0">
                     <div className="flex items-center justify-between gap-3 mb-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
-                                <LayoutGrid className="w-5 h-5" />
-                            </div>
-                            <h3 className="text-lg font-black text-slate-900">Характеристики</h3>
+                            <h3 className="text-xl font-bold text-slate-900">Характеристики</h3>
                         </div>
 
                         {isEditing && (
@@ -133,8 +130,9 @@ export function ItemCharacteristicSection({ className }: { className?: string })
 
                         {/* DESCRIPTION BLOCK */}
                         {(item.description || isEditing) && (
-                            <div className="mt-4 pt-4">
-                                <h4 className="text-[11px] font-black tracking-wider text-slate-400 mb-3">
+                            <div className="mt-2">
+                                <hr className="my-6 border-slate-100" />
+                                <h4 className="text-xs font-bold text-slate-400 mb-3">
                                     Описание
                                 </h4>
                                 {isEditing ? (

@@ -90,11 +90,12 @@ export async function updateProfile(formData: FormData) {
 
     const validated = ProfileSchema.safeParse(rawData);
     if (!validated.success) {
-        return { success: false, error: "Некорректные данные:" + validated.error.issues[0].message };
+        return { success: false, error: "Некорректные данные: " + validated.error.issues[0].message };
     }
 
     const { name, phone, telegram, instagram, socialMax, birthday } = validated.data;
     const avatarFile = formData.get("avatar") as File | null;
+    const avatarUrl = formData.get("avatarUrl") as string | null;
 
     try {
         const updateData: Partial<typeof users.$inferInsert> = {
@@ -107,6 +108,7 @@ export async function updateProfile(formData: FormData) {
             updatedAt: new Date()
         };
 
+        // Option 1: File provided (legacy/direct)
         if (avatarFile && avatarFile.size > 0) {
             const currentUser = await db.query.users.findFirst({
                 where: eq(users.id, session.id),
@@ -116,6 +118,10 @@ export async function updateProfile(formData: FormData) {
             const buffer = Buffer.from(await avatarFile.arrayBuffer());
             const displayName = name || session.name || "user";
             updateData.avatar = await saveAvatarFile(buffer, session.id, displayName, currentUser?.avatar || null);
+        }
+        // Option 2: Server URL provided (from advanced uploader)
+        else if (avatarUrl) {
+            updateData.avatar = avatarUrl;
         }
 
         await db.transaction(async (tx) => {

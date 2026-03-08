@@ -1,8 +1,10 @@
-import { useState, useEffect } from"react";
-import { useRouter } from"next/navigation";
-import { updateBrandingSettings, uploadBrandingFile } from"../actions";
-import { BrandingSettingsSchema } from"../../validation";
-import { playSound, setGlobalSoundConfig } from"@/lib/sounds";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { updateBrandingSettings } from "../actions";
+import { BrandingSettingsSchema } from "../../validation";
+import { playSound, setGlobalSoundConfig } from "@/lib/sounds";
+import { useImageUploader } from "@/hooks/use-image-uploader";
+import { useToast } from "@/components/ui/toast";
 
 export interface BrandingSettings {
     companyName: string;
@@ -49,7 +51,7 @@ export interface BrandingUiState {
     };
     modal: {
         open: boolean;
-        type:"success" |"error";
+        type: "success" | "error";
         title: string;
         message: string;
         showRefresh: boolean;
@@ -58,10 +60,11 @@ export interface BrandingUiState {
 
 export function useBrandingForm(initialSettings: BrandingSettings) {
     const router = useRouter();
+    const { toast } = useToast();
     const [ui, setUi] = useState<BrandingUiState>({
         isLoading: false,
-        activeTab:"main",
-        activeSoundTab:"notifications",
+        activeTab: "main",
+        activeSoundTab: "notifications",
         uploads: {
             logo: false,
             favicon: false,
@@ -72,14 +75,18 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         },
         modal: {
             open: false,
-            type:"success",
-            title:"",
-            message:"",
+            type: "success",
+            title: "",
+            message: "",
             showRefresh: false
         }
     });
 
     const [formData, setFormData] = useState<BrandingSettings>(initialSettings);
+
+    const { uploadStates, processFiles, cancelUpload } = useImageUploader({
+        maxOriginalSizeMB: 15, // branding assets can be large backgrounds
+    });
 
     // Sync sound config to global state for preview
     useEffect(() => {
@@ -88,7 +95,7 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         }
     }, [formData.soundConfig]);
 
-    const showModal = (type:"success" |"error", title: string, message: string, showRefresh = false) => {
+    const showModal = (type: "success" | "error", title: string, message: string, showRefresh = false) => {
         setUi(prev => ({
             ...prev,
             modal: { open: true, type, title, message, showRefresh }
@@ -108,7 +115,7 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         const validation = BrandingSettingsSchema.safeParse(formData);
         if (!validation.success) {
             const errorMessage = validation.error.issues[0].message;
-            showModal("error","Ошибка валидации", errorMessage);
+            showModal("error", "Ошибка валидации", errorMessage);
             playSound("notification_error");
             return;
         }
@@ -118,10 +125,10 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         const result = await updateBrandingSettings(validation.data as BrandingSettings);
 
         if (result.error) {
-            showModal("error","Ошибка", result.error);
+            showModal("error", "Ошибка", result.error);
             playSound("notification_error");
         } else {
-            showModal("success","Успешно","Настройки сохранены! Обновите страницу для применения изменений.", true);
+            showModal("success", "Успешно", "Настройки сохранены! Обновите страницу для применения изменений.", true);
             playSound("notification_success");
             router.refresh();
         }
@@ -129,75 +136,50 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         setUi(prev => ({ ...prev, isLoading: false }));
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type:"logo" |"favicon" |"background" |"print_logo" |"sound" |"crm_background" |"email_logo", soundKey?: string) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "favicon" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        const uploadKeyMap: Record<string, keyof BrandingUiState['uploads']> = {
-            logo:"logo",
-            favicon:"favicon",
-            background:"background",
-            print_logo:"printLogo",
-            crm_background:"crmBg",
-            email_logo:"emailLogo"
+        // Map internal types to uploader folders and settings keys
+        const configMap: Record<string, { folder: string, field: keyof BrandingSettings, maxSize?: number }> = {
+            logo: { folder: "branding", field: "logoUrl", maxSize: 2 },
+            favicon: { folder: "branding", field: "faviconUrl", maxSize: 1 },
+            background: { folder: "branding", field: "loginBackgroundUrl", maxSize: 10 },
+            print_logo: { folder: "branding", field: "printLogoUrl", maxSize: 5 },
+            crm_background: { folder: "branding", field: "crmBackgroundUrl", maxSize: 10 },
+            email_logo: { folder: "branding", field: "emailLogoUrl", maxSize: 2 },
+            sound: { folder: "sounds", field: "notificationSound", maxSize: 5 }
         };
 
-        const uploadKey = uploadKeyMap[type];
-        if (uploadKey) {
-            setUi(prev => ({ ...prev, uploads: { ...prev.uploads, [uploadKey]: true } }));
-        }
+        const config = configMap[type];
+        if (!config) return;
 
-        const uploadData = new FormData();
-        uploadData.append("file", file);
-        uploadData.append("type", type);
-        if (soundKey) uploadData.append("soundKey", soundKey);
-
-        try {
-            const result = await uploadBrandingFile(uploadData);
-            if (result.success && result.url) {
-                const urlWithVersion = `${result.url}?v=${Date.now()}`;
-
-                if (type ==="sound" && soundKey) {
-                    const newConfig = { ...formData.soundConfig };
-                    const current = newConfig[soundKey] || { enabled: true, vibration: true };
-                    newConfig[soundKey] = { ...current, customUrl: urlWithVersion };
-                    setFormData(prev => ({
-                        ...prev,
-                        soundConfig: newConfig
-                    }));
-                } else {
-                    const keyMap: Record<string, keyof BrandingSettings> = {
-                        logo:"logoUrl",
-                        favicon:"faviconUrl",
-                        background:"loginBackgroundUrl",
-                        print_logo:"printLogoUrl",
-                        crm_background:"crmBackgroundUrl",
-                        email_logo:"emailLogoUrl",
-                        sound:"notificationSound"
-                    };
-                    const field = keyMap[type];
-                    if (field) {
-                        setFormData(prev => ({
-                            ...prev,
-                            [field]: urlWithVersion
-                        }));
-                    }
-                }
-                playSound("notification_success");
-            } else if (result.error) {
-                showModal("error","Ошибка загрузки", result.error);
-                playSound("notification_error");
+        const onFileProcessed = (res: { preview: string }) => {
+            if (type === "sound" && soundKey) {
+                const newConfig = { ...formData.soundConfig };
+                const current = newConfig[soundKey] || { enabled: true, vibration: true };
+                newConfig[soundKey] = { ...current, customUrl: res.preview };
+                setFormData(prev => ({ ...prev, soundConfig: newConfig }));
+            } else {
+                setFormData(prev => ({ ...prev, [config.field]: res.preview }));
             }
-        } catch (error) {
-            console.error("Upload error:", error);
-            showModal("error","Ошибка","Ошибка при загрузке файла");
+            playSound("notification_success");
+        };
+
+        const onError = (msg: string) => {
+            toast(msg, "destructive");
             playSound("notification_error");
-        } finally {
-            if (uploadKey) {
-                setUi(prev => ({ ...prev, uploads: { ...prev.uploads, [uploadKey]: false } }));
-            }
-            e.target.value ="";
-        }
+        };
+
+        // We use processFiles which handles the whole flow
+        await processFiles(
+            [file],
+            0,
+            onFileProcessed,
+            onError
+        );
+
+        e.target.value = "";
     };
 
     return {
@@ -207,6 +189,8 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         setFormData,
         handleSubmit,
         handleFileUpload,
+        cancelUpload,
+        uploadStates,
         closeModal
     };
 }
