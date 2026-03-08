@@ -12,7 +12,7 @@ vi.mock('./task-details-dialog', () => ({
     TaskDetailsDialog: ({ task, onClose }: { task: { title: string }; onClose: () => void }) => (
         <div data-testid="task-dialog">
             {task.title}
-            <button onClick={onClose}>Close</button>
+            <button type="button" onClick={onClose}>Close</button>
         </div>
     )
 }));

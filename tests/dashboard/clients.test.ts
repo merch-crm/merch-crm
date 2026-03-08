@@ -45,8 +45,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { type Session } from '@/lib/auth';
-import { getSession } from '@/lib/auth';
+import { getSession, type Session } from '@/lib/auth';
 import { db } from '@/lib/db';
 import {
     getManagers,

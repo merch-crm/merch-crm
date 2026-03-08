@@ -87,8 +87,7 @@ vi.mock('@/lib/admin', () => ({
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
-import { type Session } from '@/lib/auth';
-import { getSession } from '@/lib/auth';
+import { getSession, type Session } from '@/lib/auth';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';
 
