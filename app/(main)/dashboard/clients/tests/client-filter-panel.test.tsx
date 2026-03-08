@@ -1,6 +1,6 @@
 import { render, screen, within, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ClientFilterPanel } from './client-filter-panel'
+import { ClientFilterPanel } from '../components/client-filter-panel'
 import { ClientUiState } from "../hooks/use-clients-state";
 import { ClientFilters } from "../actions";
 import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'

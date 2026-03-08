@@ -44,7 +44,7 @@ describe('Select', () => {
     it('filters options when searching', async () => {
         const manyOptions = Array.from({ length: 20 }, (_, i) => ({
             id: `${i}`,
-            title: `Элемент ${i}`
+            title: "Элемент " + i
         }));
 
         render(<Select options={manyOptions} value="" onChange={() => { }} showSearch={true} />);

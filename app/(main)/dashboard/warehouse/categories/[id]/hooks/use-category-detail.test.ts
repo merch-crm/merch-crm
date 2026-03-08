@@ -2,11 +2,11 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import { useCategoryDetail } from './use-category-detail';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getInventoryCategories, deleteInventoryCategory } from '../../../category-actions';
-import { deleteInventoryItems } from '../../../bulk-actions';
-import { getItemStocks } from '../../../stock-actions';
+import { getInventoryCategories, deleteInventoryCategory } from '@/app/(main)/dashboard/warehouse/category-actions';
+import { deleteInventoryItems } from '@/app/(main)/dashboard/warehouse/bulk-actions';
+import { getItemStocks } from '@/app/(main)/dashboard/warehouse/stock-actions';
 import { useBreadcrumbs } from '@/components/layout/breadcrumbs-context';
-import type { Category, InventoryItem } from '../../../types';
+import type { Category, InventoryItem } from '@/app/(main)/dashboard/warehouse/types';
 
 // Mocks
 vi.mock('next/navigation', () => ({
@@ -26,17 +26,17 @@ vi.mock('@/components/layout/breadcrumbs-context', () => ({
     useBreadcrumbs: vi.fn(),
 }));
 
-vi.mock('../../../bulk-actions', () => ({
+vi.mock('@/app/(main)/dashboard/warehouse/bulk-actions', () => ({
     deleteInventoryItems: vi.fn(),
     archiveInventoryItems: vi.fn(),
 }));
 
-vi.mock('../../../category-actions', () => ({
+vi.mock('@/app/(main)/dashboard/warehouse/category-actions', () => ({
     getInventoryCategories: vi.fn(),
     deleteInventoryCategory: vi.fn(),
 }));
 
-vi.mock('../../../stock-actions', () => ({
+vi.mock('@/app/(main)/dashboard/warehouse/stock-actions', () => ({
     getItemStocks: vi.fn(),
 }));
 
@@ -72,8 +72,8 @@ describe('useCategoryDetail', () => {
     it('sets breadcrumbs on mount', () => {
         renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
         expect(mockSetCustomTrail).toHaveBeenCalledWith([
-            { label:"Склад", href:"/dashboard/warehouse" },
-            { label:"Одежда", href:"/dashboard/warehouse/categories/cat-1" }
+            { label: "Склад", href: "/dashboard/warehouse" },
+            { label: "Одежда", href: "/dashboard/warehouse/categories/cat-1" }
         ]);
     });
 
@@ -111,7 +111,7 @@ describe('useCategoryDetail', () => {
         const { result } = renderHook(() => useCategoryDetail(mockCategory, undefined, STABLE_EMPTY_ARRAY, mockItems));
 
         act(() => {
-            result.current.setFilters(prev => ({ ...prev, search:"test" }));
+            result.current.setFilters(prev => ({ ...prev, search: "test" }));
         });
 
         // Effect runs to update URL

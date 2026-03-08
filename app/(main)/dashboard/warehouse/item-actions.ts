@@ -20,7 +20,7 @@ import { type ActionResult } from "@/lib/types";
 import { InventoryItemSchema, InventoryFiltersSchema } from "./validation";
 import { getSession } from "@/lib/auth";
 import { getCategoryPath, saveFile } from "./actions-utils";
-import { sanitizeFileName } from "./shared-utils";
+import { sanitizeFileName, sanitize } from "./shared-utils";
 
 /**
  * Get inventory items with filtering and pagination
@@ -352,7 +352,6 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
             return { success: false, error: "Недостаточно прав для изменения товаров" };
         }
 
-        const sanitize = (str: string) => (str || "").replace(/<[^>]*>/g, '').trim();
 
         const validation = InventoryItemSchema.safeParse(Object.fromEntries(formData));
         if (!validation.success) {
