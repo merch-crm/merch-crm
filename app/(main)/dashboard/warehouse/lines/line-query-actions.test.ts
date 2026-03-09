@@ -40,8 +40,8 @@ describe("Line Query Actions", () => {
             });
 
             try {
-                const { getProductLines } = await import("./line-query-actions");
-                const result = await getProductLines({ categoryId: VALID_CATEGORY_ID });
+                const { getLinesByCategory } = await import("./line-query-actions");
+                const result = await getLinesByCategory(VALID_CATEGORY_ID);
                 expect(result.success).toBe(true);
                 expect(Array.isArray(result.data)).toBe(true);
             } catch {
@@ -58,8 +58,8 @@ describe("Line Query Actions", () => {
             });
 
             try {
-                const { getProductLines } = await import("./line-query-actions");
-                const result = await getProductLines({ categoryId: VALID_CATEGORY_ID });
+                const { getLinesByCategory } = await import("./line-query-actions");
+                const result = await getLinesByCategory(VALID_CATEGORY_ID);
                 expect(result.success).toBe(false);
             } catch {
                 expect(true).toBe(true);

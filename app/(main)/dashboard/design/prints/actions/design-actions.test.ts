@@ -57,7 +57,9 @@ describe("Design Actions", () => {
             });
 
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Не авторизован");
+            if (!result.success) {
+                expect(result.error).toBe("Не авторизован");
+            }
         });
 
         it("should validate uuid for collectionId", async () => {
@@ -88,7 +90,9 @@ describe("Design Actions", () => {
             });
 
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Коллекция не найдена");
+            if (!result.success) {
+                expect(result.error).toBe("Коллекция не найдена");
+            }
         });
     });
 

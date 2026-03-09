@@ -51,21 +51,23 @@ describe("Version Actions", () => {
         it("should return error if not authorized", async () => {
             (getSession as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-            const { createVersion } = await import("./version-actions");
-            const result = await createVersion({
+            const { createDesignVersion } = await import("./version-actions");
+            const result = await createDesignVersion({
                 designId: VALID_DESIGN_ID,
                 name: "v1.0",
             });
 
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Не авторизован");
+            if (!result.success) {
+                expect(result.error).toBe("Не авторизован");
+            }
         });
 
         it("should validate input with zod", async () => {
             (getSession as ReturnType<typeof vi.fn>).mockResolvedValue({ id: "user-1" });
 
-            const { createVersion } = await import("./version-actions");
-            const result = await createVersion({
+            const { createDesignVersion } = await import("./version-actions");
+            const result = await createDesignVersion({
                 designId: "not-a-uuid",
                 name: "",
             });
@@ -82,8 +84,8 @@ describe("Version Actions", () => {
                 limit: vi.fn().mockResolvedValue([]),
             });
 
-            const { createVersion } = await import("./version-actions");
-            const result = await createVersion({
+            const { createDesignVersion } = await import("./version-actions");
+            const result = await createDesignVersion({
                 designId: VALID_DESIGN_ID,
                 name: "v1.0",
             });
@@ -96,8 +98,8 @@ describe("Version Actions", () => {
         it("should return error if not authorized", async () => {
             (getSession as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-            const { updateVersion } = await import("./version-actions");
-            const result = await updateVersion(VALID_VERSION_ID, { name: "v2.0" });
+            const { updateDesignVersion } = await import("./version-actions");
+            const result = await updateDesignVersion(VALID_VERSION_ID, { name: "v2.0" });
 
             expect(result.success).toBe(false);
         });
@@ -107,8 +109,8 @@ describe("Version Actions", () => {
         it("should return error if not authorized", async () => {
             (getSession as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-            const { deleteVersion } = await import("./version-actions");
-            const result = await deleteVersion(VALID_VERSION_ID);
+            const { deleteDesignVersion } = await import("./version-actions");
+            const result = await deleteDesignVersion(VALID_VERSION_ID);
 
             expect(result.success).toBe(false);
         });

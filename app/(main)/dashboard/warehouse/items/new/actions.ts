@@ -446,5 +446,6 @@ export async function addPositionsToExistingLine(lineId: string, positions: Posi
     }
 }
 
-// Re-export query functions (moved to actions-queries.ts to keep this file size manageable)
-export { getLatestSkus, getBaseLinesForCategory, getPrintsForSelection } from "./actions-queries";
+// Re-export query functions (imported first to ensure compatibility with "use server")
+import { getLatestSkus, getBaseLinesForCategory, getPrintsForSelection } from "./actions-queries";
+export { getLatestSkus, getBaseLinesForCategory, getPrintsForSelection };

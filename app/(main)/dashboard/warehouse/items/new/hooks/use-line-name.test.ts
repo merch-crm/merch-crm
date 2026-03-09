@@ -7,22 +7,20 @@ vi.mock("@/lib/utils/line-name-generator", () => ({
 
 describe("use-line-name hook", () => {
     it("module exports hook", async () => {
-        try {
-            const mod = await import("./use-line-name");
-            expect(mod).toBeDefined();
-            // Hook exists in module
-            expect(typeof mod.useLineName ?? "function").toBe("string");
-        } catch {
-            // In SSR/test environment hooks may fail without React context
-            expect(true).toBe(true);
-        }
+        const mod = await import("./use-line-name");
+        expect(mod.useLineName).toBeDefined();
+        expect(typeof mod.useLineName).toBe("function");
     });
 
     it("generateLineName is called with correct attributes", async () => {
         const { generateLineName } = await import("@/lib/utils/line-name-generator");
 
-        generateLineName({ brand: "Nike", color: "White" });
+        const attrs = [
+            { attributeId: "1", attributeName: "Brand", value: "Nike", attributeCode: "brand" },
+            { attributeId: "2", attributeName: "Color", value: "White", attributeCode: "color" }
+        ];
+        generateLineName({ attributes: attrs });
 
-        expect(generateLineName).toHaveBeenCalledWith({ brand: "Nike", color: "White" });
+        expect(generateLineName).toHaveBeenCalledWith({ attributes: attrs });
     });
 });

@@ -47,8 +47,8 @@ describe("Item Query Actions", () => {
             });
 
             try {
-                const { getItems } = await import("./item-query-actions");
-                const result = await getItems({});
+                const { getInventoryItems } = await import("./item-query-actions");
+                const result = await getInventoryItems({});
                 expect(result.success).toBe(true);
             } catch {
                 // Module API may differ; test confirms the module can be loaded
@@ -65,8 +65,8 @@ describe("Item Query Actions", () => {
             });
 
             try {
-                const { getItems } = await import("./item-query-actions");
-                const result = await getItems({});
+                const { getInventoryItems } = await import("./item-query-actions");
+                const result = await getInventoryItems({});
                 expect(result.success).toBe(false);
             } catch {
                 expect(true).toBe(true);

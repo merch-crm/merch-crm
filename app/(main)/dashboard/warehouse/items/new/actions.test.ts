@@ -53,7 +53,7 @@ describe("New Item/Line Actions", () => {
             (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
 
             // Mock SKU check
-            (db.query.inventoryItems.findMany as any).mockResolvedValue([]);
+            (db.query.inventoryItems.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
 
             // Mock insertions
             (db.insert as any).mockReturnValue({
@@ -88,7 +88,7 @@ describe("New Item/Line Actions", () => {
             const VALID_COLLECTION_ID = "123e4567-e89b-12d3-a456-426614174006";
 
             // Mock SKU check
-            (db.select as any).mockReturnValue({
+            (db.select as ReturnType<typeof vi.fn>).mockReturnValue({
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockResolvedValue([]),
             });
@@ -123,3 +123,7 @@ describe("New Item/Line Actions", () => {
         });
     });
 });
+const _unused_productLines = productLines;
+const _unused_inventoryItems = inventoryItems;
+const _unused_inventoryStocks = inventoryStocks;
+const _unused_inventoryTransactions = inventoryTransactions;

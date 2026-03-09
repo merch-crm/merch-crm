@@ -73,7 +73,7 @@ describe("Product Line Mutation Actions", () => {
 
             // Mock insertion with returning()
             const mockLine = { id: VALID_LINE_ID, name: "Base Line", type: "base" };
-            (db.insert as any).mockReturnValue({
+            (db.insert as ReturnType<typeof vi.fn>).mockReturnValue({
                 values: vi.fn().mockReturnThis(),
                 returning: vi.fn().mockResolvedValue([mockLine])
             });

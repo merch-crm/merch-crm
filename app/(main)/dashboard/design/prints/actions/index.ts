@@ -1,17 +1,38 @@
-"use server";
-
-export * from"./collection-actions";
-export * from"./design-actions";
-export * from"./version-actions";
-export * from"./file-actions";
-
-// Алиасы для обратной совместимости
 export {
- createDesignVersion as createVersion,
- updateDesignVersion as updateVersion,
- deleteDesignVersion as deleteVersion
-} from"./version-actions";
+    getCollections,
+    createCollection,
+    updateCollection,
+    deleteCollection,
+    getCollectionById,
+    updateCollectionsOrder
+} from "./collection-actions";
 
 export {
- deleteDesignFile as deleteFile
-} from"./file-actions";
+    getDesignsByCollection,
+    getDesignById,
+    createDesign,
+    updateDesign,
+    deleteDesign,
+    setDesignPreview,
+    updateDesignsOrder,
+    getPrintsStats
+} from "./design-actions";
+
+export {
+    createDesignVersion,
+    updateDesignVersion,
+    deleteDesignVersion,
+    updateVersionsOrder,
+    // Алиасы для обратной совместимости
+    createDesignVersion as createVersion,
+    updateDesignVersion as updateVersion,
+    deleteDesignVersion as deleteVersion
+} from "./version-actions";
+
+export {
+    uploadFile,
+    deleteDesignFile,
+    getFilesByVersion,
+    // Алиасы для обратной совместимости
+    deleteDesignFile as deleteFile
+} from "./file-actions";
