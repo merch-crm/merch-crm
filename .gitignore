@@ -60,3 +60,4 @@ debug-warehouse.png
 *.png
 !e2e/ui/visual-regression.spec.ts-snapshots/*.png
 playwright/.auth/
+TECHNICAL_PASS.md
