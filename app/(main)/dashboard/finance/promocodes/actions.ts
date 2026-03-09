@@ -55,6 +55,15 @@ export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
+        const ordersSq = db
+            .select({
+                promocodeId: orders.promocodeId,
+                sqTotalSaved: sql<number>`SUM(CAST(${orders.discountAmount} AS DECIMAL))`.as("sq_total_saved"),
+            })
+            .from(orders)
+            .groupBy(orders.promocodeId)
+            .as("orders_sq");
+
         const data = await db.select({
             id: promocodes.id,
             name: promocodes.name,
@@ -68,9 +77,10 @@ export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
             adminComment: promocodes.adminComment,
             minOrderAmount: promocodes.minOrderAmount,
             createdAt: promocodes.createdAt,
-            totalSaved: sql<number>`COALESCE((SELECT SUM(CAST(discount_amount AS DECIMAL)) FROM ${orders} WHERE promocode_id = ${promocodes.id}), 0)`
+            totalSaved: sql<number>`coalesce(${ordersSq.sqTotalSaved}, 0)::float`
         })
             .from(promocodes)
+            .leftJoin(ordersSq, eq(promocodes.id, ordersSq.promocodeId))
             .orderBy(desc(promocodes.createdAt))
             .limit(100);
 

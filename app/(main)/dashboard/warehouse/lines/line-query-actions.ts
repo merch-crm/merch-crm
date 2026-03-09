@@ -45,6 +45,17 @@ export async function getLinesByCategory(
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
+        const statsSq = db
+            .select({
+                productLineId: inventoryItems.productLineId,
+                sqPositionsCount: sql<number>`count(*)::int`.as("sq_positions_count"),
+                sqTotalStock: sql<number>`coalesce(sum(${inventoryItems.quantity}), 0)::int`.as("sq_total_stock"),
+            })
+            .from(inventoryItems)
+            .where(eq(inventoryItems.isArchived, false))
+            .groupBy(inventoryItems.productLineId)
+            .as("stats");
+
         const baseQuery = db
             .select({
                 id: productLines.id,
@@ -62,20 +73,11 @@ export async function getLinesByCategory(
                 createdBy: productLines.createdBy,
                 createdAt: productLines.createdAt,
                 updatedAt: productLines.updatedAt,
-                positionsCount: sql<number>`(
-                    SELECT COUNT(*)::int 
-                    FROM ${inventoryItems} 
-                    WHERE ${inventoryItems.productLineId} = ${productLines.id}
-                    AND ${inventoryItems.isArchived} = false
-                )`,
-                totalStock: sql<number>`(
-                    SELECT COALESCE(SUM(${inventoryItems.quantity}), 0)::int 
-                    FROM ${inventoryItems} 
-                    WHERE ${inventoryItems.productLineId} = ${productLines.id}
-                    AND ${inventoryItems.isArchived} = false
-                )`,
+                positionsCount: sql<number>`coalesce(${statsSq.sqPositionsCount}, 0)`,
+                totalStock: sql<number>`coalesce(${statsSq.sqTotalStock}, 0)`,
             })
             .from(productLines)
+            .leftJoin(statsSq, eq(productLines.id, statsSq.productLineId))
             .where(
                 type && type !== "all"
                     ? and(
@@ -111,7 +113,7 @@ export async function getLinesByCategory(
                 : undefined,
         }));
 
-        return { success: true, data: linesWithCollections };
+        return { success: true, data: linesWithCollections as ProductLineWithStats[] };
     } catch (error) {
         await logError({
             error,
@@ -210,6 +212,17 @@ export async function getBaseLines(categoryId?: string): Promise<{ success: bool
                 eq(productLines.isActive, true)
             );
 
+        const statsSq = db
+            .select({
+                productLineId: inventoryItems.productLineId,
+                sqPositionsCount: sql<number>`count(*)::int`.as("sq_positions_count"),
+                sqTotalStock: sql<number>`coalesce(sum(${inventoryItems.quantity}), 0)::int`.as("sq_total_stock"),
+            })
+            .from(inventoryItems)
+            .where(eq(inventoryItems.isArchived, false))
+            .groupBy(inventoryItems.productLineId)
+            .as("stats");
+
         const lines = await db
             .select({
                 id: productLines.id,
@@ -227,20 +240,11 @@ export async function getBaseLines(categoryId?: string): Promise<{ success: bool
                 createdBy: productLines.createdBy,
                 createdAt: productLines.createdAt,
                 updatedAt: productLines.updatedAt,
-                positionsCount: sql<number>`(
-                    SELECT COUNT(*)::int 
-                    FROM ${inventoryItems} 
-                    WHERE ${inventoryItems.productLineId} = ${productLines.id}
-                    AND ${inventoryItems.isArchived} = false
-                )`,
-                totalStock: sql<number>`(
-                    SELECT COALESCE(SUM(${inventoryItems.quantity}), 0)::int 
-                    FROM ${inventoryItems} 
-                    WHERE ${inventoryItems.productLineId} = ${productLines.id}
-                    AND ${inventoryItems.isArchived} = false
-                )`,
+                positionsCount: sql<number>`coalesce(${statsSq.sqPositionsCount}, 0)`,
+                totalStock: sql<number>`coalesce(${statsSq.sqTotalStock}, 0)`,
             })
             .from(productLines)
+            .leftJoin(statsSq, eq(productLines.id, statsSq.productLineId))
             .where(whereClause)
             .orderBy(asc(productLines.name));
 
@@ -264,6 +268,17 @@ export async function getAllLines(): Promise<{ success: boolean; data?: ProductL
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
+        const statsSq = db
+            .select({
+                productLineId: inventoryItems.productLineId,
+                sqPositionsCount: sql<number>`count(*)::int`.as("sq_positions_count"),
+                sqTotalStock: sql<number>`coalesce(sum(${inventoryItems.quantity}), 0)::int`.as("sq_total_stock"),
+            })
+            .from(inventoryItems)
+            .where(eq(inventoryItems.isArchived, false))
+            .groupBy(inventoryItems.productLineId)
+            .as("stats");
+
         const lines = await db
             .select({
                 id: productLines.id,
@@ -281,20 +296,11 @@ export async function getAllLines(): Promise<{ success: boolean; data?: ProductL
                 createdBy: productLines.createdBy,
                 createdAt: productLines.createdAt,
                 updatedAt: productLines.updatedAt,
-                positionsCount: sql<number>`(
-                    SELECT COUNT(*)::int 
-                    FROM ${inventoryItems} 
-                    WHERE ${inventoryItems.productLineId} = ${productLines.id}
-                    AND ${inventoryItems.isArchived} = false
-                )`,
-                totalStock: sql<number>`(
-                    SELECT COALESCE(SUM(${inventoryItems.quantity}), 0)::int 
-                    FROM ${inventoryItems} 
-                    WHERE ${inventoryItems.productLineId} = ${productLines.id}
-                    AND ${inventoryItems.isArchived} = false
-                )`,
+                positionsCount: sql<number>`coalesce(${statsSq.sqPositionsCount}, 0)`,
+                totalStock: sql<number>`coalesce(${statsSq.sqTotalStock}, 0)`,
             })
             .from(productLines)
+            .leftJoin(statsSq, eq(productLines.id, statsSq.productLineId))
             .where(eq(productLines.isActive, true))
             .orderBy(asc(productLines.sortOrder), asc(productLines.name));
 

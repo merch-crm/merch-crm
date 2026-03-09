@@ -229,7 +229,7 @@ export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>>
                 lastActivityAt: sql<Date | null>`(
                     SELECT MAX(created_at)
                     FROM inventory_transactions
-                    WHERE item_id = ${inventoryItems.id}
+                    WHERE inventory_transactions.item_id = ${inventoryItems.id}
                 )`,
             })
                 .from(inventoryItems)
@@ -237,14 +237,14 @@ export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>>
                     eq(inventoryItems.isArchived, false),
                     sql`NOT EXISTS (
                         SELECT 1 FROM inventory_transactions
-                        WHERE item_id = ${inventoryItems.id}
-                        AND created_at >= ${thirtyDaysAgo}
+                        WHERE inventory_transactions.item_id = ${inventoryItems.id}
+                        AND inventory_transactions.created_at >= ${thirtyDaysAgo}
                     )`
                 ))
                 .orderBy(sql`(
                     SELECT MAX(created_at)
                     FROM inventory_transactions
-                    WHERE item_id = ${inventoryItems.id}
+                    WHERE inventory_transactions.item_id = ${inventoryItems.id}
                 ) ASC NULLS FIRST`)
                 .limit(50)
         ]);

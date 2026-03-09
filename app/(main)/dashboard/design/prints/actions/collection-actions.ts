@@ -36,6 +36,24 @@ export async function getCollections(search?: string): Promise<ActionResult<Coll
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
+        const designsSq = db
+            .select({
+                collectionId: printDesigns.collectionId,
+                designsCount: sql<number>`count(*)::int`.as("sq_designs_count"),
+            })
+            .from(printDesigns)
+            .groupBy(printDesigns.collectionId)
+            .as("designs_sq");
+
+        const linesSq = db
+            .select({
+                printCollectionId: productLines.printCollectionId,
+                linesCount: sql<number>`count(*)::int`.as("sq_lines_count"),
+            })
+            .from(productLines)
+            .groupBy(productLines.printCollectionId)
+            .as("lines_sq");
+
         const baseQuery = db
             .select({
                 id: printCollections.id,
@@ -48,18 +66,12 @@ export async function getCollections(search?: string): Promise<ActionResult<Coll
                 createdAt: printCollections.createdAt,
                 updatedAt: printCollections.updatedAt,
                 slug: printCollections.slug,
-                designsCount: sql<number>`(
- SELECT COUNT(*)::int 
- FROM ${printDesigns} 
- WHERE ${printDesigns.collectionId} = ${printCollections.id}
-)`,
-                linkedLinesCount: sql<number>`(
- SELECT COUNT(*)::int 
- FROM ${productLines} 
- WHERE ${productLines.printCollectionId} = ${printCollections.id}
-)`,
+                designsCount: sql<number>`coalesce(${designsSq.designsCount}, 0)`,
+                linkedLinesCount: sql<number>`coalesce(${linesSq.linesCount}, 0)`,
             })
-            .from(printCollections);
+            .from(printCollections)
+            .leftJoin(designsSq, eq(printCollections.id, designsSq.collectionId))
+            .leftJoin(linesSq, eq(printCollections.id, linesSq.printCollectionId));
 
         const collections = search
             ? await baseQuery

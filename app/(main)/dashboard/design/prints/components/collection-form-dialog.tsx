@@ -27,8 +27,8 @@ import { toast } from "sonner";
 import { createCollection, updateCollection } from "../actions/index";
 
 const formSchema = z.object({
-    name: z.string().min(1, "Название обязательно").max(255),
-    description: z.string().max(1000).optional(),
+    name: z.string().min(1, "Название обязательно").max(100, "Максимум 100 символов"),
+    description: z.string().max(500, "Максимум 500 символов").optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -124,7 +124,12 @@ export function CollectionFormDialog({
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                            console.error("Form Validation Errors:", errors);
+                        })}
+                        className="space-y-3"
+                    >
                         <FormField
                             control={form.control}
                             name="name"

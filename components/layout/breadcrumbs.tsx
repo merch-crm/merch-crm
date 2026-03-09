@@ -13,6 +13,8 @@ const routeLabels: Record<string, string> = {
     items: "Товары",
     production: "Производство",
     design: "Дизайн",
+    prints: "Принты",
+    queue: "Очередь",
     tasks: "Задачи",
     finance: "Финансы",
     "knowledge-base": "База знаний",
