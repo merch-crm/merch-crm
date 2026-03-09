@@ -12,32 +12,9 @@ const routeLabels: Record<string, string> = {
     categories: "Категории",
     items: "Товары",
     production: "Производство",
-    design: "Дизайн",
-    prints: "Принты",
-    queue: "Очередь",
-    tasks: "Задачи",
-    finance: "Финансы",
-    "knowledge-base": "База знаний",
-    admin: "Администрирование",
-    branding: "Внешний вид",
-    users: "Сотрудники",
-    roles: "Роли",
-    departments: "Отделы",
-    promocodes: "Промокоды",
-    monitoring: "Мониторинг",
-    storage: "Места хранения",
-    characteristics: "Характеристики",
-    history: "История",
-    archive: "Архив",
-    new: "Создание",
-    profile: "Профиль",
-    salary: "Зарплата",
-    funds: "Фонды",
-    transactions: "Транзакции",
-    expenses: "Расходы",
-    pl: "P&L отчет",
     sales: "Продажи",
     overview: "Обзор",
+    prints: "Принты",
 };
 
 export function Breadcrumbs() {
@@ -59,7 +36,7 @@ export function Breadcrumbs() {
         .map((path, index) => {
             let href = `/${paths.slice(0, index + 2).join("/")}`;
             if (path === 'warehouse') href = "/dashboard/warehouse/overview";
-            const label = labels.get(path) || routeLabels[path] || path;
+            const label = labels.get(path) || routeLabels[path.toLowerCase()] || path;
             const isLast = index === paths.length - 2;
             return { href, label, isLast, path };
         })

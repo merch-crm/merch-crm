@@ -3,7 +3,20 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
 const { mockSelect, mockInsert, mockUpdate, mockDelete } = vi.hoisted(() => {
-    const mockSelect = vi.fn();
+    const mockQuery = {
+        from: vi.fn().mockReturnThis(),
+        leftJoin: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockReturnThis(),
+        as: vi.fn().mockReturnThis(),
+        then: vi.fn(function (this: any, resolve) {
+            return Promise.resolve(this._results || []).then(resolve);
+        }),
+    };
+
+    const mockSelect = vi.fn(() => mockQuery);
     const mockInsert = vi.fn(() => ({
         values: vi.fn(() => ({
             returning: vi.fn(() => Promise.resolve([{ id: 'new-id' }]))
@@ -19,7 +32,7 @@ const { mockSelect, mockInsert, mockUpdate, mockDelete } = vi.hoisted(() => {
     const mockDelete = vi.fn(() => ({
         where: vi.fn(() => Promise.resolve({ success: true }))
     }));
-    return { mockSelect, mockInsert, mockUpdate, mockDelete };
+    return { mockSelect, mockInsert, mockUpdate, mockDelete, mockQuery };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
@@ -75,23 +88,17 @@ describe("Collection Actions", () => {
         it("should return empty array when no collections", async () => {
             vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleName: "Администратор" }));
 
-            const queryMock = {
-                from: vi.fn().mockReturnThis(),
-                where: vi.fn().mockReturnThis(),
-                orderBy: vi.fn().mockResolvedValue([]),
-                then: vi.fn((onFullfilled) => Promise.resolve([]).then(onFullfilled)),
-            };
-
-            mockSelect.mockReturnValue(queryMock);
+            // @ts-ignore
+            mockSelect()._results = [];
+            // We need to mock the implementation of orderBy to return a Promise for await
+            vi.spyOn(mockSelect(), 'orderBy').mockImplementation(() => Promise.resolve([]) as any);
 
             const result = await getCollections();
-
-            if (result.success) {
-                expect(result.data).toEqual([]);
-            } else {
-                console.error("Result error:", result.error);
-                throw new Error("Expected success");
+            if (!result.success) {
+                console.error("DEBUG: getCollections failure:", result.error);
+                throw new Error("Expected success but got error: " + result.error);
             }
+            expect(result.data).toEqual([]);
         });
 
         it("should return error if session is missing", async () => {

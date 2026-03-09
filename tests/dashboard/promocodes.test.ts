@@ -4,14 +4,26 @@ import { mockSession } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockSelect, mockTx } = vi.hoisted(() => {
-    const mockSelect = vi.fn();
+const { mockSelect, mockTx, mockQuery } = vi.hoisted(() => {
+    const mockQuery = {
+        from: vi.fn().mockReturnThis(),
+        leftJoin: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockReturnThis(),
+        as: vi.fn().mockReturnThis(),
+        then: vi.fn(function (this: any, resolve) {
+            return Promise.resolve(this._results || []).then(resolve);
+        }),
+    };
+    const mockSelect = vi.fn(() => mockQuery);
     const mockTx = {
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) }),
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
     };
-    return { mockSelect, mockTx };
+    return { mockSelect, mockTx, mockQuery };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
@@ -67,27 +79,23 @@ describe('getPromocodes', () => {
 
     it('возвращает список промокодов', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const promos = [{ id: 'p1', code: 'SUMMER10', discountType: 'percentage', value: '10' }];
-        mockSelect.mockReturnValue({
-            from: vi.fn().mockReturnValue({
-                orderBy: vi.fn().mockReturnValue({
-                    limit: vi.fn().mockResolvedValue(promos),
-                }),
-            }),
-        });
+        const promos = [{ id: 'p1', code: 'SUMMER10', discountType: 'percentage', value: 10 }];
+
+        // @ts-ignore
+        mockSelect()._results = promos;
+
         const result = await getPromocodes();
+        if (!result.success) {
+            console.error("DEBUG: getPromocodes failure:", result.error);
+        }
         expect(result).toEqual({ success: true, data: promos });
     });
 
     it('возвращает ошибку при сбое БД', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        mockSelect.mockReturnValue({
-            from: vi.fn().mockReturnValue({
-                orderBy: vi.fn().mockReturnValue({
-                    limit: vi.fn().mockRejectedValue(new Error('DB error')),
-                }),
-            }),
-        });
+        // @ts-ignore
+        vi.spyOn(mockSelect(), 'orderBy').mockImplementation(() => Promise.reject(new Error('DB error')));
+
         const result = await getPromocodes();
         expect(result.success).toBe(false);
     });
