@@ -50,24 +50,22 @@ describe('useAddAttributeType', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as any);
-        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as any);
+        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as never);
+        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as never);
 
         const mockSearchParams = new URLSearchParams();
-        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
+        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as never);
     });
 
     it('initializes with default values', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
         expect(result.current.dataTypes).toEqual([]);
         expect(result.current.activeCategoryId).toBe('cat1'); // Default to first category
         expect(result.current.isOpen).toBe(false);
     });
 
     it('dataTypes updates automatically when toggleDataType changes', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
 
         act(() => {
             result.current.toggleDataType('color');
@@ -77,8 +75,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleOpen resets state properly', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
 
         act(() => {
             result.current.toggleDataType('dimensions');
@@ -95,8 +92,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate fails without any dataTypes selected', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
 
         await act(async () => {
             await result.current.handleCreate();
@@ -109,8 +105,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate succeeds and calls router.refresh()', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
 
         act(() => {
             result.current.toggleDataType('material');
@@ -142,7 +137,7 @@ describe('useAddAttributeType', () => {
         vi.mocked(createInventoryAttributeType).mockReset();
         vi.mocked(createInventoryAttributeType).mockResolvedValue({ success: false, error: 'Database error' });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
 
         act(() => {
             result.current.toggleDataType('text');

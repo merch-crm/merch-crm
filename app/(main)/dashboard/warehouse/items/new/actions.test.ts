@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { productLines, inventoryItems, inventoryStocks, inventoryTransactions } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
+import { mockSession } from "@/tests/helpers/mocks";
 
 // Mock the dependencies
 vi.mock("@/lib/db", () => ({
@@ -50,7 +51,7 @@ describe("New Item/Line Actions", () => {
 
     describe("createBaseLineWithPositions", () => {
         it("should create base line and items successfully", async () => {
-            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
+            vi.mocked(getSession).mockResolvedValue(mockSession({ id: VALID_USER_ID }));
 
             // Mock SKU check
             (db.query.inventoryItems.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
@@ -58,7 +59,7 @@ describe("New Item/Line Actions", () => {
             // Mock insertions
             vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockResolvedValue({}),
-            } as any);
+            } as never);
 
             const result = await createBaseLineWithPositions({
                 line: {
@@ -82,7 +83,7 @@ describe("New Item/Line Actions", () => {
 
     describe("createFinishedLineWithPositions", () => {
         it("should create finished line with items in transaction", async () => {
-            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
+            vi.mocked(getSession).mockResolvedValue(mockSession({ id: VALID_USER_ID }));
 
             const VALID_PRINT_ID = "123e4567-e89b-12d3-a456-426614174005";
             const VALID_COLLECTION_ID = "123e4567-e89b-12d3-a456-426614174006";
@@ -97,7 +98,7 @@ describe("New Item/Line Actions", () => {
             vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockReturnThis(),
                 returning: vi.fn().mockResolvedValue([{ id: "item-1" }, { id: "item-2" }]),
-            } as any);
+            } as never);
 
             const result = await createFinishedLineWithPositions({
                 categoryId: VALID_CATEGORY_ID,

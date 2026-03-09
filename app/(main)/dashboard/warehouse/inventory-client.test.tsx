@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { InventoryClient } from './inventory-client';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { Category } from '@/lib/types';
+import type { Category } from './types';
 
 // Mocks
 const mockPush = vi.fn();
@@ -51,26 +51,25 @@ describe('InventoryClient', () => {
     });
 
     it('renders top-level categories correctly', () => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        render(<InventoryClient categories={mockCategories as any} user={null} />);
+        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
         expect(screen.getByText('Одежда')).toBeInTheDocument();
         expect(screen.getByText('Сувениры')).toBeInTheDocument();
     });
 
     it('navigates to category detail on click', async () => {
-        render(<InventoryClient categories={mockCategories as any} user={null} />);
+        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
         fireEvent.click(screen.getByText('Одежда'));
         expect(mockPush).toHaveBeenCalledWith('/dashboard/warehouse/categories/1');
     });
 
     it('shows subcategories for a category', () => {
-        render(<InventoryClient categories={mockCategories as any} user={null} />);
+        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
         expect(screen.getByText('Футболки')).toBeInTheDocument();
         expect(screen.getByText('Худи')).toBeInTheDocument();
     });
 
     it('opens edit dialog when clicking pencil icon', async () => {
-        const { container } = render(<InventoryClient categories={mockCategories as any} user={null} />);
+        const { container } = render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
 
         // Find the pencil icon and its parent button
         const pencilIcon = container.querySelector('.lucide-pencil');
@@ -90,7 +89,7 @@ describe('InventoryClient', () => {
     });
 
     it('shows description if no subcategories', () => {
-        render(<InventoryClient categories={mockCategories as any} user={null} />);
+        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
         expect(screen.getByText('Разные сувениры')).toBeInTheDocument();
     });
 });
