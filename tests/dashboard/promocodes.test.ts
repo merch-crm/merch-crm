@@ -81,7 +81,7 @@ describe('getPromocodes', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const promos = [{ id: 'p1', code: 'SUMMER10', discountType: 'percentage', value: 10 }];
 
-        // @ts-ignore
+        // @ts-expect-error
         mockSelect()._results = promos;
 
         const result = await getPromocodes();
@@ -93,7 +93,7 @@ describe('getPromocodes', () => {
 
     it('возвращает ошибку при сбое БД', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        // @ts-ignore
+        // @ts-expect-error
         vi.spyOn(mockSelect(), 'orderBy').mockImplementation(() => Promise.reject(new Error('DB error')));
 
         const result = await getPromocodes();

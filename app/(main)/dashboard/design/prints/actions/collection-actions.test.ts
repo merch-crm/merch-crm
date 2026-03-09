@@ -88,7 +88,7 @@ describe("Collection Actions", () => {
         it("should return empty array when no collections", async () => {
             vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleName: "Администратор" }));
 
-            // @ts-ignore
+            // @ts-expect-error
             mockSelect()._results = [];
             // We need to mock the implementation of orderBy to return a Promise for await
             vi.spyOn(mockSelect(), 'orderBy').mockImplementation(() => Promise.resolve([]) as any);
