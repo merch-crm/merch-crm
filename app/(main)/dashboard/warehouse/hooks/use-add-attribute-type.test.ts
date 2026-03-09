@@ -50,14 +50,15 @@ describe('useAddAttributeType', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        (useRouter as ReturnType<typeof vi.fn>).mockReturnValue({ refresh: mockRefresh });
-        (useToast as ReturnType<typeof vi.fn>).mockReturnValue({ toast: mockToast });
+        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as any);
+        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as any);
 
         const mockSearchParams = new URLSearchParams();
-        (useSearchParams as ReturnType<typeof vi.fn>).mockReturnValue(mockSearchParams);
+        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
     });
 
     it('initializes with default values', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
         expect(result.current.dataTypes).toEqual([]);
         expect(result.current.activeCategoryId).toBe('cat1'); // Default to first category
@@ -65,6 +66,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('dataTypes updates automatically when toggleDataType changes', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {
@@ -75,6 +77,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleOpen resets state properly', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {
@@ -92,6 +95,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate fails without any dataTypes selected', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         await act(async () => {
@@ -105,6 +109,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate succeeds and calls router.refresh()', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {

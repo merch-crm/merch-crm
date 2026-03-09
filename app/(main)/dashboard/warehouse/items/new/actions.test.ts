@@ -50,15 +50,15 @@ describe("New Item/Line Actions", () => {
 
     describe("createBaseLineWithPositions", () => {
         it("should create base line and items successfully", async () => {
-            (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
+            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
 
             // Mock SKU check
             (db.query.inventoryItems.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([]);
 
             // Mock insertions
-            (db.insert as any).mockReturnValue({
+            vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockResolvedValue({}),
-            });
+            } as any);
 
             const result = await createBaseLineWithPositions({
                 line: {
@@ -82,7 +82,7 @@ describe("New Item/Line Actions", () => {
 
     describe("createFinishedLineWithPositions", () => {
         it("should create finished line with items in transaction", async () => {
-            (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
+            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
 
             const VALID_PRINT_ID = "123e4567-e89b-12d3-a456-426614174005";
             const VALID_COLLECTION_ID = "123e4567-e89b-12d3-a456-426614174006";
@@ -94,10 +94,10 @@ describe("New Item/Line Actions", () => {
             });
 
             // Mock insertions with returning
-            (db.insert as any).mockReturnValue({
+            vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockReturnThis(),
                 returning: vi.fn().mockResolvedValue([{ id: "item-1" }, { id: "item-2" }]),
-            });
+            } as any);
 
             const result = await createFinishedLineWithPositions({
                 categoryId: VALID_CATEGORY_ID,

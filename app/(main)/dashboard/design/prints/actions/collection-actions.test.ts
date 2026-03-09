@@ -61,6 +61,7 @@ vi.mock("@/lib/utils", () => ({
 
 import { getCollections, createCollection } from "./collection-actions";
 import { getSession } from "@/lib/auth";
+import { mockSession } from "@/tests/helpers/mocks";
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
@@ -72,7 +73,7 @@ describe("Collection Actions", () => {
 
     describe("getCollections", () => {
         it("should return empty array when no collections", async () => {
-            vi.mocked(getSession).mockResolvedValue({ id: "user-1", roleName: "Администратор" });
+            vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleName: "Администратор" }));
 
             const queryMock = {
                 from: vi.fn().mockReturnThis(),
@@ -88,7 +89,7 @@ describe("Collection Actions", () => {
             if (result.success) {
                 expect(result.data).toEqual([]);
             } else {
-                console.error("Result error:", (result as any).error);
+                console.error("Result error:", result.error);
                 throw new Error("Expected success");
             }
         });
@@ -117,7 +118,7 @@ describe("Collection Actions", () => {
         });
 
         it("should validate input with zod", async () => {
-            vi.mocked(getSession).mockResolvedValue({ id: "user-1", roleName: "Дизайнер" });
+            vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleName: "Дизайнер" }));
 
             const result = await createCollection({ name: "" });
 

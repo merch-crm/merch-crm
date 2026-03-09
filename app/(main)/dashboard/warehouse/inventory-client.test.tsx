@@ -51,6 +51,7 @@ describe('InventoryClient', () => {
     });
 
     it('renders top-level categories correctly', () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         render(<InventoryClient categories={mockCategories as any} user={null} />);
         expect(screen.getByText('Одежда')).toBeInTheDocument();
         expect(screen.getByText('Сувениры')).toBeInTheDocument();

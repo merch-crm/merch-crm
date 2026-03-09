@@ -49,7 +49,7 @@ describe("Product Line Mutation Actions", () => {
 
     describe("createProductLine", () => {
         it("should return error if not authorized", async () => {
-            (getSession as any).mockResolvedValue(null);
+            vi.mocked(getSession).mockResolvedValue(null);
 
             const result = await createProductLine({
                 name: "Test Line",
@@ -62,14 +62,14 @@ describe("Product Line Mutation Actions", () => {
         });
 
         it("should create a base product line successfully", async () => {
-            (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
+            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
 
             // Mock category check
-            (db.select as any).mockReturnValue({
+            vi.mocked(db.select).mockReturnValue({
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([{ id: VALID_CATEGORY_ID }])
-            });
+            } as any);
 
             // Mock insertion with returning()
             const mockLine = { id: VALID_LINE_ID, name: "Base Line", type: "base" };
@@ -92,13 +92,13 @@ describe("Product Line Mutation Actions", () => {
         });
 
         it("should return error if category not found", async () => {
-            (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
+            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
 
-            (db.select as any).mockReturnValue({
+            vi.mocked(db.select).mockReturnValue({
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([])
-            });
+            } as any);
 
             const result = await createProductLine({
                 name: "Test Line",
@@ -111,7 +111,7 @@ describe("Product Line Mutation Actions", () => {
         });
 
         it("should require print collection for finished lines", async () => {
-            (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
+            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
 
             const result = await createProductLine({
                 name: "Finished Line",
@@ -124,21 +124,21 @@ describe("Product Line Mutation Actions", () => {
         });
 
         it("should check for collection existence for finished lines", async () => {
-            (getSession as any).mockResolvedValue({ id: VALID_USER_ID });
+            vi.mocked(getSession).mockResolvedValue({ id: VALID_USER_ID } as any);
 
             // Mock category check (success)
-            (db.select as any).mockReturnValueOnce({
+            vi.mocked(db.select).mockReturnValueOnce({
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([{ id: VALID_CATEGORY_ID }])
-            });
+            } as any);
 
             // Mock collection check (failure)
-            (db.select as any).mockReturnValueOnce({
+            vi.mocked(db.select).mockReturnValueOnce({
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([])
-            });
+            } as any);
 
             const result = await createProductLine({
                 name: "Finished Line",
