@@ -4,7 +4,7 @@ import { mockSession } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockSelect, mockTx, mockQuery } = vi.hoisted(() => {
+const { mockSelect, mockTx } = vi.hoisted(() => {
     const mockQuery = {
         from: vi.fn().mockReturnThis(),
         leftJoin: vi.fn().mockReturnThis(),
@@ -23,7 +23,7 @@ const { mockSelect, mockTx, mockQuery } = vi.hoisted(() => {
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
     };
-    return { mockSelect, mockTx, mockQuery };
+    return { mockSelect, mockTx };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
@@ -81,7 +81,7 @@ describe('getPromocodes', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const promos = [{ id: 'p1', code: 'SUMMER10', discountType: 'percentage', value: 10 }];
 
-        // @ts-expect-error
+        // @ts-expect-error -- mockQuery._results is a test-only property not in the type
         mockSelect()._results = promos;
 
         const result = await getPromocodes();
@@ -93,8 +93,7 @@ describe('getPromocodes', () => {
 
     it('возвращает ошибку при сбое БД', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        // @ts-expect-error
-        vi.spyOn(mockSelect(), 'orderBy').mockImplementation(() => Promise.reject(new Error('DB error')));
+        vi.spyOn(mockSelect(), 'orderBy').mockImplementation(() => Promise.reject(new Error('DB error')) as never);
 
         const result = await getPromocodes();
         expect(result.success).toBe(false);
