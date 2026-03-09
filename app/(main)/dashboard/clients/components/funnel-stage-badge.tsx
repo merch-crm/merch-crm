@@ -10,7 +10,7 @@ import {
     Crown,
     AlertTriangle,
 } from "lucide-react";
-import type { FunnelStage } from "@/lib/schema/clients";
+import type { FunnelStage } from "@/lib/schema";
 
 interface FunnelStageBadgeProps {
     stage: FunnelStage | string | null;

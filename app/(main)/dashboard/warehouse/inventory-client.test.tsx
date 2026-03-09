@@ -38,12 +38,12 @@ vi.mock('./edit-category-dialog', () => ({
     },
 }));
 
-const mockCategories: Category[] = [
-    { id: '1', name: 'Одежда', totalQuantity: 100, color: 'blue', parentId: null, sortOrder: 1, itemCount: 10, icon: null, description: null } as Category,
-    { id: '2', name: 'Футболки', totalQuantity: 60, parentId: '1', sortOrder: 1, itemCount: 5, icon: null, description: null, color: null } as Category,
-    { id: '3', name: 'Худи', totalQuantity: 40, parentId: '1', sortOrder: 2, itemCount: 5, icon: null, description: null, color: null } as Category,
-    { id: '4', name: 'Сувениры', totalQuantity: 20, parentId: null, sortOrder: 2, description: 'Разные сувениры', icon: null, color: null } as Category,
-];
+const mockCategories = [
+    { id: '1', name: 'Одежда', totalQuantity: 100, color: 'blue', parentId: null, sortOrder: 1, itemCount: 10, icon: null, description: null },
+    { id: '2', name: 'Футболки', totalQuantity: 60, color: null, parentId: '1', sortOrder: 1, itemCount: 5, icon: null, description: null },
+    { id: '3', name: 'Худи', totalQuantity: 40, color: null, parentId: '1', sortOrder: 2, itemCount: 5, icon: null, description: null },
+    { id: '4', name: 'Сувениры', totalQuantity: 20, color: null, parentId: null, sortOrder: 2, itemCount: 0, icon: null, description: 'Разные сувениры' },
+] as Category[];
 
 describe('InventoryClient', () => {
     beforeEach(() => {
@@ -51,25 +51,25 @@ describe('InventoryClient', () => {
     });
 
     it('renders top-level categories correctly', () => {
-        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
+        render(<InventoryClient categories={mockCategories} user={null} />);
         expect(screen.getByText('Одежда')).toBeInTheDocument();
         expect(screen.getByText('Сувениры')).toBeInTheDocument();
     });
 
     it('navigates to category detail on click', async () => {
-        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
+        render(<InventoryClient categories={mockCategories} user={null} />);
         fireEvent.click(screen.getByText('Одежда'));
         expect(mockPush).toHaveBeenCalledWith('/dashboard/warehouse/categories/1');
     });
 
     it('shows subcategories for a category', () => {
-        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
+        render(<InventoryClient categories={mockCategories} user={null} />);
         expect(screen.getByText('Футболки')).toBeInTheDocument();
         expect(screen.getByText('Худи')).toBeInTheDocument();
     });
 
     it('opens edit dialog when clicking pencil icon', async () => {
-        const { container } = render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
+        const { container } = render(<InventoryClient categories={mockCategories} user={null} />);
 
         // Find the pencil icon and its parent button
         const pencilIcon = container.querySelector('.lucide-pencil');
@@ -89,7 +89,7 @@ describe('InventoryClient', () => {
     });
 
     it('shows description if no subcategories', () => {
-        render(<InventoryClient categories={mockCategories as unknown as Category[]} user={null} />);
+        render(<InventoryClient categories={mockCategories} user={null} />);
         expect(screen.getByText('Разные сувениры')).toBeInTheDocument();
     });
 });

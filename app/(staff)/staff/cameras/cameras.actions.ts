@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { xiaomiAccounts, cameras, workstations } from '@/lib/schema/presence'
+import { xiaomiAccounts, cameras, workstations } from '@/lib/schema'
 import { systemSettings } from '@/lib/schema/system'
 import { eq, desc, inArray } from 'drizzle-orm'
 import { getSession } from '@/lib/session'

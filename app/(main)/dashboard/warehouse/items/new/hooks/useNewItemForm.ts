@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { ItemFormData, Category } from "@/app/(main)/dashboard/warehouse/types";
 
 export const DEFAULT_FORM_DATA: ItemFormData = {
@@ -28,8 +28,8 @@ export const DEFAULT_FORM_DATA: ItemFormData = {
     quantity: "0",
     criticalStockThreshold: "0",
     lowStockThreshold: "10",
-    costPrice: "0",
-    sellingPrice: "0",
+    costPrice: "",
+    sellingPrice: "",
     responsibleUserId: "",
     attributes: {}
 };
@@ -66,7 +66,7 @@ export function useNewItemForm() {
         setValidationError("");
     }, []);
 
-    return {
+    return useMemo(() => ({
         step,
         setStep,
         maxStep,
@@ -83,5 +83,9 @@ export function useNewItemForm() {
         isSubmitting,
         setIsSubmitting,
         resetForm
-    };
+    }), [
+        step, setStep, maxStep, setMaxStep, selectedCategory, setSelectedCategory,
+        formData, setFormData, updateFormData, validationError, setValidationError,
+        isSaving, setIsSaving, isSubmitting, setIsSubmitting, resetForm
+    ]);
 }

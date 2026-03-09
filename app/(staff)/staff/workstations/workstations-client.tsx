@@ -20,7 +20,7 @@ import { toast } from 'sonner'
 import { createWorkstation, updateWorkstation, deleteWorkstation } from './workstations.actions'
 import { Select } from '@/components/ui/select'
 import { ZoneEditor } from '@/components/staff/zone-editor'
-import { DetectionZone } from '@/lib/schema/presence'
+import { DetectionZone } from '@/lib/schema'
 
 export interface Workstation {
     id: string

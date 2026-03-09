@@ -12,6 +12,28 @@ import { Button } from "@/components/ui/button";
 import { createInventoryAttribute, getInventoryAttributes, getInventoryAttributeTypes } from "./attribute-actions";
 import { useToast } from "@/components/ui/toast";
 import { AttributeType } from "./types";
+
+// Simple promise cache to deduplicate concurrent requests when rendering multiple selectors
+let _sharedAttributesPromise: Promise<{ success: boolean; data?: unknown }> | null = null;
+let _sharedAttributeTypesPromise: Promise<{ success: boolean; data?: unknown }> | null = null;
+
+async function fetchAttributesDeduplicated() {
+    if (!_sharedAttributesPromise) {
+        _sharedAttributesPromise = getInventoryAttributes().finally(() => {
+            setTimeout(() => { _sharedAttributesPromise = null; }, 2000);
+        });
+    }
+    return _sharedAttributesPromise;
+}
+
+async function fetchAttributeTypesDeduplicated() {
+    if (!_sharedAttributeTypesPromise) {
+        _sharedAttributeTypesPromise = getInventoryAttributeTypes().finally(() => {
+            setTimeout(() => { _sharedAttributeTypesPromise = null; }, 2000);
+        });
+    }
+    return _sharedAttributeTypesPromise;
+}
 import { AttributeCustomModal } from "./attribute-custom-modal";
 import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
@@ -55,6 +77,7 @@ interface AttributeSelectorProps {
     required?: boolean;
     categoryId?: string;
     initialAttributeType?: AttributeType;
+    headerAction?: React.ReactNode;
 }
 
 interface DbAttribute {
@@ -81,7 +104,8 @@ export function AttributeSelector({
     label,
     required,
     categoryId,
-    initialAttributeType
+    initialAttributeType,
+    headerAction
 }: AttributeSelectorProps) {
     const [showCustom, setShowCustom] = useState(false);
     const [customForm, setCustomForm] = useState({
@@ -110,34 +134,46 @@ export function AttributeSelector({
 
     const resolvedTypeSlug = useMemo(() => {
         if (initialAttributeType) return initialAttributeType.slug;
-        if (!categoryId) return type;
-        const specificType = attributeTypes.find(t =>
-            t.categoryId === categoryId &&
-            (t.slug === type || (type === 'color' && t.dataType === 'color'))
-        );
-        return specificType ? specificType.slug : type;
-    }, [type, categoryId, attributeTypes, initialAttributeType]);
+        return type;
+    }, [type, initialAttributeType]);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchData = async () => {
-            const [attrRes, typeRes] = await Promise.all([
-                getInventoryAttributes(),
-                getInventoryAttributeTypes()
-            ]);
+            try {
+                const [attrRes, typeRes] = await Promise.all([
+                    fetchAttributesDeduplicated(),
+                    fetchAttributeTypesDeduplicated()
+                ]);
 
-            if (typeRes.success && typeRes.data) {
-                setAttributeTypes(typeRes.data as unknown as AttributeType[]);
-            }
+                if (!isMounted) return;
 
-            if (attrRes.success && attrRes.data) {
-                const allFetchedAttrs = attrRes.data as unknown as DbAttribute[];
-                setDbAttributes(allFetchedAttrs.filter(a =>
-                    (a.type === resolvedTypeSlug || a.type === type) &&
-                    (a.categoryId === (categoryId || null) || a.categoryId === null)
-                ));
+                if (typeRes.success && typeRes.data) {
+                    const newData = typeRes.data as unknown as AttributeType[];
+                    // Only update if actually different to prevent loops
+                    setAttributeTypes(prev => {
+                        if (JSON.stringify(prev) === JSON.stringify(newData)) return prev;
+                        return newData;
+                    });
+                }
+
+                if (attrRes.success && attrRes.data) {
+                    const allFetchedAttrs = attrRes.data as unknown as DbAttribute[];
+                    const filtered = allFetchedAttrs.filter(a =>
+                        (a.type === resolvedTypeSlug || a.type === type) &&
+                        (a.categoryId === (categoryId || null) || a.categoryId === null)
+                    );
+                    setDbAttributes(prev => {
+                        if (JSON.stringify(prev) === JSON.stringify(filtered)) return prev;
+                        return filtered;
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching attributes:", error);
             }
         };
         fetchData();
+        return () => { isMounted = false; };
     }, [resolvedTypeSlug, categoryId, type]);
 
     const currentAttributeType = attributeTypes.find(t => t.slug === resolvedTypeSlug);
@@ -324,58 +360,54 @@ export function AttributeSelector({
                             {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
                         </h4>
                     </div>
-                    {value && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                                onChange("", "");
-                                if (onCodeChange) onCodeChange("");
-                            }}
-                            className="h-auto p-0 text-slate-400 hover:text-rose-500 transition-colors"
-                        >
-                            <span className="text-[11px] font-bold">Сбросить</span>
-                        </Button>
-                    )}
+                    <div className="flex items-center gap-3 shrink-0">
+                        {allowCustom && (
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => setShowCustom(true)}
+                                className="h-auto p-0 px-2 text-slate-400 hover:text-slate-900 transition-colors"
+                            >
+                                <span className="text-[11px] font-bold mr-1">+</span>
+                                <span className="text-[11px] font-bold">Добавить</span>
+                            </Button>
+                        )}
+                        {headerAction}
+                    </div>
                 </div>
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(74px,1fr))] gap-3 w-full">
-                    {allOptions.map(c => (
-                        <button
-                            key={c.name}
-                            type="button"
-                            onClick={() => {
-                                onChange(c.name, c.code);
-                                if (onCodeChange) onCodeChange(c.code);
-                            }}
-                            className={cn("group relative w-full h-[78px] shrink-0 flex flex-col items-center justify-center gap-1 rounded-[12px] bg-white transition-all shadow-sm p-0 cursor-pointer overflow-hidden",
-                                value === c.code ? "border-[1.5px] border-slate-900 shadow-md scale-[1.02] z-10" : "border border-slate-200 hover:border-slate-300 hover:bg-slate-50"
-                            )}
-                        >
+                <Select
+                    options={allOptions.map(c => ({
+                        id: c.code,
+                        title: c.name || c.code,
+                        icon: (
                             <div
-                                className="w-[32px] h-[32px] rounded-[10px] border border-black/5 shadow-inner shrink-0 transition-transform mt-1"
-                                style={{ backgroundColor: c.hex }}
+                                className="w-4 h-4 rounded-[4px] border border-black/10 shadow-inner shrink-0"
+                                style={{ backgroundColor: c.hex || "#000000" }}
                             />
-                            <span className={cn("text-xs font-bold truncate w-full px-1 text-center transition-colors mb-0.5",
-                                value === c.code ? "text-slate-900" : "text-slate-500 group-hover:text-slate-700"
-                            )}>{c.name || c.code}</span>
-                        </button>
-                    ))}
-                    {allowCustom && (
-                        <button
-                            type="button"
-                            onClick={() => setShowCustom(true)}
-                            className="group relative w-full h-[78px] shrink-0 flex flex-col items-center justify-center gap-1 rounded-[12px] border-[1.5px] border-dashed border-slate-300 hover:border-slate-400 bg-slate-50/30 hover:bg-white transition-all p-0 cursor-pointer text-slate-400 hover:text-slate-600 overflow-hidden"
-                        >
-                            <div className="w-[32px] h-[32px] rounded-[10px] flex items-center justify-center bg-white border border-slate-200 shadow-sm transition-all group-hover:scale-[1.02] mt-1">
-                                <span className="text-xl leading-none font-light mb-0.5 text-slate-400 group-hover:text-slate-500">+</span>
-                            </div>
-                            <span className="text-xs font-bold mb-0.5">Добавить</span>
-                        </button>
-                    )}
-                </div>
+                        ),
+                    }))}
+                    value={value || ""}
+                    onChange={(code) => {
+                        if (!code) {
+                            onChange("", "");
+                            if (onCodeChange) onCodeChange("");
+                            return;
+                        }
+                        const opt = allOptions.find(o => o.code === code);
+                        if (opt) {
+                            onChange(opt.name, opt.code);
+                            if (onCodeChange) onCodeChange(opt.code);
+                        }
+                    }}
+                    placeholder="Выберите цвет..."
+                    autoLayout={false}
+                    showSearch={allOptions.length > 8}
+                    clearable={true}
+                    className="h-11 rounded-xl border-slate-200 bg-white shadow-none"
+                />
                 <AttributeCustomModal {...sharedModalProps} />
-            </div >
+            </div>
         );
     }
 
@@ -412,18 +444,21 @@ export function AttributeSelector({
                         {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
                     </h4>
                 </div>
-                {allowCustom && (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowCustom(true)}
-                        className="h-auto p-0 text-slate-400 hover:text-slate-900 transition-colors"
-                    >
-                        <span className="text-[11px] font-bold mr-1">+</span>
-                        <span className="text-[11px] font-bold">Добавить</span>
-                    </Button>
-                )}
+                <div className="flex items-center gap-3 shrink-0">
+                    {allowCustom && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setShowCustom(true)}
+                            className="h-auto p-0 px-2 text-slate-400 hover:text-slate-900 transition-colors"
+                        >
+                            <span className="text-[11px] font-bold mr-1">+</span>
+                            <span className="text-[11px] font-bold">Добавить</span>
+                        </Button>
+                    )}
+                    {headerAction}
+                </div>
             </div>
 
             <Select

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { type DetectionZone } from '@/lib/schema/presence'
+import { type DetectionZone } from '@/lib/schema'
 import { toast } from 'sonner'
 import {
     addXiaomiAccountByToken,

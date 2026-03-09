@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useRef } from "react";
 import type {
     Category,
     AttributeType,
@@ -40,6 +40,8 @@ export function useMatrixGenerator({
     selectedDesigns = [],
     availableDesigns = [],
 }: UseMatrixGeneratorProps) {
+    const lastPositionsRef = useRef<string>("");
+
     const uniqueAttributes = useMemo(() => {
         return attributeTypes.filter((attr) => {
             const config = commonAttributes[attr.slug];
@@ -51,14 +53,21 @@ export function useMatrixGenerator({
         const result: Record<string, Array<{ code: string; name: string; color?: string }>> = {};
 
         uniqueAttributes.forEach((attr) => {
-            const values = dynamicAttributes
-                .filter((da) => da.type === attr.id)
+            const rawValues = dynamicAttributes
+                .filter((da) => da.type === attr.id || da.type === attr.slug)
                 .map((da) => ({
                     code: da.value,
                     name: da.name,
-                    color: (da.meta as Record<string, unknown>)?.color as string | undefined,
+                    color: (da.meta as Record<string, unknown>)?.hex as string ||
+                        (da as unknown as Record<string, unknown>).hex as string ||
+                        (da.meta as Record<string, unknown>)?.color as string ||
+                        undefined,
                 }));
-            result[attr.slug] = values;
+
+            // Удаляем дубликаты по code (value), чтобы React не ругался на одинаковые key в map
+            const uniqueValues = Array.from(new Map(rawValues.map(item => [item.code, item])).values());
+
+            result[attr.slug] = uniqueValues;
         });
 
         return result;
@@ -95,13 +104,16 @@ export function useMatrixGenerator({
 
             if (isFinishedLine && selectedDesigns.length > 0) {
                 const designValues = availableDesigns
-                    .filter((d) => selectedDesigns.includes(d.id))
-                    .map((d) => ({ code: d.id, name: d.name }));
+                    .filter((d: { id: string; name: string; sku: string }) => selectedDesigns.includes(d.id))
+                    .map((d: { id: string; name: string; sku: string }) => ({ code: d.id, name: d.name }));
                 selectedValues.unshift({ slug: "design", values: designValues });
             }
 
             if (selectedValues.length === 0) {
-                onPositionsGenerated([]);
+                if (lastPositionsRef.current !== "[]") {
+                    lastPositionsRef.current = "[]";
+                    onPositionsGenerated([]);
+                }
                 return;
             }
 
@@ -123,7 +135,7 @@ export function useMatrixGenerator({
                 const nameParts: string[] = [category.name];
                 const skuParts: string[] = [category.prefix || ""];
 
-                Object.entries(commonAttributes).forEach(([slug, config]) => {
+                Object.entries(commonAttributes).forEach(([slug, config]: [string, { isCommon: boolean; value: string }]) => {
                     if (config.isCommon && config.value) {
                         attributes[slug] = config.value;
                         const attr = attributeTypes.find((a) => a.slug === slug);
@@ -155,7 +167,11 @@ export function useMatrixGenerator({
                 };
             });
 
-            onPositionsGenerated(positions);
+            const positionsJson = JSON.stringify(positions);
+            if (positionsJson !== lastPositionsRef.current) {
+                lastPositionsRef.current = positionsJson;
+                onPositionsGenerated(positions);
+            }
         };
 
         generatePositions();

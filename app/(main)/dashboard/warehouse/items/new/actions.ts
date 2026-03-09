@@ -344,6 +344,11 @@ export async function createSingleItem(data: Record<string, any>) {
                 costPrice: data.costPrice || "0",
                 sellingPrice: data.sellingPrice || "0",
                 attributes: data.attributes || {},
+                brandCode: data.brandCode || null,
+                qualityCode: data.qualityCode || null,
+                materialCode: data.materialCode || null,
+                sizeCode: data.sizeCode || null,
+                attributeCode: data.attributeCode || null,
                 createdBy: session.id,
             });
 
@@ -361,7 +366,7 @@ export async function createSingleItem(data: Record<string, any>) {
         return { success: true, id: itemId };
     } catch (error) {
         console.error("Error creating single item:", error);
-        return { success: false, error: "Ошибка при создании товара" };
+        return { success: false, error: error instanceof Error ? error.message : "Ошибка при создании товара" };
     }
 }
 

@@ -61,18 +61,20 @@ export function LivePreviewCard({
                 <div className="relative z-10 space-y-2 md:space-y-3">
                     {/* Category & Subcategory */}
                     {category && (
-                        <div className="flex items-center gap-1.5 md:gap-2 mb-0.5 md:mb-1">
-                            <span className="text-[11px] font-black tracking-normal text-indigo-500 bg-indigo-50/80 px-2 md:px-2.5 py-0.5 md:py-1 rounded-md border border-indigo-100/50">
-                                {category.name}
-                            </span>
-                            {activeSubcategory && (
-                                <>
-                                    <span className="text-slate-300 font-bold">/</span>
-                                    <span className="text-[11px] font-black tracking-normal text-slate-500 bg-white/60 px-2 md:px-2.5 py-0.5 md:py-1 rounded-md border border-slate-200/50">
-                                        {activeSubcategory.name}
-                                    </span>
-                                </>
-                            )}
+                        <div className="flex items-center flex-wrap gap-1.5 md:gap-2 mb-0.5 md:mb-1">
+                            <div className="flex items-center gap-1.5 md:gap-2 bg-indigo-50/80 px-2 md:px-2.5 py-0.5 md:py-1 rounded-md border border-indigo-100/50">
+                                <span className="text-[11px] font-black tracking-normal text-indigo-500">
+                                    {category.name}
+                                </span>
+                                {activeSubcategory && (
+                                    <>
+                                        <span className="text-indigo-300 font-bold">/</span>
+                                        <span className="text-[11px] font-black tracking-normal text-indigo-500/80">
+                                            {activeSubcategory.name}
+                                        </span>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     )}
 

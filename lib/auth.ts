@@ -73,45 +73,57 @@ export async function getSession(): Promise<Session | null> {
     const sessionCookie = cookieStore.get("session");
     const session = sessionCookie?.value;
 
-    if (!session) return null;
+    if (!session) {
+        console.log("[Auth] No session cookie found");
+        return null;
+    }
 
     try {
         const isBlacklisted = await redis.get(`blacklist:${session}`);
-        if (isBlacklisted) return null;
-    } catch {
-        console.warn("⚠️ Redis blacklist check failed, allowing session (network error)");
+        if (isBlacklisted) {
+            console.log("[Auth] Session is blacklisted");
+            return null;
+        }
+    } catch (e) {
+        console.warn("⚠️ Redis blacklist check failed, allowing session (network error)", e);
     }
 
     try {
         const parsed = await decrypt(session);
+        console.log("[Auth] Decrypted session:", parsed.email);
 
         // Security check: Verify User-Agent to prevent session hijacking
         const { headers } = await import("next/headers");
         const currentUa = (await headers()).get("user-agent") || "unknown";
         if (parsed.ua && parsed.ua !== currentUa) {
-            console.warn(`[Auth] Session Hijacking attempt detected! UA mismatch. User: ${parsed.email}`);
+            console.warn(`[Auth] Session Hijacking attempt detected! UA mismatch. User: ${parsed.email}. Expected: ${parsed.ua}, Actual: ${currentUa}`);
             return null;
         }
 
         // Database Session Verification
         if (parsed.sessionId) {
             try {
-                const { pool } = await import('@/lib/db');
-                const result = await pool.query(
-                    'SELECT id FROM sessions WHERE id = $1 LIMIT 1',
-                    [parsed.sessionId]
-                );
-                if (!result || !result?.rows || result?.rows?.length === 0) {
+                const { db } = await import('@/lib/db');
+                if (!db.query || !db.query.sessions) {
+                    console.error("[Auth] db.query.sessions is NOT available! Schema keys:", Object.keys(db.query || {}));
+                    return parsed; // Fallback to JWT
+                }
+                const result = await db.query.sessions.findFirst({
+                    where: (sessions, { eq }) => eq(sessions.id, parsed.sessionId)
+                });
+                if (!result) {
                     console.warn(`[Auth] DB Session missing or revoked. User: ${parsed.email}`);
                     return null; // Session revoked
                 }
+                console.log("[Auth] DB Session verified");
             } catch (dbError) {
                 console.warn("[Auth] DB check failed (network). Allowing JWT fallback.", dbError);
             }
         }
 
         return parsed;
-    } catch {
+    } catch (e) {
+        console.error("[Auth] Session validation error:", e);
         return null;
     }
 }

@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { db } from './lib/db';
-import { inventoryAttributeTypes, inventoryAttributes, inventoryCategories } from './lib/schema/warehouse'; // Use the actual path from finding
+import { inventoryCategories, inventoryAttributeTypes } from './lib/schema/warehouse/categories';
+import { inventoryAttributes } from './lib/schema/warehouse/attributes';
 import * as fs from 'fs';
 
 async function main() {

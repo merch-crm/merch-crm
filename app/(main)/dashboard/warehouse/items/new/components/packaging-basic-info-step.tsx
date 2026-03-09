@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 
 interface PackagingBasicInfoStepProps {
     category: Category;
+    categories: Category[];
     subCategories: Category[];
     dynamicAttributes: InventoryAttribute[];
     attributeTypes: AttributeType[];
@@ -25,6 +26,7 @@ interface PackagingBasicInfoStepProps {
 
 export function PackagingBasicInfoStep({
     category,
+    categories: _categories,
     subCategories,
     dynamicAttributes,
     formData,

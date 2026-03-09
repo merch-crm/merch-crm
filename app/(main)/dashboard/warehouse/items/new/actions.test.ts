@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createBaseLineWithPositions, createFinishedLineWithPositions } from "./actions";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import { productLines, inventoryItems, inventoryStocks, inventoryTransactions } from "@/lib/schema";
+import { productLines } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { mockSession } from "@/tests/helpers/mocks";
 
@@ -59,7 +59,7 @@ describe("New Item/Line Actions", () => {
             // Mock insertions
             vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockResolvedValue({}),
-            } as never);
+            } as any);
 
             const result = await createBaseLineWithPositions({
                 line: {
@@ -98,7 +98,7 @@ describe("New Item/Line Actions", () => {
             vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockReturnThis(),
                 returning: vi.fn().mockResolvedValue([{ id: "item-1" }, { id: "item-2" }]),
-            } as never);
+            } as any);
 
             const result = await createFinishedLineWithPositions({
                 categoryId: VALID_CATEGORY_ID,
@@ -124,7 +124,4 @@ describe("New Item/Line Actions", () => {
         });
     });
 });
-const _unused_productLines = productLines;
-const _unused_inventoryItems = inventoryItems;
-const _unused_inventoryStocks = inventoryStocks;
-const _unused_inventoryTransactions = inventoryTransactions;
+

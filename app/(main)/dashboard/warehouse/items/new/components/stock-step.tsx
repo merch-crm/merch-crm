@@ -58,6 +58,8 @@ export function StockStep({
 
     const selectedUnit = formData.unit || "шт.";
 
+    const isCostPriceValid = formData.costPrice !== "" && formData.costPrice !== undefined && formData.costPrice !== null;
+
     return (
         <div className="flex flex-col h-full min-h-0">
             <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-1">
@@ -223,19 +225,23 @@ export function StockStep({
                                     <Label className="text-sm font-black text-slate-700 px-1 flex items-center gap-1">
                                         Себестоимость <span className="text-rose-500">*</span>
                                     </Label>
-                                    <div className="relative bg-slate-50 rounded-[18px] px-5 py-4 border border-slate-100/50 hover:border-slate-200 transition-colors w-full">
+                                    <div className={cn("relative bg-slate-50 rounded-[18px] px-5 py-4 border transition-colors w-full", isCostPriceValid ? "border-slate-100/50 hover:border-slate-200" : "border-rose-300 bg-rose-50/30")}>
                                         <Input
                                             type="text"
                                             inputMode="decimal"
-                                            value={formData.costPrice}
+                                            placeholder="Введите значение"
+                                            value={formData.costPrice || ""}
                                             onChange={(e) => {
                                                 const val = e.target.value.replace(/[^0-9.]/g, '');
                                                 updateFormData({ costPrice: val });
                                             }}
-                                            className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
+                                            className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none placeholder:text-slate-300 placeholder:font-medium placeholder:text-lg"
                                         />
                                         <span className="absolute right-5 bottom-4 text-sm font-bold text-slate-300">{currencySymbol}</span>
                                     </div>
+                                    {!isCostPriceValid && (
+                                        <p className="text-xs font-bold text-rose-500 px-1 mt-1">Обязательное поле — укажите себестоимость</p>
+                                    )}
                                 </div>
 
                                 <div className="space-y-2.5">
@@ -246,12 +252,13 @@ export function StockStep({
                                         <Input
                                             type="text"
                                             inputMode="decimal"
-                                            value={formData.sellingPrice}
+                                            placeholder="Введите значение"
+                                            value={formData.sellingPrice || ""}
                                             onChange={(e) => {
                                                 const val = e.target.value.replace(/[^0-9.]/g, '');
                                                 updateFormData({ sellingPrice: val });
                                             }}
-                                            className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none"
+                                            className="w-full text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 pr-8 min-w-0 h-auto shadow-none placeholder:text-slate-300 placeholder:font-medium placeholder:text-lg"
                                         />
                                         <span className="absolute right-5 bottom-4 text-sm font-bold text-slate-300">{currencySymbol}</span>
                                     </div>
@@ -345,7 +352,7 @@ export function StockStep({
                     onBack={onBack}
                     onNext={onNext}
                     nextLabel="Далее"
-                    isNextDisabled={!formData.storageLocationId}
+                    isNextDisabled={!formData.storageLocationId || !isCostPriceValid}
                     isSubmitting={isSubmitting}
                     validationError={validationError}
                 />

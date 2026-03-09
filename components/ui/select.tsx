@@ -201,13 +201,13 @@ export function Select({
                         </div>
                         <div className="flex items-center gap-1 shrink-0 ml-2">
                             {clearable && value && (
-                                <button
-                                    type="button"
+                                <div
+                                    role="button"
                                     onClick={handleClear}
                                     className="p-1 rounded-md hover:bg-slate-200/60 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                                 >
                                     <X className="w-3.5 h-3.5" />
-                                </button>
+                                </div>
                             )}
                             <ChevronDown className={cn("shrink-0 transition-transform duration-300",
                                 variant === "minimal" ? "w-3 h-3" : "w-4 h-4",

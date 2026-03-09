@@ -1,14 +1,14 @@
 "use client";
 
-import { Package, Building2, TrendingDown, TrendingUp, Clock, Layers, Zap, Tag, PlusSquare, Trash2, ChevronRight, MapPin } from"lucide-react";
-import { Button } from"@/components/ui/button";
-import { Checkbox } from"@/components/ui/checkbox";
-import { ItemThumbnail } from"./ItemThumbnail";
-import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
-import { cn, formatUnit } from"@/lib/utils";
-import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
-import { StorageLocation } from"@/app/(main)/dashboard/warehouse/storage-locations-tab";
-import { useRouter } from"next/navigation";
+import { Package, Building2, TrendingDown, TrendingUp, Clock, Layers, Zap, Tag, PlusSquare, Trash2, ChevronRight, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ItemThumbnail } from "./ItemThumbnail";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { cn, formatUnit } from "@/lib/utils";
+import { InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
+import { StorageLocation } from "@/app/(main)/dashboard/warehouse/storage-locations-tab";
+import { useRouter } from "next/navigation";
 
 interface CategoryItemsListProps {
     items: InventoryItem[];
@@ -36,6 +36,10 @@ export function CategoryItemsList({
     setIdsToDelete
 }: CategoryItemsListProps) {
     const router = useRouter();
+
+    const getDisplayName = (item: InventoryItem) => {
+        return item.name;
+    };
 
     return (
         <div className="space-y-3">
@@ -121,7 +125,7 @@ export function CategoryItemsList({
                                                 }
                                             }}
                                             className={cn("crm-tr-clickable",
-                                                isSelected &&"crm-tr-selected"
+                                                isSelected && "crm-tr-selected"
                                             )}
                                         >
                                             <td className="crm-td crm-td-selection" onClick={(e) => e.stopPropagation()}>
@@ -138,10 +142,10 @@ export function CategoryItemsList({
                                                     </div>
                                                     <div>
                                                         <div className="text-sm font-bold text-slate-900 leading-tight transition-colors">
-                                                            {item.name}
+                                                            {getDisplayName(item)}
                                                         </div>
                                                         <div className="text-xs font-mono font-bold text-slate-400 mt-1 bg-slate-50 inline-block px-1.5 py-0.5 rounded-[4px]">
-                                                            {item.sku ||"N/A"}
+                                                            {item.sku || "N/A"}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -149,7 +153,7 @@ export function CategoryItemsList({
                                             <td className="crm-td">
                                                 <div className="flex flex-col gap-1 text-[11px] text-slate-500 font-medium">
                                                     {item.stocks?.filter(s => s.quantity > 0).map((s) => {
-                                                        const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name ||"N/A";
+                                                        const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
                                                         return (
                                                             <div key={s.storageLocationId} className="flex items-center gap-2 whitespace-nowrap">
                                                                 <MapPin className="w-3 h-3 text-slate-300 shrink-0" />
@@ -168,20 +172,20 @@ export function CategoryItemsList({
                                             {canSeeCost && (
                                                 <td className="crm-td crm-td-number">
                                                     <span className="text-[11px] font-medium text-slate-400">
-                                                        {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` :"—"}
+                                                        {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                     </span>
                                                 </td>
                                             )}
                                             {canSeeCost && (
                                                 <td className="crm-td crm-td-number">
                                                     <span className="text-sm font-bold text-slate-900">
-                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` :"—"}
+                                                        {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                     </span>
                                                 </td>
                                             )}
                                             <td className="crm-td crm-td-number text-center">
                                                 <span className={cn("text-sm font-bold tabular-nums",
-                                                    (item.reservedQuantity || 0) > 0 ?"text-amber-500" :"text-slate-300"
+                                                    (item.reservedQuantity || 0) > 0 ? "text-amber-500" : "text-slate-300"
                                                 )}>
                                                     {item.reservedQuantity || 0}
                                                 </span>
@@ -189,12 +193,12 @@ export function CategoryItemsList({
                                             <td className="crm-td crm-td-number text-center">
                                                 <div className="flex flex-col items-center gap-1.5 translate-x-2">
                                                     <div className={cn("inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
-                                                        isCritical ?"bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
-                                                            isLowStock ?"bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" :"bg-emerald-50 border-emerald-100 text-emerald-600"
+                                                        isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
+                                                            isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" : "bg-emerald-50 border-emerald-100 text-emerald-600"
                                                     )}>
                                                         <div className={cn("w-1.5 h-1.5 rounded-full shrink-0",
-                                                            isCritical ?"bg-rose-500 animate-pulse" :
-                                                                isLowStock ?"bg-amber-500" :"bg-emerald-500"
+                                                            isCritical ? "bg-rose-500 animate-pulse" :
+                                                                isLowStock ? "bg-amber-500" : "bg-emerald-500"
                                                         )} />
                                                         <span className="tabular-nums">{available} {formatUnit(item.unit)}</span>
                                                     </div>
@@ -271,7 +275,7 @@ export function CategoryItemsList({
                                 role="button"
                                 tabIndex={0}
                                 className={cn("group relative flex flex-col gap-3 p-4 transition-all duration-300 cursor-pointer active:scale-[0.98] rounded-3xl border border-slate-200/60 shadow-sm",
-                                    isSelected ?"bg-primary/[0.03] border-primary/20 ring-4 ring-primary/5" :"bg-white hover:shadow-md"
+                                    isSelected ? "bg-primary/[0.03] border-primary/20 ring-4 ring-primary/5" : "bg-white hover:shadow-md"
                                 )}
                                 onClick={() => router.push(`/dashboard/warehouse/items/${item.id}`)}
                                 onKeyDown={(e) => {
@@ -293,14 +297,14 @@ export function CategoryItemsList({
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="text-sm font-black text-slate-900 truncate leading-tight mb-0.5">
-                                            {item.name}
+                                            {getDisplayName(item)}
                                         </div>
                                         <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
-                                            <span className="bg-slate-50 px-1.5 py-0.5 rounded-[4px] font-mono">{item.sku ||"N/A"}</span>
+                                            <span className="bg-slate-50 px-1.5 py-0.5 rounded-[4px] font-mono">{item.sku || "N/A"}</span>
                                             <span className="text-slate-200">•</span>
                                             <span className={cn("px-1.5 py-0.5 rounded-full  text-xs font-black",
-                                                isCritical ?"bg-rose-50 text-rose-600 border border-rose-100" :
-                                                    isLowStock ?"bg-amber-50 text-amber-600 border border-amber-100" :"bg-emerald-50 text-emerald-600 border border-emerald-100"
+                                                isCritical ? "bg-rose-50 text-rose-600 border border-rose-100" :
+                                                    isLowStock ? "bg-amber-50 text-amber-600 border border-amber-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
                                             )}>
                                                 {available} {formatUnit(item.unit)}
                                             </span>
@@ -323,7 +327,7 @@ export function CategoryItemsList({
                                             )}
                                         </div>
                                         <div className="text-sm font-black text-slate-900">
-                                            {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` :"—"}
+                                            {item.sellingPrice ? `${Number(item.sellingPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                         </div>
                                     </div>
                                 )}

@@ -15,7 +15,8 @@ import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { getSession } from "@/lib/auth";
 import { z } from "zod";
-import { generateId, slugify } from "@/lib/utils";
+import { slugify } from "@/lib/utils";
+import { v4 as uuidv4 } from "uuid";
 import {
     CollectionWithStats,
     CollectionWithFullStats,
@@ -66,8 +67,8 @@ export async function getCollections(search?: string): Promise<ActionResult<Coll
                 createdAt: printCollections.createdAt,
                 updatedAt: printCollections.updatedAt,
                 slug: printCollections.slug,
-                designsCount: sql<number>`coalesce(${designsSq.designsCount}, 0)`,
-                linkedLinesCount: sql<number>`coalesce(${linesSq.linesCount}, 0)`,
+                designsCount: sql<number>`coalesce("designs_sq"."sq_designs_count", 0)`,
+                linkedLinesCount: sql<number>`coalesce("lines_sq"."sq_lines_count", 0)`,
             })
             .from(printCollections)
             .leftJoin(designsSq, eq(printCollections.id, designsSq.collectionId))
@@ -96,19 +97,23 @@ export async function createCollection(data: {
     description?: string | null;
     coverImage?: string | null;
 }): Promise<ActionResult<PrintCollection>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    const validated = CollectionSchema.safeParse(data);
-    if (!validated.success) {
-        return { success: false, error: validated.error.issues[0].message };
-    }
-
+    console.log("[createCollection] Starting with data:", JSON.stringify(data));
     try {
+        const session = await getSession();
+        console.log("[createCollection] Session:", session ? `Found (${session.email})` : "Not found");
+        if (!session) return { success: false, error: "Не авторизован" };
+
+        const validated = CollectionSchema.safeParse(data);
+        if (!validated.success) {
+            console.error("[createCollection] Validation failed:", JSON.stringify(validated.error.format()));
+            return { success: false, error: validated.error.issues[0].message };
+        }
+
+        console.log("[createCollection] Inserting into DB...");
         const [collection] = await db
             .insert(printCollections)
             .values({
-                id: generateId(),
+                id: uuidv4(),
                 name: validated.data.name,
                 slug: slugify(validated.data.name),
                 description: validated.data.description || null,
@@ -119,21 +124,32 @@ export async function createCollection(data: {
             })
             .returning();
 
-        await logAction("Создана коллекция дизайнов", "print_collection", collection.id, {
-            name: collection.name
-        });
+        console.log("[createCollection] Inserted collection:", collection.id);
 
-        invalidateCache("design:collections");
-        revalidatePath("/dashboard/design/prints");
+        try {
+            await logAction("Создана коллекция дизайнов", "print_collection", collection.id, {
+                name: collection.name
+            });
+            console.log("[createCollection] Action logged");
+        } catch (logErr) {
+            console.warn("[createCollection] Failed to log action:", logErr);
+        }
+
+        try {
+            invalidateCache("design:collections");
+            revalidatePath("/dashboard/design/prints");
+            console.log("[createCollection] Cache invalidated and path revalidated");
+        } catch (revalidateErr) {
+            console.warn("[createCollection] Revalidation failed:", revalidateErr);
+        }
 
         return { success: true, data: collection };
     } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/collection-actions",
-            method: "createCollection",
-        });
-        return { success: false, error: "Не удалось создать коллекцию" };
+        console.error("[createCollection] FATAL ERROR:", error);
+        return {
+            success: false,
+            error: `Ошибка: ${error instanceof Error ? error.message : String(error)}`
+        };
     }
 }
 

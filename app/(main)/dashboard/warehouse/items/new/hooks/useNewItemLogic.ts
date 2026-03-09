@@ -101,6 +101,44 @@ export function useNewItemLogic({
         setIsMounted(true);
     }, []);
 
+    // Синхронизация общих характеристик (Common Attributes)
+    useEffect(() => {
+        if (state.creationType !== "base_line") return;
+
+        const newCommonAttributes: Record<string, { isCommon: boolean; value: string }> = {};
+
+        // Фильтруем по текущей категории и подкатегории
+        const categoryId = state.selectedCategory?.id;
+        const subcategoryId = state.formData.subcategoryId;
+        const relevantTypes = attributeTypes.filter(t =>
+            !t.categoryId ||
+            t.categoryId === categoryId ||
+            (subcategoryId && t.categoryId === subcategoryId)
+        );
+
+        relevantTypes.forEach(attr => {
+            const isCommonForLine = lineData.commonAttributeIds.includes(attr.id);
+            // Пытаемся взять значение из разных вариантов ключей массива
+            const attrValue = state.formData.attributes?.[attr.slug] ||
+                state.formData.attributes?.[attr.id] ||
+                "";
+
+            if (isCommonForLine) {
+                newCommonAttributes[attr.slug] = {
+                    isCommon: true,
+                    value: attrValue
+                };
+            }
+        });
+
+        // Проверяем изменился ли объект перед обновлением (предотвращаем лишние рендеры)
+        const isChanged = JSON.stringify(newCommonAttributes) !== JSON.stringify(state.commonAttributes);
+        if (isChanged) {
+            state.setCommonAttributes(newCommonAttributes);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- state — нестабильный объект; полный deps вызовет бесконечный цикл
+    }, [lineData.commonAttributeIds, state.formData.attributes, attributeTypes, state.creationType, state.commonAttributes, state.setCommonAttributes, state.selectedCategory?.id, state.formData.subcategoryId]);
+
     const handleReset = () => {
         draft.clearDraft();
         state.resetForm();
@@ -232,7 +270,7 @@ export function useNewItemLogic({
                     toast("Готовая линейка создана", "success");
                     playSound("notification_success");
                     handleReset();
-                    window.location.href = "/dashboard/warehouse";
+                    window.location.href = `/dashboard/warehouse/lines/${res.lineId}`;
                 } else {
                     state.setValidationError(res.error || "Ошибка при создании линейки");
                 }
@@ -261,18 +299,21 @@ export function useNewItemLogic({
                     toast("Базовая линейка создана", "success");
                     playSound("notification_success");
                     handleReset();
-                    window.location.href = "/dashboard/warehouse";
+                    window.location.href = `/dashboard/warehouse/lines/${res.lineId}`;
                 } else {
                     state.setValidationError(res.error || "Ошибка при создании линейки");
                 }
             } else {
                 // Одиночная позиция
-                const res = await createSingleItem(state.formData);
+                const res = await createSingleItem({
+                    ...state.formData,
+                    categoryId: state.selectedCategory!.id,
+                });
                 if (res.success) {
                     toast("Позиция создана", "success");
                     playSound("notification_success");
                     handleReset();
-                    window.location.href = "/dashboard/warehouse";
+                    window.location.href = `/dashboard/warehouse/items/${res.id}`;
                 } else {
                     state.setValidationError(res.error || "Ошибка при создании позиции");
                 }
@@ -287,9 +328,20 @@ export function useNewItemLogic({
     };
 
     const getSteps = () => {
+        const currentSubCat = subCategories.find(s => s.id === state.formData.subcategoryId) ||
+            categories.find(s => s.id === state.formData.subcategoryId);
+        const categoryDesc = currentSubCat?.name || state.selectedCategory?.name || "Выбор категории";
+
+        const typeLabels: Record<string, string> = {
+            single: "Одиночная позиция",
+            base_line: "Базовая линейка",
+            finished_line: "Готовая линейка"
+        };
+        const typeDesc = typeLabels[state.creationType] || "Тип создания";
+
         const base = [
-            { id: 0, title: "Категория", desc: "Выбор категории" },
-            { id: 1, title: "Тип", desc: "Тип создания" },
+            { id: 0, title: "Категория", desc: categoryDesc },
+            { id: 1, title: "Тип", desc: typeDesc },
         ];
 
         if (state.creationType === "single") {
@@ -395,7 +447,7 @@ export function useNewItemLogic({
         availablePrints,
         isLoadingData,
         handleSidebarClick: (target: number) => {
-            if (target < state.step) {
+            if (target <= state.maxStep && target !== state.step) {
                 state.setStep(target);
                 state.setValidationError("");
             }

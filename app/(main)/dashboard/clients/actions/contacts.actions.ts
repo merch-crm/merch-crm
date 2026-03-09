@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clientContacts, clients } from "@/lib/schema";
+import { clientContacts, clients, type ClientContact } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
@@ -9,7 +9,6 @@ import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { z } from "zod";
 import type { ActionResult } from "@/lib/types";
-import type { ClientContact } from "@/lib/schema/client-contacts";
 
 // === Схемы валидации ===
 

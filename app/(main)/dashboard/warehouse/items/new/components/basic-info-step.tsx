@@ -7,13 +7,13 @@ import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-se
 import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
 
 import { useBasicInfoLogic } from "./basic-info/hooks/useBasicInfoLogic";
 import { LivePreviewCard } from "./live-preview-card";
 
 interface BasicInfoStepProps {
     category: Category;
+    categories: Category[];
     subCategories: Category[];
     dynamicAttributes: InventoryAttribute[];
     attributeTypes: AttributeType[];
@@ -26,6 +26,7 @@ interface BasicInfoStepProps {
 
 export function BasicInfoStep({
     category,
+    categories,
     subCategories,
     formData,
     updateFormData,
@@ -97,7 +98,7 @@ export function BasicInfoStep({
                         category={category}
                         attributeTypes={attributeTypes}
                         dynamicAttributes={dynamicAttributes}
-                        activeSubcategory={formData.subcategoryId ? subCategories.find(s => s.id === formData.subcategoryId) : undefined}
+                        activeSubcategory={formData.subcategoryId ? (subCategories.find((s: Category) => s.id === formData.subcategoryId) || categories.find((s: Category) => s.id === formData.subcategoryId)) : undefined}
                         className="mb-4"
                     />
 
@@ -124,9 +125,8 @@ export function BasicInfoStep({
                                     <div className="flex flex-col space-y-2.5 pt-1.5">
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 grid-flow-row-dense w-full">
                                             {categoryAttributes.map((attr) => {
-                                                const isFullWidth = attr.dataType === 'color';
                                                 return (
-                                                    <div key={attr.id} className={cn(isFullWidth && "md:col-span-3 w-full")}>
+                                                    <div key={attr.id}>
                                                         <AttributeSelector
                                                             type={attr.slug}
                                                             label={attr.name}

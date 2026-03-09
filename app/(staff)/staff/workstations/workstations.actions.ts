@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { workstations, cameras } from '@/lib/schema/presence'
+import { workstations, cameras } from '@/lib/schema'
 import { users } from '@/lib/schema/users'
 import { eq, asc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'

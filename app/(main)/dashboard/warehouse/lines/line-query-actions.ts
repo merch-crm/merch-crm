@@ -73,8 +73,8 @@ export async function getLinesByCategory(
                 createdBy: productLines.createdBy,
                 createdAt: productLines.createdAt,
                 updatedAt: productLines.updatedAt,
-                positionsCount: sql<number>`coalesce(${statsSq.sqPositionsCount}, 0)`,
-                totalStock: sql<number>`coalesce(${statsSq.sqTotalStock}, 0)`,
+                positionsCount: sql<number>`coalesce("stats"."sq_positions_count", 0)`,
+                totalStock: sql<number>`coalesce("stats"."sq_total_stock", 0)`,
             })
             .from(productLines)
             .leftJoin(statsSq, eq(productLines.id, statsSq.productLineId))
@@ -240,8 +240,8 @@ export async function getBaseLines(categoryId?: string): Promise<{ success: bool
                 createdBy: productLines.createdBy,
                 createdAt: productLines.createdAt,
                 updatedAt: productLines.updatedAt,
-                positionsCount: sql<number>`coalesce(${statsSq.sqPositionsCount}, 0)`,
-                totalStock: sql<number>`coalesce(${statsSq.sqTotalStock}, 0)`,
+                positionsCount: sql<number>`coalesce("stats"."sq_positions_count", 0)`,
+                totalStock: sql<number>`coalesce("stats"."sq_total_stock", 0)`,
             })
             .from(productLines)
             .leftJoin(statsSq, eq(productLines.id, statsSq.productLineId))
@@ -296,8 +296,8 @@ export async function getAllLines(): Promise<{ success: boolean; data?: ProductL
                 createdBy: productLines.createdBy,
                 createdAt: productLines.createdAt,
                 updatedAt: productLines.updatedAt,
-                positionsCount: sql<number>`coalesce(${statsSq.sqPositionsCount}, 0)`,
-                totalStock: sql<number>`coalesce(${statsSq.sqTotalStock}, 0)`,
+                positionsCount: sql<number>`coalesce("stats"."sq_positions_count", 0)`,
+                totalStock: sql<number>`coalesce("stats"."sq_total_stock", 0)`,
             })
             .from(productLines)
             .leftJoin(statsSq, eq(productLines.id, statsSq.productLineId))

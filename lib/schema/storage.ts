@@ -2,7 +2,7 @@ import { pgTable, text, timestamp, uuid, boolean, index, integer } from "drizzle
 import { relations } from "drizzle-orm";
 import { storageLocationTypeEnum } from "./enums";
 import { users } from "./users";
-import { inventoryStocks, inventoryTransfers } from "./warehouse";
+import { inventoryStocks, inventoryTransfers } from "./warehouse/stock";
 
 export const storageLocations = pgTable("storage_locations", {
     id: uuid("id").defaultRandom().primaryKey(),

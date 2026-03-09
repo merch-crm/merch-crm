@@ -3,7 +3,9 @@ export * from "./enums";
 
 // Core
 export * from "./users";
-export * from "./clients";
+export * from "./clients/main";
+export * from "./clients/contacts";
+export * from "./clients/loyalty";
 export * from "./promocodes";
 export * from "./storage";
 
@@ -14,7 +16,10 @@ export * from "./designs";
 export * from "./product-lines";
 
 // Warehouse
-export * from "./warehouse";
+export * from "./warehouse/categories";
+export * from "./warehouse/attributes";
+export * from "./warehouse/items";
+export * from "./warehouse/stock";
 export * from "./inventory-transactions.schema";
 
 // Orders & Finance
@@ -25,7 +30,9 @@ export * from "./finance";
 export * from "./tasks";
 export * from "./system";
 export * from "./wiki";
-export * from "./presence";
-export * from "./client-contacts";
-export * from "./loyalty-levels";
+export * from "./presence/hardware";
+export * from "./presence/recognition";
+export * from "./presence/workstations";
+export * from "./presence/sessions";
+export * from "./presence/settings";
 export * from "./communications";

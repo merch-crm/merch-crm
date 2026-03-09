@@ -11,7 +11,8 @@ import {
     uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { inventoryCategories, inventoryItems } from "./warehouse";
+import { inventoryCategories } from "./warehouse/categories";
+import { inventoryItems } from "./warehouse/items";
 import { printCollections } from "./designs";
 import { users } from "./users";
 

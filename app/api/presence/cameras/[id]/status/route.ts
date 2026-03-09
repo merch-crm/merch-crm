@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { cameras } from '@/lib/schema/presence'
+import { cameras } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
 import { logError } from '@/lib/error-logger'
 

@@ -127,13 +127,28 @@ export function NewItemPageClient({
                 return valAcc;
             }, [] as { id: string; value: string; label: string }[]);
 
-            acc.push({ id: t.id, code: t.slug, name: t.name, values });
+            acc.push({
+                id: t.id,
+                code: t.slug,
+                name: t.name,
+                values,
+                categoryId: t.categoryId
+            });
             return acc;
-        }, [] as { id: string; code: string; name: string; values: { id: string; value: string; label: string }[] }[]);
+        }, [] as { id: string; code: string; name: string; categoryId?: string | null; values: { id: string; value: string; label: string }[] }[]);
     }, [attributeTypes, dynamicAttributes, selectedCategory?.id, formData.subcategoryId]);
 
+    // Типы характеристик, отфильтрованные по текущей категории/подкатегории (для матрицы и CommonAttributes)
+    const filteredAttributeTypes = useMemo(() => {
+        return attributeTypes.filter(t => {
+            return !t.categoryId ||
+                t.categoryId === selectedCategory?.id ||
+                (formData.subcategoryId && t.categoryId === formData.subcategoryId);
+        });
+    }, [attributeTypes, selectedCategory?.id, formData.subcategoryId]);
+
     return (
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full max-w-[1440px] mx-auto xl:px-0">
             <div className="flex flex-col xl:flex-row xl:h-[calc(100vh-160px)] gap-3 w-full">
                 <NewItemSidebar
                     step={step}
@@ -220,6 +235,7 @@ export function NewItemPageClient({
                                         <LineCharacteristicsStep
                                             categoryAttributes={categoryAttributes}
                                             selectedAttributes={formData.attributes || {}}
+                                            updateFormData={updateFormData}
                                             commonAttributeIds={lineData.commonAttributeIds}
                                             customLineName={lineData.customName}
                                             lineDescription={lineData.description}
@@ -321,6 +337,7 @@ export function NewItemPageClient({
                                         {isPackaging ? (
                                             <PackagingBasicInfoStep
                                                 category={selectedCategory}
+                                                categories={categories}
                                                 subCategories={subCategories}
                                                 dynamicAttributes={dynamicAttributes}
                                                 attributeTypes={attributeTypes}
@@ -333,6 +350,7 @@ export function NewItemPageClient({
                                         ) : (
                                             <BasicInfoStep
                                                 category={selectedCategory}
+                                                categories={categories}
                                                 subCategories={subCategories}
                                                 dynamicAttributes={dynamicAttributes}
                                                 attributeTypes={attributeTypes}
@@ -358,7 +376,7 @@ export function NewItemPageClient({
                                     >
                                         <LineMatrixStep
                                             category={selectedCategory!}
-                                            attributeTypes={attributeTypes}
+                                            attributeTypes={filteredAttributeTypes}
                                             dynamicAttributes={dynamicAttributes}
                                             commonAttributes={commonAttributes}
                                             matrixSelection={matrixSelection}

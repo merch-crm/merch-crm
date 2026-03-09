@@ -1,8 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { loyaltyLevels, type LoyaltyLevel } from "@/lib/schema/loyalty-levels";
-import { clients } from "@/lib/schema/clients";
+import { loyaltyLevels, clients, type LoyaltyLevel } from "@/lib/schema";
 import { eq, asc, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";

@@ -113,8 +113,8 @@ export function NewItemSidebar({
                 <div className="flex-1 space-y-2 overflow-y-auto overflow-x-visible pb-10 -mx-4 px-4 pt-2 custom-scrollbar">
                     {steps.map((s, idx) => {
                         const isActive = step === s.id;
-                        const isCompleted = maxStep > s.id || step > s.id;
-                        const isLocked = maxStep < s.id && step < s.id; // Cannot click future steps directly unless current is valid
+                        const isCompleted = maxStep >= s.id && !isActive;
+                        const isLocked = maxStep < s.id;
 
                         if (s.id === 1 && !hasSubCategories && step !== 1) return null;
 

@@ -70,7 +70,7 @@ describe("Product Line Mutation Actions", () => {
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([{ id: VALID_CATEGORY_ID }])
-            } as never);
+            } as any);
 
             // Mock insertion with returning()
             const mockLine = { id: VALID_LINE_ID, name: "Base Line", type: "base" };
@@ -99,7 +99,7 @@ describe("Product Line Mutation Actions", () => {
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([])
-            } as never);
+            } as any);
 
             const result = await createProductLine({
                 name: "Test Line",
@@ -132,14 +132,14 @@ describe("Product Line Mutation Actions", () => {
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([{ id: VALID_CATEGORY_ID }])
-            } as never);
+            } as any);
 
             // Mock collection check (failure)
             vi.mocked(db.select).mockReturnValueOnce({
                 from: vi.fn().mockReturnThis(),
                 where: vi.fn().mockReturnThis(),
                 limit: vi.fn().mockResolvedValue([])
-            } as never);
+            } as any);
 
             const result = await createProductLine({
                 name: "Finished Line",

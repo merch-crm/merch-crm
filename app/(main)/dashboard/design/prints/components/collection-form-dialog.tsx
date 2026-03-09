@@ -102,8 +102,9 @@ export function CollectionFormDialog({
                     onSuccess?.(result.data.id);
                 }
             }
-        } catch (_error) {
-            toast.error("Произошла ошибка");
+        } catch (error) {
+            console.error("Submission error:", error);
+            toast.error(error instanceof Error ? error.message : "Произошла ошибка");
         } finally {
             setIsSubmitting(false);
         }

@@ -10,19 +10,13 @@ import {
     CheckSquare,
     BookOpen,
     Package,
-    ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HeaderSearch } from "./header-search";
 import Image from "next/image";
 import { UserNav } from "./user-nav";
 import { NotificationCenter } from "@/components/notifications/notification-center";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { NavDropdown } from "./nav-dropdown";
 import type { Notification, BrandingSettings } from "@/lib/types";
 
 const navigation = [
@@ -134,33 +128,14 @@ export function Navbar({
                             // Если есть подменю
                             if (item.children && item.children.length > 0) {
                                 return (
-                                    <DropdownMenu key={item.name}>
-                                        <DropdownMenuTrigger
-                                            className={cn(
-                                                "flex items-center gap-1 transition-colors whitespace-nowrap outline-none",
-                                                isActive
-                                                    ? "text-primary"
-                                                    : "text-slate-400 hover:text-slate-900"
-                                            )}
-                                        >
-                                            {item.name}
-                                            <ChevronDown className="h-3 w-3" />
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="start" className="min-w-[160px]">
-                                            {item.children.map((child) => (
-                                                <DropdownMenuItem key={child.href} asChild>
-                                                    <Link
-                                                        href={child.href}
-                                                        className={cn(
-                                                            pathname === child.href && "bg-slate-100"
-                                                        )}
-                                                    >
-                                                        {child.name}
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                            ))}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <NavDropdown
+                                        key={item.name}
+                                        name={item.name}
+                                        href={item.href}
+                                        isActive={isActive}
+                                    >
+                                        {item.children}
+                                    </NavDropdown>
                                 );
                             }
 

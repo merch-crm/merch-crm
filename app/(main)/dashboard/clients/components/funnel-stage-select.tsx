@@ -8,7 +8,7 @@ import { FunnelStageBadge } from "./funnel-stage-badge";
 import {
     funnelStages,
     type FunnelStage
-} from "@/lib/schema/clients";
+} from "@/lib/schema";
 
 interface FunnelStageSelectProps {
     value: FunnelStage | string | null;

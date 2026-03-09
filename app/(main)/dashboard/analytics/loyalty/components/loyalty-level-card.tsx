@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LoyaltyLevelBadge } from "@/app/(main)/dashboard/clients/components/loyalty-level-badge";
-import type { LoyaltyLevel } from "@/lib/schema/loyalty-levels";
+import type { LoyaltyLevel } from "@/lib/schema";
 import { useBranding } from "@/components/branding-provider";
 
 interface LoyaltyLevelCardProps {

@@ -77,7 +77,7 @@ export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
             adminComment: promocodes.adminComment,
             minOrderAmount: promocodes.minOrderAmount,
             createdAt: promocodes.createdAt,
-            totalSaved: sql<number>`coalesce(${ordersSq.sqTotalSaved}, 0)::float`
+            totalSaved: sql<number>`coalesce("orders_sq"."sq_total_saved", 0)::float`
         })
             .from(promocodes)
             .leftJoin(ordersSq, eq(promocodes.id, ordersSq.promocodeId))

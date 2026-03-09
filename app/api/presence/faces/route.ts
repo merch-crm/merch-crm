@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { employeeFaces } from '@/lib/schema/presence'
+import { employeeFaces } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
 import { logError } from '@/lib/error-logger'
 

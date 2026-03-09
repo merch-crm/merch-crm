@@ -1,6 +1,6 @@
 import { pgTable, text, uuid, boolean, integer, timestamp, jsonb, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { clients } from "./clients";
+import { clients } from "./clients/main";
 import { users } from "./users";
 
 // === ТИПЫ КАНАЛОВ ===

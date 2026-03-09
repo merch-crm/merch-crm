@@ -1,4 +1,4 @@
-import { type DetectionZone } from '@/lib/schema/presence'
+import { type DetectionZone } from '@/lib/schema'
 
 export interface WorkstationInput {
     name: string;

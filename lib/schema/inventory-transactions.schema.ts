@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid, index, integer, decimal, primaryKey } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { transactionTypeEnum } from "./enums";
-import { inventoryItems } from "./warehouse";
+import { inventoryItems } from "./warehouse/items";
 import { orders } from "./orders";
 import { storageLocations } from "./storage";
 import { users } from "./users";

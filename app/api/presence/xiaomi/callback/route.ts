@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { xiaomiAccounts } from '@/lib/schema/presence'
+import { xiaomiAccounts } from '@/lib/schema'
 import { logError } from '@/lib/error-logger'
 import { logAction } from '@/lib/audit'
 import { encrypt } from '@/lib/crypto'

@@ -8,7 +8,6 @@ import { LayoutGrid, MapPin, Book, History, Clock, Layers } from "lucide-react";
 export const WAREHOUSE_TABS = [
     { id: "overview", label: "Обзор", icon: LayoutGrid, href: "/dashboard/warehouse/overview" },
     { id: "categories", label: "Категории", icon: Layers, href: "/dashboard/warehouse/categories" },
-    { id: "lines", label: "Линейки", icon: Layers, href: "/dashboard/warehouse/lines" },
     { id: "storage", label: "Хранение", icon: MapPin, href: "/dashboard/warehouse/storage" },
     { id: "characteristics", label: "Характеристики", icon: Book, href: "/dashboard/warehouse/characteristics" },
     { id: "history", label: "История", icon: History, href: "/dashboard/warehouse/history", activeColor: "bg-[#550bf5]", shadowColor: "shadow-[#550bf5]/25" },
@@ -16,7 +15,7 @@ export const WAREHOUSE_TABS = [
 ];
 
 export const WAREHOUSE_TAB_INFO: Record<string, { title: string; description: string }> = {
-    "/dashboard/warehouse/overview": { title: "Обзор склада", description: "Сводные показатели, активность и критические остатки" }, "/dashboard/warehouse/categories": { title: "Категории", description: "Управление структурой каталога, категориями и актуальными остатками" }, "/dashboard/warehouse/lines": { title: "Линейки", description: "Базовые и готовые линейки продуктов" }, "/dashboard/warehouse/storage": { title: "Места хранения", description: "Мониторинг складов, ячеек и перемещений продукции" }, "/dashboard/warehouse/characteristics": { title: "Характеристики", description: "Настройка характеристик, типов атрибутов и параметров SKU" }, "/dashboard/warehouse/history": { title: "Журнал операций", description: "Детальная история всех складских транзакций и изменений" }, "/dashboard/warehouse/archive": { title: "Архив продукции", description: "Список позиций, выведенных из эксплуатации или удаленных" }, "/dashboard/warehouse/items/new": { title: "Новая позиция", description: "Создание новой карточки товара в системе" }
+    "/dashboard/warehouse/overview": { title: "Обзор склада", description: "Сводные показатели, активность и критические остатки" }, "/dashboard/warehouse/categories": { title: "Категории", description: "Управление структурой каталога, категориями и актуальными остатками" }, "/dashboard/warehouse/storage": { title: "Места хранения", description: "Мониторинг складов, ячеек и перемещений продукции" }, "/dashboard/warehouse/characteristics": { title: "Характеристики", description: "Настройка характеристик, типов атрибутов и параметров SKU" }, "/dashboard/warehouse/history": { title: "Журнал операций", description: "Детальная история всех складских транзакций и изменений" }, "/dashboard/warehouse/archive": { title: "Архив продукции", description: "Список позиций, выведенных из эксплуатации или удаленных" }, "/dashboard/warehouse/items/new": { title: "Новая позиция", description: "Создание новой карточки товара в системе" }
 };
 
 interface WarehouseNavigationTabsProps {

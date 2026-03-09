@@ -1,10 +1,10 @@
 import { pgTable, text, timestamp, uuid, boolean, index, integer, decimal } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { clientTypeEnum } from "./enums";
-import { users } from "./users";
-import { orders } from "./orders";
-import { clientContacts } from "./client-contacts";
-import { loyaltyLevels } from "./loyalty-levels";
+import { clientTypeEnum } from "../enums";
+import { users } from "../users";
+import { orders } from "../orders";
+import { clientContacts } from "./contacts";
+import { loyaltyLevels } from "./loyalty";
 
 // Этапы воронки
 export const funnelStages = ["lead", "first_contact", "negotiation", "first_order", "regular"] as const;

@@ -1,7 +1,7 @@
 // lib/schema/loyalty-levels.ts
 import { pgTable, uuid, text, boolean, timestamp, decimal, integer, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { clients } from "./clients";
+import { clients } from "./main";
 
 export const loyaltyLevels = pgTable("loyalty_levels", {
     id: uuid("id").primaryKey().defaultRandom(),

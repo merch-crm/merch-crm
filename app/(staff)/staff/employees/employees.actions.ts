@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { employeeFaces } from '@/lib/schema/presence'
+import { employeeFaces } from '@/lib/schema'
 import { users } from '@/lib/schema/users'
 import { eq, desc, and } from 'drizzle-orm'
 import { getSession } from '@/lib/session'

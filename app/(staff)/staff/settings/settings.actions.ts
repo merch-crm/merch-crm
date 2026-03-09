@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { presenceSettings } from '@/lib/schema/presence'
+import { presenceSettings } from '@/lib/schema'
 import { eq } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { checkIsAdmin } from '@/lib/admin'

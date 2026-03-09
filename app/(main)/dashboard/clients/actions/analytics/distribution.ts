@@ -1,10 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clients, loyaltyLevels } from "@/lib/schema";
+import { clients, loyaltyLevels, funnelStages, funnelStageLabels, funnelStageColors } from "@/lib/schema";
 import { eq, sql, and, count, isNull, isNotNull } from "drizzle-orm";
 import { logError } from "@/lib/error-logger";
-import { funnelStages, funnelStageLabels, funnelStageColors } from "@/lib/schema/clients";
 import { rfmSegmentLabels, rfmSegmentColors } from "../rfm.types";
 import { FunnelAnalyticsData, RevenueBySegmentData, LoyaltyDistributionData, RFMDistributionData } from "./types";
 

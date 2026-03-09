@@ -213,10 +213,17 @@ export interface InventoryItem {
         } | null;
     } | null;
     stocks?: { storageLocationId: string; quantity: number }[];
-    printDesignId?: string | null;
     printDesign?: {
         id: string;
         name: string;
+    } | null;
+    printDesignId?: string | null;
+    productLineId?: string | null;
+    productLine?: {
+        id: string;
+        name: string;
+        type: "base" | "finished";
+        printCollectionId?: string | null;
     } | null;
 }
 

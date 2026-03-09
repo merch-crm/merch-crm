@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { LoyaltySettingsClient } from "./loyalty-settings-client";
 import { Button } from "@/components/ui/button";
 import { getLoyaltyLevels } from "../../actions/loyalty.actions";
-import type { LoyaltyLevel } from "@/lib/schema/loyalty-levels";
+import type { LoyaltyLevel } from "@/lib/schema";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

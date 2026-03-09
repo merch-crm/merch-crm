@@ -3,10 +3,10 @@ import { relations } from "drizzle-orm";
 import { orders } from "./orders";
 import { payments, expenses } from "./finance";
 import { inventoryTransactions } from "./inventory-transactions.schema";
-import { inventoryTransfers } from "./warehouse";
+import { inventoryTransfers } from "./warehouse/stock";
 import { tasks } from "./tasks";
 import { notifications, auditLogs, securityEvents, systemErrors } from "./system";
-import { clients } from "./clients";
+import { clients } from "./clients/main";
 import { wikiPages } from "./wiki";
 
 export const departments = pgTable("departments", {

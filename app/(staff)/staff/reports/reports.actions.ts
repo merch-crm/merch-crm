@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/lib/db'
-import { dailyWorkStats } from '@/lib/schema/presence'
+import { dailyWorkStats } from '@/lib/schema'
 import { eq, and, gte, lte } from 'drizzle-orm'
 import { getSession } from '@/lib/session'
 import { logError } from '@/lib/error-logger'

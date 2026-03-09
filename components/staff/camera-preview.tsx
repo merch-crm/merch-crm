@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
-import { type DetectionZone } from '@/lib/schema/presence'
+import { type DetectionZone } from '@/lib/schema'
 
 interface Zone {
     id: string

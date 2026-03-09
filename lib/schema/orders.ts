@@ -1,10 +1,10 @@
 import { pgTable, text, timestamp, uuid, boolean, index, decimal, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { orderStatusEnum, paymentStatusEnum, deliveryStatusEnum, orderCategoryEnum, productionStageStatusEnum } from "./enums";
-import { clients } from "./clients";
+import { clients } from "./clients/main";
 import { users } from "./users";
 import { promocodes } from "./promocodes";
-import { inventoryItems } from "./warehouse";
+import { inventoryItems } from "./warehouse/items";
 import { payments } from "./finance";
 import { tasks } from "./tasks";
 

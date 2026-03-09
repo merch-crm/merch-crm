@@ -31,12 +31,16 @@ export function useNewItemState() {
         sizeName?: string;
     }>>([]);
 
+    const { setFormData, setValidationError } = form;
     const updateFormData = useCallback(
         (updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => {
-            form.setFormData(updates);
-            if (form.validationError) form.setValidationError("");
+            setFormData((prev) => {
+                const resolved = typeof updates === 'function' ? updates(prev) : updates;
+                return { ...prev, ...resolved };
+            });
+            setValidationError("");
         },
-        [form]
+        [setFormData, setValidationError]
     );
 
     const resetMatrixAndLineStates = useCallback(() => {

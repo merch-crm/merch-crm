@@ -9,7 +9,7 @@ import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
 import { addClientContact, updateClientContact } from "../actions/contacts.actions";
-import type { ClientContact } from "@/lib/schema/client-contacts";
+import type { ClientContact } from "@/lib/schema";
 
 interface ContactEditDialogProps {
     isOpen: boolean;

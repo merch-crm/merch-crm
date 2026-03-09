@@ -173,6 +173,49 @@ export function CategoryDetailClient({
     const subStartIndex = (ui.subCurrentPage - 1) * subsPerPage;
     const currentSubCategories = subCategories.slice(subStartIndex, subStartIndex + subsPerPage);
 
+    const groupedData = useMemo(() => {
+        const linesMap = new Map(lines.map(l => [l.id, l]));
+        const lineGroups: Record<string, InventoryItem[]> = {};
+        const standalone: InventoryItem[] = [];
+
+        items.forEach(item => {
+            const lineId = item.productLineId;
+            if (lineId) {
+                if (!lineGroups[lineId]) lineGroups[lineId] = [];
+                lineGroups[lineId].push(item);
+            } else {
+                standalone.push(item);
+            }
+        });
+
+        const groups: { id: string | null; name: string; items: InventoryItem[]; type?: string; isCollection?: boolean }[] = [];
+
+        // Add groups for lines
+        Object.entries(lineGroups).forEach(([lineId, lineItems]) => {
+            const line = linesMap.get(lineId);
+            const isCollection = line?.type === 'finished' && !!line.printCollectionId;
+
+            groups.push({
+                id: lineId,
+                name: line?.name || "Линейка",
+                items: lineItems,
+                type: line?.type,
+                isCollection
+            });
+        });
+
+        // Standalone group
+        if (standalone.length > 0) {
+            groups.push({
+                id: null,
+                name: "Позиции",
+                items: standalone
+            });
+        }
+
+        return groups;
+    }, [items, lines]);
+
     const isAnyModalOpen =
         dialogs.massActions.isBulkMoveOpen ||
         dialogs.massActions.isBulkCategoryOpen ||
@@ -229,35 +272,9 @@ export function CategoryDetailClient({
                 }}
             />
 
-            {/* Линейки */}
-            {lines && lines.length > 0 && (
-                <div className="space-y-3 mt-8">
-                    <div className="flex items-center gap-3 px-2">
-                        <h2 className="text-sm font-bold text-slate-500">Линейки в категории</h2>
-                        <div className="h-px flex-1 bg-[#e2e8f0]" />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
-                        {lines.map((line) => (
-                            <LineCard
-                                key={line.id}
-                                line={{
-                                    ...line,
-                                    description: line.description ?? null
-                                } as ProductLineWithStats}
-                                category={category}
-                            />
-                        ))}
-                    </div>
-                </div>
-            )}
 
             {/* Items Table Section */}
-            <div className="space-y-3 mt-8">
-                <div className="flex items-center gap-3 px-2">
-                    <h2 className="text-sm font-bold text-slate-500">Позиции</h2>
-                    <div className="h-px flex-1 bg-[#e2e8f0]" />
-                </div>
-
+            <div className="space-y-6 mt-8">
                 {dialogs.massActions.showArchiveReason && (
                     <ArchiveReasonDialog
                         isOpen={dialogs.massActions.showArchiveReason}
@@ -269,19 +286,33 @@ export function CategoryDetailClient({
                 )}
 
                 {totalItems > 0 ? (
-                    <div className="space-y-3">
-                        <CategoryItemsList
-                            items={items || []}
-                            selectedIds={ui.selectedIds}
-                            toggleSelectAll={toggleSelectAll}
-                            toggleSelectItem={(id) => toggleSelectItem(id)}
-                            canSeeCost={!!canSeeCost}
-                            currencySymbol={currencySymbol || ""}
-                            storageLocations={storageLocations}
-                            handlePrintLabel={handlePrintLabel}
-                            handleOpenAdjust={handleOpenAdjust}
-                            setIdsToDelete={(ids) => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, ids } }))}
-                        />
+                    <div className="space-y-10">
+                        {groupedData.map((group) => (
+                            <div key={group.id || 'standalone'} className="space-y-4">
+                                <div className="flex items-center gap-3 px-2">
+                                    <h2 className="text-sm font-bold text-slate-500">
+                                        {group.isCollection ? `Коллекция «${group.name}»` :
+                                            group.id ? (group.name === 'Линейка' || !group.name ? 'Линейка' : `Линейка «${group.name}»`) :
+                                                group.name}
+                                    </h2>
+                                    <div className="h-px flex-1 bg-[#e2e8f0]" />
+                                </div>
+
+                                <CategoryItemsList
+                                    items={group.items}
+                                    selectedIds={ui.selectedIds}
+                                    toggleSelectAll={toggleSelectAll}
+                                    toggleSelectItem={(id) => toggleSelectItem(id)}
+                                    canSeeCost={!!canSeeCost}
+                                    currencySymbol={currencySymbol || ""}
+                                    storageLocations={storageLocations}
+                                    handlePrintLabel={handlePrintLabel}
+                                    handleOpenAdjust={handleOpenAdjust}
+                                    setIdsToDelete={(ids) => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, ids } }))}
+                                />
+                            </div>
+                        ))}
+
                         <div className="pt-2">
                             <Pagination
                                 currentPage={Number(searchParams.get("page")) || 1}
@@ -307,7 +338,7 @@ export function CategoryDetailClient({
                         </p>
                     </div>
                 )}
-            </div >
+            </div>
 
             {ui.mounted && (
                 <>

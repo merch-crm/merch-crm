@@ -162,29 +162,45 @@ export function LineMatrixStep({
                                     </button>
                                 </div>
 
-                                <div className={cn("grid gap-3", isColor ? "grid-cols-4 md:grid-cols-6 lg:grid-cols-8" : "grid-cols-2 md:grid-cols-4 lg:grid-cols-6")}>
-                                    {values.map((value) => {
-                                        const isSelected = selected.includes(value.code);
-                                        if (isColor && value.color) {
+                                {/* Кружки с цветом — для атрибутов у которых есть hex */}
+                                {isColor && values.some(v => v.color) && (
+                                    <div className="flex flex-wrap gap-2">
+                                        {values.filter(v => v.color).map((value) => {
+                                            const isSelected = selected.includes(value.code);
                                             return (
                                                 <Tooltip key={value.code} content={value.name}>
                                                     <button
                                                         type="button"
                                                         onClick={() => handleValueToggle(attr.slug, value.code, !isSelected)}
-                                                        className={cn("w-12 h-12 rounded-xl border-2 transition-all", isSelected ? "border-blue-500 ring-2 ring-blue-200 scale-110" : "border-slate-200 hover:border-slate-300")}
+                                                        className={cn("w-10 h-10 rounded-xl border-2 transition-all", isSelected ? "border-blue-500 ring-2 ring-blue-200 scale-110" : "border-slate-200 hover:border-slate-300")}
                                                         style={{ backgroundColor: value.color }}
                                                     />
                                                 </Tooltip>
                                             );
-                                        }
-                                        return (
-                                            <label key={value.code} className={cn("flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all", isSelected ? "border-blue-400 bg-blue-50" : "border-slate-200 bg-white hover:border-blue-200")}>
-                                                <Checkbox checked={isSelected} onCheckedChange={(checked) => handleValueToggle(attr.slug, value.code, checked as boolean)} />
-                                                <span className="text-sm font-medium">{value.name}</span>
-                                            </label>
-                                        );
-                                    })}
-                                </div>
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* Лейблы — для цветов без hex и всех нецветных атрибутов */}
+                                {values.some(v => !isColor || !v.color) && (
+                                    <div className={cn("flex flex-wrap gap-2", !isColor && "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6")}>
+                                        {values.filter(v => !isColor || !v.color).map((value) => {
+                                            const isSelected = selected.includes(value.code);
+                                            return (
+                                                <label key={value.code} className={cn("flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all", isSelected ? "border-blue-400 bg-blue-50" : "border-slate-200 bg-white hover:border-blue-200")}>
+                                                    <Checkbox checked={isSelected} onCheckedChange={(checked) => handleValueToggle(attr.slug, value.code, checked as boolean)} />
+                                                    {isColor && (
+                                                        <span
+                                                            className="w-4 h-4 rounded-full border border-slate-200 shrink-0"
+                                                            style={{ backgroundColor: value.color || '#e2e8f0' }}
+                                                        />
+                                                    )}
+                                                    <span className="text-sm font-medium whitespace-nowrap">{value.name}</span>
+                                                </label>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                                 {values.length === 0 && <p className="text-sm text-slate-500 text-center py-4">Нет значений для этой характеристики</p>}
                             </div>
                         );

@@ -108,7 +108,8 @@ export async function getInventoryItems(filters: InventoryFilters = {}): Promise
                     with: {
                         storageLocation: true
                     }
-                }
+                },
+                productLine: true
             },
             orderBy: orderByClause,
             limit: limit > 0 ? limit : 100,

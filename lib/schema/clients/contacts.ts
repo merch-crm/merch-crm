@@ -1,7 +1,6 @@
-// lib/schema/client-contacts.ts
 import { pgTable, uuid, text, boolean, timestamp, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { clients } from "./clients";
+import { clients } from "./main";
 
 // Роли контактных лиц
 export const contactRoles = ["lpr", "accountant", "buyer", "other"] as const;

@@ -5,7 +5,7 @@ import { useToast } from '@/components/ui/toast';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { createInventoryAttributeType } from '../attributes/actions/type.actions';
 import { playSound } from '@/lib/sounds';
-import type { Category } from '@/lib/types';
+import type { Category } from '../types';
 
 // Mocks
 vi.mock('next/navigation', () => ({
@@ -25,10 +25,10 @@ vi.mock('@/lib/sounds', () => ({
     playSound: vi.fn()
 }));
 
-const mockCategories: Category[] = [
-    { id: 'cat1', name: 'Одежда' } as Category,
-    { id: 'cat2', name: 'Обувь' } as Category
-];
+const mockCategories = [
+    { id: 'cat1', name: 'Одежда', description: null, icon: null, color: null },
+    { id: 'cat2', name: 'Обувь', description: null, icon: null, color: null }
+] as Category[];
 
 describe('transliterateToSlug', () => {
     it('correctly transliterates Russian to Latin', () => {
@@ -50,22 +50,22 @@ describe('useAddAttributeType', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as never);
-        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as never);
+        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as any);
+        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as any);
 
         const mockSearchParams = new URLSearchParams();
-        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as never);
+        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
     });
 
     it('initializes with default values', () => {
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
         expect(result.current.dataTypes).toEqual([]);
         expect(result.current.activeCategoryId).toBe('cat1'); // Default to first category
         expect(result.current.isOpen).toBe(false);
     });
 
     it('dataTypes updates automatically when toggleDataType changes', () => {
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
             result.current.toggleDataType('color');
@@ -75,7 +75,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleOpen resets state properly', () => {
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
             result.current.toggleDataType('dimensions');
@@ -92,7 +92,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate fails without any dataTypes selected', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         await act(async () => {
             await result.current.handleCreate();
@@ -105,7 +105,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate succeeds and calls router.refresh()', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
             result.current.toggleDataType('material');
@@ -137,7 +137,7 @@ describe('useAddAttributeType', () => {
         vi.mocked(createInventoryAttributeType).mockReset();
         vi.mocked(createInventoryAttributeType).mockResolvedValue({ success: false, error: 'Database error' });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as never }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
 
         act(() => {
             result.current.toggleDataType('text');
