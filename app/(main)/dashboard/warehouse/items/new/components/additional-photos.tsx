@@ -21,8 +21,8 @@ export function AdditionalPhotos({
     onReplace,
     onRemove
 }: AdditionalPhotosProps) {
-    const totalSlots = 6;
     const currentCount = previews?.length || 0;
+    const totalSlots = Math.max(6, currentCount + 1);
 
     return (
         <div className="grid grid-cols-3 gap-3 pb-4">

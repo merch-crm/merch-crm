@@ -5,7 +5,7 @@ import { useMediaLogic } from "../hooks/useMediaLogic";
 import { MainPhotoUploader } from "./main-photo-uploader";
 import { ImageThumbControls } from "./image-thumb-controls";
 import { AdditionalPhotos } from "./additional-photos";
-import { pluralize } from "@/lib/pluralize";
+
 
 interface MediaStepProps {
     category: Category | null;
@@ -20,7 +20,6 @@ export function MediaStep({ category, formData, updateFormData, onNext, onBack }
         isProcessing,
         uploadStates,
         loadingIndex,
-        isMinimumRequiredMet,
         thumbSettings,
         aspectRatio,
         maxBounds,
@@ -131,7 +130,7 @@ export function MediaStep({ category, formData, updateFormData, onNext, onBack }
                     onNext={onNext}
                     isNextDisabled={isProcessing}
                     validationError={undefined}
-                    hint={isMinimumRequiredMet && ((formData.imageDetailsPreviews?.length || 0) + (formData.imagePreview ? 1 : 0)) < 7 ? `Вы можете добавить еще ${7 - ((formData.imageDetailsPreviews?.length || 0) + (formData.imagePreview ? 1 : 0))} ${pluralize(7 - ((formData.imageDetailsPreviews?.length || 0) + (formData.imagePreview ? 1 : 0)), "ракурс", "ракурса", "ракурсов")}` : undefined}
+                    hint={undefined}
                 />
             </div>
         </div>

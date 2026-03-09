@@ -1,14 +1,15 @@
-import { db } from"@/lib/db";
+import { db } from "@/lib/db";
 
-import { inventoryCategories } from"@/lib/schema";
-import { eq } from"drizzle-orm";
-import { notFound, redirect } from"next/navigation";
-import { Metadata } from"next";
-import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from"./category-detail-client";
-import type { StorageLocation, InventoryFilters } from"../../types";
-import { getSession } from"@/lib/auth";
-import { serializeForClient, type Serialized } from"@/lib/serialize";
-import { cache } from"react";
+import { inventoryCategories } from "@/lib/schema";
+import { eq } from "drizzle-orm";
+import { notFound, redirect } from "next/navigation";
+import { Metadata } from "next";
+import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from "./category-detail-client";
+import type { StorageLocation, InventoryFilters, ProductLineWithStats } from "../../types";
+import { getSession } from "@/lib/auth";
+import { serializeForClient, type Serialized } from "@/lib/serialize";
+import { cache } from "react";
+import { getLinesByCategory } from "../../lines/actions";
 
 type PageParams = {
     params: Promise<{ id: string }>;
@@ -49,12 +50,12 @@ const getCachedCategory = cache(async (id: string, isUuid: boolean) => {
 
 export async function generateMetadata({ params }: PageParams): Promise<Metadata> {
     const { id: paramId } = await params;
-    if (paramId ==="orphaned") return { title:"Склад | Без категории" };
+    if (paramId === "orphaned") return { title: "Склад | Без категории" };
 
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
     const found = await getCachedCategory(paramId, isUuid);
 
-    return { title: found ? `Склад | ${found.name}` :"Склад | Категория" };
+    return { title: found ? `Склад | ${found.name}` : "Склад | Категория" };
 }
 
 export default async function CategoryPage({
@@ -73,7 +74,7 @@ export default async function CategoryPage({
     let parentCategory = null;
     let resolvedCategoryId: string | null = null;
 
-    if (paramId ==="orphaned") {
+    if (paramId === "orphaned") {
         resolvedCategoryId = null; // orphaned
     } else {
         const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(paramId);
@@ -158,7 +159,7 @@ export default async function CategoryPage({
     const page = Number(searchParamsObj.page) || 1;
     const limit = 20;
 
-    const [itemsRes, locationsRes, typesRes, attrsRes] = await Promise.all([
+    const [itemsRes, locationsRes, typesRes, attrsRes, linesRes] = await Promise.all([
         getInventoryItems({
             categoryIds: targetCategoryIds,
             page,
@@ -166,11 +167,12 @@ export default async function CategoryPage({
             search: searchParamsObj.search,
             status: searchParamsObj.status as InventoryFilters["status"],
             storageLocationId: searchParamsObj.storage,
-            onlyOrphaned: paramId ==="orphaned"
+            onlyOrphaned: paramId === "orphaned"
         }),
         getStorageLocations(),
         getInventoryAttributeTypes(),
-        getInventoryAttributes()
+        getInventoryAttributes(),
+        resolvedCategoryId ? getLinesByCategory(resolvedCategoryId) : Promise.resolve({ success: true, data: [] })
     ]);
 
     const itemsData = itemsRes.success && itemsRes.data ? itemsRes.data : { items: [], total: 0 };
@@ -181,6 +183,7 @@ export default async function CategoryPage({
     const locationsData = locationsRes.success ? locationsRes.data : [] as StorageLocation[];
     const typesData = typesRes.success ? typesRes.data : [] as AttributeType[];
     const attrsData = attrsRes.success ? attrsRes.data : [] as InventoryAttribute[];
+    const linesData = linesRes.success ? linesRes.data : [];
 
     // Унифицированная сериализация всех данных
     const subCategories = serializeForClient(subCategoriesRaw) as Serialized<Category[]>;
@@ -188,17 +191,18 @@ export default async function CategoryPage({
     const locations = serializeForClient(locationsData) as Serialized<StorageLocation[]>;
     const attributeTypes = serializeForClient(typesData) as Serialized<AttributeType[]>;
     const allAttributes = serializeForClient(attrsData) as Serialized<InventoryAttribute[]>;
+    const lines = serializeForClient(linesData);
 
     // Fallback object for UI if orphaned
     const finalCategory = category ? serializeForClient(category) as Serialized<Category> : {
-        id:"orphaned",
-        name:"Без категории",
-        description:"Товары, которым не назначена категория",
+        id: "orphaned",
+        name: "Без категории",
+        description: "Товары, которым не назначена категория",
         prefix: null,
-        color:"slate",
-        icon:"box",
+        color: "slate",
+        icon: "box",
         isSystem: true,
-        gender:"neuter",
+        gender: "neuter",
         sortOrder: 0,
         isActive: true
     } as Serialized<Category>;
@@ -217,6 +221,7 @@ export default async function CategoryPage({
 
             attributeTypes={attributeTypes as AttributeType[]}
             allAttributes={allAttributes as InventoryAttribute[]}
+            lines={lines as unknown as ProductLineWithStats[]}
             user={session}
         />
     );

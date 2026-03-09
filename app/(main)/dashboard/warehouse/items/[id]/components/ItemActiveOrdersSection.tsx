@@ -1,16 +1,11 @@
 "use client";
 
-import React from"react";
+import React from "react";
 import {
     ShoppingBag,
-    ChevronRight,
-    User,
-    Calendar,
-} from"lucide-react";
-import { ActiveOrderItem } from"@/app/(main)/dashboard/warehouse/types";
-import { format } from"date-fns";
-import { ru } from"date-fns/locale";
-import Link from"next/link";
+} from "lucide-react";
+import { ActiveOrderItem } from "@/app/(main)/dashboard/warehouse/types";
+import Link from "next/link";
 
 interface ItemActiveOrdersSectionProps {
     orders: ActiveOrderItem[];
@@ -27,68 +22,59 @@ export function ItemActiveOrdersSection({ orders = [] }: ItemActiveOrdersSection
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="flex flex-col gap-2.5">
             {(orders || []).map((item, idx) => {
                 if (!item.order) return null;
 
                 const clientName = item.order.client
                     ? `${item.order.client.firstName} ${item.order.client.lastName}`.trim()
-                    :"Частное лицо";
+                    : "Частное лицо";
+                const avatarInitial = clientName.charAt(0).toUpperCase();
+
+                const orderData = item.order as { category?: string; status?: string; orderNumber?: string };
+                const categoryRaw = orderData.category;
+                const _orderCategory = categoryRaw === "corporate" ? "Корпоративный заказ" :
+                    categoryRaw === "retail" ? "Розничный заказ" :
+                        categoryRaw === "wholesale" ? "Оптовый заказ" :
+                            (item.order.client?.company || "В работе");
+
+                // Try to extract a status or use category as fallback for the right side badge
+                const statusText = orderData.status === 'new' ? 'Новый' :
+                    orderData.status === 'processing' ? 'В обработке' :
+                        orderData.status === 'ready' ? 'Готов' :
+                            'В резерве';
+
+                const orderNumber = item.order.orderNumber?.startsWith('#') ? item.order.orderNumber : `#${item.order.orderNumber}`;
 
                 return (
                     <Link
                         key={item.id}
                         href={`/dashboard/orders/${item.order.id}`}
-                        className="group relative overflow-hidden p-5 rounded-2xl bg-muted/50 hover:bg-card border border-border hover:shadow-crm-md transition-all duration-300 flex flex-col justify-between h-full"
+                        className="group p-3.5 rounded-2xl border border-slate-100/80 bg-white hover:border-slate-200 hover:shadow-sm transition-all duration-300 flex items-center justify-between"
                         style={{ animationDelay: `${idx * 50}ms` }}
                     >
-                        {/* Status Batch */}
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="h-7 px-3 rounded-full bg-card border border-border shadow-sm flex items-center gap-2 transition-colors">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                <span className="text-xs font-bold text-foreground whitespace-nowrap">
-                                    Заказ #{item.order.orderNumber}
+                        <div className="flex items-center gap-3.5">
+                            <div className="w-10 h-10 rounded-full bg-blue-50/50 border border-blue-100 flex items-center justify-center text-blue-600 font-black text-sm shrink-0">
+                                {avatarInitial}
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[14px] font-black text-slate-900 group-hover:text-blue-600 transition-colors">
+                                    Заказ {orderNumber}
+                                </span>
+                                <span className="text-[12px] font-bold text-slate-400 mt-0.5">
+                                    {clientName}
                                 </span>
                             </div>
-                            <span className="text-sm font-bold text-primary tabular-nums">
-                                {item.quantity} шт
+                        </div>
+
+                        <div className="flex flex-col items-end">
+                            <span className="text-[14px] font-black text-slate-900 tabular-nums">
+                                {item.quantity} шт.
+                            </span>
+                            <span className="text-[11px] font-bold text-slate-400 mt-1">
+                                {statusText}
                             </span>
                         </div>
-
-                        {/* Middle Content */}
-                        <div className="space-y-3 mb-4">
-                            <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors shrink-0">
-                                    <User className="w-4 h-4" />
-                                </div>
-                                <div className="min-w-0">
-                                    <p className="text-xs font-bold text-muted-foreground mb-0.5">Клиент</p>
-                                    <p className="text-[12px] font-bold text-foreground truncate">
-                                        {item.order.client?.company || clientName}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Footer Info */}
-                        <div className="pt-4 border-t border-border/60 flex items-center justify-between">
-                            <div className="flex items-center gap-2 text-xs font-bold text-muted-foreground">
-                                <Calendar className="w-3.5 h-3.5 text-muted-foreground/50" />
-                                <span>
-                                    {(() => {
-                                        const d = new Date(item.order.createdAt);
-                                        return isNaN(d.getTime()) ?"—" : format(d,"dd MMM yyyy", { locale: ru });
-                                    })()}
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-primary/60 group-hover:text-primary transition-colors">
-                                <span>Открыть</span>
-                                <ChevronRight className="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform" />
-                            </div>
-                        </div>
-
-                        {/* Subtle background glow on hover */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </Link>
                 );
             })}

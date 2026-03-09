@@ -101,7 +101,7 @@ export default function UIKitPage() {
                     <div className="flex items-center justify-between">
                         <div>
                             <h1 className="text-2xl font-black text-slate-900">UI Kit</h1>
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-slate-500" suppressHydrationWarning>
                                 MerchCRM • {totalComponents} компонентов • {sections.length} категорий
                             </p>
                         </div>

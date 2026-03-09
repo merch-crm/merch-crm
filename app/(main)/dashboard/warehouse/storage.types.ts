@@ -7,11 +7,12 @@ export interface StorageLocation {
     isSystem?: boolean;
     isDefault?: boolean;
     isActive?: boolean;
-    sortOrder?: number;
+    sortOrder?: number | null;
     responsibleUser?: {
         name: string;
     } | null;
     type: "warehouse" | "production" | "office";
+    createdAt?: Date;
     items?: StorageLocationItem[];
 }
 

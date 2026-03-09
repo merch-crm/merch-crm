@@ -86,7 +86,7 @@ export function ItemImagePreview({
 
             {/* THUMBNAIL CONTROLS */}
             {isEditing && item.image && (
-                <div className="crm-card rounded-3xl p-5 bg-white shadow-sm border border-slate-100 flex flex-col gap-3 animate-in slide-in-from-top-2 duration-500">
+                <div className="crm-card bg-white shadow-sm border border-slate-100 flex flex-col gap-3 animate-in slide-in-from-top-2 duration-500">
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between">
                             <span className="text-[11px] font-bold tracking-wider text-slate-400">Масштаб</span>

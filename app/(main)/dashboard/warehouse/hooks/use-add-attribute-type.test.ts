@@ -58,14 +58,14 @@ describe('useAddAttributeType', () => {
     });
 
     it('initializes with default values', () => {
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
         expect(result.current.dataTypes).toEqual([]);
         expect(result.current.activeCategoryId).toBe('cat1'); // Default to first category
         expect(result.current.isOpen).toBe(false);
     });
 
     it('dataTypes updates automatically when toggleDataType changes', () => {
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {
             result.current.toggleDataType('color');
@@ -75,7 +75,7 @@ describe('useAddAttributeType', () => {
     });
 
     it('handleOpen resets state properly', () => {
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {
             result.current.toggleDataType('dimensions');
@@ -92,7 +92,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate fails without any dataTypes selected', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         await act(async () => {
             await result.current.handleCreate();
@@ -105,7 +105,7 @@ describe('useAddAttributeType', () => {
     it('handleCreate succeeds and calls router.refresh()', async () => {
         (createInventoryAttributeType as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ success: true });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {
             result.current.toggleDataType('material');
@@ -137,7 +137,7 @@ describe('useAddAttributeType', () => {
         vi.mocked(createInventoryAttributeType).mockReset();
         vi.mocked(createInventoryAttributeType).mockResolvedValue({ success: false, error: 'Database error' });
 
-        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories }));
+        const { result } = renderHook(() => useAddAttributeType({ categories: mockCategories as any }));
 
         act(() => {
             result.current.toggleDataType('text');

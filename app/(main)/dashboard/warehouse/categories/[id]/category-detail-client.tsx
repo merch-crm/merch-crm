@@ -1,11 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { ArrowLeft, Plus, SearchX, Package } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { SearchX, Package } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-
-import { Button } from "@/components/ui/button";
 
 import { updateInventoryCategoriesOrder } from "../../category-actions";
 import { Pagination } from "@/components/ui/pagination";
@@ -16,41 +13,37 @@ import { Session } from "@/lib/auth";
 import { pluralize } from "@/lib/pluralize";
 
 import {
-    DndContext,
-    closestCenter,
     KeyboardSensor,
     PointerSensor,
     useSensor,
     useSensors,
     DragEndEvent,
     TouchSensor,
-    DragOverlay,
     DragStartEvent,
 } from "@dnd-kit/core";
 import {
     arrayMove,
-    SortableContext,
     sortableKeyboardCoordinates,
-    rectSortingStrategy,
 } from "@dnd-kit/sortable";
 
 import type {
     InventoryItem, Category, InventoryAttribute, AttributeType,
     MeasurementUnit, ItemStock, ItemHistoryTransaction, ActiveOrderItem,
-    InventoryFilters, ThumbnailSettings
+    InventoryFilters, ThumbnailSettings, ProductLineWithStats
 } from "../../types";
 
-import { SortableSubCategoryCard, SubCategoryCardContent } from "./components/SubCategoryCard";
 import { CategoryFilters } from "./components/CategoryFilters";
 import { CategoryItemsList } from "./components/CategoryItemsList";
+import { CategoryHeader } from "./components/CategoryHeader";
+import { SubCategoriesSection } from "./components/SubCategoriesSection";
 import { MassActionsBar } from "./components/MassActionsBar";
+import { LineCard } from "../../lines/components/line-card";
 
 import { useCategoryDetail } from "./hooks/use-category-detail";
 import dynamic from "next/dynamic";
 
 const AdjustStockDialog = dynamic(() => import("../../adjust-stock-dialog").then(m => m.AdjustStockDialog), { ssr: false });
 const EditCategoryDialog = dynamic(() => import("../../edit-category-dialog").then(m => m.EditCategoryDialog), { ssr: false });
-const AddCategoryDialog = dynamic(() => import("../../add-category-dialog").then(m => m.AddCategoryDialog), { ssr: false });
 const ConfirmDialog = dynamic(() => import("@/components/ui/confirm-dialog").then(m => m.ConfirmDialog), { ssr: false });
 const ArchiveReasonDialog = dynamic(() => import("../../components/archive-reason-dialog").then(m => m.ArchiveReasonDialog), { ssr: false });
 const LabelPrinterDialog = dynamic(() => import("../../components/LabelPrinterDialog").then(m => m.LabelPrinterDialog), { ssr: false });
@@ -69,6 +62,7 @@ interface CategoryDetailClientProps {
     storageLocations?: StorageLocation[];
     attributeTypes: AttributeType[];
     allAttributes: InventoryAttribute[];
+    lines?: ProductLineWithStats[];
     user: Session | null;
 }
 
@@ -81,6 +75,7 @@ export function CategoryDetailClient({
     storageLocations = [],
     attributeTypes = [],
     allAttributes = [],
+    lines = [],
     user
 }: CategoryDetailClientProps) {
     const {
@@ -191,44 +186,10 @@ export function CategoryDetailClient({
     return (
         <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header Group */}
-            <div className="flex flex-row items-center justify-between gap-3 mb-4">
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => router.back()}
-                        className="w-10 h-10 sm:w-11 sm:h-11 rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0 group mr-1 sm:mr-2"
-                    >
-                        <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
-                    </Button>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-none truncate">{category.name}</h1>
-                </div>
-
-                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                    {category.id !== "orphaned" && !category.parentId && ui.mounted && (
-                        <AddCategoryDialog
-                            parentId={category.id}
-                            buttonText="Добавить подкатегорию"
-                            className="h-10 w-10 sm:h-11 sm:w-auto"
-                        />
-                    )}
-                    <Button
-                        type="button"
-                        onClick={() => {
-                            const url = category.parentId
-                                ? `/dashboard/warehouse/items/new?categoryId=${category.parentId}&subcategoryId=${category.id}`
-                                : `/dashboard/warehouse/items/new?categoryId=${category.id}`;
-                            router.push(url);
-                        }}
-                        className={cn("h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center text-xs sm:text-sm border-none shadow-lg shadow-primary/20 transition-all active:scale-95"
-                        )}
-                    >
-                        <Plus className="w-5 h-5" />
-                        <span className="hidden sm:inline">Добавить позицию</span>
-                    </Button>
-                </div>
-            </div>
+            <CategoryHeader
+                category={category}
+                mounted={ui.mounted}
+            />
 
             {/* Sub-header with Search and Filters */}
             <CategoryFilters
@@ -246,68 +207,49 @@ export function CategoryDetailClient({
             />
 
             {/* Subcategories Grid - Show if this is a parent category */}
-            {
-                subCategories.length > 0 && (
-                    <div className="space-y-3 mt-8">
-                        <div className="flex items-center gap-3 px-2">
-                            <h2 className="text-sm font-bold text-slate-500">Подкатегории</h2>
-                            <div className="h-px flex-1 bg-[#e2e8f0]" />
-                        </div>
-                        <DndContext
-                            sensors={sensors}
-                            collisionDetection={closestCenter}
-                            onDragStart={handleDragStart}
-                            onDragEnd={handleDragEnd}
-                            onDragCancel={() => setUi(prev => ({ ...prev, activeId: null }))}
-                        >
-                            <SortableContext
-                                items={subCategories.map(s => s.id)}
-                                strategy={rectSortingStrategy}
-                            >
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
-                                    {currentSubCategories.map((subcat) => (
-                                        <div key={subcat.id} className="min-w-0">
-                                            <SortableSubCategoryCard
-                                                subcat={subcat}
-                                                router={router}
-                                                setEditingCategory={(cat) => setDialogs(prev => ({ ...prev, edit: { ...prev.edit, category: cat } }))}
-                                                setDeletingCategory={(cat) => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, category: cat } }))}
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
-                            </SortableContext>
-                            {subCategories.length > subsPerPage && (
-                                <div className="pt-4">
-                                    <Pagination
-                                        currentPage={ui.subCurrentPage}
-                                        totalItems={subCategories.length}
-                                        pageSize={subsPerPage}
-                                        onPageChange={(page) => setUi(prev => ({ ...prev, subCurrentPage: page }))}
-                                        itemNames={['подкатегория', 'подкатегории', 'подкатегорий']}
-                                        variant="card"
-                                    />
-                                </div>
-                            )}
-                            <DragOverlay adjustScale={true} dropAnimation={{
-                                duration: 250,
-                                easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)',
-                            }}>
-                                {ui.activeId ? (
-                                    <div className="w-full h-full pointer-events-none z-[100]">
-                                        <div className="bg-white border border-primary/30 rounded-[var(--radius)] p-5 shadow-2xl shadow-primary/15 flex items-center justify-between">
-                                            <SubCategoryCardContent
-                                                subcat={subCategories.find(s => s.id === ui.activeId)!}
-                                                isDragging={true}
-                                            />
-                                        </div>
-                                    </div>
-                                ) : null}
-                            </DragOverlay>
-                        </DndContext>
+            <SubCategoriesSection
+                data={{
+                    subCategories,
+                    currentSubCategories,
+                    subsPerPage,
+                    subCurrentPage: ui.subCurrentPage,
+                    activeId: ui.activeId,
+                }}
+                handlers={{
+                    setSubCurrentPage: (page) => setUi(prev => ({ ...prev, subCurrentPage: page })),
+                    handleDragStart,
+                    handleDragEnd,
+                    setActiveId: (id) => setUi(prev => ({ ...prev, activeId: id })),
+                    setEditingCategory: (cat) => setDialogs(prev => ({ ...prev, edit: { ...prev.edit, category: cat } })),
+                    setDeletingCategory: (cat) => setDialogs(prev => ({ ...prev, delete: { ...prev.delete, category: cat } })),
+                }}
+                config={{
+                    sensors,
+                    router,
+                }}
+            />
+
+            {/* Линейки */}
+            {lines && lines.length > 0 && (
+                <div className="space-y-3 mt-8">
+                    <div className="flex items-center gap-3 px-2">
+                        <h2 className="text-sm font-bold text-slate-500">Линейки в категории</h2>
+                        <div className="h-px flex-1 bg-[#e2e8f0]" />
                     </div>
-                )
-            }
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
+                        {lines.map((line) => (
+                            <LineCard
+                                key={line.id}
+                                line={{
+                                    ...line,
+                                    description: line.description ?? null
+                                } as ProductLineWithStats}
+                                category={category}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Items Table Section */}
             <div className="space-y-3 mt-8">

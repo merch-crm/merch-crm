@@ -20,7 +20,7 @@ export default function PaginationVariantsPage() {
                     </Button>
                     <div>
                         <h1 className="text-xl font-bold text-slate-900 leading-tight">Варианты Пагинации</h1>
-                        <p className="text-sm text-slate-500 font-medium">30 уникальных UI/UX концептов для таблиц и списков</p>
+                        <p className="text-sm text-slate-500 font-medium" suppressHydrationWarning>30 уникальных UI/UX концептов для таблиц и списков</p>
                     </div>
                 </div>
             </header>

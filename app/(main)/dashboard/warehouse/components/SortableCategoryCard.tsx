@@ -356,7 +356,7 @@ export const CategoryCardContent = React.memo(({
                             <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 w-max mb-4">
                                 <span className="text-[11px] font-bold text-slate-400 tracking-wide">На сумму:</span>
                                 <span className="text-slate-800 font-extrabold tabular-nums text-[12px]">
-                                    {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(category.totalCost || 0)}
+                                    {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(Number(category.totalCost || 0))}
                                 </span>
                             </div>
                         </div>

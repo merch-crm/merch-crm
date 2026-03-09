@@ -213,6 +213,11 @@ export interface InventoryItem {
         } | null;
     } | null;
     stocks?: { storageLocationId: string; quantity: number }[];
+    printDesignId?: string | null;
+    printDesign?: {
+        id: string;
+        name: string;
+    } | null;
 }
 
 
@@ -242,4 +247,5 @@ export interface InventoryFilters {
     sortBy?: string;
     showArchived?: boolean;
     onlyOrphaned?: boolean;
+    productLineId?: string;
 }

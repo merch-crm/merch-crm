@@ -1,11 +1,11 @@
-import { pgTable, text, timestamp, uuid, boolean, index, uniqueIndex, integer, jsonb, decimal, AnyPgColumn } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, boolean, index, uniqueIndex, integer, jsonb, decimal, AnyPgColumn, varchar } from "drizzle-orm/pg-core";
 import { sql, relations } from "drizzle-orm";
 import { measurementUnitEnum, inventoryItemTypeEnum } from "./enums";
 import { users } from "./users";
 import { storageLocations } from "./storage";
 import { inventoryTransactions } from "./inventory-transactions.schema";
-
-
+import { productLines } from "./product-lines";
+import { printDesigns, printDesignVersions } from "./designs";
 export const inventoryAttributes = pgTable("inventory_attributes", {
     id: uuid("id").defaultRandom().primaryKey(),
     type: text("type").notNull(), // 'color' or 'material'
@@ -79,6 +79,7 @@ export const inventoryCategoriesRelations = relations(inventoryCategories, ({ on
     attributeTypes: many(inventoryAttributeTypes),
     attributes: many(inventoryAttributes),
     items: many(inventoryItems),
+    productLines: many(productLines),
 }));
 
 export const inventoryAttributeTypes = pgTable("inventory_attribute_types", {
@@ -147,6 +148,20 @@ export const inventoryItems = pgTable("inventory_items", {
     attributes: jsonb("attributes").default("{}"),
     imageDetails: jsonb("image_details").default("[]"),
     materialComposition: jsonb("material_composition").default("{}"),
+    // === НОВЫЕ ПОЛЯ ДЛЯ ЛИНЕЕК ===
+
+    // Линейка, к которой принадлежит позиция
+    productLineId: varchar("product_line_id", { length: 36 })
+        .references(() => productLines.id),
+
+    // Для готовой продукции — базовая позиция
+    baseItemId: varchar("base_item_id", { length: 36 }),
+
+    // Для готовой продукции — принт
+    printDesignId: varchar("print_design_id", { length: 36 })
+        .references(() => printDesigns.id),
+    printVersionId: varchar("print_version_id", { length: 36 })
+        .references(() => printDesignVersions.id),
 }, (table) => {
     return {
         categoryIdx: index("inv_items_category_idx").on(table.categoryId),
@@ -156,6 +171,12 @@ export const inventoryItems = pgTable("inventory_items", {
         archivedIdx: index("inv_items_archived_idx").on(table.isArchived),
         createdIdx: index("inv_items_created_idx").on(table.createdAt),
         createdByIdx: index("inv_items_created_by_idx").on(table.createdBy),
+
+        // === НОВЫЕ ИНДЕКСЫ ===
+        productLineIdx: index("inventory_items_product_line_idx").on(table.productLineId),
+        baseItemIdx: index("inventory_items_base_item_idx").on(table.baseItemId),
+        printDesignIdx: index("inventory_items_print_design_idx").on(table.printDesignId),
+        printVersionIdx: index("inventory_items_print_version_idx").on(table.printVersionId),
     }
 });
 
@@ -176,6 +197,36 @@ export const inventoryItemsRelations = relations(inventoryItems, ({ one, many })
     stocks: many(inventoryStocks),
     transfers: many(inventoryTransfers),
     transactions: many(inventoryTransactions),
+
+    // === НОВЫЕ СВЯЗИ ===
+
+    // Линейка продуктов
+    productLine: one(productLines, {
+        fields: [inventoryItems.productLineId],
+        references: [productLines.id],
+    }),
+
+    // Базовая позиция (self-reference)
+    baseItem: one(inventoryItems, {
+        fields: [inventoryItems.baseItemId],
+        references: [inventoryItems.id],
+        relationName: "baseToFinished",
+    }),
+
+    // Готовые позиции на основе этой базовой
+    finishedItems: many(inventoryItems, {
+        relationName: "baseToFinished",
+    }),
+
+    // Принт
+    printDesign: one(printDesigns, {
+        fields: [inventoryItems.printDesignId],
+        references: [printDesigns.id],
+    }),
+    printVersion: one(printDesignVersions, {
+        fields: [inventoryItems.printVersionId],
+        references: [printDesignVersions.id],
+    }),
 }));
 
 export const inventoryItemAttributes = pgTable("inventory_item_attributes", {

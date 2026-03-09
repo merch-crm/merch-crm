@@ -73,7 +73,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                         {/* 1. Context: Where and What */}
                         <div className="space-y-3">
                             <div className="space-y-2 overflow-visible">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div className={cn("grid gap-3", type === "transfer" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1")}>
                                     <div className="space-y-2">
                                         <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                                             {type === "transfer" ? "Откуда (источник)" : "Склад"}
@@ -83,6 +83,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                             onChange={setSelectedLocationId}
                                             options={Array.isArray(locations) ? locations : []}
                                             stocks={itemStocks}
+                                            className="w-full"
                                         />
                                     </div>
                                     {type === "transfer" && (
@@ -93,6 +94,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 onChange={setToLocationId}
                                                 options={Array.isArray(locations) ? locations.filter(l => l.id !== selectedLocationId) : []}
                                                 stocks={itemStocks}
+                                                className="w-full"
                                             />
                                         </div>
                                     )}
@@ -228,9 +230,9 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                         </div>
 
                         {/* 3. Inputs: Amount & Price */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
                             {/* Quantity Block */}
-                            <div className={cn("space-y-2", !((type === "in" || type === "out") && canSeeCost) && "sm:col-span-2")}>
+                            <div className={cn("space-y-2", (type === "in" || type === "out") && canSeeCost ? "sm:col-span-2" : "sm:col-span-5")}>
                                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                                     {type === "set" ? "Новое количество" : "Количество"}
                                 </label>
@@ -253,9 +255,13 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                             min="0"
                                             value={amount}
                                             onChange={(e) => setAmount(Number(e.target.value))}
-                                            className="w-20 bg-transparent border-none text-center text-3xl font-black text-slate-900 outline-none tabular-nums p-0 leading-none"
+                                            className={cn(
+                                                "w-full bg-transparent border-none text-center font-black text-slate-900 outline-none tabular-nums p-0 leading-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
+                                                amount.toString().length > 7 ? "text-xl" :
+                                                    amount.toString().length > 5 ? "text-2xl" : "text-3xl"
+                                            )}
                                         />
-                                        <span className="text-sm font-bold text-slate-400 mt-1">
+                                        <span className="text-sm font-bold text-slate-400 mt-1 shrink-0">
                                             {formatUnit(item.unit)}
                                         </span>
                                     </div>
@@ -274,7 +280,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
 
                             {/* Price Block */}
                             {(type === "in" || type === "out") && canSeeCost && (
-                                <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
+                                <div className="space-y-2 animate-in slide-in-from-top-2 duration-300 sm:col-span-3">
                                     <label className="text-sm font-bold text-slate-700 block mb-2 pr-1 text-right">
                                         {type === "in" ? "Цена закупки" : "Цена списания"}
                                     </label>
@@ -309,7 +315,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
 
                         {/* 4. Reason */}
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-slate-700 ml-1">Причина <span className="text-rose-500">*</span></label>
+                            <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Причина <span className="text-rose-500">*</span></label>
                             <textarea
                                 value={reason}
                                 required

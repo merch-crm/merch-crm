@@ -83,15 +83,15 @@ export function useItemDetailController(
                 const parentCat = cat.parent;
                 trail.push({
                     label: forceSingular(parentCat.name || "", parentCat.singularName),
-                    href: `/dashboard/warehouse/${parentCat.id}`
+                    href: `/dashboard/warehouse/categories/${parentCat.id}`
                 });
             }
             trail.push({
                 label: forceSingular(cat.name || "", cat.singularName),
-                href: `/dashboard/warehouse/${cat.id}`
+                href: `/dashboard/warehouse/categories/${cat.id}`
             });
         } else {
-            trail.push({ label: "Без категории", href: "/dashboard/warehouse/orphaned" });
+            trail.push({ label: "Без категории", href: "/dashboard/warehouse" });
         }
 
         trail.push({
@@ -118,7 +118,7 @@ export function useItemDetailController(
         });
 
         setCustomTrail(trail);
-        // return () => setCustomTrail(null); // Removing cleanup to prevent flickering on every render if it's unstable
+        return () => setCustomTrail(null);
     }, [item, item.id, item.name, item.category, setCustomTrail]); // Use primitive/stable identities
 
     const handleScan = useCallback(async (decodedText: string) => {

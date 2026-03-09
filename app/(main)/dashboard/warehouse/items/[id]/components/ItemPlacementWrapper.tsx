@@ -69,39 +69,45 @@ export function ItemPlacementWrapper({
 
     return (
         <div className={cn("flex flex-col gap-3", className)}>
-            {/* ACTION BUTTONS */}
-            <div className="grid grid-cols-3 gap-3">
+            {/* ACTION BUTTONS (Variant 2) */}
+            <div className="grid grid-cols-3 gap-2 lg:gap-3">
                 <button
                     type="button"
                     onClick={() => setDialogs(prev => ({ ...prev, label: true }))}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-9 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
+                    className="flex flex-col items-center justify-center gap-2.5 p-4 rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-violet-50/50 hover:border-violet-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
                 >
-                    <Printer className="w-4 h-4 text-muted-foreground group-hover:text-violet-600 transition-colors" strokeWidth={2.5} />
-                    <span className="text-[11px] font-bold tracking-wider text-foreground group-hover:text-violet-700 transition-colors">Печать QR</span>
+                    <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-violet-600 transition-all duration-300 group-hover:scale-110">
+                        <Printer className="w-5 h-5" strokeWidth={2} />
+                    </div>
+                    <span className="text-[12px] sm:text-[13px] font-bold text-slate-600 group-hover:text-violet-700">Печать QR</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={handleDownload}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-9 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
+                    className="flex flex-col items-center justify-center gap-2.5 p-4 rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 hover:border-emerald-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
                 >
-                    <Download className="w-4 h-4 text-muted-foreground group-hover:text-emerald-600 transition-colors" strokeWidth={2.5} />
-                    <span className="text-[11px] font-bold tracking-wider text-foreground group-hover:text-emerald-700 transition-colors">Скачать</span>
+                    <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-emerald-600 transition-all duration-300 group-hover:scale-110">
+                        <Download className="w-5 h-5" strokeWidth={2} />
+                    </div>
+                    <span className="text-[12px] sm:text-[13px] font-bold text-slate-600 group-hover:text-emerald-700">Скачать</span>
                 </button>
 
                 <button
                     type="button"
                     onClick={handleDelete}
-                    className="flex flex-col sm:flex-row items-center justify-center gap-2.5 py-9 bg-white rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 group active:scale-95"
+                    className="flex flex-col items-center justify-center gap-2.5 p-4 rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-rose-50/50 hover:border-rose-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
                 >
-                    <Archive className="w-4 h-4 text-muted-foreground group-hover:text-rose-600 transition-colors" strokeWidth={2.5} />
-                    <span className="text-[11px] font-bold tracking-wider text-foreground group-hover:text-rose-700 transition-colors">Архив</span>
+                    <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-rose-600 transition-all duration-300 group-hover:scale-110">
+                        <Archive className="w-5 h-5" strokeWidth={2} />
+                    </div>
+                    <span className="text-[12px] sm:text-[13px] font-bold text-slate-600 group-hover:text-rose-700">Архив</span>
                 </button>
             </div>
 
             {/* CARD 1: TOTAL STOCK */}
-            <div className="crm-card rounded-[32px] bg-white shadow-sm border border-slate-100/50" style={{ padding: '32px' }}>
-                <div className="flex items-center justify-between mb-6">
+            <div className="crm-card bg-white">
+                <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                         <div className="w-11 h-11 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                             <Package className="w-5 h-5" />
@@ -115,8 +121,8 @@ export function ItemPlacementWrapper({
                     </div>
                 </div>
 
-                <div className="flex items-center justify-between mb-8">
-                    <div className="space-y-3 pt-3">
+                <div className="flex items-center justify-between mb-4">
+                    <div className="space-y-3">
                         <div className="flex items-baseline gap-1.5">
                             <span className="text-6xl font-black text-slate-900 tracking-tighter">
                                 {totalQuantity.toLocaleString('ru-RU')}
@@ -160,7 +166,7 @@ export function ItemPlacementWrapper({
                 <div className="grid grid-cols-2 gap-3">
                     {/* Min Stock */}
                     <div
-                        className="p-4 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
+                        className="p-4 rounded-xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                         onDoubleClick={handleStartEdit}
                     >
                         <span className="text-[11px] font-bold tracking-wider text-slate-400 block mb-2">Мин. остаток</span>
@@ -181,7 +187,7 @@ export function ItemPlacementWrapper({
 
                     {/* Critical Stock */}
                     <div
-                        className="p-4 rounded-2xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
+                        className="p-4 rounded-xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                         onDoubleClick={handleStartEdit}
                     >
                         <span className="text-[11px] font-bold tracking-wider text-slate-400 block mb-2">Крит. остаток</span>
@@ -241,7 +247,7 @@ export function ItemPlacementWrapper({
             </button>
 
             {/* CARD 2: BREAKDOWN */}
-            <div className="crm-card rounded-[32px] bg-white shadow-sm border border-slate-100/50" style={{ padding: '32px' }}>
+            <div className="crm-card bg-white">
                 <ItemWarehouseBreakdown
                     stocks={sortedStocks}
                 />

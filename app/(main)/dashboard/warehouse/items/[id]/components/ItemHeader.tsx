@@ -44,7 +44,7 @@ export const ItemHeader = React.memo(({
     }, [isEditing, editName]);
 
     return (
-        <div className={cn("space-y-1 w-full",
+        <div className={cn("space-y-0.5 w-full",
             item.isArchived && "opacity-80"
         )}>
             {/* Status Banner for Archive */}
@@ -55,8 +55,8 @@ export const ItemHeader = React.memo(({
                             <Trash2 className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-sm font-bold text-destructive leading-none mb-1">Архив товара</p>
-                            <p className="text-[11px] font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
+                            <p className="text-xs font-bold text-destructive leading-none mb-1">Архив товара</p>
+                            <p className="text-xs font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
                         </div>
                     </div>
                     <Button
@@ -69,8 +69,7 @@ export const ItemHeader = React.memo(({
                 </div>
             )}
 
-            {/* Main Header Content */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 w-full">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 w-full">
                 <div className="flex-1 min-w-0 w-full">
                     <div className="flex items-center gap-2 sm:gap-3">
                         {isEditing ? (
@@ -153,10 +152,10 @@ export const ItemHeader = React.memo(({
 
                                 <div className="flex items-center gap-3 ml-[52px]">
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-[13px] font-black text-slate-400 tracking-tight">
+                                        <span className="text-xs font-black text-slate-400">
                                             Артикул:
                                         </span>
-                                        <span className="text-[13px] font-bold text-slate-500 font-mono">
+                                        <span className="text-xs font-bold text-slate-500 font-mono">
                                             {item.sku || '—'}
                                         </span>
                                     </div>
@@ -164,10 +163,10 @@ export const ItemHeader = React.memo(({
                                     <div className="w-1 h-1 rounded-full bg-slate-300" />
 
                                     <div className="flex items-center gap-1.5">
-                                        <span className="text-[13px] font-medium text-slate-400">
+                                        <span className="text-xs font-medium text-slate-400">
                                             Последнее обновление:
                                         </span>
-                                        <span className="text-[13px] font-bold text-slate-500">
+                                        <span className="text-xs font-bold text-slate-500">
                                             {(() => {
                                                 const dateVal = item.updatedAt;
                                                 if (!dateVal) return '—';
@@ -201,16 +200,17 @@ export const ItemHeader = React.memo(({
                                 variant="ghost"
                                 onClick={onCancel}
                                 aria-label="Отменить изменения"
-                                className="h-10 px-4 sm:h-11 md:px-8 rounded-element font-bold text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
+                                className="h-10 px-4 sm:h-11 md:px-8 rounded-element font-bold text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2"
                             >
                                 <X className="w-4 h-4" />
                                 <span className="hidden md:inline">Отмена</span>
                             </Button>
                             <Button
                                 onClick={onSave}
+                                type="button"
                                 disabled={isSaving || isAnyUploading}
                                 aria-label="Сохранить изменения"
-                                className="h-10 px-5 sm:h-11 md:px-10 rounded-element bg-primary text-white font-bold text-[13px] border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95"
+                                className="h-10 px-5 sm:h-11 md:px-10 rounded-element bg-primary text-white font-bold text-xs border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95"
                             >
                                 {isSaving ? (
                                     <RefreshCcw className="w-4 h-4 animate-spin" />

@@ -153,6 +153,7 @@ export const ItemGeneralInfo = React.memo(({
                 <Button
                     variant="outline"
                     size="sm"
+                    type="button"
                     onClick={onEdit}
                     className="mt-4 h-9 rounded-xl font-bold"
                 >
@@ -166,7 +167,7 @@ export const ItemGeneralInfo = React.memo(({
     return (
         <div className="flex flex-col animate-in fade-in slide-in-from-bottom-2 duration-1000">
             {/* Characteristics Grid */}
-            <div className="grid grid-cols-2 gap-3 mt-2">
+            <div className="grid grid-cols-2 gap-2.5 mt-1.5">
                 {allParams.map((param) => {
                     const attrLabel = getAttrLabel(param.slug, param.code as string | number | null);
                     const hexColor = getColorHex(attrLabel);
@@ -197,7 +198,7 @@ export const ItemGeneralInfo = React.memo(({
                                         style={{ backgroundColor: hexColor }}
                                     />
                                 )}
-                                <div className="text-[15px] font-bold text-slate-900 truncate flex-1">
+                                <div className="text-sm font-bold text-slate-900 truncate flex-1">
                                     {isEditing ? (
                                         <Select
                                             value={(param.code as string) || ""}

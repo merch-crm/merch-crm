@@ -58,10 +58,10 @@ export function ItemActionButtons({
                 </div>
 
                 <div className="relative z-10 flex flex-col items-start w-full mt-auto">
-                    <span className="text-[14px] sm:text-[15px] font-bold leading-tight text-white drop-shadow-md transition-transform duration-500 ease-out group-hover:translate-x-1 text-left">
+                    <span className="text-sm sm:text-[15px] font-bold leading-tight text-white drop-shadow-md transition-transform duration-500 ease-out group-hover:translate-x-1 text-left">
                         Корректировка<br />остатка
                     </span>
-                    <span className="text-[11px] text-white/80 font-medium opacity-0 -translate-x-4 max-h-0 group-hover:max-h-5 group-hover:opacity-100 group-hover:translate-x-1 group-hover:mt-1 transition-all duration-500 ease-out">
+                    <span className="text-xs text-white/80 font-medium opacity-0 -translate-x-4 max-h-0 group-hover:max-h-5 group-hover:opacity-100 group-hover:translate-x-1 group-hover:mt-1 transition-all duration-500 ease-out">
                         Настроить наличие
                     </span>
                 </div>

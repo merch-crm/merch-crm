@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo, useEffect } from"react";
-import { Transaction } from"../history-types";
-import { deleteInventoryTransactions } from"../history-actions";
-import { useToast } from"@/components/ui/toast";
-import { playSound } from"@/lib/sounds";
-import { sentence } from"@/lib/pluralize";
+import { useState, useMemo, useEffect } from "react";
+import { Transaction } from "../history-types";
+import { deleteInventoryTransactions } from "../history-actions";
+import { useToast } from "@/components/ui/toast";
+import { playSound } from "@/lib/sounds";
+import { sentence } from "@/lib/pluralize";
 
-export type FilterType ="all" |"in" |"out" |"transfer" |"other";
+export type FilterType = "all" | "in" | "out" | "transfer" | "other";
 
 interface UseHistoryTableProps {
     transactions: Transaction[];
@@ -36,19 +36,23 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
     // Filter Logic
     const filteredTransactions = useMemo(() => {
         return transactions.filter(t => {
-            const matchesFilter = activeFilter ==="all"
+            const matchesFilter = activeFilter === "all"
                 ? true
-                : activeFilter ==="other"
-                    ? ["archive","restore","attribute_change","adjustment","stock_in","stock_out"].includes(t.type)
-                    : t.type === activeFilter;
+                : activeFilter === "in"
+                    ? ["in", "stock_in"].includes(t.type)
+                    : activeFilter === "out"
+                        ? ["out", "stock_out"].includes(t.type)
+                        : activeFilter === "other"
+                            ? ["archive", "restore", "attribute_change", "adjustment"].includes(t.type)
+                            : t.type === activeFilter;
 
             const search = searchQuery.toLowerCase();
             const matchesSearch =
                 t.id.toLowerCase().includes(search) ||
-                (t.item?.name?.toLowerCase() ||"").includes(search) ||
-                (t.item?.sku?.toLowerCase() ||"").includes(search) ||
-                (t.reason?.toLowerCase() ||"").includes(search) ||
-                (t.creator?.name?.toLowerCase() ||"").includes(search);
+                (t.item?.name?.toLowerCase() || "").includes(search) ||
+                (t.item?.sku?.toLowerCase() || "").includes(search) ||
+                (t.reason?.toLowerCase() || "").includes(search) ||
+                (t.creator?.name?.toLowerCase() || "").includes(search);
 
             return matchesFilter && matchesSearch;
         });
@@ -86,7 +90,7 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
         try {
             const res = await deleteInventoryTransactions(selectedIds);
             if (res.success) {
-                toast(sentence(selectedIds.length, 'f', { one: 'Запись удалена', many: 'Записи удалены' }, { one: 'запись', few: 'записи', many: 'записей' }),"success");
+                toast(sentence(selectedIds.length, 'f', { one: 'Запись удалена', many: 'Записи удалены' }, { one: 'запись', few: 'записи', many: 'записей' }), "success");
                 playSound("notification_success");
                 setSelectedIds([]);
                 setIsDeleteDialogOpen(false);
@@ -97,7 +101,7 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
                 // However, the original component didn't explicitly call router.refresh() inside `confirmDeleteItems`. 
                 // It seems `deleteInventoryTransactions` is a server action that revalidates path.
             } else {
-                toast(res.error ||"Ошибка при удалении","error");
+                toast(res.error || "Ошибка при удалении", "error");
                 playSound("notification_error");
             }
         } finally {
@@ -140,12 +144,36 @@ export function useHistoryTable({ transactions }: UseHistoryTableProps) {
             confirmDeleteItems,
             resetFilters,
             handleExportSelected: async () => {
+                if (selectedIds.length === 0) {
+                    toast("Не выбраны записи для экспорта", "warning");
+                    return;
+                }
+
+                toast("Подготовка данных для экспорта...", "info");
+
                 // Simulate a small delay for better UX
-                const promise = new Promise(resolve => setTimeout(resolve, 300));
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                const transactionsToExport = transactions.filter(t => selectedIds.includes(t.id));
+
+                // Dynamically import exportToCSV to avoid polluting the file top if the import path gets messy. Actually better to just use dynamic import for this util because the file doesn't have it imported.
+                const { exportToCSV } = await import("@/lib/export-utils");
+
+                exportToCSV(transactionsToExport, "history_export", [
+                    { header: "ID", key: "id" },
+                    { header: "Тип", key: (t) => t.type },
+                    { header: "Товар", key: (t) => t.item?.name || "Характеристики" },
+                    { header: "Артикул", key: (t) => t.item?.sku || "" },
+                    { header: "Количество", key: "changeAmount" },
+                    { header: "Причина", key: (t) => t.reason || "" },
+                    { header: "Склад", key: (t) => t.storageLocation?.name || "" },
+                    { header: "Создал", key: (t) => t.creator?.name || "Система" },
+                    { header: "Роль", key: (t) => t.creator?.role?.name || (t.creator ? "Оператор" : "Система") },
+                    { header: "Дата", key: (t) => new Date(t.createdAt) }
+                ]);
+
                 playSound("notification_success");
-                toast("Подготовка данных для экспорта...","info");
-                await promise;
-                toast("Экспорт будет доступен в следующем обновлении","warning");
+                toast("Экспорт завершен", "success");
             }
         }
     };

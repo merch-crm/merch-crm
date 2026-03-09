@@ -1,198 +1,127 @@
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { useNewItemForm, DEFAULT_FORM_DATA } from "./useNewItemForm";
-import { ItemFormData, Category, StorageLocation, AttributeType } from "@/app/(main)/dashboard/warehouse/types";
-import { addInventoryItem } from "@/app/(main)/dashboard/warehouse/item-actions";
+import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
-import { ROUTES } from "@/lib/routes";
 import { sortCategories } from "@/app/(main)/dashboard/warehouse/category-utils";
+import { Category, StorageLocation, ItemFormData, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
+import { useNewItemState } from "./use-new-item-state";
+import { useNewItemDraft } from "./use-new-item-draft";
+import { useNewItemNavigation } from "./use-new-item-navigation";
+import { generateLineName, generatePositionName, singularize } from "@/lib/utils/line-name-generator";
+import { LineData } from "../types";
+import {
+    createBaseLineWithPositions,
+    createFinishedLineWithPositions,
+    createSingleItem,
+    getBaseLinesForCategory,
+    getPrintsForSelection
+} from "../actions";
 
 const CATEGORY_TYPES = {
     packaging: "упаковка",
-    clothing: "одежда",
-    consumables: "расходники",
-    uncategorized: "без категории",
 } as const;
 
 interface UseNewItemLogicProps {
     categories: Category[];
     storageLocations: StorageLocation[];
+    dynamicAttributes: InventoryAttribute[];
+    attributeTypes: AttributeType[];
     initialCategoryId?: string;
     initialSubcategoryId?: string;
-    attributeTypes: AttributeType[];
 }
 
 export function useNewItemLogic({
     categories,
-    initialCategoryId,
-    initialSubcategoryId,
-    attributeTypes: _attributeTypes
+    dynamicAttributes,
+    attributeTypes,
+    initialCategoryId: _initialCategoryId,
+    initialSubcategoryId: _initialSubcategoryId,
 }: UseNewItemLogicProps) {
-    const router = useRouter();
+    const searchParams = useSearchParams();
     const { toast } = useToast();
-
     const [isMounted, setIsMounted] = useState(false);
 
-    const {
-        step, setStep,
-        maxStep, setMaxStep,
-        selectedCategory, setSelectedCategory,
-        formData, setFormData,
-        validationError, setValidationError,
-        isSaving, setIsSaving,
-        isSubmitting, setIsSubmitting,
-        resetForm
-    } = useNewItemForm();
+    const state = useNewItemState();
+    const draft = useNewItemDraft(isMounted, state, state.setIsSaving);
+    const nav = useNewItemNavigation(state.step, state.setStep, state.creationType, state.lineMode, state.setValidationError);
 
-    const updateFormData = useCallback((updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => {
-        setFormData((prev: ItemFormData) => {
-            const resolvedUpdates = typeof updates === "function" ? updates(prev) : updates;
-            return { ...prev, ...resolvedUpdates };
-        });
-        if (validationError) setValidationError("");
-    }, [validationError, setFormData, setValidationError]);
+    const [lineData, setLineData] = useState<LineData>({
+        customName: "",
+        description: "",
+        commonAttributeIds: [],
+        printCollectionId: null,
+        baseLineId: null,
+    });
 
-    // Load initial state and draft after mount
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [availableBaseLines, setAvailableBaseLines] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [availablePrints, setAvailablePrints] = useState<any[]>([]);
+    const [isLoadingData, setIsLoadingData] = useState(false);
+
+    // Initial load from URL parameters
     useEffect(() => {
-        Promise.resolve().then(() => {
-            setIsMounted(true);
-        });
+        const lineId = searchParams.get("lineId");
+        const lineType = searchParams.get("lineType");
+        if (lineId && lineType) {
+            state.setSelectedLineId(lineId);
+            state.setLineMode("existing");
+            state.setCreationType(lineType === "finished" ? "finished_line" : "base_line");
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams]);
 
-        // 1. Initial params
-        let initialStep = 0;
-        let initialMax = 0;
-        let initialCat: Category | null = null;
-        let initialForm = { ...DEFAULT_FORM_DATA };
-
-        if (initialSubcategoryId || initialCategoryId) {
-            let resolvedSubId = initialSubcategoryId;
-            let resolvedCatId = initialCategoryId;
-
-            if (!resolvedSubId && resolvedCatId) {
-                const cat = categories.find(c => c.id === resolvedCatId);
-                if (cat?.parentId) {
-                    resolvedSubId = resolvedCatId;
-                    resolvedCatId = cat.parentId;
-                }
+    // Загрузка данных для готовой линейки при переходе на шаг 2
+    useEffect(() => {
+        if (state.step === 2 && state.creationType === "finished_line") {
+            const categoryId = state.formData.subcategoryId || state.selectedCategory?.id;
+            if (categoryId) {
+                setIsLoadingData(true);
+                getBaseLinesForCategory(categoryId).then((res) => {
+                    setAvailableBaseLines(res || []);
+                });
             }
+        }
+    }, [state.step, state.creationType, state.formData.subcategoryId, state.selectedCategory]);
 
-            initialCat = resolvedCatId ? (categories.find(c => c.id === resolvedCatId) || null) : null;
-
-            if (initialCat) {
-                const hasSubs = categories.some(c => c.parentId === initialCat?.id);
-                if (!hasSubs || resolvedSubId) {
-                    initialStep = 2;
-                }
-            }
-
-            if (resolvedSubId) {
-                const subCat = categories.find(c => c.id === resolvedSubId);
-                const cleanSubName = subCat?.name.toLowerCase().trim() || "";
-                const cleanInitialName = initialCat?.name.toLowerCase().trim() || "";
-                const _isClothing = cleanSubName.includes(CATEGORY_TYPES.clothing) || cleanInitialName.includes(CATEGORY_TYPES.clothing);
-                initialForm = {
-                    ...initialForm,
-                    subcategoryId: resolvedSubId
-                };
-            }
+    useEffect(() => {
+        if (state.selectedCollectionId) {
+            getPrintsForSelection(state.selectedCollectionId).then((res) => {
+                setAvailablePrints(res || []);
+            });
         } else {
-            // 2. Draft
-            const saved = typeof window !== "undefined" ? localStorage.getItem("merch_crm_new_item_draft") : null;
-            if (saved) {
-                try {
-                    const draft = JSON.parse(saved);
-                    initialStep = draft.step || 0;
-                    initialMax = draft.maxStep ?? initialStep;
-                    if (draft.selectedCategoryId) {
-                        initialCat = categories.find(c => c.id === draft.selectedCategoryId) || null;
-                    }
-                    if (draft.formData) {
-                        initialForm = {
-                            ...initialForm,
-                            ...draft.formData,
-                            imageFile: null, imageBackFile: null, imageSideFile: null,
-                            imageDetailsFiles: [], imagePreview: null,
-                            imageBackPreview: null, imageSidePreview: null,
-                            imageDetailsPreviews: []
-                        };
-                    }
-                } catch (e) {
-                    console.error("Error parsing draft:", e);
-                }
-            }
+            setAvailablePrints([]);
         }
+    }, [state.selectedCollectionId]);
 
-        Promise.resolve().then(() => {
-            setStep(initialStep);
-            setMaxStep(Math.max(initialMax, initialStep));
-            setSelectedCategory(initialCat);
-            setFormData(initialForm);
-        });
-    }, [categories, initialCategoryId, initialSubcategoryId, setFormData, setSelectedCategory, setStep, setMaxStep]);
-
-    // Save draft on changes
+    // Initial hydration and mounting
     useEffect(() => {
-        if (!isMounted) return;
-        Promise.resolve().then(() => {
-            setIsSaving(true);
-        });
-        const timer = setTimeout(() => {
-            const dataToSave = {
-                formData: {
-                    ...formData,
-                    imageFile: null,
-                    imageBackFile: null,
-                    imageSideFile: null,
-                    imageDetailsFiles: [],
-                    imagePreview: null,
-                    imageBackPreview: null,
-                    imageSidePreview: null,
-                    imageDetailsPreviews: []
-                },
-                step,
-                maxStep,
-                selectedCategoryId: selectedCategory?.id
-            };
-            if (typeof window !== "undefined") {
-                localStorage.setItem("merch_crm_new_item_draft", JSON.stringify(dataToSave));
-            }
-            setIsSaving(false);
-        }, 1000);
-
-        return () => clearTimeout(timer);
-    }, [formData, step, maxStep, selectedCategory, isMounted, setIsSaving]);
-
-    const clearDraft = () => {
-        if (typeof window !== "undefined") {
-            localStorage.removeItem("merch_crm_new_item_draft");
-        }
-    };
+        setIsMounted(true);
+    }, []);
 
     const handleReset = () => {
-        clearDraft();
-        resetForm();
+        draft.clearDraft();
+        state.resetForm();
+        state.resetMatrixAndLineStates();
+        state.setCreationType("single");
+        state.setLineMode("new");
         toast("Форма сброшена", "info");
     };
 
-    const subCategories = selectedCategory
-        ? sortCategories(categories.filter(c => c.parentId === selectedCategory.id))
+    const subCategories = state.selectedCategory
+        ? sortCategories(categories.filter((c) => c.parentId === state.selectedCategory!.id))
         : [];
 
-    const __isClothing = selectedCategory?.slug === "clothing";
-    const isPackaging = selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
-
-    const topLevelCategories = sortCategories(
-        categories.filter(c => !c.parentId || c.parentId === "")
-    );
-
+    const isPackaging = state.selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging);
+    const topLevelCategories = sortCategories(categories.filter((c) => !c.parentId || c.parentId === ""));
     const hasSubCategories = subCategories.length > 0;
 
     const handleCategorySelect = (category: Category) => {
-        setSelectedCategory(category);
-        setValidationError("");
-
-        setFormData((prev: ItemFormData) => ({
+        state.setSelectedCategory(category);
+        state.setValidationError("");
+        state.setFormData((prev: ItemFormData) => ({
             ...prev,
             subcategoryId: "",
             brandCode: "",
@@ -201,248 +130,275 @@ export function useNewItemLogic({
             attributeCode: "",
             sizeCode: "",
             itemName: "",
-            attributes: {}
+            attributes: {},
         }));
+        state.resetMatrixAndLineStates();
     };
 
     const handleSubCategorySelect = (subCategory: Category) => {
-        if (subCategory.id === formData.subcategoryId) return;
-        setValidationError("");
-        updateFormData({
+        if (subCategory.id === state.formData.subcategoryId) return;
+        state.setValidationError("");
+        state.updateFormData({
             subcategoryId: subCategory.id,
             attributes: {},
             brandCode: "",
             qualityCode: "",
             materialCode: "",
             attributeCode: "",
-            sizeCode: ""
+            sizeCode: "",
         });
-    };
-
-    const handleBack = () => {
-        setValidationError("");
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        if (step === 2) {
-            setStep(0);
-        } else if (step === 1) {
-            setStep(0);
-        } else if (step > 2) {
-            setStep(step - 1);
-        } else {
-            router.push(ROUTES.WAREHOUSE.CATEGORIES);
-        }
+        state.resetMatrixAndLineStates();
     };
 
     const validateStep = (currentStep: number): boolean => {
-        setValidationError("");
+        state.setValidationError("");
+
         if (currentStep === 0) {
-            if (!selectedCategory) {
-                setValidationError("Выберите категорию");
+            if (!state.selectedCategory) {
+                state.setValidationError("Выберите категорию");
                 return false;
             }
-            const currentSubCategories = categories.filter(c => c.parentId === selectedCategory.id);
-            if (currentSubCategories.length > 0 && !formData.subcategoryId) {
-                setValidationError("Выберите подкатегорию");
+            if (hasSubCategories && !state.formData.subcategoryId) {
+                state.setValidationError("Выберите подкатегорию");
                 return false;
             }
         }
 
-        const cleanCatName = selectedCategory?.name.toLowerCase().trim() || "";
-        const isClothing = cleanCatName === CATEGORY_TYPES.clothing ||
-            cleanCatName.startsWith(CATEGORY_TYPES.clothing + " ") ||
-            cleanCatName.startsWith(CATEGORY_TYPES.clothing + ":");
-        const isPackaging = cleanCatName.includes(CATEGORY_TYPES.packaging);
-
-        if (currentStep === 2) {
-            if (hasSubCategories && !formData.subcategoryId) {
-                setValidationError("Выберите подкатегорию");
-                return false;
-            }
-
-            if (isClothing) {
-
-                // Helper to validate a standard field with a fallback to the attributes pool
-
-                // All standard attributes are now optional as requested by the user
-                // We no longer return false if isFieldValid is false
-                /* 
-                if (!isFieldValid("brand", "бренд", formData.brandCode)) {
-                    setValidationError("Выберите бренд");
-                    return false;
-                }
-                ...
-                */
-            } else if (isPackaging) {
-                // Dimensions and weight are now optional as per user request to remove mandatory filling for all characteristic blocks
-
-            } else {
-                if (!formData.itemName) {
-                    setValidationError("Введите название позиции");
+        if (currentStep === 1) {
+            if (state.creationType === "finished_line") {
+                if (!state.selectedCollectionId) {
+                    state.setValidationError("Выберите коллекцию дизайнов");
                     return false;
                 }
             }
         }
 
-
+        if (currentStep === 3) {
+            if (state.creationType === "finished_line") {
+                if (state.selectedPrintIds.length === 0) {
+                    state.setValidationError("Выберите хотя бы один принт");
+                    return false;
+                }
+            } else if (state.creationType !== "single") {
+                if (state.generatedPositions.length === 0) {
+                    state.setValidationError("Сгенерируйте позиции");
+                    return false;
+                }
+            }
+        }
 
         if (currentStep === 4) {
-            if (!formData.costPrice || parseFloat(formData.costPrice) <= 0) {
-                setValidationError("Введите себестоимость позиции");
-                return false;
-            }
-            if (!formData.storageLocationId) {
-                setValidationError("Выберите склад для хранения");
-                return false;
+            if (state.creationType === "finished_line") {
+                if (state.generatedPositions.length === 0) {
+                    state.setValidationError("Матрица пуста. Проверьте комбинации.");
+                    return false;
+                }
             }
         }
 
         return true;
     };
 
-    const handleNext = () => {
-        if (!validateStep(step)) return;
-
-        // Jump from 0 to 2 as 1 is currently obsolete/missing in Client and Sidebar
-        if (step === 0) {
-            setStep(2);
-        } else {
-            setStep(step + 1);
-        }
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
     const handleSubmit = async () => {
-        if (!validateStep(step)) return;
-        setIsSubmitting(true);
-        setValidationError("");
+        if (!validateStep(state.step)) return;
+        state.setIsSubmitting(true);
+        state.setValidationError("");
 
         try {
-            const submitFormData = new FormData();
+            const categoryId = state.formData.subcategoryId || state.selectedCategory!.id;
 
-            let itemType = "clothing";
-            if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.packaging)) itemType = "packaging";
-            else if (selectedCategory?.name.toLowerCase().includes(CATEGORY_TYPES.consumables)) itemType = "consumables";
+            if (state.creationType === "finished_line") {
+                const res = await createFinishedLineWithPositions({
+                    categoryId,
+                    lineName: getLineName(),
+                    description: lineData.description,
+                    printCollectionId: state.selectedCollectionId!,
+                    baseLineId: state.selectedLineId,
+                    positions: state.generatedPositions.map(p => ({
+                        name: p.name,
+                        sku: p.sku,
+                        printDesignId: p.designId!,
+                        attributes: p.attributes
+                    })),
+                    stock: {
+                        quantity: Number(state.formData.quantity) || 0,
+                        locationId: (state.formData.locationId as string) || "",
+                        minStock: Number(state.formData.minStock) || 0,
+                        userId: (state.formData.userId as string) || ""
+                    }
+                });
 
-            submitFormData.append("itemType", itemType);
+                if (res.success) {
+                    toast("Готовая линейка создана", "success");
+                    playSound("notification_success");
+                    handleReset();
+                    window.location.href = "/dashboard/warehouse";
+                } else {
+                    state.setValidationError(res.error || "Ошибка при создании линейки");
+                }
+            } else if (state.creationType === "base_line") {
+                const res = await createBaseLineWithPositions({
+                    line: {
+                        name: getLineName(),
+                        categoryId,
+                        subcategoryId: state.formData.subcategoryId,
+                        brandCode: state.formData.brandCode,
+                        qualityCode: state.formData.qualityCode,
+                        materialCode: state.formData.materialCode,
+                        itemType: "base",
+                        unit: (state.formData.unit as string) || "шт.",
+                    },
+                    positions: state.generatedPositions.map(p => ({
+                        name: p.name,
+                        sku: p.sku,
+                        attributes: p.attributes,
+                        sizeCode: p.attributes.size || p.attributes.Size,
+                        quantity: 0,
+                    }))
+                });
 
-            submitFormData.append("name", formData.itemName || "");
-            submitFormData.append("categoryId", formData.subcategoryId || selectedCategory?.id || "");
-            submitFormData.append("sku", formData.sku || "");
-            submitFormData.append("description", formData.description || "");
-            submitFormData.append("quantity", String(formData.quantity) || "0");
-            submitFormData.append("criticalStockThreshold", String(formData.criticalStockThreshold) || "0");
-            submitFormData.append("lowStockThreshold", String(formData.lowStockThreshold) || "10");
-            submitFormData.append("storageLocationId", formData.storageLocationId || "");
-            submitFormData.append("costPrice", String(formData.costPrice) || "0");
-            submitFormData.append("sellingPrice", String(formData.sellingPrice) || "0");
-
-            submitFormData.append("qualityCode", formData.qualityCode || "");
-            submitFormData.append("materialCode", formData.materialCode || "");
-            submitFormData.append("brandCode", formData.brandCode || "");
-            submitFormData.append("attributeCode", formData.attributeCode || "");
-            submitFormData.append("sizeCode", formData.sizeCode || "");
-
-            if (formData.width) submitFormData.append("width", String(formData.width));
-            if (formData.height) submitFormData.append("height", String(formData.height));
-            if (formData.depth) submitFormData.append("depth", String(formData.depth));
-            if (formData.department) submitFormData.append("department", formData.department);
-
-            if (formData.packagingType) submitFormData.append("packagingType", formData.packagingType);
-            if (formData.supplierName) submitFormData.append("supplierName", formData.supplierName);
-            if (formData.supplierLink) submitFormData.append("supplierLink", formData.supplierLink);
-            if (formData.minBatch) submitFormData.append("minBatch", String(formData.minBatch));
-            if (formData.weight) submitFormData.append("weight", String(formData.weight));
-            if (formData.features) submitFormData.append("features", JSON.stringify(formData.features));
-
-            if (formData.imageFile) submitFormData.append("image", formData.imageFile);
-            if (formData.imageBackFile) submitFormData.append("imageBack", formData.imageBackFile);
-            if (formData.imageSideFile) submitFormData.append("imageSide", formData.imageSideFile);
-            formData.imageDetailsFiles?.forEach((img: File | null) => {
-                if (img) submitFormData.append("imageDetails", img);
-            });
-
-            const attributes: Record<string, unknown> = {
-                ...formData.attributes,
-                thumbnailSettings: formData.thumbSettings
-            };
-            submitFormData.append("thumbnailSettings", JSON.stringify(formData.thumbSettings));
-            submitFormData.append("attributes", JSON.stringify(attributes));
-
-            const result = await addInventoryItem(submitFormData);
-
-            if (!result?.success) {
-                setValidationError(result.error);
-                playSound("notification_error");
-                setIsSubmitting(false);
+                if (res.success) {
+                    toast("Базовая линейка создана", "success");
+                    playSound("notification_success");
+                    handleReset();
+                    window.location.href = "/dashboard/warehouse";
+                } else {
+                    state.setValidationError(res.error || "Ошибка при создании линейки");
+                }
             } else {
-                clearDraft();
-                playSound("item_created");
-                toast("Позиция создана", "success");
-                router.push(result.data?.id ? ROUTES.WAREHOUSE.ITEM_DETAIL(result.data.id) : ROUTES.WAREHOUSE.ROOT);
-                router.refresh();
-            }
-        } catch (error) {
-            console.error("[NEW_ITEM_SUBMIT] Error creating item:", error);
-            setValidationError(
-                error instanceof Error
-                    ? error.message
-                    : "Произошла ошибка при создании позиции"
-            );
-            playSound("notification_error");
-            setIsSubmitting(false);
-        }
-    };
-
-    const handleSidebarClick = (targetStep: number) => {
-        if (targetStep === step) return;
-
-        if (targetStep < step) {
-            setStep(targetStep);
-            setValidationError("");
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            // Validate intermediate steps when jumping forward
-            const allSteps = [0, 2, 3, 4, 5];
-            const currentIndex = allSteps.indexOf(step);
-            const targetIndex = allSteps.indexOf(targetStep);
-
-            if (targetIndex === -1) return;
-
-            // Validate from current step up to target - 1
-            for (let i = currentIndex; i < targetIndex; i++) {
-                const sId = allSteps[i];
-                if (!validateStep(sId)) {
-                    // validateStep will set the error message
-                    return;
+                // Одиночная позиция
+                const res = await createSingleItem(state.formData);
+                if (res.success) {
+                    toast("Позиция создана", "success");
+                    playSound("notification_success");
+                    handleReset();
+                    window.location.href = "/dashboard/warehouse";
+                } else {
+                    state.setValidationError(res.error || "Ошибка при создании позиции");
                 }
             }
-
-            setStep(targetStep);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (error) {
+            console.error("[NEW_ITEM_SUBMIT] Error:", error);
+            state.setValidationError(error instanceof Error ? error.message : "Произошла ошибка при создании");
+            playSound("notification_error");
+        } finally {
+            state.setIsSubmitting(false);
         }
     };
 
+    const getSteps = () => {
+        const base = [
+            { id: 0, title: "Категория", desc: "Выбор категории" },
+            { id: 1, title: "Тип", desc: "Тип создания" },
+        ];
+
+        if (state.creationType === "single") {
+            return [
+                ...base,
+                { id: 2, title: "Описание", desc: "Характеристики" },
+                { id: 3, title: "Галерея", desc: "Фото и медиа" },
+                { id: 4, title: "Склад", desc: "Остатки и хранение" },
+                { id: 5, title: "Итог", desc: "Проверка и создание" },
+            ];
+        }
+
+        if (state.creationType === "finished_line") {
+            return [
+                ...base,
+                { id: 2, title: "База", desc: "Коллекция и база" },
+                { id: 3, title: "Принты", desc: "Выбор принтов" },
+                { id: 4, title: "Матрица", desc: "Комбинации вариантов" },
+                { id: 5, title: "Итог", desc: "Подтверждение" },
+            ];
+        }
+
+        const steps = [...base];
+        if (state.lineMode === "new") {
+            steps.push({ id: 2, title: "Линейка", desc: "Характеристики линейки" });
+        }
+        return [
+            ...steps,
+            { id: 3, title: "Матрица", desc: "Выбор комбинаций" },
+            { id: 4, title: "Склад", desc: "Цены и хранение" },
+            { id: 5, title: "Итог", desc: "Проверка и создание" }
+        ];
+    };
+
+    const getLineName = useCallback(() => {
+        if (lineData.customName.trim()) {
+            return lineData.customName.trim();
+        }
+
+        const commonAttributes = lineData.commonAttributeIds
+            .map((attrId) => {
+                const attrType = attributeTypes.find((t) => t.id === attrId);
+                if (!attrType) return null;
+
+                const selectedValueCode = state.formData.attributes?.[attrType.slug];
+                if (!selectedValueCode) return null;
+
+                const attrValue = dynamicAttributes.find(
+                    (a) => a.type === attrType.slug && a.value === selectedValueCode
+                );
+
+                return {
+                    attributeId: attrId,
+                    attributeCode: attrType.slug,
+                    attributeName: attrType.name,
+                    value: selectedValueCode,
+                    valueLabel: attrValue?.name || selectedValueCode,
+                };
+            })
+            .filter(Boolean);
+
+        return generateLineName({ attributes: commonAttributes as never });
+    }, [lineData.customName, lineData.commonAttributeIds, state.formData.attributes, dynamicAttributes, attributeTypes]);
+
+    const generatePositionNames = useCallback((
+        positions: Array<{ printName?: string; colorName: string; sizeName: string }>
+    ) => {
+        const subcategory = categories.find((c) => c.id === state.formData.subcategoryId);
+
+        const productName = subcategory ? singularize(subcategory.name) : "";
+        const lineName = getLineName();
+
+        return positions.map((pos) => ({
+            ...pos,
+            name: generatePositionName({
+                productName,
+                lineName,
+                printName: pos.printName || "",
+                colorName: pos.colorName,
+                sizeName: pos.sizeName,
+            }),
+        }));
+    }, [state.formData.subcategoryId, categories, getLineName]);
+
     return {
-        step,
-        maxStep,
-        selectedCategory,
-        formData,
-        validationError,
-        isSaving,
-        isSubmitting,
+        ...state,
         subCategories,
         isPackaging,
         topLevelCategories,
         hasSubCategories,
-        updateFormData,
         handleCategorySelect,
         handleSubCategorySelect,
-        handleBack,
-        handleNext,
+        handleBack: nav.handleBack,
+        handleNext: () => nav.handleNext(validateStep),
         handleSubmit,
         handleReset,
-        handleSidebarClick,
-        setValidationError
+        getSteps,
+        lineData,
+        setLineData,
+        getLineName,
+        generatePositionNames,
+        availableBaseLines,
+        availablePrints,
+        isLoadingData,
+        handleSidebarClick: (target: number) => {
+            if (target < state.step) {
+                state.setStep(target);
+                state.setValidationError("");
+            }
+        }
     };
 }

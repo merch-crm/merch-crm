@@ -37,8 +37,8 @@ export const ItemWarehouseBreakdown = React.memo(({ stocks }: ItemWarehouseBreak
     };
 
     return (
-        <div className="space-y-3 pt-3">
-            <div className="flex items-center gap-3 px-1 mb-6">
+        <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3 mb-2">
                 <div className="w-11 h-11 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
                     <MapPin className="w-5 h-5" />
                 </div>
@@ -57,7 +57,7 @@ export const ItemWarehouseBreakdown = React.memo(({ stocks }: ItemWarehouseBreak
                         <div key={idx} className="group space-y-3">
                             <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-start gap-2.5 min-w-0">
-                                    <div className="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 group-hover:bg-white group-hover:border-primary/20 transition-all shrink-0 mt-0.5">
+                                    <div className="w-8 h-8 flex items-center justify-center shrink-0 mt-0.5">
                                         {getWarehouseIcon(locationName, locationType)}
                                     </div>
                                     <div className="min-w-0">

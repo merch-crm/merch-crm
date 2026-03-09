@@ -3,6 +3,7 @@
 import * as React from "react";
 import { MapPin, Warehouse, Printer, Briefcase } from "lucide-react";
 import { Select, SelectOption } from "./select";
+import { cn } from "@/lib/utils";
 
 interface LocationOption {
     id: string;
@@ -50,7 +51,7 @@ export function StorageLocationSelect({ value, onChange, options, stocks, classN
         , [options, stocksMap]);
 
     return (
-        <div className={className}>
+        <div className={cn("w-full", className)}>
             {name && <input type="hidden" name={name} value={value} />}
             <Select
                 options={safeOptions}

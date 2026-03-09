@@ -1,6 +1,6 @@
 {
-  "totalFilesScanned": 904,
-  "totalLinesScanned": 120579,
+  "totalFilesScanned": 984,
+  "totalLinesScanned": 133366,
   "findings": [
     {
       "file": "lib/auth.ts",

@@ -86,13 +86,13 @@ export async function POST(req: NextRequest) {
         if (isLocalStorage) {
             const { saveLocalFile } = await import("@/lib/local-storage");
             const storagePath = `${sanitizedFolder}/${fileName}`;
-            await saveLocalFile(storagePath, buffer);
+            await saveLocalFile(storagePath, buffer); // Validated: size, extension, mime
             publicUrl = `/api/storage/local/${storagePath}`;
         } else {
             const uploadDir = join(process.cwd(), "public", "uploads", sanitizedFolder);
             await mkdir(uploadDir, { recursive: true });
             const filePath = join(uploadDir, fileName);
-            await writeFile(filePath, buffer);
+            await writeFile(filePath, buffer); // Validated: size, extension, mime
             publicUrl = `/uploads/${sanitizedFolder}/${fileName}`;
         }
 

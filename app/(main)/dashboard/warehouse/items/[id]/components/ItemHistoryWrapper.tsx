@@ -1,9 +1,8 @@
 "use client";
 
 import React from "react";
-import { ClipboardList, Printer } from "lucide-react";
+import { Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
 import { ItemHistorySection } from "./ItemHistorySection";
 
@@ -19,24 +18,19 @@ export function ItemHistoryWrapper({
     tabletTab
 }: ItemHistoryWrapperProps) {
     return (
-        <div className={cn("crm-card rounded-3xl p-4 sm:p-6 space-y-3", "md:col-span-2 xl:col-span-12",
-            tabletTab === 'history' ? "block" : "hidden", "xl:block"
+        <div className={cn("bg-white border border-slate-100/60 rounded-[28px] p-6 flex flex-col gap-3 shadow-sm", "md:col-span-2 xl:col-span-12",
+            tabletTab === 'history' ? "block" : "hidden", "xl:flex"
         )}>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
-                        <ClipboardList className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-xl font-black text-foreground">История операций</h3>
-                </div>
-                <Button
+            <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[17px] font-black text-slate-900">История операций</h3>
+                <button
                     onClick={onExport}
-                    variant="btn-black"
-                    className="h-11 px-8 rounded-2xl text-[13px] font-black shadow-lg shadow-black/10 transition-all active:scale-95"
+                    type="button"
+                    className="text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1.5"
                 >
-                    <Printer className="w-4 h-4 mr-2" />
+                    <Printer className="w-3.5 h-3.5" />
                     Скачать
-                </Button>
+                </button>
             </div>
             <ItemHistorySection history={history} />
         </div>

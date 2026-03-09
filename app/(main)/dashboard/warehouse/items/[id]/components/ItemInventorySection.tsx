@@ -1,6 +1,6 @@
 "use client";
 
-import React from"react";
+import React from "react";
 import {
     Package,
     PlusCircle,
@@ -8,12 +8,12 @@ import {
     TrendingDown,
     Map,
     Box
-} from"lucide-react";
-import { cn, formatUnit } from"@/lib/utils";
-import { InventoryItem, ItemStock } from"@/app/(main)/dashboard/warehouse/types";
-import { Button } from"@/components/ui/button";
-import { Input } from"@/components/ui/input";
-import { Badge } from"@/components/ui/badge";
+} from "lucide-react";
+import { cn, formatUnit } from "@/lib/utils";
+import { InventoryItem, ItemStock } from "@/app/(main)/dashboard/warehouse/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 
 interface ItemInventorySectionProps {
     item: InventoryItem;
@@ -46,8 +46,8 @@ export function ItemInventorySection({
             {/* Stock Performance Summary */}
             <div className="flex flex-col md:flex-row gap-3">
                 <div className={cn("flex-1 p-6 sm:p-6 rounded-2xl border relative overflow-hidden group transition-all duration-700",
-                    isCriticalStock ?"bg-destructive/5 border-destructive/20" :
-                        isLowStock ?"bg-amber-500/5 border-amber-200/50" :"bg-emerald-500/5 border-emerald-200/50"
+                    isCriticalStock ? "bg-destructive/5 border-destructive/20" :
+                        isLowStock ? "bg-amber-500/5 border-amber-200/50" : "bg-emerald-500/5 border-emerald-200/50"
                 )}>
                     {/* Decorative element */}
                     <div className="absolute -right-6 -top-6 w-32 h-32 bg-black/5 rounded-full blur-3xl group-hover:bg-black/10 transition-colors" />
@@ -57,25 +57,26 @@ export function ItemInventorySection({
                             <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-primary shadow-sm border border-primary/20">
                                 <Package className="w-6 h-6" />
                             </div>
-                            {isCriticalStock && <Badge className="bg-rose-600 text-white rounded-2xl font-bold text-xs px-4">Критический остаток</Badge>}
-                            {isLowStock && !isCriticalStock && <Badge className="bg-amber-600 text-white rounded-2xl font-bold text-xs px-4">Низкий запас</Badge>}
+                            {isCriticalStock && <Badge className="bg-rose-600 text-white rounded-2xl font-bold text-xs px-4 border-none">Критический остаток</Badge>}
+                            {isLowStock && !isCriticalStock && <Badge className="bg-amber-600 text-white rounded-2xl font-bold text-xs px-4 border-none">Низкий запас</Badge>}
                         </div>
 
                         <div>
-                            <p className={cn("text-[12px] font-bold", isLowStock || isCriticalStock ?"text-slate-500" :"text-white/60")}>Доступный остаток</p>
+                            <p className={cn("text-xs font-bold", isLowStock || isCriticalStock ? "text-slate-500" : "text-white/60")}>Доступный остаток</p>
                             <div className="flex items-baseline gap-2">
-                                <span className={cn("text-5xl font-bold tabular-nums leading-none", isLowStock || isCriticalStock ?"text-slate-900" :"text-white")}>
+                                <span className={cn("text-5xl font-bold tabular-nums leading-none", isLowStock || isCriticalStock ? "text-slate-900" : "text-white")}>
                                     {item.quantity}
                                 </span>
-                                <span className={cn("text-xl font-bold", isLowStock || isCriticalStock ?"text-slate-400" :"text-white/30")}>{formatUnit(item.unit)}</span>
+                                <span className={cn("text-xl font-bold", isLowStock || isCriticalStock ? "text-slate-400" : "text-white/30")}>{formatUnit(item.unit)}</span>
                             </div>
                         </div>
 
-                        <div className={cn("pt-6 border-t", isLowStock || isCriticalStock ?"border-black/5" :"border-white/10")}>
+                        <div className={cn("pt-6 border-t", isLowStock || isCriticalStock ? "border-black/5" : "border-white/10")}>
                             <Button
+                                type="button"
                                 onClick={() => onAdjustStock()}
-                                className={cn("rounded-2xl px-8 h-11 text-[13px] font-bold transition-all shadow-md active:scale-95 border-none",
-                                    isLowStock || isCriticalStock ?"bg-slate-900 text-white hover:bg-black" :"bg-white text-primary hover:bg-slate-50")}
+                                className={cn("rounded-2xl px-8 h-11 text-xs font-bold transition-all shadow-md active:scale-95 border-none",
+                                    isLowStock || isCriticalStock ? "bg-slate-900 text-white hover:bg-black" : "bg-white text-primary hover:bg-slate-50")}
                             >
                                 <PlusCircle className="w-4 h-4 mr-3" />
                                 Инвентаризация
@@ -93,16 +94,16 @@ export function ItemInventorySection({
                             <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
                                 <TrendingDown className="w-5 h-5 text-rose-400" />
                             </div>
-                            <span className="text-[11px] font-bold text-slate-500">Система оповещений</span>
+                            <span className="text-xs font-bold text-slate-500">Система оповещений</span>
                         </div>
 
                         <div className="space-y-3">
                             <div className="space-y-1">
-                                <p className="text-[11px] font-bold text-primary/60">Лимит предупреждения</p>
+                                <p className="text-xs font-bold text-primary/60">Лимит предупреждения</p>
                                 <p className="text-2xl font-bold">{item.lowStockThreshold} {formatUnit(item.unit)}</p>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[11px] font-bold text-rose-500/60">Критический лимит</p>
+                                <p className="text-xs font-bold text-rose-500/60">Критический лимит</p>
                                 <p className="text-2xl font-bold">{item.criticalStockThreshold} {formatUnit(item.unit)}</p>
                             </div>
                         </div>
@@ -111,7 +112,8 @@ export function ItemInventorySection({
                     <div className="relative mt-8">
                         <Button
                             variant="outline"
-                            className="w-full h-11 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-[13px]"
+                            type="button"
+                            className="w-full h-11 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-xs"
                             onClick={() => onUpdateField("lowStockThreshold", 10)} // Example, usually triggers editing
                         >
                             Настроить пороги
@@ -146,10 +148,10 @@ export function ItemInventorySection({
 
             {/* Warehouse Breakdown */}
             <div className="space-y-3">
-                <div className="flex items-center justify-between px-2">
+                <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Map className="w-4 h-4 text-primary" />
-                        <h4 className="text-[11px] font-bold text-slate-400">Геолокация запасов</h4>
+                        <h4 className="text-xs font-bold text-slate-400">Геолокация запасов</h4>
                     </div>
                     <Badge className="bg-slate-900 text-white rounded-2xl font-bold text-xs px-3">
                         {stocks.length} локаций
@@ -169,35 +171,35 @@ export function ItemInventorySection({
                                 key={stock.id}
                                 className="crm-card  !rounded-2xl hover:shadow-md transition-all group flex flex-col"
                             >
-                                <div className="flex items-center gap-3 mb-6">
+                                <div className="flex items-center gap-3 mb-2">
                                     <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground">
                                         <Box className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-bold text-foreground leading-none">
-                                            {stock.storageLocation?.name ||"Global Store"}
+                                            {stock.storageLocation?.name || "Global Store"}
                                         </h3>
-                                        <p className="text-[13px] font-medium text-muted-foreground mt-1">Остатки и лимиты</p>
+                                        <p className="text-xs font-medium text-muted-foreground mt-1">Остатки и лимиты</p>
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
                                     {/* Current Stock */}
-                                    <div className="p-4 rounded-2xl bg-muted/30 border border-border/50">
+                                    <div className="p-3 rounded-2xl bg-muted/30 border border-border/50">
                                         <div className="flex justify-between items-start mb-2">
-                                            <span className="text-[11px] font-bold text-muted-foreground">Текущий остаток</span>
+                                            <span className="text-xs font-bold text-muted-foreground">Текущий остаток</span>
                                             <span className={cn("px-2 py-1 rounded-lg text-xs font-bold border",
-                                                stockStatus === 'critical' ?"bg-rose-500/10 text-rose-600 border-rose-200" :
-                                                    stockStatus === 'low' ?"bg-amber-500/10 text-amber-600 border-amber-200" :"bg-emerald-500/10 text-emerald-600 border-emerald-200"
+                                                stockStatus === 'critical' ? "bg-rose-500/10 text-rose-600 border-rose-200" :
+                                                    stockStatus === 'low' ? "bg-amber-500/10 text-amber-600 border-amber-200" : "bg-emerald-500/10 text-emerald-600 border-emerald-200"
                                             )}>
-                                                {stockStatus === 'critical' ?"Критический" :
-                                                    stockStatus === 'low' ?"Мало" :"Норма"}
+                                                {stockStatus === 'critical' ? "Критический" :
+                                                    stockStatus === 'low' ? "Мало" : "Норма"}
                                             </span>
                                         </div>
                                         <div className="flex items-baseline gap-2">
                                             <span className={cn("text-4xl font-black",
-                                                stockStatus === 'critical' ?"text-rose-600" :
-                                                    stockStatus === 'low' ?"text-amber-600" :"text-foreground"
+                                                stockStatus === 'critical' ? "text-rose-600" :
+                                                    stockStatus === 'low' ? "text-amber-600" : "text-foreground"
                                             )}>
                                                 {stock.quantity}
                                             </span>
@@ -209,6 +211,7 @@ export function ItemInventorySection({
                                         <Button
                                             variant="ghost"
                                             size="icon"
+                                            type="button"
                                             onClick={() => onAdjustStock(stock.storageLocationId)}
                                             className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground w-10 h-10 min-w-0"
                                         >
@@ -217,6 +220,7 @@ export function ItemInventorySection({
                                         <Button
                                             variant="ghost"
                                             size="icon"
+                                            type="button"
                                             onClick={() => onTransferStock(stock.storageLocationId)}
                                             className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground w-10 h-10 min-w-0"
                                         >
@@ -232,7 +236,7 @@ export function ItemInventorySection({
                         <div className="col-span-full py-20 text-center bg-slate-50/50 rounded-2xl border-2 border-dashed border-slate-200">
                             <PlusCircle className="w-16 h-16 text-slate-300 mx-auto mb-6 transition-transform hover:rotate-90 cursor-pointer" onClick={() => onAdjustStock()} />
                             <h4 className="text-xl font-bold text-slate-400  mb-2">Регистр пуст</h4>
-                            <p className="text-[12px] font-medium text-slate-300">Нажмите для инициализации стока</p>
+                            <p className="text-xs font-medium text-slate-300">Нажмите для инициализации стока</p>
                         </div>
                     )}
                 </div>

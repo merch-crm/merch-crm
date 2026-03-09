@@ -1,8 +1,8 @@
 "use client";
 
-import React from"react";
-import { cn } from"@/lib/utils";
-import { Timeframe, PERIODS } from"./types";
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Timeframe, PERIODS } from "./types";
 
 interface TimeframeTabsProps {
     timeframe: Timeframe;
@@ -12,17 +12,17 @@ interface TimeframeTabsProps {
 export function TimeframeTabs({ timeframe, setTimeframe }: TimeframeTabsProps) {
     return (
         <div className="flex items-center justify-center">
-            <div className="inline-flex p-1 bg-muted/30 backdrop-blur-md border border-border/40 rounded-full shadow-sm">
+            <div className="inline-flex p-1.5 bg-slate-100/60 backdrop-blur-sm rounded-2xl shadow-inner border border-slate-200/50">
                 {PERIODS.map((p) => (
                     <button type="button"
                         key={p.value}
                         onClick={() => setTimeframe(p.value as Timeframe)}
                         aria-label={`Период: ${p.label}`}
                         aria-pressed={timeframe === p.value}
-                        className={cn("px-4 py-1.5 text-xs font-bold transition-all duration-300 rounded-full whitespace-nowrap",
+                        className={cn("px-4 py-1.5 text-xs font-black transition-all duration-300 rounded-xl whitespace-nowrap",
                             timeframe === p.value
-                                ?"bg-foreground text-background shadow-md transform scale-105"
-                                :"text-muted-foreground hover:text-foreground hover:bg-background/40"
+                                ? "bg-white text-slate-900 shadow-sm scale-100"
+                                : "text-slate-500 hover:text-slate-800 hover:bg-slate-200/50 scale-95 hover:scale-100"
                         )}
                     >
                         {p.label}

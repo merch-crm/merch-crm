@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ActiveOrderItem } from "@/app/(main)/dashboard/warehouse/types";
 import { ItemActiveOrdersSection } from "./ItemActiveOrdersSection";
@@ -9,37 +8,25 @@ import { ItemActiveOrdersSection } from "./ItemActiveOrdersSection";
 interface ItemActiveOrdersWrapperProps {
     activeOrders: ActiveOrderItem[];
     reservedQuantity: number;
-    displayUnit: string;
     tabletTab: string;
 }
 
 export function ItemActiveOrdersWrapper({
     activeOrders,
     reservedQuantity,
-    displayUnit,
     tabletTab
 }: ItemActiveOrdersWrapperProps) {
     if (activeOrders.length === 0 && reservedQuantity === 0 && tabletTab !== 'placement' && tabletTab !== 'characteristic') return null;
 
     return (
-        <div className={cn("crm-card rounded-3xl p-4 sm:p-6 flex flex-col space-y-3",
+        <div className={cn("bg-white border border-slate-100/60 rounded-[28px] p-6 flex flex-col gap-3 shadow-sm",
             (tabletTab === 'placement' || tabletTab === 'characteristic') ? "flex" : "hidden", "xl:flex"
         )}>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-foreground flex items-center justify-center text-background transition-all shadow-sm">
-                        <ShoppingBag className="w-6 h-6" />
-                    </div>
-                    <h3 className="text-xl font-black text-foreground">Зарезервировано в заказах</h3>
-                </div>
-                {activeOrders.length > 0 && (
-                    <div className="px-4 py-2 bg-amber-100/50 rounded-3xl border border-amber-200/50 flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-                        <span className="text-xs font-bold text-amber-700">
-                            Всего в заказах: {reservedQuantity} {displayUnit}
-                        </span>
-                    </div>
-                )}
+            <div className="flex items-center justify-between mb-2">
+                <h3 className="text-[17px] font-black text-slate-900">Активные заказы ({activeOrders.length})</h3>
+                <button type="button" className="text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+                    Смотреть все
+                </button>
             </div>
             <ItemActiveOrdersSection orders={activeOrders} />
         </div>

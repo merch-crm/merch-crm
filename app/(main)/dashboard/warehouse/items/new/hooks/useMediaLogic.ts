@@ -17,7 +17,7 @@ interface UseMediaLogicProps {
 export function useMediaLogic({ formData, updateFormData }: UseMediaLogicProps) {
     const { toast } = useToast();
     const { isProcessing, uploadStates: genericUploadStates, processFiles } = useImageUploader({
-        maxFiles: 7,
+        maxFiles: Infinity,
         maxSizeMB: 1,
         type: "image/webp",
         maxWidth: 1920,

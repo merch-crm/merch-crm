@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "50mb", // Increase limit for image uploads
+      bodySizeLimit: "500mb", // Increase limit for large print file uploads
     },
   },
   images: {
@@ -20,40 +20,25 @@ const nextConfig: NextConfig = {
         pathname: "/api/storage/local/**",
       },
     ],
+    // Разрешаем оптимизацию локальных загруженных файлов
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "i.pravatar.cc",
-      },
-      {
-        protocol: "https",
-        hostname: "api.dicebear.com",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        protocol: "https",
-        hostname: "store.storeimages.cdn-apple.com",
-      },
-      {
-        protocol: "https",
-        hostname: "randomuser.me",
-      },
-      {
-        protocol: "https",
-        hostname: "api.qrserver.com",
-      },
-      {
-        protocol: "https",
-        hostname: "s3.regru.cloud",
-      },
-      {
-        protocol: "https",
-        hostname: "*.s3.regru.cloud",
+        protocol: 'https',
+        hostname: '**',
       },
     ],
+
+    // Размеры для responsive изображений
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+
+    // Размеры для превью и иконок
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512],
+
+    // Форматы (WebP — лучшее сжатие)
+    formats: ['image/webp'],
+
+    // Кеширование: 1 год для prod, 1 минута для dev
+    minimumCacheTTL: process.env.NODE_ENV === 'production' ? 31536000 : 60,
   },
   async redirects() {
     return [

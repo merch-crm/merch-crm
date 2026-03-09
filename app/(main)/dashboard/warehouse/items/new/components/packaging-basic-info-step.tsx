@@ -154,7 +154,7 @@ export function PackagingBasicInfoStep({
     return (
         <div className="flex flex-col h-full !overflow-visible">
             <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar pr-1">
-                <div className="max-w-[800px] mx-auto space-y-3 pb-10 p-8">
+                <div className="max-w-[800px] mx-auto space-y-2.5 pb-8 p-6">
 
                     {/* Header */}
                     <div className="flex items-center gap-3 shrink-0 mb-4">
@@ -182,8 +182,8 @@ export function PackagingBasicInfoStep({
                     )}
 
                     {/* Section 1: Type & Brand */}
-                    <section className="space-y-3 pb-4">
-                        <div className="flex items-center gap-3 mb-4">
+                    <section className="space-y-2.5 pb-3">
+                        <div className="flex items-center gap-2.5 mb-3">
                             <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200 text-white shrink-0">
                                 <Box className="w-6 h-6" strokeWidth={2} />
                             </div>
@@ -193,7 +193,7 @@ export function PackagingBasicInfoStep({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-bold text-slate-700 ml-1">Тип упаковки</label>
                                 <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-[14px]">
@@ -236,8 +236,8 @@ export function PackagingBasicInfoStep({
                     </section>
 
                     {/* Section 2: Dimensions & Specs */}
-                    <section className="space-y-3 pb-4">
-                        <div className="flex items-center gap-3 mb-4">
+                    <section className="space-y-2.5 pb-3">
+                        <div className="flex items-center gap-2.5 mb-3">
                             <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shadow-lg shadow-slate-200 text-white shrink-0">
                                 <Scale className="w-6 h-6" strokeWidth={2} />
                             </div>
@@ -247,9 +247,9 @@ export function PackagingBasicInfoStep({
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-12 gap-3">
+                        <div className="grid grid-cols-12 gap-2.5">
                             {/* Dimensions */}
-                            <div className="col-span-12 md:col-span-7 grid grid-cols-3 gap-3 p-4 bg-slate-50/50 rounded-[20px] border border-slate-200/60">
+                            <div className="col-span-12 md:col-span-7 grid grid-cols-3 gap-2.5 p-3.5 bg-slate-50/50 rounded-[20px] border border-slate-200/60">
                                 {renderInput("Длина", formData.depth, "depth", "300", <Ruler className="w-3 h-3" />, "мм", "number")}
                                 {renderInput("Ширина", formData.width, "width", "200", <Ruler className="w-3 h-3 rotate-90" />, "мм", "number")}
                                 {renderInput("Высота", formData.height, "height", "100", <Box className="w-3 h-3" />, "мм", "number")}

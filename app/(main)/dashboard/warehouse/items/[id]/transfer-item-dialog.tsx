@@ -152,24 +152,24 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Откуда (источник)</label>
                                 <LocationSelect
-                                    locations={availableFromLocations}
+                                    locations={availableFromLocations as unknown as StorageLocation[]}
                                     value={fromLocationId}
                                     onChange={setFromLocationId}
                                     excludeId={toLocationId}
                                     placeholder="Выберите склад…"
-                                    stocks={stockMap}
+                                    stocks={stockMap as unknown as Map<string, number>}
                                 />
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Куда (получатель)</label>
                                 <LocationSelect
-                                    locations={locations}
+                                    locations={locations as unknown as StorageLocation[]}
                                     value={toLocationId}
                                     onChange={setToLocationId}
                                     excludeId={fromLocationId}
                                     placeholder="Выберите склад…"
-                                    stocks={stockMap}
+                                    stocks={stockMap as unknown as Map<string, number>}
                                 />
                             </div>
                         </div>

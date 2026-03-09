@@ -177,6 +177,7 @@ export const InventoryFiltersSchema = z.object({
     sortBy: z.string().optional().default("createdAt"),
     showArchived: z.coerce.boolean().optional().default(false),
     onlyOrphaned: z.coerce.boolean().optional().default(false),
+    productLineId: z.string().uuid().optional(),
 });
 
 export const BulkUpdateCategorySchema = z.object({

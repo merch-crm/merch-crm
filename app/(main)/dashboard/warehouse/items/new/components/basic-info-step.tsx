@@ -98,11 +98,11 @@ export function BasicInfoStep({
                         attributeTypes={attributeTypes}
                         dynamicAttributes={dynamicAttributes}
                         activeSubcategory={formData.subcategoryId ? subCategories.find(s => s.id === formData.subcategoryId) : undefined}
-                        className="mb-6"
+                        className="mb-4"
                     />
 
                     {/* Header */}
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                             <div className="w-12 h-12 rounded-[var(--radius)] bg-slate-900 flex items-center justify-center shrink-0 shadow-lg shadow-slate-200">
                                 <ClipboardList className="w-6 h-6 text-white" />
@@ -114,15 +114,15 @@ export function BasicInfoStep({
                         </div>
                     </div>
 
-                    <div className="flex-1 flex flex-col pt-6 min-h-0">
-                        <div className="flex-1 flex flex-col gap-3">
+                    <div className="flex-1 flex flex-col pt-4 min-h-0">
+                        <div className="flex-1 flex flex-col gap-2.5">
 
 
 
                             <div>
                                 {categoryAttributes.length > 0 ? (
-                                    <div className="flex flex-col space-y-3 pt-2">
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 grid-flow-row-dense w-full">
+                                    <div className="flex flex-col space-y-2.5 pt-1.5">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 grid-flow-row-dense w-full">
                                             {categoryAttributes.map((attr) => {
                                                 const isFullWidth = attr.dataType === 'color';
                                                 return (
