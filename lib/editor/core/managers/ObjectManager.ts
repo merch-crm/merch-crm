@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { BaseManager } from "./BaseManager";
 import { AddObjectCommand, RemoveObjectCommand } from "../../commands";
 import { DEFAULT_TEXT_STYLES } from "../../constants";
@@ -58,57 +58,53 @@ export class ObjectManager extends BaseManager {
             throw new Error(`Максимум ${this.editor._config.maxLayers} слоёв`);
         }
 
-        return new Promise((resolve, reject) => {
-            fabric.Image.fromURL(
-                url,
-                (img) => {
-                    if (!img || !this.editor.canvas) {
-                        reject(new Error("Failed to load image"));
-                        return;
-                    }
+        try {
+            const img = await fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
+            if (!this.editor.canvas) {
+                throw new Error("Canvas not initialized");
+            }
 
-                    // Масштабируем если слишком большое
-                    const maxScale = Math.min(
-                        (this.editor._config.width * 0.8) / img.width!,
-                        (this.editor._config.height * 0.8) / img.height!,
-                        1
-                    );
-                    if (maxScale < 1) {
-                        img.scale(maxScale);
-                    }
-
-                    // Центрируем по умолчанию
-                    const defaultOptions: AddImageOptions = {
-                        left: options.left ?? (this.editor._config.width - img.getScaledWidth()) / 2,
-                        top: options.top ?? (this.editor._config.height - img.getScaledHeight()) / 2,
-                        scaleX: options.scaleX ?? img.scaleX ?? 1,
-                        scaleY: options.scaleY ?? img.scaleY ?? 1,
-                        angle: options.angle ?? 0,
-                        opacity: options.opacity ?? 1,
-                        name: options.name ?? "Изображение",
-                    };
-
-                    img.set({
-                        left: defaultOptions.left,
-                        top: defaultOptions.top,
-                        scaleX: defaultOptions.scaleX,
-                        scaleY: defaultOptions.scaleY,
-                        angle: defaultOptions.angle,
-                        opacity: defaultOptions.opacity,
-                    });
-
-                    const layer = this.createLayerItem(img, "image", defaultOptions.name);
-
-                    // Добавляем через команду для истории
-                    const command = new AddObjectCommand(this.editor, img, layer);
-                    this.editor.history.execute(command);
-
-                    this.editor.emit("object:added", { object: layer });
-                    resolve(layer);
-                },
-                { crossOrigin: "anonymous" }
+            // Масштабируем если слишком большое
+            const maxScale = Math.min(
+                (this.editor._config.width * 0.8) / img.width!,
+                (this.editor._config.height * 0.8) / img.height!,
+                1
             );
-        });
+            if (maxScale < 1) {
+                img.scale(maxScale);
+            }
+
+            // Центрируем по умолчанию
+            const defaultOptions: AddImageOptions = {
+                left: options.left ?? (this.editor._config.width - img.getScaledWidth()) / 2,
+                top: options.top ?? (this.editor._config.height - img.getScaledHeight()) / 2,
+                scaleX: options.scaleX ?? img.scaleX ?? 1,
+                scaleY: options.scaleY ?? img.scaleY ?? 1,
+                angle: options.angle ?? 0,
+                opacity: options.opacity ?? 1,
+                name: options.name ?? "Изображение",
+            };
+
+            img.set({
+                left: defaultOptions.left,
+                top: defaultOptions.top,
+                scaleX: defaultOptions.scaleX,
+                scaleY: defaultOptions.scaleY,
+                angle: defaultOptions.angle,
+                opacity: defaultOptions.opacity,
+            });
+
+            const layer = this.createLayerItem(img, "image", defaultOptions.name);
+
+            // Добавляем через команду для истории
+            const command = new AddObjectCommand(this.editor, img, layer);
+            this.editor.history.execute(command);
+
+            this.editor.emit("object:added", { object: layer });
+            return layer;
+        } catch (_error) {
+            throw new Error("Failed to load image");
+        }
     }
 
     addText(text: string = "Текст", options: Partial<TextStyles> = {}): LayerItem {
@@ -197,7 +193,7 @@ export class ObjectManager extends BaseManager {
         const layer = this.editor.objects.get(id);
         if (!layer || !this.editor.canvas) return;
 
-        this.editor.canvas.bringForward(layer.fabricObject);
+        this.editor.canvas.bringObjectForward(layer.fabricObject);
         this.updateLayerZIndexes();
         this.editor.canvas.renderAll();
     }
@@ -206,7 +202,7 @@ export class ObjectManager extends BaseManager {
         const layer = this.editor.objects.get(id);
         if (!layer || !this.editor.canvas) return;
 
-        this.editor.canvas.sendBackwards(layer.fabricObject);
+        this.editor.canvas.sendObjectBackwards(layer.fabricObject);
         this.updateLayerZIndexes();
         this.editor.canvas.renderAll();
     }
@@ -215,7 +211,7 @@ export class ObjectManager extends BaseManager {
         const layer = this.editor.objects.get(id);
         if (!layer || !this.editor.canvas) return;
 
-        this.editor.canvas.bringToFront(layer.fabricObject);
+        this.editor.canvas.bringObjectToFront(layer.fabricObject);
         this.updateLayerZIndexes();
         this.editor.canvas.renderAll();
     }
@@ -224,7 +220,7 @@ export class ObjectManager extends BaseManager {
         const layer = this.editor.objects.get(id);
         if (!layer || !this.editor.canvas) return;
 
-        this.editor.canvas.sendToBack(layer.fabricObject);
+        this.editor.canvas.sendObjectToBack(layer.fabricObject);
         this.updateLayerZIndexes();
         this.editor.canvas.renderAll();
     }

@@ -29,6 +29,7 @@ export const tasks = pgTable("tasks", {
         orderIdIdx: index("tasks_order_id_idx").on(table.orderId),
         statusIdx: index("tasks_status_idx").on(table.status),
         createdIdx: index("tasks_created_idx").on(table.createdAt),
+        createdByIdx: index("tasks_created_by_idx").on(table.createdBy),
     }
 });
 
@@ -152,6 +153,7 @@ export const taskAttachments = pgTable("task_attachments", {
     return {
         taskIdx: index("task_attachments_task_idx").on(table.taskId),
         createdIdx: index("task_attachments_created_idx").on(table.createdAt),
+        createdByIdx: index("task_attachments_created_by_idx").on(table.createdBy),
     }
 });
 

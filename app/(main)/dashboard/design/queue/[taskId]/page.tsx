@@ -7,8 +7,11 @@ interface PageProps {
     params: { taskId: string };
 }
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const result = await getDesignTask(params.taskId);
+    const { taskId } = await params;
+    const result = await getDesignTask(taskId);
 
     if (!result.success || !result.data) {
         return { title: "Задача не найдена" };
@@ -21,7 +24,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function DesignTaskPage({ params }: PageProps) {
-    const result = await getDesignTask(params.taskId);
+    const { taskId } = await params;
+    const result = await getDesignTask(taskId);
 
     if (!result.success || !result.data) {
         notFound();

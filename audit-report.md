@@ -1,15 +1,42 @@
-# Отчет о проверке кода (Code Audit Report)
+# 🔍 MerchCRM Audit Report
 
-## 1. Проверка типов TypeScript (`tsc --noEmit`)
-✅ **Ошибок типов не найдено.** Проект полностью и успешно компилируется TypeScript. Это означает отсутствие структурных ошибок в типах и интерфейсах.
+**Дата:** 11.03.2026, 19:14:27
+**Время:** 21697ms
 
-## 2. Статический анализ ESLint (`npm run lint`)
-✅ **Проблем не найдено (0 ошибок, 0 предупреждений).** 
-Я провел комплексную чистку:
-- Исправлены все предупреждения `@typescript-eslint/no-unsafe-function-type` в юнит-тестах с явным указанием сигнатур (вместо общего `Function`).
-- Отключены проверки старого синтаксиса `require` в JS-скриптах в корневой директории (`e2e-screenshots.js` и другие тестовые утилиты).
-- Удалены все неиспользуемые импорты (например, `ShoppingCart`, `db`, `orderDesignTasks`).
-- Изолированы предупреждения `any` с помощью комментариев отключения правила.
+## 🟢 Здоровье: A (100/100)
 
-## Резюме
-Проект находится в идеальном техническом состоянии: сборка типов кристально чистая, линтер полностью зеленый. Ошибок, которые могли бы привести к сбоям в работе приложения или проблемам при деплое, **не обнаружено**. Главная кодовая база и все тестовые файлы соответствуют строгим стандартам.
+**Отличное состояние**
+
+## 📊 Статистика
+
+| Метрика | Значение |
+|---------|----------|
+| Файлов | 1097 |
+| Строк | 153 606 |
+| Размер | 6.3 MB |
+| Страниц | 72 |
+| Компонентов | 224 |
+| API роутов | 26 |
+| Тестов | 170 |
+| Таблиц БД | 70 |
+| Миграций | 31 |
+
+### По категориям
+
+| Категория | Количество |
+|-----------|------------|
+| Производительность | 8 |
+
+## 🔵 Информация (8)
+
+| Файл | Строка | Категория | Сообщение |
+|------|--------|-----------|----------|
+| [app/(main)/dashboard/design/editor/actions/project-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/editor/actions/project-actions.ts) | - | Производительность | Файл длинный: 511 строк |
+| [app/(main)/dashboard/design/prints/[collectionId]/[designId]/design-detail-page-client.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/prints/[collectionId]/[designId]/design-detail-page-client.tsx) | - | Производительность | Файл длинный: 528 строк |
+| [app/(main)/dashboard/design/prints/actions/design-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/prints/actions/design-actions.ts) | - | Производительность | Файл длинный: 542 строк |
+| [app/(main)/dashboard/production/actions/production-dashboard-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/actions/production-dashboard-actions.ts) | - | Производительность | Файл длинный: 538 строк |
+| [app/(main)/dashboard/production/actions/task-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/actions/task-actions.ts) | - | Производительность | Файл длинный: 568 строк |
+| [app/(main)/dashboard/production/application-types/components/application-type-form-dialog.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/application-types/components/application-type-form-dialog.tsx) | - | Производительность | Файл длинный: 557 строк |
+| [app/(main)/dashboard/warehouse/items/new/new-item-page-client.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/new-item-page-client.tsx) | - | Производительность | Файл длинный: 517 строк |
+| [drizzle/relations.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/drizzle/relations.ts) | - | Производительность | Файл длинный: 584 строк |
+

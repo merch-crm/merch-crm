@@ -1,11 +1,10 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { BaseManager } from "./BaseManager";
 import type {
     TextStyles,
     FilterValue,
     FilterType,
     WatermarkConfig,
-    ImageFilters
 } from "../../types";
 
 export class StyleManager extends BaseManager {
@@ -85,7 +84,7 @@ export class StyleManager extends BaseManager {
         const filters = image.filters || [];
 
         const existingIndex = filters.findIndex(
-            (f) => f && (f as fabric.IBaseFilter & { type: string }).type === filter.type
+            (f) => f && (f as unknown as { type: string }).type === filter.type
         );
         if (existingIndex !== -1) {
             filters.splice(existingIndex, 1);
@@ -93,7 +92,7 @@ export class StyleManager extends BaseManager {
 
         const fabricFilter = this.createFabricFilter(filter);
         if (fabricFilter) {
-            filters.push(fabricFilter);
+            filters.push(fabricFilter as unknown as fabric.filters.BaseFilter<string, Record<string, unknown>>);
         }
 
         image.filters = filters;
@@ -101,26 +100,26 @@ export class StyleManager extends BaseManager {
         this.editor.canvas?.renderAll();
     }
 
-    public createFabricFilter(filter: FilterValue): fabric.IBaseFilter | null {
+    public createFabricFilter(filter: FilterValue): fabric.filters.BaseFilter<string, Record<string, unknown>> | null {
         switch (filter.type) {
             case "brightness":
-                return new fabric.Image.filters.Brightness({ brightness: filter.value });
+                return new fabric.filters.Brightness({ brightness: filter.value });
             case "contrast":
-                return new fabric.Image.filters.Contrast({ contrast: filter.value });
+                return new fabric.filters.Contrast({ contrast: filter.value });
             case "saturation":
-                return new fabric.Image.filters.Saturation({ saturation: filter.value });
+                return new fabric.filters.Saturation({ saturation: filter.value });
             case "blur":
-                return new fabric.Image.filters.Blur({ blur: filter.value });
+                return new fabric.filters.Blur({ blur: filter.value });
             case "grayscale":
-                return filter.value ? new fabric.Image.filters.Grayscale() : null;
+                return filter.value ? new fabric.filters.Grayscale() : null;
             case "sepia":
-                return filter.value ? new fabric.Image.filters.Sepia() : null;
+                return filter.value ? new fabric.filters.Sepia() : null;
             case "invert":
-                return filter.value ? new fabric.Image.filters.Invert() : null;
+                return filter.value ? new fabric.filters.Invert() : null;
             case "noise":
-                return new fabric.Image.filters.Noise({ noise: filter.value });
+                return new fabric.filters.Noise({ noise: filter.value });
             case "pixelate":
-                return new fabric.Image.filters.Pixelate({ blocksize: filter.value });
+                return new fabric.filters.Pixelate({ blocksize: filter.value });
             default:
                 return null;
         }
@@ -134,7 +133,7 @@ export class StyleManager extends BaseManager {
         if (!image.filters) return;
 
         image.filters = image.filters.filter(
-            (f) => f && (f as fabric.IBaseFilter & { type: string }).type !== filterType
+            (f) => f && (f as unknown as { type: string }).type !== filterType
         );
         image.applyFilters();
         this.editor.canvas?.renderAll();
@@ -149,14 +148,17 @@ export class StyleManager extends BaseManager {
 
         return image.filters
             .filter(Boolean)
-            .map((f: fabric.IBaseFilter) => ({
-                type: (f as fabric.IBaseFilter & { type: string }).type as FilterType,
-                value: this.getFilterValue(f),
-            }));
+            .map((f) => {
+                const filter = f as unknown as { type: string };
+                return {
+                    type: filter.type as FilterType,
+                    value: this.getFilterValue(f),
+                };
+            });
     }
 
-    private getFilterValue(filter: fabric.IBaseFilter): number {
-        const f = filter as fabric.IBaseFilter & Partial<ImageFilters> & { blocksize?: number };
+    private getFilterValue(filter: fabric.filters.BaseFilter<string, Record<string, unknown>>): number {
+        const f = filter as unknown as Record<string, number | undefined>;
         if (f.brightness !== undefined) return f.brightness;
         if (f.contrast !== undefined) return f.contrast;
         if (f.saturation !== undefined) return f.saturation;

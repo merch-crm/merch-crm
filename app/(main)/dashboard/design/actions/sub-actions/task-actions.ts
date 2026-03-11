@@ -1,17 +1,18 @@
 "use server";
 
 import { db } from "@/lib/db";
+import { users } from "@/lib/schema/users";
 import {
     orderDesignTasks,
     orderDesignHistory,
-    users,
     orderDesignFiles
-} from "@/lib/schema";
+} from "@/lib/schema/design-tasks";
 import { eq, and, desc, asc, inArray, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { z } from "zod";
 import { ActionResult, DesignTask, DesignTaskFull } from "../types";
+import { CreateTaskSchema } from "../schemas";
 
 // Генерация номера задачи
 export async function generateTaskNumber(orderId: string): Promise<string> {
@@ -34,21 +35,7 @@ export async function generateTaskNumber(orderId: string): Promise<string> {
     }
 }
 
-// Схема валидации
-export const CreateTaskSchema = z.object({
-    orderId: z.string().uuid(),
-    orderItemId: z.string().uuid().optional().nullable(),
-    title: z.string().min(1).max(255),
-    description: z.string().optional().nullable(),
-    applicationTypeId: z.string().uuid().optional().nullable(),
-    sourceDesignId: z.string().uuid().optional().nullable(),
-    printArea: z.string().optional().nullable(),
-    quantity: z.number().int().min(1).optional(),
-    colors: z.number().int().min(1).optional().nullable(),
-    dueDate: z.date().optional().nullable(),
-    clientNotes: z.string().optional().nullable(),
-    priority: z.number().int().min(0).max(2).optional(),
-});
+// Схема валидации (переехала в schemas.ts, реэкспортируем для совместимости)
 
 // Получить очередь дизайн-задач
 export async function getDesignQueue(options?: {

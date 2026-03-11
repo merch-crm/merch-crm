@@ -1,13 +1,8 @@
-import {
-    orders,
-    orderItems,
-    orderDesignTasks,
-    orderDesignFiles,
-    orderDesignHistory,
-    printDesigns,
-    clients,
-    clientBranding
-} from "@/lib/schema";
+import { orders, orderItems } from "@/lib/schema/orders";
+import { orderDesignTasks, orderDesignFiles, orderDesignHistory } from "@/lib/schema/design-tasks";
+import { printDesigns } from "@/lib/schema/designs";
+import { clients } from "@/lib/schema/clients/main";
+import { clientBranding } from "@/lib/schema/clients/branding";
 
 export type ActionResult<T = void> = {
     success: boolean;

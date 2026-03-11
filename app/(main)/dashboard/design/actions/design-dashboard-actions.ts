@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orderDesignTasks, printDesigns, printCollections, applicationTypes } from "@/lib/schema";
+import { orderDesignTasks } from "@/lib/schema/design-tasks";
+import { printDesigns, printCollections } from "@/lib/schema/designs";
+import { applicationTypes } from "@/lib/schema/production";
 import { eq, and, gte, lte, sql, count, desc } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek } from "date-fns";
 import { z } from "zod";

@@ -21,6 +21,7 @@ export const employeeFaces = pgTable("employee_faces", {
     index("employee_faces_is_active_idx").on(table.isActive),
     index("employee_faces_is_primary_idx").on(table.isPrimary),
     index("employee_faces_created_at_idx").on(table.createdAt),
+    index("employee_faces_created_by_idx").on(table.createdById),
 ]);
 
 export const presenceLogs = pgTable("presence_logs", {

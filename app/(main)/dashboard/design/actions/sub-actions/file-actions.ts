@@ -5,7 +5,7 @@ import {
     orderDesignTasks,
     orderDesignFiles,
     orderDesignHistory
-} from "@/lib/schema";
+} from "@/lib/schema/design-tasks";
 import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
@@ -13,13 +13,9 @@ import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
 import { ActionResult, DesignFile, DesignTaskFull } from "../types";
+import { UploadFileSchema } from "../schemas";
 
-export const UploadFileSchema = z.object({
-    taskId: z.string().uuid(),
-    type: z.enum(["source", "preview", "mockup", "client_file"]),
-    file: z.any(), // File object, difficult to validate with Zod strictly in server action, but we can type it
-    comment: z.string().optional().nullable(),
-});
+// Схема переехала в schemas.ts
 
 // Загрузить файл
 export async function uploadDesignFile(data: z.infer<typeof UploadFileSchema>): Promise<ActionResult<DesignFile>> {

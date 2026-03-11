@@ -1,10 +1,12 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 export type Canvas = fabric.Canvas;
 export type FabricObject = fabric.Object;
-export type Image = fabric.Image;
+export type Image = fabric.FabricImage;
 export type IText = fabric.IText;
 export type Textbox = fabric.Textbox;
+export type FabricObjectProps = fabric.TFabricObjectProps;
+
 export interface FabricObjectWithData extends fabric.Object {
     data?: EditorObjectData;
 }

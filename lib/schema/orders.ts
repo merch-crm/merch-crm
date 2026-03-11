@@ -50,6 +50,8 @@ export const orders = pgTable("orders", {
         deadlineIdx: index("orders_deadline_idx").on(table.deadline),
         dateIdx: index("orders_date_idx").on(table.createdAt),
         statusDateIdx: index("orders_status_date_idx").on(table.status, table.createdAt),
+        archivedByIdx: index("orders_archived_by_idx").on(table.archivedBy),
+        promocodeIdx: index("orders_promocode_idx").on(table.promocodeId),
     }
 });
 

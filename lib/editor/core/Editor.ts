@@ -1,4 +1,5 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
+import type { FabricObject, Canvas } from "../types";
 import { EventEmitter } from "./EventEmitter";
 import { HistoryManager } from "./History";
 import { ObjectManager } from "./managers/ObjectManager";
@@ -22,11 +23,11 @@ import type {
 } from "../types";
 
 export class Editor extends EventEmitter implements IEditor {
-    public canvas: fabric.Canvas | null = null;
+    public canvas: Canvas | null = null;
     public _config: EditorConfig;
     public history: HistoryManager;
     public objects: Map<string, LayerItem> = new Map();
-    public watermarkObject: fabric.Object | null = null;
+    public watermarkObject: FabricObject | null = null;
     public _zoom: number = 1;
     private _isReady: boolean = false;
     public idCounter: number = 0;
@@ -88,28 +89,28 @@ export class Editor extends EventEmitter implements IEditor {
         this.canvas.on("selection:created", (e) => {
             this.emit("selection:changed", {
                 objects: this.getSelectedObjects(),
-                e: e.e,
+                e: e.e as fabric.TPointerEvent,
             });
         });
 
         this.canvas.on("selection:updated", (e) => {
             this.emit("selection:changed", {
                 objects: this.getSelectedObjects(),
-                e: e.e,
+                e: e.e as fabric.TPointerEvent,
             });
         });
 
         this.canvas.on("selection:cleared", (e) => {
-            this.emit("selection:changed", { objects: [], e: e.e });
+            this.emit("selection:changed", { objects: [], e: e.e as fabric.TPointerEvent });
         });
 
         this.canvas.on("object:modified", (e) => {
             this.objectManager.updateLayerZIndexes();
-            this.emit("object:modified", { object: e.target });
+            this.emit("object:modified", { object: e.target as FabricObject });
         });
 
         this.canvas.on("object:moving", (e) => {
-            this.emit("object:moving", { object: e.target });
+            this.emit("object:moving", { object: e.target as FabricObject });
         });
     }
 
@@ -118,7 +119,7 @@ export class Editor extends EventEmitter implements IEditor {
     get isReady(): boolean { return this._isReady; }
     get config(): EditorConfig { return this._config; }
     get zoom(): number { return this._zoom; }
-    getCanvas(): fabric.Canvas {
+    getCanvas(): Canvas {
         if (!this.canvas) throw new Error("Editor not initialized");
         return this.canvas;
     }
@@ -148,33 +149,28 @@ export class Editor extends EventEmitter implements IEditor {
     // ============ ФОН ============
 
     async setBackgroundImage(url: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            fabric.Image.fromURL(url, (img) => {
-                if (!this.canvas) {
-                    reject(new Error("Canvas not initialized"));
-                    return;
-                }
+        if (!this.canvas) throw new Error("Canvas not initialized");
 
-                const scale = Math.max(
-                    this._config.width / img.width!,
-                    this._config.height / img.height!
-                );
+        const img = await fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
+        const scale = Math.max(
+            this._config.width / img.width!,
+            this._config.height / img.height!
+        );
 
-                this.canvas.setBackgroundImage(img, this.canvas.renderAll.bind(this.canvas), {
-                    scaleX: scale,
-                    scaleY: scale,
-                    originX: "left",
-                    originY: "top",
-                    crossOrigin: "anonymous",
-                });
-                resolve();
-            }, { crossOrigin: "anonymous" });
+        img.set({
+            scaleX: scale,
+            scaleY: scale,
+            originX: "left",
+            originY: "top",
         });
+        this.canvas.backgroundImage = img;
+        this.canvas.renderAll();
     }
 
     setBackgroundColor(color: string): void {
         if (!this.canvas) return;
-        this.canvas.setBackgroundColor(color, this.canvas.renderAll.bind(this.canvas));
+        this.canvas.backgroundColor = color;
+        this.canvas.renderAll();
     }
 
     resize(width: number, height: number): void {

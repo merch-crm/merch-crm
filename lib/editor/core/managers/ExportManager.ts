@@ -1,12 +1,11 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { BaseManager } from "./BaseManager";
 import { LIMITS } from "../../constants";
 import type {
-    EditorObjectType,
     ExportOptions,
     ExportResult,
     LayerItem,
-    FabricObjectWithData
+    FabricObjectWithData,
 } from "../../types";
 
 export class ExportManager extends BaseManager {
@@ -76,7 +75,7 @@ export class ExportManager extends BaseManager {
         return {
             version: "1.0",
             config: this.editor._config,
-            canvas: this.editor.canvas.toJSON(["data"]),
+            canvas: this.editor.canvas.toJSON(),
             objects: Array.from(this.editor.objects.entries()).map(([id, layer]) => ({
                 id,
                 name: layer.name,
@@ -88,36 +87,36 @@ export class ExportManager extends BaseManager {
     }
 
     async loadFromJSON(json: unknown): Promise<void> {
-        const data = json as { canvas?: unknown; objects?: LayerItem[] };
+        const data = json as { canvas?: Record<string, unknown>; objects?: LayerItem[] };
         if (!this.editor.canvas) return;
 
         this.editor.objects.clear();
         this.editor.history.clear();
 
-        return new Promise((resolve) => {
-            this.editor.canvas!.loadFromJSON(data.canvas, () => {
-                this.editor.canvas!.getObjects().forEach((obj: fabric.Object) => {
-                    const fabricData = (obj as FabricObjectWithData).data;
-                    if (fabricData?.id) {
-                        const layerData = (json as { objects?: LayerItem[] }).objects?.find((o) => o.id === fabricData.id);
-                        const layer: LayerItem = {
-                            id: fabricData.id,
-                            name: layerData?.name || "Объект",
-                            type: fabricData.type,
-                            visible: fabricData.visible,
-                            locked: fabricData.locked,
-                            opacity: obj.opacity ?? 1,
-                            zIndex: 0,
-                            fabricObject: obj,
-                        };
-                        this.editor.objects.set(fabricData.id, layer);
-                    }
-                });
-
-                this.editor.canvas!.renderAll();
-                resolve();
-            });
+        if (data.canvas) {
+            await this.editor.canvas.loadFromJSON(data.canvas);
+        }
+        
+        this.editor.canvas.getObjects().forEach((obj) => {
+            const fabricObj = obj as FabricObjectWithData;
+            const fabricData = fabricObj.data;
+            if (fabricData?.id) {
+                const layerData = data.objects?.find((o) => o.id === fabricData.id);
+                const layer: LayerItem = {
+                    id: fabricData.id,
+                    name: layerData?.name || "Объект",
+                    type: fabricData.type,
+                    visible: fabricData.visible ?? true,
+                    locked: fabricData.locked ?? false,
+                    opacity: obj.opacity ?? 1,
+                    zIndex: 0,
+                    fabricObject: obj,
+                };
+                this.editor.objects.set(fabricData.id, layer);
+            }
         });
+
+        this.editor.canvas.renderAll();
     }
 
     // ============ WATERMARK СЛУЖЕБНЫЕ ============
@@ -129,14 +128,15 @@ export class ExportManager extends BaseManager {
         const padding = 20;
 
         if (config.type === "text" || config.type === "both") {
-            const text = new fabric.Text(config.text || "© Merch CRM", {
+            const text = new fabric.FabricText(config.text || "© Merch CRM", {
                 fontSize: 16,
                 fill: "#000000",
                 opacity: config.opacity,
                 selectable: false,
                 evented: false,
-                data: { type: "watermark" as EditorObjectType },
-            } as fabric.ITextOptions);
+            } as fabric.TFabricObjectProps);
+            
+            (text as unknown as { data: Record<string, unknown> }).data = { type: "watermark" };
 
             const pos = this.calculateWatermarkPosition(text, config.position, padding);
             text.set(pos);
@@ -146,35 +146,28 @@ export class ExportManager extends BaseManager {
 
         if (config.type === "image" || config.type === "both") {
             if (config.imagePath) {
-                await new Promise<void>((resolve) => {
-                    fabric.Image.fromURL(
-                        config.imagePath!,
-                        (img: fabric.Image) => {
-                            if (!img || !this.editor.canvas) {
-                                resolve();
-                                return;
-                            }
+                try {
+                    const img = await fabric.FabricImage.fromURL(config.imagePath!, { crossOrigin: "anonymous" });
+                    
+                    const maxSize = Math.min(this.editor._config.width, this.editor._config.height) * 0.15;
+                    const scale = maxSize / Math.max(img.width!, img.height!);
+                    img.scale(scale * config.scale);
 
-                            const maxSize = Math.min(this.editor._config.width, this.editor._config.height) * 0.15;
-                            const scale = maxSize / Math.max(img.width!, img.height!);
-                            img.scale(scale * config.scale);
+                    img.set({
+                        opacity: config.opacity,
+                        selectable: false,
+                        evented: false,
+                    });
+                    
+                    (img as unknown as { data: Record<string, unknown> }).data = { type: "watermark" };
 
-                            img.set({
-                                opacity: config.opacity,
-                                selectable: false,
-                                evented: false,
-                                data: { type: "watermark" },
-                            });
-
-                            const pos = this.calculateWatermarkPosition(img, config.position, padding);
-                            img.set(pos);
-                            this.editor.canvas.add(img);
-                            this.editor.watermarkObject = img;
-                            resolve();
-                        },
-                        { crossOrigin: "anonymous" }
-                    );
-                });
+                    const pos = this.calculateWatermarkPosition(img, config.position, padding);
+                    img.set(pos);
+                    this.editor.canvas.add(img);
+                    this.editor.watermarkObject = img;
+                } catch (_error) {
+                    // Ignore image load error for watermark
+                }
             }
         }
     }

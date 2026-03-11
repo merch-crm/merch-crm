@@ -1,10 +1,26 @@
-
 import { WarehouseWidgets } from "../warehouse-widgets";
+import { type RecentTransaction } from "../warehouse-stats-actions";
+
+interface WarehouseStatsData {
+    totalItems: number;
+    totalQuantity: number;
+    totalReserved: number;
+    totalStorages: number;
+    archivedCount: number;
+    totalCategories: number;
+    totalSubCategories: number;
+    criticalItems: Array<{ id: string; name: string; quantity: number; unit: string }>;
+    activity: { ins: number; usage: number; waste: number; transfers: number; adjustments: number };
+    financials: { totalCostValue: number; totalRetailValue: number; frozenCostValue: number; frozenRetailValue: number; writeOffValue30d: number };
+    currencySymbol: string;
+    recentTransactions: RecentTransaction[];
+    topSoldItems: Array<{ id: string; name: string; unit: string; totalSold: number }>;
+    stagnantItems: Array<{ id: string; name: string; quantity: number; unit: string; lastActivityAt: Date | null }>;
+}
 
 export async function WarehouseWidgetsContainer() {
-    console.log("[DEBUG] SSR: WarehouseWidgetsContainer - BYPASSING stats call");
     // const res = await getWarehouseStats();
-    const res = {
+    const res: { success: boolean; data: WarehouseStatsData } = {
         success: true,
         data: {
             totalItems: 10,
@@ -24,12 +40,9 @@ export async function WarehouseWidgetsContainer() {
         }
     };
 
-    console.log("[DEBUG] SSR: WarehouseWidgetsContainer - returning dummy data");
-
     if (!res.success || !res.data) {
-        return null; // Or handle error
+        return null;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return <WarehouseWidgets stats={res.data as any} />;
+    return <WarehouseWidgets stats={res.data} />;
 }

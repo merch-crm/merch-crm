@@ -1,5 +1,5 @@
 import type { Editor } from "../Editor";
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 
 export abstract class BaseManager {
     constructor(protected editor: Editor) { }

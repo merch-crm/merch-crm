@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { BaseCommand } from "./Command";
 import type { IEditor, EditorObjectData } from "../types";
 

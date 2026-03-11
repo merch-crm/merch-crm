@@ -3,13 +3,11 @@
 import { db } from "@/lib/db";
 import {
     orderDesignTasks
-} from "@/lib/schema";
+} from "@/lib/schema/design-tasks";
 import { eq, and, inArray, count, sql } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
-import { z } from "zod";
 import { ActionResult, DesignQueueStats } from "../types";
-
-export const GetStatsSchema = z.object({});
+import { GetStatsSchema } from "../schemas";
 
 export async function getDesignQueueStats(): Promise<ActionResult<DesignQueueStats>> {
     try {

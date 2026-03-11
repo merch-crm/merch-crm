@@ -22,6 +22,7 @@ export const payments = pgTable("payments", {
         orderIdx: index("payments_order_idx").on(table.orderId),
         statusIdx: index("payments_status_idx").on(table.status),
         createdIdx: index("payments_created_idx").on(table.createdAt),
+        createdByIdx: index("payments_created_by_idx").on(table.createdBy),
     }
 });
 

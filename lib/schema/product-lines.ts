@@ -77,6 +77,7 @@ export const productLines = pgTable(
         sortOrderIdx: index("product_lines_sort_order_idx").on(table.sortOrder),
         categoryTypeIdx: index("product_lines_category_type_idx").on(table.categoryId, table.type),
         createdAtIdx: index("product_lines_created_at_idx").on(table.createdAt),
+        createdByIdx: index("product_lines_created_by_idx").on(table.createdBy),
     })
 );
 

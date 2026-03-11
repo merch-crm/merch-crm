@@ -13,6 +13,7 @@ export const presenceSettings = pgTable("presence_settings", {
 }, (table) => [
     index("presence_settings_key_idx").on(table.key),
     index("presence_settings_created_at_idx").on(table.createdAt),
+    index("presence_settings_updated_by_idx").on(table.updatedById),
 ]);
 
 export const presenceSettingsRelations = relations(presenceSettings, ({ one }) => ({

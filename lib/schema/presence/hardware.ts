@@ -23,6 +23,7 @@ export const xiaomiAccounts = pgTable("xiaomi_accounts", {
     index("xiaomi_accounts_email_idx").on(table.email),
     index("xiaomi_accounts_is_active_idx").on(table.isActive),
     index("xiaomi_accounts_created_at_idx").on(table.createdAt),
+    index("xiaomi_accounts_created_by_idx").on(table.createdById),
 ]);
 
 export const cameras = pgTable("cameras", {

@@ -1,4 +1,4 @@
-import { fabric } from "fabric";
+import * as fabric from "fabric";
 import { BaseCommand } from "./Command";
 import type { IEditor, EditorObjectData } from "../types";
 
@@ -29,7 +29,8 @@ export class RemoveObjectCommand extends BaseCommand {
         const canvas = this.editor.getCanvas();
         canvas.add(this.fabricObject);
         // Восстанавливаем z-index
-        this.fabricObject.moveTo(this.zIndex);
+        const obj = this.fabricObject as fabric.Object & { moveTo: (index: number) => fabric.Object };
+        obj.moveTo(this.zIndex);
         canvas.renderAll();
     }
 }

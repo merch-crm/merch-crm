@@ -63,6 +63,7 @@ export const inventoryItems = pgTable("inventory_items", {
         baseItemIdx: index("inventory_items_base_item_idx").on(table.baseItemId),
         printDesignIdx: index("inventory_items_print_design_idx").on(table.printDesignId),
         printVersionIdx: index("inventory_items_print_version_idx").on(table.printVersionId),
+        archivedByIdx: index("inv_items_archived_by_idx").on(table.archivedBy),
     }
 });
 
