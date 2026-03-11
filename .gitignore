@@ -54,7 +54,7 @@ restore_source.json
 
 # logs and debug
 *.log
-audit-report.json
+/reports/
 audit_output.txt
 debug-warehouse.png
 *.png
