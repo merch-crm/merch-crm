@@ -5,8 +5,6 @@
 import { vi } from 'vitest';
 import { type Session } from '@/lib/auth';
 import { Task } from '@/app/(main)/dashboard/tasks/types';
-import { hashPassword } from "@/lib/password";
-import crypto from "crypto";
 
 // ─── Session ─────────────────────────────────────────────────────────────────
 

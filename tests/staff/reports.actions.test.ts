@@ -29,14 +29,14 @@ vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { type Session } from '@/lib/auth';
+import { type _Session } from '@/lib/auth';
 import { getSession } from '@/lib/session';
 import { mockSession } from '../helpers/mocks';
 
 describe('Reports Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as unknown);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
     });
 
     describe('getDailyReport', () => {

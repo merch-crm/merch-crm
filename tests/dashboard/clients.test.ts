@@ -45,7 +45,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession, type Session } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import {
     getManagers,
@@ -94,7 +94,7 @@ describe('getManagers', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает список менеджеров', async () => {
-        vi.mocked(getSession).mockResolvedValue(mockSession() as unknown);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
         const managers = [{ id: 'u1', name: 'Manager 1', roleName: 'Менеджер' }];
         mockFindMany.mockResolvedValueOnce(managers);
         const result = await getManagers();

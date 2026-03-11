@@ -51,7 +51,7 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession, type Session } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { logAction } from '@/lib/audit';
 import { logError } from '@/lib/error-logger';

@@ -30,13 +30,13 @@ vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession, type Session } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { mockSession } from '../helpers/mocks';
 
 describe('Export Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as unknown);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
