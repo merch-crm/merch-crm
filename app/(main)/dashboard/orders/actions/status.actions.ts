@@ -15,7 +15,8 @@ const { orders, inventoryItems, inventoryTransactions, inventoryStocks } = schem
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+    const allowedRoles = ["Администратор", "Руководство", "Отдел продаж", "Дизайнер", "Печать", "Вышивка", "Склад"];
+    if (!session || !allowedRoles.includes(session.roleName)) {
         return { success: false, error: "Недостаточно прав для изменения статуса заказа" };
     }
 
@@ -34,13 +35,21 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             if (oldStatus === newStatus) return;
 
             // Status transition validation
+            // Admins and Management can jump any status
+            const isAdmin = ["Администратор", "Руководство"].includes(session.roleName);
+            
             const allowedTransitions: Record<string, string[]> = {
-                "new": ["design", "production", "cancelled"], "design": ["new", "production", "cancelled"], "production": ["done", "cancelled"], "done": ["shipped", "cancelled"], "shipped": ["cancelled"], "cancelled": ["new", "design", "production"]
+                "new": ["design", "production", "cancelled"], 
+                "design": ["new", "production", "cancelled"], 
+                "production": ["done", "cancelled"], 
+                "done": ["shipped", "cancelled"], 
+                "shipped": ["cancelled"], 
+                "cancelled": ["new", "design", "production"]
             };
 
             const allowed = allowedTransitions[oldStatus as string] || [];
-            if (!allowed.includes(newStatus)) {
-                throw new Error(`Переход из ${oldStatus} в ${newStatus} не разрешен`);
+            if (!isAdmin && !allowed.includes(newStatus)) {
+                throw new Error(`Переход из ${oldStatus} в ${newStatus} не разрешен для вашей роли`);
             }
 
             // Stock Adjustment Logic

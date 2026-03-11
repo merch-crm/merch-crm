@@ -3,8 +3,11 @@
 import { useState, useRef, useEffect } from"react";
 import { Badge } from"@/components/ui/badge";
 import { Zap, Circle, ChevronDown } from"lucide-react";
-import { updateOrderField } from"./actions/core.actions";;
-import { Button } from"@/components/ui/button";
+import { updateOrderField } from "./actions/core.actions";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { playSound } from "@/lib/sounds";
 
 const priorities = [
     { id:"normal", label:"Обычный", icon: Circle, color:"text-slate-500", lightBg:"bg-slate-50 border-slate-200", dot:"bg-slate-400" },
@@ -16,6 +19,8 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
+    const router = useRouter();
 
     const activeItem = priorities.find(p => p.id === currentPriority) || priorities[0];
     const isHigh = currentPriority ==="high";
@@ -41,11 +46,24 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
         setCurrentPriority(newId);
         setIsOpen(false);
 
-        const res = await updateOrderField(orderId,"priority", newId);
-        if (!res.success) {
+        try {
+            const res = await updateOrderField(orderId, "priority", newId);
+            if (!res.success) {
+                setCurrentPriority(prevPriority);
+                toast(res.error || "Не удалось обновить приоритет", "error");
+                playSound("notification_error");
+            } else {
+                toast("Приоритет обновлен", "success");
+                playSound("notification_success");
+                router.refresh();
+            }
+        } catch (_error) {
             setCurrentPriority(prevPriority);
+            toast("Ошибка соединения", "error");
+            playSound("notification_error");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

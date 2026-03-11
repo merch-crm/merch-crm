@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown, Kanban, Target } from "lucide-react";
 import { ClientsTable } from "./clients-list";
-import { getClientStats } from "./actions/core.actions";
+import { getClientStats, getClientsInitialData } from "./actions/core.actions";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
 import { PageHeader } from "@/components/layout/page-header";
 
@@ -11,7 +11,10 @@ import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/auth";
 
-export default async function ClientsPage() {
+export default async function ClientsPage(props: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+    const searchParams = await props.searchParams || {};
     const session = await getSession();
     const user = session ? await db.query.users.findFirst({
         where: eq(users.id, session.id),
@@ -22,13 +25,38 @@ export default async function ClientsPage() {
         user?.role?.name === "Администратор" ||
         ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
-    const statsRes = await getClientStats();
+    const page = Number(searchParams.page) || 1;
+    const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
+    const clientType = typeof searchParams.type === "string" ? searchParams.type : "all";
+    const activityStatus = typeof searchParams.activityStatus === "string" ? searchParams.activityStatus : "all";
+
+    const [statsRes, initialDataRes] = await Promise.all([
+        getClientStats(),
+        getClientsInitialData({
+            page,
+            limit: 10,
+            search,
+            clientType,
+            activityStatus
+        })
+    ]);
+
     const stats = (statsRes.success && statsRes.data) ? statsRes.data : {
         totalClients: 0,
         newThisMonth: 0,
         avgCheck: 0,
         totalRevenue: 0
     };
+
+    const initialData = initialDataRes.success && initialDataRes.data ? {
+        ...initialDataRes.data,
+        clientsData: {
+            clients: initialDataRes.data.clients,
+            total: initialDataRes.data.total,
+            totalPages: initialDataRes.data.totalPages,
+            currentPage: initialDataRes.data.currentPage
+        }
+    } : undefined;
 
     const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol || "₽";
@@ -138,7 +166,7 @@ export default async function ClientsPage() {
                     ))}
                 </div>
 
-                <ClientsTable userRoleName={user?.role?.name} showFinancials={showFinancials} />
+                <ClientsTable userRoleName={user?.role?.name} showFinancials={showFinancials} initialData={initialData} />
             </div>
         </div>
     );

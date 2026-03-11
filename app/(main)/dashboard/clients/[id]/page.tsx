@@ -18,9 +18,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from"@/components/ui/tabs";
 import { Badge } from"@/components/ui/badge";
 import { cn } from"@/lib/utils";
 
-export default async function ClientPage({ params }: { params: { id: string } }) {
-    const resolvedParams = await Promise.resolve(params);
-    const result = await getClientDetails(resolvedParams.id);
+export default async function ClientPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const result = await getClientDetails(id);
     const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol ||"₽";
 

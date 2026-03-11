@@ -408,7 +408,8 @@ export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResul
 
 export async function updateOrderField(orderId: string, field: string, value: unknown): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+    const allowedRoles = ["Администратор", "Руководство", "Отдел продаж", "Дизайнер", "Печать", "Вышивка", "Склад"];
+    if (!session || !allowedRoles.includes(session.roleName)) {
         return { success: false, error: "Недостаточно прав для редактирования заказа" };
     }
 
@@ -424,6 +425,14 @@ export async function updateOrderField(orderId: string, field: string, value: un
             else if (field === "status") updateData.status = value;
 
             await tx.update(orders).set(updateData).where(eq(orders.id, orderId));
+            
+            await logAction(
+                `Изменение поля ${field}`, 
+                "order", 
+                orderId, 
+                { field, value }, 
+                tx
+            );
         });
         revalidatePath("/dashboard/orders");
         return { success: true };

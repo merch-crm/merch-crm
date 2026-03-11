@@ -10,10 +10,13 @@ import {
     CheckCircle2,
     Truck
 } from"lucide-react";
-import { updateOrderStatus } from"./actions/status.actions";;
-import { cn } from"@/lib/utils";
-import { AnimatePresence, motion } from"framer-motion";
-import { Button } from"@/components/ui/button";
+import { updateOrderStatus } from "./actions/status.actions";
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { playSound } from "@/lib/sounds";
 
 const statuses = [
     { id:"new", label:"Новый", icon: Sparkles, color:"text-blue-600", lightBg:"bg-blue-50 border-blue-100", dot:"bg-blue-500" },
@@ -28,6 +31,8 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
+    const router = useRouter();
 
     const activeItem = statuses.find(s => s.id === currentStatus) || statuses[0];
 
@@ -53,11 +58,24 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
         setCurrentStatus(newId);
         setIsOpen(false);
 
-        const res = await updateOrderStatus(orderId, newId);
-        if (!res.success) {
+        try {
+            const res = await updateOrderStatus(orderId, newId);
+            if (!res.success) {
+                setCurrentStatus(prevStatus);
+                toast(res.error || "Не удалось обновить статус", "error");
+                playSound("notification_error");
+            } else {
+                toast("Статус обновлен", "success");
+                playSound("notification_success");
+                router.refresh();
+            }
+        } catch (_error) {
             setCurrentStatus(prevStatus);
+            toast("Ошибка соединения", "error");
+            playSound("notification_error");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

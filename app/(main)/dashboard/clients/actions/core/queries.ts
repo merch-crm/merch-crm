@@ -16,6 +16,8 @@ import {
     AuditLogDetails
 } from "@/lib/types";
 
+import { getOrSetCache, CACHE_TTL } from "@/lib/redis";
+
 const { clients, orders, payments, auditLogs } = schema;
 
 export async function getAcquisitionSources(): Promise<ActionResult<string[]>> {
@@ -23,15 +25,18 @@ export async function getAcquisitionSources(): Promise<ActionResult<string[]>> {
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const result = await db.selectDistinct({ source: clients.acquisitionSource })
-            .from(clients)
-            .where(sql`${clients.acquisitionSource} IS NOT NULL AND ${clients.acquisitionSource} != ''`)
-            .orderBy(asc(clients.acquisitionSource))
-            .limit(100);
+        const data = await getOrSetCache("clients:acquisition_sources", async () => {
+            const result = await db.selectDistinct({ source: clients.acquisitionSource })
+                .from(clients)
+                .where(sql`${clients.acquisitionSource} IS NOT NULL AND ${clients.acquisitionSource} != ''`)
+                .orderBy(asc(clients.acquisitionSource))
+                .limit(100);
+            return result.map(r => r.source as string).filter(Boolean);
+        }, CACHE_TTL.MEDIUM);
 
         return {
             success: true,
-            data: result.map(r => r.source as string).filter(Boolean)
+            data
         };
     } catch (error) {
         await logError({ error, path: "/dashboard/clients/actions", method: "getAcquisitionSources" });
@@ -44,12 +49,15 @@ export async function getManagers(): Promise<ActionResult<{ id: string; name: st
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const data = await db.query.users.findMany({
-            columns: { id: true, name: true },
-            where: (users, { eq }) => eq(users.isSystem, false),
-            orderBy: (users, { asc }) => [asc(users.name)],
-            limit: 100,
-        });
+        const data = await getOrSetCache("clients:managers", async () => {
+            return await db.query.users.findMany({
+                columns: { id: true, name: true },
+                where: (users, { eq }) => eq(users.isSystem, false),
+                orderBy: (users, { asc }) => [asc(users.name)],
+                limit: 100,
+            });
+        }, CACHE_TTL.MEDIUM);
+        
         return { success: true, data };
     } catch (error) {
         await logError({ error, path: "/dashboard/clients/actions", method: "getManagers" });
@@ -62,10 +70,14 @@ export async function getRegions(): Promise<ActionResult<string[]>> {
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const result = await db.selectDistinct({ city: clients.city }).from(clients)
-            .where(sql`${clients.city} IS NOT NULL AND ${clients.city} != ''`)
-            .orderBy(asc(clients.city)).limit(100);
-        return { success: true, data: result.map(r => r.city as string) };
+        const data = await getOrSetCache("clients:regions", async () => {
+            const result = await db.selectDistinct({ city: clients.city }).from(clients)
+                .where(sql`${clients.city} IS NOT NULL AND ${clients.city} != ''`)
+                .orderBy(asc(clients.city)).limit(100);
+            return result.map(r => r.city as string);
+        }, CACHE_TTL.MEDIUM);
+
+        return { success: true, data };
     } catch (error) {
         await logError({ error, path: "/dashboard/clients/actions", method: "getRegions" });
         return { success: false, error: "Не удалось загрузить регионы" };
@@ -342,5 +354,55 @@ export async function getClientTypeCounts(showArchived: boolean = false): Promis
     } catch (error) {
         await logError({ error, path: "/dashboard/clients/actions", method: "getClientTypeCounts" });
         return { success: false, error: "Не удалось загрузить счётчики" };
+    }
+}
+export async function getClientsInitialData(filters: Record<string, unknown> = {}): Promise<ActionResult<{
+    clients: ClientSummary[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+    managers: { id: string; name: string }[];
+    regions: string[];
+    sources: string[];
+    typeCounts: { all: number; b2c: number; b2b: number };
+    activityCounts: { active: number; attention: number; atRisk: number; inactive: number; total: number };
+}>> {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
+    try {
+        const [
+            clientsRes,
+            managersRes,
+            regionsRes,
+            sourcesRes,
+            typeCountsRes,
+            activityCountsRes
+        ] = await Promise.all([
+            getClients(filters),
+            getManagers(),
+            getRegions(),
+            getAcquisitionSources(),
+            getClientTypeCounts(Boolean(filters.showArchived)),
+            import("../stats.actions").then(m => m.getActivityStats())
+        ]);
+
+        if (!clientsRes.success) throw new Error(clientsRes.error);
+        if (!clientsRes.data) throw new Error("No clients data returned");
+
+        return {
+            success: true,
+            data: {
+                ...clientsRes.data,
+                managers: managersRes.success ? managersRes.data || [] : [],
+                regions: regionsRes.success ? regionsRes.data || [] : [],
+                sources: sourcesRes.success ? sourcesRes.data || [] : [],
+                typeCounts: typeCountsRes.success ? typeCountsRes.data || { all: 0, b2c: 0, b2b: 0 } : { all: 0, b2c: 0, b2b: 0 },
+                activityCounts: activityCountsRes.success ? activityCountsRes.data || { active: 0, attention: 0, atRisk: 0, inactive: 0, total: 0 } : { active: 0, attention: 0, atRisk: 0, inactive: 0, total: 0 },
+            }
+        };
+    } catch (error) {
+        await logError({ error, path: "/dashboard/clients/actions", method: "getClientsInitialData" });
+        return { success: false, error: "Не удалось загрузить данные для страницы" };
     }
 }

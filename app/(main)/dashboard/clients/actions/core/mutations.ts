@@ -9,6 +9,7 @@ import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { ClientSchema, ClientUpdateSchema, UpdateClientFieldSchema } from "../../validation";
 import { ActionResult } from "@/lib/types";
+import { invalidateCache } from "@/lib/redis";
 import { releaseReservationsForOrders } from "../utils";
 import { checkClientDuplicates } from "./duplicates";
 
@@ -39,6 +40,7 @@ export async function addClient(formData: FormData): Promise<ActionResult<{ dupl
 
         revalidatePath("/dashboard/clients");
         revalidatePath("/dashboard/orders");
+        await invalidateCache("clients:*");
         return { success: true };
     } catch (error) {
         await logError({ error, path: "/dashboard/clients", method: "addClient", details: { lastName, firstName, phone } });
@@ -62,6 +64,7 @@ export async function updateClient(clientId: string, formData: FormData): Promis
             await logAction("Обновлен клиент", "client", clientId, { name: fullName }, tx);
         });
         revalidatePath("/dashboard/clients");
+        await invalidateCache("clients:*");
         return { success: true };
     } catch (error) {
         await logError({ error, path: `/dashboard/clients/${clientId}`, method: "updateClient" });

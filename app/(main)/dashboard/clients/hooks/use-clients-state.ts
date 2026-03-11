@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import type { ClientSummary as Client } from "@/lib/types";
 import { ClientFilters } from "../actions";
 
@@ -26,28 +27,48 @@ export interface ActivityCounts {
     total: number;
 }
 
-export function useClientsState() {
+export interface ClientsInitialData {
+    clients: Client[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+    managers: { id: string; name: string }[];
+    regions: string[];
+    sources: string[];
+    typeCounts: ClientTypeCounts;
+    activityCounts: ActivityCounts;
+    clientsData: {
+        clients: Client[];
+        total: number;
+        totalPages: number;
+        currentPage: number;
+    };
+}
+
+export function useClientsState(initialData?: ClientsInitialData) {
+    const searchParams = useSearchParams();
+
     const [viewState, setViewState] = useState({
-        data: null as { clients: Client[], total: number, totalPages: number, currentPage: number } | null,
-        loading: true,
+        data: initialData?.clientsData || null,
+        loading: !initialData,
         mounted: false,
         now: 0
     });
 
     const [filters, setFilters] = useState<ClientFilters>(() => ({
-        page: 1,
-        limit: 50,
-        search: "",
+        page: Number(searchParams.get("page")) || 1,
+        limit: 10,
+        search: searchParams.get("search") || "",
         sortBy: "alphabet",
         period: "all",
         orderCount: "any",
         region: "all",
         status: "all",
         showArchived: false,
-        clientType: "all",
+        clientType: (searchParams.get("type") as "all" | "b2c" | "b2b") || "all",
         managerId: "all",
         acquisitionSource: "all",
-        activityStatus: "all",
+        activityStatus: (searchParams.get("activityStatus") as ClientFilters['activityStatus']) || "all",
         rfmSegment: "all",
     }));
 
@@ -69,12 +90,12 @@ export function useClientsState() {
     });
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [managers, setManagers] = useState<{ id: string; name: string }[]>([]);
-    const [regions, setRegions] = useState<string[]>([]);
-    const [sources, setSources] = useState<string[]>([]);
+    const [managers, setManagers] = useState<{ id: string; name: string }[]>(initialData?.managers || []);
+    const [regions, setRegions] = useState<string[]>(initialData?.regions || []);
+    const [sources, setSources] = useState<string[]>(initialData?.sources || []);
 
-    const [typeCounts, setTypeCounts] = useState<ClientTypeCounts>({ all: 0, b2c: 0, b2b: 0 });
-    const [activityCounts, setActivityCounts] = useState<ActivityCounts | null>(null);
+    const [typeCounts, setTypeCounts] = useState<ClientTypeCounts>(initialData?.typeCounts || { all: 0, b2c: 0, b2b: 0 });
+    const [activityCounts, setActivityCounts] = useState<ActivityCounts | null>(initialData?.activityCounts || null);
 
     return {
         viewState, setViewState,
@@ -89,3 +110,4 @@ export function useClientsState() {
         activityCounts, setActivityCounts,
     };
 }
+

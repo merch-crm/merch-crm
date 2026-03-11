@@ -155,7 +155,7 @@ export async function getArchivedItems(filters: InventoryFilters = {}): Promise<
         const validated = InventoryFiltersSchema.safeParse(filters || {});
         const baseFilters = validated.success ? validated.data : (InventoryFiltersSchema.parse({}));
 
-        await logAction("Просмотр архива товаров", "inventory_item", "list");
+        await logAction("Просмотр архива товаров", "inventory_item", "list", {}, undefined, "list");
 
         return getInventoryItems({
             ...baseFilters,

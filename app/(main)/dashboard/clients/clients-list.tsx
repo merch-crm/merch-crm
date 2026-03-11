@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useCallback, useMemo, useState } from "react";
+import { useEffect, useCallback, useMemo, useState, useRef } from "react";
 import {
-    getClients, getManagers, updateClientField, getRegions,
-    getClientTypeCounts, getAcquisitionSources, getActivityStats,
-    ClientFilters
+    getClients, updateClientField, getClientTypeCounts,
+    getActivityStats, ClientFilters
 } from "./actions";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ExportDialog } from "./components/export-dialog";
@@ -19,9 +18,9 @@ import { ClientTable } from "./components/client-table";
 import { ClientBulkActions } from "./components/client-bulk-actions";
 import { ClientListHeader } from "./components/client-list-header";
 
-import { useClientsState } from "./hooks/use-clients-state";
+import { useClientsState, type ClientsInitialData } from "./hooks/use-clients-state";
 
-export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: string | null, showFinancials?: boolean }) {
+export function ClientsTable({ userRoleName, showFinancials, initialData }: { userRoleName?: string | null, showFinancials?: boolean, initialData?: ClientsInitialData }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const branding = useBranding();
@@ -33,12 +32,12 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         uiState, setUiState,
         dialogs, setDialogs,
         selectedIds, setSelectedIds,
-        managers, setManagers,
-        regions, setRegions,
-        sources, setSources,
+        regions,
+        managers,
+        sources,
         typeCounts, setTypeCounts,
         activityCounts, setActivityCounts
-    } = useClientsState();
+    } = useClientsState(initialData);
 
     const [showAtRiskBanner, setShowAtRiskBanner] = useState(true);
 
@@ -76,7 +75,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
         setFilters(prev => ({ ...prev, clientType: type, page: 1 }));
     }, [router, searchParams, setFilters]);
 
-    // === НОВОЕ: Загрузка счётчиков ===
+    // === Загрузка счётчиков ===
     const fetchTypeCounts = useCallback(() => {
         getClientTypeCounts(filters.showArchived).then(res => {
             if (res.success && res.data) {
@@ -106,37 +105,25 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             }
         }, 0);
 
-        getManagers().then(res => {
-            if (res.success && res.data) setManagers(res.data);
-        });
-        getRegions().then(res => {
-            if (res.success && res.data) setRegions(res.data);
-        });
-        getAcquisitionSources().then(res => {
-            if (res.success && res.data) setSources(res.data);
-        });
-
-        fetchTypeCounts();
-        fetchActivityCounts();
-
         return () => clearTimeout(t);
-    }, [setManagers, setRegions, setSources, setUiState, setViewState, fetchTypeCounts, fetchActivityCounts]);
-
-    useEffect(() => {
-        fetchTypeCounts();
-    }, [filters.showArchived, fetchTypeCounts]);
+    }, [setUiState, setViewState]);
 
     const addToHistory = useCallback((query: string) => {
         if (!query || query.length < 2) return;
         setUiState(prev => {
-            const newHistory = [query, ...prev.searchHistory.filter(h => h !== query)].slice(0, 5);
+            const newHistory = [query, ...prev.searchHistory.filter((h: string) => h !== query)].slice(0, 5);
             localStorage.setItem("client_search_history", JSON.stringify(newHistory));
             return { ...prev, searchHistory: newHistory };
         });
     }, [setUiState]);
 
+    const isFetchingRef = useRef(false);
+
     const fetchClients = useCallback(() => {
-        setViewState(prev => prev.loading ? prev : { ...prev, loading: true });
+        if (isFetchingRef.current) return;
+        isFetchingRef.current = true;
+        
+        setViewState(prev => ({ ...prev, loading: true }));
         getClients({
             page: currentPage,
             limit: 10,
@@ -155,10 +142,11 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             maxTotalAmount: (filters as Record<string, unknown>).maxTotalAmount,
             rfmSegment: filters.rfmSegment,
         }).then(res => {
+            isFetchingRef.current = false;
             if (res.success && res.data) {
                 setViewState(prev => ({
                     ...prev,
-                    data: res.data as unknown as { clients: Client[], total: number, totalPages: number, currentPage: number },
+                    data: (res.data as unknown) as { clients: Client[], total: number, totalPages: number, currentPage: number },
                     loading: false
                 }));
                 fetchTypeCounts();
@@ -166,14 +154,31 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
             } else {
                 setViewState(prev => ({ ...prev, loading: false }));
             }
+        }).catch(() => {
+            isFetchingRef.current = false;
+            setViewState(prev => ({ ...prev, loading: false }));
         });
     }, [currentPage, debouncedSearch, filters, setViewState, fetchTypeCounts, fetchActivityCounts]);
 
+    const isFirstRun = useRef(true);
+
+    const minAmount = (filters as Record<string, unknown>).minTotalAmount;
+    const maxAmount = (filters as Record<string, unknown>).maxTotalAmount;
+
     useEffect(() => {
-        // Use a microtask/timeout to avoid synchronous state update warning
+        if (isFirstRun.current) {
+            isFirstRun.current = false;
+            return;
+        }
         const t = setTimeout(fetchClients, 0);
         return () => clearTimeout(t);
-    }, [fetchClients]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        currentPage, debouncedSearch, filters.sortBy, filters.period, filters.orderCount, 
+        filters.region, filters.status, filters.showArchived, filters.clientType, 
+        filters.managerId, filters.acquisitionSource, filters.activityStatus, filters.rfmSegment,
+        minAmount, maxAmount
+    ]);
 
     const handleUpdateField = async (clientId: string, field: string, value: string | number | boolean | null) => {
         const res = await updateClientField(clientId, field, value);
@@ -186,17 +191,18 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
     };
 
     const clientsList = useMemo(() => viewState.data?.clients || [], [viewState.data]);
-    const isAllSelected = useMemo(() => clientsList.length > 0 && clientsList.every(c => selectedIds.includes(c.id)), [clientsList, selectedIds]);
+    const isAllSelected = useMemo(() => clientsList.length > 0 && clientsList.every((c: Client) => selectedIds.includes(c.id)), [clientsList, selectedIds]);
 
     const handleSelectAll = useCallback(() => {
         if (isAllSelected) {
-            setSelectedIds(prev => prev.filter(id => !clientsList.some(c => c.id === id)));
+            setSelectedIds(prev => prev.filter(id => !clientsList.some((c: Client) => c.id === id)));
         } else {
             const newIds = [...selectedIds];
-            clientsList.forEach(c => {
+            clientsList.forEach((c: Client) => {
                 if (!newIds.includes(c.id)) newIds.push(c.id);
             });
             setSelectedIds(newIds);
+
         }
     }, [isAllSelected, clientsList, selectedIds, setSelectedIds]);
 
@@ -300,7 +306,7 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 isOpen={!!dialogs.selectedClientId}
                 onClose={() => setDialogs(prev => ({ ...prev, selectedClientId: null }))}
                 onEdit={() => {
-                    const client = clientsList.find(c => c.id === dialogs.selectedClientId);
+                    const client = clientsList.find((c: Client) => c.id === dialogs.selectedClientId);
                     if (client) {
                         setDialogs(prev => ({ ...prev, editingClient: client, selectedClientId: null }));
                     }
@@ -348,6 +354,6 @@ export function ClientsTable({ userRoleName, showFinancials }: { userRoleName?: 
                 }}
                 totalCount={viewState.data?.total || 0}
             />
-        </div >
+        </div>
     );
 }

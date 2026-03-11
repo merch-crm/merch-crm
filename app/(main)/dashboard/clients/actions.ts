@@ -14,7 +14,7 @@ export {
     getManagers, getRegions, getClients, checkClientDuplicates,
     addClient, updateClient, updateClientComments, getClientDetails,
     getClientStats, deleteClient, updateClientField, toggleClientArchived,
-    getClientTypeCounts, getAcquisitionSources
+    getClientTypeCounts, getAcquisitionSources, getClientsInitialData
 } from "./actions/core.actions";
 
 export {

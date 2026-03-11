@@ -115,6 +115,9 @@ export const clients = pgTable("clients", {
         lastOrderAtIdx: index("idx_clients_last_order_at").on(table.lastOrderAt),
         rfmSegmentIdx: index("idx_clients_rfm_segment").on(table.rfmSegment),
         rfmScoreIdx: index("idx_clients_rfm_score").on(table.rfmScore),
+        cityIdx: index("idx_clients_city").on(table.city),
+        sourceIdx: index("idx_clients_source").on(table.acquisitionSource),
+        clientTypeIdx: index("idx_clients_client_type").on(table.clientType),
     }
 });
 

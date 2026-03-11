@@ -13,32 +13,34 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
- const result = await getDesignById(params.designId);
+    const { designId } = await params;
+    const result = await getDesignById(designId);
 
- if (!result.success || !result.data) {
- return { title:"Принт не найден"};
- }
+    if (!result.success || !result.data) {
+        return { title: "Принт не найден" };
+    }
 
- const design = result.data;
+    const design = result.data;
 
- return {
- title: `${design.name} — ${design.collection.name}`,
- description: design.description || `Принт"${design.name}"`,
- };
+    return {
+        title: `${design.name} — ${design.collection.name}`,
+        description: design.description || `Принт "${design.name}"`,
+    };
 }
 
-export const dynamic ="force-dynamic";
+export const dynamic = "force-dynamic";
 
 export default async function DesignPage({ params }: PageProps) {
- const result = await getDesignById(params.designId);
+    const { collectionId, designId } = await params;
+    const result = await getDesignById(designId);
 
- if (!result.success || !result.data || result.data.collectionId !== params.collectionId) {
- notFound();
- }
+    if (!result.success || !result.data || result.data.collectionId !== collectionId) {
+        notFound();
+    }
 
- return (
- <Suspense fallback={<DesignPageSkeleton />}>
- <DesignPageClient design={result.data} />
- </Suspense>
-);
+    return (
+        <Suspense fallback={<DesignPageSkeleton />}>
+            <DesignPageClient design={result.data} />
+        </Suspense>
+    );
 }
