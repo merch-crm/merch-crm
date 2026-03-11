@@ -24,7 +24,7 @@ describe("getDesignQueueStats", () => {
     beforeEach(() => {
         vi.clearAllMocks();
         // Reset the thenable mock to avoid hanging
-        (db as any).then = undefined;
+        (db as unknown as { then: unknown }).then = undefined;
     });
 
     it("should return an error if the user is not authenticated", async () => {
@@ -40,10 +40,10 @@ describe("getDesignQueueStats", () => {
         (getSession as Mock).mockResolvedValue({ id: "user-1" });
 
         // Mocking the database chain results by overriding 'then' for each call
-        const mockDb = db as any;
+        const mockDb = db as unknown as { then: Mock };
         
         // 1. statusCounts
-        mockDb.then = vi.fn().mockImplementationOnce((onSuccess) => onSuccess([
+        mockDb.then = vi.fn().mockImplementationOnce((onSuccess: (data: unknown) => void) => onSuccess([
             { status: "pending", count: 5 },
             { status: "in_progress", count: 3 },
             { status: "review", count: 2 },
@@ -51,13 +51,13 @@ describe("getDesignQueueStats", () => {
         ]));
 
         // 2. overdueCount
-        mockDb.then.mockImplementationOnce((onSuccess: any) => onSuccess([{ count: 1 }]));
+        mockDb.then.mockImplementationOnce((onSuccess: (data: unknown) => void) => onSuccess([{ count: 1 }]));
 
         // 3. myTasksCount
-        mockDb.then.mockImplementationOnce((onSuccess: any) => onSuccess([{ count: 4 }]));
+        mockDb.then.mockImplementationOnce((onSuccess: (data: unknown) => void) => onSuccess([{ count: 4 }]));
 
         // 4. completedTodayCount
-        mockDb.then.mockImplementationOnce((onSuccess: any) => onSuccess([{ count: 2 }]));
+        mockDb.then.mockImplementationOnce((onSuccess: (data: unknown) => void) => onSuccess([{ count: 2 }]));
 
         const result = await getDesignQueueStats();
 
