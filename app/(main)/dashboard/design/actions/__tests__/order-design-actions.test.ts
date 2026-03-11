@@ -11,6 +11,8 @@ vi.mock("@/lib/db", () => ({
         where: vi.fn().mockReturnThis(),
         groupBy: vi.fn().mockReturnThis(),
         limit: vi.fn().mockReturnThis(),
+        execute: vi.fn(), // Drizzle can use execute or thenable for results
+        then: vi.fn(), // To make it thenable
     },
 }));
 
@@ -21,6 +23,8 @@ vi.mock("@/lib/auth", () => ({
 describe("getDesignQueueStats", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        // Reset the thenable mock to avoid hanging
+        (db as any).then = undefined;
     });
 
     it("should return an error if the user is not authenticated", async () => {
@@ -35,23 +39,25 @@ describe("getDesignQueueStats", () => {
     it("should return statistics if the user is authenticated", async () => {
         (getSession as Mock).mockResolvedValue({ id: "user-1" });
 
-        // Mocking the database chain results
+        // Mocking the database chain results by overriding 'then' for each call
+        const mockDb = db as any;
+        
         // 1. statusCounts
-        (db.groupBy as Mock).mockResolvedValueOnce([
+        mockDb.then = vi.fn().mockImplementationOnce((onSuccess) => onSuccess([
             { status: "pending", count: 5 },
             { status: "in_progress", count: 3 },
             { status: "review", count: 2 },
             { status: "approved", count: 10 },
-        ]);
+        ]));
 
         // 2. overdueCount
-        (db.where as Mock).mockResolvedValueOnce([{ count: 1 }]);
+        mockDb.then.mockImplementationOnce((onSuccess: any) => onSuccess([{ count: 1 }]));
 
         // 3. myTasksCount
-        (db.where as Mock).mockResolvedValueOnce([{ count: 4 }]);
+        mockDb.then.mockImplementationOnce((onSuccess: any) => onSuccess([{ count: 4 }]));
 
         // 4. completedTodayCount
-        (db.where as Mock).mockResolvedValueOnce([{ count: 2 }]);
+        mockDb.then.mockImplementationOnce((onSuccess: any) => onSuccess([{ count: 2 }]));
 
         const result = await getDesignQueueStats();
 
