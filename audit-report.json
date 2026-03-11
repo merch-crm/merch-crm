@@ -1,0 +1,82 @@
+{
+  "timestamp": "12.03.2026, 01:03:37",
+  "duration": 15745,
+  "projectName": "MerchCRM",
+  "errors": [
+    {
+      "file": "app/(main)/dashboard/design/editor/actions/project-actions.ts",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 511 строк"
+    },
+    {
+      "file": "app/(main)/dashboard/design/prints/[collectionId]/[designId]/design-detail-page-client.tsx",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 528 строк"
+    },
+    {
+      "file": "app/(main)/dashboard/design/prints/actions/design-actions.ts",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 542 строк"
+    },
+    {
+      "file": "app/(main)/dashboard/production/actions/production-dashboard-actions.ts",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 538 строк"
+    },
+    {
+      "file": "app/(main)/dashboard/production/actions/task-actions.ts",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 568 строк"
+    },
+    {
+      "file": "app/(main)/dashboard/production/application-types/components/application-type-form-dialog.tsx",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 557 строк"
+    },
+    {
+      "file": "app/(main)/dashboard/warehouse/items/new/new-item-page-client.tsx",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 517 строк"
+    },
+    {
+      "file": "drizzle/relations.ts",
+      "severity": "info",
+      "category": "Производительность",
+      "message": "Файл длинный: 584 строк"
+    }
+  ],
+  "stats": {
+    "totalFiles": 1106,
+    "totalLines": 154728,
+    "totalSize": 6668921,
+    "pagesCount": 75,
+    "componentsCount": 224,
+    "hooksCount": 10,
+    "actionsCount": 97,
+    "typesCount": 13,
+    "apiRoutesCount": 25,
+    "formsCount": 48,
+    "testsCount": 172,
+    "tablesCount": 73,
+    "migrationsCount": 33,
+    "typescriptErrors": 0,
+    "lintErrors": 0,
+    "lintWarnings": 0,
+    "byCategory": {
+      "Производительность": 8
+    }
+  },
+  "health": {
+    "score": 100,
+    "grade": "A",
+    "summary": "Отличное состояние",
+    "recommendations": []
+  }
+}

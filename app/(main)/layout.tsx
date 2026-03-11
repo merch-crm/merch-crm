@@ -33,7 +33,7 @@ export default async function DashboardLayout({
 }) {
     const session = await getSession();
     if (!session) {
-        redirect("/api/auth/logout");
+        redirect("/login");
     }
 
     let userData = null;
@@ -64,7 +64,7 @@ export default async function DashboardLayout({
     }
 
     if (!userData) {
-        redirect("/api/auth/logout");
+        redirect("/login");
     }
 
     const user = {
@@ -150,9 +150,9 @@ export default async function DashboardLayout({
 
             <PullToRefresh>
                 <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
-                    {session?.impersonatorId && (
+                    {session?.betterAuthSession?.impersonatedBy && (
                         <ImpersonationBanner
-                            impersonatorName={session.impersonatorName || "Admin"}
+                            impersonatorName={"Admin"}
                             targetName={user.name}
                         />
                     )}

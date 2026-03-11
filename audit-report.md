@@ -1,0 +1,42 @@
+# 🔍 MerchCRM Audit Report
+
+**Дата:** 12.03.2026, 01:03:37
+**Время:** 15745ms
+
+## 🟢 Здоровье: A (100/100)
+
+**Отличное состояние**
+
+## 📊 Статистика
+
+| Метрика | Значение |
+|---------|----------|
+| Файлов | 1106 |
+| Строк | 154 728 |
+| Размер | 6.4 MB |
+| Страниц | 75 |
+| Компонентов | 224 |
+| API роутов | 25 |
+| Тестов | 172 |
+| Таблиц БД | 73 |
+| Миграций | 33 |
+
+### По категориям
+
+| Категория | Количество |
+|-----------|------------|
+| Производительность | 8 |
+
+## 🔵 Информация (8)
+
+| Файл | Строка | Категория | Сообщение |
+|------|--------|-----------|----------|
+| [app/(main)/dashboard/design/editor/actions/project-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/editor/actions/project-actions.ts) | - | Производительность | Файл длинный: 511 строк |
+| [app/(main)/dashboard/design/prints/[collectionId]/[designId]/design-detail-page-client.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/prints/[collectionId]/[designId]/design-detail-page-client.tsx) | - | Производительность | Файл длинный: 528 строк |
+| [app/(main)/dashboard/design/prints/actions/design-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/prints/actions/design-actions.ts) | - | Производительность | Файл длинный: 542 строк |
+| [app/(main)/dashboard/production/actions/production-dashboard-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/actions/production-dashboard-actions.ts) | - | Производительность | Файл длинный: 538 строк |
+| [app/(main)/dashboard/production/actions/task-actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/actions/task-actions.ts) | - | Производительность | Файл длинный: 568 строк |
+| [app/(main)/dashboard/production/application-types/components/application-type-form-dialog.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/application-types/components/application-type-form-dialog.tsx) | - | Производительность | Файл длинный: 557 строк |
+| [app/(main)/dashboard/warehouse/items/new/new-item-page-client.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/warehouse/items/new/new-item-page-client.tsx) | - | Производительность | Файл длинный: 517 строк |
+| [drizzle/relations.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/drizzle/relations.ts) | - | Производительность | Файл длинный: 584 строк |
+

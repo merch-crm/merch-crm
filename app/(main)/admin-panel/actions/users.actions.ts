@@ -1,13 +1,13 @@
 "use server";
 
 import { db } from"@/lib/db";
-import { users } from"@/lib/schema";
-import { getSession } from"@/lib/auth";
+import { users, accounts } from"@/lib/schema";
+import { getSession, auth } from"@/lib/auth";
 import { requireAdmin } from"@/lib/admin";
 import { logError } from"@/lib/error-logger";
 import { logAction } from"@/lib/audit";
-import { hashPassword, comparePassword } from"@/lib/password";
-import { eq, asc, sql, or, ilike } from"drizzle-orm";
+import { comparePassword } from"@/lib/password";
+import { eq, asc, sql, or, ilike, and } from"drizzle-orm";
 import { revalidatePath } from"next/cache";
 import {
     CreateUserSchema,
@@ -105,19 +105,28 @@ export async function createUser(formData: FormData) {
             return { success: false, error: validated.error.issues[0].message };
         }
 
-        const hashedPassword = await hashPassword(validated.data.password);
+        const { email, password, name, roleId, departmentId } = validated.data;
 
-        const [newUser] = await db.insert(users).values({
-            name: validated.data.name,
-            email: validated.data.email,
-            passwordHash: hashedPassword,
-            roleId: validated.data.roleId,
-            departmentId: validated.data.departmentId || null,
-        }).returning();
+        // Используем Admin Plugin для создания пользователя
+        const newUser = await auth.api.createUser({
+            headers: await import("next/headers").then(h => h.headers()),
+            body: {
+                email,
+                password,
+                name,
+                // @ts-expect-error - roleId and departmentId are custom fields handled by adapter
+                roleId: roleId || undefined,
+                departmentId: departmentId || undefined,
+            }
+        });
 
-        await logAction("Создание пользователя","user", newUser.id, { email: newUser.email });
+        if (!newUser) {
+            return { success: false, error: "Не удалось создать пользователя через Admin API" };
+        }
+
+        await logAction("Создание пользователя", "user", newUser.user.id, { email: newUser.user.email });
         revalidatePath("/admin-panel/users");
-        return { success: true, data: newUser };
+        return { success: true, data: newUser.user };
     } catch (error) {
         await logError({
             error,
@@ -166,16 +175,29 @@ export async function updateUser(userId: string, formData: FormData) {
 export async function deleteUser(userId: string, password?: string) {
     const session = await getSession();
     try {
-        const currentUser = await requireAdmin(session);
+        await requireAdmin(session);
         if (session?.id === userId) {
             return { success: false, error:"Нельзя удалить самого себя" };
         }
 
         const targetUser = await db.query.users.findFirst({ where: eq(users.id, userId) });
         if (targetUser?.isSystem || password) {
-            if (!password) return { success: false, error:"Для этого действия требуется пароль" };
-            const isMatch = await comparePassword(password, currentUser.passwordHash);
-            if (!isMatch) return { success: false, error:"Неверный пароль администратора" };
+            if (!password) return { success: false, error: "Для этого действия требуется пароль" };
+            
+            // Получаем хеш пароля администратора из таблицы accounts
+            const adminAccount = await db.query.accounts.findFirst({
+                where: and(
+                    eq(accounts.userId, session!.id),
+                    eq(accounts.providerId, "credential")
+                )
+            });
+
+            if (!adminAccount || !adminAccount.password) {
+                return { success: false, error: "У администратора не установлен пароль в Better Auth" };
+            }
+
+            const isMatch = await comparePassword(password, adminAccount.password);
+            if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
         }
 
         await db.delete(users).where(eq(users.id, userId));

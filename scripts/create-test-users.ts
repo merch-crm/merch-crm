@@ -6,9 +6,10 @@ dotenv.config({ path: resolve(process.cwd(), ".env.local") });
 
 async function main() {
     const { db } = await import("../lib/db");
-    const { users, roles, departments } = await import("../lib/schema");
+    const { users, roles, departments, clients, orders, accounts } = await import("../lib/schema");
     const { hashPassword } = await import("../lib/password");
     const { eq } = await import("drizzle-orm");
+    const crypto = await import("crypto");
 
     console.log("Creating test employees...");
 
@@ -33,12 +34,19 @@ async function main() {
             // Find matching department for role if possible
             const dept = allDepts.find(d => d.id === role.departmentId) || allDepts[0];
 
-            await db.insert(users).values({
+            const [newUser] = await db.insert(users).values({
                 name: `Тест ${role.name}`,
                 email,
-                passwordHash,
                 roleId: role.id,
                 departmentId: dept?.id,
+            }).returning();
+
+            await db.insert(accounts).values({
+                id: crypto.randomUUID(),
+                userId: newUser.id,
+                providerId: "credential",
+                accountId: email,
+                password: passwordHash,
             });
 
             console.log(`✓ Created user: ${email} (Role: ${role.name})`);

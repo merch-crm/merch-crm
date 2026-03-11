@@ -18,7 +18,13 @@ export const RATE_LIMITS = {
     passwordReset: {
         limit: 3,
         windowSec: 60 * 60, // 1 час
-        message: "Слишком много запросов сброса пароля.",
+        message: "Слишком много запросов сброса пароля. Подождите час.",
+    },
+
+    passwordResetApply: {
+        limit: 5,
+        windowSec: 60 * 60, // 1 час
+        message: "Слишком много попыток. Запросите новую ссылку.",
     },
 
     // API — общие лимиты

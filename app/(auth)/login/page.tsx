@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { authClient } from "@/lib/auth-client";
 
 type BrandingSettings = Awaited<ReturnType<typeof getBrandingSettings>>;
 
@@ -29,31 +30,23 @@ export default function LoginPage() {
         const formData = new FormData(event.currentTarget);
 
         try {
-            const response = await fetch("/api/auth/login", {
-                method: "POST",
-                body: formData,
+            const { error: authError } = await authClient.signIn.email({
+                email: formData.get("email") as string,
+                password: formData.get("password") as string,
             });
 
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.error || "Произошла ошибка при входе");
+            if (authError) {
+                setError(authError.message || "Неверный email или пароль");
                 setIsLoading(false);
                 return;
             }
 
-            if (data.success) {
-                const params = new URLSearchParams(window.location.search);
-                const from = params.get("from");
-                // Rule 13: Only allow relative paths (starting with / and not //) to prevent Open Redirect
-                if (from && from.startsWith("/") && !from.startsWith("//")) {
-                    window.location.href = from;
-                } else {
-                    window.location.href = "/dashboard";
-                }
+            const params = new URLSearchParams(window.location.search);
+            const from = params.get("from");
+            if (from && from.startsWith("/") && !from.startsWith("//")) {
+                window.location.href = from;
             } else {
-                setError(data.error || "Неизвестная ошибка");
-                setIsLoading(false);
+                window.location.href = "/dashboard";
             }
         } catch (err) {
             console.error("Login error:", err);
@@ -168,6 +161,15 @@ export default function LoginPage() {
                                 </Button>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="flex justify-end -mt-1">
+                        <a
+                            href="/forgot-password"
+                            className="text-xs text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
+                        >
+                            Забыли пароль?
+                        </a>
                     </div>
 
                     {error && (

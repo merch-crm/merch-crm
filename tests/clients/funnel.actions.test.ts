@@ -49,7 +49,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Funnel Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 

@@ -8,7 +8,7 @@ import {
     inventoryAttributeTypes,
     inventoryItemAttributes,
     inventoryTransactions,
-    users
+    accounts
 } from "@/lib/schema";
 import { logError } from "@/lib/error-logger";
 import { getSession } from "@/lib/auth";
@@ -245,8 +245,20 @@ export async function deleteInventoryAttributeType(id: string, password?: string
                 return { success: false, error: "Для удаления системного раздела требуется пароль от вашей учетной записи" };
             }
 
-            const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
-            if (!user || !(await comparePassword(password, user.passwordHash))) {
+            // Получаем хеш пароля пользователя из таблицы accounts
+            const userAccount = await db.query.accounts.findFirst({
+                where: and(
+                    eq(accounts.userId, session.id),
+                    eq(accounts.providerId, "credential")
+                )
+            });
+
+            if (!userAccount || !userAccount.password) {
+                return { success: false, error: "У пользователя не установлен пароль в Better Auth" };
+            }
+
+            const isMatch = await comparePassword(password, userAccount.password);
+            if (!isMatch) {
                 return { success: false, error: "Неверный пароль" };
             }
         }

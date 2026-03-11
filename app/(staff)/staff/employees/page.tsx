@@ -9,7 +9,7 @@ export default async function EmployeesPage() {
     const session = await getSession()
 
     if (!session) {
-        redirect('/logout')
+        redirect('/login')
     }
 
     const isAdmin = await checkIsAdmin(session)

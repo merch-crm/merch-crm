@@ -9,7 +9,7 @@ export default async function ReportsPage() {
     const session = await getSession()
 
     if (!session) {
-        redirect('/logout')
+        redirect('/login')
     }
 
     const today = new Date()

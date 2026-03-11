@@ -1,5 +1,5 @@
 import { db } from "../lib/db";
-import { users, roles, departments, clients, orders } from "../lib/schema";
+import { users, roles, departments, clients, orders, accounts } from "../lib/schema";
 import { eq, or, and } from "drizzle-orm";
 import { hashPassword } from "../lib/password";
 
@@ -42,15 +42,33 @@ async function setup() {
             [admin] = await db.insert(users).values({
                 name: "E2E Administrator",
                 email: email,
-                passwordHash: passwordHash,
                 roleId: role.id,
                 departmentId: dept.id,
                 isSystem: true
             }).returning();
+
+            await db.insert(accounts).values({
+                id: crypto.randomUUID(),
+                userId: admin.id,
+                providerId: "credential",
+                accountId: email,
+                password: passwordHash,
+            });
         } else {
-            console.log(`Admin User already exists. Updating password and role...`);
+            console.log(`Admin User already exists. Updating password in accounts...`);
+            await db.insert(accounts).values({
+                id: crypto.randomUUID(),
+                userId: admin.id,
+                providerId: "credential",
+                accountId: email,
+                password: passwordHash,
+            }).onConflictDoUpdate({
+                target: [accounts.providerId, accounts.accountId],
+                set: { password: passwordHash }
+            });
+
             await db.update(users)
-                .set({ passwordHash, roleId: role.id, departmentId: dept.id })
+                .set({ roleId: role.id, departmentId: dept.id })
                 .where(eq(users.id, admin.id));
         }
 

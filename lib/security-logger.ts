@@ -7,6 +7,7 @@ type SecurityEventType =
     | "login_failed"
     | "logout"
     | "password_change"
+    | "password_reset_requested"
     | "email_change"
     | "profile_update"
     | "role_change"
@@ -16,6 +17,7 @@ type SecurityEventType =
     | "settings_change"
     | "maintenance_mode_toggle"
     | "system_error"
+    | "rate_limit_exceeded"
     | "admin_impersonation_start"
     | "admin_impersonation_stop";
 

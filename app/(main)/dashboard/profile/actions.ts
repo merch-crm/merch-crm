@@ -2,11 +2,9 @@
 
 import { db } from "@/lib/db";
 import { users, orders, tasks, auditLogs, clients } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { comparePassword, hashPassword } from "@/lib/password";
+import { auth, getSession } from "@/lib/auth";
 import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
@@ -38,7 +36,10 @@ const PasswordSchema = z.object({
 
 export async function logout() {
     try {
-        (await cookies()).delete("session");
+        const { headers } = await import("next/headers");
+        await auth.api.signOut({
+            headers: await headers()
+        });
     } catch (error) {
         console.error("Logout failed:", error);
     }
@@ -162,26 +163,25 @@ export async function updatePassword(formData: FormData) {
     const { currentPassword, newPassword } = validated.data;
 
     try {
-        const user = await db.query.users.findFirst({
-            where: eq(users.id, session.id)
+        const { headers } = await import("next/headers");
+        const changeResult = await auth.api.changePassword({
+            headers: await headers(),
+            body: {
+                currentPassword,
+                newPassword,
+                revokeOtherSessions: true
+            }
         });
 
-        if (!user) return { success: false, error: "Пользователь не найден" };
-
-        const isMatch = await comparePassword(currentPassword, user.passwordHash);
-        if (!isMatch) return { success: false, error: "Текущий пароль указан неверно" };
-
-        const newHash = await hashPassword(newPassword);
-        await db.transaction(async (tx) => {
-            await tx.update(users)
-                .set({ passwordHash: newHash })
-                .where(eq(users.id, session.id));
-
-            await logAction("password_change", "users", session.id, undefined, tx);
-        });
+        if (!changeResult) {
+            return { success: false, error: "Не удалось изменить пароль через Better Auth" };
+        }
 
         return { success: true };
-    } catch (error) {
+    } catch (error: unknown) {
+        if (error && typeof error === 'object' && 'code' in error && error.code === "INVALID_PASSWORD") {
+            return { success: false, error: "Текущий пароль указан неверно" };
+        }
         await logError({
             error,
             path: "/dashboard/profile",

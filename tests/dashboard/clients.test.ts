@@ -94,7 +94,7 @@ describe('getManagers', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает список менеджеров', async () => {
-        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as unknown);
         const managers = [{ id: 'u1', name: 'Manager 1', roleName: 'Менеджер' }];
         mockFindMany.mockResolvedValueOnce(managers);
         const result = await getManagers();
@@ -205,7 +205,7 @@ describe('addClient', () => {
     });
 
     it('создаёт клиента при валидных данных', async () => {
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
         const newClient = createMockClient();
 
         // addClient checks duplicates using db.select().from(clients).where().limit(5)
@@ -245,7 +245,7 @@ describe('updateClient', () => {
     });
 
     it('обновляет клиента при валидных данных', async () => {
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
         // updateClient calls db.query.users.findFirst to check user role (in some implementations)
         // Adjusting based on current mutations.ts logic
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' } }));
@@ -283,7 +283,7 @@ describe('deleteClient', () => {
     });
 
     it('удаляет клиента для администратора', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as unknown);
         // deleteClient uses db.query.users.findFirst (NOT tx) to check admin rights
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' } }));
         // Inside tx: tx.query.clients.findFirst returns client with no orders
@@ -304,7 +304,7 @@ describe('toggleClientArchived', () => {
     });
 
     it('архивирует клиента', async () => {
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
         const result = await toggleClientArchived('33333333-3333-4333-8333-333333333333', true);
         expect(result).toEqual({ success: true });
     });
@@ -334,7 +334,7 @@ describe('bulkDeleteClients', () => {
     });
 
     it('удаляет клиентов массово для администратора', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as unknown);
         // bulkDeleteClients uses db.query.users.findFirst (NOT tx) for permission check
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' } }));
         // Inside tx: tx.query.orders.findMany returns no orders for these clients

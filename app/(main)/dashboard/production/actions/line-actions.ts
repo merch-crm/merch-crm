@@ -123,7 +123,7 @@ export async function createProductionLine(
 ): Promise<ActionResult<ProductionLine>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -163,7 +163,7 @@ export async function updateProductionLine(
 ): Promise<ActionResult<ProductionLine>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -207,7 +207,7 @@ export async function updateProductionLine(
 export async function deleteProductionLine(id: string): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -242,7 +242,7 @@ export async function updateLinesOrder(
 ): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 

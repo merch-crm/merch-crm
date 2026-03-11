@@ -91,7 +91,7 @@ export async function createEquipment(
 ): Promise<ActionResult<Equipment>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -130,7 +130,7 @@ export async function updateEquipment(
 ): Promise<ActionResult<Equipment>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -174,7 +174,7 @@ export async function updateEquipment(
 export async function deleteEquipment(id: string): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -196,7 +196,7 @@ export async function updateEquipmentStatus(
 ): Promise<ActionResult<Equipment>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -229,7 +229,7 @@ export async function updateEquipmentMaintenance(
 ): Promise<ActionResult<Equipment>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 

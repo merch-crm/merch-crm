@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function WorkstationsPage() {
     const session = await getSession()
-    if (!session) redirect('/logout')
+    if (!session) redirect('/login')
 
     // admin access check
     await checkIsAdmin(session)

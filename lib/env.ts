@@ -4,11 +4,19 @@ const envSchema = z.object({
     DATABASE_URL: z.string().url(),
     JWT_SECRET_KEY: z.string().min(16),
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
-    // Добавьте другие переменные, которые критичны для работы
+
+    // Resend и Better Auth
+    RESEND_API_KEY: z.string().optional(),
+    FROM_EMAIL: z.string().email().default("noreply@merch-crm.ru"),
+    BETTER_AUTH_URL: z.string().url().optional(),
+
+    // S3
     S3_ACCESS_KEY: z.string().optional(),
     S3_SECRET_KEY: z.string().optional(),
     S3_ENDPOINT: z.string().optional(),
     S3_BUCKET: z.string().optional(),
+
+    // Redis
     REDIS_HOST: z.string().default("127.0.0.1"),
     REDIS_PASSWORD: z.string().optional(),
 });

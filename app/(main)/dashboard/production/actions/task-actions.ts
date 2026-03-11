@@ -184,7 +184,7 @@ export async function createProductionTask(
 ): Promise<ActionResult<ProductionTask>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session?.id) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -231,7 +231,7 @@ export async function updateTaskStatus(
 ): Promise<ActionResult<ProductionTask>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session?.id) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -304,7 +304,7 @@ export async function assignTask(
 ): Promise<ActionResult<ProductionTask>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session?.id) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -352,7 +352,7 @@ export async function updateTaskProgress(
 ): Promise<ActionResult<ProductionTask>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session?.id) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -412,7 +412,7 @@ export async function updateTasksOrder(
 ): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session?.id) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -438,7 +438,7 @@ export async function updateTasksOrder(
 export async function deleteProductionTask(id: string): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session?.id) {
             return { success: false, error: "Необходима авторизация" };
         }
 

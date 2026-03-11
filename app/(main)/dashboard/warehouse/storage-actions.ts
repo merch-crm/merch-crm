@@ -10,7 +10,7 @@ import {
     inventoryStocks,
     inventoryTransactions,
     inventoryTransfers,
-    users,
+    accounts,
 } from "@/lib/schema";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
@@ -214,8 +214,20 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
                 return { success: false, error: "Для удаления системного места хранения требуется пароль от вашей учетной записи" };
             }
 
-            const [user] = await db.select().from(users).where(eq(users.id, session.id)).limit(1);
-            if (!user || !(await comparePassword(password, user.passwordHash))) {
+            // Получаем хеш пароля пользователя из таблицы accounts
+            const userAccount = await db.query.accounts.findFirst({
+                where: and(
+                    eq(accounts.userId, session.id),
+                    eq(accounts.providerId, "credential")
+                )
+            });
+
+            if (!userAccount || !userAccount.password) {
+                return { success: false, error: "У пользователя не установлен пароль в Better Auth" };
+            }
+
+            const isMatch = await comparePassword(password, userAccount.password);
+            if (!isMatch) {
                 return { success: false, error: "Неверный пароль" };
             }
         }

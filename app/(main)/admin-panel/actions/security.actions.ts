@@ -1,16 +1,15 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auditLogs, securityEvents, systemErrors, users, systemSettings, sessions } from "@/lib/schema";
-import { getSession, encrypt } from "@/lib/auth";
+import { auditLogs, securityEvents, systemErrors, users, systemSettings } from "@/lib/schema";
+import { getSession, auth } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logSecurityEvent } from "@/lib/security-logger";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { eq, desc, and, gte, sql, count, ilike, lte } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { cookies, headers } from "next/headers";
-import { v4 as uuidv4 } from "uuid";
+import { headers } from "next/headers";
 
 import { z } from "zod";
 
@@ -89,42 +88,14 @@ export async function impersonateUser(userId: string) {
 
         const targetUser = await db.query.users.findFirst({
             where: eq(users.id, validUserId),
-            with: { role: true, department: true }
         });
 
         if (!targetUser) return { success: false, error: "Пользователь не найден" };
 
-        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        const sessionId = uuidv4();
-        const userAgent = (await headers()).get("user-agent") || "unknown";
-
-        await db.insert(sessions).values({
-            id: sessionId,
-            userId: targetUser.id,
-            expiresAt: expires,
-            userAgent: userAgent,
-        });
-
-        const newSessionData = {
-            id: targetUser.id,
-            sessionId,
-            email: targetUser.email,
-            roleId: targetUser.roleId || "",
-            roleName: targetUser.role?.name || "User",
-            departmentName: targetUser.department?.name || "",
-            name: targetUser.name || "",
-            impersonatorId: session.impersonatorId || session.id,
-            impersonatorName: session.impersonatorName || session.name,
-            expires,
-        };
-
-        const encryptedSession = await encrypt(newSessionData);
-        (await cookies()).set("session", encryptedSession, {
-            expires,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
+        const defaultHeaders = await headers();
+        await auth.api.impersonateUser({
+            headers: defaultHeaders,
+            body: { userId: validUserId }
         });
 
         await logSecurityEvent({
@@ -133,70 +104,41 @@ export async function impersonateUser(userId: string) {
             severity: "warning",
             entityType: "user",
             entityId: targetUser.id,
-            details: { adminId: session.id!, targetUserId: targetUser.id }
+            details: { adminId: session.id, targetUserId: targetUser.id }
         });
 
         revalidatePath("/");
         return { success: true };
-    } catch {
+    } catch (e) {
+        console.error("Impersonate error:", e);
         return { success: false, error: "Ошибка при смене пользователя" };
     }
 }
 
 export async function stopImpersonating() {
     const session = await getSession();
-    if (!session || !session.impersonatorId) return { success: false, error: "Нет активной сессии" };
+    // better-auth doesn't expose impersonatorId directly in user by default unless mapped, 
+    // but the stopImpersonating API figures it out from the cookie
+    if (!session) return { success: false, error: "Нет активной сессии" };
 
     try {
-        const adminUser = await db.query.users.findFirst({
-            where: eq(users.id, session.impersonatorId),
-            with: { role: true, department: true }
-        });
-
-        if (!adminUser) return { success: false, error: "Администратор не найден" };
-
-        const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
-        const sessionId = uuidv4();
-        const userAgent = (await headers()).get("user-agent") || "unknown";
-
-        await db.insert(sessions).values({
-            id: sessionId,
-            userId: adminUser.id,
-            expiresAt: expires,
-            userAgent: userAgent,
-        });
-
-        const originalSessionData = {
-            id: adminUser.id,
-            sessionId,
-            email: adminUser.email,
-            roleId: adminUser.roleId || "",
-            roleName: adminUser.role?.name || "User",
-            departmentName: adminUser.department?.name || "",
-            name: adminUser.name || "",
-            expires,
-        };
-
-        const encryptedSession = await encrypt(originalSessionData);
-        (await cookies()).set("session", encryptedSession, {
-            expires,
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-            path: "/",
+        const defaultHeaders = await headers();
+        await auth.api.stopImpersonating({
+            headers: defaultHeaders,
         });
 
         await logSecurityEvent({
             eventType: "admin_impersonation_stop",
-            userId: adminUser.id,
+            userId: session.id,
             severity: "info",
             entityType: "user",
-            details: { adminId: adminUser.id }
+            details: { adminId: session.id }
         });
 
         revalidatePath("/");
         return { success: true };
-    } catch {
+    } catch (e) {
+        console.error("Stop impersonating error:", e);
         return { success: false, error: "Не удалось вернуться в режим администратора" };
     }
 }

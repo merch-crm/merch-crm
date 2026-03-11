@@ -1,13 +1,13 @@
 "use server";
 
 import { db } from"@/lib/db";
-import { departments, roles, users } from"@/lib/schema";
+import { departments, roles, users, accounts } from"@/lib/schema";
 import { getSession } from"@/lib/auth";
 import { requireAdmin } from"@/lib/admin";
 import { logError } from"@/lib/error-logger";
 import { logAction } from"@/lib/audit";
 import { comparePassword } from"@/lib/password";
-import { eq, asc, inArray } from"drizzle-orm";
+import { eq, asc, inArray, and } from"drizzle-orm";
 import { revalidatePath } from"next/cache";
 import { CreateDepartmentSchema, UpdateDepartmentSchema } from"../validation";
 
@@ -115,11 +115,24 @@ export async function updateDepartment(deptId: string, formData: FormData, roleI
 export async function deleteDepartment(deptId: string, password?: string) {
     const session = await getSession();
     try {
-        const currentUser = await requireAdmin(session);
+        if (!session) return { success: false, error: "Не авторизован" };
+        await requireAdmin(session);
 
         if (password) {
-            const isMatch = await comparePassword(password, currentUser.passwordHash);
-            if (!isMatch) return { success: false, error:"Неверный пароль администратора" };
+            // Получаем хеш пароля администратора из таблицы accounts
+            const adminAccount = await db.query.accounts.findFirst({
+                where: and(
+                    eq(accounts.userId, session.id),
+                    eq(accounts.providerId, "credential")
+                )
+            });
+
+            if (!adminAccount || !adminAccount.password) {
+                return { success: false, error: "У администратора не установлен пароль в Better Auth" };
+            }
+
+            const isMatch = await comparePassword(password, adminAccount.password);
+            if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
         }
 
         // check if users belong to this department

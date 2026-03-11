@@ -1,13 +1,13 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { roles, users } from "@/lib/schema";
+import { roles, users, accounts } from "@/lib/schema";
 import { getSession } from "@/lib/auth";
 import { requireAdmin } from "@/lib/admin";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { comparePassword } from "@/lib/password";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { CreateRoleSchema, UpdateRoleSchema } from "../validation";
 
@@ -102,10 +102,23 @@ export async function updateRole(roleId: string, formData: FormData) {
 export async function deleteRole(roleId: string, password?: string) {
     const session = await getSession();
     try {
-        const currentUser = await requireAdmin(session);
+        if (!session) return { success: false, error: "Не авторизован" };
+        await requireAdmin(session);
 
         if (password) {
-            const isMatch = await comparePassword(password, currentUser.passwordHash);
+            // Получаем хеш пароля администратора из таблицы accounts
+            const adminAccount = await db.query.accounts.findFirst({
+                where: and(
+                    eq(accounts.userId, session.id),
+                    eq(accounts.providerId, "credential")
+                )
+            });
+
+            if (!adminAccount || !adminAccount.password) {
+                return { success: false, error: "У администратора не установлен пароль в Better Auth" };
+            }
+
+            const isMatch = await comparePassword(password, adminAccount.password);
             if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
         }
 

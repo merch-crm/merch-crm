@@ -203,7 +203,7 @@ export async function updateEditorProject(
 export async function deleteEditorProject(id: string): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -225,7 +225,7 @@ export async function autoSaveProject(
 ): Promise<ActionResult> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 
@@ -248,7 +248,7 @@ export async function autoSaveProject(
 export async function duplicateEditorProject(id: string): Promise<ActionResult<EditorProject>> {
     try {
         const session = await getSession();
-        if (!session?.user) {
+        if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
 

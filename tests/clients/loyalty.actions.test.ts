@@ -60,7 +60,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Loyalty Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
 
         mockDb.insert().values().returning.mockResolvedValue([]);
         mockDb.update().set?.().where?.().returning?.mockResolvedValue([]);
@@ -112,7 +112,7 @@ describe('Loyalty Actions', () => {
         });
 
         it('should deny access if not admin', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as Session);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as unknown);
 
             const result = await createLoyaltyLevel({} as Parameters<typeof createLoyaltyLevel>[0]);
 

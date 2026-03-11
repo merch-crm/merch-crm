@@ -12,7 +12,7 @@ export default async function StaffLayout({
     const session = await getSession()
 
     if (!session) {
-        redirect('/logout')
+        redirect('/login')
     }
 
     const branding = await getBrandingSettings()

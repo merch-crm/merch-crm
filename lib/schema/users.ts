@@ -57,7 +57,6 @@ export const users = pgTable("users", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     email: text("email").notNull().unique(),
-    passwordHash: text("password_hash").notNull(),
     roleId: uuid("role_id").references(() => roles.id),
     phone: text("phone"),
     birthday: date("birthday"),
@@ -70,6 +69,9 @@ export const users = pgTable("users", {
     isSystem: boolean("is_system").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    image: text("image"),
+    twoFactorEnabled: boolean("two_factor_enabled").default(false),
 }, (table) => {
     return {
         roleIdx: index("users_role_idx").on(table.roleId),
@@ -109,10 +111,13 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 
 export const sessions = pgTable("sessions", {
     id: text("id").primaryKey(), // Using text because we'll insert our secure session hash
+    token: text("token").notNull().unique(), // Added for Better Auth
     userId: uuid("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
     userAgent: text("user_agent"),
+    ipAddress: text("ip_address"), // Added for Better Auth
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(), // Added for Better Auth
 }, (table) => {
     return {
         userIdx: index("sessions_user_idx").on(table.userId),
@@ -127,3 +132,46 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
         references: [users.id],
     }),
 }));
+
+export const accounts = pgTable("accounts", {
+    id: text("id").primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    expiresAt: timestamp("expires_at"),
+    password: text("password"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("accounts_user_idx").on(table.userId),
+        createdIdx: index("accounts_created_idx").on(table.createdAt),
+    }
+});
+
+export const twoFactors = pgTable("two_factors", {
+    id: text("id").primaryKey(),
+    userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+    secret: text("secret").notNull(),
+    backupCodes: text("backup_codes"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => {
+    return {
+        userIdx: index("two_factors_user_idx").on(table.userId),
+        createdIdx: index("two_factors_created_idx").on(table.createdAt),
+    }
+});
+
+export const verificationTokens = pgTable("verification_tokens", {
+    id: text("id").primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+}, (table) => {
+    return {
+        createdIdx: index("verification_tokens_created_idx").on(table.createdAt),
+    }
+});

@@ -11,7 +11,11 @@ export default async function DashboardPage({
 }) {
     const session = await getSession();
     if (!session) {
-        redirect("/api/auth/logout");
+        redirect("/login");
+    }
+
+    if (!session.roleName) {
+        redirect("/login");
     }
 
     const { period ="month" } = await searchParams;

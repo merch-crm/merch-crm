@@ -9,10 +9,10 @@ export const taskPriorityEnum = pgEnum("task_priority", ["low", "normal", "high"
 export const taskTypeEnum = pgEnum("task_type", ["design", "production", "acquisition", "delivery", "other"]);
 export const notificationTypeEnum = pgEnum("notification_type", ["info", "warning", "success", "error", "transfer"]);
 export const securityEventTypeEnum = pgEnum("security_event_type", [
-    "login_success", "login_failed", "logout", "password_change", "email_change",
-    "profile_update", "role_change", "permission_change", "data_export",
+    "login_success", "login_failed", "logout", "password_change", "password_reset_requested",
+    "email_change", "profile_update", "role_change", "permission_change", "data_export",
     "record_delete", "settings_change", "maintenance_mode_toggle", "system_error",
-    "admin_impersonation_start", "admin_impersonation_stop"
+    "rate_limit_exceeded", "admin_impersonation_start", "admin_impersonation_stop"
 ]);
 export const orderCategoryEnum = pgEnum("order_category", ["print", "embroidery", "merch", "other"]);
 export const inventoryItemTypeEnum = pgEnum("inventory_item_type", ["clothing", "packaging", "consumables"]);

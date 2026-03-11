@@ -3,6 +3,7 @@ import { UserCircle, Shield } from"lucide-react";
 import { ProfileForm } from"../../profile-form";
 import { PasswordForm } from"../../password-form";
 import { UserProfile } from"../../types";
+import { TwoFactorSetup } from "../../2fa-setup";
 
 interface SettingsTabProps {
     user: UserProfile;
@@ -22,6 +23,7 @@ export function SettingsTab({ user }: SettingsTabProps) {
                     <Shield className="w-6 h-6 text-primary" /> Безопасность
                 </h2>
                 <PasswordForm />
+                <TwoFactorSetup />
             </div>
         </div>
     );

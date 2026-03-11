@@ -5,6 +5,8 @@
 import { vi } from 'vitest';
 import { type Session } from '@/lib/auth';
 import { Task } from '@/app/(main)/dashboard/tasks/types';
+import { hashPassword } from "@/lib/password";
+import crypto from "crypto";
 
 // ─── Session ─────────────────────────────────────────────────────────────────
 
@@ -18,8 +20,11 @@ export function mockSession(overrides: Partial<Session> = {}): Session {
         roleName: 'Администратор',
         departmentName: 'Руководство',
         expires: new Date(Date.now() + 86400000),
+        ua: 'Mozilla/5.0',
+        betterAuthUser: { id: '11111111-1111-4111-8111-111111111111', email: 'admin@test.com', name: 'Test Admin' },
+        betterAuthSession: { id: 'session-uuid-1234', userId: '11111111-1111-4111-8111-111111111111', expiresAt: new Date(Date.now() + 86400000) },
         ...overrides,
-    };
+    } as unknown as Session;
 }
 
 // ─── DB Mock ──────────────────────────────────────────────────────────────────
@@ -158,7 +163,6 @@ export function createMockUser(overrides: Record<string, unknown> = {}) {
         id: '11111111-1111-4111-8111-111111111111',
         name: 'Test Admin',
         email: 'admin@test.com',
-        passwordHash: '$2b$10$hashedpassword',
         roleId: 'role-uuid-1234',
         departmentId: null,
         isSystem: false,

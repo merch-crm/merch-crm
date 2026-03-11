@@ -50,7 +50,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Stats Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
@@ -92,7 +92,7 @@ describe('Stats Actions', () => {
         });
 
         it('should block non-admins', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Manager' }) as Session);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Manager' }) as unknown);
             const result = await recalculateAllClientsStats();
             expect(result.success).toBe(false);
             if (!result.success) {

@@ -5,9 +5,10 @@ dotenv.config({ path: ".env.local" });
 async function main() {
     // Dynamic imports to ensure env vars are loaded first
     const { db } = await import("@/lib/db");
-    const { users, roles } = await import("@/lib/schema");
+    const { users, roles, departments, accounts } = await import("../lib/schema");
     const { hashPassword } = await import("@/lib/password");
     const { eq } = await import("drizzle-orm");
+    const crypto = await import("crypto");
 
     console.log("Seeding roles and migrating users...");
 
@@ -111,11 +112,18 @@ async function main() {
             const adminRole = createdRoles.find(r => r.name === "Администратор");
             if (adminRole) {
                 const passwordHash = await hashPassword("admin123");
-                await db.insert(users).values({
+                const [newUser] = await db.insert(users).values({
                     name: "Администратор",
                     email: "admin@crm.local",
-                    passwordHash,
                     roleId: adminRole.id,
+                }).returning();
+
+                await db.insert(accounts).values({
+                    id: crypto.randomUUID(),
+                    userId: newUser.id,
+                    providerId: "credential",
+                    accountId: "admin@crm.local",
+                    password: passwordHash,
                 });
                 console.log("✓ Created admin user: admin@crm.local / admin123");
             }

@@ -51,7 +51,7 @@ export async function getSystemStats() {
         await Promise.all(tables.map(async (table) => {
             // Белый список таблиц уже задан выше, но добавляем проверку
             if (!/^[a-z_]+$/.test(table)) return;
-            const countResult = await db.execute(sql.raw(`SELECT count(*)::int as count FROM ${table}`)); // audit-ignore
+            const countResult = await db.execute(sql`SELECT count(*)::int as count FROM ${sql.identifier(table)}`);
             tableCounts[table] = Number(countResult.rows[0]?.count || 0);
         }));
 
