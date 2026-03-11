@@ -55,6 +55,10 @@ export const printDesigns = pgTable(
         name: varchar("name", { length: 255 }).notNull(),
         description: text("description"),
         preview: varchar("preview", { length: 500 }),
+        printFilePath: text("print_file_path"),
+        applicationTypeId: uuid("application_type_id"), // Added for design-pricing-card
+        costPrice: integer("cost_price"), // decimal/integer, using integer representing cents or exact value
+        retailPrice: integer("retail_price"),
         isActive: boolean("is_active").default(true).notNull(),
         sortOrder: integer("sort_order").default(0).notNull(),
         createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -117,6 +121,28 @@ export const printDesignFiles = pgTable(
     })
 );
 
+// ============ МОКАПЫ ДИЗАЙНОВ ============
+
+export const printDesignMockups = pgTable("print_design_mockups", {
+    id: uuid("id").defaultRandom().primaryKey(),
+    designId: uuid("design_id").notNull().references(() => printDesigns.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    description: text("description"),
+    preview: text("preview"),
+    imagePath: text("image_path"),
+    color: varchar("color", { length: 50 }),
+    isActive: boolean("is_active").default(true).notNull(),
+    sortOrder: integer("sort_order").default(0).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+},
+    (table) => ({
+        designIdx: index("print_design_mockups_design_idx").on(table.designId),
+        activeIdx: index("print_design_mockups_active_idx").on(table.isActive),
+        sortOrderIdx: index("print_design_mockups_sort_order_idx").on(table.sortOrder),
+        createdAtIdx: index("print_design_mockups_created_at_idx").on(table.createdAt),
+    }));
+
 // ============ RELATIONS ============
 
 export const printCollectionsRelations = relations(
@@ -138,6 +164,7 @@ export const printDesignsRelations = relations(
             references: [printCollections.id],
         }),
         versions: many(printDesignVersions),
+        mockups: many(printDesignMockups),
     })
 );
 
@@ -175,3 +202,6 @@ export type NewPrintDesignVersion = typeof printDesignVersions.$inferInsert;
 
 export type PrintDesignFile = typeof printDesignFiles.$inferSelect;
 export type NewPrintDesignFile = typeof printDesignFiles.$inferInsert;
+
+export type PrintDesignMockup = typeof printDesignMockups.$inferSelect;
+export type NewPrintDesignMockup = typeof printDesignMockups.$inferInsert;

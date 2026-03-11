@@ -176,6 +176,13 @@
       "when": 1773027522422,
       "tag": "0024_add_created_at_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1773128156813,
+      "tag": "0025_wonderful_freak",
+      "breakpoints": true
     }
   ]
 }

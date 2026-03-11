@@ -7,6 +7,7 @@ import { promocodes } from "./promocodes";
 import { inventoryItems } from "./warehouse/items";
 import { payments } from "./finance";
 import { tasks } from "./tasks";
+import { applicationTypes } from "./production";
 
 export const orders = pgTable("orders", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -94,6 +95,7 @@ export const orderItems = pgTable("order_items", {
     stagePrintStatus: productionStageStatusEnum("stage_print_status").default("pending").notNull(),
     stageApplicationStatus: productionStageStatusEnum("stage_application_status").default("pending").notNull(),
     stagePackagingStatus: productionStageStatusEnum("stage_packaging_status").default("pending").notNull(),
+    applicationTypeId: uuid("application_type_id"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
@@ -112,6 +114,10 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     inventory: one(inventoryItems, {
         fields: [orderItems.inventoryId],
         references: [inventoryItems.id],
+    }),
+    applicationType: one(applicationTypes, {
+        fields: [orderItems.applicationTypeId],
+        references: [applicationTypes.id],
     }),
 }));
 

@@ -10,15 +10,15 @@ export async function waitForPageLoad(page: Page, options?: {
 }) {
     const timeout = options?.timeout ?? 15000;
 
-    // 1. Ждём завершения сетевых запросов
-    await page.waitForLoadState('networkidle', { timeout }).catch(() => {
-        // Игнорируем таймаут networkidle, так как некоторые сокеты или аналитика могут висеть
+    // 1. Ждём завершения сетевых запросов (с коротким таймаутом, так как есть поллинг)
+    await page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => {
+        // Игнорируем таймаут networkidle
     });
 
     // 2. Ждём исчезновения лоадеров (если есть)
-    const loader = page.locator('[data-testid="page-loader"], .loading-spinner, [aria-busy="true"]');
-    await loader.waitFor({ state: 'hidden', timeout }).catch(() => {
-        // Игнорируем если лоадера нет
+    const loader = page.locator('[data-testid="page-loader"], .loading-spinner, [aria-busy="true"], .animate-pulse');
+    await loader.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {
+        // Игнорируем если лоадера нет или он не исчез
     });
 
     // 3. Ждём появления main контента

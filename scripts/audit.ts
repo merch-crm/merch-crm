@@ -1085,6 +1085,7 @@ function checkLocalization(files: string[]): AuditError[] {
         logInfo(`Замечаний: ${errors.length}`);
     }
 
+
     return errors;
 }
 
@@ -1768,6 +1769,23 @@ function checkTests(): AuditError[] {
                     severity: 'info',
                     category: 'Тесты',
                     message: `Нет теста для ${baseName}`,
+                });
+            }
+        }
+
+        // Проверка на использование any в тестах
+        for (const testFile of testFiles) {
+            const content = fs.readFileSync(testFile, 'utf-8');
+            const anyMatches = [...content.matchAll(/:\s*any\b|as\s+any\b/g)];
+
+            for (const match of anyMatches) {
+                errors.push({
+                    file: testFile,
+                    line: getLineNumber(content, match.index || 0),
+                    severity: 'warning',
+                    category: 'Тесты',
+                    message: 'Использование "any" в тестах запрещено',
+                    suggestion: 'Используй конкретные типы или unknown',
                 });
             }
         }

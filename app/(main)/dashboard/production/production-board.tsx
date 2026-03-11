@@ -13,7 +13,7 @@ import { pluralize } from "@/lib/pluralize";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 
-interface OrderItem {
+export interface OrderItem {
     id: string;
     description: string | null;
     quantity: number;

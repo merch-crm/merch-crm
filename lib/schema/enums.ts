@@ -1,6 +1,7 @@
 import { pgEnum } from "drizzle-orm/pg-core";
 
 export const orderStatusEnum = pgEnum("order_status", ["new", "design", "production", "done", "shipped", "cancelled"]);
+export const orderItemDesignStatusEnum = pgEnum("order_item_design_status", ["pending", "in_progress", "review", "approved", "revision"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["unpaid", "partial", "paid", "refunded"]);
 export const deliveryStatusEnum = pgEnum("delivery_status", ["not_started", "shipped", "delivered", "cancelled"]);
 export const taskStatusEnum = pgEnum("task_status", ["new", "in_progress", "review", "done", "archived"]);
@@ -25,3 +26,5 @@ export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "tra
 export const presenceEventTypeEnum = pgEnum("presence_event_type", ["detected", "lost", "recognized", "unknown"]);
 export const sessionTypeEnum = pgEnum("session_type", ["work", "break", "idle"]);
 export const cameraStatusEnum = pgEnum("camera_status", ["online", "offline", "error", "connecting"]);
+export const brandingFileTypeEnum = pgEnum("branding_file_type", ["logo_main", "logo_accent", "icon", "font", "pattern", "other"]);
+export const defectReasonEnum = pgEnum("defect_reason", ["equipment_failure", "human_error", "material_defect", "other"]);

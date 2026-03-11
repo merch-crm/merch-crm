@@ -33,7 +33,8 @@ async function check() {
         await client.connect();
 
         const types = await client.query('SELECT slug FROM inventory_attribute_types');
-        console.log("Types:", types.rows.map(r => r.slug));
+        const rowSlugs = (types.rows || []).map((r: { slug: string }) => r.slug);
+        console.log("Types:", rowSlugs);
 
         const attrs = await client.query('SELECT type, name, value, category_id FROM inventory_attributes');
         console.log("Attributes count:", attrs.rowCount);

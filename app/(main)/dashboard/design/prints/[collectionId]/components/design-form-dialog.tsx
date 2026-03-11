@@ -45,6 +45,7 @@ interface DesignFormDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     collectionId: string;
+    applicationTypes?: { id: string; name: string; color: string | null }[];
     design?: {
         id: string;
         name: string;
@@ -57,6 +58,7 @@ export function DesignFormDialog({
     open,
     onOpenChange,
     collectionId,
+    applicationTypes: _applicationTypes, // Not used but passed so we don't crash
     design,
     onSuccess,
 }: DesignFormDialogProps) {

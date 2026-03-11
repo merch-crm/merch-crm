@@ -50,11 +50,11 @@ describe('useAddAttributeType', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as any);
-        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as any);
+        vi.mocked(useRouter).mockReturnValue({ refresh: mockRefresh } as unknown as ReturnType<typeof useRouter>);
+        vi.mocked(useToast).mockReturnValue({ toast: mockToast } as unknown as ReturnType<typeof useToast>);
 
         const mockSearchParams = new URLSearchParams();
-        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as any);
+        vi.mocked(useSearchParams).mockReturnValue(mockSearchParams as unknown as ReturnType<typeof useSearchParams>);
     });
 
     it('initializes with default values', () => {

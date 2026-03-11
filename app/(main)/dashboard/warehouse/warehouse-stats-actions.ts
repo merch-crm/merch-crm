@@ -111,142 +111,181 @@ export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>>
 
         const [itemsRes, stockRes, archivedRes, categoriesRes, subCategoriesRes, storagesRes, criticalRes, activityRes, recentTransactionsRes, financialsRes, writeOffRes, topSoldRes, stagnantRes] = await Promise.all([
             // 0. Total Items (non-archived SKUs count)
-            db.select({ count: count() })
-                .from(inventoryItems)
-                .where(eq(inventoryItems.isArchived, false)),
+            (async () => {
+                const res = await db.select({ count: count() })
+                    .from(inventoryItems)
+                    .where(eq(inventoryItems.isArchived, false));
+                return res;
+            })(),
 
             // 1. Total Quantity and Reserved (SUM of units)
-            db.select({
-                totalQuantity: sql<number>`COALESCE(SUM(${inventoryItems.quantity}), 0)::int`,
-                totalReserved: sql<number>`COALESCE(SUM(${inventoryItems.reservedQuantity}), 0)::int`,
-            }).from(inventoryItems).where(eq(inventoryItems.isArchived, false)),
+            (async () => {
+                const res = await db.select({
+                    totalQuantity: sql<number>`COALESCE(SUM(${inventoryItems.quantity}), 0)::int`,
+                    totalReserved: sql<number>`COALESCE(SUM(${inventoryItems.reservedQuantity}), 0)::int`,
+                }).from(inventoryItems).where(eq(inventoryItems.isArchived, false));
+                return res;
+            })(),
 
             // 2. Archived count
-            db.select({ count: count() })
-                .from(inventoryItems)
-                .where(eq(inventoryItems.isArchived, true)),
+            (async () => {
+                const res = await db.select({ count: count() })
+                    .from(inventoryItems)
+                    .where(eq(inventoryItems.isArchived, true));
+                return res;
+            })(),
 
             // 3. Root Categories count
-            db.select({ count: count() })
-                .from(inventoryCategories)
-                .where(isNull(inventoryCategories.parentId)),
+            (async () => {
+                const res = await db.select({ count: count() })
+                    .from(inventoryCategories)
+                    .where(isNull(inventoryCategories.parentId));
+                return res;
+            })(),
 
             // 4. Subcategories count
-            db.select({ count: count() })
-                .from(inventoryCategories)
-                .where(isNotNull(inventoryCategories.parentId)),
+            (async () => {
+                const res = await db.select({ count: count() })
+                    .from(inventoryCategories)
+                    .where(isNotNull(inventoryCategories.parentId));
+                return res;
+            })(),
 
             // 5. Total Storages count
-            db.select({ count: count() })
-                .from(storageLocations)
-                .where(eq(storageLocations.isActive, true)),
+            (async () => {
+                const res = await db.select({ count: count() })
+                    .from(storageLocations)
+                    .where(eq(storageLocations.isActive, true));
+                return res;
+            })(),
 
             // 6. Critical items
-            db.select({
-                id: inventoryItems.id,
-                name: inventoryItems.name,
-                quantity: inventoryItems.quantity,
-                unit: inventoryItems.unit
-            })
-                .from(inventoryItems)
-                .where(and(
-                    eq(inventoryItems.isArchived, false),
-                    sql`${inventoryItems.quantity} <= ${inventoryItems.lowStockThreshold}`
-                ))
-                .limit(20),
+            (async () => {
+                const res = await db.select({
+                    id: inventoryItems.id,
+                    name: inventoryItems.name,
+                    quantity: inventoryItems.quantity,
+                    unit: inventoryItems.unit
+                })
+                    .from(inventoryItems)
+                    .where(and(
+                        eq(inventoryItems.isArchived, false),
+                        sql`${inventoryItems.quantity} <= ${inventoryItems.lowStockThreshold}`
+                    ))
+                    .limit(20);
+                return res;
+            })(),
 
             // 7. Activity counts
-            db.select({
-                type: inventoryTransactions.type,
-                reason: inventoryTransactions.reason,
-                count: sql<number>`count(*)`
-            })
-                .from(inventoryTransactions)
-                .where(gte(inventoryTransactions.createdAt, thirtyDaysAgo))
-                .groupBy(inventoryTransactions.type, inventoryTransactions.reason)
-                .limit(100),
+            (async () => {
+                const res = await db.select({
+                    type: inventoryTransactions.type,
+                    reason: inventoryTransactions.reason,
+                    count: sql<number>`count(*)`
+                })
+                    .from(inventoryTransactions)
+                    .where(gte(inventoryTransactions.createdAt, thirtyDaysAgo))
+                    .groupBy(inventoryTransactions.type, inventoryTransactions.reason)
+                    .limit(100);
+                return res;
+            })(),
 
             // 8. Recent transactions
-            db.query.inventoryTransactions.findMany({
-                where: inArray(inventoryTransactions.type, ['in', 'transfer']),
-                with: {
-                    item: true,
-                    storageLocation: true,
-                    fromStorageLocation: true,
-                    creator: {
-                        with: {
-                            role: true
-                        }
+            (async () => {
+                const res = await db.query.inventoryTransactions.findMany({
+                    where: inArray(inventoryTransactions.type, ['in', 'transfer']),
+                    with: {
+                        item: true,
+                        storageLocation: true,
+                        fromStorageLocation: true,
+                        creator: {
+                            with: {
+                                role: true
+                            }
+                        },
                     },
-                },
-                orderBy: [desc(inventoryTransactions.createdAt)],
-                limit: 100
-            }),
+                    orderBy: [desc(inventoryTransactions.createdAt)],
+                    limit: 100
+                });
+                return res;
+            })(),
 
             // 9. Financial aggregations (cost, retail, frozen)
-            db.select({
-                totalCostValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
-                totalRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
-                frozenCostValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
-                frozenRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
-            }).from(inventoryItems).where(eq(inventoryItems.isArchived, false)),
+            (async () => {
+                const res = await db.select({
+                    totalCostValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
+                    totalRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
+                    frozenCostValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
+                    frozenRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
+                }).from(inventoryItems).where(eq(inventoryItems.isArchived, false));
+                return res;
+            })(),
 
-            // 10. Write-off value for last 30 days (transactions of type 'out' that are waste/write-off)
-            db.select({
-                writeOffValue: sql<string>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
-            })
-                .from(inventoryTransactions)
-                .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
-                .where(and(
-                    eq(inventoryTransactions.type, 'out'),
-                    gte(inventoryTransactions.createdAt, thirtyDaysAgo)
-                )),
+            // 10. Write-off value for last 30 days
+            (async () => {
+                const res = await db.select({
+                    writeOffValue: sql<string>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
+                })
+                    .from(inventoryTransactions)
+                    .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
+                    .where(and(
+                        eq(inventoryTransactions.type, 'out'),
+                        gte(inventoryTransactions.createdAt, thirtyDaysAgo)
+                    ));
+                return res;
+            })(),
 
-            // 11. Top-5 sold items (by outbound quantity in last 30 days)
-            db.select({
-                id: inventoryItems.id,
-                name: inventoryItems.name,
-                unit: inventoryItems.unit,
-                totalSold: sql<number>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})), 0)::int`,
-            })
-                .from(inventoryTransactions)
-                .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
-                .where(and(
-                    eq(inventoryTransactions.type, 'out'),
-                    gte(inventoryTransactions.createdAt, thirtyDaysAgo),
-                    eq(inventoryItems.isArchived, false)
-                ))
-                .groupBy(inventoryItems.id, inventoryItems.name, inventoryItems.unit)
-                .orderBy(sql`SUM(ABS(${inventoryTransactions.changeAmount})) DESC`)
-                .limit(5),
+            // 11. Top-5 sold items
+            (async () => {
+                const res = await db.select({
+                    id: inventoryItems.id,
+                    name: inventoryItems.name,
+                    unit: inventoryItems.unit,
+                    totalSold: sql<number>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})), 0)::int`,
+                })
+                    .from(inventoryTransactions)
+                    .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
+                    .where(and(
+                        eq(inventoryTransactions.type, 'out'),
+                        gte(inventoryTransactions.createdAt, thirtyDaysAgo),
+                        eq(inventoryItems.isArchived, false)
+                    ))
+                    .groupBy(inventoryItems.id, inventoryItems.name, inventoryItems.unit)
+                    .orderBy(sql`SUM(ABS(${inventoryTransactions.changeAmount})) DESC`)
+                    .limit(5);
+                return res;
+            })(),
 
-            // 12. Stagnant items (no transactions in last 30 days)
-            db.select({
-                id: inventoryItems.id,
-                name: inventoryItems.name,
-                quantity: inventoryItems.quantity,
-                unit: inventoryItems.unit,
-                lastActivityAt: sql<Date | null>`(
-                    SELECT MAX(created_at)
-                    FROM inventory_transactions
-                    WHERE inventory_transactions.item_id = ${inventoryItems.id}
-                )`,
-            })
-                .from(inventoryItems)
-                .where(and(
-                    eq(inventoryItems.isArchived, false),
-                    sql`NOT EXISTS (
-                        SELECT 1 FROM inventory_transactions
+            // 12. Stagnant items
+            (async () => {
+                const res = await db.select({
+                    id: inventoryItems.id,
+                    name: inventoryItems.name,
+                    quantity: inventoryItems.quantity,
+                    unit: inventoryItems.unit,
+                    lastActivityAt: sql<Date | null>`(
+                        SELECT MAX(created_at)
+                        FROM inventory_transactions
                         WHERE inventory_transactions.item_id = ${inventoryItems.id}
-                        AND inventory_transactions.created_at >= ${thirtyDaysAgo}
-                    )`
-                ))
-                .orderBy(sql`(
-                    SELECT MAX(created_at)
-                    FROM inventory_transactions
-                    WHERE inventory_transactions.item_id = ${inventoryItems.id}
-                ) ASC NULLS FIRST`)
-                .limit(50)
+                    )`,
+                })
+                    .from(inventoryItems)
+                    .where(and(
+                        eq(inventoryItems.isArchived, false),
+                        sql`NOT EXISTS (
+                            SELECT 1 FROM inventory_transactions
+                            WHERE inventory_transactions.item_id = ${inventoryItems.id}
+                            AND inventory_transactions.created_at >= ${thirtyDaysAgo}
+                        )`
+                    ))
+                    .orderBy(sql`(
+                        SELECT MAX(created_at)
+                        FROM inventory_transactions
+                        WHERE inventory_transactions.item_id = ${inventoryItems.id}
+                    ) ASC NULLS FIRST`)
+                    .limit(50);
+                return res;
+            })(),
         ]);
 
 

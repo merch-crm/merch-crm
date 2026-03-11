@@ -11,8 +11,8 @@ const { mockSelect, mockInsert, mockUpdate, mockDelete } = vi.hoisted(() => {
         orderBy: vi.fn().mockReturnThis(),
         limit: vi.fn().mockReturnThis(),
         as: vi.fn().mockReturnThis(),
-        then: vi.fn(function (this: any, resolve) {
-            return Promise.resolve(this._results || []).then(resolve);
+        then: vi.fn(function (this: unknown, resolve: (val: unknown) => void) {
+            return Promise.resolve((this as { _results?: unknown[] })._results || []).then(resolve);
         }),
     };
 

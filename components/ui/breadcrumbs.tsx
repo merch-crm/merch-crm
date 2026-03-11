@@ -30,12 +30,17 @@ export function Breadcrumbs({
 }: BreadcrumbsProps) {
     const safeItems = Array.isArray(items) ? items : [];
     const isMobile = useMediaQuery("(max-width: 1023px)");
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Handle mobile truncation automatically if items > 2
     // We only truncate if none of the items are already marked as ellipsis
 
 
-    const displayItems = isMobile && safeItems.length > 0
+    const displayItems = (mounted && isMobile && safeItems.length > 0)
         ? [safeItems[safeItems.length - 1]]
         : safeItems;
 
@@ -109,6 +114,6 @@ export function Breadcrumbs({
                     </div>
                 );
             })}
-        </nav>
+        </nav >
     );
 }

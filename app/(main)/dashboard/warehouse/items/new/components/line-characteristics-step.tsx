@@ -8,8 +8,8 @@ import { Sparkles, RotateCcw, Info, Package, FileText, LayoutPanelTop } from "lu
 import { useLineName } from "../hooks/use-line-name";
 import { StepFooter } from "./step-footer";
 import { cn } from "@/lib/utils";
-import { AttributeSelector } from "../../../attribute-selector";
-import { ItemFormData } from "../../../types";
+import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-selector";
+import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 
 interface Attribute {
     id: string;
@@ -31,30 +31,26 @@ interface SelectedAttribute {
     valueLabel?: string;
 }
 
-interface LineCharacteristicsStepProps {
-    /** Доступные атрибуты категории */
-    categoryAttributes: Attribute[];
-    /** Выбранные значения атрибутов (все) */
-    selectedAttributes: Record<string, string>;
-    /** Общие атрибуты линейки (ID атрибутов) */
-    commonAttributeIds: string[];
-    /** Пользовательское название линейки */
+interface LineMetadata {
     customLineName: string;
-    /** Описание линейки */
     lineDescription: string;
-    /** Callback изменения общих атрибутов */
-    onCommonAttributesChange: (ids: string[]) => void;
-    /** Callback изменения названия */
     onLineNameChange: (name: string) => void;
-    /** Callback изменения описания */
     onLineDescriptionChange: (description: string) => void;
-    /** Навигация назад */
+}
+
+interface LineActions {
     onBack: () => void;
-    /** Навигация вперёд */
     onNext: () => void;
-    /** Callback для обновления данных формы (атрибутов) */
     updateFormData: (updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => void;
-    /** Ошибки валидации */
+}
+
+interface LineCharacteristicsStepProps {
+    categoryAttributes: Attribute[];
+    selectedAttributes: Record<string, string>;
+    commonAttributeIds: string[];
+    onCommonAttributesChange: (ids: string[]) => void;
+    lineData: LineMetadata;
+    actions: LineActions;
     errors?: Record<string, string>;
 }
 
@@ -62,16 +58,14 @@ export function LineCharacteristicsStep({
     categoryAttributes,
     selectedAttributes,
     commonAttributeIds,
-    customLineName,
-    lineDescription,
     onCommonAttributesChange,
-    onLineNameChange,
-    onLineDescriptionChange,
-    onBack,
-    onNext,
-    updateFormData,
+    lineData,
+    actions,
     errors,
 }: LineCharacteristicsStepProps) {
+    const { customLineName, lineDescription, onLineNameChange, onLineDescriptionChange } = lineData;
+    const { onBack, onNext, updateFormData } = actions;
+
     // Преобразуем общие атрибуты в формат для генератора
     const commonAttributesForName = useMemo(() => {
         return commonAttributeIds

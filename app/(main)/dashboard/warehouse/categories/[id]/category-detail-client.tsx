@@ -37,7 +37,6 @@ import { CategoryItemsList } from "./components/CategoryItemsList";
 import { CategoryHeader } from "./components/CategoryHeader";
 import { SubCategoriesSection } from "./components/SubCategoriesSection";
 import { MassActionsBar } from "./components/MassActionsBar";
-import { LineCard } from "../../lines/components/line-card";
 
 import { useCategoryDetail } from "./hooks/use-category-detail";
 import dynamic from "next/dynamic";
@@ -178,7 +177,7 @@ export function CategoryDetailClient({
         const lineGroups: Record<string, InventoryItem[]> = {};
         const standalone: InventoryItem[] = [];
 
-        items.forEach(item => {
+        (items || []).forEach(item => {
             const lineId = item.productLineId;
             if (lineId) {
                 if (!lineGroups[lineId]) lineGroups[lineId] = [];
@@ -274,7 +273,7 @@ export function CategoryDetailClient({
 
 
             {/* Items Table Section */}
-            <div className="space-y-6 mt-8">
+            <div className="space-y-3 mt-8">
                 {dialogs.massActions.showArchiveReason && (
                     <ArchiveReasonDialog
                         isOpen={dialogs.massActions.showArchiveReason}
@@ -286,9 +285,9 @@ export function CategoryDetailClient({
                 )}
 
                 {totalItems > 0 ? (
-                    <div className="space-y-10">
+                    <div className="space-y-3">
                         {groupedData.map((group) => (
-                            <div key={group.id || 'standalone'} className="space-y-4">
+                            <div key={group.id || 'standalone'} className="space-y-3">
                                 <div className="flex items-center gap-3 px-2">
                                     <h2 className="text-sm font-bold text-slate-500">
                                         {group.isCollection ? `Коллекция «${group.name}»` :

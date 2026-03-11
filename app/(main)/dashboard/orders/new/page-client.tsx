@@ -4,13 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
     Check,
-    ShoppingCart,
     User,
     Package,
     Clock,
     ChevronRight
 } from "lucide-react";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { createOrder, searchClients } from "../actions/core.actions";
 import { ActionResult, Client, ClientType } from "@/lib/types";
 import { validatePromocode } from "../../finance/actions";
@@ -277,14 +275,6 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
         <div className="flex-1 flex flex-col md:h-[calc(100vh-130px)] overflow-hidden bg-muted/50">
             {/* Hidden title for E2E tests - placed at top level for reliable detection */}
             <h1 className="sr-only" data-testid="page-title">Новый заказ</h1>
-            <div className="px-8 pt-6 shrink-0">
-                <Breadcrumbs
-                    items={[
-                        { label: "Заказы", href: "/dashboard/orders", icon: ShoppingCart },
-                        { label: "Новый заказ" }
-                    ]}
-                />
-            </div>
 
             <div className="flex-1 flex flex-col lg:flex-row min-h-0 gap-3 px-4 sm:px-8 pb-8 pt-4 overflow-y-auto lg:overflow-hidden">
                 {/* Sidebar */}

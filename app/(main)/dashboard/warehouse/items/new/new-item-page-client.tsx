@@ -235,15 +235,19 @@ export function NewItemPageClient({
                                         <LineCharacteristicsStep
                                             categoryAttributes={categoryAttributes}
                                             selectedAttributes={formData.attributes || {}}
-                                            updateFormData={updateFormData}
                                             commonAttributeIds={lineData.commonAttributeIds}
-                                            customLineName={lineData.customName}
-                                            lineDescription={lineData.description}
                                             onCommonAttributesChange={(ids) => setLineData(prev => ({ ...prev, commonAttributeIds: ids }))}
-                                            onLineNameChange={(name) => setLineData(prev => ({ ...prev, customName: name }))}
-                                            onLineDescriptionChange={(desc) => setLineData(prev => ({ ...prev, description: desc }))}
-                                            onNext={handleNext}
-                                            onBack={handleBack}
+                                            lineData={{
+                                                customLineName: lineData.customName,
+                                                lineDescription: lineData.description,
+                                                onLineNameChange: (name) => setLineData(prev => ({ ...prev, customName: name })),
+                                                onLineDescriptionChange: (desc) => setLineData(prev => ({ ...prev, description: desc })),
+                                            }}
+                                            actions={{
+                                                onNext: handleNext,
+                                                onBack: handleBack,
+                                                updateFormData: updateFormData,
+                                            }}
                                             errors={validationError ? { global: validationError } : {}}
                                         />
                                     </motion.div>

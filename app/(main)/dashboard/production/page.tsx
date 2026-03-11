@@ -1,30 +1,41 @@
-import { ProductionWidgets } from"./production-widgets";
-import { ProductionBoard } from"./production-board";
-import { getProductionStats, getProductionItems } from"./actions";
-import { PageContainer } from"@/components/ui/page-container";
-import { PageHeader } from"@/components/layout/page-header";
+import { ProductionDashboardClient } from "./production-dashboard-client";
+import {
+    getProductionStats,
+    getTasksByLine,
+    getUrgentProductionTasks,
+    getEquipmentStatus,
+    getStaffOnShift,
+    getDailyOutputData
+} from "./actions/production-dashboard-actions";
+import { PageContainer } from "@/components/ui/page-container";
 
 export default async function ProductionPage() {
-    const statsRes = await getProductionStats();
-    const stats = (statsRes.success && statsRes.data) ? statsRes.data : { active: 0, urgent: 0, efficiency: 0, completedToday: 0 };
-
-    const itemsRes = await getProductionItems();
-    const items = (itemsRes.success && itemsRes.data) ? itemsRes.data : [];
+    const [
+        statsRes,
+        tasksByLineRes,
+        urgentTasksRes,
+        equipmentStatusRes,
+        staffOnShiftRes,
+        dailyOutputRes
+    ] = await Promise.all([
+        getProductionStats(),
+        getTasksByLine(),
+        getUrgentProductionTasks(),
+        getEquipmentStatus(),
+        getStaffOnShift(),
+        getDailyOutputData()
+    ]);
 
     return (
         <PageContainer>
-            {/* Header */}
-            <PageHeader
-                title="Производство"
-                description="Управление очередью печати и цеховыми процессами"
-                className="px-1"
+            <ProductionDashboardClient
+                stats={statsRes.success ? statsRes.data! : null}
+                tasksByLine={tasksByLineRes.success ? tasksByLineRes.data! : []}
+                urgentTasks={urgentTasksRes.success ? urgentTasksRes.data! : []}
+                equipmentStatus={equipmentStatusRes.success ? equipmentStatusRes.data! : []}
+                staffOnShift={staffOnShiftRes.success ? staffOnShiftRes.data! : []}
+                dailyOutput={dailyOutputRes.success ? dailyOutputRes.data! : []}
             />
-
-            {/* Widgets */}
-            <ProductionWidgets stats={stats} />
-
-            {/* Kanban Board */}
-            <ProductionBoard items={items} />
         </PageContainer>
     );
 }

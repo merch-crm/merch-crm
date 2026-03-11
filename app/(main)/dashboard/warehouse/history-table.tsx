@@ -58,12 +58,14 @@ export function HistoryTable({ transactions, isAdmin }: HistoryTableProps) {
 
     if (transactions.length === 0) {
         return (
-            <EmptyState
-                icon={History}
-                title="Операций не найдено"
-                description="Все действия с товарами на складе будут отображаться здесь."
-                className="py-24"
-            />
+            <div data-testid="history-container">
+                <EmptyState
+                    icon={History}
+                    title="Операций не найдено"
+                    description="Все действия с товарами на складе будут отображаться здесь."
+                    className="py-24"
+                />
+            </div>
         );
     }
 

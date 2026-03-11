@@ -4,15 +4,25 @@ export * from "./enums";
 // Core
 export * from "./users";
 export * from "./clients/main";
+export * from "./clients/branding";
 export * from "./clients/contacts";
 export * from "./clients/loyalty";
 export * from "./promocodes";
 export * from "./storage";
 
-// Designs (перед warehouse, т.к. warehouse зависит от designs)
-export * from "./designs";
+// Production (Base for many others)
+export * from "./production";
 
-// Product Lines (перед warehouse)
+// Designs
+export * from "./designs";
+export { printDesigns, printCollections, printDesignVersions, printDesignFiles, printDesignMockups } from "./designs";
+export * from "./design-tasks";
+export { orderDesignTasks, orderDesignFiles, orderDesignHistory } from "./design-tasks";
+export * from "./order-mockup-versions";
+export * from "./editor";
+export * from "./system-fonts";
+
+// Product Lines
 export * from "./product-lines";
 
 // Warehouse
@@ -25,6 +35,8 @@ export * from "./inventory-transactions.schema";
 // Orders & Finance
 export * from "./orders";
 export * from "./finance";
+export * from "./order-chat";
+export * from "./order-defects";
 
 // Other
 export * from "./tasks";

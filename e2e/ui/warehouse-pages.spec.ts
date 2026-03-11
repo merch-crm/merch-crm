@@ -1,19 +1,25 @@
 import { test, expect } from '@playwright/test';
-import { expectPageLoaded, waitForPageLoad } from '../utils/page-helpers';
+import { expectPageLoaded } from '../utils/page-helpers';
 
 test.describe('Warehouse Pages', () => {
 
+    test('Loads /dashboard/warehouse/overview successfully', async ({ page }) => {
+        await page.goto('/dashboard/warehouse/overview');
+        await expectPageLoaded(page, { title: /Обзор|Склад/i });
+
+        const content = page.locator('main').first();
+        await expect(content).toBeVisible({ timeout: 15000 });
+    });
+
     test('Loads /dashboard/warehouse successfully', async ({ page }) => {
         await page.goto('/dashboard/warehouse');
-        await waitForPageLoad(page);
-        await expect(page).toHaveURL(/.*warehouse\/(categories|storage)/);
+        await page.waitForURL(/.*warehouse\/(categories|storage|overview)/, { timeout: 30000 });
     });
 
     test('Loads /dashboard/warehouse/items/new successfully', async ({ page }) => {
         await page.goto('/dashboard/warehouse/items/new');
-        await waitForPageLoad(page, { expectUrl: /.*items\/new/ });
-
-        const container = page.locator('main .crm-card, main [data-testid="item-form"]').first();
+        // На странице /new может быть заголовок или специфичный контейнер
+        const container = page.locator('h1:has-text("Новая позиция"), [data-testid="item-form-container"]').first();
         await expect(container).toBeVisible({ timeout: 15000 });
     });
 
@@ -53,8 +59,8 @@ test.describe('Warehouse Pages', () => {
         await page.goto('/dashboard/warehouse/history');
         await expectPageLoaded(page, { title: /Журнал операций|История|Склад/i });
 
-        // history-container рендерится всегда (включая placeholder), Safari Safari Safari
-        const content = page.locator('[data-testid="history-container"]').first();
+        // history-container рендерится всегда (включая placeholder и пустые состояния)
+        const content = page.locator('[data-testid="history-container"], [data-testid="empty-state"]').first();
         await expect(content).toBeVisible({ timeout: 20000 });
     });
 });

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 import { useBreadcrumbs } from "./breadcrumbs-context";
 import { Breadcrumbs as BreadcrumbsUI } from "@/components/ui/breadcrumbs";
 
@@ -15,13 +16,23 @@ const routeLabels: Record<string, string> = {
     sales: "Продажи",
     overview: "Обзор",
     prints: "Принты",
+    new: "Создание",
+    design: "Дизайн",
+    tasks: "Задачи",
 };
 
 export function Breadcrumbs() {
+    const [mounted, setMounted] = useState(false);
     const pathname = usePathname();
     const { labels, customTrail } = useBreadcrumbs();
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const paths = pathname.split("/").filter(Boolean);
+
+    if (!mounted) return null;
 
     // If custom trail is provided, render it instead of pathname logic
     if (customTrail) {

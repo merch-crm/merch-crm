@@ -59,7 +59,7 @@ describe("New Item/Line Actions", () => {
             // Mock insertions
             vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockResolvedValue({}),
-            } as any);
+            } as unknown as ReturnType<typeof db.insert>);
 
             const result = await createBaseLineWithPositions({
                 line: {
@@ -98,7 +98,7 @@ describe("New Item/Line Actions", () => {
             vi.mocked(db.insert).mockReturnValue({
                 values: vi.fn().mockReturnThis(),
                 returning: vi.fn().mockResolvedValue([{ id: "item-1" }, { id: "item-2" }]),
-            } as any);
+            } as unknown as ReturnType<typeof db.insert>);
 
             const result = await createFinishedLineWithPositions({
                 categoryId: VALID_CATEGORY_ID,
