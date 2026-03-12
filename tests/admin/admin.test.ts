@@ -174,7 +174,7 @@ describe('Admin Panel Actions', () => {
                 roleId: '55555555-5555-4555-8555-555555555555'
             });
             const result = await createUser(formData);
-            if (!result.success) console.error('Create user failed:', (result as any).error);
+            if (!result.success) console.error('Create user failed:', (result as { error: string }).error);
             expect(result.success).toBe(true);
         });
     });

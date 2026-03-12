@@ -65,7 +65,6 @@ vi.mock('@/lib/db', () => ({
 }));
 
 import { getSession, type Session as _Session, auth } from '@/lib/auth';
-import { comparePassword } from '@/lib/password';
 import {
     getUserProfile,
     updateProfile,
@@ -170,9 +169,12 @@ describe('updatePassword', () => {
     it('обновляет пароль при верных данных', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as _Session);
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } }));
-        vi.mocked(auth.api.changePassword).mockResolvedValueOnce({ success: true } as any);
+        vi.mocked(auth.api.changePassword).mockResolvedValueOnce({ 
+            token: 'test-token', 
+            user: createMockUser() as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>['user']
+        } as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>);
         const result = await updatePassword(createFormData({ currentPassword: 'p-correct-old', newPassword: 'p-new-123456', confirmPassword: 'p-new-123456' })); // Safe
-        if (!result.success) console.error('Password update failed:', (result as any).error);
+        if (!result.success) console.error('Password update failed:', (result as { error?: string }).error);
         expect(result.success).toBe(true);
     });
 });
