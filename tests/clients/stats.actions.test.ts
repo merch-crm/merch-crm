@@ -44,13 +44,13 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession } from '@/lib/auth';
+import { getSession, type Session as _Session } from '@/lib/auth';
 import { mockSession } from '../helpers/mocks';
 
 describe('Stats Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
@@ -92,7 +92,7 @@ describe('Stats Actions', () => {
         });
 
         it('should block non-admins', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Manager' }) as unknown);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession() as _Session);
             const result = await recalculateAllClientsStats();
             expect(result.success).toBe(false);
             if (!result.success) {

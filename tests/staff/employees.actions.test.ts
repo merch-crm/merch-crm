@@ -45,7 +45,7 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { type _Session } from '@/lib/auth';
+import { type Session as _Session } from '@/lib/auth';
 import { getSession } from '@/lib/session';
 import { checkIsAdmin } from '@/lib/admin';
 import { mockSession } from '../helpers/mocks';
@@ -53,7 +53,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Employees Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
         vi.mocked(checkIsAdmin).mockResolvedValue(true);
         chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
     });
@@ -132,7 +132,7 @@ describe('Employees Actions', () => {
     describe('deleteEmployeeFace', () => {
         it('should soft delete face by setting isActive false', async () => {
             const validSession = mockSession();
-            vi.mocked(getSession).mockResolvedValue(validSession as unknown);
+            vi.mocked(getSession).mockResolvedValue(validSession as _Session);
             vi.mocked(checkIsAdmin).mockResolvedValue(true);
 
             const result = await deleteEmployeeFace('55555555-5555-4555-8555-000000000001');

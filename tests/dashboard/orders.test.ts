@@ -72,7 +72,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession } from '@/lib/auth';
+import { getSession, type Session as _Session } from '@/lib/auth';
 import {
     getOrders,
     searchClients,

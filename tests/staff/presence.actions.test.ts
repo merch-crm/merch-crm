@@ -46,14 +46,14 @@ vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession } from '@/lib/auth';
+import { getSession, type Session as _Session } from '@/lib/auth';
 import { requireAdmin } from '@/lib/admin';
 import { mockSession } from '../helpers/mocks';
 
 describe('Presence Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as unknown);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
         vi.mocked(requireAdmin).mockResolvedValue(undefined as never);
         chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
     });

@@ -41,14 +41,14 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession } from '@/lib/auth';
+import { getSession, type Session as _Session } from '@/lib/auth';
 import { logAction } from '@/lib/audit';
 import { mockSession } from '../helpers/mocks';
 
 describe('RFM Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
