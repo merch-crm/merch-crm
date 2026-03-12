@@ -92,7 +92,7 @@ describe('Stats Actions', () => {
         });
 
         it('should block non-admins', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(mockSession() as _Session);
+            vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as _Session);
             const result = await recalculateAllClientsStats();
             expect(result.success).toBe(false);
             if (!result.success) {

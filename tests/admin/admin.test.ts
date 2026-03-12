@@ -12,6 +12,7 @@ const { mockQuery, mockDb } = vi.hoisted(() => {
         orders: { findFirst: vi.fn().mockResolvedValue(null) },
         tasks: { findFirst: vi.fn().mockResolvedValue(null) },
         systemSettings: { findFirst: vi.fn().mockResolvedValue(null) },
+        accounts: { findFirst: vi.fn().mockResolvedValue(null) },
     };
 
     const createUpdateChain = () => {
@@ -67,7 +68,17 @@ vi.mock('@/lib/db', () => ({ db: mockDb, pool: { connect: vi.fn(), query: vi.fn(
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
-vi.mock('@/lib/auth', () => ({ getSession: vi.fn(), encrypt: vi.fn().mockResolvedValue('token'), decrypt: vi.fn() }));
+vi.mock('@/lib/auth', () => ({ 
+    getSession: vi.fn(), 
+    encrypt: vi.fn().mockResolvedValue('token'), 
+    decrypt: vi.fn(),
+    auth: {
+        api: {
+            createUser: vi.fn().mockResolvedValue({ user: { id: 'new-id', email: 'new@test.com' } }),
+            changePassword: vi.fn().mockResolvedValue({ success: true }),
+        }
+    }
+}));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
 vi.mock('@/lib/security-logger', () => ({ logSecurityEvent: vi.fn() }));
@@ -77,11 +88,14 @@ vi.mock('@/lib/password', () => ({
 }));
 vi.mock('@/lib/backup', () => ({ performDatabaseBackup: vi.fn().mockResolvedValue({ success: true, fileName: 'backup.json' }) }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
-vi.mock('next/headers', () => ({ cookies: vi.fn().mockReturnValue({ set: vi.fn(), get: vi.fn(), delete: vi.fn() }) }));
+vi.mock('next/headers', () => ({ 
+    cookies: vi.fn().mockReturnValue({ set: vi.fn(), get: vi.fn(), delete: vi.fn() }),
+    headers: vi.fn().mockResolvedValue(new Map()),
+}));
 vi.mock('@/lib/admin', () => ({
     requireAdmin: vi.fn().mockImplementation(async (session: { roleName?: string }) => {
         if (!session || session.roleName !== 'Администратор') throw new Error('Доступ запрещен');
-        return session;
+        return { id: 'test-user-id', role: { name: 'Администратор' } };
     }),
 }));
 
@@ -101,11 +115,17 @@ import { getNotificationSettingsAction } from '@/app/(main)/admin-panel/actions/
 
 function setupMocks() {
     vi.clearAllMocks();
-    mockQuery.users.findFirst.mockResolvedValue(createMockUser({ roleName: 'Администратор' }));
+    mockQuery.users.findFirst.mockResolvedValue(createMockUser({ 
+        role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
+    }));
     mockQuery.roles.findMany.mockResolvedValue([]);
     mockQuery.departments.findMany.mockResolvedValue([]);
     mockQuery.auditLogs.findMany.mockResolvedValue([]);
-    vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+    
+    if (mockQuery.accounts) {
+        mockQuery.accounts.findFirst = vi.fn().mockResolvedValue({ userId: '1', providerId: 'credential', password: 'hashed-password' });
+    }
+    vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
     vi.mocked(performDatabaseBackup).mockResolvedValue({ success: true, fileName: 'backup.json' });
 }
 
@@ -143,13 +163,18 @@ describe('Admin Panel Actions', () => {
 
     describe('createUser', () => {
         it('создает пользователя при валидных данных', async () => {
+            vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
+            mockQuery.users.findFirst.mockResolvedValueOnce(createMockUser({ 
+                role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
+            }));
             const formData = createFormData({
                 name: 'New User',
                 email: 'new@test.com',
-                password: 't-pass-123', // Safe
+                password: 'TestPassword123', // Full valid password
                 roleId: '55555555-5555-4555-8555-555555555555'
             });
             const result = await createUser(formData);
+            if (!result.success) console.error('Create user failed:', (result as any).error);
             expect(result.success).toBe(true);
         });
     });

@@ -14,7 +14,7 @@ export function mockSession(overrides: Partial<Session> = {}): Session {
         sessionId: 'session-uuid-1234',
         email: 'admin@test.com',
         name: 'Test Admin',
-        roleId: 'role-uuid-1234',
+        roleId: '55555555-5555-4555-8555-555555555555',
         roleName: 'Администратор',
         departmentName: 'Руководство',
         expires: new Date(Date.now() + 86400000),
@@ -172,7 +172,7 @@ export function createMockUser(overrides: Record<string, unknown> = {}) {
         birthday: null,
         createdAt: new Date('2026-01-01'),
         updatedAt: new Date('2026-01-01'),
-        role: { id: 'role-uuid-1234', name: 'Администратор' },
+        role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' },
         department: null,
         ...overrides,
     };

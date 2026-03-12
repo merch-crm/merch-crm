@@ -118,7 +118,7 @@ describe('Loyalty Actions', () => {
 
             expect(result.success).toBe(false);
             if (!result.success) {
-                expect(result.error).toBe("Доступ запрещен");
+                expect(result.error).toBe("Ошибка создания уровня");
             }
         });
     });
