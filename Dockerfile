@@ -32,6 +32,7 @@ ARG DATABASE_URL="postgresql://build:build@localhost:5432/build"
 # Non-sensitive stub for build-time validation:
 ARG BUILD_AUTH_STUB="dummy-key-for-build-process-at-least-32-chars-long"
 ENV AUTH_STUB_KEY=$BUILD_AUTH_STUB
+ENV JWT_SECRET_KEY=$BUILD_AUTH_STUB
 ENV SKIP_ENV_VALIDATION="true"
 
 RUN npm run build
