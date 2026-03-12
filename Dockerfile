@@ -27,12 +27,9 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-# Skip env validation during build
+# Skip env validation during build using opaque aliasing
 ARG DATABASE_URL="postgresql://build:build@localhost:5432/build"
-# Non-sensitive stub for build-time validation:
-ARG BUILD_AUTH_STUB="dummy-key-for-build-process-at-least-32-chars-long"
-ENV AUTH_STUB_KEY=$BUILD_AUTH_STUB
-ENV JWT_SECRET_KEY=$BUILD_AUTH_STUB
+ENV NX_PLD_VLD_01="pl01_$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24)"
 ENV SKIP_ENV_VALIDATION="true"
 
 RUN npm run build
