@@ -1,7 +1,7 @@
 import { ProductionDashboardClient } from "./production-dashboard-client";
+import { getProductionStats } from "./actions/dashboard-stats-actions";
+import { getTasksByLine } from "./actions/dashboard-lines-actions";
 import {
-    getProductionStats,
-    getTasksByLine,
     getUrgentProductionTasks,
     getEquipmentStatus,
     getStaffOnShift,

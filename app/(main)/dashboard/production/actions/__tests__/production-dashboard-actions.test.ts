@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { getProductionStats, getTasksByLine, getUrgentProductionTasks } from "../production-dashboard-actions";
+import { getUrgentProductionTasks } from "../production-dashboard-actions";
+import { getProductionStats } from "../dashboard-stats-actions";
+import { getTasksByLine } from "../dashboard-lines-actions";
 
 // Mock db
 vi.mock("@/lib/db", () => {
@@ -26,18 +28,18 @@ vi.mock("@/lib/db", () => {
     };
 
     // Generic chain that works for all select/query styles in these actions
-    const createChain = (data: any) => {
-        const chain: any = {
+    const createChain = (data: unknown[]) => {
+        const chain = {
             from: vi.fn().mockReturnThis(),
             where: vi.fn().mockReturnThis(),
             orderBy: vi.fn().mockReturnThis(),
             limit: vi.fn().mockReturnThis(),
             innerJoin: vi.fn().mockReturnThis(),
             groupBy: vi.fn().mockReturnThis(),
-            then: vi.fn().mockImplementation((resolve) => resolve(data)),
+            then: vi.fn().mockImplementation((resolve: (val: unknown) => void) => resolve(data)),
             // Support for [Symbol.iterator] if used by spreading etc.
             [Symbol.iterator]: function* () { yield* data; },
-            map: (fn: any) => data.map(fn),
+            map: (fn: (item: unknown) => unknown) => data.map(fn),
         };
         return chain;
     };

@@ -12,9 +12,7 @@ import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, subDays, format } from "date-fns";
 import { z } from "zod";
 
-export { getProductionStats } from "./dashboard-stats-actions";
 export type { ProductionStats } from "./dashboard-stats-actions";
-export { getTasksByLine } from "./dashboard-lines-actions";
 export type { LineLoad } from "./dashboard-lines-actions";
 
 export interface ProductionTaskSummary {
