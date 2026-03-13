@@ -3,7 +3,6 @@
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import {
     DndContext,
     closestCenter,
@@ -20,33 +19,11 @@ import {
     rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import {
-    ArrowLeft,
     Plus,
-    Edit,
-    Trash2,
-    Copy,
-    MoreVertical,
     Image as ImageIcon,
-    DollarSign,
-    Tag,
-    Calendar,
-    Eye,
-    EyeOff,
-    PenTool,
 } from "lucide-react";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -63,11 +40,16 @@ import { MockupFormDialog } from "./components/mockup-form-dialog";
 import { DesignFormDialog } from "../components/design-form-dialog";
 import {
     deleteDesign,
+} from "../../actions/design-actions";
+import {
     updateMockupsOrder,
     updateMockup,
-} from "../../actions";
+} from "../../actions/mockup-actions";
 import type { DesignWithFullData, PrintDesignMockup } from "@/lib/types";
 import type { ApplicationType } from "@/lib/schema/production";
+
+import { DesignDetailHeader } from "./components/design-detail-header";
+import { DesignInfoSidebar } from "./components/design-info-sidebar";
 
 interface DesignWithMockups extends DesignWithFullData {
     mockups: PrintDesignMockup[];
@@ -184,69 +166,20 @@ export function DesignDetailPageClient({
     };
 
     const handleDuplicateDesign = async () => {
-        // Implementation would create a copy
         toast("Функция в разработке");
     };
 
     return (
         <div className="space-y-3">
-            {/* Header */}
-            <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()}>
-                        <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <div>
-                        <div className="flex items-center gap-2 mb-1">
-                            <h1 className="text-2xl font-bold">{design.name}</h1>
-                            {!design.isActive && (
-                                <Badge variant="secondary">Неактивен</Badge>
-                            )}
-                        </div>
-                        <p className="text-muted-foreground">
-                            {design.sku && `SKU: ${design.sku}`}
-                        </p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" asChild>
-                        <Link href={`/dashboard/design/editor/new?designId=${design.id}`}>
-                            <PenTool className="h-4 w-4 mr-2" />
-                            Открыть в редакторе
-                        </Link>
-                    </Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="icon">
-                                <MoreVertical className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Редактировать
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={handleDuplicateDesign}>
-                                <Copy className="h-4 w-4 mr-2" />
-                                Дублировать
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                onClick={() => setIsDeleteOpen(true)}
-                                className="text-destructive"
-                            >
-                                <Trash2 className="h-4 w-4 mr-2" />
-                                Удалить
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-            </div>
+            <DesignDetailHeader
+                design={design}
+                onEdit={() => setIsEditOpen(true)}
+                onDelete={() => setIsDeleteOpen(true)}
+                onDuplicate={handleDuplicateDesign}
+            />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                {/* Main Content */}
                 <div className="lg:col-span-2 space-y-3">
-                    {/* Preview */}
                     <Card>
                         <CardContent className="p-0">
                             <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
@@ -266,7 +199,6 @@ export function DesignDetailPageClient({
                         </CardContent>
                     </Card>
 
-                    {/* Description */}
                     {design.description && (
                         <Card>
                             <CardHeader>
@@ -278,7 +210,6 @@ export function DesignDetailPageClient({
                         </Card>
                     )}
 
-                    {/* Mockups */}
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-base">
@@ -332,147 +263,15 @@ export function DesignDetailPageClient({
                     </Card>
                 </div>
 
-                {/* Sidebar */}
-                <div className="space-y-3">
-                    {/* Info */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">Информация</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            {/* Application Type */}
-                            {applicationType && (
-                                <div className="flex items-center gap-3">
-                                    <Tag className="h-4 w-4 text-muted-foreground" />
-                                    <div>
-                                        <p className="text-sm text-muted-foreground">Тип нанесения</p>
-                                        <div className="flex items-center gap-2">
-                                            {applicationType.color && (
-                                                <div
-                                                    className="w-3 h-3 rounded-full"
-                                                    style={{ backgroundColor: applicationType.color }}
-                                                />
-                                            )}
-                                            <span className="text-sm font-medium">
-                                                {applicationType.name}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Status */}
-                            <div className="flex items-center gap-3">
-                                {design.isActive ? (
-                                    <Eye className="h-4 w-4 text-green-600" />
-                                ) : (
-                                    <EyeOff className="h-4 w-4 text-muted-foreground" />
-                                )}
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Статус</p>
-                                    <p className="text-sm font-medium">
-                                        {design.isActive ? "Активен" : "Неактивен"}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* Prices */}
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-3">
-                                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                    <div>
-                                        <p className="text-sm text-muted-foreground">Себестоимость</p>
-                                        <p className="text-sm font-medium">
-                                            {design.costPrice
-                                                ? `${design.costPrice} ₽`
-                                                : "Не указана"}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <DollarSign className="h-4 w-4 text-muted-foreground" />
-                                    <div>
-                                        <p className="text-sm text-muted-foreground">
-                                            Розничная цена
-                                        </p>
-                                        <p className="text-sm font-medium">
-                                            {design.retailPrice
-                                                ? `${design.retailPrice} ₽`
-                                                : "Не указана"}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Separator />
-
-                            {/* Dates */}
-                            <div className="flex items-center gap-3">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Создан</p>
-                                    <p className="text-sm font-medium">
-                                        {format(new Date(design.createdAt), "dd MMMM yyyy", {
-                                            locale: ru,
-                                        })}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {design.updatedAt && design.updatedAt !== design.createdAt && (
-                                <div className="flex items-center gap-3">
-                                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                                    <div>
-                                        <p className="text-sm text-muted-foreground">Обновлён</p>
-                                        <p className="text-sm font-medium">
-                                            {format(new Date(design.updatedAt), "dd MMMM yyyy", {
-                                                locale: ru,
-                                            })}
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Quick Actions */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">Действия</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                            <Button
-                                variant="outline"
-                                className="w-full justify-start"
-                                onClick={() => setIsEditOpen(true)}
-                            >
-                                <Edit className="h-4 w-4 mr-2" />
-                                Редактировать
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="w-full justify-start"
-                                onClick={() => setIsMockupOpen(true)}
-                            >
-                                <Plus className="h-4 w-4 mr-2" />
-                                Добавить мокап
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="w-full justify-start"
-                                onClick={handleDuplicateDesign}
-                            >
-                                <Copy className="h-4 w-4 mr-2" />
-                                Дублировать
-                            </Button>
-                        </CardContent>
-                    </Card>
-                </div>
+                <DesignInfoSidebar
+                    design={design}
+                    applicationType={applicationType}
+                    onEdit={() => setIsEditOpen(true)}
+                    onAddMockup={() => setIsMockupOpen(true)}
+                    onDuplicate={handleDuplicateDesign}
+                />
             </div>
 
-            {/* Edit Design Dialog */}
             <DesignFormDialog
                 open={isEditOpen}
                 onOpenChange={setIsEditOpen}
@@ -486,7 +285,6 @@ export function DesignDetailPageClient({
                 }}
             />
 
-            {/* Create/Edit Mockup Dialog */}
             <MockupFormDialog
                 open={isMockupOpen || !!editingMockup}
                 onOpenChange={(open) => {
@@ -500,7 +298,6 @@ export function DesignDetailPageClient({
                 onSuccess={editingMockup ? handleMockupUpdated : handleMockupCreated}
             />
 
-            {/* Delete Confirmation */}
             <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

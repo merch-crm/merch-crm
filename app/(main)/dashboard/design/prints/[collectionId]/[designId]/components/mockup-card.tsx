@@ -33,7 +33,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteMockup } from "@/app/(main)/dashboard/design/prints/actions";
+import { deleteMockup } from "@/app/(main)/dashboard/design/prints/actions/mockup-actions";
 import type { PrintDesignMockup } from "@/lib/types";
 
 interface MockupCardProps {

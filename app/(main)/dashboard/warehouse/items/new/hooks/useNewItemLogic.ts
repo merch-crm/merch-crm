@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -426,6 +426,38 @@ export function useNewItemLogic({
         }));
     }, [state.formData.subcategoryId, categories, getLineName]);
 
+    const categoryAttributes = useMemo(() => {
+        return attributeTypes.reduce((acc, t) => {
+            const isCategoryMatched = !t.categoryId || t.categoryId === state.selectedCategory?.id || (state.formData.subcategoryId && t.categoryId === state.formData.subcategoryId);
+            if (!isCategoryMatched) return acc;
+
+            const values = dynamicAttributes.reduce((valAcc, a) => {
+                if (a.type === t.slug) {
+                    valAcc.push({ id: a.id, value: a.value, label: a.name });
+                }
+                return valAcc;
+            }, [] as { id: string; value: string; label: string }[]);
+
+            acc.push({
+                id: t.id,
+                code: t.slug,
+                name: t.name,
+                values,
+                categoryId: t.categoryId
+            });
+            return acc;
+        }, [] as { id: string; code: string; name: string; categoryId?: string | null; values: { id: string; value: string; label: string }[] }[]);
+    }, [attributeTypes, dynamicAttributes, state.selectedCategory?.id, state.formData.subcategoryId]);
+
+    // Типы характеристик, отфильтрованные по текущей категории/подкатегории (для матрицы и CommonAttributes)
+    const filteredAttributeTypes = useMemo(() => {
+        return attributeTypes.filter(t => {
+            return !t.categoryId ||
+                t.categoryId === state.selectedCategory?.id ||
+                (state.formData.subcategoryId && t.categoryId === state.formData.subcategoryId);
+        });
+    }, [attributeTypes, state.selectedCategory?.id, state.formData.subcategoryId]);
+
     return {
         ...state,
         subCategories,
@@ -451,6 +483,8 @@ export function useNewItemLogic({
                 state.setStep(target);
                 state.setValidationError("");
             }
-        }
+        },
+        categoryAttributes,
+        filteredAttributeTypes,
     };
 }

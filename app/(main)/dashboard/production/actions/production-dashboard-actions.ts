@@ -9,22 +9,13 @@ import {
 } from "@/lib/schema";
 import { orderItems, orders } from "@/lib/schema";
 import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
-import { startOfDay, endOfDay, startOfWeek, subDays, format } from "date-fns";
+import { startOfDay, subDays, format } from "date-fns";
 import { z } from "zod";
 
-export interface ProductionStats {
-    inQueue: number;
-    inProgress: number;
-    completedToday: number;
-    completedWeek: number;
-    overdue: number;
-    paused: number;
-    totalQuantityToday: number;
-    activeStaff: number;
-    totalStaff: number;
-    activeLines: number;
-    totalLines: number;
-}
+export { getProductionStats } from "./dashboard-stats-actions";
+export type { ProductionStats } from "./dashboard-stats-actions";
+export { getTasksByLine } from "./dashboard-lines-actions";
+export type { LineLoad } from "./dashboard-lines-actions";
 
 export interface ProductionTaskSummary {
     id: string;
@@ -40,16 +31,6 @@ export interface ProductionTaskSummary {
     assigneeName?: string;
     dueDate: string | null;
     createdAt: string;
-}
-
-export interface LineLoad {
-    id: string;
-    name: string;
-    code: string;
-    color: string | null;
-    tasksCount: number;
-    totalQuantity: number;
-    inProgress: number;
 }
 
 export interface EquipmentStatus {
@@ -68,163 +49,6 @@ export interface StaffOnShift {
     lineId: string | null;
     lineName?: string;
     activeTasks: number;
-}
-
-export async function getProductionStats(): Promise<{
-    success: boolean;
-    data?: ProductionStats;
-    error?: string;
-}> {
-    try {
-        const now = new Date();
-        const todayStart = startOfDay(now);
-        const todayEnd = endOfDay(now);
-        const weekStart = startOfWeek(now, { weekStartsOn: 1 });
-
-        const [inQueueResult] = await db
-            .select({ count: count() })
-            .from(productionTasks)
-            .where(eq(productionTasks.status, "pending"));
-
-        const [inProgressResult] = await db
-            .select({ count: count() })
-            .from(productionTasks)
-            .where(eq(productionTasks.status, "in_progress"));
-
-        const [pausedResult] = await db
-            .select({ count: count() })
-            .from(productionTasks)
-            .where(eq(productionTasks.status, "paused"));
-
-        const [completedTodayResult] = await db
-            .select({ count: count(), quantity: sum(productionTasks.completedQuantity) })
-            .from(productionTasks)
-            .where(
-                and(
-                    eq(productionTasks.status, "completed"),
-                    gte(productionTasks.completedAt, todayStart),
-                    lte(productionTasks.completedAt, todayEnd)
-                )
-            );
-
-        const [completedWeekResult] = await db
-            .select({ count: count() })
-            .from(productionTasks)
-            .where(
-                and(
-                    eq(productionTasks.status, "completed"),
-                    gte(productionTasks.completedAt, weekStart)
-                )
-            );
-
-        const [overdueResult] = await db
-            .select({ count: count() })
-            .from(productionTasks)
-            .where(
-                and(
-                    lte(productionTasks.dueDate, now),
-                    sql`${productionTasks.status} NOT IN ('completed', 'cancelled')`
-                )
-            );
-
-        const [activeStaffResult] = await db
-            .select({ count: count() })
-            .from(productionStaff)
-            .where(eq(productionStaff.isActive, true));
-
-        const [totalStaffResult] = await db
-            .select({ count: count() })
-            .from(productionStaff);
-
-        const [activeLinesResult] = await db
-            .select({ count: count() })
-            .from(productionLines)
-            .where(eq(productionLines.isActive, true));
-
-        const [totalLinesResult] = await db
-            .select({ count: count() })
-            .from(productionLines);
-
-        return {
-            success: true,
-            data: {
-                inQueue: inQueueResult?.count || 0,
-                inProgress: inProgressResult?.count || 0,
-                paused: pausedResult?.count || 0,
-                completedToday: completedTodayResult?.count || 0,
-                completedWeek: completedWeekResult?.count || 0,
-                overdue: overdueResult?.count || 0,
-                totalQuantityToday: Number(completedTodayResult?.quantity || 0),
-                activeStaff: activeStaffResult?.count || 0,
-                totalStaff: totalStaffResult?.count || 0,
-                activeLines: activeLinesResult?.count || 0,
-                totalLines: totalLinesResult?.count || 0,
-            },
-        };
-    } catch (error) {
-        console.error("Error getting production stats:", error);
-        return { success: false, error: "Не удалось получить статистику" };
-    }
-}
-
-export async function getTasksByLine(): Promise<{
-    success: boolean;
-    data?: LineLoad[];
-    error?: string;
-}> {
-    try {
-        const lines = await db
-            .select({
-                id: productionLines.id,
-                name: productionLines.name,
-                code: productionLines.code,
-                color: productionLines.color,
-            })
-            .from(productionLines)
-            .where(eq(productionLines.isActive, true));
-
-        const data = await Promise.all(
-            lines.map(async (line) => {
-                const [tasksResult] = await db
-                    .select({
-                        count: count(),
-                        quantity: sum(productionTasks.quantity),
-                    })
-                    .from(productionTasks)
-                    .where(
-                        and(
-                            eq(productionTasks.lineId, line.id),
-                            sql`${productionTasks.status} NOT IN ('completed', 'cancelled')`
-                        )
-                    );
-
-                const [inProgressResult] = await db
-                    .select({ count: count() })
-                    .from(productionTasks)
-                    .where(
-                        and(
-                            eq(productionTasks.lineId, line.id),
-                            eq(productionTasks.status, "in_progress")
-                        )
-                    );
-
-                return {
-                    id: line.id,
-                    name: line.name,
-                    code: line.code,
-                    color: line.color,
-                    tasksCount: tasksResult?.count || 0,
-                    totalQuantity: Number(tasksResult?.quantity || 0),
-                    inProgress: inProgressResult?.count || 0,
-                };
-            })
-        );
-
-        return { success: true, data };
-    } catch (error) {
-        console.error("Error getting tasks by line:", error);
-        return { success: false, error: "Не удалось получить данные" };
-    }
 }
 
 export async function getUrgentProductionTasks(): Promise<{

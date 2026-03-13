@@ -48,8 +48,8 @@ export function DesignPricingCard({
         setIsLoading(true);
         try {
             const result = await updateDesign(design.id, {
-                costPrice: form.costPrice || null,
-                retailPrice: form.retailPrice || null,
+                costPrice: form.costPrice ? Number(form.costPrice) : null,
+                retailPrice: form.retailPrice ? Number(form.retailPrice) : null,
                 applicationTypeId: form.applicationTypeId === "none" ? null : form.applicationTypeId,
             });
 

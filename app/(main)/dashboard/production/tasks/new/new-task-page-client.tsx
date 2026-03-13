@@ -36,17 +36,17 @@ import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
     title: z.string().min(1, "Введите название"),
-    description: z.string().optional(),
-    orderId: z.string().optional(),
-    orderItemId: z.string().optional(),
-    applicationTypeId: z.string().optional(),
-    lineId: z.string().optional(),
-    assigneeId: z.string().optional(),
+    description: z.string().optional().nullable(),
+    orderId: z.string().optional().nullable(),
+    orderItemId: z.string().optional().nullable(),
+    applicationTypeId: z.string().optional().nullable(),
+    lineId: z.string().optional().nullable(),
+    assigneeId: z.string().optional().nullable(),
     quantity: z.number().min(1, "Минимум 1"),
-    priority: z.enum(["low", "normal", "high", "urgent"]).optional(),
-    dueDate: z.date().optional(),
-    estimatedTime: z.number().optional(),
-    notes: z.string().optional(),
+    priority: z.enum(["low", "normal", "high", "urgent"]),
+    dueDate: z.date().optional().nullable(),
+    estimatedTime: z.number().optional().nullable(),
+    notes: z.string().optional().nullable(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -94,13 +94,16 @@ export function NewTaskPageClient({
 
     const onSubmit = async (values: FormValues) => {
         const result = await createProductionTask({
-            ...values,
-            applicationTypeId: values.applicationTypeId || undefined,
-            lineId: values.lineId || undefined,
-            assigneeId: values.assigneeId || undefined,
             orderId: values.orderId || "",
-            orderItemId: values.orderItemId || undefined,
-            dueDate: values.dueDate || undefined,
+            name: values.title,
+            description: values.description,
+            orderItemId: values.orderItemId,
+            applicationTypeId: values.applicationTypeId || "",
+            lineId: values.lineId,
+            assigneeId: values.assigneeId,
+            quantity: values.quantity,
+            priority: values.priority,
+            dueDate: values.dueDate ? values.dueDate.toISOString() : null,
         });
 
         if (result.success && result.data) {
@@ -139,7 +142,7 @@ export function NewTaskPageClient({
                                     <FormItem>
                                         <FormLabel>Название *</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Печать футболок для заказа #123" {...field} />
+                                            <Input placeholder="Печать футболок для заказа #123" {...field} value={field.value || ""} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -156,6 +159,7 @@ export function NewTaskPageClient({
                                             <Textarea
                                                 placeholder="Детальное описание задачи..."
                                                 {...field}
+                                                value={field.value || ""}
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -171,7 +175,7 @@ export function NewTaskPageClient({
                                         <FormItem>
                                             <FormLabel>ID заказа</FormLabel>
                                             <FormControl>
-                                                <Input placeholder="order-uuid" {...field} />
+                                                <Input placeholder="order-uuid" {...field} value={field.value || ""} />
                                             </FormControl>
                                             <FormDescription>Опционально</FormDescription>
                                             <FormMessage />
@@ -190,6 +194,7 @@ export function NewTaskPageClient({
                                                     type="number"
                                                     min={1}
                                                     {...field}
+                                                    value={field.value || 0}
                                                     onChange={e => field.onChange({ target: { value: Number(e.target.value) } })}
                                                 />
                                             </FormControl>
@@ -207,7 +212,7 @@ export function NewTaskPageClient({
                                         <FormLabel>Приоритет</FormLabel>
                                         <FormControl>
                                             <Select
-                                                value={field.value || ""}
+                                                value={field.value || "normal"}
                                                 onChange={field.onChange}
                                                 options={[
                                                     { id: "low", title: "Низкий" },
@@ -327,7 +332,7 @@ export function NewTaskPageClient({
                                             <PopoverContent className="w-auto p-0" align="start">
                                                 <Calendar
                                                     mode="single"
-                                                    selected={field.value}
+                                                    selected={field.value || undefined}
                                                     onSelect={field.onChange}
                                                     disabled={(date) =>
                                                         date < new Date(new Date().setHours(0, 0, 0, 0))
@@ -353,6 +358,7 @@ export function NewTaskPageClient({
                                                 min={0}
                                                 placeholder="60"
                                                 {...field}
+                                                value={field.value || 0}
                                                 onChange={e => field.onChange({ target: { value: Number(e.target.value) } })}
                                             />
                                         </FormControl>
@@ -371,6 +377,7 @@ export function NewTaskPageClient({
                                             <Textarea
                                                 placeholder="Дополнительные заметки..."
                                                 {...field}
+                                                value={field.value || ""}
                                             />
                                         </FormControl>
                                         <FormMessage />

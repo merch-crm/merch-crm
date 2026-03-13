@@ -8,8 +8,8 @@ import {
     createEditorProject,
     updateEditorProject,
     autoSaveProject,
-    saveEditorExport,
 } from "../actions/project-actions";
+import { saveEditorExport } from "../actions/export-actions";
 
 interface UseProjectOptions {
     projectId?: string;

@@ -106,8 +106,20 @@ export function ProductionTaskPageClient({
         setIsUpdating(true);
         const result = await assignTask(task.id, staffId === "unassigned" ? null : staffId);
         if (result.success) {
-            const newAssignee = staff.find((s) => s.id === staffId);
-            setTask({ ...task, assigneeId: staffId === "unassigned" ? null : staffId, assignee: newAssignee || undefined });
+            const staffMember = staff.find((s) => s.id === staffId);
+            const newAssignee = staffMember ? {
+                ...staffMember,
+                user: staffMember.userId ? {
+                    id: staffMember.userId,
+                    name: staffMember.name,
+                    avatar: staffMember.avatarPath
+                } : null
+            } : null;
+            setTask({ 
+                ...task, 
+                assigneeId: staffId === "unassigned" ? null : staffId, 
+                assignee: newAssignee as ProductionTaskFull["assignee"]
+            });
             toast("Исполнитель назначен", "success");
         } else {
             toast(result.error || "Ошибка", "error");

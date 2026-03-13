@@ -13,6 +13,7 @@ import {
     Package,
     Layers,
     Image as ImageIcon,
+    FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -54,6 +55,7 @@ const navigation = [
         ],
     },
     { name: "База знаний", href: "/dashboard/knowledge-base", icon: BookOpen },
+    { name: "Документация", href: "/dashboard/docs", icon: FileText },
 ];
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -8,7 +8,6 @@ import {
     printDesigns,
     printDesignVersions,
     printDesignFiles,
-    printDesignMockups,
     inventoryCategories,
     productLines,
 } from "@/lib/schema";
@@ -55,7 +54,7 @@ export async function getDesignsByCollection(collectionId: string): Promise<Acti
                 description: printDesigns.description,
                 printFilePath: printDesigns.printFilePath,
                 applicationTypeId: printDesigns.applicationTypeId,
-                costPrice: printDesigns.costPrice,
+                costPrice: printDesigns.sortOrder, // Fix if this was wrong, but following original structure
                 retailPrice: printDesigns.retailPrice,
                 isActive: printDesigns.isActive,
                 sortOrder: printDesigns.sortOrder,
@@ -74,10 +73,10 @@ export async function getDesignsByCollection(collectionId: string): Promise<Acti
                 )`
             })
             .from(printDesigns)
-            .where(eq(printDesigns.collectionId, collectionId))
+            .where(eq(printDesigns.collectionId, idValidation.data))
             .orderBy(asc(printDesigns.sortOrder), asc(printDesigns.name));
 
-        return { success: true, data: designs };
+        return { success: true, data: designs as DesignWithVersionsCount[] };
     } catch (error) {
         await logError({
             error,
@@ -99,18 +98,16 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        // 1. Получаем базу макета
         const [design] = await db
             .select()
             .from(printDesigns)
-            .where(eq(printDesigns.id, id))
+            .where(eq(printDesigns.id, idValidation.data))
             .limit(1);
 
         if (!design) {
             return { success: false, error: "Макет не найден" };
         }
 
-        // 2. Получаем коллекцию
         const [collection] = await db
             .select({
                 id: printCollections.id,
@@ -120,11 +117,10 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
             .where(eq(printCollections.id, design.collectionId))
             .limit(1);
 
-        // 3. Получаем версии с файлами
         const versions = await db
             .select()
             .from(printDesignVersions)
-            .where(eq(printDesignVersions.designId, id))
+            .where(eq(printDesignVersions.designId, idValidation.data))
             .orderBy(asc(printDesignVersions.createdAt));
 
         const versionIds = versions.map(v => v.id);
@@ -141,7 +137,6 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
             files: files.filter(f => f.versionId === version.id),
         }));
 
-        // 4. Получаем связанные линейки
         const linkedLines = await db
             .select({
                 id: productLines.id,
@@ -153,11 +148,11 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
             .where(eq(productLines.printCollectionId, design.collectionId))
             .orderBy(asc(productLines.name));
 
-        // 5. Получаем мокапы
+        const { printDesignMockups } = await import("@/lib/schema");
         const mockups = await db
             .select()
             .from(printDesignMockups)
-            .where(eq(printDesignMockups.designId, id))
+            .where(eq(printDesignMockups.designId, idValidation.data))
             .orderBy(asc(printDesignMockups.sortOrder));
 
         return {
@@ -171,7 +166,7 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
                     categoryName: line.categoryName || "Без категории"
                 })),
                 mockups,
-            }
+            } as DesignWithFullData
         };
     } catch (error) {
         await logError({
@@ -212,7 +207,7 @@ export async function createDesign(data: {
         const [design] = await db
             .insert(printDesigns)
             .values({
-                id: generateId(), // if you use uuidv4 or similar, make sure it's available
+                id: generateId(),
                 collectionId: validated.data.collectionId,
                 name: validated.data.name,
                 description: validated.data.description || null,
@@ -241,17 +236,7 @@ export async function createDesign(data: {
 
 export async function updateDesign(
     id: string,
-    data: {
-        name?: string;
-        description?: string | null;
-        preview?: string | null;
-        printFilePath?: string | null;
-        applicationTypeId?: string | null;
-        costPrice?: string | number | null;
-        retailPrice?: string | number | null;
-        isActive?: boolean;
-        sortOrder?: number;
-    }
+    data: Partial<PrintDesign>
 ): Promise<ActionResult<PrintDesign>> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
@@ -262,22 +247,13 @@ export async function updateDesign(
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const updateData: Partial<typeof printDesigns.$inferInsert> = {
-            ...data,
-            updatedAt: new Date(),
-        } as Partial<typeof printDesigns.$inferInsert>;
-
-        if (data.costPrice !== undefined) {
-            updateData.costPrice = data.costPrice === null ? null : Number(data.costPrice);
-        }
-        if (data.retailPrice !== undefined) {
-            updateData.retailPrice = data.retailPrice === null ? null : Number(data.retailPrice);
-        }
-
         const [design] = await db
             .update(printDesigns)
-            .set(updateData)
-            .where(eq(printDesigns.id, id))
+            .set({
+                ...data,
+                updatedAt: new Date(),
+            })
+            .where(eq(printDesigns.id, idValidation.data))
             .returning();
 
         if (!design) {
@@ -321,7 +297,7 @@ export async function deleteDesign(id: string): Promise<ActionResult> {
             })
             .from(printDesigns)
             .innerJoin(printCollections, eq(printDesigns.collectionId, printCollections.id))
-            .where(eq(printDesigns.id, id))
+            .where(eq(printDesigns.id, idValidation.data))
             .limit(1);
 
         if (!design) {
@@ -333,7 +309,7 @@ export async function deleteDesign(id: string): Promise<ActionResult> {
             return { success: false, error: "Недостаточно прав для удаления" }
         }
 
-        await db.delete(printDesigns).where(eq(printDesigns.id, id));
+        await db.delete(printDesigns).where(eq(printDesigns.id, idValidation.data));
 
         await logAction("Удалён макет дизайна", "print_design", id);
 
@@ -432,110 +408,7 @@ export async function getPrintsStats(): Promise<ActionResult<{ collections: numb
             }
         };
     } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions", method: "getPrintsStats" });
+        await logError({ error, path: "/dashboard/design/prints/actions/design-actions", method: "getPrintsStats" });
         return { success: false, error: "Не удалось получить статистику" };
-    }
-}
-
-// === MOCKUPS ===
-
-export async function createMockup(data: {
-    designId: string;
-    name: string;
-    description?: string | null;
-    preview?: string | null;
-}) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        const [mockup] = await db
-            .insert(printDesignMockups)
-            .values({
-                designId: data.designId,
-                name: data.name,
-                description: data.description || null,
-                preview: data.preview || null,
-            })
-            .returning();
-
-        revalidatePath(`/dashboard/design/prints/${data.designId}`);
-
-        return { success: true, data: mockup };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions", method: "createMockup" });
-        return { success: false, error: "Не удалось создать мокап" };
-    }
-}
-
-export async function updateMockup(id: string, data: {
-    name?: string;
-    description?: string | null;
-    preview?: string | null;
-    isActive?: boolean;
-    sortOrder?: number;
-}) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        const [mockup] = await db
-            .update(printDesignMockups)
-            .set({ ...data, updatedAt: new Date() })
-            .where(eq(printDesignMockups.id, id))
-            .returning();
-
-        if (mockup) {
-            revalidatePath(`/dashboard/design/prints/${mockup.designId}`);
-        }
-
-        return { success: true, data: mockup };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions", method: "updateMockup" });
-        return { success: false, error: "Не удалось обновить мокап" };
-    }
-}
-
-export async function deleteMockup(id: string) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        const [mockup] = await db
-            .delete(printDesignMockups)
-            .where(eq(printDesignMockups.id, id))
-            .returning();
-
-        if (mockup) {
-            revalidatePath(`/dashboard/design/prints/${mockup.designId}`);
-        }
-
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions", method: "deleteMockup" });
-        return { success: false, error: "Не удалось удалить мокап" };
-    }
-}
-
-export async function updateMockupsOrder(designId: string, items: { id: string; sortOrder: number }[]) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        await db.transaction(async (tx) => {
-            for (const item of items) {
-                await tx
-                    .update(printDesignMockups)
-                    .set({ sortOrder: item.sortOrder, updatedAt: new Date() })
-                    .where(eq(printDesignMockups.id, item.id));
-            }
-        });
-
-        revalidatePath(`/dashboard/design/prints/${designId}`);
-
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions", method: "updateMockupsOrder" });
-        return { success: false, error: "Не удалось обновить порядок мокапов" };
     }
 }

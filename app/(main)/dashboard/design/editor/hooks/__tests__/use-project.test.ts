@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { useProject } from "../use-project";
 import * as projectActions from "../../actions/project-actions";
+import * as exportActions from "../../actions/export-actions";
 
 // Mock router
 vi.mock("next/navigation", () => ({
@@ -16,6 +17,9 @@ vi.mock("../../actions/project-actions", () => ({
     createEditorProject: vi.fn(),
     updateEditorProject: vi.fn(),
     autoSaveProject: vi.fn(),
+}));
+
+vi.mock("../../actions/export-actions", () => ({
     saveEditorExport: vi.fn(),
 }));
 

@@ -1,0 +1,18 @@
+CRM SYSTEM DOCUMENTATION (PLAIN TEXT)
+=====================================
+
+To view this content, open the file 'CRM_Documentation.txt' in the root folder of your project.
+
+SUMMARY:
+--------
+1. Auth and Roles: Hierarchy Departments -> Roles -> Users.
+2. Clients: RFM analysis, Sales funnel, Loyalty levels.
+3. Orders: Statuses (New, Design, Production, Done, Shipped).
+4. Warehouse: SKU generation, Transactions tracking.
+5. Finance: P&L reports, Salary calculations.
+6. Design: Fabric.js editor integration.
+7. Audit: Security events and action logging.
+8. Scripts: Maintenance tools in 'scripts/' directory.
+
+FULL DESCRIPTION IS IN 'CRM_Documentation.md' (if it works).
+This .txt file is provided as a fallback.

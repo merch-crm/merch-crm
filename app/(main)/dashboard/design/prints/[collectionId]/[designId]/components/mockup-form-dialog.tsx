@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { createMockup, updateMockup } from "@/app/(main)/dashboard/design/prints/actions";
+import { createMockup, updateMockup } from "@/app/(main)/dashboard/design/prints/actions/mockup-actions";
 import type { PrintDesignMockup } from "@/lib/schema/designs";
 
 const formSchema = z.object({

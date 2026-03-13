@@ -23,7 +23,7 @@ import {
 } from "../../types";
 import { useNewItemLogic } from "./hooks/useNewItemLogic";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface NewItemPageClientProps {
@@ -110,42 +110,12 @@ export function NewItemPageClient({
         availableBaseLines,
         availablePrints,
         isLoadingData,
+        categoryAttributes,
+        filteredAttributeTypes,
     } = logic;
 
     const steps = getSteps();
     const isLineCreation = creationType !== "single";
-
-    const categoryAttributes = useMemo(() => {
-        return attributeTypes.reduce((acc, t) => {
-            const isCategoryMatched = !t.categoryId || t.categoryId === selectedCategory?.id || (formData.subcategoryId && t.categoryId === formData.subcategoryId);
-            if (!isCategoryMatched) return acc;
-
-            const values = dynamicAttributes.reduce((valAcc, a) => {
-                if (a.type === t.slug) {
-                    valAcc.push({ id: a.id, value: a.value, label: a.name });
-                }
-                return valAcc;
-            }, [] as { id: string; value: string; label: string }[]);
-
-            acc.push({
-                id: t.id,
-                code: t.slug,
-                name: t.name,
-                values,
-                categoryId: t.categoryId
-            });
-            return acc;
-        }, [] as { id: string; code: string; name: string; categoryId?: string | null; values: { id: string; value: string; label: string }[] }[]);
-    }, [attributeTypes, dynamicAttributes, selectedCategory?.id, formData.subcategoryId]);
-
-    // Типы характеристик, отфильтрованные по текущей категории/подкатегории (для матрицы и CommonAttributes)
-    const filteredAttributeTypes = useMemo(() => {
-        return attributeTypes.filter(t => {
-            return !t.categoryId ||
-                t.categoryId === selectedCategory?.id ||
-                (formData.subcategoryId && t.categoryId === formData.subcategoryId);
-        });
-    }, [attributeTypes, selectedCategory?.id, formData.subcategoryId]);
 
     return (
         <div className="flex flex-col w-full max-w-[1440px] mx-auto xl:px-0">

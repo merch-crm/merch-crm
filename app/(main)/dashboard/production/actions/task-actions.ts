@@ -1,567 +1,318 @@
 "use server";
 
-import { db } from "@/lib/db";
-import { productionTasks, productionLogs, productionStaff } from "@/lib/schema/production";
-import { orders, orderItems } from "@/lib/schema/orders";
-import { eq, and, desc, asc, gte, lte, inArray, sql, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { eq, and, desc, inArray, type InferSelectModel } from "drizzle-orm";
+import { db } from "@/lib/db";
+import {
+    productionTasks,
+    productionLogs,
+    type ApplicationType,
+    type ProductionLine,
+    type ProductionStaff,
+} from "@/lib/schema/production";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { logAction } from "@/lib/audit";
+import { logError } from "@/lib/error-logger";
 import { getSession } from "@/lib/auth";
 import { z } from "zod";
+import { generateId } from "@/lib/utils";
 
-type ActionResult<T = void> = {
-    success: boolean;
-    data?: T;
-    error?: string;
+export type ProductionTask = InferSelectModel<typeof productionTasks>;
+export type InventoryItem = InferSelectModel<typeof inventoryItems>;
+
+/**
+ * Расширенный тип производственной задачи со всеми связанными данными.
+ * Используется для типизации результатов findMany/findFirst в Drizzle.
+ */
+export type ProductionTaskFull = ProductionTask & {
+    applicationType: ApplicationType | null;
+    line: ProductionLine | null;
+    assignee: (ProductionStaff & {
+        user: { id: string; name: string; avatar: string | null } | null;
+    }) | null;
+    orderItem: {
+        order: { id: string; orderNumber: string | null } | null;
+        inventory: InventoryItem | null;
+    } | null;
+    logs: (InferSelectModel<typeof productionLogs> & {
+        performedByUser: { id: string; name: string; avatar: string | null } | null;
+    })[];
 };
 
-export interface ProductionTaskStats {
-    total: number;
-    byStatus: Record<string, number>;
-    byPriority: Record<string, number>;
-    byLine: Record<string, number>;
-    totalQuantity: number;
-    completedQuantity: number;
-    overdueCount: number;
-    averageCompletionTime: number;
-}
-
-// Генерация номера задачи
-async function generateTaskNumber(): Promise<string> {
-    const year = new Date().getFullYear();
-    const prefix = `TASK-${year}-`;
-
-    const lastTask = await db.query.productionTasks.findFirst({
-        where: sql`number LIKE ${prefix + '%'}`,
-        orderBy: [desc(productionTasks.createdAt)],
-    });
-
-    let nextNum = 1;
-    if (lastTask) {
-        const lastNum = parseInt(lastTask.number.replace(prefix, ""));
-        if (!isNaN(lastNum)) {
-            nextNum = lastNum + 1;
-        }
-    }
-
-    return `${prefix}${String(nextNum).padStart(5, "0")}`;
-}
-
-const CreateTaskSchema = z.object({
-    orderId: z.string().uuid(),
+// Схемы валидации
+const TaskSchema = z.object({
+    orderId: z.string().uuid("ID заказа обязателен"),
     orderItemId: z.string().uuid().optional().nullable(),
-    applicationTypeId: z.string().uuid().optional().nullable(),
+    applicationTypeId: z.string().uuid("Тип нанесения обязателен"),
+    name: z.string().min(1, "Название обязательно").max(200),
+    description: z.string().max(2000).optional().nullable(),
+    quantity: z.number().int().positive("Количество должно быть положительным"),
+    priority: z.enum(["low", "normal", "high", "urgent"]),
+    dueDate: z.string().optional().nullable(),
     lineId: z.string().uuid().optional().nullable(),
     assigneeId: z.string().uuid().optional().nullable(),
-    title: z.string().min(1).max(255),
-    description: z.string().optional().nullable(),
-    quantity: z.number().int().min(1),
-    priority: z.enum(["low", "normal", "high", "urgent"]).optional(),
-    dueDate: z.date().optional().nullable(),
-    estimatedTime: z.number().int().min(0).optional().nullable(),
-    designFiles: z.array(z.object({
-        path: z.string(),
-        name: z.string(),
-        type: z.string(),
-    })).optional(),
-    notes: z.string().optional().nullable(),
 });
 
-// Получить задачи
+// === ЗАДАЧИ ===
+
 export async function getProductionTasks(options?: {
-    status?: string | string[];
+    status?: ProductionTask["status"][];
+    priority?: ProductionTask["priority"][];
     lineId?: string;
     assigneeId?: string;
-    priority?: string;
-    dateFrom?: Date;
-    dateTo?: Date;
     limit?: number;
-}): Promise<ActionResult<ProductionTaskFull[]>> {
+    offset?: number;
+}) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
         const conditions = [];
 
-        if (options?.status) {
-            if (Array.isArray(options.status)) {
-                conditions.push(inArray(productionTasks.status, options.status as NonNullable<typeof productionTasks.$inferInsert["status"]>[]));
-            } else {
-                conditions.push(eq(productionTasks.status, options.status as NonNullable<typeof productionTasks.$inferInsert["status"]>));
-            }
+        if (options?.status && options.status.length > 0) {
+            conditions.push(inArray(productionTasks.status, options.status));
         }
-
+        if (options?.priority && options.priority.length > 0) {
+            conditions.push(inArray(productionTasks.priority, options.priority));
+        }
         if (options?.lineId) {
             conditions.push(eq(productionTasks.lineId, options.lineId));
         }
-
         if (options?.assigneeId) {
             conditions.push(eq(productionTasks.assigneeId, options.assigneeId));
         }
 
-        if (options?.priority) {
-            conditions.push(eq(productionTasks.priority, options.priority as NonNullable<typeof productionTasks.$inferInsert["priority"]>));
-        }
-
-        if (options?.dateFrom) {
-            conditions.push(gte(productionTasks.dueDate, options.dateFrom));
-        }
-
-        if (options?.dateTo) {
-            conditions.push(lte(productionTasks.dueDate, options.dateTo));
-        }
-
-        const result = await db.query.productionTasks.findMany({
+        const tasks = await db.query.productionTasks.findMany({
             where: conditions.length > 0 ? and(...conditions) : undefined,
-            orderBy: [
-                asc(productionTasks.sortOrder),
-                desc(productionTasks.priority),
-                asc(productionTasks.dueDate),
-            ],
-            limit: options?.limit || 100,
             with: {
-                order: {
-                    columns: { id: true, status: true },
-                    extras: {
-                        number: sql<string>`${orders.orderNumber}`.as("number"),
-                    },
-                },
-                applicationType: {
-                    columns: { id: true, name: true, color: true },
-                },
-                line: {
-                    columns: { id: true, name: true, color: true },
-                },
+                applicationType: true,
+                line: true,
                 assignee: {
-                    columns: { id: true, name: true, avatarPath: true },
+                    with: {
+                        user: {
+                            columns: { id: true, name: true, avatar: true }
+                        }
+                    }
                 },
+                orderItem: {
+                    with: {
+                        order: {
+                            columns: { id: true, orderNumber: true }
+                        },
+                        inventory: true
+                    }
+                }
             },
+            orderBy: [desc(productionTasks.createdAt)],
+            limit: options?.limit || 50,
+            offset: options?.offset || 0,
         });
 
-        return { success: true, data: result as ProductionTaskFull[] };
+        return { success: true, data: tasks as ProductionTaskFull[] };
     } catch (error) {
-        console.error("Error fetching tasks:", error);
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "getProductionTasks" });
         return { success: false, error: "Не удалось загрузить задачи" };
     }
 }
 
-// Получить задачу по ID
-export async function getProductionTask(id: string): Promise<ActionResult<ProductionTaskFull>> {
+export async function getProductionTaskById(id: string) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
-        const result = await db.query.productionTasks.findFirst({
+        const task = await db.query.productionTasks.findFirst({
             where: eq(productionTasks.id, id),
             with: {
-                order: true,
-                orderItem: true,
                 applicationType: true,
                 line: true,
-                assignee: true,
-                createdByUser: {
-                    columns: { id: true, name: true },
+                assignee: {
+                    with: {
+                        user: { columns: { id: true, name: true, avatar: true } }
+                    }
+                },
+                orderItem: {
+                    with: {
+                        order: true,
+                        inventory: true,
+                    }
                 },
                 logs: {
-                    orderBy: [desc(productionLogs.createdAt)],
-                    limit: 50,
                     with: {
-                        performedByUser: {
-                            columns: { id: true, name: true },
-                        },
+                        performedByUser: { columns: { id: true, name: true, avatar: true } }
                     },
-                },
-            },
+                    orderBy: [desc(productionLogs.createdAt)]
+                }
+            }
         });
 
-        if (!result) {
-            return { success: false, error: "Задача не найдена" };
-        }
+        if (!task) return { success: false, error: "Задача не найдена" };
 
-        return { success: true, data: result as unknown as ProductionTaskFull };
+        return { success: true, data: task as ProductionTaskFull };
     } catch (error) {
-        console.error("Error fetching task:", error);
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "getProductionTaskById", details: { id } });
         return { success: false, error: "Не удалось загрузить задачу" };
     }
 }
 
-// Создать задачу
-export async function createProductionTask(
-    data: z.infer<typeof CreateTaskSchema>
-): Promise<ActionResult<ProductionTask>> {
+// Aliases for compatibility
+export const getProductionTask = getProductionTaskById;
+
+export async function createProductionTask(data: z.infer<typeof TaskSchema>) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
+    const validated = TaskSchema.safeParse(data);
+    if (!validated.success) return { success: false, error: validated.error.issues[0].message };
+
     try {
-        const session = await getSession();
-        if (!session?.id) {
-            return { success: false, error: "Необходима авторизация" };
-        }
+        const taskId = generateId();
+        const taskNumber = `PROD-${Date.now().toString().slice(-6)}`;
+        
+        const [task] = await db.insert(productionTasks).values({
+            id: taskId,
+            number: taskNumber,
+            title: validated.data.name,
+            orderId: validated.data.orderId, 
+            orderItemId: validated.data.orderItemId,
+            applicationTypeId: validated.data.applicationTypeId,
+            lineId: validated.data.lineId,
+            assigneeId: validated.data.assigneeId,
+            description: validated.data.description,
+            quantity: validated.data.quantity,
+            priority: validated.data.priority,
+            dueDate: validated.data.dueDate ? new Date(validated.data.dueDate) : null,
+            createdBy: session.id,
+        }).returning();
 
-        const validated = CreateTaskSchema.parse(data);
-        const number = await generateTaskNumber();
-
-        const [result] = await db
-            .insert(productionTasks)
-            .values({
-                ...validated,
-                number,
-                createdBy: session.id,
-            })
-            .returning();
-
-        // Логируем создание
         await db.insert(productionLogs).values({
-            taskId: result.id,
+            taskId: task.id,
             event: "created",
-            details: { title: result.title },
             performedBy: session.id,
+            details: { message: "Задача создана" },
         });
 
-        revalidatePath("/dashboard/production");
+        await logAction("Создана производственная задача", "production_task", task.id, { title: task.title });
         revalidatePath("/dashboard/production/tasks");
 
-        return { success: true, data: result };
+        return { success: true, data: task as ProductionTask };
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            return { success: false, error: error.issues[0].message };
-        }
-        console.error("Error creating task:", error);
-        if (error instanceof Error) {
-            console.error("Error stack:", error.stack);
-        }
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "createProductionTask" });
         return { success: false, error: "Не удалось создать задачу" };
     }
 }
 
-// Обновить статус задачи
-export async function updateTaskStatus(
-    id: string,
-    status: "pending" | "in_progress" | "paused" | "completed" | "cancelled"
-): Promise<ActionResult<ProductionTask>> {
+export async function updateProductionTaskStatus(taskId: string, status: ProductionTask["status"], comment?: string) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
-        const session = await getSession();
-        if (!session?.id) {
-            return { success: false, error: "Необходима авторизация" };
-        }
+        const [task] = await db.select().from(productionTasks).where(eq(productionTasks.id, taskId)).limit(1);
+        if (!task) return { success: false, error: "Задача не найдена" };
 
-        const task = await db.query.productionTasks.findFirst({
-            where: eq(productionTasks.id, id),
-        });
+        if (task.status === status) return { success: true, data: task as ProductionTask };
 
-        if (!task) {
-            return { success: false, error: "Задача не найдена" };
-        }
-
-        const updateData: Partial<typeof productionTasks.$inferInsert> = {
-            status,
-            updatedAt: new Date(),
-        };
-
-        // Дополнительная логика по статусам
-        if (status === "in_progress" && !task.startDate) {
-            updateData.startDate = new Date();
-        }
-
+        const updateData: Partial<ProductionTask> = { status, updatedAt: new Date() };
         if (status === "completed") {
             updateData.completedAt = new Date();
             updateData.completedQuantity = task.quantity;
-
-            // Рассчитываем фактическое время
-            if (task.startDate) {
-                const diff = new Date().getTime() - new Date(task.startDate).getTime();
-                updateData.actualTime = Math.round(diff / 60000); // минуты
-            }
         }
 
-        const [result] = await db
-            .update(productionTasks)
-            .set(updateData)
-            .where(eq(productionTasks.id, id))
-            .returning();
-
-        // Логируем изменение статуса
-        const eventMap: Record<string, string> = {
-            pending: "reset",
-            in_progress: "started",
-            paused: "paused",
-            completed: "completed",
-            cancelled: "cancelled",
-        };
+        const [updatedTask] = await db.update(productionTasks).set(updateData).where(eq(productionTasks.id, taskId)).returning();
 
         await db.insert(productionLogs).values({
-            taskId: id,
-            event: eventMap[status] || "status_changed",
-            details: { oldStatus: task.status, newStatus: status },
+            taskId,
+            event: "status_updated",
             performedBy: session.id,
+            details: { status, comment: comment || null },
         });
 
-        revalidatePath("/dashboard/production");
+        await logAction("Обновлён статус задачи", "production_task", taskId, { status, comment });
         revalidatePath("/dashboard/production/tasks");
-        revalidatePath(`/dashboard/production/tasks/${id}`);
+        revalidatePath(`/dashboard/production/tasks/${taskId}`);
 
-        return { success: true, data: result };
+        return { success: true, data: updatedTask as ProductionTask };
     } catch (error) {
-        console.error("Error updating status:", error);
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "updateProductionTaskStatus", details: { taskId, status } });
         return { success: false, error: "Не удалось обновить статус" };
     }
 }
 
-// Назначить исполнителя
-export async function assignTask(
-    id: string,
-    assigneeId: string | null
-): Promise<ActionResult<ProductionTask>> {
-    try {
-        const session = await getSession();
-        if (!session?.id) {
-            return { success: false, error: "Необходима авторизация" };
-        }
+export const updateTaskStatus = updateProductionTaskStatus;
 
-        const [result] = await db
-            .update(productionTasks)
-            .set({
-                assigneeId,
+export async function updateProductionTaskProgress(taskId: string, completedQuantity: number) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
+    try {
+        const [task] = await db.select().from(productionTasks).where(eq(productionTasks.id, taskId)).limit(1);
+        if (!task) return { success: false, error: "Задача не найдена" };
+
+        const newStatus: ProductionTask["status"] = completedQuantity >= task.quantity ? 'completed' : task.status;
+
+        const [updatedTask] = await db.update(productionTasks)
+            .set({ 
+                completedQuantity, 
                 updatedAt: new Date(),
+                status: newStatus
             })
-            .where(eq(productionTasks.id, id))
-            .returning();
-
-        // Получаем имя исполнителя для лога
-        let assigneeName = "Не назначен";
-        if (assigneeId) {
-            const assignee = await db.query.productionStaff.findFirst({
-                where: eq(productionStaff.id, assigneeId),
-            });
-            if (assignee) {
-                assigneeName = assignee.name;
-            }
-        }
-
-        await db.insert(productionLogs).values({
-            taskId: id,
-            event: "assigned",
-            details: { assigneeId, assigneeName },
-            performedBy: session.id,
-        });
-
-        revalidatePath("/dashboard/production");
-        revalidatePath(`/dashboard/production/tasks/${id}`);
-
-        return { success: true, data: result };
-    } catch (error) {
-        console.error("Error assigning task:", error);
-        return { success: false, error: "Не удалось назначить исполнителя" };
-    }
-}
-
-// Обновить выполненное количество
-export async function updateTaskProgress(
-    id: string,
-    completedQuantity: number
-): Promise<ActionResult<ProductionTask>> {
-    try {
-        const session = await getSession();
-        if (!session?.id) {
-            return { success: false, error: "Необходима авторизация" };
-        }
-
-        const task = await db.query.productionTasks.findFirst({
-            where: eq(productionTasks.id, id),
-        });
-
-        if (!task) {
-            return { success: false, error: "Задача не найдена" };
-        }
-
-        if (completedQuantity > task.quantity) {
-            return { success: false, error: "Выполненное количество не может превышать общее" };
-        }
-
-        const updateData: Partial<typeof productionTasks.$inferInsert> = {
-            completedQuantity,
-            updatedAt: new Date(),
-        };
-
-        // Автоматически завершаем если всё выполнено
-        if (completedQuantity === task.quantity) {
-            updateData.status = "completed";
-            updateData.completedAt = new Date();
-        }
-
-        const [result] = await db
-            .update(productionTasks)
-            .set(updateData)
-            .where(eq(productionTasks.id, id))
+            .where(eq(productionTasks.id, taskId))
             .returning();
 
         await db.insert(productionLogs).values({
-            taskId: id,
-            event: "quantity_updated",
-            details: {
-                oldQuantity: task.completedQuantity,
-                newQuantity: completedQuantity,
-                total: task.quantity,
-            },
+            taskId,
+            event: "progress_updated",
             performedBy: session.id,
+            details: { completedQuantity },
         });
 
-        revalidatePath("/dashboard/production");
-        revalidatePath(`/dashboard/production/tasks/${id}`);
-
-        return { success: true, data: result };
+        revalidatePath(`/dashboard/production/tasks/${taskId}`);
+        return { success: true, data: updatedTask as ProductionTask };
     } catch (error) {
-        console.error("Error updating progress:", error);
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "updateProductionTaskProgress", details: { taskId, completedQuantity } });
         return { success: false, error: "Не удалось обновить прогресс" };
     }
 }
 
-// Обновить порядок задач (drag-and-drop)
-export async function updateTasksOrder(
-    items: { id: string; sortOrder: number }[]
-): Promise<ActionResult> {
-    try {
-        const session = await getSession();
-        if (!session?.id) {
-            return { success: false, error: "Необходима авторизация" };
-        }
+export const updateTaskProgress = updateProductionTaskProgress;
 
-        await db.transaction(async (tx) => {
-            for (const item of items) {
-                await tx
-                    .update(productionTasks)
-                    .set({ sortOrder: item.sortOrder, updatedAt: new Date() })
-                    .where(eq(productionTasks.id, item.id));
-            }
+export async function updateProductionTaskAssignee(taskId: string, assigneeId: string | null) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
+    try {
+        await db.update(productionTasks)
+            .set({ assigneeId, updatedAt: new Date() })
+            .where(eq(productionTasks.id, taskId));
+
+        await db.insert(productionLogs).values({
+            taskId,
+            event: "assignee_updated",
+            performedBy: session.id,
+            details: { assigneeId },
         });
 
-        revalidatePath("/dashboard/production");
-
+        revalidatePath(`/dashboard/production/tasks/${taskId}`);
         return { success: true };
     } catch (error) {
-        console.error("Error updating order:", error);
-        return { success: false, error: "Не удалось обновить порядок" };
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "updateProductionTaskAssignee", details: { taskId } });
+        return { success: false, error: "Не удалось обновить исполнителя" };
     }
 }
 
-// Удалить задачу
-export async function deleteProductionTask(id: string): Promise<ActionResult> {
+export const assignTask = updateProductionTaskAssignee;
+export const updateTaskAssignee = updateProductionTaskAssignee;
+
+export async function deleteProductionTask(id: string) {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Не авторизован" };
+
     try {
-        const session = await getSession();
-        if (!session?.id) {
-            return { success: false, error: "Необходима авторизация" };
-        }
-
-        await db.transaction(async (tx) => {
-            await tx.delete(productionLogs).where(eq(productionLogs.taskId, id));
-            await tx.delete(productionTasks).where(eq(productionTasks.id, id));
-        });
-
-        revalidatePath("/dashboard/production");
+        await db.delete(productionTasks).where(eq(productionTasks.id, id));
+        await logAction("Удалена производственная задача", "production_task", id);
         revalidatePath("/dashboard/production/tasks");
-
         return { success: true };
     } catch (error) {
-        console.error("Error deleting task:", error);
+        await logError({ error, path: "/dashboard/production/actions/task-actions", method: "deleteProductionTask", details: { id } });
         return { success: false, error: "Не удалось удалить задачу" };
     }
 }
-
-// Статистика производства задач
-export async function getTaskProductionStats(options?: {
-    dateFrom?: Date;
-    dateTo?: Date;
-}): Promise<ActionResult<ProductionTaskStats>> {
-    try {
-        const conditions = [];
-
-        if (options?.dateFrom) {
-            conditions.push(gte(productionTasks.createdAt, options.dateFrom));
-        }
-        if (options?.dateTo) {
-            conditions.push(lte(productionTasks.createdAt, options.dateTo));
-        }
-
-        const tasks = await db
-            .select()
-            .from(productionTasks)
-            .where(conditions.length > 0 ? and(...conditions) : undefined);
-
-        const stats: ProductionTaskStats = {
-            total: tasks.length,
-            byStatus: {},
-            byPriority: {},
-            byLine: {},
-            totalQuantity: 0,
-            completedQuantity: 0,
-            overdueCount: 0,
-            averageCompletionTime: 0,
-        };
-
-        let totalCompletionTime = 0;
-        let completedWithTime = 0;
-        const now = new Date();
-
-        for (const task of tasks) {
-            stats.byStatus[task.status] = (stats.byStatus[task.status] || 0) + 1;
-            stats.byPriority[task.priority] = (stats.byPriority[task.priority] || 0) + 1;
-
-            if (task.lineId) {
-                stats.byLine[task.lineId] = (stats.byLine[task.lineId] || 0) + 1;
-            }
-
-            stats.totalQuantity += task.quantity;
-            stats.completedQuantity += task.completedQuantity || 0;
-
-            if (task.dueDate && new Date(task.dueDate) < now && task.status !== "completed") {
-                stats.overdueCount++;
-            }
-
-            if (task.actualTime) {
-                totalCompletionTime += task.actualTime;
-                completedWithTime++;
-            }
-        }
-
-        if (completedWithTime > 0) {
-            stats.averageCompletionTime = Math.round(totalCompletionTime / completedWithTime);
-        }
-
-        return { success: true, data: stats };
-    } catch (error) {
-        console.error("Error fetching stats:", error);
-        return { success: false, error: "Не удалось загрузить статистику" };
-    }
-}
-
-// Получить количество заказов по типам нанесения
-export async function getProductionOrdersCounts(): Promise<ActionResult<Record<string, number>>> {
-    try {
-        const result = await db
-            .select({
-                applicationTypeId: productionTasks.applicationTypeId,
-                count: count(),
-            })
-            .from(productionTasks)
-            .where(sql`${productionTasks.status} != 'completed'`)
-            .groupBy(productionTasks.applicationTypeId);
-
-        const counts: Record<string, number> = {};
-        result.forEach((row) => {
-            if (row.applicationTypeId) {
-                counts[row.applicationTypeId] = Number(row.count);
-            }
-        });
-
-        return { success: true, data: counts };
-    } catch (error) {
-        console.error("Error fetching order counts:", error);
-        return { success: false, error: "Не удалось загрузить счётчики" };
-    }
-}
-
-// Типы
-export type ProductionTask = typeof productionTasks.$inferSelect;
-export type ProductionTaskFull = ProductionTask & {
-    order?: { id: string; number: string; status: string } | null;
-    applicationType?: { id: string; name: string; color: string | null } | null;
-    line?: { id: string; name: string; code: string; color: string | null } | null;
-    assignee?: { id: string; name: string; avatarPath: string | null } | null;
-    logs?: (typeof productionLogs.$inferSelect & {
-        performedByUser?: { id: string; name: string } | null;
-    })[];
-    orderItem?: typeof orderItems.$inferSelect | null;
-    createdByUser?: { id: string; name: string } | null;
-};
-
-// ProductionStats is imported from production-dashboard-actions

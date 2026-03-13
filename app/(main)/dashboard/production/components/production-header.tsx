@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { TypeTabs } from "./type-tabs";
 import { getApplicationTypes, type ApplicationType } from "../actions/application-type-actions";
-import { getProductionOrdersCounts } from "../actions/task-actions";
+import { getProductionOrdersCounts } from "../actions/task-stats-actions";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProductionHeaderProps {

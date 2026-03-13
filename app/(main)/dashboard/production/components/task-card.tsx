@@ -120,14 +120,14 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
                             {task.title}
                         </Link>
 
-                        {task.order && (
+                        {task.orderItem?.order && (
                             <p className="text-sm text-muted-foreground">
                                 Заказ{" "}
                                 <Link
-                                    href={`/dashboard/orders/${task.order.id}`}
+                                    href={`/dashboard/orders/${task.orderItem.order.id}`}
                                     className="text-primary hover:underline"
                                 >
-                                    #{task.order.number}
+                                    #{task.orderItem.order.orderNumber}
                                 </Link>
                             </p>
                         )}

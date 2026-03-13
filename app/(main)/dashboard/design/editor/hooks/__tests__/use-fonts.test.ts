@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useFonts } from "../use-fonts";
-import * as projectActions from "../../actions/project-actions";
+import * as fontActions from "../../actions/font-actions";
 
 // Mock the action
-vi.mock("../../actions/project-actions", () => ({
+vi.mock("../../actions/font-actions", () => ({
     getSystemFonts: vi.fn(),
 }));
 
@@ -39,7 +39,7 @@ describe("useFonts", () => {
         const mockFonts = [
             { id: "1", name: "Inter", family: "Inter", category: "sans-serif", regularPath: "/fonts/inter.woff2" },
         ];
-        (projectActions.getSystemFonts as unknown as { mockResolvedValue: (...args: unknown[]) => unknown }).mockResolvedValue({
+        (fontActions.getSystemFonts as unknown as { mockResolvedValue: (...args: unknown[]) => unknown }).mockResolvedValue({
             success: true,
             data: mockFonts,
         });
@@ -58,7 +58,7 @@ describe("useFonts", () => {
     });
 
     it("should handle error when loading fonts fails", async () => {
-        (projectActions.getSystemFonts as unknown as { mockResolvedValue: (...args: unknown[]) => unknown }).mockResolvedValue({
+        (fontActions.getSystemFonts as unknown as { mockResolvedValue: (...args: unknown[]) => unknown }).mockResolvedValue({
             success: false,
             error: "Failed to fetch",
         });

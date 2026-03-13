@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSystemFonts } from "../actions/project-actions";
+import { getSystemFonts } from "../actions/font-actions";
 
 interface FontInfo {
     id: string;

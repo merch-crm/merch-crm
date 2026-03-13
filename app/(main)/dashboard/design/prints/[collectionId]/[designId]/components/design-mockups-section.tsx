@@ -26,7 +26,7 @@ import {
     Loader2
 } from "lucide-react";
 import { PrintDesignMockup } from "@/lib/types";
-import { updateMockupsOrder } from "@/app/(main)/dashboard/design/prints/actions";
+import { updateMockupsOrder } from "@/app/(main)/dashboard/design/prints/actions/mockup-actions";
 import { MockupCard } from "./mockup-card";
 import { MockupFormDialog } from "./mockup-form-dialog";
 import { toast } from "sonner";

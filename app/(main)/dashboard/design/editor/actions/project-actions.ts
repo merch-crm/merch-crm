@@ -1,13 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { editorProjects, editorExports, systemFonts } from "@/lib/schema";
-import { eq, desc, and, asc } from "drizzle-orm";
+import { editorProjects, editorExports } from "@/lib/schema";
+import { eq, desc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { z } from "zod";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 
 // Типы
 type ActionResult<T = void> = {
@@ -81,7 +79,7 @@ export async function getEditorProjects(options?: {
             },
         });
 
-        return { success: true, data: result };
+        return { success: true, data: result as EditorProject[] };
     } catch (error) {
         console.error("Error fetching projects:", error);
         return { success: false, error: "Не удалось загрузить проекты" };
@@ -218,7 +216,7 @@ export async function deleteEditorProject(id: string): Promise<ActionResult> {
     }
 }
 
-// Автосохранение (без создания новой записи — только обновление canvasData)
+// Автосохранение
 export async function autoSaveProject(
     id: string,
     canvasData: unknown
@@ -339,165 +337,6 @@ export async function createProjectFromTemplate(
     }
 }
 
-// === ЭКСПОРТ ===
-
-// Сохранить экспорт
-export async function saveEditorExport(data: {
-    projectId: string;
-    filename: string;
-    format: string;
-    width: number;
-    height: number;
-    blob: Blob;
-    hasWatermark?: boolean;
-    quality?: number;
-}): Promise<ActionResult<EditorExport>> {
-    try {
-        const session = await getSession();
-        if (!session) {
-            return { success: false, error: "Необходима авторизация" };
-        }
-
-        // Создаём директорию
-        const year = new Date().getFullYear();
-        const month = String(new Date().getMonth() + 1).padStart(2, "0");
-        const dir = join(process.cwd(), "public", "uploads", "exports", String(year), month);
-        await mkdir(dir, { recursive: true });
-
-        // Сохраняем файл
-        const buffer = Buffer.from(await data.blob.arrayBuffer());
-        const uniqueFilename = `${Date.now()}_${data.filename}`;
-        const filePath = join(dir, uniqueFilename);
-        await writeFile(filePath, buffer);
-
-        const publicPath = `/uploads/exports/${year}/${month}/${uniqueFilename}`;
-
-        // Сохраняем в БД
-        const results = await db
-            .insert(editorExports)
-            .values({
-                projectId: data.projectId,
-                filename: data.filename,
-                format: data.format,
-                width: data.width,
-                height: data.height,
-                size: buffer.length,
-                path: publicPath,
-                hasWatermark: data.hasWatermark || false,
-                quality: data.quality,
-                createdBy: session.id,
-            })
-            .returning();
-
-        const result = results[0] as EditorExport;
-
-        return { success: true, data: result };
-    } catch (error) {
-        console.error("Error saving export:", error);
-        return { success: false, error: "Не удалось сохранить экспорт" };
-    }
-}
-
-// Получить экспорты проекта
-export async function getProjectExports(projectId: string): Promise<ActionResult<EditorExport[]>> {
-    try {
-        const result = await db.query.editorExports.findMany({
-            where: eq(editorExports.projectId, projectId),
-            orderBy: [desc(editorExports.createdAt)],
-            limit: 100,
-        });
-
-        return { success: true, data: result };
-    } catch (error) {
-        console.error("Error fetching exports:", error);
-        return { success: false, error: "Не удалось загрузить экспорты" };
-    }
-}
-
-// === ШРИФТЫ ===
-
-// Получить системные шрифты
-export async function getSystemFonts(): Promise<ActionResult<SystemFont[]>> {
-    try {
-        const result = await db.query.systemFonts.findMany({
-            where: eq(systemFonts.isActive, true),
-            orderBy: [asc(systemFonts.sortOrder), asc(systemFonts.name)],
-            limit: 500,
-        });
-
-        return { success: true, data: result };
-    } catch (error) {
-        console.error("Error fetching fonts:", error);
-        return { success: false, error: "Не удалось загрузить шрифты" };
-    }
-}
-
-// Добавить кастомный шрифт
-export async function addCustomFont(data: {
-    name: string;
-    family: string;
-    category?: string;
-    files: {
-        regular?: File;
-        bold?: File;
-        italic?: File;
-        boldItalic?: File;
-    };
-}): Promise<ActionResult<SystemFont>> {
-    try {
-        const session = await getSession();
-        if (!session) {
-            return { success: false, error: "Необходима авторизация" };
-        }
-
-        // Проверяем уникальность family
-        const existing = await db.query.systemFonts.findFirst({
-            where: eq(systemFonts.family, data.family),
-        });
-
-        if (existing) {
-            return { success: false, error: "Шрифт с таким названием уже существует" };
-        }
-
-        // Сохраняем файлы шрифтов
-        const fontDir = join(process.cwd(), "public", "fonts", data.family.toLowerCase().replace(/\s+/g, "-"));
-        await mkdir(fontDir, { recursive: true });
-
-        const paths: Record<string, string | null> = {
-            regularPath: null,
-            boldPath: null,
-            italicPath: null,
-            boldItalicPath: null,
-        };
-
-        for (const [key, file] of Object.entries(data.files)) {
-            if (file) {
-                const buffer = Buffer.from(await file.arrayBuffer());
-                const filename = `${key}.${file.name.split(".").pop()}`;
-                await writeFile(join(fontDir, filename), buffer);
-                paths[`${key}Path`] = `/fonts/${data.family.toLowerCase().replace(/\s+/g, "-")}/${filename}`;
-            }
-        }
-
-        const results = await db
-            .insert(systemFonts)
-            .values({
-                name: data.name,
-                family: data.family,
-                category: data.category || "sans-serif",
-                ...paths,
-            })
-            .returning();
-
-        const result = results[0] as SystemFont;
-
-        return { success: true, data: result };
-    } catch (error) {
-        console.error("Error adding font:", error);
-        return { success: false, error: "Не удалось добавить шрифт" };
-    }
-}
-
 // Типы
 type EditorProject = typeof editorProjects.$inferSelect;
 type EditorProjectFull = EditorProject & {
@@ -506,5 +345,3 @@ type EditorProjectFull = EditorProject & {
     design?: { id: string; name: string; preview: string | null } | null;
     exports: (typeof editorExports.$inferSelect)[];
 };
-type EditorExport = typeof editorExports.$inferSelect;
-type SystemFont = typeof systemFonts.$inferSelect;
