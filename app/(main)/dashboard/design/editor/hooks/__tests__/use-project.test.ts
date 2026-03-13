@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor, act } from "@testing-library/react";
 import { useProject } from "../use-project";
 import * as projectActions from "../../actions/project-actions";
-import * as exportActions from "../../actions/export-actions";
 
 // Mock router
 vi.mock("next/navigation", () => ({

@@ -83,7 +83,7 @@ describe("production task-actions", () => {
 
             const result = await createProductionTask({
                 orderId: ORDER_ID,
-                title: "New Task",
+                name: "New Task",
                 quantity: 10,
                 lineId: LINE_ID,
                 applicationTypeId: APP_TYPE_ID,
