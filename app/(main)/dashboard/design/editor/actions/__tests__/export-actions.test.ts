@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import { getProjectExports } from "../export-actions";
 import { db } from "@/lib/db";
-import { editorExports } from "@/lib/schema";
 
 vi.mock("@/lib/db", () => ({
     db: {

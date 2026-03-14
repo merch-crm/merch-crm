@@ -1,14 +1,27 @@
 import { describe, it, expect } from "vitest";
 import { performCalculation } from "../calculation-logic";
-import type { ApplicationType, PrintGroupInput } from "../../types";
+import type { ApplicationType, PrintGroupInput, ConsumablesConfigData } from "../../types";
 
 describe("calculation-logic", () => {
-    const defaultPricing = [{ fromMeters: 0, toMeters: null, pricePerMeter: 1000 }];
-    const defaultConsumables = {
-        fillPercent: 100,
+    const defaultPricing = [{
+        id: "1",
+        applicationType: "dtf" as ApplicationType,
+        rollWidthMm: 600,
+        sortOrder: 1,
+        isActive: true,
+        fromMeters: 0,
+        toMeters: null,
+        pricePerMeter: 1000
+    }];
+    const defaultConsumables: ConsumablesConfigData = {
+        applicationType: "dtf" as ApplicationType,
         inkWhitePerM2: 10,
         inkCmykPerM2: 5,
         powderPerM2: 20,
+        paperPerM2: 15,
+        fillPercent: 100,
+        wastePercent: 5,
+        config: null,
     };
 
     it("should calculate correct layout for a single group", () => {
@@ -18,6 +31,7 @@ describe("calculation-logic", () => {
             heightMm: 100,
             quantity: 10,
             name: "Test",
+            placementId: null,
             color: "White",
         }];
 

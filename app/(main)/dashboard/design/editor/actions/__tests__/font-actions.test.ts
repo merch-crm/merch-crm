@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import { getSystemFonts } from "../font-actions";
 import { db } from "@/lib/db";
-import { systemFonts } from "@/lib/schema";
 
 vi.mock("@/lib/db", () => ({
     db: {
