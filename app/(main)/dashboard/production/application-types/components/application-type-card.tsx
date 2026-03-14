@@ -5,18 +5,18 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import {
     GripVertical,
-    MoreHorizontal,
+    MoreVertical,
     Pencil,
     Trash2,
     Power,
     PowerOff,
     Clock,
     Palette,
-    Ruler
+    Ruler,
+    Layers,
 } from "lucide-react";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -99,7 +99,6 @@ export function ApplicationTypeCard({
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.5 : 1,
     };
 
     const handleToggleActive = async () => {
@@ -142,140 +141,135 @@ export function ApplicationTypeCard({
 
     return (
         <>
-            <Card
+            <div
                 ref={setNodeRef}
                 style={style}
-                className={`relative transition-shadow ${isDragging ? "shadow-lg" : ""
-                    } ${!type.isActive ? "opacity-60" : ""}`}
+                className={cn(
+                    "crm-card transition-all group relative overflow-hidden flex flex-col gap-3",
+                    isDragging && "shadow-2xl z-50 ring-2 ring-primary border-transparent",
+                    !type.isActive && "opacity-60 grayscale-[0.5]",
+                    "hover:shadow-xl hover:-translate-y-1"
+                )}
             >
-                <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                            {isSorting && (
-                                <button
-                                    type="button"
-                                    {...attributes}
-                                    {...listeners}
-                                    className="cursor-grab active:cursor-grabbing p-1 -ml-1 text-muted-foreground hover:text-foreground"
-                                >
-                                    <GripVertical className="h-4 w-4" />
-                                </button>
-                            )}
-
-                            {/* Color indicator */}
-                            <div
-                                className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-medium"
-                                style={{ backgroundColor: type.color || "#6B7280" }}
+                {/* Header: Grip, Icon & Context Menu */}
+                <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                        {isSorting && (
+                            <div 
+                                {...attributes} 
+                                {...listeners} 
+                                className="cursor-grab active:cursor-grabbing p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:text-primary transition-colors"
                             >
-                                {type.name.charAt(0).toUpperCase()}
+                                <GripVertical className="h-4 w-4" />
                             </div>
-
-                            <div>
-                                <h3 className="font-medium leading-none">{type.name}</h3>
-                                <p className="text-sm text-muted-foreground mt-1">{type.slug}</p>
-                            </div>
-                        </div>
-
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                    <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-                                    <Pencil className="mr-2 h-4 w-4" />
-                                    Редактировать
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={handleToggleActive}>
-                                    {type.isActive ? (
-                                        <>
-                                            <PowerOff className="mr-2 h-4 w-4" />
-                                            Деактивировать
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Power className="mr-2 h-4 w-4" />
-                                            Активировать
-                                        </>
-                                    )}
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    onClick={() => setIsDeleteOpen(true)}
-                                    className="text-destructive"
-                                >
-                                    <Trash2 className="mr-2 h-4 w-4" />
-                                    Удалить
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </CardHeader>
-
-                <CardContent className="space-y-3">
-                    {/* Category & Status */}
-                    <div className="flex items-center gap-2">
-                        <Badge variant="secondary">{categoryLabels[type.category]}</Badge>
-                        {!type.isActive && (
-                            <Badge variant="outline" className="text-muted-foreground">
-                                Неактивен
-                            </Badge>
                         )}
-                    </div>
-
-                    {/* Description */}
-                    {type.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                            {type.description}
-                        </p>
-                    )}
-
-                    {/* Stats */}
-                    <div className="grid grid-cols-3 gap-2 pt-2 border-t">
-                        <div className="text-center">
-                            <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                                <Palette className="h-3 w-3" />
-                            </div>
-                            <div className="text-sm font-medium">
-                                {type.maxColors || "∞"}
-                            </div>
-                            <div className="text-xs text-muted-foreground">цветов</div>
+                        <div 
+                            className="w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-sm shrink-0"
+                            style={{ backgroundColor: type.color || "#64748b" }}
+                        >
+                            <Layers className="h-6 w-6" />
                         </div>
-
-                        <div className="text-center">
-                            <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                                <Ruler className="h-3 w-3" />
-                            </div>
-                            <div className="text-sm font-medium">
-                                {type.maxPrintArea || "—"}
-                            </div>
-                            <div className="text-xs text-muted-foreground">область</div>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="flex items-center justify-center gap-1 text-muted-foreground mb-1">
-                                <Clock className="h-3 w-3" />
-                            </div>
-                            <div className="text-sm font-medium">
-                                {formatTime(type.estimatedTime)}
-                            </div>
-                            <div className="text-xs text-muted-foreground">время</div>
+                        <div className="min-w-0">
+                            <h3 className="font-bold text-slate-900 truncate leading-tight">{type.name}</h3>
+                            <p className="text-xs font-black text-slate-400 mt-0.5 tracking-tight">
+                                {type.slug}
+                            </p>
                         </div>
                     </div>
 
-                    {/* Cost */}
-                    {(type.baseCost || type.costPerUnit) && (
-                        <div className="flex items-center justify-between pt-2 border-t text-sm">
-                            <span className="text-muted-foreground">Стоимость:</span>
-                            <span className="font-medium">
-                                {formatCost(type.baseCost)}
-                                {type.costPerUnit ? ` + ${formatCost(type.costPerUnit)}/шт` : ""}
-                            </span>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-slate-100 shrink-0">
+                                <MoreVertical className="h-4 w-4 text-slate-500" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl min-w-[180px]">
+                            <DropdownMenuItem onClick={() => setIsEditOpen(true)} className="rounded-lg gap-2 cursor-pointer">
+                                <Pencil className="h-4 w-4 text-slate-500" />
+                                <span className="font-medium">Редактировать</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleToggleActive} className="rounded-lg gap-2 cursor-pointer">
+                                {type.isActive ? (
+                                    <>
+                                        <PowerOff className="h-4 w-4 text-slate-400" />
+                                        <span className="font-medium">Деактивировать</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Power className="h-4 w-4 text-emerald-500" />
+                                        <span className="font-medium text-emerald-600">Активировать</span>
+                                    </>
+                                )}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-slate-50" />
+                            <DropdownMenuItem
+                                onClick={() => setIsDeleteOpen(true)}
+                                className="text-rose-600 rounded-lg gap-2 focus:bg-rose-50 focus:text-rose-600 cursor-pointer"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                                <span className="font-bold">Удалить тип</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+
+                {/* Badge Row */}
+                <div className="flex items-center gap-2">
+                    <div className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold tracking-wider">
+                        {categoryLabels[type.category]}
+                    </div>
+                    {!type.isActive && (
+                        <div className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-500 text-xs font-bold tracking-wider border border-rose-100">
+                            Неактивен
                         </div>
                     )}
-                </CardContent>
-            </Card>
+                </div>
+
+                {/* Description */}
+                {type.description && (
+                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed h-8">
+                        {type.description}
+                    </p>
+                )}
+
+                {/* Performance Stats */}
+                <div className="grid grid-cols-3 gap-2 py-3 border-y border-slate-50">
+                    <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-slate-50/50">
+                        <Palette className="h-3.5 w-3.5 text-slate-400" />
+                        <span className="text-xs font-bold text-slate-700">{type.maxColors || "∞"}</span>
+                        <span className="text-xs text-slate-400 font-medium">цветов</span>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-slate-50/50">
+                        <Ruler className="h-3.5 w-3.5 text-slate-400" />
+                        <span className="text-xs font-bold text-slate-700 truncate w-full text-center">
+                            {type.maxPrintArea || "—"}
+                        </span>
+                        <span className="text-xs text-slate-400 font-medium">область</span>
+                    </div>
+
+                    <div className="flex flex-col items-center gap-1.5 p-2 rounded-xl bg-slate-50/50">
+                        <Clock className="h-3.5 w-3.5 text-slate-400" />
+                        <span className="text-xs font-bold text-slate-700">{formatTime(type.estimatedTime)}</span>
+                        <span className="text-xs text-slate-400 font-medium">время</span>
+                    </div>
+                </div>
+
+                {/* Pricing Footer */}
+                {(type.baseCost || type.costPerUnit) && (
+                    <div className="flex items-center justify-between pt-1">
+                        <span className="text-xs font-bold text-slate-400 tracking-tight">Стоимость:</span>
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-black text-slate-900">{formatCost(type.baseCost)}</span>
+                            {type.costPerUnit && (
+                                <span className="text-xs font-bold text-slate-400">
+                                    + {formatCost(type.costPerUnit)}/шт
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>
 
             {/* Edit Dialog */}
             <ApplicationTypeFormDialog
@@ -291,19 +285,19 @@ export function ApplicationTypeCard({
 
             {/* Delete Confirmation */}
             <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-2xl border-slate-100">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Удалить тип нанесения?</AlertDialogTitle>
                         <AlertDialogDescription>
                             Вы уверены, что хотите удалить &quot;{type.name}&quot;? Это действие нельзя отменить.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                    <AlertDialogFooter className="gap-2">
+                        <AlertDialogCancel className="rounded-xl border-slate-200">Отмена</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-rose-600 text-white hover:bg-rose-700 rounded-xl shadow-lg shadow-rose-200 border-none"
                         >
                             {isDeleting ? "Удаление..." : "Удалить"}
                         </AlertDialogAction>

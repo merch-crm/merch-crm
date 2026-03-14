@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 import {
     DndContext,
     closestCenter,
@@ -16,12 +17,11 @@ import {
     sortableKeyboardCoordinates,
     rectSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Plus, Search, GripVertical, Factory } from "lucide-react";
+import { Plus, GripVertical, Factory } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { SearchInput } from "@/components/ui/search-input";
 
 import { ProductionNav } from "../components/production-nav";
 import { LineCard } from "./components/line-card";
@@ -114,16 +114,16 @@ export function LinesPageClient({
     const totalInProgress = lines.reduce((sum, l) => sum + l.stats.inProgress, 0);
 
     return (
-        <div className="p-6 space-y-3">
+        <div className="flex flex-col gap-3">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                    <h1 className="text-2xl font-semibold">Производственные линии</h1>
-                    <p className="text-muted-foreground">
+                    <h1 className="text-2xl font-bold text-slate-900">Производственные линии</h1>
+                    <p className="text-slate-500 text-sm mt-0.5">
                         Управление линиями и распределение задач
                     </p>
                 </div>
-                <Button onClick={() => setIsCreateOpen(true)}>
+                <Button onClick={() => setIsCreateOpen(true)} className="rounded-xl shadow-lg shadow-primary/20">
                     <Plus className="mr-2 h-4 w-4" />
                     Добавить линию
                 </Button>
@@ -131,45 +131,79 @@ export function LinesPageClient({
 
             <ProductionNav />
 
-            {/* Stats */}
+            {/* Stats Overview (Bento) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground">Всего линий</p>
-                    <p className="text-2xl font-bold">{lines.length}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground">Активных</p>
-                    <p className="text-2xl font-bold text-green-600">{activeLinesCount}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground">Общая мощность</p>
-                    <p className="text-2xl font-bold">{totalCapacity} ед/день</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground">Задач в работе</p>
-                    <p className="text-2xl font-bold">{totalInProgress}</p>
-                </Card>
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-slate-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                            <Factory className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Всего линий</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{lines.length}</span>
+                    </div>
+                </div>
+
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-emerald-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Активных сейчас</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{activeLinesCount}</span>
+                    </div>
+                </div>
+
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-amber-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+                            <GripVertical className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Общая мощность</span>
+                    </div>
+                    <div className="flex items-baseline gap-1">
+                        <span className="text-3xl font-bold text-slate-900">{totalCapacity}</span>
+                        <span className="text-slate-400 text-xs font-bold">ЕД/ДЕНЬ</span>
+                    </div>
+                </div>
+
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-slate-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600">
+                            <Plus className="w-4 h-4 rotate-45" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">В работе</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{totalInProgress}</span>
+                    </div>
+                </div>
             </div>
 
             {/* Toolbar */}
-            <div className="flex items-center gap-3">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Поиск по названию или коду..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="pl-9"
-                    />
-                </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+                <SearchInput
+                    placeholder="Поиск по названию или коду..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
                 <Button
                     variant={isSorting ? "default" : "outline"}
                     size="sm"
                     onClick={() => setIsSorting(!isSorting)}
+                    className={cn(
+                        "h-11 px-5 rounded-xl border-slate-100 gap-2 font-bold text-xs tracking-tight transition-all duration-300",
+                        isSorting 
+                            ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
+                            : "bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-200"
+                    )}
                 >
-                    <GripVertical className="mr-2 h-4 w-4" />
-                    {isSorting ? "Готово" : "Сортировка"}
+                    <GripVertical className="h-4 w-4" />
+                    {isSorting ? "Завершить сортировку" : "Изменить порядок"}
                 </Button>
             </div>
 
@@ -185,7 +219,7 @@ export function LinesPageClient({
                         strategy={rectSortingStrategy}
                         disabled={!isSorting}
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                             {filteredLines.map((line) => (
                                 <LineCard
                                     key={line.id}
@@ -200,19 +234,24 @@ export function LinesPageClient({
                     </SortableContext>
                 </DndContext>
             ) : (
-                <Card className="p-12 text-center">
-                    <Factory className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                    <h3 className="mt-4 text-lg font-medium">Нет линий</h3>
-                    <p className="mt-2 text-muted-foreground">
-                        {search ? "Попробуйте изменить поисковый запрос" : "Создайте первую производственную линию"}
+                <div className="crm-card p-12 py-20 text-center flex flex-col items-center border-dashed border-2 bg-slate-50/50">
+                    <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-6">
+                        <Factory className="h-10 w-10 text-slate-300" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">Производственные линии не найдены</h3>
+                    <p className="mt-2 text-slate-500 max-w-xs mx-auto text-sm">
+                        {search ? "По вашему поисковому запросу ничего не найдено. Попробуйте изменить параметры поиска." : "Вы еще не создали ни одной производственной линии."}
                     </p>
                     {!search && (
-                        <Button className="mt-4" onClick={() => setIsCreateOpen(true)}>
+                        <Button 
+                            className="mt-8 rounded-xl px-8 h-12 shadow-lg shadow-primary/20" 
+                            onClick={() => setIsCreateOpen(true)}
+                        >
                             <Plus className="mr-2 h-4 w-4" />
-                            Добавить линию
+                            Создать линию
                         </Button>
                     )}
-                </Card>
+                </div>
             )}
 
             {/* Create Dialog */}

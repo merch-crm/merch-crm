@@ -48,3 +48,4 @@ export * from "./presence/workstations";
 export * from "./presence/sessions";
 export * from "./presence/settings";
 export * from "./communications";
+export * from "./calculators";

@@ -53,10 +53,15 @@ export async function getApplicationTypes(options?: {
             conditions.push(eq(applicationTypes.isActive, true));
         }
 
-        const result = await db
+        const query = db
             .select()
-            .from(applicationTypes)
-            .where(conditions.length > 0 ? and(...conditions) : undefined)
+            .from(applicationTypes);
+
+        if (conditions.length > 0) {
+            query.where(and(...conditions));
+        }
+
+        const result = await query
             .orderBy(asc(applicationTypes.sortOrder), asc(applicationTypes.name));
 
         return { success: true, data: result };

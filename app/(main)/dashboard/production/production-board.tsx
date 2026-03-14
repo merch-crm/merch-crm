@@ -77,23 +77,29 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                 const Icon = stage.icon;
 
                 return (
-                    <div key={stage.id} className="crm-card min-h-[500px] flex flex-col">
+                    <div key={stage.id} className="crm-card min-h-[550px] flex flex-col !bg-slate-50/30">
                         {/* Column Header */}
-                        <div className="flex items-center gap-3 md:gap-3 mb-5 pb-4 border-b border-slate-200">
-                            <div className={cn("w-10 h-10 md:w-12 md:h-12 rounded-[12px] md:rounded-[16px] flex items-center justify-center shrink-0", stage.color)}>
-                                <Icon className="w-5 h-5 md:w-6 md:h-6" />
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200/60 relative">
+                            <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm border", stage.color)}>
+                                <Icon className="w-6 h-6" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-sm md:text-base font-bold text-slate-900 truncate">{stage.label}</h3>
-                                <p className="text-xs md:text-sm text-slate-400 font-medium">{stageItems.length} {pluralize(stageItems.length, 'позиция', 'позиции', 'позиций')}</p>
+                                <h3 className="text-base font-bold text-slate-900 truncate tracking-tight">{stage.label}</h3>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                                    <p className="text-xs text-slate-400 font-bold tracking-wider">
+                                        {stageItems.length} {pluralize(stageItems.length, 'позиция', 'позиции', 'позиций')}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
                         {/* Cards */}
-                        <div className="flex-1 space-y-3 overflow-y-auto">
+                        <div className="flex-1 space-y-3 overflow-y-auto pr-1 custom-scrollbar">
                             {stageItems.length === 0 ? (
-                                <div className="flex items-center justify-center h-32 text-slate-300 text-sm">
-                                    Нет задач
+                                <div className="flex flex-col items-center justify-center h-40 text-slate-300 border-2 border-dashed border-slate-200 rounded-3xl m-2">
+                                    <Icon className="w-8 h-8 mb-2 opacity-20" />
+                                    <span className="text-xs font-bold opacity-40 text-center px-4">Нет задач</span>
                                 </div>
                             ) : (
                                 stageItems.map((item) => {
@@ -104,67 +110,91 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                     return (
                                         <div
                                             key={item.id}
-                                            className={cn("bg-white rounded-[var(--radius)] p-4 md:p-5 border transition-all hover:shadow-lg cursor-pointer group touch-manipulation",
-                                                isUrgent ? "border-rose-200 bg-rose-50/30" : "border-slate-200"
+                                            className={cn(
+                                                "bg-white rounded-[24px] p-5 border transition-all hover:shadow-xl hover:-translate-y-1 cursor-pointer group touch-manipulation relative overflow-hidden",
+                                                isUrgent ? "border-rose-200 shadow-rose-100/50" : "border-slate-100 shadow-slate-200/50"
                                             )}
                                         >
+                                            {isUrgent && (
+                                                <div className="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-full -mr-12 -mt-12 blur-2xl opacity-50" />
+                                            )}
+
                                             {/* Order Info */}
-                                            <div className="flex items-start justify-between mb-3">
+                                            <div className="flex items-start justify-between mb-4">
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="text-xs md:text-sm font-bold text-slate-400 mb-1">
-                                                        {item.order.orderNumber}
+                                                    <div className="text-xs font-bold text-slate-400 mb-1.5 flex items-center gap-1.5">
+                                                        <span>{item.order.orderNumber}</span>
+                                                        {isUrgent && (
+                                                            <>
+                                                                <span className="w-1 h-1 rounded-full bg-rose-300" />
+                                                                <span className="text-rose-500">СРОЧНО</span>
+                                                            </>
+                                                        )}
                                                     </div>
-                                                    <div className="text-sm md:text-lg font-bold text-slate-900 truncate leading-tight">
+                                                    <div className="text-base font-bold text-slate-900 truncate leading-tight">
                                                         {item.order.client?.name || "Без имени"}
                                                     </div>
                                                 </div>
                                                 {isUrgent && (
-                                                    <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse shrink-0 ml-2 mt-1" />
+                                                    <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse shrink-0 ml-2 mt-1 shadow-sm shadow-rose-500/50" />
                                                 )}
                                             </div>
 
                                             {/* Mockup Preview */}
                                             {item.order.attachments && item.order.attachments.length > 0 && (
-                                                <div className="mb-3 relative group/mockup overflow-hidden rounded-[8px] bg-slate-50 border border-slate-200 aspect-video">
+                                                <div className="mb-4 relative group/mockup overflow-hidden rounded-[20px] bg-slate-100 border border-slate-200 aspect-video shadow-inner">
                                                     <Image
                                                         src={item.order.attachments[0].fileUrl}
                                                         alt="Mockup"
                                                         fill
-                                                        className="object-cover transition-transform duration-500 group-hover/mockup:scale-110"
+                                                        className="object-cover transition-transform duration-700 group-hover/mockup:scale-110"
                                                     />
-                                                    <Button
-                                                        variant="ghost"
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setLightboxImage(item.order.attachments?.[0]?.fileUrl || null);
-                                                        }}
-                                                        className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover/mockup:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-2 p-0 h-auto hover:bg-slate-900/50 hover:text-white"
-                                                    >
-                                                        <Maximize className="w-3.5 h-3.5" />
-                                                        Открыть во весь экран
-                                                    </Button>
+                                                    <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover/mockup:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
+                                                        <Button
+                                                            variant="ghost"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setLightboxImage(item.order.attachments?.[0]?.fileUrl || null);
+                                                            }}
+                                                            className="text-white text-xs font-bold gap-2 p-0 h-auto hover:bg-transparent hover:text-white/80 active:scale-95 transition-all"
+                                                        >
+                                                            <Maximize className="w-4 h-4" />
+                                                            <span>ПРОСМОТР</span>
+                                                        </Button>
+                                                    </div>
                                                 </div>
                                             )}
 
                                             {/* Item Description */}
-                                            <div className="text-xs md:text-sm font-medium text-slate-600 mb-4 line-clamp-3 leading-relaxed">
+                                            <div className="text-sm font-medium text-slate-500 mb-4 line-clamp-2 leading-snug">
                                                 {item.description || "Без описания"}
                                             </div>
 
-                                            {/* Quantity */}
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Package className="w-4 h-4 text-slate-400" />
-                                                <span className="text-xs md:text-sm font-bold text-slate-600">{item.quantity} {pluralize(item.quantity, 'штука', 'штуки', 'штук')}</span>
+                                            {/* Footer: Quantity & Status */}
+                                            <div className="flex items-center justify-between mb-5">
+                                                <div className="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
+                                                    <Package className="w-4 h-4 text-slate-400" />
+                                                    <span className="text-xs font-bold text-slate-700">
+                                                        {item.quantity} {pluralize(item.quantity, 'штука', 'штуки', 'штук')}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div className={cn(
+                                                    "text-xs font-bold px-2 py-1 rounded-lg border",
+                                                    currentStatus === 'in_progress' ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-slate-50 text-slate-400 border-slate-100"
+                                                )}>
+                                                    {currentStatus === 'in_progress' ? 'В работе' : 'Ожидание'}
+                                                </div>
                                             </div>
 
                                             {/* Actions */}
-                                            <div className="flex gap-3 pt-4 border-t border-slate-200">
+                                            <div className="flex gap-2 pt-4 border-t border-slate-100">
                                                 {currentStatus === 'pending' && (
                                                     <Button
                                                         variant="default"
                                                         onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 h-11 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/20"
+                                                        className="flex-1 h-12 bg-primary text-white rounded-2xl text-xs font-bold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/20 border-0"
                                                     >
                                                         {loading === item.id ? '...' : 'Начать'}
                                                     </Button>
@@ -174,7 +204,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                         variant="default"
                                                         onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
                                                         disabled={loading === item.id}
-                                                        className="flex-1 h-11 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-sm font-bold active:scale-95 transition-all shadow-lg shadow-emerald-500/20"
+                                                        className="flex-1 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl text-xs font-bold active:scale-95 transition-all shadow-lg shadow-emerald-500/20 border-0"
                                                     >
                                                         {loading === item.id ? '...' : 'Завершить'}
                                                     </Button>

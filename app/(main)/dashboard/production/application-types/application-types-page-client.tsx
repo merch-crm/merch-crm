@@ -19,7 +19,6 @@ import {
 } from "@dnd-kit/sortable";
 import {
     Plus,
-    Search,
     GripVertical,
     Printer,
     Scissors,
@@ -29,14 +28,15 @@ import {
     Package
 } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { SearchInput } from "@/components/ui/search-input";
 
 import { ApplicationTypeCard } from "./components/application-type-card";
 import { ApplicationTypeFormDialog } from "./components/application-type-form-dialog";
 import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
+import { ProductionNav } from "../components/production-nav";
 import { updateApplicationTypesOrder } from "../actions/application-type-actions";
 
 type ApplicationType = {
@@ -85,6 +85,47 @@ const categoryIcons: Record<string, React.ReactNode> = {
     transfer: <Thermometer className="h-4 w-4" />,
     other: <Package className="h-4 w-4" />,
 };
+
+interface StatCardProps {
+    label: string;
+    value: number | string;
+    icon: React.ReactNode;
+    iconBg?: string;
+    iconColor?: string;
+    pulse?: boolean;
+}
+
+function StatCard({ label, value, icon, iconBg = "bg-slate-50", iconColor = "text-slate-600", pulse }: StatCardProps) {
+    return (
+        <div className="crm-card flex flex-col justify-between">
+            <div className={cn("flex items-center gap-3 mb-4", iconColor)}>
+                <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", iconBg)}>
+                    {pulse ? <div className={cn("w-2 h-2 rounded-full animate-pulse", iconBg.replace('bg-', 'bg-').split('-')[0] + '-500')} /> : icon}
+                </div>
+                <span className="text-xs font-bold tracking-tight">{label}</span>
+            </div>
+            <div>
+                <span className="text-3xl font-bold text-slate-900">{value}</span>
+            </div>
+        </div>
+    );
+}
+
+function ActiveStatCard({ label, value }: { label: string, value: number }) {
+    return (
+        <div className="crm-card flex flex-col justify-between">
+            <div className="flex items-center gap-3 text-emerald-500 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                </div>
+                <span className="text-xs font-bold tracking-tight">{label}</span>
+            </div>
+            <div>
+                <span className="text-3xl font-bold text-slate-900">{value}</span>
+            </div>
+        </div>
+    );
+}
 
 export function ApplicationTypesPageClient({
     initialTypes,
@@ -149,79 +190,62 @@ export function ApplicationTypesPageClient({
     };
 
     return (
-        <div className="space-y-3 p-6">
+        <div className="flex flex-col gap-3">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                    <h1 className="text-2xl font-semibold">Типы нанесения</h1>
-                    <p className="text-muted-foreground">
+                    <h1 className="text-2xl font-bold text-slate-900">Типы нанесения</h1>
+                    <p className="text-slate-500 text-sm mt-0.5">
                         Справочник методов нанесения для производства
                     </p>
                 </div>
-                <Button onClick={() => setIsCreateOpen(true)}>
+                <Button onClick={() => setIsCreateOpen(true)} className="rounded-xl shadow-lg shadow-primary/20">
                     <Plus className="mr-2 h-4 w-4" />
                     Добавить тип
                 </Button>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Всего типов
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.total}</div>
-                    </CardContent>
-                </Card>
+            <ProductionNav />
 
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Активных
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{stats.active}</div>
-                    </CardContent>
-                </Card>
+            {/* Stats Overview (Bento Style) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <StatCard 
+                    label="Всего типов" 
+                    value={stats.total} 
+                    icon={<Layers className="w-4 h-4" />} 
+                    iconBg="bg-blue-50" 
+                    iconColor="text-slate-500"
+                />
+                
+                <ActiveStatCard label="Активных" value={stats.active} />
 
                 {Object.entries(stats.byCategory).slice(0, 2).map(([category, count]) => (
-                    <Card key={category}>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                                {categoryIcons[category]}
-                                {categoryLabels[category]}
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{count}</div>
-                        </CardContent>
-                    </Card>
+                    <StatCard 
+                        key={category}
+                        label={categoryLabels[category]}
+                        value={count}
+                        icon={categoryIcons[category]}
+                    />
                 ))}
             </div>
 
             {/* Toolbar */}
-            <div className="flex items-center gap-3">
-                <div className="relative flex-1 max-w-sm">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        placeholder="Поиск по названию..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="pl-9"
-                    />
-                </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+                <SearchInput value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Поиск по названию..." />
 
                 <Button
                     variant={isSorting ? "default" : "outline"}
                     size="sm"
                     onClick={() => setIsSorting(!isSorting)}
+                    className={cn(
+                        "h-11 px-5 rounded-xl border-slate-100 gap-2 font-bold text-xs tracking-tight transition-all duration-300",
+                        isSorting 
+                            ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
+                            : "bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-200"
+                    )}
                 >
-                    <GripVertical className="mr-2 h-4 w-4" />
-                    {isSorting ? "Готово" : "Сортировка"}
+                    <GripVertical className="h-4 w-4" />
+                    {isSorting ? "Завершить сортировку" : "Изменить порядок"}
                 </Button>
             </div>
 
@@ -237,7 +261,7 @@ export function ApplicationTypesPageClient({
                         strategy={rectSortingStrategy}
                         disabled={!isSorting}
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                             {filteredTypes.map((type) => (
                                 <ApplicationTypeCard
                                     key={type.id}
@@ -255,19 +279,24 @@ export function ApplicationTypesPageClient({
                     </SortableContext>
                 </DndContext>
             ) : (
-                <Card className="p-12 text-center">
-                    <Layers className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                    <h3 className="mt-4 text-lg font-medium">Нет типов нанесения</h3>
-                    <p className="mt-2 text-muted-foreground">
-                        {search ? "Попробуйте изменить поисковый запрос" : "Создайте первый тип нанесения"}
+                <div className="crm-card p-12 py-20 text-center flex flex-col items-center border-dashed border-2 bg-slate-50/50">
+                    <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-6">
+                        <Layers className="h-10 w-10 text-slate-300" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">Типы нанесения не найдены</h3>
+                    <p className="mt-2 text-slate-500 max-w-xs mx-auto text-sm">
+                        {search ? "По вашему поисковому запросу ничего не найдено. Попробуйте изменить параметры поиска." : "Вы еще не создали ни одного типа нанесения."}
                     </p>
                     {!search && (
-                        <Button className="mt-4" onClick={() => setIsCreateOpen(true)}>
+                        <Button 
+                            className="mt-8 rounded-xl px-8 h-12 shadow-lg shadow-primary/20" 
+                            onClick={() => setIsCreateOpen(true)}
+                        >
                             <Plus className="mr-2 h-4 w-4" />
                             Добавить тип
                         </Button>
                     )}
-                </Card>
+                </div>
             )}
 
             {/* Create Dialog */}

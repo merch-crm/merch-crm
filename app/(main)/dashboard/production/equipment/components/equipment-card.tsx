@@ -1,22 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { formatDistanceToNow, format } from "date-fns";
+import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
     MoreVertical,
-    Edit,
+    Pencil,
     Trash2,
     Wrench,
     Power,
+    PowerOff,
     MapPin,
     Calendar,
     Gauge,
     LucideIcon,
+    AlertCircle,
 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -34,7 +36,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/components/ui/toast";
+import { toast } from "sonner";
+
 import { EquipmentFormDialog } from "./equipment-form-dialog";
 import { MaintenanceDialog } from "./maintenance-dialog";
 import {
@@ -72,7 +75,6 @@ export function EquipmentCard({
     onUpdated,
     onDeleted,
 }: EquipmentCardProps) {
-    const { toast } = useToast();
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isMaintenanceOpen, setIsMaintenanceOpen] = useState(false);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -91,9 +93,9 @@ export function EquipmentCard({
         const result = await updateEquipmentStatus(equipment.id, newStatus);
         if (result.success) {
             onUpdated({ ...equipment, status: newStatus });
-            toast("Статус обновлён");
+            toast.success("Статус обновлён");
         } else {
-            toast(`Ошибка: ${result.error}`);
+            toast.error(`Ошибка: ${result.error}`);
         }
     };
 
@@ -102,8 +104,9 @@ export function EquipmentCard({
         const result = await deleteEquipment(equipment.id);
         if (result.success) {
             onDeleted(equipment.id);
+            toast.success("Оборудование удалено");
         } else {
-            toast(`Ошибка: ${result.error}`);
+            toast.error(`Ошибка: ${result.error}`);
         }
         setIsDeleting(false);
         setIsDeleteOpen(false);
@@ -115,130 +118,133 @@ export function EquipmentCard({
 
     return (
         <>
-            <Card className={isMaintenanceDue ? "border-yellow-500" : ""}>
-                <CardHeader className="pb-3">
-                    <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg ${category.color}`}>
-                                <CategoryIcon className="h-5 w-5 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold">{equipment.name}</h3>
-                                {equipment.code && (
-                                    <p className="text-sm text-muted-foreground">{equipment.code}</p>
-                                )}
-                            </div>
+            <div className={cn(
+                "crm-card transition-all group relative overflow-hidden flex flex-col gap-3",
+                equipment.status === "inactive" && "opacity-60 grayscale-[0.5]",
+                isMaintenanceDue && "border-amber-400 ring-1 ring-amber-400/20",
+                "hover:shadow-xl hover:-translate-y-1"
+            )}>
+                {/* Header: Category Icon, Name & Context Menu */}
+                <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className={cn(
+                            "w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-sm",
+                            category.color
+                        )}>
+                            <CategoryIcon className="h-6 w-6" />
                         </div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                    <MoreVertical className="h-4 w-4" />
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-                                    <Edit className="h-4 w-4 mr-2" />
-                                    Редактировать
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setIsMaintenanceOpen(true)}>
-                                    <Wrench className="h-4 w-4 mr-2" />
-                                    Обслуживание
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                {equipment.status !== "active" && (
-                                    <DropdownMenuItem onClick={() => handleStatusChange("active")}>
-                                        <Power className="h-4 w-4 mr-2" />
-                                        Активировать
-                                    </DropdownMenuItem>
-                                )}
-                                {equipment.status !== "inactive" && (
-                                    <DropdownMenuItem onClick={() => handleStatusChange("inactive")}>
-                                        <Power className="h-4 w-4 mr-2" />
-                                        Деактивировать
-                                    </DropdownMenuItem>
-                                )}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    onClick={() => setIsDeleteOpen(true)}
-                                    className="text-destructive"
-                                >
-                                    <Trash2 className="h-4 w-4 mr-2" />
-                                    Удалить
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    {/* Status Badge */}
-                    <div className="flex items-center gap-2">
-                        <StatusIcon className={`h-4 w-4 ${status.color}`} />
-                        <span className={`text-sm font-medium ${status.color}`}>
-                            {status.label}
-                        </span>
+                        <div className="min-w-0">
+                            <h3 className="font-bold text-slate-900 truncate leading-tight">{equipment.name}</h3>
+                            <p className="text-xs font-bold text-slate-400 mt-0.5 tracking-tight">
+                                {equipment.code || "Без кода"}
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Brand & Model */}
-                    {(equipment.brand || equipment.model) && (
-                        <p className="text-sm text-muted-foreground">
-                            {[equipment.brand, equipment.model].filter(Boolean).join(" ")}
-                        </p>
-                    )}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-slate-100">
+                                <MoreVertical className="h-4 w-4 text-slate-500" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-xl border-slate-100 shadow-xl">
+                            <DropdownMenuItem onClick={() => setIsEditOpen(true)} className="rounded-lg gap-2">
+                                <Pencil className="h-4 w-4 text-slate-500" />
+                                <span>Редактировать</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setIsMaintenanceOpen(true)} className="rounded-lg gap-2">
+                                <Wrench className="h-4 w-4 text-amber-500" />
+                                <span>Обслуживание</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-slate-50" />
+                            <DropdownMenuItem onClick={() => handleStatusChange("active")} disabled={equipment.status === "active"} className="rounded-lg gap-2">
+                                <Power className="h-4 w-4 text-emerald-500" />
+                                <span>Активировать</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange("inactive")} disabled={equipment.status === "inactive"} className="rounded-lg gap-2">
+                                <PowerOff className="h-4 w-4 text-slate-500" />
+                                <span>Деактивировать</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-slate-50" />
+                            <DropdownMenuItem
+                                onClick={() => setIsDeleteOpen(true)}
+                                className="text-rose-600 rounded-lg gap-2 focus:bg-rose-50 focus:text-rose-600"
+                            >
+                                <Trash2 className="h-4 w-4" />
+                                <span>Удалить оборудование</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
 
-                    {/* Location */}
-                    {equipment.location && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <MapPin className="h-4 w-4" />
-                            <span>{equipment.location}</span>
+                {/* Status Indicator */}
+                <div className={cn(
+                    "flex items-center gap-2 px-3 py-1.5 rounded-xl border w-fit",
+                    equipment.status === "active" ? "bg-emerald-50 border-emerald-100 text-emerald-600" :
+                    equipment.status === "maintenance" ? "bg-amber-50 border-amber-100 text-amber-600" :
+                    equipment.status === "repair" ? "bg-rose-50 border-rose-100 text-rose-600" :
+                    "bg-slate-100 border-slate-200 text-slate-400"
+                )}>
+                    <StatusIcon className="h-4 w-4" />
+                    <span className="text-xs font-bold tracking-tight">{status.label}</span>
+                </div>
+
+                {/* Info Grid */}
+                <div className="grid grid-cols-2 gap-3">
+                    <div className="flex flex-col gap-1">
+                         <span className="text-xs font-bold text-slate-400 tracking-wider">Локация</span>
+                        <div className="flex items-center gap-1.5 text-slate-600">
+                            <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                            <span className="text-xs font-bold truncate">{equipment.location || "—"}</span>
                         </div>
-                    )}
-
-                    {/* Speed */}
+                    </div>
                     {equipment.printSpeed && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Gauge className="h-4 w-4" />
-                            <span>{equipment.printSpeed}</span>
+                        <div className="flex flex-col gap-1">
+                             <span className="text-xs font-bold text-slate-400 tracking-wider">Скорость</span>
+                            <div className="flex items-center gap-1.5 text-slate-600">
+                                <Gauge className="h-3.5 w-3.5 text-slate-400" />
+                                <span className="text-xs font-bold truncate">{equipment.printSpeed}</span>
+                            </div>
                         </div>
                     )}
+                </div>
 
-                    {/* Application Types */}
+                {/* Maintenance Section */}
+                <div className={cn(
+                    "mt-auto pt-3 border-t border-slate-50 space-y-2",
+                    isMaintenanceDue && "border-amber-100"
+                )}>
+                    {equipment.nextMaintenanceAt && (
+                        <div className={cn(
+                            "flex items-center justify-between p-2 rounded-xl",
+                            isMaintenanceDue ? "bg-amber-50 text-amber-600" : "bg-slate-50 text-slate-500"
+                        )}>
+                            <div className="flex items-center gap-2">
+                                <Calendar className="h-3.5 w-3.5" />
+                                <span className="text-xs font-bold">ТО: {format(new Date(equipment.nextMaintenanceAt), "dd.MM.yyyy", { locale: ru })}</span>
+                            </div>
+                            {isMaintenanceDue && <AlertCircle className="h-3.5 w-3.5 animate-pulse" />}
+                        </div>
+                    )}
+                    
                     {linkedTypes.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5 pt-1">
                             {linkedTypes.map((type) => (
-                                <Badge key={type.id} variant="secondary" className="text-xs">
+                                <div 
+                                    key={type.id} 
+                                    className="px-2 py-0.5 rounded-lg border bg-white text-[11px] font-bold"
+                                    style={{
+                                        borderColor: type.color ? `${type.color}30` : "#e2e8f0",
+                                        color: type.color || "#64748b",
+                                    }}
+                                >
                                     {type.name}
-                                </Badge>
+                                </div>
                             ))}
                         </div>
                     )}
-
-                    {/* Maintenance Info */}
-                    {equipment.nextMaintenanceAt && (
-                        <div
-                            className={`flex items-center gap-2 text-sm ${isMaintenanceDue ? "text-yellow-600" : "text-muted-foreground"
-                                }`}
-                        >
-                            <Calendar className="h-4 w-4" />
-                            <span>
-                                ТО:{" "}
-                                {isMaintenanceDue
-                                    ? "требуется"
-                                    : formatDistanceToNow(new Date(equipment.nextMaintenanceAt), {
-                                        addSuffix: true,
-                                        locale: ru,
-                                    })}
-                            </span>
-                        </div>
-                    )}
-
-                    {equipment.lastMaintenanceAt && (
-                        <p className="text-xs text-muted-foreground">
-                            Последнее ТО:{" "}
-                            {format(new Date(equipment.lastMaintenanceAt), "dd.MM.yyyy", { locale: ru })}
-                        </p>
-                    )}
-                </CardContent>
-            </Card>
+                </div>
+            </div>
 
             {/* Edit Dialog */}
             <EquipmentFormDialog
@@ -259,7 +265,7 @@ export function EquipmentCard({
 
             {/* Delete Confirmation */}
             <AlertDialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-                <AlertDialogContent>
+                <AlertDialogContent className="rounded-2xl border-slate-100">
                     <AlertDialogHeader>
                         <AlertDialogTitle>Удалить оборудование?</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -267,12 +273,12 @@ export function EquipmentCard({
                             нельзя отменить.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                    <AlertDialogFooter className="gap-2">
+                        <AlertDialogCancel className="rounded-xl border-slate-200">Отмена</AlertDialogCancel>
                         <AlertDialogAction
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="bg-rose-600 text-white hover:bg-rose-700 rounded-xl shadow-lg shadow-rose-200 border-none"
                         >
                             {isDeleting ? "Удаление..." : "Удалить"}
                         </AlertDialogAction>

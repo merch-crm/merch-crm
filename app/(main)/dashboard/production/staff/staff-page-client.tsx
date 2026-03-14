@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Search, Users, UserCheck, Briefcase } from "lucide-react";
+import { Plus, Users, UserCheck, Briefcase } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
+import { SearchInput } from "@/components/ui/search-input";
 
 import { ProductionNav } from "../components/production-nav";
 import { StaffCard } from "./components/staff-card";
@@ -66,16 +65,16 @@ export function StaffPageClient({
     const totalCompletedTasks = staff.reduce((sum, s) => sum + s.stats.completed, 0);
 
     return (
-        <div className="p-6 space-y-3">
+        <div className="flex flex-col gap-3">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                 <div>
-                    <h1 className="text-2xl font-semibold">Сотрудники производства</h1>
-                    <p className="text-muted-foreground">
+                    <h1 className="text-2xl font-bold text-slate-900">Сотрудники производства</h1>
+                    <p className="text-slate-500 text-sm mt-0.5">
                         Управление персоналом и назначение задач
                     </p>
                 </div>
-                <Button onClick={() => setIsCreateOpen(true)}>
+                <Button onClick={() => setIsCreateOpen(true)} className="rounded-xl shadow-lg shadow-primary/20">
                     <Plus className="mr-2 h-4 w-4" />
                     Добавить сотрудника
                 </Button>
@@ -83,49 +82,69 @@ export function StaffPageClient({
 
             <ProductionNav />
 
-            {/* Stats */}
+            {/* Stats Overview (Bento Style) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        Всего сотрудников
-                    </p>
-                    <p className="text-2xl font-bold">{staff.length}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                        <UserCheck className="h-4 w-4" />
-                        Активных
-                    </p>
-                    <p className="text-2xl font-bold text-green-600">{activeStaffCount}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground flex items-center gap-2">
-                        <Briefcase className="h-4 w-4" />
-                        Задач в работе
-                    </p>
-                    <p className="text-2xl font-bold">{totalActiveTasks}</p>
-                </Card>
-                <Card className="p-4">
-                    <p className="text-sm text-muted-foreground">Выполнено задач</p>
-                    <p className="text-2xl font-bold">{totalCompletedTasks}</p>
-                </Card>
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-slate-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                            <Users className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Всего сотрудников</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{staff.length}</span>
+                    </div>
+                </div>
+
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-emerald-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Активных</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{activeStaffCount}</span>
+                    </div>
+                </div>
+
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-amber-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+                            <Briefcase className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Задач в работе</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{totalActiveTasks}</span>
+                    </div>
+                </div>
+
+                <div className="crm-card flex flex-col justify-between">
+                    <div className="flex items-center gap-3 text-indigo-500 mb-4">
+                        <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                            <UserCheck className="w-4 h-4" />
+                        </div>
+                        <span className="text-xs font-bold tracking-tight">Выполнено</span>
+                    </div>
+                    <div>
+                        <span className="text-3xl font-bold text-slate-900">{totalCompletedTasks}</span>
+                    </div>
+                </div>
             </div>
 
-            {/* Search */}
-            <div className="relative max-w-sm">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
+            {/* Toolbar */}
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+                <SearchInput
                     placeholder="Поиск по имени или должности..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="pl-9"
                 />
             </div>
 
             {/* Grid */}
             {filteredStaff.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                     {filteredStaff.map((member) => (
                         <StaffCard
                             key={member.id}
@@ -138,19 +157,24 @@ export function StaffPageClient({
                     ))}
                 </div>
             ) : (
-                <Card className="p-12 text-center">
-                    <Users className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                    <h3 className="mt-4 text-lg font-medium">Нет сотрудников</h3>
-                    <p className="mt-2 text-muted-foreground">
-                        {search ? "Попробуйте изменить поисковый запрос" : "Добавьте первого сотрудника"}
+                <div className="crm-card p-12 py-20 text-center flex flex-col items-center border-dashed border-2 bg-slate-50/50">
+                    <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-6">
+                        <Users className="h-10 w-10 text-slate-300" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-900">Сотрудники не найдены</h3>
+                    <p className="mt-2 text-slate-500 max-w-xs mx-auto text-sm">
+                        {search ? "Попробуйте изменить параметры поиска." : "Вы еще не добавили ни одного сотрудника производства."}
                     </p>
                     {!search && (
-                        <Button className="mt-4" onClick={() => setIsCreateOpen(true)}>
+                        <Button 
+                            className="mt-8 rounded-xl px-8 h-12 shadow-lg shadow-primary/20" 
+                            onClick={() => setIsCreateOpen(true)}
+                        >
                             <Plus className="mr-2 h-4 w-4" />
                             Добавить сотрудника
                         </Button>
                     )}
-                </Card>
+                </div>
             )}
 
             {/* Create Dialog */}

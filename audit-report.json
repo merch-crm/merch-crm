@@ -1,78 +1,26 @@
 {
-  "timestamp": "12.03.2026, 18:26:46",
-  "duration": 14746,
+  "timestamp": "14.03.2026, 23:21:36",
+  "duration": 15211,
   "projectName": "MerchCRM",
-  "errors": [
-    {
-      "file": "app/(main)/dashboard/production/application-types/components/application-type-form-dialog.tsx",
-      "severity": "info",
-      "category": "Производительность",
-      "message": "Файл длинный: 557 строк"
-    },
-    {
-      "file": "drizzle/relations.ts",
-      "severity": "info",
-      "category": "Производительность",
-      "message": "Файл длинный: 584 строк"
-    },
-    {
-      "file": "app/(main)/dashboard/design/editor/actions/export-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для export-actions"
-    },
-    {
-      "file": "app/(main)/dashboard/design/editor/actions/font-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для font-actions"
-    },
-    {
-      "file": "app/(main)/dashboard/design/prints/actions/mockup-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для mockup-actions"
-    },
-    {
-      "file": "app/(main)/dashboard/production/actions/dashboard-lines-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для dashboard-lines-actions"
-    },
-    {
-      "file": "app/(main)/dashboard/production/actions/dashboard-stats-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для dashboard-stats-actions"
-    },
-    {
-      "file": "app/(main)/dashboard/production/actions/task-stats-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для task-stats-actions"
-    }
-  ],
+  "errors": [],
   "stats": {
-    "totalFiles": 1130,
-    "totalLines": 155185,
-    "totalSize": 6761131,
-    "pagesCount": 76,
-    "componentsCount": 224,
+    "totalFiles": 1247,
+    "totalLines": 173687,
+    "totalSize": 7433636,
+    "pagesCount": 83,
+    "componentsCount": 225,
     "hooksCount": 10,
-    "actionsCount": 103,
+    "actionsCount": 112,
     "typesCount": 13,
     "apiRoutesCount": 25,
-    "formsCount": 48,
-    "testsCount": 172,
-    "tablesCount": 73,
+    "formsCount": 51,
+    "testsCount": 196,
+    "tablesCount": 78,
     "migrationsCount": 33,
     "typescriptErrors": 0,
     "lintErrors": 0,
     "lintWarnings": 0,
-    "byCategory": {
-      "Производительность": 2,
-      "Тесты": 6
-    }
+    "byCategory": {}
   },
   "health": {
     "score": 100,

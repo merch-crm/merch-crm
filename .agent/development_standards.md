@@ -8,6 +8,16 @@
 
 ---
 
+## 0. Технологический стек
+- **Framework**: Next.js 16.1.6 (App Router + Turbopack)
+- **Runtime**: Node.js 20+
+- **Styling**: Tailwind CSS v4 (Engine: Oxide)
+- **Database**: PostgreSQL (Managed on Reg.ru)
+- **ORM**: Drizzle ORM
+- **Authentication**: Better Auth (Redis-based sessions)
+
+---
+
 ## 1. Уведомления и взаимодействие с пользователем
 - **Никаких стандартных браузерных уведомлений**: Не используйте `alert()`, `confirm()` или `prompt()`.
 - **Кастомные уведомления (Toasts)**: Используйте хук `useToast` из `@/components/ui/toast`.
@@ -138,10 +148,10 @@ AI обязан использовать существующие компоне
 
 > **Правило**: Перед созданием нового компонента — проверь, нет ли готового в `/components`.
 
-## 10. Работа с медиа (Изображения)
-
 - **Конвертация в WebP**: При загрузке **любого** изображения оно должно автоматически конвертироваться в формат `.webp` для оптимизации.
-- **Инструмент**: Используйте функцию `compressImage` из `@/lib/image-processing`. Не пишите свои Canvas-скрипты.
+- **Инструментарий**: 
+  - На сервере (Server Actions): Используйте библиотеку `sharp` для быстрой и качественной обработки.
+  - На клиенте: Используйте функцию `compressImage` из `@/lib/image-processing.ts`.
   ```tsx
   import { compressImage } from "@/lib/image-processing";
   const { file, preview } = await compressImage(originalFile, { type: "image/webp" });
