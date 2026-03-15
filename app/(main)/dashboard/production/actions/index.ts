@@ -1,8 +1,6 @@
-export * from "./application-type-actions";
-export * from "./equipment-actions";
-export * from "./line-actions";
-export * from "./staff-actions";
-export * from "./task-actions";
-export { getProductionStats, type ProductionStats } from "./dashboard-stats-actions";
-export { getTasksByLine, type LineLoad } from "./dashboard-lines-actions";
-export * from "./production-dashboard-actions";
+// app/(main)/dashboard/production/actions/index.ts
+
+// Новые actions для bento-дашборда
+export * from "./bento-dashboard-actions";
+export * from "./warehouse-integration-actions";
+export * from "./defect-actions";

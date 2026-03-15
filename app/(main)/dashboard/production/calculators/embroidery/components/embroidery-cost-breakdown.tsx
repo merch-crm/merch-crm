@@ -18,6 +18,7 @@ export const EmbroideryCostBreakdown = memo(function EmbroideryCostBreakdown({
     totalDigitizingCost,
     totalSetupCost,
     totalExtraColorsCost,
+    materialsCost = 0,
     totalCostBeforeDiscount,
     discountAmount
   } = result
@@ -27,7 +28,8 @@ export const EmbroideryCostBreakdown = memo(function EmbroideryCostBreakdown({
     { label: 'Вышивка (работа)', value: totalEmbroideryCost, color: 'bg-pink-500', percentage: (totalEmbroideryCost / totalCostBeforeDiscount) * 100 },
     { label: 'Дигитайзинг', value: totalDigitizingCost, color: 'bg-indigo-500', percentage: (totalDigitizingCost / totalCostBeforeDiscount) * 100 },
     { label: 'Подготовка/Настройка', value: totalSetupCost, color: 'bg-blue-500', percentage: (totalSetupCost / totalCostBeforeDiscount) * 100 },
-    { label: 'Доп. цвета нитей', value: totalExtraColorsCost, color: 'bg-amber-500', percentage: (totalExtraColorsCost / totalCostBeforeDiscount) * 100 }
+    { label: 'Доп. цвета нитей', value: totalExtraColorsCost, color: 'bg-amber-500', percentage: (totalExtraColorsCost / totalCostBeforeDiscount) * 100 },
+    { label: 'Материалы со склада', value: materialsCost, color: 'bg-cyan-500', percentage: (materialsCost / totalCostBeforeDiscount) * 100 }
   ].filter(s => s.value > 0)
 
   return (

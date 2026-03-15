@@ -1,5 +1,5 @@
 import { pgTable, uuid, varchar, text, integer, boolean, timestamp, pgEnum, index, uniqueIndex, jsonb } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import { users } from "./users";
 import { orders, orderItems } from "./orders";
 
@@ -240,6 +240,11 @@ export const productionTasks = pgTable("production_tasks", {
     // Количество
     quantity: integer("quantity").notNull().default(1),
     completedQuantity: integer("completed_quantity").default(0),
+    defectQuantity: integer("defect_quantity").default(0),
+
+    // Категория и детали брака
+    defectCategory: varchar("defect_category", { length: 50 }),
+    defectComment: text("defect_comment"),
 
     // Статус и приоритет
     status: productionTaskStatusEnum("status").notNull().default("pending"),
@@ -284,6 +289,10 @@ export const productionTasks = pgTable("production_tasks", {
     dueDateIdx: index("production_tasks_due_date_idx").on(table.dueDate),
     sortOrderIdx: index("production_tasks_sort_order_idx").on(table.sortOrder),
     createdAtIdx: index("production_tasks_created_at_idx").on(table.createdAt),
+    // Индекс для статистики брака
+    defectCategoryIdx: index("idx_production_tasks_defect_category")
+        .on(table.defectCategory)
+        .where(sql`${table.defectQuantity} > 0`),
 }));
 
 // === ЛОГИ ПРОИЗВОДСТВА ===

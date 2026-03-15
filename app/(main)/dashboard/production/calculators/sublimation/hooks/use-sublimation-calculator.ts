@@ -1,182 +1,204 @@
-'use client'
+"use client";
 
-import { useMemo } from 'react'
-import {
-  calculateAllGroupsLayout,
-  calculateEfficiency
-} from '../../lib/layout-utils'
-import {
-  getPricePerMeter,
-  calculateCostStats
-} from '../../lib/pricing-utils'
-import {
-  calculateConsumption,
-  calculateMaterialsCost
-} from '../../lib/consumption-utils'
-import {
-  type PrintGroupInput,
-  type CalculatorParams,
-  type MeterPriceTierData,
-  type PlacementData,
-  type ConsumablesConfigData,
-  type CalculationResult,
-  type CalculatedSection,
-  PRINT_GROUP_COLORS,
-  SUBLIMATION_PRODUCTS,
-  SUBLIMATION_FABRIC_PRICES
-} from '../../types'
+import { useState, useCallback, useMemo } from "react";
+import type { SelectedMaterial } from "@/app/(main)/dashboard/production/components/warehouse-materials-list";
 
-interface UseSublimationCalculatorParams {
-  groups: PrintGroupInput[]
-  params: CalculatorParams
-  meterPricing: MeterPriceTierData[]
-  placements: PlacementData[]
-  consumablesConfig: ConsumablesConfigData | null
-  calculationMode: 'products' | 'custom' | 'fabric'
-  fabricParams?: {
-    fabricType: string
-    widthM: number
-    lengthM: number
-    quantity: number
-  }
+export interface SublimationSettings {
+  quantity: number;
+  productType: "tshirt" | "mug" | "plate" | "pillow" | "mousepad" | "puzzle" | "custom";
+  size: "small" | "medium" | "large" | "xlarge";
+  coverage: number; // процент покрытия 0-100
+  quality: "standard" | "premium";
+  coating: "none" | "glossy" | "matte";
+  urgency: "normal" | "express" | "urgent";
 }
 
-export function useSublimationCalculator({
-  groups,
-  params,
-  meterPricing,
-  placements,
-  consumablesConfig,
-  calculationMode,
-  fabricParams
-}: UseSublimationCalculatorParams): CalculationResult | null {
-  return useMemo(() => {
-    // 1. Фильтруем заполненные группы
-    const filledGroups = groups.filter(
-      g => g.widthMm > 0 && g.heightMm > 0 && g.quantity > 0
-    )
+export interface SublimationPricing {
+  productPrices: Record<string, Record<string, number>>;
+  coverageMultiplier: number;
+  qualityMultipliers: Record<string, number>;
+  coatingPrices: Record<string, number>;
+  urgencyMultipliers: Record<string, number>;
+  setupFee: number;
+  minOrderFee: number;
+}
 
-    if (filledGroups.length === 0) {
-      return null
-    }
+export interface CalculationResult {
+  perItem: number;
+  total: number;
+  materialsCost: number;
+  printCost: number;
+  productCost: number;
+  coatingCost: number;
+  setupCost: number;
+  discount: number;
+  breakdown: {
+    label: string;
+    value: number;
+    type: "cost" | "fee" | "discount";
+  }[];
+}
 
-    // 2. Рассчитываем раскладку
-    const layoutDetails = calculateAllGroupsLayout(filledGroups, params)
-    const totalLengthM = layoutDetails.totalLengthMm / 1000
-    
-    // 3. Получаем цену за метр бумаги
-    const pricePerMeter = getPricePerMeter(
-      meterPricing,
-      params.rollWidthMm,
-      totalLengthM
-    )
+const DEFAULT_PRICING: SublimationPricing = {
+  productPrices: {
+    tshirt: { small: 250, medium: 300, large: 350, xlarge: 400 },
+    mug: { small: 150, medium: 180, large: 220, xlarge: 280 },
+    plate: { small: 200, medium: 280, large: 350, xlarge: 450 },
+    pillow: { small: 350, medium: 450, large: 550, xlarge: 700 },
+    mousepad: { small: 120, medium: 150, large: 200, xlarge: 250 },
+    puzzle: { small: 300, medium: 400, large: 550, xlarge: 750 },
+    custom: { small: 200, medium: 300, large: 400, xlarge: 500 },
+  },
+  coverageMultiplier: 0.005, // за каждый % покрытия
+  qualityMultipliers: {
+    standard: 1,
+    premium: 1.3,
+  },
+  coatingPrices: {
+    none: 0,
+    glossy: 30,
+    matte: 25,
+  },
+  urgencyMultipliers: {
+    normal: 1,
+    express: 1.25,
+    urgent: 1.5,
+  },
+  setupFee: 150,
+  minOrderFee: 500,
+};
 
-    // 4. Стоимость печати (метраж бумаги)
-    const printCostTotal = totalLengthM * pricePerMeter
+const QUANTITY_DISCOUNTS = [
+  { min: 200, discount: 0.2 },
+  { min: 100, discount: 0.15 },
+  { min: 50, discount: 0.1 },
+  { min: 20, discount: 0.05 },
+];
 
-    // 5. Рассчитываем секции с детализацией стоимости
-    const sections: CalculatedSection[] = layoutDetails.sections.map((layoutSection, index) => {
-      const group = filledGroups[index]
-      
-      // Находим продукт если есть
-      const product = group.productId 
-        ? SUBLIMATION_PRODUCTS.find(p => p.id === group.productId)
-        : undefined
+export function useSublimationCalculator() {
+  const [settings, setSettings] = useState<SublimationSettings>({
+    quantity: 1,
+    productType: "tshirt",
+    size: "medium",
+    coverage: 80,
+    quality: "standard",
+    coating: "none",
+    urgency: "normal",
+  });
+  const [materials, setMaterials] = useState<SelectedMaterial[]>([]);
+  const [pricing, setPricing] = useState<SublimationPricing>(DEFAULT_PRICING);
+  const [margin, setMargin] = useState(30);
 
-      const placement = group.placementId 
-        ? placements.find(p => p.id === group.placementId)
-        : undefined
+  const updateSettings = useCallback((updates: Partial<SublimationSettings>) => {
+    setSettings((prev) => ({ ...prev, ...updates }));
+  }, []);
 
-      // Стоимость нанесения
-      const placementCost = (placement?.workPrice || 0) * group.quantity
-      
-      // Стоимость метража для этой секции
-      const sectionPrintCost = (layoutSection.sectionLengthMm / 1000) * pricePerMeter
+  const materialsCost = useMemo(() => {
+    return materials.reduce((sum, m) => sum + m.price * m.quantity, 0);
+  }, [materials]);
 
-      // Стоимость заготовки (для продуктов)
-      const blankCostPerUnit = product?.pricePerUnit || group.productPrice || 0
-      const totalBlankCost = blankCostPerUnit * group.quantity
+  const calculation = useMemo((): CalculationResult => {
+    const { quantity, productType, size, coverage, quality, coating, urgency } = settings;
 
-      return {
-        ...layoutSection,
-        groupId: group.id,
-        name: group.name || product?.name || `Группа ${index + 1}`,
-        color: group.color || PRINT_GROUP_COLORS[index % PRINT_GROUP_COLORS.length],
-        widthMm: group.widthMm,
-        heightMm: group.heightMm,
-        quantity: group.quantity,
-        placementId: group.placementId,
-        placementName: placement?.name,
-        placementCost: placement?.workPrice || 0,
-        printCost: sectionPrintCost,
-        workCost: placementCost,
-        blankCost: totalBlankCost,
-        sectionCost: sectionPrintCost + placementCost + totalBlankCost,
-        costPerPrint: (sectionPrintCost + placementCost + totalBlankCost) / group.quantity,
-        sortOrder: index
+    // Базовая стоимость продукта
+    const productCost = pricing.productPrices[productType]?.[size] || 200;
+
+    // Стоимость печати (зависит от покрытия)
+    const coverageCost = productCost * (coverage / 100) * pricing.coverageMultiplier * 100;
+
+    // Качество
+    const qualityMult = pricing.qualityMultipliers[quality];
+
+    // Покрытие
+    const coatingCost = pricing.coatingPrices[coating];
+
+    // Базовая себестоимость
+    let costPerItem = (productCost + coverageCost) * qualityMult + coatingCost;
+
+    // Срочность
+    const urgencyMult = pricing.urgencyMultipliers[urgency];
+    costPerItem *= urgencyMult;
+
+    // Материалы
+    const materialsPerItem = quantity > 0 ? materialsCost / quantity : 0;
+    costPerItem += materialsPerItem;
+
+    // Скидка
+    let discount = 0;
+    for (const tier of QUANTITY_DISCOUNTS) {
+      if (quantity >= tier.min) {
+        discount = tier.discount;
+        break;
       }
-    })
-
-    // 6. Общие итоги стоимости
-    const totalPlacementCost = sections.reduce((sum, s) => sum + s.workCost, 0)
-    const totalBlanksCost = sections.reduce((sum, s) => sum + (s.blankCost || 0), 0)
-    const totalPrints = filledGroups.reduce((sum, g) => sum + g.quantity, 0)
-
-    // 7. Расход материалов
-    const consumption = calculateConsumption(
-      layoutDetails.printsAreaM2,
-      layoutDetails.totalAreaM2,
-      consumablesConfig || { applicationType: 'sublimation' } as ConsumablesConfigData,
-      'sublimation'
-    )
-
-    // 8. Стоимость материалов (чернила + бумага)
-    const materialsCost = calculateMaterialsCost(consumption)
-
-    // 9. Специфично для режима ткани: стоимость самой ткани
-    let fabricBaseCost = 0
-    if (calculationMode === 'fabric' && fabricParams) {
-        const fabricPriceM2 = SUBLIMATION_FABRIC_PRICES[fabricParams.fabricType] || 0
-        fabricBaseCost = (fabricParams.widthM * fabricParams.lengthM * fabricParams.quantity) * fabricPriceM2
-        
-        // Добавляем ткань в расход
-        consumption.push({
-            key: 'fabric',
-            name: 'Ткань',
-            value: fabricParams.widthM * fabricParams.lengthM * fabricParams.quantity,
-            unit: 'м²',
-        })
     }
 
-    // 10. Итоговая сумма
-    const totalCost = printCostTotal + totalPlacementCost + materialsCost + totalBlanksCost + fabricBaseCost
+    // Цена с наценкой
+    const pricePerItem = costPerItem * (1 + margin / 100) * (1 - discount);
 
-    // 11. Статистика цен за принт
-    const costStats = calculateCostStats(sections)
+    // Итого
+    let total = pricePerItem * quantity + pricing.setupFee;
+    if (total < pricing.minOrderFee) {
+      total = pricing.minOrderFee;
+    }
 
-    // 12. Эффективность использования бумаги
-    const efficiencyPercent = calculateEfficiency(
-      layoutDetails.printsAreaM2,
-      layoutDetails.totalAreaM2
-    )
+    // Breakdown
+    const breakdown: CalculationResult["breakdown"] = [
+      { label: "Заготовка", value: productCost * quantity, type: "cost" },
+      { label: `Печать (${coverage}% покрытия)`, value: coverageCost * quantity, type: "cost" },
+    ];
+
+    if (coatingCost > 0) {
+      breakdown.push({ label: "Покрытие", value: coatingCost * quantity, type: "cost" });
+    }
+
+    if (materialsCost > 0) {
+      breakdown.push({ label: "Материалы со склада", value: materialsCost, type: "cost" });
+    }
+
+    breakdown.push({ label: "Настройка", value: pricing.setupFee, type: "fee" });
+
+    if (discount > 0) {
+      const discountValue = (pricePerItem * quantity * discount) / (1 - discount);
+      breakdown.push({ label: `Скидка ${Math.round(discount * 100)}%`, value: -discountValue, type: "discount" });
+    }
 
     return {
-      sections,
-      totalPrints: totalPrints,
-      totalLengthM: totalLengthM,
-      totalAreaM2: layoutDetails.totalAreaM2,
-      printsAreaM2: layoutDetails.printsAreaM2,
-      efficiencyPercent,
-      pricePerMeter,
-      printCost: printCostTotal,
-      placementCost: totalPlacementCost,
-      materialsCost: materialsCost + fabricBaseCost, // Ткань входит в материалы
-      blanksCost: totalBlanksCost,
-      totalCost,
-      avgCostPerPrint: costStats.avgCostPerPrint,
-      minCostPerPrint: costStats.minCostPerPrint,
-      maxCostPerPrint: costStats.maxCostPerPrint,
-      consumption
-    }
-  }, [groups, params, meterPricing, placements, consumablesConfig, calculationMode, fabricParams])
+      perItem: Math.round(pricePerItem),
+      total: Math.round(total),
+      materialsCost: Math.round(materialsCost),
+      printCost: Math.round(coverageCost * quantity),
+      productCost: Math.round(productCost * quantity),
+      coatingCost: Math.round(coatingCost * quantity),
+      setupCost: pricing.setupFee,
+      discount: Math.round(discount * 100),
+      breakdown,
+    };
+  }, [settings, materialsCost, pricing, margin]);
+
+  const reset = useCallback(() => {
+    setSettings({
+      quantity: 1,
+      productType: "tshirt",
+      size: "medium",
+      coverage: 80,
+      quality: "standard",
+      coating: "none",
+      urgency: "normal",
+    });
+    setMaterials([]);
+    setMargin(30);
+  }, []);
+
+  return {
+    settings,
+    materials,
+    pricing,
+    margin,
+    calculation,
+    updateSettings,
+    setMaterials,
+    setPricing,
+    setMargin,
+    reset,
+  };
 }

@@ -21,12 +21,10 @@ export default async function NewTaskPage() {
     const applicationTypes = (typesResult.success && typesResult.data) ? typesResult.data : [];
 
     return (
-        <div className="container py-6 max-w-2xl">
-            <NewTaskPageClient
-                lines={lines}
-                staff={staff}
-                applicationTypes={applicationTypes}
-            />
-        </div>
+        <NewTaskPageClient
+            lines={lines}
+            staff={staff}
+            applicationTypes={applicationTypes}
+        />
     );
 }

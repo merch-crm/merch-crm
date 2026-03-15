@@ -47,6 +47,8 @@ const embroideryCalculationSchema = z.object({
     threadConsumption: z.object({
       totalThreadMeters: z.number(),
     }).optional(),
+    materials: z.array(z.any()).optional(),
+    materialsCost: z.number().optional(),
   }),
   notes: z.string().optional(),
 })
@@ -111,7 +113,9 @@ export async function saveEmbroideryCalculation(
             threadConsumption: validated.result.threadConsumption,
             extraColorsCost: validated.result.totalExtraColorsCost,
             discountAmount: validated.result.discountAmount,
-            designs: validated.designs
+            designs: validated.designs,
+            materials: validated.result.materials,
+            materialsCost: validated.result.materialsCost
           },
           createdBy: session.id
         })

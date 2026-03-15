@@ -7,10 +7,13 @@ import {
   type EmbroideryCalculationResult,
 } from '../../embroidery-types'
 
+import type { SelectedMaterial } from "@/app/(main)/dashboard/production/components/warehouse-materials-list";
+
 export interface EmbroideryState {
   // Data
   designs: EmbroideryDesign[]
   orders: EmbroideryPrintInput[]
+  materials: SelectedMaterial[]
   result: EmbroideryCalculationResult | null
   calculationError: string | null
 
@@ -34,6 +37,7 @@ export type EmbroideryAction =
   | { type: 'SET_RESULT'; payload: EmbroideryCalculationResult | null }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_SAVED_INFO'; payload: { id: string; number: string } | null }
+  | { type: 'SET_MATERIALS'; payload: SelectedMaterial[] }
   | { type: 'SET_UI'; payload: { key: 'isCalculating' | 'isSaving' | 'isCopying' | 'showHistory'; value: boolean } }
 
 function embroideryReducer(state: EmbroideryState, action: EmbroideryAction): EmbroideryState {
@@ -92,6 +96,8 @@ function embroideryReducer(state: EmbroideryState, action: EmbroideryAction): Em
       return { ...state, calculationError: action.payload }
     case 'SET_SAVED_INFO':
       return { ...state, savedCalculationInfo: action.payload }
+    case 'SET_MATERIALS':
+      return { ...state, materials: action.payload, result: null, savedCalculationInfo: null }
     case 'SET_UI':
       return { ...state, [action.payload.key]: action.payload.value }
     default:
@@ -103,6 +109,7 @@ export function useEmbroideryState() {
   const [state, dispatch] = useReducer(embroideryReducer, {
     designs: [],
     orders: [],
+    materials: [],
     result: null,
     calculationError: null,
     isCalculating: false,

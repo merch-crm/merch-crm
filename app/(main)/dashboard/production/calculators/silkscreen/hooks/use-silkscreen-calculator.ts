@@ -1,189 +1,235 @@
-'use client'
+"use client";
 
-import { useMemo } from 'react'
-import {
-  type SilkscreenPrintInput,
-  type SilkscreenCalculationResult,
-  type InkType,
-  SILKSCREEN_GARMENTS,
-  SILKSCREEN_POSITIONS,
-  SILKSCREEN_PRINT_SIZES,
-  SILKSCREEN_INK_TYPES,
-  SILKSCREEN_SCREEN_PRICING,
-  SILKSCREEN_QUANTITY_DISCOUNTS
-} from '../../types'
+import { useState, useCallback, useMemo } from "react";
+import type { SelectedMaterial } from "@/app/(main)/dashboard/production/components/warehouse-materials-list";
 
-interface UseSilkscreenCalculatorParams {
-  orders: SilkscreenPrintInput[]
-  includeScreens: boolean
+export interface SilkscreenSettings {
+  quantity: number;
+  colors: number;
+  printLocations: number; // количество мест печати
+  size: "small" | "medium" | "large" | "xlarge";
+  inkType: "plastisol" | "waterbase" | "discharge" | "specialty";
+  meshCount: "low" | "medium" | "high";
+  urgency: "normal" | "express" | "urgent";
 }
 
-export function useSilkscreenCalculator({
-  orders,
-  includeScreens
-}: UseSilkscreenCalculatorParams): SilkscreenCalculationResult | null {
-  return useMemo(() => {
-    // Фильтруем валидные заказы
-    const validOrders = (orders || []).filter(o => 
-      o.positions.length > 0 && o.quantity > 0
-    )
+export interface SilkscreenPricing {
+  basePrice: number;
+  colorPrice: number;
+  locationPrice: number;
+  sizePrices: Record<string, number>;
+  inkPrices: Record<string, number>;
+  meshMultipliers: Record<string, number>;
+  screenFee: number; // за каждый экран
+  setupFee: number;
+  urgencyMultipliers: Record<string, number>;
+  minOrderQuantity: number;
+  minOrderFee: number;
+}
 
-    if (validOrders.length === 0) {
-      return null
-    }
+export interface CalculationResult {
+  perItem: number;
+  total: number;
+  materialsCost: number;
+  printCost: number;
+  screensCost: number;
+  setupCost: number;
+  discount: number;
+  screensNeeded: number;
+  breakdown: {
+    label: string;
+    value: number;
+    type: "cost" | "fee" | "discount";
+  }[];
+}
 
-    // Общее количество изделий
-    const totalQuantity = validOrders.reduce((sum, o) => sum + o.quantity, 0)
+const DEFAULT_PRICING: SilkscreenPricing = {
+  basePrice: 30,
+  colorPrice: 25,
+  locationPrice: 40,
+  sizePrices: {
+    small: 0,
+    medium: 10,
+    large: 25,
+    xlarge: 40,
+  },
+  inkPrices: {
+    plastisol: 0,
+    waterbase: 15,
+    discharge: 30,
+    specialty: 50,
+  },
+  meshMultipliers: {
+    low: 0.9,
+    medium: 1,
+    high: 1.2,
+  },
+  screenFee: 800, // стоимость изготовления одного экрана
+  setupFee: 500,
+  urgencyMultipliers: {
+    normal: 1,
+    express: 1.3,
+    urgent: 1.6,
+  },
+  minOrderQuantity: 20,
+  minOrderFee: 2000,
+};
 
-    // Находим скидку за тираж
-    const quantityDiscountInfo = SILKSCREEN_QUANTITY_DISCOUNTS.find(d => 
-      totalQuantity >= d.minQuantity && (d.maxQuantity === null || totalQuantity <= d.maxQuantity)
-    )
-    const discountPercent = quantityDiscountInfo?.discount || 0
+const QUANTITY_DISCOUNTS = [
+  { min: 1000, discount: 0.25 },
+  { min: 500, discount: 0.2 },
+  { min: 200, discount: 0.15 },
+  { min: 100, discount: 0.1 },
+  { min: 50, discount: 0.05 },
+];
 
-    // Общее количество цветов для ценообразования трафаретов
-    const totalColorsCount = validOrders.reduce((sum, order) => 
-      sum + order.positions.reduce((pSum, pos) => pSum + pos.colors.length, 0), 0
-    )
+export function useSilkscreenCalculator() {
+  const [settings, setSettings] = useState<SilkscreenSettings>({
+    quantity: 50,
+    colors: 2,
+    printLocations: 1,
+    size: "medium",
+    inkType: "plastisol",
+    meshCount: "medium",
+    urgency: "normal",
+  });
+  const [materials, setMaterials] = useState<SelectedMaterial[]>([]);
+  const [pricing, setPricing] = useState<SilkscreenPricing>(DEFAULT_PRICING);
+  const [margin, setMargin] = useState(30);
 
-    // Получаем цены трафаретов в зависимости от количества цветов
-    const screenPricing = SILKSCREEN_SCREEN_PRICING.find(sp => sp.colorCount >= totalColorsCount) 
-      || SILKSCREEN_SCREEN_PRICING[SILKSCREEN_SCREEN_PRICING.length - 1]
-    
-    if (!screenPricing) return null
+  const updateSettings = useCallback((updates: Partial<SilkscreenSettings>) => {
+    setSettings((prev) => ({ ...prev, ...updates }));
+  }, []);
 
-    // Расчёт по позициям (аккумулируем для всех заказов)
-    const positionsMap = new Map<string, {
-      positionId: string
-      positionName: string
-      sizeId: string
-      sizeName: string
-      colorsCount: number
-      colors: Array<{
-        inkType: InkType
-        inkName: string
-        isUnderbase: boolean
-        screenCost: number
-        setupCost: number
-        printCostPerItem: number
-        totalPrintCost: number
-      }>
-      totalScreensCost: number
-      totalSetupCost: number
-      printCostPerItem: number
-      totalPrintCost: number
-    }>()
+  const materialsCost = useMemo(() => {
+    return materials.reduce((sum, m) => sum + m.price * m.quantity, 0);
+  }, [materials]);
 
-    let totalGarmentCost = 0
-    let totalScreensCost = 0
-    let totalSetupCost = 0
-    let totalPrintCostBeforeDiscount = 0
+  const calculation = useMemo((): CalculationResult => {
+    const { quantity, colors, printLocations, size, inkType, meshCount, urgency } = settings;
 
-    validOrders.forEach(order => {
-      const garment = SILKSCREEN_GARMENTS.find(g => g.id === order.garmentId)
-      if (!garment) return
+    // Количество экранов
+    const screensNeeded = colors * printLocations;
 
-      // Стоимость заготовок
-      totalGarmentCost += garment.basePrice * order.quantity
+    // Базовая стоимость печати за единицу
+    const sizePrice = pricing.sizePrices[size];
+    const inkPrice = pricing.inkPrices[inkType];
+    const meshMult = pricing.meshMultipliers[meshCount];
 
-      order.positions.forEach(pos => {
-        const position = SILKSCREEN_POSITIONS.find(p => p.id === pos.positionId)
-        const size = SILKSCREEN_PRINT_SIZES.find(s => s.id === pos.sizeId)
-        if (!position || !size) return
+    let printCostPerItem = pricing.basePrice;
+    printCostPerItem += colors * pricing.colorPrice;
+    printCostPerItem += (printLocations - 1) * pricing.locationPrice;
+    printCostPerItem += sizePrice;
+    printCostPerItem += inkPrice;
+    printCostPerItem *= meshMult;
 
-        const posKey = `${pos.positionId}-${pos.sizeId}`
+    // Срочность
+    const urgencyMult = pricing.urgencyMultipliers[urgency];
+    printCostPerItem *= urgencyMult;
 
-        // Расчёт по цветам
-        const colorsResult = pos.colors.map(color => {
-          const inkInfo = SILKSCREEN_INK_TYPES.find(i => i.id === color.inkType)
-          const priceMultiplier = inkInfo?.priceMultiplier || 1
+    // Стоимость экранов (единоразово)
+    const screensCost = screensNeeded * pricing.screenFee;
 
-          // Стоимость трафарета (один раз на весь тираж)
-          const screenCost = includeScreens ? screenPricing.screenPrice : 0
-          
-          // Приладка
-          const setupCost = screenPricing.setupPrice + size.setupPrice
-          
-          // Стоимость печати за изделие
-          const printCostPerItem = size.basePrice * priceMultiplier
-          
-          // Общая стоимость печати этого цвета
-          const totalPrintCost = printCostPerItem * order.quantity
+    // Материалы на единицу
+    const materialsPerItem = quantity > 0 ? materialsCost / quantity : 0;
+    const costPerItem = printCostPerItem + materialsPerItem;
 
-          return {
-            inkType: color.inkType,
-            inkName: inkInfo?.name || color.inkType,
-            isUnderbase: color.isUnderbase,
-            screenCost,
-            setupCost,
-            printCostPerItem,
-            totalPrintCost
-          }
-        })
-
-        // Аккумулируем или создаём позицию
-        const existingPos = positionsMap.get(posKey)
-        
-        if (existingPos) {
-          // Добавляем к существующей
-          existingPos.colors.push(...colorsResult)
-          existingPos.colorsCount += colorsResult.length
-          existingPos.totalScreensCost += colorsResult.reduce((s, c) => s + c.screenCost, 0)
-          existingPos.totalSetupCost += colorsResult.reduce((s, c) => s + c.setupCost, 0)
-          existingPos.totalPrintCost += colorsResult.reduce((s, c) => s + c.totalPrintCost, 0)
-          existingPos.printCostPerItem = existingPos.totalPrintCost / totalQuantity
-        } else {
-          positionsMap.set(posKey, {
-            positionId: pos.positionId,
-            positionName: position.name,
-            sizeId: pos.sizeId,
-            sizeName: size.name,
-            colorsCount: colorsResult.length,
-            colors: colorsResult,
-            totalScreensCost: colorsResult.reduce((s, c) => s + c.screenCost, 0),
-            totalSetupCost: colorsResult.reduce((s, c) => s + c.setupCost, 0),
-            printCostPerItem: colorsResult.reduce((s, c) => s + c.printCostPerItem, 0),
-            totalPrintCost: colorsResult.reduce((s, c) => s + c.totalPrintCost, 0)
-          })
-        }
-
-        // Накапливаем общие суммы
-        totalScreensCost += colorsResult.reduce((s, c) => s + c.screenCost, 0)
-        totalSetupCost += colorsResult.reduce((s, c) => s + c.setupCost, 0)
-        totalPrintCostBeforeDiscount += colorsResult.reduce((s, c) => s + c.totalPrintCost, 0)
-      })
-    })
-
-    const positions = Array.from(positionsMap.values())
-
-    // Применяем скидку к печати
-    const discountAmount = (totalPrintCostBeforeDiscount * discountPercent) / 100
-    const totalPrintCost = totalPrintCostBeforeDiscount - discountAmount
-
-    // Итоговая стоимость
-    const totalCost = totalGarmentCost + totalScreensCost + totalSetupCost + totalPrintCost
-    const costPerItem = totalCost / totalQuantity
-
-    return {
-      positions,
-      quantity: totalQuantity,
-      garmentCost: totalGarmentCost,
-      totalScreensCost,
-      totalSetupCost,
-      printCostBeforeDiscount: totalPrintCostBeforeDiscount,
-      quantityDiscount: discountAmount,
-      discountPercent,
-      totalPrintCost,
-      totalCost,
-      costPerItem,
-      breakdown: {
-        garments: totalGarmentCost,
-        screens: totalScreensCost,
-        setup: totalSetupCost,
-        printing: totalPrintCost,
-        discount: discountAmount,
-        total: totalCost
+    // Скидка за объём
+    let discount = 0;
+    for (const tier of QUANTITY_DISCOUNTS) {
+      if (quantity >= tier.min) {
+        discount = tier.discount;
+        break;
       }
     }
-  }, [orders, includeScreens])
+
+    // Цена с наценкой
+    const pricePerItem = costPerItem * (1 + margin / 100) * (1 - discount);
+
+    // Итого
+    let total = pricePerItem * quantity + screensCost + pricing.setupFee;
+
+    // Минимальный заказ
+    if (quantity < pricing.minOrderQuantity) {
+      total = Math.max(total, pricing.minOrderFee);
+    }
+
+    // Breakdown
+    const breakdown: CalculationResult["breakdown"] = [
+      { label: "Базовая печать", value: pricing.basePrice * quantity, type: "cost" },
+      { label: `Цвета (${colors})`, value: colors * pricing.colorPrice * quantity, type: "cost" },
+    ];
+
+    if (printLocations > 1) {
+      breakdown.push({
+        label: `Доп. места печати (${printLocations - 1})`,
+        value: (printLocations - 1) * pricing.locationPrice * quantity,
+        type: "cost",
+      });
+    }
+
+    if (sizePrice > 0) {
+      breakdown.push({ label: "Размер принта", value: sizePrice * quantity, type: "cost" });
+    }
+
+    if (inkPrice > 0) {
+      breakdown.push({ label: "Тип краски", value: inkPrice * quantity, type: "cost" });
+    }
+
+    breakdown.push({
+      label: `Изготовление экранов (${screensNeeded})`,
+      value: screensCost,
+      type: "fee",
+    });
+
+    if (materialsCost > 0) {
+      breakdown.push({ label: "Материалы со склада", value: materialsCost, type: "cost" });
+    }
+
+    breakdown.push({ label: "Настройка", value: pricing.setupFee, type: "fee" });
+
+    if (discount > 0) {
+      const discountValue = (pricePerItem * quantity * discount) / (1 - discount);
+      breakdown.push({ label: `Скидка ${Math.round(discount * 100)}%`, value: -discountValue, type: "discount" });
+    }
+
+    return {
+      perItem: Math.round(pricePerItem),
+      total: Math.round(total),
+      materialsCost: Math.round(materialsCost),
+      printCost: Math.round(printCostPerItem * quantity),
+      screensCost,
+      setupCost: pricing.setupFee,
+      discount: Math.round(discount * 100),
+      screensNeeded,
+      breakdown,
+    };
+  }, [settings, materialsCost, pricing, margin]);
+
+  const reset = useCallback(() => {
+    setSettings({
+      quantity: 50,
+      colors: 2,
+      printLocations: 1,
+      size: "medium",
+      inkType: "plastisol",
+      meshCount: "medium",
+      urgency: "normal",
+    });
+    setMaterials([]);
+    setMargin(30);
+  }, []);
+
+  return {
+    settings,
+    materials,
+    pricing,
+    margin,
+    calculation,
+    updateSettings,
+    setMaterials,
+    setPricing,
+    setMargin,
+    reset,
+  };
 }

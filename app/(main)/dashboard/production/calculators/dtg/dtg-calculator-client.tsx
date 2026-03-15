@@ -1,445 +1,281 @@
-'use client'
+"use client";
 
-import { useEffect, useCallback, memo } from 'react'
-import dynamic from 'next/dynamic'
-import { motion } from 'framer-motion'
-import { 
-  Save, 
-  Trash2, 
-  Calculator as CalcIcon,
-  Plus,
-  History,
-  Settings
-} from 'lucide-react'
-import { v4 as uuidv4 } from 'uuid'
-
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { useToast } from '@/components/ui/toast'
-
-import { 
-  type ConsumablesConfigData,
-  type MeterPriceTierData,
-  type PlacementData,
-} from '../types'
-
+import { useEffect } from "react";
+import { Printer, Maximize2, Palette, Clock, RotateCcw } from "lucide-react";
+import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Select } from "@/components/ui/select";
 import {
-  type DtgPrintInput,
-  DTG_GARMENTS,
-  DTG_PRINT_POSITIONS
-} from '../dtg-types'
+  CalculatorLayout,
+  CalculatorSection,
+  CalculatorResults,
+  ResultRow,
+} from "../../components/calculator-layout";
+import { WarehouseMaterialsList } from "../../components/warehouse-materials-list";
+import { useDTGCalculator } from "./hooks/use-dtg-calculator";
+import { cn } from "@/lib/utils";
+import { pluralize } from "@/lib/pluralize";
 
-import { 
-  GarmentSelector, 
-  DtgOrderList, 
-  DtgResultSummary, 
-  DtgConsumptionCards 
-} from './components'
-import { useDtgCalculator } from './hooks/use-dtg-calculator'
-import { useDtgState } from './hooks/use-dtg-state'
-import { 
-  saveDtgCalculation, 
-  getCalculationDetails,
-  getMeterPricing,
-  getPlacements,
-  getConsumablesConfig
-} from '../actions'
+const FABRIC_COLORS = [
+  { value: "white", label: "Белый", description: "Без подложки" },
+  { value: "light", label: "Светлый", description: "Цветная ткань" },
+  { value: "dark", label: "Тёмный", description: "С подложкой" },
+  { value: "black", label: "Чёрный", description: "Макс. подложка" },
+];
 
-// Динамический импорт компонентов, чтобы избежать проблем с гидратацией
-const DownloadPdfButton = dynamic(
-  () => import('../components').then(mod => mod.DownloadPdfButton),
-  { ssr: false }
-)
+const QUALITY_OPTIONS = [
+  { value: "standard", label: "Стандарт", dpi: "720 DPI" },
+  { value: "high", label: "Высокое", dpi: "1440 DPI" },
+  { value: "photo", label: "Фото", dpi: "2880 DPI" },
+];
 
-const HistoryModal = dynamic(
-  () => import('../components').then(mod => mod.HistoryModal),
-  { ssr: false }
-)
+const FIXATION_OPTIONS = [
+  { value: "standard", label: "Стандартная" },
+  { value: "enhanced", label: "Усиленная" },
+];
 
-const CalculatorSettingsModal = dynamic(
-  () => import('../components').then(mod => mod.CalculatorSettingsModal),
-  { ssr: false }
-)
+const URGENCY_OPTIONS = [
+  { value: "normal", label: "Обычный", days: "3-5 дней" },
+  { value: "express", label: "Экспресс", days: "1-2 дня" },
+  { value: "urgent", label: "Срочный", days: "24 часа" },
+];
 
-interface DtgCalculatorClientProps {
-  initialMeterPricing: MeterPriceTierData[]
-  initialPlacements: PlacementData[]
-  initialConsumablesConfig: ConsumablesConfigData
-}
+export function DTGCalculatorClient() {
+  const { setCustomTrail } = useBreadcrumbs();
 
-const STORAGE_KEY = 'merch-crm-dtg-orders-v2'
+  const {
+    settings,
+    materials,
+    margin,
+    calculation,
+    updateSettings,
+    setMaterials,
+    setMargin,
+    reset,
+  } = useDTGCalculator();
 
-export const DtgCalculatorClient = memo(function DtgCalculatorClient({
-  initialMeterPricing,
-  initialPlacements,
-  initialConsumablesConfig
-}: DtgCalculatorClientProps) {
-  const { toast } = useToast()
-  
-  const { state, dispatch, setUi } = useDtgState({
-    meterPricing: initialMeterPricing,
-    placements: initialPlacements,
-    consumablesConfig: initialConsumablesConfig
-  })
-
-  const { orders, isHistoryOpen, isSettingsOpen, isSaving, savedNumber, consumablesConfig } = state
-
-  // Загрузка из localStorage при инициализации
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      try {
-        dispatch({ type: 'SET_ORDERS', payload: JSON.parse(saved) })
-      } catch (_e) {
-        console.error('Failed to load DTG orders', _e)
-      }
-    }
-  }, [dispatch])
-
-  // Сохранение в localStorage
-  useEffect(() => {
-    const ordersToSave = orders || []
-    if (ordersToSave.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(ordersToSave))
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  }, [orders])
-
-  // Расчёт
-  const result = useDtgCalculator({
-    orders,
-    _consumablesConfig: consumablesConfig
-  })
-
-  // Обработчики заказов
-  const handleAddGarment = useCallback((garmentId: string, color: 'light' | 'dark') => {
-    const garment = DTG_GARMENTS.find(g => g.id === garmentId)
-    if (!garment) return
-
-    const newOrder: DtgPrintInput = {
-      id: uuidv4(),
-      garmentId,
-      garmentColor: color,
-      positions: [
-        {
-          positionId: DTG_PRINT_POSITIONS[0].id,
-          widthMm: 210,
-          heightMm: 297,
-          fillPercent: 60
-        }
-      ],
-      quantity: 1
-    }
-
-    dispatch({ type: 'ADD_ORDER', payload: newOrder })
-    toast(`Добавлено: ${garment.name}`, 'success')
-  }, [toast, dispatch])
-
-  const handleUpdateOrder = useCallback((orderId: string, updates: Partial<DtgPrintInput>) => {
-    dispatch({ type: 'UPDATE_ORDER', payload: { id: orderId, updates } })
-  }, [dispatch])
-
-  const handleDeleteOrder = useCallback((orderId: string) => {
-    dispatch({ type: 'DELETE_ORDER', payload: orderId })
-    toast('Изделие удалено', 'info')
-  }, [toast, dispatch])
-
-  const handleDuplicateOrder = useCallback((orderId: string) => {
-    const orderToDup = orders.find(o => o.id === orderId)
-    if (!orderToDup) return
-    
-    const duplicate: DtgPrintInput = {
-      ...orderToDup,
-      id: uuidv4()
-    }
-    
-    dispatch({ type: 'DUPLICATE_ORDER', payload: duplicate })
-    toast('Копия создана', 'success')
-  }, [orders, toast, dispatch])
-
-  const handleClearAll = useCallback(() => {
-    dispatch({ type: 'CLEAR_ORDERS' })
-    toast('Расчёт очищен', 'info')
-  }, [toast, dispatch])
-
-  // Сохранение на сервер
-  const handleSave = useCallback(async () => {
-    if (!result || (orders || []).length === 0) return
-
-    setUi('isSaving', true)
-    try {
-      const res = await saveDtgCalculation({
-        items: (orders || []).map(o => ({
-          garmentId: o.garmentId,
-          garmentColor: o.garmentColor,
-          quantity: o.quantity,
-          positions: o.positions
-        })),
-        totalQuantity: result.totalQuantity,
-        totalGarmentCost: result.totalGarmentCost,
-        totalPrintCost: result.totalPrintCost,
-        totalWorkCost: result.totalWorkCost,
-        totalPrimerCost: result.totalPrimerCost,
-        totalCost: result.totalCost,
-        avgCostPerItem: result.avgCostPerItem,
-        consumption: result.consumption.map(c => ({
-          ...c,
-          color: c.key === 'primer' ? '#6366f1' : '#cbd5e1'
-        }))
-      })
-
-      if (res.success && res.data) {
-        dispatch({ type: 'SET_SAVED_NUMBER', payload: res.data.calculationNumber })
-        toast(`Расчёт №${res.data.calculationNumber} сохранён`, 'success')
-      } else if (!res.success) {
-        toast(!res.success && 'error' in res ? String(res.error) : 'Ошибка при сохранении', 'destructive')
-      }
-    } catch (_err) {
-      toast('Не удалось сохранить расчёт', 'destructive')
-    } finally {
-      setUi('isSaving', false)
-    }
-  }, [result, orders, toast, setUi, dispatch])
-
-  // История
-  const handleSelectFromHistory = useCallback(async (item: { id: string }) => {
-    try {
-      const res = await getCalculationDetails(item.id)
-      if (res.success && res.data) {
-        const { calculation } = res.data
-        if (calculation.consumptionData) {
-          const data = typeof calculation.consumptionData === 'string' 
-            ? JSON.parse(calculation.consumptionData) 
-            : (calculation.consumptionData as unknown as Record<string, unknown>)
-          
-          if (data.items) {
-            dispatch({ type: 'SET_ORDERS', payload: (data.items as DtgPrintInput[]).map((it) => ({
-              ...it,
-              id: uuidv4()
-            })) })
-            dispatch({ type: 'SET_SAVED_NUMBER', payload: calculation.calculationNumber })
-            toast(`Загружен расчёт №${calculation.calculationNumber}`, 'success')
-          }
-        }
-      }
-    } catch (_err) {
-      toast('Ошибка загрузки из истории', 'destructive')
-    }
-  }, [toast, dispatch])
-
-  // Настройки
-  const handleSettingsUpdated = useCallback(async () => {
-    try {
-      const [pRes, plRes, cRes] = await Promise.all([
-        getMeterPricing('dtg'),
-        getPlacements('dtg'),
-        getConsumablesConfig('dtg')
-      ])
-      if (pRes.success) dispatch({ type: 'SET_METER_PRICING', payload: pRes.data })
-      if (plRes.success) dispatch({ type: 'SET_PLACEMENTS', payload: plRes.data })
-      if (cRes.success && cRes.data) dispatch({ type: 'SET_CONSUMABLES', payload: cRes.data as ConsumablesConfigData })
-      toast('Настройки обновлены', 'success')
-    } catch (_err) {
-      toast('Ошибка обновления настроек', 'destructive')
-    }
-  }, [toast, dispatch])
+    setCustomTrail([
+      { label: "Главная", href: "/dashboard" },
+      { label: "Производство", href: "/dashboard/production" },
+      { label: "Калькуляторы", href: "/dashboard/production/calculators" },
+      { label: "DTG печать", href: "/dashboard/production/calculators/dtg" },
+    ]);
+  }, [setCustomTrail]);
 
   return (
-    <div className="space-y-3">
-      <div className="flex justify-between items-center bg-white p-4 rounded-[24px] border border-slate-100 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
-            <CalcIcon className="w-6 h-6 text-indigo-600" />
-          </div>
-          <div>
-            <h1 className="text-xl font-black text-slate-900 leading-tight">Прямая печать (DTG)</h1>
-            <p className="text-xs font-bold text-slate-400">Расчёт себестоимости по расходу чернил</p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setUi('isHistoryOpen', true)}
-            className="rounded-xl font-bold text-xs"
-          >
-            <History className="w-4 h-4 mr-2" />
-            История
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => setUi('isSettingsOpen', true)}
-            className="rounded-xl font-bold text-xs"
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Настройки
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start">
-        <div className="xl:col-span-8 space-y-3">
-          <GarmentSelector onSelect={handleAddGarment} />
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-2">
-              <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                Список изделий
-                {(orders || []).length > 0 && (
-                  <Badge variant="secondary" className="rounded-full">
-                    {(orders || []).length}
-                  </Badge>
-                )}
-              </h2>
-              {(orders || []).length > 0 && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleClearAll}
-                  className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl"
-                >
-                  <Trash2 className="w-4 h-4 mr-2" />
-                  Очистить всё
-                </Button>
-              )}
-            </div>
-
-            {(orders || []).length === 0 ? (
-              <div className="py-20 text-center bg-white rounded-[32px] border border-dashed border-slate-200">
-                <div className="w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-4">
-                  <CalcIcon className="w-8 h-8 text-slate-300" />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-1">Калькулятор пуст</h3>
-                <p className="text-slate-500 text-sm max-w-xs mx-auto">
-                  Выберите изделие выше, чтобы начать расчёт
-                </p>
-                <div className="mt-6">
-                    <Button variant="outline" className="rounded-xl" onClick={() => handleAddGarment(DTG_GARMENTS[0].id, 'light')}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Добавить футболку
-                    </Button>
-                </div>
-              </div>
-            ) : (
-              <DtgOrderList 
-                orders={orders}
-                onUpdate={handleUpdateOrder}
-                onDelete={handleDeleteOrder}
-                onDuplicate={handleDuplicateOrder}
-              />
-            )}
-          </div>
-
-          {result && (orders || []).length > 0 && (
-            <div className="space-y-3">
-              <h2 className="text-xl font-bold text-slate-900 px-2">Прогноз расхода материалов</h2>
-              <DtgConsumptionCards consumption={result.consumption} />
-            </div>
-          )}
-        </div>
-
-        <div className="xl:col-span-4 sticky top-6 space-y-3">
-          {result && (orders || []).length > 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-3"
-            >
-              <DtgResultSummary result={result} />
-              
-              <div className="grid grid-cols-2 gap-3">
-                <Button 
-                  variant="default"
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="h-12 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold"
-                >
-                  <Save className="w-4 h-4 mr-2" />
-                  {isSaving ? 'Сохранение...' : 'Сохранить'}
-                </Button>
-                
-                <DownloadPdfButton 
-                  result={{
-                    ...result,
-                    sections: (result?.items || []).map((it, idx) => ({
-                        groupId: (orders || [])[idx]?.id || uuidv4(),
-                        name: it.garment.name,
-                        widthMm: 0,
-                        heightMm: 0,
-                        quantity: it.quantity,
-                        placementCost: it.workCost / it.quantity,
-                        printCost: it.printCost,
-                        workCost: it.workCost,
-                        sectionCost: it.totalCost,
-                        costPerPrint: it.costPerItem,
-                        printsPerRow: 0,
-                        rowsCount: 0,
-                        sectionLengthMm: 0,
-                        sectionAreaM2: 0,
-                        color: it.garmentColor === 'dark' ? '#000000' : '#ffffff',
-                        sortOrder: idx
-                    })),
-                    totalPrints: result.totalQuantity,
-                    totalLengthM: 0,
-                    totalAreaM2: 0,
-                    printsAreaM2: 0,
-                    efficiencyPercent: 0,
-                    pricePerMeter: 0,
-                    printCost: result.totalPrintCost,
-                    placementCost: result.totalWorkCost,
-                    materialsCost: result.totalPrintCost + result.totalPrimerCost,
-                    totalCost: result.totalCost,
-                    avgCostPerPrint: result.avgCostPerItem,
-                    minCostPerPrint: result.avgCostPerItem,
-                    maxCostPerPrint: result.avgCostPerItem,
-                    consumption: result.consumption.map(c => ({
-                      ...c,
-                      color: c.key === 'primer' ? '#6366f1' : '#cbd5e1'
-                    }))
-                  }}
-                  params={{
-                    applicationType: 'dtg',
-                    rollWidthMm: 400,
-                    edgeMarginMm: 0,
-                    printGapMm: 0
-                  }}
-                  applicationType="dtg"
-                  calculationNumber={savedNumber}
+    <CalculatorLayout
+      title="DTG калькулятор"
+      description="Прямая цифровая печать на ткани (Direct to Garment)"
+      icon={<Printer className="w-5 h-5" />}
+      actions={
+        <Button variant="outline" size="sm" onClick={reset} className="gap-2">
+          <RotateCcw className="w-4 h-4" />
+          <span className="hidden sm:inline">Сбросить</span>
+        </Button>
+      }
+    >
+      {/* Левая колонка */}
+      <div className="lg:col-span-2 space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Размеры */}
+          <CalculatorSection title="Размеры принта" icon={<Maximize2 className="w-4 h-4" />}>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Ширина (см)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={40}
+                  step={0.5}
+                  value={settings.width}
+                  onChange={(e) => updateSettings({ width: Number(e.target.value) })}
                 />
               </div>
-            </motion.div>
-          ) : (
-            <div className="p-8 rounded-[32px] border border-dashed border-slate-200 bg-white/50 text-center space-y-2">
-              <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto text-slate-300">
-                <CalcIcon className="w-6 h-6" />
+              <div className="space-y-2">
+                <Label>Высота (см)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={50}
+                  step={0.5}
+                  value={settings.height}
+                  onChange={(e) => updateSettings({ height: Number(e.target.value) })}
+                />
               </div>
-              <p className="text-xs font-bold text-slate-400">
-                Ожидание данных для расчёта
-              </p>
             </div>
-          )}
+          </CalculatorSection>
+
+          {/* Количество */}
+          <CalculatorSection title="Тираж">
+            <div className="space-y-2">
+              <Label>Количество изделий (шт)</Label>
+              <Input
+                type="number"
+                min={1}
+                value={settings.quantity}
+                onChange={(e) => updateSettings({ quantity: Math.max(1, Number(e.target.value)) })}
+              />
+            </div>
+          </CalculatorSection>
         </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Параметры ткани и качества */}
+          <CalculatorSection title="Параметры печати" icon={<Palette className="w-4 h-4" />}>
+            <div className="space-y-3">
+              <div className="space-y-2">
+                <Label>Цвет ткани</Label>
+                <Select
+                  options={FABRIC_COLORS.map(opt => ({
+                    id: opt.value,
+                    title: opt.label,
+                    description: opt.description
+                  }))}
+                  value={settings.fabricColor}
+                  onChange={(value) => updateSettings({ fabricColor: value as typeof settings.fabricColor })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Качество</Label>
+                <Select
+                  options={QUALITY_OPTIONS.map(opt => ({
+                    id: opt.value,
+                    title: opt.label,
+                    description: opt.dpi
+                  }))}
+                  value={settings.printQuality}
+                  onChange={(value) => updateSettings({ printQuality: value as typeof settings.printQuality })}
+                />
+              </div>
+            </div>
+          </CalculatorSection>
+
+          {/* Фиксация и Срочность */}
+          <div className="space-y-3">
+            <CalculatorSection title="Обработка и фиксация">
+              <div className="space-y-3">
+                <Select
+                  options={FIXATION_OPTIONS.map(opt => ({
+                    id: opt.value,
+                    title: opt.label
+                  }))}
+                  value={settings.fixation}
+                  onChange={(value) => updateSettings({ fixation: value as typeof settings.fixation })}
+                />
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">Праймер</Label>
+                    <p className="text-xs text-slate-500">Улучшает яркость на цвете</p>
+                  </div>
+                  <Switch
+                    checked={settings.pretreatment}
+                    onCheckedChange={(checked) => updateSettings({ pretreatment: checked })}
+                  />
+                </div>
+              </div>
+            </CalculatorSection>
+
+            <CalculatorSection title="Срочность" icon={<Clock className="w-4 h-4" />}>
+              <div className="grid grid-cols-3 gap-2">
+                {URGENCY_OPTIONS.map((option) => (
+                  <button
+                    type="button"
+                    key={option.value}
+                    onClick={() => updateSettings({ urgency: option.value as typeof settings.urgency })}
+                    className={cn(
+                      "p-2 rounded-xl border text-center transition-all",
+                      settings.urgency === option.value
+                        ? "border-primary bg-primary/5"
+                        : "border-slate-200 hover:border-slate-300"
+                    )}
+                  >
+                    <div className="text-xs font-medium">{option.label}</div>
+                    <div className="text-xs text-slate-400">{option.days}</div>
+                  </button>
+                ))}
+              </div>
+            </CalculatorSection>
+          </div>
+        </div>
+
+        {/* Материалы */}
+        <CalculatorSection title="Дополнительные материалы">
+          <WarehouseMaterialsList
+            materials={materials}
+            onChange={setMaterials}
+            applicationTypeId="dtg"
+          />
+        </CalculatorSection>
+
+        {/* Наценка */}
+        <CalculatorSection title="Ценовая политика">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Наценка (Маржа %)</Label>
+              <span className="text-sm font-bold bg-primary/10 text-primary px-2 py-1 rounded-lg">
+                {margin}%
+              </span>
+            </div>
+            <Slider
+              value={[margin]}
+              onValueChange={([value]) => setMargin(value)}
+              min={0}
+              max={150}
+              step={5}
+              className="py-4"
+            />
+          </div>
+        </CalculatorSection>
       </div>
 
-      <HistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setUi('isHistoryOpen', false)}
-        applicationType="dtg"
-        onSelect={handleSelectFromHistory}
-      />
+      {/* Правая колонка - результаты */}
+      <CalculatorResults
+        total={calculation.total}
+        perItem={calculation.perItem}
+        quantity={settings.quantity}
+        itemLabel={pluralize(settings.quantity, "изделие", "изделия", "изделий")}
+      >
+        <div className="space-y-2">
+          <div className="text-sm font-bold text-slate-900 mb-3 tracking-wider text-xs">
+            Детализация за тираж
+          </div>
+          <div className="space-y-1">
+            {calculation.breakdown.map((item, index) => (
+              <ResultRow 
+                key={index} 
+                label={item.label} 
+                value={item.value} 
+                type={item.type} 
+              />
+            ))}
+          </div>
+        </div>
 
-      <CalculatorSettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setUi('isSettingsOpen', false)}
-        applicationType="dtg"
-        initialMeterPricing={initialMeterPricing}
-        initialPlacements={initialPlacements}
-        initialConsumables={consumablesConfig}
-        onSettingsUpdated={handleSettingsUpdated}
-      />
-    </div>
-  )
-})
+        {calculation.discount > 0 && (
+          <div className="mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-700">Скидка за объём</span>
+              <span className="font-bold text-emerald-700">-{calculation.discount}%</span>
+            </div>
+          </div>
+        )}
+
+        {materials.length > 0 && (
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-blue-700">Материалы ({materials.length})</span>
+              <span className="font-bold text-blue-700">
+                {calculation.materialsCost.toLocaleString("ru-RU")} ₽
+              </span>
+            </div>
+          </div>
+        )}
+      </CalculatorResults>
+    </CalculatorLayout>
+  );
+}

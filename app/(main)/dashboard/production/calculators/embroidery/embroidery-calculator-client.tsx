@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useCallback, useMemo, memo } from 'react'
+import { useCallback, useMemo, memo, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -19,9 +19,10 @@ import {
 } from 'lucide-react'
 import { formatCurrency } from '@/lib/formatters'
 import { useToast } from '@/components/ui/toast'
+import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context"
 
 // Компоненты
-import { CalculationsHistory } from '../components'
+import { CalculationsHistory, WarehouseMaterialsList } from '../components'
 import {
   DesignManager,
   EmbroideryOrderCard,
@@ -42,16 +43,19 @@ import {
   type EmbroideryPrintInput,
   EMBROIDERY_QUANTITY_DISCOUNTS
 } from '../embroidery-types'
+import type { SelectedMaterial } from '../../components/warehouse-materials-list'
 
 import { saveEmbroideryCalculation } from '../actions'
 
 export const EmbroideryCalculatorClient = memo(function EmbroideryCalculatorClient() {
   const { toast } = useToast()
+  const { setCustomTrail } = useBreadcrumbs()
   const { state, dispatch, setUi } = useEmbroideryState()
 
   const {
     designs,
     orders,
+    materials,
     result,
     calculationError,
     isCalculating,
@@ -60,6 +64,15 @@ export const EmbroideryCalculatorClient = memo(function EmbroideryCalculatorClie
     showHistory,
     savedCalculationInfo
   } = state
+
+  useEffect(() => {
+    setCustomTrail([
+      { label: "Главная", href: "/dashboard" },
+      { label: "Производство", href: "/dashboard/production" },
+      { label: "Калькуляторы", href: "/dashboard/production/calculators" },
+      { label: "Вышивка", href: "/dashboard/production/calculators/embroidery" },
+    ]);
+  }, [setCustomTrail]);
 
   // Хук расчёта
   const calculatedResult = useEmbroideryCalculator(designs, orders)
@@ -129,6 +142,10 @@ export const EmbroideryCalculatorClient = memo(function EmbroideryCalculatorClie
     }})
   }, [orders, dispatch])
 
+  const handleUpdateMaterials = useCallback((newMaterials: SelectedMaterial[]) => {
+    dispatch({ type: 'SET_MATERIALS', payload: newMaterials })
+  }, [dispatch])
+
   // Расчёт
   const handleCalculate = useCallback(async () => {
     if (designs.length === 0) {
@@ -176,7 +193,9 @@ export const EmbroideryCalculatorClient = memo(function EmbroideryCalculatorClie
           avgCostPerItem: result.avgCostPerItem || 0,
           threadConsumption: {
             totalThreadMeters: result.totalThreadConsumption
-          }
+          },
+          materials: result.materials,
+          materialsCost: result.materialsCost
         },
         notes: ''
       })
@@ -359,6 +378,22 @@ export const EmbroideryCalculatorClient = memo(function EmbroideryCalculatorClie
                onSelect={handleAddOrder} 
                disabled={designs.length === 0}
             />
+
+          {/* Доп. материалы со склада */}
+          {(designs.length > 0 || (orders || []).length > 0) && (
+            <div className="mt-8">
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-600">
+                  <Calculator className="w-5 h-5" />
+                </div>
+                Дополнительные материалы
+              </h2>
+              <WarehouseMaterialsList
+                materials={materials}
+                onChange={handleUpdateMaterials}
+              />
+            </div>
+          )}
           </div>
 
           {designs.length === 0 && (orders || []).length === 0 && (

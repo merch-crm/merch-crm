@@ -1,155 +1,214 @@
-import { useMemo } from 'react'
-import {
-  PrintItem,
-  PrintApplicationInput,
-  PrintApplicationResult,
-  PRINT_TYPES,
-  PRINT_SIZES,
-  APPLICATION_POSITIONS,
-  PRINT_APPLICATION_QUANTITY_DISCOUNTS,
-  DEFAULT_PRINT_APPLICATION_PARAMS,
-} from '../../types'
+"use client";
 
-interface UsePrintApplicationCalculatorProps {
-  prints: PrintItem[]
-  orders: PrintApplicationInput[]
-  includeGarments: boolean
-  isRush: boolean
+import { useState, useCallback, useMemo } from "react";
+import type { SelectedMaterial } from "@/app/(main)/dashboard/production/components/warehouse-materials-list";
+
+export interface PrintApplicationSettings {
+  quantity: number;
+  printType: "flex" | "flock" | "reflective" | "glitter" | "neons" | "transfer";
+  applicationType: "thermal" | "sew-on" | "patch";
+  size: "small" | "medium" | "large" | "xlarge";
+  complexCutting: boolean;
+  weedComplexity: "simple" | "medium" | "complex";
+  urgency: "normal" | "express" | "urgent";
 }
 
-export function usePrintApplicationCalculator({
-  prints,
-  orders,
-  includeGarments,
-  isRush,
-}: UsePrintApplicationCalculatorProps): PrintApplicationResult | null {
-  return useMemo(() => {
-    // Фильтруем заказы с нанесениями
-    const validOrders = (orders || []).filter(
-      order => order.quantity > 0 && order.applications.length > 0
-    )
+export interface PrintApplicationPricing {
+  printPrices: Record<string, number>;
+  applicationPrices: Record<string, number>;
+  sizePrices: Record<string, number>;
+  cuttingPrice: number;
+  weedPrices: Record<string, number>;
+  urgencyMultipliers: Record<string, number>;
+  setupFee: number;
+  minOrderFee: number;
+}
 
-    if (validOrders.length === 0) {
-      return null
-    }
+export interface CalculationResult {
+  perItem: number;
+  total: number;
+  materialsCost: number;
+  printCost: number;
+  applicationCost: number;
+  cuttingFee: number;
+  setupCost: number;
+  discount: number;
+  breakdown: {
+    label: string;
+    value: number;
+    type: "cost" | "fee" | "discount";
+  }[];
+}
 
-    let totalGarmentsCost = 0
-    let totalPrintsCost = 0
-    let totalWorkCost = 0
-    let totalSetupTime = 0
-    let totalApplicationTime = 0
-    let totalItems = 0
-    let totalApplications = 0
+const DEFAULT_PRICING: PrintApplicationPricing = {
+  printPrices: {
+    flex: 120,
+    flock: 180,
+    reflective: 250,
+    glitter: 220,
+    neons: 150,
+    transfer: 100,
+  },
+  applicationPrices: {
+    thermal: 40,
+    "sew-on": 120,
+    patch: 80,
+  },
+  sizePrices: {
+    small: 1,
+    medium: 1.5,
+    large: 2.2,
+    xlarge: 3,
+  },
+  cuttingPrice: 30,
+  weedPrices: {
+    simple: 0,
+    medium: 40,
+    complex: 80,
+  },
+  urgencyMultipliers: {
+    normal: 1,
+    express: 1.3,
+    urgent: 1.5,
+  },
+  setupFee: 200,
+  minOrderFee: 400,
+};
 
-    const breakdown: PrintApplicationResult['breakdown'] = []
+const QUANTITY_DISCOUNTS = [
+  { min: 100, discount: 0.15 },
+  { min: 50, discount: 0.1 },
+  { min: 20, discount: 0.05 },
+];
 
-    // Отслеживаем уникальные типы принтов для расчёта настройки
-    const uniquePrintTypes = new Set<string>()
+export function usePrintApplicationCalculator() {
+  const [settings, setSettings] = useState<PrintApplicationSettings>({
+    quantity: 1,
+    printType: "flex",
+    applicationType: "thermal",
+    size: "medium",
+    complexCutting: false,
+    weedComplexity: "simple",
+    urgency: "normal",
+  });
+  const [materials, setMaterials] = useState<SelectedMaterial[]>([]);
+  const [pricing, setPricing] = useState<PrintApplicationPricing>(DEFAULT_PRICING);
+  const [margin, setMargin] = useState(30);
 
-    for (const order of validOrders) {
-      const garmentPrice = order.garmentPrice || 0
-      const quantity = order.quantity
-      
-      totalItems += quantity
-      
-      const orderGarmentCost = includeGarments ? garmentPrice * quantity : 0
-      totalGarmentsCost += orderGarmentCost
+  const updateSettings = useCallback((updates: Partial<PrintApplicationSettings>) => {
+    setSettings((prev) => ({ ...prev, ...updates }));
+  }, []);
 
-      const applicationDetails: PrintApplicationResult['breakdown'][0]['applications'] = []
+  const materialsCost = useMemo(() => {
+    return materials.reduce((sum, m) => sum + m.price * m.quantity, 0);
+  }, [materials]);
 
-      for (const app of order.applications) {
-        totalApplications += quantity
+  const calculation = useMemo((): CalculationResult => {
+    const { quantity, printType, applicationType, size, complexCutting, weedComplexity, urgency } = settings;
 
-        // Находим информацию о типе принта
-        const printType = PRINT_TYPES.find(pt => pt.id === app.printType)
-        const printSize = PRINT_SIZES.find(ps => ps.id === app.sizeId)
-        const position = APPLICATION_POSITIONS.find(pos => pos.id === app.positionId)
+    const sizeMult = pricing.sizePrices[size];
 
-        if (!printType || !printSize || !position) continue
+    // Стоимость печати/материала
+    const basePrintCost = pricing.printPrices[printType] * sizeMult;
 
-        // Стоимость принтов
-        const printCostPerItem = app.printPrice * quantity
-        totalPrintsCost += printCostPerItem
+    // Резка и выборка
+    const cuttingCost = complexCutting ? pricing.cuttingPrice * sizeMult : 0;
+    const weedCost = pricing.weedPrices[weedComplexity] * sizeMult;
 
-        // Стоимость работы
-        const baseWorkPrice = printType.baseWorkPrice
-        const sizeMultiplier = printSize.priceMultiplier
-        const difficultyMultiplier = position.difficultyMultiplier
-        
-        const workPricePerItem = baseWorkPrice * sizeMultiplier * difficultyMultiplier
-        const workCostTotal = workPricePerItem * quantity
-        totalWorkCost += workCostTotal
+    // Стоимость нанесения
+    const applicationCost = pricing.applicationPrices[applicationType];
 
-        // Время
-        if (!uniquePrintTypes.has(printType.id)) {
-          totalSetupTime += printType.setupTime
-          uniquePrintTypes.add(printType.id)
-        }
-        totalApplicationTime += printType.applicationTime * quantity
+    // Базовая себестоимость
+    let costPerItem = basePrintCost + cuttingCost + weedCost + applicationCost;
 
-        applicationDetails.push({
-          position: position.name,
-          printName: app.printName || 'Принт',
-          printType: printType.name,
-          printCost: app.printPrice,
-          workCost: workPricePerItem,
-        })
+    // Срочность
+    const urgencyMult = pricing.urgencyMultipliers[urgency];
+    costPerItem *= urgencyMult;
+
+    // Материалы со склада
+    const materialsPerItem = quantity > 0 ? materialsCost / quantity : 0;
+    costPerItem += materialsPerItem;
+
+    // Скидка
+    let discount = 0;
+    for (const tier of QUANTITY_DISCOUNTS) {
+      if (quantity >= tier.min) {
+        discount = tier.discount;
+        break;
       }
-
-      breakdown.push({
-        garmentName: order.garmentName || 'Изделие',
-        quantity,
-        garmentTotal: orderGarmentCost,
-        applications: applicationDetails,
-        itemTotal: orderGarmentCost + 
-          applicationDetails.reduce((sum, a) => sum + (a.printCost + a.workCost) * quantity, 0),
-      })
     }
 
-    // Стоимость настройки (фиксированная за заказ)
-    const setupCost = uniquePrintTypes.size > 0 ? DEFAULT_PRINT_APPLICATION_PARAMS.setupFee : 0
+    // Цена с наценкой
+    const pricePerItem = costPerItem * (1 + margin / 100) * (1 - discount);
 
-    // Скидка за объём
-    const discountTier = PRINT_APPLICATION_QUANTITY_DISCOUNTS.find(
-      d => totalItems >= d.minQuantity && (d.maxQuantity === null || totalItems <= d.maxQuantity)
-    ) || PRINT_APPLICATION_QUANTITY_DISCOUNTS[0]
-
-    const subtotal = totalGarmentsCost + totalPrintsCost + totalWorkCost + setupCost
-    const quantityDiscount = Math.round(subtotal * discountTier.discount / 100)
-    
-    // Итого до срочности
-    let totalBeforeRush = subtotal - quantityDiscount
-    
-    // Множитель срочности
-    if (isRush) {
-      totalBeforeRush = Math.round(totalBeforeRush * DEFAULT_PRINT_APPLICATION_PARAMS.rushMultiplier)
+    // Итого
+    let total = pricePerItem * quantity + pricing.setupFee;
+    if (total < pricing.minOrderFee) {
+      total = pricing.minOrderFee;
     }
 
-    // Минимальная сумма заказа
-    const totalCost = Math.max(totalBeforeRush, DEFAULT_PRINT_APPLICATION_PARAMS.minOrderAmount)
+    // Breakdown
+    const breakdown: CalculationResult["breakdown"] = [
+      { label: `Печать (${printType})`, value: basePrintCost * quantity, type: "cost" },
+      { label: `Нанесение (${applicationType})`, value: applicationCost * quantity, type: "cost" },
+    ];
 
-    // Время в минутах
-    const estimatedTime = totalSetupTime + totalApplicationTime
+    if (cuttingCost > 0) {
+      breakdown.push({ label: "Сложная контурная резка", value: cuttingCost * quantity, type: "cost" });
+    }
+
+    if (weedCost > 0) {
+      breakdown.push({ label: `Выборка пленки (${weedComplexity})`, value: weedCost * quantity, type: "cost" });
+    }
+
+    if (materialsCost > 0) {
+      breakdown.push({ label: "Материалы со склада", value: materialsCost, type: "cost" });
+    }
+
+    breakdown.push({ label: "Настройка оборудования", value: pricing.setupFee, type: "fee" });
+
+    if (discount > 0) {
+      const discountValue = (pricePerItem * quantity * discount) / (1 - discount);
+      breakdown.push({ label: `Скидка ${Math.round(discount * 100)}%`, value: -discountValue, type: "discount" });
+    }
 
     return {
-      totalCost,
-      costPerItem: totalItems > 0 ? Math.round(totalCost / totalItems) : 0,
-      
-      garmentsCost: totalGarmentsCost,
-      printsCost: totalPrintsCost,
-      workCost: totalWorkCost,
-      setupCost,
-      
-      quantityDiscount,
-      discountPercent: discountTier.discount,
-      
-      totalItems,
-      totalPrints: prints.length,
-      totalApplications,
-      
-      estimatedTime,
-      
+      perItem: Math.round(pricePerItem),
+      total: Math.round(total),
+      materialsCost: Math.round(materialsCost),
+      printCost: Math.round(basePrintCost * quantity),
+      applicationCost: Math.round(applicationCost * quantity),
+      cuttingFee: Math.round(cuttingCost * quantity),
+      setupCost: pricing.setupFee,
+      discount: Math.round(discount * 100),
       breakdown,
-    }
-  }, [prints, orders, includeGarments, isRush])
+    };
+  }, [settings, materialsCost, pricing, margin]);
+
+  const reset = useCallback(() => {
+    setSettings({
+      quantity: 1,
+      printType: "flex",
+      applicationType: "thermal",
+      size: "medium",
+      complexCutting: false,
+      weedComplexity: "simple",
+      urgency: "normal",
+    });
+    setMaterials([]);
+    setMargin(30);
+  }, []);
+
+  return {
+    settings,
+    materials,
+    pricing,
+    margin,
+    calculation,
+    updateSettings,
+    setMaterials,
+    setPricing,
+    setMargin,
+    reset,
+  };
 }

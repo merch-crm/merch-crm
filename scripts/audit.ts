@@ -944,7 +944,7 @@ function checkHooks(files: string[]): AuditError[] {
             });
         }
 
-        const conditionalMatches = [...content.matchAll(/if\s*\([^)]+\)\s*\{[^}]*use[A-Z]/g)];
+        const conditionalMatches = [...content.matchAll(/if\s*\([^)]+\)\s*\{[^}]*\buse[A-Z]/g)];
         for (const match of conditionalMatches) {
             errors.push({
                 file,

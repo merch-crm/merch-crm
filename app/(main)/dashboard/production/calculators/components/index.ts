@@ -9,8 +9,12 @@ export { MeterPricingEditor } from './meter-pricing-editor'
 export { PlacementsEditor } from './placements-editor'
 export { ConsumablesEditor } from './consumables-editor'
 
+// Общие компоненты производства (подняты на уровень выше)
+export * from '../../components/calculator-layout'
+export * from '../../components/warehouse-materials-list'
+
 // История
-export { CalculationsHistory } from './calculations-history'
+export * from './calculations-history'
 export { HistoryModal } from './history-modal'
 
 // PDF

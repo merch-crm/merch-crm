@@ -1,176 +1,126 @@
-'use client'
+"use client";
 
-import { useMemo } from 'react'
+import { useMemo } from "react";
 import {
-  EMBROIDERY_GARMENTS,
-  EMBROIDERY_POSITIONS,
+  type EmbroideryDesign,
+  type EmbroideryPrintInput,
+  type EmbroideryCalculationResult,
   EMBROIDERY_STITCH_PRICING,
   EMBROIDERY_DIGITIZING_PRICING,
   EMBROIDERY_QUANTITY_DISCOUNTS,
-  estimateThreadConsumption,
-  type EmbroideryDesign,
-  type EmbroideryPrintInput,
-  type EmbroideryCalculationResult
-} from '../../types'
+  EMBROIDERY_GARMENTS,
+  EMBROIDERY_POSITIONS,
+  EMBROIDERY_THREAD_TYPES,
+  EMBROIDERY_DENSITIES,
+  estimateThreadConsumption
+} from "../../embroidery-types";
 
 export function useEmbroideryCalculator(
   designs: EmbroideryDesign[],
   orders: EmbroideryPrintInput[]
-) {
-  const result = useMemo((): EmbroideryCalculationResult => {
-    if ((orders || []).length === 0) {
-      return {
-        orders: [],
-        totalGarmentCost: 0,
-        totalEmbroideryCost: 0,
-        totalDigitizingCost: 0,
-        totalSetupCost: 0,
-        totalExtraColorsCost: 0,
-        totalThreadConsumption: 0,
-        totalStitches: 0,
-        totalQuantity: 0,
-        discountPercent: 0,
-        discountAmount: 0,
-        totalCostBeforeDiscount: 0,
-        totalCost: 0,
-        avgCostPerItem: 0
-      }
-    }
+): EmbroideryCalculationResult | null {
+  return useMemo(() => {
+    if (!designs?.length || !orders?.length) return null;
 
-    // 1. Расчет стоимости дигитайзинга
-    let totalDigitizingCost = 0
-    const processedDesigns = new Set<string>();
-    
-    (orders || []).forEach((order: EmbroideryPrintInput) => {
-      order.positions.forEach((pos) => {
-        const design = designs.find(d => d.id === pos.designId)
-        if (design && design.hasDigitizing && !processedDesigns.has(design.id)) {
-          const pricing = [...EMBROIDERY_DIGITIZING_PRICING]
-            .sort((a, b) => a.maxStitches - b.maxStitches)
-            .find(p => design.stitchCount <= p.maxStitches)
-          
-          totalDigitizingCost += pricing ? pricing.price : EMBROIDERY_DIGITIZING_PRICING[EMBROIDERY_DIGITIZING_PRICING.length - 1].price
-          processedDesigns.add(design.id)
-        }
-      })
-    })
+    let totalGarmentCost = 0;
+    let totalEmbroideryCost = 0;
+    let totalDigitizingCost = 0;
+    let totalSetupCost = 0;
+    let totalExtraColorsCost = 0;
+    let totalStitches = 0;
+    let totalQuantity = 0;
 
-    // 2. Расчет по каждому заказу
-    let totalGarmentCost = 0
-    let totalEmbroideryCost = 0
-    let totalSetupCost = 0
-    let totalExtraColorsCost = 0
-    let totalThreadConsumption = 0
-    let totalStitches = 0
-    let totalQuantity = 0
+    // Сначала считаем общую статистику
+    (orders || []).forEach(order => {
+      const garment = EMBROIDERY_GARMENTS.find(g => g.id === order.garmentId);
+      if (!garment) return;
 
-    const orderResults = (orders || []).map(order => {
-      const garment = EMBROIDERY_GARMENTS.find(g => g.id === order.garmentId)!
-      const quantity = order.quantity
-      totalQuantity += quantity
+      totalQuantity += order.quantity;
+      totalGarmentCost += garment.basePrice * order.quantity;
 
-      const orderGarmentCost = garment.basePrice * quantity
-      let orderTotalEmbroideryPrice = 0
-      let orderTotalSetupPrice = 0
-      let orderExtraColorsCost = 0
-      let orderStitches = 0
-      let orderThreadConsumption = 0
-      let orderTotalColors = 0
+      order.positions.forEach(pos => {
+        const design = designs.find(d => d.id === pos.designId);
+        const position = EMBROIDERY_POSITIONS.find(p => p.id === pos.positionId);
+        if (!design || !position) return;
 
-      const positionResults = order.positions.map(pos => {
-        const position = EMBROIDERY_POSITIONS.find(p => p.id === pos.positionId)!
-        const design = designs.find(d => d.id === pos.designId)!
+        const stitchesCount = design.stitchCount;
+        totalStitches += stitchesCount * order.quantity;
 
-        if (!design) {
-           return null
+        // Цена за стежки (прогрессивная)
+        const pricingTier = EMBROIDERY_STITCH_PRICING.find(
+          t => stitchesCount >= t.minStitches && (t.maxStitches === null || stitchesCount < t.maxStitches)
+        );
+        const pricePerThousand = pricingTier?.pricePerThousand || 25;
+        let embroideryCost = (stitchesCount / 1000) * pricePerThousand;
+
+        // Учёт типа ниток
+        const threadType = EMBROIDERY_THREAD_TYPES.find(t => t.id === design.threadType);
+        embroideryCost *= (threadType?.priceMultiplier || 1);
+
+        // Учёт плотности
+        const density = EMBROIDERY_DENSITIES.find(d => d.id === design.density);
+        embroideryCost *= (density?.priceMultiplier || 1);
+
+        totalEmbroideryCost += embroideryCost * order.quantity;
+
+        // Доп. цвета
+        if (design.colorsCount > garment.maxColors) {
+          const extraColors = design.colorsCount - garment.maxColors;
+          const extraCost = extraColors * 20; // Условно 20р за доп цвет
+          totalExtraColorsCost += extraCost * order.quantity;
         }
 
-        const pricing = [...EMBROIDERY_STITCH_PRICING]
-          .sort((a, b) => b.minStitches - a.minStitches)
-          .find(p => design.stitchCount >= p.minStitches)
-        
-        const basePricePer1000 = pricing ? pricing.pricePerThousand : EMBROIDERY_STITCH_PRICING[0].pricePerThousand
-        
-        const densityFactor = design.density === 'light' ? 0.9 : 
-                             design.density === 'medium' ? 1.0 :
-                             design.density === 'heavy' ? 1.2 : 1.4
-        
-        const threadFactor = design.threadType === 'metallic' ? 1.5 :
-                            design.threadType === 'glow' ? 1.8 : 1.0
+        // Приладка (setup)
+        totalSetupCost += position.setupPrice;
+      });
+    });
 
-        const pricePerItem = (design.stitchCount / 1000) * basePricePer1000 * densityFactor * threadFactor
-        const totalEmbroideryPrice = pricePerItem * quantity
+    // Дигитайзинг (считаем один раз для каждого уникального дизайна в заказе)
+    const uniqueDesignIds = new Set<string>();
+    (orders || []).forEach(o => o.positions.forEach(p => uniqueDesignIds.add(p.designId)));
 
-        orderTotalEmbroideryPrice += totalEmbroideryPrice
-        orderTotalSetupPrice += position.setupPrice
-        orderStitches += design.stitchCount * quantity
-        orderThreadConsumption += estimateThreadConsumption(design.stitchCount) * quantity
-        orderTotalColors += design.colorsCount
-
-        return {
-          position,
-          design,
-          setupCost: position.setupPrice,
-          embroideryPricePerItem: pricePerItem,
-          totalEmbroideryPrice
-        }
-      }).filter((p): p is NonNullable<typeof p> => p !== null)
-
-      // Доплата за цвета
-      const extraColorsCount = Math.max(0, orderTotalColors - garment.maxColors)
-      if (extraColorsCount > 0) {
-        orderExtraColorsCost = extraColorsCount * 50 * quantity
+    uniqueDesignIds.forEach(id => {
+      const design = designs.find(d => d.id === id);
+      if (design?.hasDigitizing) {
+        const digiTier = EMBROIDERY_DIGITIZING_PRICING.find(
+          t => design.stitchCount <= t.maxStitches
+        ) || EMBROIDERY_DIGITIZING_PRICING[EMBROIDERY_DIGITIZING_PRICING.length - 1];
+        totalDigitizingCost += digiTier.price;
       }
+    });
 
-      const orderTotalCost = orderGarmentCost + orderTotalEmbroideryPrice + orderTotalSetupPrice + orderExtraColorsCost
+    const totalCostBeforeDiscount = totalGarmentCost + totalEmbroideryCost + totalDigitizingCost + totalSetupCost + totalExtraColorsCost;
 
-      totalGarmentCost += orderGarmentCost
-      totalEmbroideryCost += orderTotalEmbroideryPrice
-      totalSetupCost += orderTotalSetupPrice
-      totalExtraColorsCost += orderExtraColorsCost
-      totalStitches += orderStitches
-      totalThreadConsumption += orderThreadConsumption
-
-      return {
-        garment,
-        quantity,
-        positions: positionResults,
-        garmentCost: orderGarmentCost,
-        totalEmbroideryPrice: orderTotalEmbroideryPrice,
-        totalSetupPrice: orderTotalSetupPrice,
-        extraColorsCost: orderExtraColorsCost,
-        totalCost: orderTotalCost,
-        costPerItem: orderTotalCost / quantity
-      }
-    })
-
-    const totalCostBeforeDiscount = totalGarmentCost + totalEmbroideryCost + totalSetupCost + totalExtraColorsCost + totalDigitizingCost
-
+    // Скидка за тираж
     const discountTier = [...EMBROIDERY_QUANTITY_DISCOUNTS]
-      .sort((a, b) => b.minQuantity - a.minQuantity)
-      .find(d => totalQuantity >= d.minQuantity)
+      .sort((a, b) => (b.minQuantity || 0) - (a.minQuantity || 0))
+      .find(d => totalQuantity >= (d.minQuantity || 0));
     
-    const discountPercent = discountTier ? discountTier.discount : 0
-    const discountAmount = totalCostBeforeDiscount * (discountPercent / 100)
-    const totalCost = totalCostBeforeDiscount - discountAmount
+    const discountPercent = discountTier?.discount || 0;
+    const discountAmount = (totalEmbroideryCost + totalExtraColorsCost) * (discountPercent / 100);
+
+    const totalCost = totalCostBeforeDiscount - discountAmount;
+    const avgCostPerItem = totalQuantity > 0 ? totalCost / totalQuantity : 0;
+    const totalThreadConsumption = estimateThreadConsumption(totalStitches);
 
     return {
-      orders: orderResults,
+      orders,
+      totalCost: Math.round(totalCost),
+      avgCostPerItem: Math.round(avgCostPerItem),
+      totalDigitizingCost: Math.round(totalDigitizingCost),
+      totalEmbroideryCost: Math.round(totalEmbroideryCost),
+      totalGarmentCost: Math.round(totalGarmentCost),
+      totalSetupCost: Math.round(totalSetupCost),
+      totalExtraColorsCost: Math.round(totalExtraColorsCost),
+      totalCostBeforeDiscount: Math.round(totalCostBeforeDiscount),
+      discountAmount: Math.round(discountAmount),
+      discountPercent,
       totalQuantity,
       totalStitches,
-      totalDigitizingCost,
-      totalGarmentCost,
-      totalSetupCost,
-      totalEmbroideryCost,
-      totalExtraColorsCost,
-      totalThreadConsumption,
-      discountPercent,
-      discountAmount,
-      totalCostBeforeDiscount,
-      totalCost,
-      avgCostPerItem: totalQuantity > 0 ? totalCost / totalQuantity : 0
-    }
-  }, [designs, orders])
-
-  return result
+      totalThreadConsumption: Math.round(totalThreadConsumption),
+      threadConsumption: {
+        totalThreadMeters: Math.round(totalThreadConsumption)
+      }
+    };
+  }, [designs, orders]);
 }

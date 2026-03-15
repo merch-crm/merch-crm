@@ -144,6 +144,8 @@ export interface ConsumptionData {
     totalItems?: number;
     totalApplications?: number;
     estimatedTime?: number;
+    materials?: Record<string, unknown>[];
+    materialsCost?: number;
     breakdown?: Array<Record<string, unknown>>;
 }
 

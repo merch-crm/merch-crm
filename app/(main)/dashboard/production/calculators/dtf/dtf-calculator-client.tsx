@@ -1,427 +1,322 @@
-'use client'
+"use client";
 
-import { useCallback, useMemo, useRef, memo } from 'react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Spinner } from '@/components/ui/spinner'
-import { useToast } from '@/components/ui/toast'
-// import { useBreadcrumbs } from '@/components/layout/breadcrumbs'
-import { 
-  Calculator, 
-  Save, 
-  Copy, 
-  AlertCircle
-} from 'lucide-react'
-import { formatCurrency } from '@/lib/formatters'
-import { formatCount } from '@/lib/pluralize'
-import dynamic from "next/dynamic"
-
-// Динамический импорт кнопки PDF
-const DownloadPdfButton = dynamic(
-    () => import("../components").then((mod) => mod.DownloadPdfButton),
-    { ssr: false }
-)
-
-// Компоненты
-import { CalculatorHeader, CalculatorSettingsModal, HistoryModal } from '../components'
+import { useEffect } from "react";
+import { Printer, Maximize2, Layers, Scissors, Clock, RotateCcw, Sparkles } from "lucide-react";
+import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Select } from "@/components/ui/select";
 import {
-  RollParamsCard,
-  PrintGroupsList,
-  FilmLayoutCanvas,
-  LayoutInfoCard,
-  CostSummary,
-  ConsumptionCards,
-  CostPerPrintTable
-} from './components'
+  CalculatorLayout,
+  CalculatorSection,
+  CalculatorResults,
+  ResultRow,
+} from "../../components/calculator-layout";
+import { WarehouseMaterialsList } from "../../components/warehouse-materials-list";
+import { useDTFCalculator } from "./hooks/use-dtf-calculator";
+import { cn } from "@/lib/utils";
+import { pluralize } from "@/lib/pluralize";
 
-// Хуки и утилиты
-import { useLayoutCalculator } from './hooks/use-layout-calculator'
-import { useDtfState } from './hooks/use-dtf-state'
+const FILM_OPTIONS = [
+  { value: "standard", label: "Стандартная", description: "Базовая плёнка" },
+  { value: "premium", label: "Премиум", description: "Повышенная стойкость" },
+  { value: "glitter", label: "Глиттер", description: "С блёстками" },
+  { value: "glow", label: "Светящаяся", description: "Светится в темноте" },
+  { value: "metallic", label: "Металлик", description: "Металлический эффект" },
+];
 
-// Actions
-import { 
-  saveCalculation,
-  getMeterPricing,
-  getPlacements,
-  getConsumablesConfig,
-  getCalculationDetails
-} from '../actions'
+const QUALITY_OPTIONS = [
+  { value: "draft", label: "Черновик", dpi: "300 DPI" },
+  { value: "standard", label: "Стандарт", dpi: "600 DPI" },
+  { value: "high", label: "Высокое", dpi: "1200 DPI" },
+];
 
-// Типы
-import {
-  type MeterPriceTierData,
-  type PlacementData,
-  type ConsumablesConfigData,
-  type PrintGroupInput,
-  PRINT_GROUP_COLORS
-} from '../types'
+const WHITE_LAYER_OPTIONS = [
+  { value: "none", label: "Без белого", description: "Только для белых тканей" },
+  { value: "auto", label: "Авто", description: "Автоматически под цвета" },
+  { value: "full", label: "Полный", description: "Сплошной белый слой" },
+];
 
-interface DtfCalculatorClientProps {
-  initialMeterPricing: MeterPriceTierData[]
-  initialPlacements: PlacementData[]
-  initialConsumables: ConsumablesConfigData | null
-}
+const CUTTING_OPTIONS = [
+  { value: "none", label: "Без резки", price: 0 },
+  { value: "contour", label: "По контуру", price: 15 },
+  { value: "rectangle", label: "Прямоугольник", price: 5 },
+];
 
-export const DtfCalculatorClient = memo(function DtfCalculatorClient({
-  initialMeterPricing,
-  initialPlacements,
-  initialConsumables
-}: DtfCalculatorClientProps) {
-  const { toast } = useToast()
-  
-  // State Management via useReducer
-  const { state, dispatch, setUiFlag } = useDtfState({
-    meterPricing: initialMeterPricing,
-    placements: initialPlacements,
-    consumablesConfig: initialConsumables
-  })
+const URGENCY_OPTIONS = [
+  { value: "normal", label: "Обычный", days: "3-5 дней" },
+  { value: "express", label: "Экспресс", days: "1-2 дня" },
+  { value: "urgent", label: "Срочный", days: "24 часа" },
+];
 
-  // Destructure state for convenience
+export function DTFCalculatorClient() {
+  const { setCustomTrail } = useBreadcrumbs();
+
   const {
-    params: calculatorParams,
-    printGroups,
-    result,
-    meterPricing,
-    placements,
-    consumablesConfig,
-    isCalculating,
-    isSaving,
-    calculationError,
-    savedCalculationNumber,
-    isSettingsOpen,
-    isHistoryOpen
-  } = state
+    settings,
+    materials,
+    margin,
+    calculation,
+    updateSettings,
+    setMaterials,
+    setMargin,
+    reset,
+  } = useDTFCalculator();
 
-  // Ref для Canvas (для экспорта в PDF)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-
-  // Хук расчёта
-  const calculatedResultFromHook = useLayoutCalculator({
-    groups: printGroups,
-    params: calculatorParams,
-    meterPricing,
-    placements,
-    consumablesConfig,
-    applicationType: 'dtf'
-  })
-
-  // Фильтрованные группы (заполненные)
-  const filledGroups = useMemo(() => 
-    printGroups.filter(g => g.widthMm > 0 && g.heightMm > 0 && g.quantity > 0),
-    [printGroups]
-  )
-
-  // Обработчики параметров
-  const handleParamsChange = useCallback((updates: Partial<typeof calculatorParams>) => {
-    dispatch({ type: 'UPDATE_PARAMS', payload: updates })
-  }, [dispatch])
-
-  // Обработчики групп принтов
-  const handleGroupsChange = useCallback((newGroups: PrintGroupInput[]) => {
-    dispatch({ type: 'SET_GROUPS', payload: newGroups })
-  }, [dispatch])
-
-  // Расчёт
-  const handleCalculate = useCallback(async () => {
-    if (filledGroups.length === 0) {
-      toast('Добавьте хотя бы один принт с размерами', 'destructive')
-      return
-    }
-
-    setUiFlag('isCalculating', true)
-    dispatch({ type: 'SET_ERROR', payload: null })
-
-    try {
-      // Имитируем небольшую задержку для UI-фидбека
-      await new Promise(resolve => setTimeout(resolve, 300))
-      
-      if (calculatedResultFromHook) {
-        dispatch({ type: 'SET_RESULT', payload: calculatedResultFromHook })
-        toast('Расчёт выполнен', 'success')
-      } else {
-        throw new Error('Ошибка расчета')
-      }
-    } catch (_error) {
-      dispatch({ type: 'SET_ERROR', payload: 'Ошибка при расчёте' })
-      toast('Не удалось выполнить расчёт', 'destructive')
-    } finally {
-      setUiFlag('isCalculating', false)
-    }
-  }, [filledGroups, calculatedResultFromHook, toast, setUiFlag, dispatch])
-
-  // Сохранение
-  const handleSave = useCallback(async () => {
-    if (!result) return
-
-    setUiFlag('isSaving', true)
-
-    try {
-      const saveResult = await saveCalculation({
-        applicationType: 'dtf',
-        rollWidthMm: calculatorParams.rollWidthMm,
-        edgeMarginMm: calculatorParams.edgeMarginMm,
-        printGapMm: calculatorParams.printGapMm,
-        groups: filledGroups.map((g, i) => ({
-          name: g.name || `Принт ${i + 1}`,
-          widthMm: g.widthMm,
-          heightMm: g.heightMm,
-          quantity: g.quantity,
-          placementId: g.placementId,
-          color: g.color || PRINT_GROUP_COLORS[i % PRINT_GROUP_COLORS.length]
-        }))
-      })
-
-      if (saveResult.success && 'data' in saveResult && saveResult.data) {
-        dispatch({ type: 'SET_SAVED_NUMBER', payload: saveResult.data.calculationNumber })
-        toast(`Расчёт сохранён под номером ${saveResult.data.calculationNumber}`, 'success')
-      } else {
-        throw new Error(!saveResult.success && 'error' in saveResult ? String(saveResult.error) : 'Ошибка сохранения')
-      }
-    } catch (_error) {
-      toast('Не удалось сохранить расчёт', 'destructive')
-    } finally {
-      setUiFlag('isSaving', false)
-    }
-  }, [result, calculatorParams, filledGroups, toast, setUiFlag, dispatch])
-
-  // Копирование результата
-  const handleCopyResult = useCallback(async () => {
-    if (!result) return
-
-    const text = [
-      `DTF-печать | Расчёт себестоимости`,
-      savedCalculationNumber ? `№ ${savedCalculationNumber}` : '',
-      ``,
-      `Параметры:`,
-      `• Ширина рулона: ${calculatorParams.rollWidthMm} мм`,
-      `• Отступ: ${calculatorParams.edgeMarginMm} мм`,
-      `• Зазор: ${calculatorParams.printGapMm} мм`,
-      ``,
-      `Итоги:`,
-      `• ${formatCount(result.totalPrints, 'принт', 'принта', 'принтов')}`,
-      `• Длина: ${result.totalLengthM.toFixed(2)} м`,
-      `• КПД: ${result.efficiencyPercent.toFixed(1)}%`,
-      `• Себестоимость: ${formatCurrency(result.totalCost)}`,
-      `• Средняя цена за принт: ${formatCurrency(result.avgCostPerPrint)}`,
-      ``,
-      `Детализация:`,
-      ...result.sections.map(s => 
-        `• ${s.name}: ${formatCount(s.quantity, 'штука', 'штуки', 'штук')} × ${formatCurrency(s.costPerPrint)} = ${formatCurrency(s.sectionCost)}`
-      )
-    ].filter(Boolean).join('\n')
-
-    try {
-      await navigator.clipboard.writeText(text)
-      toast('Результат расчёта скопирована в буфер обмена', 'success')
-    } catch (_error) {
-      toast('Не удалось скопировать', 'destructive')
-    }
-  }, [result, calculatorParams, savedCalculationNumber, toast])
-
-  // Обновление настроек
-  const handleSettingsUpdated = useCallback(async () => {
-    try {
-      const [newPricingRes, newPlacementsRes, newConsumablesRes] = await Promise.all([
-        getMeterPricing('dtf'),
-        getPlacements('dtf'),
-        getConsumablesConfig('dtf')
-      ])
-
-      if (newPricingRes.success) dispatch({ type: 'SET_METER_PRICING', payload: newPricingRes.data })
-      if (newPlacementsRes.success) dispatch({ type: 'SET_PLACEMENTS', payload: newPlacementsRes.data })
-      if (newConsumablesRes.success) dispatch({ type: 'SET_CONSUMABLES', payload: newConsumablesRes.data })
-
-      if (result) {
-        dispatch({ type: 'SET_RESULT', payload: null })
-        toast('Настройки обновлены. Пересчитайте для применения новых цен', 'info')
-      }
-    } catch (_error) {
-      toast('Не удалось загрузить обновлённые настройки', 'destructive')
-    }
-  }, [result, toast, dispatch])
-
-  // Обработчик выбора из истории
-  const handleSelectFromHistory = useCallback(async (item: { id: string }) => {
-    try {
-      const res = await getCalculationDetails(item.id)
-      if (res.success && res.data) {
-        const { calculation, groups } = res.data
-        
-        const restoredParams = {
-          applicationType: 'dtf',
-          rollWidthMm: calculation.rollWidthMm || 600,
-          edgeMarginMm: calculation.edgeMarginMm || 5,
-          printGapMm: calculation.printGapMm || 5
-        }
-        
-        const restoredGroups = groups.map((g, i) => ({
-          id: crypto.randomUUID(),
-          name: g.name || '',
-          widthMm: g.widthMm,
-          heightMm: g.heightMm,
-          quantity: g.quantity,
-          placementId: g.placementId || null,
-          color: g.color || PRINT_GROUP_COLORS[i % PRINT_GROUP_COLORS.length]
-        }))
-        
-        dispatch({ 
-          type: 'LOAD_CALCULATION', 
-          payload: { 
-            params: restoredParams as typeof calculatorParams, 
-            groups: restoredGroups, 
-            number: calculation.calculationNumber 
-          } 
-        })
-        
-        toast(`Расчёт №${calculation.calculationNumber} загружен`, 'success')
-      }
-    } catch (_error) {
-      toast('Ошибка загрузки деталей расчёта', 'destructive')
-    }
-  }, [toast, dispatch])
+  useEffect(() => {
+    setCustomTrail([
+      { label: "Главная", href: "/dashboard" },
+      { label: "Производство", href: "/dashboard/production" },
+      { label: "Калькуляторы", href: "/dashboard/production/calculators" },
+      { label: "DTF печать", href: "/dashboard/production/calculators/dtf" },
+    ]);
+  }, [setCustomTrail]);
 
   return (
-    <div className="space-y-3">
-      {/* Заголовок */}
-      <CalculatorHeader
-        applicationType="dtf"
-        onSettingsClick={() => setUiFlag('isSettingsOpen', true)}
-        onHistoryClick={() => setUiFlag('isHistoryOpen', true)}
-      />
-
-      {/* Параметры рулона */}
-      <RollParamsCard
-        params={calculatorParams}
-        onChange={handleParamsChange}
-      />
-
-      {/* Список принтов */}
-      <PrintGroupsList
-        groups={printGroups}
-        onChange={handleGroupsChange}
-        placements={placements}
-      />
-
-      {/* Кнопки действий */}
-      <div className="flex flex-wrap gap-3">
-        <Button
-          onClick={handleCalculate}
-          disabled={isCalculating || filledGroups.length === 0}
-          className="flex-1 sm:flex-none animate-in fade-in duration-500"
-        >
-          {isCalculating ? (
-            <Spinner className="w-4 h-4 mr-2" />
-          ) : (
-            <Calculator className="w-4 h-4 mr-2" />
-          )}
-          <span className="hidden sm:inline">Рассчитать раскладку</span>
-          <span className="sm:hidden">Рассчитать</span>
+    <CalculatorLayout
+      title="DTF калькулятор"
+      description="Расчёт стоимости DTF печати"
+      icon={<Printer className="w-5 h-5" />}
+      actions={
+        <Button variant="outline" size="sm" onClick={reset} className="gap-2">
+          <RotateCcw className="w-4 h-4" />
+          <span className="hidden sm:inline">Сбросить</span>
         </Button>
+      }
+    >
+      {/* Левая колонка */}
+      <div className="lg:col-span-2 space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Размеры */}
+          <CalculatorSection title="Размеры принта" icon={<Maximize2 className="w-4 h-4" />}>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label>Ширина (см)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={60}
+                  step={0.5}
+                  value={settings.width}
+                  onChange={(e) => updateSettings({ width: Math.max(1, Number(e.target.value)) })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Высота (см)</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  max={90}
+                  step={0.5}
+                  value={settings.height}
+                  onChange={(e) => updateSettings({ height: Math.max(1, Number(e.target.value)) })}
+                />
+              </div>
+            </div>
+            <div className="mt-3 p-3 bg-slate-50 rounded-xl">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-600">Площадь:</span>
+                <span className="font-semibold">{calculation.areaSqCm.toFixed(1)} см²</span>
+              </div>
+            </div>
+          </CalculatorSection>
 
-        {result && (
-          <>
-            <Button
-              variant="outline"
-              onClick={handleSave}
-              disabled={isSaving}
-              className="animate-in fade-in duration-500"
-            >
-              {isSaving ? (
-                <Spinner className="w-4 h-4 mr-2" />
-              ) : (
-                <Save className="w-4 h-4 mr-2" />
-              )}
-              <span className="hidden sm:inline">Сохранить</span>
-            </Button>
+          {/* Количество */}
+          <CalculatorSection title="Количество">
+            <div className="space-y-2">
+              <Label>Тираж</Label>
+              <Input
+                type="number"
+                min={1}
+                value={settings.quantity}
+                onChange={(e) => updateSettings({ quantity: Math.max(1, Number(e.target.value)) })}
+              />
+            </div>
+          </CalculatorSection>
+        </div>
 
-            <DownloadPdfButton
-              result={result}
-              params={calculatorParams}
-              applicationType="dtf"
-              calculationNumber={savedCalculationNumber}
-              canvasRef={canvasRef}
+        {/* Тип плёнки */}
+        <CalculatorSection title="Тип плёнки" icon={<Layers className="w-4 h-4" />}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            {FILM_OPTIONS.map((option) => (
+              <button
+                type="button"
+                key={option.value}
+                onClick={() => updateSettings({ filmType: option.value as typeof settings.filmType })}
+                className={cn(
+                  "p-3 rounded-xl border text-left transition-all",
+                  settings.filmType === option.value
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-200 hover:border-slate-300"
+                )}
+              >
+                <div className="font-medium text-sm">{option.label}</div>
+                <div className="text-xs text-slate-500">{option.description}</div>
+              </button>
+            ))}
+          </div>
+        </CalculatorSection>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Качество печати */}
+          <CalculatorSection title="Качество печати" icon={<Sparkles className="w-4 h-4" />}>
+            <div className="grid grid-cols-3 gap-2">
+              {QUALITY_OPTIONS.map((option) => (
+                <button
+                  type="button"
+                  key={option.value}
+                  onClick={() => updateSettings({ printQuality: option.value as typeof settings.printQuality })}
+                  className={cn(
+                    "p-3 rounded-xl border text-center transition-all",
+                    settings.printQuality === option.value
+                      ? "border-primary bg-primary/5"
+                      : "border-slate-200 hover:border-slate-300"
+                  )}
+                >
+                  <div className="font-medium text-sm">{option.label}</div>
+                  <div className="text-xs text-slate-400">{option.dpi}</div>
+                </button>
+              ))}
+            </div>
+          </CalculatorSection>
+
+          {/* Белый слой */}
+          <CalculatorSection title="Белый слой">
+            <Select
+              options={WHITE_LAYER_OPTIONS.map(opt => ({
+                id: opt.value,
+                title: opt.label,
+                description: opt.description
+              }))}
+              value={settings.whiteLayerMode}
+              onChange={(value) => updateSettings({ whiteLayerMode: value as typeof settings.whiteLayerMode })}
             />
+          </CalculatorSection>
+        </div>
 
-            <Button
-              variant="ghost"
-              onClick={handleCopyResult}
-              className="animate-in fade-in duration-500"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Копировать</span>
-            </Button>
-          </>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Резка */}
+          <CalculatorSection title="Резка" icon={<Scissors className="w-4 h-4" />}>
+            <div className="grid grid-cols-3 gap-2">
+              {CUTTING_OPTIONS.map((option) => (
+                <button
+                  type="button"
+                  key={option.value}
+                  onClick={() => updateSettings({ cutting: option.value as typeof settings.cutting })}
+                  className={cn(
+                    "p-3 rounded-xl border text-center transition-all",
+                    settings.cutting === option.value
+                      ? "border-primary bg-primary/5"
+                      : "border-slate-200 hover:border-slate-300"
+                  )}
+                >
+                  <div className="font-medium text-sm">{option.label}</div>
+                  {option.price > 0 && (
+                    <div className="text-xs text-slate-400">+{option.price} ₽</div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </CalculatorSection>
+
+          {/* Срочность */}
+          <CalculatorSection title="Срочность" icon={<Clock className="w-4 h-4" />}>
+            <div className="grid grid-cols-3 gap-2">
+              {URGENCY_OPTIONS.map((option) => (
+                <button
+                  type="button"
+                  key={option.value}
+                  onClick={() => updateSettings({ urgency: option.value as typeof settings.urgency })}
+                  className={cn(
+                    "p-3 rounded-xl border text-center transition-all",
+                    settings.urgency === option.value
+                      ? "border-primary bg-primary/5"
+                      : "border-slate-200 hover:border-slate-300"
+                  )}
+                >
+                  <div className="font-medium text-sm">{option.label}</div>
+                  <div className="text-xs text-slate-400">{option.days}</div>
+                </button>
+              ))}
+            </div>
+          </CalculatorSection>
+        </div>
+
+        {/* Материалы */}
+        <CalculatorSection title="Материалы со склада">
+          <WarehouseMaterialsList
+            materials={materials}
+            onChange={setMaterials}
+            applicationTypeId="dtf"
+          />
+        </CalculatorSection>
+
+        {/* Наценка */}
+        <CalculatorSection title="Наценка">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Маржа</Label>
+              <span className="text-sm font-bold bg-primary/10 text-primary px-2 py-1 rounded-lg">
+                {margin}%
+              </span>
+            </div>
+            <Slider
+              value={[margin]}
+              onValueChange={([value]) => setMargin(value)}
+              min={0}
+              max={100}
+              step={5}
+              className="py-4"
+            />
+          </div>
+        </CalculatorSection>
       </div>
 
-      {/* Ошибка расчёта */}
-      {calculationError && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl">
-          <div className="flex items-center gap-2 text-red-700">
-            <AlertCircle className="w-5 h-5" />
-            <span>{calculationError}</span>
+      {/* Правая колонка - результаты */}
+      <CalculatorResults
+        total={calculation.total}
+        perItem={calculation.perItem}
+        quantity={settings.quantity}
+        itemLabel={pluralize(settings.quantity, "принт", "принта", "принтов")}
+      >
+        <div className="space-y-2">
+          <div className="text-sm font-bold text-slate-900 mb-3 tracking-wider text-xs">
+            Детализация расчёта
+          </div>
+          <div className="space-y-1">
+            {calculation.breakdown.map((item, index) => (
+              <ResultRow 
+                key={index} 
+                label={item.label} 
+                value={item.value} 
+                type={item.type} 
+              />
+            ))}
           </div>
         </div>
-      )}
 
-      {/* Результаты */}
-      {result && (
-        <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          {/* Номер расчёта */}
-          {savedCalculationNumber && (
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="font-mono">
-                № {savedCalculationNumber}
-              </Badge>
-              <span className="text-sm text-slate-500">Расчёт сохранён</span>
+        {calculation.discount > 0 && (
+          <div className="mt-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-700">Скидка за объём</span>
+              <span className="font-bold text-emerald-700">-{calculation.discount}%</span>
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Итоговая стоимость */}
-          <CostSummary result={result} />
-
-          {/* Визуализация раскладки */}
-          <FilmLayoutCanvas
-            ref={canvasRef}
-            sections={result.sections}
-            totalLengthMm={result.totalLengthM * 1000}
-            rollWidthMm={calculatorParams.rollWidthMm}
-            edgeMarginMm={calculatorParams.edgeMarginMm}
-            printGapMm={calculatorParams.printGapMm}
-          />
-
-          {/* Информация о раскладке */}
-          <LayoutInfoCard 
-            result={result} 
-            rollWidthMm={calculatorParams.rollWidthMm}
-          />
-
-          {/* Таблица себестоимости по принтам */}
-          <CostPerPrintTable sections={result.sections} />
-
-          {/* Расход материалов */}
-          <ConsumptionCards consumption={result.consumption} />
-        </div>
-      )}
-
-      {/* Модальное окно настроек */}
-      <CalculatorSettingsModal
-        isOpen={isSettingsOpen}
-        onClose={() => setUiFlag('isSettingsOpen', false)}
-        applicationType="dtf"
-        initialMeterPricing={meterPricing}
-        initialPlacements={placements}
-        initialConsumables={consumablesConfig}
-        onSettingsUpdated={handleSettingsUpdated}
-      />
-
-      {/* Модальное окно истории */}
-      <HistoryModal
-        isOpen={isHistoryOpen}
-        onClose={() => setUiFlag('isHistoryOpen', false)}
-        applicationType="dtf"
-        onSelect={handleSelectFromHistory}
-      />
-    </div>
-  )
-})
+        {materials.length > 0 && (
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded-xl">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-blue-700">Складские материалы ({materials.length})</span>
+              <span className="font-bold text-blue-700">
+                {calculation.materialsCost.toLocaleString("ru-RU")} ₽
+              </span>
+            </div>
+          </div>
+        )}
+      </CalculatorResults>
+    </CalculatorLayout>
+  );
+}

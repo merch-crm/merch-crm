@@ -1,6 +1,7 @@
 // app/(main)/dashboard/production/calculators/embroidery-types.ts
 
 import { QuantityDiscount } from './silkscreen-types'
+import type { SelectedMaterial } from '../components/warehouse-materials-list'
 
 // Типы ниток
 export type ThreadType = 'polyester' | 'rayon' | 'metallic' | 'glow'
@@ -279,7 +280,7 @@ export interface EmbroideryPrintInput {
 }
 
 export interface EmbroideryCalculationResult {
-  orders: Record<string, unknown>[]; // Для типизации в компонентах
+  orders: EmbroideryPrintInput[]
   totalCost: number
   avgCostPerItem: number
   totalDigitizingCost: number
@@ -293,6 +294,8 @@ export interface EmbroideryCalculationResult {
   totalQuantity: number
   totalStitches: number
   totalThreadConsumption: number
+  materialsCost?: number
+  materials?: SelectedMaterial[]
   threadConsumption?: {
     totalThreadMeters: number
   }

@@ -1,41 +1,37 @@
-import { ProductionDashboardClient } from "./production-dashboard-client";
-import { getProductionStats } from "./actions/dashboard-stats-actions";
-import { getTasksByLine } from "./actions/dashboard-lines-actions";
-import {
-    getUrgentProductionTasks,
-    getEquipmentStatus,
-    getStaffOnShift,
-    getDailyOutputData
-} from "./actions/production-dashboard-actions";
-import { PageContainer } from "@/components/ui/page-container";
+// app/(main)/dashboard/production/page.tsx
+import { Suspense } from "react";
+import { ProductionBentoDashboard } from "./components/bento/production-bento-dashboard";
+import { ProductionDashboardSkeleton } from "./components/bento/bento-skeleton";
+import { getAllDashboardData } from "./actions/bento-dashboard-actions";
 
-export default async function ProductionPage() {
-    const [
-        statsRes,
-        tasksByLineRes,
-        urgentTasksRes,
-        equipmentStatusRes,
-        staffOnShiftRes,
-        dailyOutputRes
-    ] = await Promise.all([
-        getProductionStats(),
-        getTasksByLine(),
-        getUrgentProductionTasks(),
-        getEquipmentStatus(),
-        getStaffOnShift(),
-        getDailyOutputData()
-    ]);
+export const metadata = {
+  title: "Производство | MerchCRM",
+  description: "Управление производственными процессами",
+};
 
+export const dynamic = "force-dynamic";
+
+async function ProductionDashboardData() {
+  const result = await getAllDashboardData("week");
+
+  if (!result.success || !result.data) {
     return (
-        <PageContainer>
-            <ProductionDashboardClient
-                stats={statsRes.success ? statsRes.data! : null}
-                tasksByLine={tasksByLineRes.success ? tasksByLineRes.data! : []}
-                urgentTasks={urgentTasksRes.success ? urgentTasksRes.data! : []}
-                equipmentStatus={equipmentStatusRes.success ? equipmentStatusRes.data! : []}
-                staffOnShift={staffOnShiftRes.success ? staffOnShiftRes.data! : []}
-                dailyOutput={dailyOutputRes.success ? dailyOutputRes.data! : []}
-            />
-        </PageContainer>
+      <div className="p-8 text-center bg-white rounded-xl border border-rose-100 shadow-sm">
+        <h2 className="text-xl font-bold text-rose-600 mb-2">Ошибка загрузки данных</h2>
+        <p className="text-slate-500">{result.error || "Не удалось загрузить данные дашборда"}</p>
+      </div>
     );
+  }
+
+  return <ProductionBentoDashboard data={result.data} />;
+}
+
+export default function ProductionPage() {
+  return (
+    <div className="flex flex-col gap-3 max-w-[1480px] mx-auto">
+      <Suspense fallback={<ProductionDashboardSkeleton />}>
+        <ProductionDashboardData />
+      </Suspense>
+    </div>
+  );
 }

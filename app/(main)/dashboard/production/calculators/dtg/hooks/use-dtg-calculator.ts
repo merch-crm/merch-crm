@@ -1,168 +1,227 @@
-'use client'
+"use client";
 
-import { useMemo } from 'react'
-import {
-  type DtgPrintInput,
-  type DtgCalculationResult,
-  type ConsumablesConfigData,
-  type ConsumptionItem,
-  DTG_GARMENTS,
-  DTG_PRINT_POSITIONS,
-  DTG_PRICE_LEVELS,
-  DTG_INK_CONSUMPTION
-} from '../../types'
+import { useState, useCallback, useMemo } from "react";
+import type { SelectedMaterial } from "@/app/(main)/dashboard/production/components/warehouse-materials-list";
 
-interface UseDtgCalculatorParams {
-  orders: DtgPrintInput[]
-  _consumablesConfig?: ConsumablesConfigData
+export interface DTGSettings {
+  quantity: number;
+  width: number;
+  height: number;
+  fabricColor: "white" | "light" | "dark" | "black";
+  printQuality: "standard" | "high" | "photo";
+  pretreatment: boolean;
+  fixation: "standard" | "enhanced";
+  urgency: "normal" | "express" | "urgent";
 }
 
-// Получение цены за см² в зависимости от площади
-function getPricePerCm2(areaCm2: number, isDark: boolean): number {
-  const level = DTG_PRICE_LEVELS.find(l => 
-    areaCm2 >= l.minAreaCm2 && (l.maxAreaCm2 === null || areaCm2 < l.maxAreaCm2)
-  )
-  
-  if (!level) {
-    const lastLevel = DTG_PRICE_LEVELS[DTG_PRICE_LEVELS.length - 1]
-    return isDark ? lastLevel.pricePerCm2Dark : lastLevel.pricePerCm2Light
-  }
-  
-  return isDark ? level.pricePerCm2Dark : level.pricePerCm2Light
+export interface DTGPricing {
+  pricePerSqCm: number;
+  fabricColorMultipliers: Record<string, number>;
+  qualityMultipliers: Record<string, number>;
+  pretreatmentPrice: number;
+  fixationPrices: Record<string, number>;
+  urgencyMultipliers: Record<string, number>;
+  setupFee: number;
+  minOrderFee: number;
+  minAreaSqCm: number;
 }
 
-export function useDtgCalculator({
-  orders,
-  _consumablesConfig: _consumablesConfig
-}: UseDtgCalculatorParams): DtgCalculationResult | null {
-  return useMemo(() => {
-    // Фильтруем валидные заказы
-    const validOrders = (orders || []).filter(o => 
-      o.positions.length > 0 && o.quantity > 0
-    )
+export interface CalculationResult {
+  perItem: number;
+  total: number;
+  areaSqCm: number;
+  materialsCost: number;
+  printCost: number;
+  pretreatmentCost: number;
+  setupCost: number;
+  discount: number;
+  breakdown: {
+    label: string;
+    value: number;
+    type: "cost" | "fee" | "discount";
+  }[];
+}
 
-    if (validOrders.length === 0) {
-      return null
+const DEFAULT_PRICING: DTGPricing = {
+  pricePerSqCm: 1.2,
+  fabricColorMultipliers: {
+    white: 1,
+    light: 1.1,
+    dark: 1.5,
+    black: 1.6,
+  },
+  qualityMultipliers: {
+    standard: 1,
+    high: 1.3,
+    photo: 1.6,
+  },
+  pretreatmentPrice: 50,
+  fixationPrices: {
+    standard: 0,
+    enhanced: 30,
+  },
+  urgencyMultipliers: {
+    normal: 1,
+    express: 1.3,
+    urgent: 1.5,
+  },
+  setupFee: 300,
+  minOrderFee: 500,
+  minAreaSqCm: 50,
+};
+
+const QUANTITY_DISCOUNTS = [
+  { min: 100, discount: 0.15 },
+  { min: 50, discount: 0.1 },
+  { min: 20, discount: 0.07 },
+  { min: 10, discount: 0.05 },
+];
+
+export function useDTGCalculator() {
+  const [settings, setSettings] = useState<DTGSettings>({
+    quantity: 1,
+    width: 20,
+    height: 25,
+    fabricColor: "white",
+    printQuality: "standard",
+    pretreatment: false,
+    fixation: "standard",
+    urgency: "normal",
+  });
+  const [materials, setMaterials] = useState<SelectedMaterial[]>([]);
+  const [pricing, setPricing] = useState<DTGPricing>(DEFAULT_PRICING);
+  const [margin, setMargin] = useState(30);
+
+  const updateSettings = useCallback((updates: Partial<DTGSettings>) => {
+    setSettings((prev) => {
+      const newSettings = { ...prev, ...updates };
+      // Автоматически включаем претрит для тёмных тканей
+      if (updates.fabricColor && (updates.fabricColor === "dark" || updates.fabricColor === "black")) {
+        newSettings.pretreatment = true;
+      }
+      return newSettings;
+    });
+  }, []);
+
+  const materialsCost = useMemo(() => {
+    return materials.reduce((sum, m) => sum + m.price * m.quantity, 0);
+  }, [materials]);
+
+  const calculation = useMemo((): CalculationResult => {
+    const { quantity, width, height, fabricColor, printQuality, pretreatment, fixation, urgency } = settings;
+
+    const areaSqCm = Math.max(width * height, pricing.minAreaSqCm);
+
+    // Базовая стоимость печати
+    const fabricMult = pricing.fabricColorMultipliers[fabricColor];
+    const qualityMult = pricing.qualityMultipliers[printQuality];
+    let printCostPerItem = areaSqCm * pricing.pricePerSqCm * fabricMult * qualityMult;
+
+    // Претрит
+    const pretreatmentCost = pretreatment ? pricing.pretreatmentPrice : 0;
+    printCostPerItem += pretreatmentCost;
+
+    // Фиксация
+    printCostPerItem += pricing.fixationPrices[fixation];
+
+    // Срочность
+    const urgencyMult = pricing.urgencyMultipliers[urgency];
+    printCostPerItem *= urgencyMult;
+
+    // Материалы
+    const materialsPerItem = quantity > 0 ? materialsCost / quantity : 0;
+    const costPerItem = printCostPerItem + materialsPerItem;
+
+    // Скидка
+    let discount = 0;
+    for (const tier of QUANTITY_DISCOUNTS) {
+      if (quantity >= tier.min) {
+        discount = tier.discount;
+        break;
+      }
     }
 
-    let totalInkCmyk = 0
-    let totalInkWhite = 0
-    let totalPrimer = 0
+    // Цена с наценкой
+    const pricePerItem = costPerItem * (1 + margin / 100) * (1 - discount);
 
-    const items = validOrders.map(order => {
-      const garment = DTG_GARMENTS.find(g => g.id === order.garmentId)
-      if (!garment) return null
-
-      const isDark = order.garmentColor === 'dark'
-
-      // Расчёт позиций
-      const positionResults = order.positions.map(pos => {
-        const position = DTG_PRINT_POSITIONS.find(p => p.id === pos.positionId)
-        if (!position) return null
-
-        const areaCm2 = (pos.widthMm * pos.heightMm) / 100
-        const areaM2 = areaCm2 / 10000
-
-        // Цена печати за площадь
-        const pricePerCm2 = getPricePerCm2(areaCm2, isDark)
-        const printCost = areaCm2 * pricePerCm2
-
-        // Стоимость работы
-        const workCost = position.workPrice
-
-        // Расход чернил
-        const fillPercent = (pos.fillPercent || 60) / 100
-        totalInkCmyk += areaM2 * DTG_INK_CONSUMPTION.cmyk * fillPercent * order.quantity
-        
-        if (isDark) {
-          totalInkWhite += areaM2 * DTG_INK_CONSUMPTION.white * fillPercent * order.quantity
-          totalPrimer += areaM2 * DTG_INK_CONSUMPTION.primer * order.quantity
-        }
-
-        return {
-          position,
-          areaCm2,
-          printCost,
-          workCost
-        }
-      }).filter((p): p is NonNullable<typeof p> => p !== null)
-
-      // Суммарные стоимости по заказу
-      const totalPrintCost = positionResults.reduce((sum, p) => sum + p.printCost, 0) * order.quantity
-      const totalWorkCost = positionResults.reduce((sum, p) => sum + p.workCost, 0) * order.quantity
-      const garmentCost = garment.basePrice * order.quantity
-      
-      // Праймер для тёмных тканей
-      const totalAreaM2 = positionResults.reduce((sum, p) => sum + p.areaCm2 / 10000, 0)
-      const primerCost = isDark ? totalAreaM2 * 50 * order.quantity : 0 // 50₽ за м² праймера
-
-      const totalCost = garmentCost + totalPrintCost + totalWorkCost + primerCost
-      const costPerItem = totalCost / order.quantity
-
-      return {
-        garment,
-        garmentColor: order.garmentColor,
-        quantity: order.quantity,
-        positions: positionResults,
-        garmentCost,
-        printCost: totalPrintCost,
-        workCost: totalWorkCost,
-        primerCost,
-        totalCost,
-        costPerItem
-      }
-    }).filter((item): item is NonNullable<typeof item> => item !== null)
-
-    // Итоговые суммы
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0)
-    const totalGarmentCost = items.reduce((sum, item) => sum + item.garmentCost, 0)
-    const totalPrintCost = items.reduce((sum, item) => sum + item.printCost, 0)
-    const totalWorkCost = items.reduce((sum, item) => sum + item.workCost, 0)
-    const totalPrimerCost = items.reduce((sum, item) => sum + item.primerCost, 0)
-    const totalCost = items.reduce((sum, item) => sum + item.totalCost, 0)
-    const avgCostPerItem = totalCost / totalQuantity
-
-    // Формируем расход материалов
-    const consumption: ConsumptionItem[] = [
-      {
-        key: 'ink_cmyk',
-        name: 'Чернила CMYK',
-        value: totalInkCmyk,
-        unit: 'мл',
-        color: '#8b5cf6'
-      }
-    ]
-
-    if (totalInkWhite > 0) {
-      consumption.push({
-        key: 'ink_white', // Исправлено type -> key для соответствия интерфейсу
-        name: 'Чернила белые',
-        value: totalInkWhite,
-        unit: 'мл',
-        color: '#e2e8f0'
-      })
+    // Итого
+    let total = pricePerItem * quantity + pricing.setupFee;
+    if (total < pricing.minOrderFee) {
+      total = pricing.minOrderFee;
     }
 
-    if (totalPrimer > 0) {
-      consumption.push({
-        key: 'primer',
-        name: 'Праймер',
-        value: totalPrimer,
-        unit: 'мл',
-        color: '#f59e0b'
-      })
+    // Breakdown
+    const breakdown: CalculationResult["breakdown"] = [
+      { label: `Печать (${areaSqCm.toFixed(0)} см²)`, value: areaSqCm * pricing.pricePerSqCm * quantity, type: "cost" },
+    ];
+
+    if (fabricMult > 1) {
+      const fabricExtra = areaSqCm * pricing.pricePerSqCm * (fabricMult - 1) * quantity;
+      breakdown.push({ label: "Тёмная ткань", value: fabricExtra, type: "cost" });
+    }
+
+    if (qualityMult > 1) {
+      const qualityExtra = areaSqCm * pricing.pricePerSqCm * fabricMult * (qualityMult - 1) * quantity;
+      breakdown.push({ label: "Повышенное качество", value: qualityExtra, type: "cost" });
+    }
+
+    if (pretreatmentCost > 0) {
+      breakdown.push({ label: "Претрит", value: pretreatmentCost * quantity, type: "cost" });
+    }
+
+    if (pricing.fixationPrices[fixation] > 0) {
+      breakdown.push({ label: "Усиленная фиксация", value: pricing.fixationPrices[fixation] * quantity, type: "cost" });
+    }
+
+    if (materialsCost > 0) {
+      breakdown.push({ label: "Материалы со склада", value: materialsCost, type: "cost" });
+    }
+
+    breakdown.push({ label: "Настройка", value: pricing.setupFee, type: "fee" });
+
+    if (discount > 0) {
+      const discountValue = (pricePerItem * quantity * discount) / (1 - discount);
+      breakdown.push({ label: `Скидка ${Math.round(discount * 100)}%`, value: -discountValue, type: "discount" });
     }
 
     return {
-      items,
-      totalQuantity,
-      totalGarmentCost,
-      totalPrintCost,
-      totalWorkCost,
-      totalPrimerCost,
-      totalCost,
-      avgCostPerItem,
-      consumption
-    }
-  }, [orders])
+      perItem: Math.round(pricePerItem),
+      total: Math.round(total),
+      areaSqCm,
+      materialsCost: Math.round(materialsCost),
+      printCost: Math.round(printCostPerItem * quantity),
+      pretreatmentCost: Math.round(pretreatmentCost * quantity),
+      setupCost: pricing.setupFee,
+      discount: Math.round(discount * 100),
+      breakdown,
+    };
+  }, [settings, materialsCost, pricing, margin]);
+
+  const reset = useCallback(() => {
+    setSettings({
+      quantity: 1,
+      width: 20,
+      height: 25,
+      fabricColor: "white",
+      printQuality: "standard",
+      pretreatment: false,
+      fixation: "standard",
+      urgency: "normal",
+    });
+    setMaterials([]);
+    setMargin(30);
+  }, []);
+
+  return {
+    settings,
+    materials,
+    pricing,
+    margin,
+    calculation,
+    updateSettings,
+    setMaterials,
+    setPricing,
+    setMargin,
+    reset,
+  };
 }

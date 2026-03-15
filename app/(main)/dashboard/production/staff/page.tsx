@@ -36,7 +36,7 @@ export default async function StaffPage() {
 
 function StaffPageSkeleton() {
     return (
-        <div className="p-6 space-y-3">
+        <div className="space-y-3">
             <div className="h-10 w-48 bg-muted animate-pulse rounded" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {[...Array(8)].map((_, i) => (

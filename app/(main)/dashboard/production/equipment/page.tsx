@@ -43,14 +43,12 @@ export default async function EquipmentPage() {
     const applicationTypes = typesResult.success ? typesResult.data || [] : [];
 
     return (
-        <div className="container py-6">
-            <Suspense fallback={<EquipmentSkeleton />}>
-                <EquipmentPageClient
-                    initialEquipment={equipment}
-                    initialStats={stats}
-                    applicationTypes={applicationTypes}
-                />
-            </Suspense>
-        </div>
+        <Suspense fallback={<EquipmentSkeleton />}>
+            <EquipmentPageClient
+                initialEquipment={equipment}
+                initialStats={stats}
+                applicationTypes={applicationTypes}
+            />
+        </Suspense>
     );
 }

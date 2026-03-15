@@ -21,7 +21,7 @@ const settingsItems = [
 
 export default function ProductionSettingsPage() {
     return (
-        <div className="container max-w-4xl py-6 space-y-3">
+        <div className="space-y-3">
             {/* Header */}
             <div className="flex items-center gap-3">
                 <Link href="/dashboard/production">

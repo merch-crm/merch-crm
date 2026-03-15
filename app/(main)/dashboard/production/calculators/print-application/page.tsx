@@ -1,16 +1,10 @@
-import { Suspense } from 'react'
-import PrintApplicationCalculatorClient from "./print-application-calculator-client"
-import { CalculatorsSkeleton } from "../components"
+import { PrintApplicationCalculatorClient } from './print-application-calculator-client'
 
 export const metadata = {
-  title: 'Нанесение принта | MerchCRM',
-  description: 'Расчёт стоимости нанесения готовых принтов'
+  title: 'Нанесение | MerchCRM',
+  description: 'Расчёт себестоимости термопереноса и нашивок'
 }
 
 export default function PrintApplicationCalculatorPage() {
-  return (
-    <Suspense fallback={<CalculatorsSkeleton />}>
-      <PrintApplicationCalculatorClient />
-    </Suspense>
-  )
+  return <PrintApplicationCalculatorClient />
 }
