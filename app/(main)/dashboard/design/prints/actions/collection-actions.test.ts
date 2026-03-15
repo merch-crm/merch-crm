@@ -47,7 +47,7 @@ vi.mock("@/lib/db", () => ({
     },
 }));
 
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn(),
 }));
 
@@ -73,7 +73,7 @@ vi.mock("@/lib/utils", () => ({
 }));
 
 import { getCollections, createCollection } from "./collection-actions";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { mockSession } from "@/tests/helpers/mocks";
 
 // ─── Tests ────────────────────────────────────────────────────────────────────

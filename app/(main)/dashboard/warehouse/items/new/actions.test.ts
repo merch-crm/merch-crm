@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createBaseLineWithPositions, createFinishedLineWithPositions } from "./actions";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { productLines } from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { mockSession } from "@/tests/helpers/mocks";
@@ -26,7 +26,7 @@ vi.mock("@/lib/db", () => ({
     },
 }));
 
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn(),
 }));
 

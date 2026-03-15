@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getExportData, getExportColumns, getExportPresets } from '../export.actions';
-import { getSession } from '@/lib/auth';
+import { getSession } from "@/lib/session";
 import { logAction } from '@/lib/audit';
 
 // --- Mocks ---
@@ -17,7 +17,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('@/lib/session', () => ({
     getSession: vi.fn(),
 }));
 

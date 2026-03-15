@@ -13,7 +13,7 @@ vi.mock("@/lib/db", () => ({
     },
 }));
 
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn(),
 }));
 
@@ -38,7 +38,7 @@ vi.mock("@/lib/utils", () => ({
     generateId: vi.fn(() => "123e4567-e89b-12d3-a456-426614174000"),
 }));
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 const _VALID_ITEM_ID = "123e4567-e89b-12d3-a456-426614174001";
 const VALID_USER_ID = "123e4567-e89b-12d3-a456-426614174002";

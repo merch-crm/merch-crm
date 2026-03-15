@@ -7,7 +7,7 @@ import {
     setPrimaryContact,
 } from '../contacts.actions';
 import { db } from '@/lib/db';
-import { getSession } from '@/lib/auth';
+import { getSession } from "@/lib/session";
 import { revalidatePath } from 'next/cache';
 
 // --- Mocks ---
@@ -60,7 +60,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-vi.mock('@/lib/auth', () => ({
+vi.mock('@/lib/session', () => ({
     getSession: vi.fn(),
 }));
 

@@ -17,7 +17,7 @@ vi.mock("@/lib/db", () => ({
     },
 }));
 
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn(),
 }));
 

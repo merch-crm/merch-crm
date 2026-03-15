@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import { getProjectExports } from "../export-actions";
 import { db } from "@/lib/db";
 
+// Mock session
+vi.mock("@/lib/session", () => ({
+    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleName: "Администратор" }),
+}));
+
 vi.mock("@/lib/db", () => ({
     db: {
         query: {

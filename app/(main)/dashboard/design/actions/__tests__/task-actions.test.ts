@@ -3,7 +3,7 @@ import { getDesignQueue } from "../sub-actions/task-actions";
 import { db } from "@/lib/db";
 
 // Mock auth
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User" }),
 }));
 

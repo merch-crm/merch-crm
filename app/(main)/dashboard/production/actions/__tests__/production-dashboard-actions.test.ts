@@ -3,6 +3,11 @@ import { getUrgentProductionTasks } from "../production-dashboard-actions";
 import { getProductionStats } from "../dashboard-stats-actions";
 import { getTasksByLine } from "../dashboard-lines-actions";
 
+// Mock session
+vi.mock("@/lib/session", () => ({
+    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleName: "Администратор" }),
+}));
+
 // Mock db
 vi.mock("@/lib/db", () => {
     const mockData = [

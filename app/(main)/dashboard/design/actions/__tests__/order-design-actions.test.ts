@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import { getDesignQueueStats } from "../sub-actions/stats-actions";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 // Mock the dependencies
 vi.mock("@/lib/db", () => ({
@@ -16,7 +16,7 @@ vi.mock("@/lib/db", () => ({
     },
 }));
 
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn(),
 }));
 

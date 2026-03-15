@@ -12,8 +12,8 @@ vi.mock("@/lib/db", () => ({
     },
 }));
 
-vi.mock("@/lib/auth", () => ({
-    getSession: vi.fn(),
+vi.mock("@/lib/session", () => ({
+    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleName: "Администратор" }),
 }));
 
 describe("font-actions", () => {

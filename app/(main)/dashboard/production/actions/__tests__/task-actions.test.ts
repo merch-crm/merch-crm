@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 // Real-looking UUIDs (must be hoisted or defined inside mock factories)
 
 // Mock auth
-vi.mock("@/lib/auth", () => ({
+vi.mock("@/lib/session", () => ({
     getSession: vi.fn().mockResolvedValue({
         id: "550e8400-e29b-41d4-a716-446655440000",
         user: { id: "550e8400-e29b-41d4-a716-446655440000", name: "Test User" }
