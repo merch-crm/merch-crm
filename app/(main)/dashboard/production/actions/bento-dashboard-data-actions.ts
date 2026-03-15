@@ -7,6 +7,7 @@ import {
   orders,
   orderItems,
   applicationTypes,
+  productionLines,
   clients,
 } from "@/lib/schema";
 import {
@@ -198,10 +199,12 @@ export async function getDailyOutputData(period: StatsPeriod = "week") {
     periodSchema.parse(period);
     const { start, end } = getPeriodRange(period);
 
-    // Реальный capacity из линий
-    const { getDailyTargetFromCapacity } = await import("./bento-dashboard-analytics-actions");
-    const capacityResult = await getDailyTargetFromCapacity();
-    const target = capacityResult.success ? capacityResult.data : 100;
+    // Capacity из активных линий (инлайн-запрос, чтобы избежать циклического импорта)
+    const lineCapacities = await db
+      .select({ capacity: productionLines.capacity })
+      .from(productionLines)
+      .where(eq(productionLines.isActive, true));
+    const target = lineCapacities.reduce((acc, l) => acc + (l.capacity || 0), 0) || 100;
 
     const output = await db
       .select({
