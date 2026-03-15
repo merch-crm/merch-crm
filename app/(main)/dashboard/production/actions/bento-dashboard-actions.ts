@@ -31,12 +31,12 @@ import type {
   MaterialAlert,
 } from "../types";
 import {
-  getPeriodRange,
   getDefectStats,
   getTopApplicationTypes,
   getDailyOutputData,
   getDeadlineCalendarData,
 } from "./bento-dashboard-data-actions";
+import { getPeriodRange } from "../utils/period-utils";
 import {
   getHeatmapData,
   getStaffLoadData,

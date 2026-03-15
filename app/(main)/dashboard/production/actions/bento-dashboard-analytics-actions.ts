@@ -37,7 +37,7 @@ import type {
   EquipmentStatusItem,
 } from "../types";
 import { users } from "@/lib/schema";
-import { getPeriodRange } from "./bento-dashboard-data-actions";
+import { getPeriodRange } from "../utils/period-utils";
 
 const periodSchema = z.enum(["day", "week", "month"]);
 

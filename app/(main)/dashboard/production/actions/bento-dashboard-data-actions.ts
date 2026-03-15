@@ -25,10 +25,7 @@ import {
 import {
   startOfDay,
   endOfDay,
-  startOfWeek,
-  startOfMonth,
   endOfMonth,
-  subDays,
   addDays,
   format,
 } from "date-fns";
@@ -38,36 +35,10 @@ import type {
   DefectStats,
   DeadlineCalendarData,
 } from "../types";
+import { getPeriodRange } from "../utils/period-utils";
+import { startOfMonth } from "date-fns";
 
 const periodSchema = z.enum(["day", "week", "month"]);
-
-/** Вспомогательная функция для периодов */
-export function getPeriodRange(period: StatsPeriod): { start: Date; end: Date } {
-  try {
-    const now = new Date();
-    let start: Date;
-    const end = now;
-
-    switch (period) {
-      case "day":
-        start = startOfDay(now);
-        break;
-      case "week":
-        start = startOfWeek(now, { weekStartsOn: 1 });
-        break;
-      case "month":
-        start = startOfMonth(now);
-        break;
-      default:
-        start = subDays(now, 7);
-    }
-
-    return { start, end };
-  } catch {
-    const now = new Date();
-    return { start: subDays(now, 7), end: now };
-  }
-}
 
 /** Сравнение метрики с предыдущим периодом */
 function calcTrend(current: number, previous: number): number {
