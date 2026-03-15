@@ -19,6 +19,7 @@ const routeLabels: Record<string, string> = {
     new: "Создание",
     design: "Дизайн",
     tasks: "Задачи",
+    calculators: "Калькулятор расчета",
 };
 
 export function Breadcrumbs() {

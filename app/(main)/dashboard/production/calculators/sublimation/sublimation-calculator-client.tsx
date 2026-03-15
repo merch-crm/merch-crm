@@ -74,6 +74,7 @@ export function SublimationCalculatorClient() {
       { label: "Калькуляторы", href: "/dashboard/production/calculators" },
       { label: "Сублимация", href: "/dashboard/production/calculators/sublimation" },
     ]);
+    return () => setCustomTrail(null);
   }, [setCustomTrail]);
 
   return (

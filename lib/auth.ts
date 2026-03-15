@@ -148,6 +148,17 @@ export const auth = betterAuth({
   trustedOrigins: [
     process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   ],
+
+  // ── Настройки куки для безопасности ───────────────
+  cookies: {
+    session: {
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
 });
 
 // ── Типы для проекта ─────────────────────────────────

@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { systemFonts } from "@/lib/schema";
 import { eq, asc } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
@@ -31,6 +31,11 @@ type SystemFont = typeof systemFonts.$inferSelect;
 // Получить системные шрифты
 export async function getSystemFonts(): Promise<ActionResult<SystemFont[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Необходима авторизация" };
+        }
+
         const result = await db.query.systemFonts.findMany({
             where: eq(systemFonts.isActive, true),
             orderBy: [asc(systemFonts.sortOrder), asc(systemFonts.name)],

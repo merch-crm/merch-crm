@@ -3,7 +3,8 @@
 import { db } from "@/lib/db";
 import { editorExports } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
@@ -33,6 +34,11 @@ export async function saveEditorExport(rawData: z.infer<typeof SaveExportSchema>
         const session = await getSession();
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
+        }
+
+        // RBAC: Only admin or management can export
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на экспорт проектов" };
         }
 
         const validatedProps = SaveExportSchema.safeParse(rawData);
@@ -74,6 +80,12 @@ export async function saveEditorExport(rawData: z.infer<typeof SaveExportSchema>
 
         const result = results[0] as EditorExport;
 
+        await logAction("Экспорт проекта сохранен", "editor_export", result.id, {
+            projectId: result.projectId,
+            filename: result.filename,
+            format: result.format
+        });
+
         return { success: true, data: result };
     } catch (error) {
         console.error("Error saving export:", error);
@@ -87,10 +99,24 @@ export async function getProjectExports(projectId: string): Promise<ActionResult
     if (!validatedId.success) return { success: false, error: "Неверный ID проекта" };
 
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Необходима авторизация" };
+        }
+
+        // RBAC: Only admin or management can see exports
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на просмотр экспортов" };
+        }
+
         const result = await db.query.editorExports.findMany({
             where: eq(editorExports.projectId, validatedId.data),
             orderBy: [desc(editorExports.createdAt)],
             limit: 100,
+        });
+
+        await logAction("Просмотрены экспорты проекта", "editor_export", projectId, {
+            projectId
         });
 
         return { success: true, data: result };

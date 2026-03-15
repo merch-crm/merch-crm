@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { printPlacements } from "@/lib/schema/calculators";
 import { eq, and, asc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { slugify } from "@/lib/utils";
 import {
@@ -116,6 +117,11 @@ export async function createPlacement(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify placements
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на изменение нанесений" };
+        }
+
         const validated = createPlacementSchema.safeParse(input);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -157,6 +163,15 @@ export async function createPlacement(
             })
             .returning();
 
+        await logAction("Создано нанесение", "print_placement", result.id, {
+            applicationType,
+            name,
+            finalSlug,
+            widthMm,
+            heightMm,
+            workPrice
+        });
+
         revalidatePath(REVALIDATE_PATH);
 
         return {
@@ -193,6 +208,11 @@ export async function updatePlacement(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify placements
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на изменение нанесений" };
+        }
+
         const validated = updatePlacementSchema.safeParse(input);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -220,6 +240,8 @@ export async function updatePlacement(
         if (!result) {
             return { success: false, error: "Нанесение не найдено" };
         }
+
+        await logAction("Обновлено нанесение", "print_placement", id, updates);
 
         revalidatePath(REVALIDATE_PATH);
 
@@ -257,6 +279,11 @@ export async function deletePlacement(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify placements
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на удаление нанесений" };
+        }
+
         const validated = deletePlacementSchema.safeParse(input);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -265,6 +292,8 @@ export async function deletePlacement(
         const { id } = validated.data;
 
         await db.delete(printPlacements).where(eq(printPlacements.id, id));
+
+        await logAction("Удалено нанесение", "print_placement", id, { id });
 
         revalidatePath(REVALIDATE_PATH);
 
@@ -288,6 +317,11 @@ export async function bulkUpdatePlacementPrices(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify placements
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на изменение цен" };
+        }
+
         await db.transaction(async (tx) => {
             for (const { id, workPrice } of updates) {
                 await tx
@@ -295,6 +329,10 @@ export async function bulkUpdatePlacementPrices(
                     .set({ workPrice: String(workPrice) })
                     .where(eq(printPlacements.id, id));
             }
+        });
+
+        await logAction("Массовое обновление цен нанесений", "print_placement", "bulk", {
+            count: updates.length
         });
 
         revalidatePath(REVALIDATE_PATH);

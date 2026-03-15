@@ -5,6 +5,7 @@ import { db } from '@/lib/db'
 import { printCalculations, printCalculationGroups } from '@/lib/schema/calculators'
 import { revalidatePath } from 'next/cache'
 import { getSession } from '@/lib/auth'
+import { logAction } from '@/lib/audit'
 import { eq, and, like, asc } from 'drizzle-orm'
 import { type ActionResult } from '@/lib/types'
 
@@ -165,6 +166,11 @@ export async function savePrintApplicationCalculation(
       return calculation
     })
 
+    await logAction("Сохранен расчет нанесения", "print_calculation", result.id, {
+        calculationNumber: result.calculationNumber,
+        totalCost: result.totalCost
+    });
+
     revalidatePath('/dashboard/production/calculators/print-application')
     revalidatePath('/dashboard/production/calculators')
 
@@ -228,6 +234,8 @@ export async function deletePrintApplicationCalculation(id: string) {
         eq(printCalculations.id, id)
       )
     })
+
+    await logAction("Удален расчет нанесения", "print_calculation", id, { id });
 
     revalidatePath('/dashboard/production/calculators/print-application')
     revalidatePath('/dashboard/production/calculators')

@@ -22,23 +22,28 @@ import {
   asc,
   inArray,
 } from "drizzle-orm";
-import {
-  startOfDay,
-  endOfDay,
-  endOfMonth,
-  addDays,
-  format,
-} from "date-fns";
+import { startOfDay, endOfDay, endOfMonth, addDays, format, startOfMonth } from "date-fns";
 import { z } from "zod";
+import { getSession } from "@/lib/session";
 import type {
   StatsPeriod,
   DefectStats,
   DeadlineCalendarData,
+  TopApplicationType,
+  DailyOutputItem
 } from "../types";
 import { getPeriodRange } from "../utils/period-utils";
-import { startOfMonth } from "date-fns";
+
+export interface DashboardActionResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
 
 const periodSchema = z.enum(["day", "week", "month"]);
+
+// Add // audit-ignore: Intentional public action for non-authenticated users if needed, 
+// but for Bento actions, they SHOULD be secured.
 
 /** Сравнение метрики с предыдущим периодом */
 function calcTrend(current: number, previous: number): number {
@@ -47,12 +52,14 @@ function calcTrend(current: number, previous: number): number {
 }
 
 /** 4. Статистика брака */
-export async function getDefectStats(period: StatsPeriod = "week"): Promise<{
-  success: boolean;
-  data?: DefectStats;
-}> {
+export async function getDefectStats(period: StatsPeriod = "week"): Promise<DashboardActionResult<DefectStats>> {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start, end } = getPeriodRange(period);
 
     // Текущий период
@@ -124,9 +131,14 @@ export async function getDefectStats(period: StatsPeriod = "week"): Promise<{
 }
 
 /** 7. Топ типов нанесения */
-export async function getTopApplicationTypes(period: StatsPeriod = "week") {
+export async function getTopApplicationTypes(period: StatsPeriod = "week"): Promise<DashboardActionResult<TopApplicationType[]>> {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start } = getPeriodRange(period);
 
     const types = await db
@@ -165,9 +177,14 @@ export async function getTopApplicationTypes(period: StatsPeriod = "week") {
 }
 
 /** 8. Дневная производительность */
-export async function getDailyOutputData(period: StatsPeriod = "week") {
+export async function getDailyOutputData(period: StatsPeriod = "week"): Promise<DashboardActionResult<DailyOutputItem[]>> {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start, end } = getPeriodRange(period);
 
     // Capacity из активных линий (инлайн-запрос, чтобы избежать циклического импорта)
@@ -209,15 +226,16 @@ export async function getDailyOutputData(period: StatsPeriod = "week") {
   }
 }
 
-/** 10. Календарь дедлайнов */
 export async function getDeadlineCalendarData(
   monthOffset: number = 0
-): Promise<{
-  success: boolean;
-  data?: DeadlineCalendarData;
-}> {
+): Promise<DashboardActionResult<DeadlineCalendarData>> {
   try {
     z.number().parse(monthOffset);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const baseDate = addDays(new Date(), monthOffset * 30);
     const start = startOfMonth(baseDate);
     const end = endOfMonth(baseDate);

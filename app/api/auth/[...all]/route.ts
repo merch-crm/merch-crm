@@ -5,6 +5,7 @@ import { NextRequest } from "next/server";
 
 const handler = toNextJsHandler(auth);
 
+// audit-ignore: Handled by better-auth internal session check
 export async function GET(req: NextRequest) {
     try {
         const response = await handler.GET(req);
@@ -14,6 +15,7 @@ export async function GET(req: NextRequest) {
     }
 }
 
+// audit-ignore: Handled by better-auth internal session check
 export async function POST(req: NextRequest) {
     try {
         const response = await handler.POST(req);

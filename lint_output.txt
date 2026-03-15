@@ -1,0 +1,28 @@
+
+> merch-crm@0.1.0 lint
+> eslint
+
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/actions/sub-actions/file-actions.ts
+  124:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  126:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/design/prints/actions/mockup-actions.ts
+   76:125  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  112:125  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  143:116  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/actions/bento-dashboard-analytics-actions.ts
+  365:72   warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  409:102  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/actions/reports-actions.ts
+  23:7  warning  'exportParamsSchema' is assigned a value but only used as a type. Allowed unused vars must match /^_/u  @typescript-eslint/no-unused-vars
+
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/production/production-board.tsx
+  141:74  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  181:70  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  191:70  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+✖ 11 problems (2 errors, 9 warnings)
+

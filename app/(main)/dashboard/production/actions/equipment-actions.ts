@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { equipment } from "@/lib/schema/production";
 import { eq, asc, ilike, and, count, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { z } from "zod";
 
 type ActionResult<T = void> = {
@@ -38,6 +39,11 @@ export async function getEquipment(options?: {
     status?: string;
 }): Promise<ActionResult<Equipment[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const conditions = [];
 
         if (options?.search) {
@@ -70,6 +76,11 @@ export async function getEquipment(options?: {
 // Получить по ID
 export async function getEquipmentById(id: string): Promise<ActionResult<Equipment>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const result = await db.query.equipment.findFirst({
             where: eq(equipment.id, id),
         });
@@ -178,7 +189,17 @@ export async function deleteEquipment(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
+        // RBAC: Только Администратор или Руководство могут удалять
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "Недостаточно прав для удаления" };
+        }
+
         await db.delete(equipment).where(eq(equipment.id, id));
+
+        // Логируем критическое действие
+        await logAction("Удалено оборудование", "equipment", id, { 
+            equipmentId: id 
+        });
 
         revalidatePath("/dashboard/production/equipment");
 
@@ -273,6 +294,11 @@ export async function getEquipmentStats(): Promise<ActionResult<{
     needsMaintenance: number;
 }>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const statusCounts = await db
             .select({
                 status: equipment.status,

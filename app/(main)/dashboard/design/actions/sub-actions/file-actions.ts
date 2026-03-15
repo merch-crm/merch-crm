@@ -8,7 +8,8 @@ import {
 } from "@/lib/schema/design-tasks";
 import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { z } from "zod";
@@ -121,6 +122,9 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
+        const userRole = session.roleName;
+        const userId = session.id;
+
         const file = await db.query.orderDesignFiles.findFirst({
             where: eq(orderDesignFiles.id, id),
         });
@@ -129,12 +133,24 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
             return { success: false, error: "Файл не найден" };
         }
 
+        // RBAC: Only admin or the uploader can delete
+        const canDelete = userRole === "Администратор" || userRole === "Руководство" || file.uploadedBy === userId;
+        if (!canDelete) {
+            return { success: false, error: "У вас нет прав на удаление этого файла" };
+        }
+
         await db.delete(orderDesignFiles).where(eq(orderDesignFiles.id, id));
+
+        // Логируем критическое действие (удовлетворяет требованиям аудита)
+        await logAction("Удален файл дизайна", "order_design_file", id, { 
+            filename: file.originalName, 
+            taskId: file.taskId 
+        });
 
         await db.insert(orderDesignHistory).values({
             taskId: file.taskId,
             event: "file_deleted",
-            oldValue: file.originalName,
+            oldValue: `File: ${file.originalName} (${file.type})`,
             performedBy: session.id,
         });
 

@@ -11,6 +11,7 @@ import { orderItems, orders } from "@/lib/schema";
 import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, subDays, format } from "date-fns";
 import { z } from "zod";
+import { getSession } from "@/lib/session";
 
 export type { ProductionStats } from "./dashboard-stats-actions";
 export type { LineLoad } from "./dashboard-lines-actions";
@@ -55,6 +56,11 @@ export async function getUrgentProductionTasks(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         tomorrow.setHours(23, 59, 59, 999);
@@ -116,6 +122,11 @@ export async function getEquipmentStatus(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const now = new Date();
 
         const result = await db
@@ -155,6 +166,11 @@ export async function getStaffOnShift(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         // productionStaff.lineIds is a jsonb array, not a FK — we use it directly
         const staff = await db
             .select({
@@ -214,6 +230,11 @@ export async function getDailyOutputData(days: number = 7): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const startDate = subDays(new Date(), days - 1);
         const dates: { date: string; completed: number; quantity: number }[] = [];
 
@@ -277,6 +298,11 @@ export async function getProductionBoardItems(applicationTypeId: string): Promis
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const _validatedId = z.string().uuid().parse(applicationTypeId);
         const items = await db.query.orderItems.findMany({
             where: eq(orderItems.applicationTypeId, _validatedId),
@@ -308,6 +334,11 @@ export async function getProductionTypeStats(applicationTypeId: string): Promise
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const _validatedId = z.string().uuid().parse(applicationTypeId);
         const todayStart = startOfDay(new Date());
 

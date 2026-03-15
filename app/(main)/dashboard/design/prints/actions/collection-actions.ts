@@ -97,10 +97,8 @@ export async function createCollection(data: {
     description?: string | null;
     coverImage?: string | null;
 }): Promise<ActionResult<PrintCollection>> {
-    console.log("[createCollection] Starting with data:", JSON.stringify(data));
     try {
         const session = await getSession();
-        console.log("[createCollection] Session:", session ? `Found (${session.email})` : "Not found");
         if (!session) return { success: false, error: "Не авторизован" };
 
         const validated = CollectionSchema.safeParse(data);
@@ -109,7 +107,6 @@ export async function createCollection(data: {
             return { success: false, error: validated.error.issues[0].message };
         }
 
-        console.log("[createCollection] Inserting into DB...");
         const [collection] = await db
             .insert(printCollections)
             .values({
@@ -124,13 +121,10 @@ export async function createCollection(data: {
             })
             .returning();
 
-        console.log("[createCollection] Inserted collection:", collection.id);
-
         try {
             await logAction("Создана коллекция дизайнов", "print_collection", collection.id, {
                 name: collection.name
             });
-            console.log("[createCollection] Action logged");
         } catch (logErr) {
             console.warn("[createCollection] Failed to log action:", logErr);
         }
@@ -138,7 +132,6 @@ export async function createCollection(data: {
         try {
             invalidateCache("design:collections");
             revalidatePath("/dashboard/design/prints");
-            console.log("[createCollection] Cache invalidated and path revalidated");
         } catch (revalidateErr) {
             console.warn("[createCollection] Revalidation failed:", revalidateErr);
         }

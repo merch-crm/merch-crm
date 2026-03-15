@@ -7,6 +7,7 @@ import { applicationTypes } from "@/lib/schema/production";
 import { eq, and, gte, lte, sql, count, desc } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek } from "date-fns";
 import { z } from "zod";
+import { getSession } from "@/lib/session";
 
 export interface DesignStats {
     inQueue: number;
@@ -55,6 +56,11 @@ export async function getDesignStats(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const now = new Date();
         const todayStart = startOfDay(now);
         const todayEnd = endOfDay(now);
@@ -158,6 +164,11 @@ export async function getMyDesignTasks(userId?: string): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const validated = z.string().uuid().optional().safeParse(userId);
         if (!validated.success) return { success: false, error: "Invalid user ID" };
         const cleanUserId = validated.data;
@@ -209,6 +220,11 @@ export async function getUrgentDesignTasks(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         tomorrow.setHours(23, 59, 59, 999);
@@ -258,6 +274,11 @@ export async function getRecentCompletedTasks(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const result = await db
             .select({
                 id: orderDesignTasks.id,
@@ -298,6 +319,11 @@ export async function getPopularDesigns(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         // For now, return latest designs (TODO: add usage tracking)
         const result = await db
             .select({
@@ -346,6 +372,11 @@ export async function getApplicationTypesStats(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const result = await db
             .select({
                 id: applicationTypes.id,

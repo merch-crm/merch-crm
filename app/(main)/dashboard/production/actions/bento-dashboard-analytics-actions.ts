@@ -22,12 +22,9 @@ import {
   or,
   lt,
 } from "drizzle-orm";
-import {
-  startOfDay,
-  endOfDay,
-  subDays,
-} from "date-fns";
+import { startOfDay, endOfDay, subDays } from "date-fns";
 import { z } from "zod";
+import { getSession } from "@/lib/session";
 import type {
   StatsPeriod,
   HeatmapData,
@@ -41,13 +38,21 @@ import { getPeriodRange } from "../utils/period-utils";
 
 const periodSchema = z.enum(["day", "week", "month"]);
 
-/** 5. Тепловая карта загрузки */
-export async function getHeatmapData(period: StatsPeriod = "week"): Promise<{
+export interface DashboardActionResult<T> {
   success: boolean;
-  data?: HeatmapData;
-}> {
+  data?: T;
+  error?: string;
+}
+
+/** 5. Тепловая карта загрузки */
+export async function getHeatmapData(period: StatsPeriod = "week"): Promise<DashboardActionResult<HeatmapData>> {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start } = getPeriodRange(period);
 
     const logs = await db
@@ -94,11 +99,13 @@ export async function getHeatmapData(period: StatsPeriod = "week"): Promise<{
 }
 
 /** 6. Загрузка персонала */
-export async function getStaffLoadData(): Promise<{
-  success: boolean;
-  data?: StaffLoadData;
-}> {
+export async function getStaffLoadData(): Promise<DashboardActionResult<StaffLoadData>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const staff = await db
       .select({
         id: productionStaff.id,
@@ -153,11 +160,13 @@ export async function getStaffLoadData(): Promise<{
 }
 
 /** 9. Эффективность смены */
-export async function getShiftEfficiency(): Promise<{
-  success: boolean;
-  data?: ShiftEfficiencyData;
-}> {
+export async function getShiftEfficiency(): Promise<DashboardActionResult<ShiftEfficiencyData>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const now = new Date();
     const shiftStart = startOfDay(now);
     const shiftEnd = endOfDay(now);
@@ -228,6 +237,11 @@ export async function getShiftEfficiency(): Promise<{
 export async function getMaterialConsumptionData(period: StatsPeriod = "week") {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start, end } = getPeriodRange(period);
 
     const consumption = await db
@@ -261,11 +275,13 @@ export async function getMaterialConsumptionData(period: StatsPeriod = "week") {
 }
 
 /** 13. Срочные задачи */
-export async function getUrgentProductionTasks(): Promise<{
-  success: boolean;
-  data: UrgentTask[];
-}> {
+export async function getUrgentProductionTasks(): Promise<DashboardActionResult<UrgentTask[]>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized", data: [] };
+    }
+
     const tomorrow = subDays(new Date(), -1);
     const result = await db
       .select({
@@ -309,11 +325,13 @@ export async function getUrgentProductionTasks(): Promise<{
 }
 
 /** 14. Статус оборудования */
-export async function getEquipmentStatus(): Promise<{
-  success: boolean;
-  data: EquipmentStatusItem[];
-}> {
+export async function getEquipmentStatus(): Promise<DashboardActionResult<EquipmentStatusItem[]>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized", data: [] };
+    }
+
     const result = await db
       .select({
         id: equipment.id,
@@ -344,8 +362,13 @@ export async function getEquipmentStatus(): Promise<{
 }
 
 /** 11. Нагрузка по линиям */
-export async function getLineLoadData() {
+export async function getLineLoadData(): Promise<DashboardActionResult<{ id: string; name: string; load: number; status: "active" | "idle"; tasksCount: number; color: string }[]>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const lines = await db
       .select({
         id: productionLines.id,
@@ -383,9 +406,14 @@ export async function getLineLoadData() {
 }
 
 /** Сравнение с предыдущим периодом */
-export async function getTrendForPeriod(period: StatsPeriod = "week") {
+export async function getTrendForPeriod(period: StatsPeriod = "week"): Promise<DashboardActionResult<{ trend: number; current: number; previous: number }>> {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start, end } = getPeriodRange(period);
 
     const periodMs = end.getTime() - start.getTime();
@@ -422,9 +450,14 @@ export async function getTrendForPeriod(period: StatsPeriod = "week") {
 }
 
 /** Sparkline данных брака (по дням) */
-export async function getDefectSparkline(period: StatsPeriod = "week") {
+export async function getDefectSparkline(period: StatsPeriod = "week"): Promise<DashboardActionResult<number[]>> {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start, end } = getPeriodRange(period);
 
     const daily = await db
@@ -452,8 +485,13 @@ export async function getDefectSparkline(period: StatsPeriod = "week") {
 }
 
 /** Линейный план на основе capacity */
-export async function getDailyTargetFromCapacity() {
+export async function getDailyTargetFromCapacity(): Promise<DashboardActionResult<number>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const lines = await db
       .select({ capacity: productionLines.capacity })
       .from(productionLines)

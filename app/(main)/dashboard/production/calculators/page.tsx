@@ -88,7 +88,7 @@ export default function CalculatorsOverviewPage() {
           <Calculator className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">Калькуляторы нанесения</h1>
+          <h1 className="text-xl font-bold text-slate-900">Калькулятор расчета себестоимости</h1>
           <p className="text-sm font-medium text-slate-500">
             Выберите тип нанесения для расчёта стоимости
           </p>

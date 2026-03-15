@@ -56,7 +56,6 @@ export async function registerCyrillicFont(doc: jsPDF): Promise<void> {
                 doc.addFileToVFS(font.name, base64);
                 // "Identity-H" обязателен для поддержки кириллицы/UTF-8 в TTF шрифтах jsPDF
                 doc.addFont(font.name, font.fontName, font.style, "Identity-H");
-                console.log(`Шрифт ${font.name} успешно зарегистрирован (${buffer.byteLength} байт)`);
             })
         );
 

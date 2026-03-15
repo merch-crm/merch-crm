@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { editorProjects, editorExports } from "@/lib/schema";
 import { eq, desc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { auditLogs } from "@/lib/schema/system";
 import { z } from "zod";
 
 // Типы
@@ -205,7 +206,30 @@ export async function deleteEditorProject(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
+        const project = await db.query.editorProjects.findFirst({
+            where: eq(editorProjects.id, id),
+        });
+
+        if (!project) {
+            return { success: false, error: "Проект не найден" };
+        }
+
+        // RBAC & IDOR: Only admin or owner can delete
+        const canDelete = session.roleName === "Администратор" || session.roleName === "Руководство" || project.createdBy === session.id;
+        if (!canDelete) {
+            return { success: false, error: "У вас нет прав на удаление этого проекта" };
+        }
+
         await db.delete(editorProjects).where(eq(editorProjects.id, id));
+
+        // Логируем критическое действие
+        await db.insert(auditLogs).values({
+            userId: session.id,
+            action: "delete_editor_project",
+            entityType: "editor_project",
+            entityId: id,
+            details: { projectName: project.name },
+        });
 
         revalidatePath("/dashboard/design/editor");
 

@@ -22,6 +22,8 @@ const ForgotPasswordSchema = z.object({
 export async function forgotPasswordAction(
     email: string
 ): Promise<ForgotPasswordResult> {
+    // audit-ignore: Public action (auth not required for forgot password)
+    // audit-ignore: Handled by better-auth
     const validated = ForgotPasswordSchema.safeParse({ email });
     if (!validated.success) {
         return { success: false, error: validated.error.issues[0].message };

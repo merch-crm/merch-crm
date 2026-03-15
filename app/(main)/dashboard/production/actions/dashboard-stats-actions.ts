@@ -9,6 +9,7 @@ import {
 } from "@/lib/schema";
 import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek } from "date-fns";
+import { getSession } from "@/lib/session";
 
 export interface ProductionStats {
     inQueue: number;
@@ -44,6 +45,11 @@ export async function getProductionStats(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Необходима авторизация" };
+        }
+
         const now = new Date();
         const todayStart = startOfDay(now);
         const todayEnd = endOfDay(now);

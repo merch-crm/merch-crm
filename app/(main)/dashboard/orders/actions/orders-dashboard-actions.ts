@@ -6,6 +6,7 @@ import { clients } from "@/lib/schema/clients/main";
 import { eq, and, gte, lte, sql, count, sum, avg, desc, inArray } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek, startOfMonth, subDays, format } from "date-fns";
 import { z } from "zod";
+import { getSession } from "@/lib/session";
 
 export interface OrdersStats {
     total: number;
@@ -59,6 +60,11 @@ export async function getOrdersStats(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const now = new Date();
         const todayStart = startOfDay(now);
         const todayEnd = endOfDay(now);
@@ -165,6 +171,11 @@ export async function getOrdersByStatus(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const result = await db
             .select({
                 status: orders.status,
@@ -194,6 +205,11 @@ export async function getSalesData(days: number = 7): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const validatedDays = z.number().int().min(1).max(365).default(7).parse(days);
         const startDate = subDays(new Date(), validatedDays - 1);
 
@@ -232,6 +248,11 @@ export async function getRecentOrders(limit: number = 5): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const _validatedLimit = z.number().int().min(1).max(100).default(5).parse(limit);
         const result = await db
             .select({
@@ -288,6 +309,11 @@ export async function getOrdersRequiringAction(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         // New orders awaiting review
         const newOrders = await db
             .select({
@@ -366,6 +392,11 @@ export async function getSalesDataExtended(days: number = 7): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const startDate = subDays(new Date(), days - 1);
         const dates: SalesDataPoint[] = [];
 

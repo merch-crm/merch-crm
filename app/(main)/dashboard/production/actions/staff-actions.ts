@@ -5,7 +5,8 @@ import { productionStaff, productionTasks } from "@/lib/schema/production";
 import { users } from "@/lib/schema/users";
 import { eq, asc, and, count, ilike } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { z } from "zod";
 
 type ActionResult<T = void> = {
@@ -34,6 +35,11 @@ export async function getProductionStaff(options?: {
     lineId?: string;
 }): Promise<ActionResult<ProductionStaffWithStats[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const conditions = [];
 
         if (options?.search) {
@@ -100,6 +106,11 @@ export async function getProductionStaff(options?: {
 // Получить сотрудника по ID
 export async function getProductionStaffById(id: string): Promise<ActionResult<ProductionStaffFull>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const member = await db.query.productionStaff.findFirst({
             where: eq(productionStaff.id, id),
             with: {
@@ -223,6 +234,11 @@ export async function deleteProductionStaff(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
+        // RBAC: Только Администратор или Руководство могут удалять
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "Недостаточно прав для удаления" };
+        }
+
         // Проверяем наличие активных задач
         const activeTasks = await db
             .select({ count: count() })
@@ -237,6 +253,11 @@ export async function deleteProductionStaff(id: string): Promise<ActionResult> {
         }
 
         await db.delete(productionStaff).where(eq(productionStaff.id, id));
+
+        // Логируем критическое действие
+        await logAction("Удален сотрудник производства", "production_staff", id, { 
+            staffId: id 
+        });
 
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/production/staff");
@@ -254,6 +275,11 @@ export async function getAvailableStaff(options?: {
     applicationTypeId?: string;
 }): Promise<ActionResult<ProductionStaffMember[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const staff = await db.query.productionStaff.findMany({
             where: eq(productionStaff.isActive, true),
             orderBy: [asc(productionStaff.name)],

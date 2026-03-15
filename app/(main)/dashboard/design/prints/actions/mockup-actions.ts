@@ -5,7 +5,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { printDesignMockups } from "@/lib/schema";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { z } from "zod";
 
 const CreateMockupSchema = z.object({
@@ -65,6 +66,17 @@ export async function updateMockup(id: string, rawData: z.infer<typeof UpdateMoc
     const data = validatedData.data;
 
     try {
+        const existing = await db.query.printDesignMockups.findFirst({
+            where: eq(printDesignMockups.id, validatedId.data),
+            with: { design: true }
+        });
+
+        if (!existing) return { success: false, error: "Мокап не найден" };
+
+        // RBAC/IDOR: Admin, Management, or Owner
+        const canUpdate = session.roleName === "Администратор" || session.roleName === "Руководство" || (existing.design as unknown as { createdBy: string }).createdBy === session.id;
+        if (!canUpdate) return { success: false, error: "Нет прав для изменения этого мокапа" };
+
         const [mockup] = await db
             .update(printDesignMockups)
             .set({ ...data, updatedAt: new Date() })
@@ -90,12 +102,27 @@ export async function deleteMockup(id: string) {
     if (!validatedId.success) return { success: false, error: "Неверный ID мокапа" };
 
     try {
+        const existing = await db.query.printDesignMockups.findFirst({
+            where: eq(printDesignMockups.id, validatedId.data),
+            with: { design: true }
+        });
+
+        if (!existing) return { success: false, error: "Мокап не найден" };
+
+        // RBAC/IDOR: Admin, Management, or Owner
+        const canDelete = session.roleName === "Администратор" || session.roleName === "Руководство" || (existing.design as unknown as { createdBy: string }).createdBy === session.id;
+        if (!canDelete) return { success: false, error: "Нет прав для удаления этого мокапа" };
+
         const [mockup] = await db
             .delete(printDesignMockups)
             .where(eq(printDesignMockups.id, validatedId.data))
             .returning();
 
         if (mockup) {
+            await logAction("Удален мокап дизайна", "print_design_mockup", id, {
+                name: existing.name,
+                designId: existing.designId
+            });
             revalidatePath(`/dashboard/design/prints/${mockup.designId}`);
         }
 
@@ -111,6 +138,16 @@ export async function updateMockupsOrder(designId: string, items: { id: string; 
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
+        const design = await db.query.printDesigns.findFirst({
+            where: eq(printDesignMockups.designId, designId),
+        });
+
+        if (!design) return { success: false, error: "Дизайн не найден" };
+
+        // RBAC/IDOR: Admin, Management, or Owner
+        const canUpdate = session.roleName === "Администратор" || session.roleName === "Руководство" || (design as unknown as { createdBy: string }).createdBy === session.id;
+        if (!canUpdate) return { success: false, error: "Нет прав для изменения порядка мокапов" };
+
         await db.transaction(async (tx) => {
             for (const item of items) {
                 await tx

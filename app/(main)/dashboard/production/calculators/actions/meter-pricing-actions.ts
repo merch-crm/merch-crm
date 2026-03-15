@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { meterPriceTiers } from "@/lib/schema/calculators";
 import { eq, and, asc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import {
     createMeterPriceTierSchema,
@@ -110,6 +111,11 @@ export async function createMeterPriceTier(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify pricing
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на изменение цен" };
+        }
+
         const validated = createMeterPriceTierSchema.safeParse(input);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -129,6 +135,14 @@ export async function createMeterPriceTier(
                 isActive,
             })
             .returning();
+
+        await logAction("Создан уровень цены", "meter_price_tier", result.id, {
+            applicationType,
+            rollWidthMm,
+            fromMeters,
+            toMeters,
+            pricePerMeter
+        });
 
         revalidatePath(REVALIDATE_PATH);
 
@@ -164,6 +178,11 @@ export async function updateMeterPriceTier(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify pricing
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на изменение цен" };
+        }
+
         const validated = updateMeterPriceTierSchema.safeParse(input);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -189,6 +208,8 @@ export async function updateMeterPriceTier(
         if (!result) {
             return { success: false, error: "Уровень цены не найден" };
         }
+
+        await logAction("Обновлен уровень цены", "meter_price_tier", id, updates);
 
         revalidatePath(REVALIDATE_PATH);
 
@@ -224,6 +245,11 @@ export async function deleteMeterPriceTier(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify pricing
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на удаление цен" };
+        }
+
         const validated = deleteMeterPriceTierSchema.safeParse(input);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -232,6 +258,8 @@ export async function deleteMeterPriceTier(
         const { id } = validated.data;
 
         await db.delete(meterPriceTiers).where(eq(meterPriceTiers.id, id));
+
+        await logAction("Удален уровень цены", "meter_price_tier", id, { id });
 
         revalidatePath(REVALIDATE_PATH);
 
@@ -263,6 +291,11 @@ export async function bulkUpdateMeterPricing(
             return { success: false, error: "Не авторизован" };
         }
 
+        // RBAC: Only management and admin can modify pricing
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "У вас нет прав на изменение цен" };
+        }
+
         await db.transaction(async (tx) => {
             // Удаляем старые записи для этого типа и ширины
             await tx
@@ -288,6 +321,12 @@ export async function bulkUpdateMeterPricing(
                     }))
                 );
             }
+        });
+
+        await logAction("Массовое обновление цен", "meter_price_tier", "bulk", {
+            applicationType,
+            rollWidthMm,
+            count: tiers.length
         });
 
         revalidatePath(REVALIDATE_PATH);

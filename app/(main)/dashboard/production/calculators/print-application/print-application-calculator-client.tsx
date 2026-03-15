@@ -73,8 +73,9 @@ export function PrintApplicationCalculatorClient() {
       { label: "Главная", href: "/dashboard" },
       { label: "Производство", href: "/dashboard/production" },
       { label: "Калькуляторы", href: "/dashboard/production/calculators" },
-      { label: "Печать + Нанесение", href: "/dashboard/production/calculators/print-application" },
+      { label: "Нанесение принта", href: "/dashboard/production/calculators/print-application" },
     ]);
+    return () => setCustomTrail(null);
   }, [setCustomTrail]);
 
   return (

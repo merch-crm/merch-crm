@@ -1,10 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { applicationTypes, printDesigns } from "@/lib/schema";
+import { applicationTypes, printDesigns, productionLogs } from "@/lib/schema";
 import { eq, asc, ilike, and, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { z } from "zod";
 
 // Схема валидации
@@ -39,6 +40,11 @@ export async function getApplicationTypes(options?: {
     activeOnly?: boolean;
 }): Promise<ActionResult<ApplicationType[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const conditions = [];
 
         if (options?.search) {
@@ -74,6 +80,11 @@ export async function getApplicationTypes(options?: {
 // Получить тип по ID
 export async function getApplicationTypeById(id: string): Promise<ActionResult<ApplicationType>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const result = await db.query.applicationTypes.findFirst({
             where: eq(applicationTypes.id, id),
         });
@@ -92,6 +103,11 @@ export async function getApplicationTypeById(id: string): Promise<ActionResult<A
 // Получить тип по slug
 export async function getApplicationTypeBySlug(slug: string): Promise<ActionResult<ApplicationType>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const result = await db.query.applicationTypes.findFirst({
             where: eq(applicationTypes.slug, slug),
         });
@@ -204,6 +220,11 @@ export async function deleteApplicationType(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
+        // RBAC: Только Администратор или Руководство могут удалять
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "Недостаточно прав для удаления" };
+        }
+
         // Проверяем использование в дизайнах
         const designsCount = await db
             .select({ count: count() })
@@ -218,6 +239,10 @@ export async function deleteApplicationType(id: string): Promise<ActionResult> {
         }
 
         await db.delete(applicationTypes).where(eq(applicationTypes.id, id));
+
+        // Логируем критическое действие
+        await logAction("Удален тип нанесения", "application_type", id, {            details: { applicationTypeId: id },
+        } as typeof productionLogs.$inferInsert);
 
         revalidatePath("/dashboard/production/application-types");
 
@@ -263,6 +288,11 @@ export async function getApplicationTypesStats(): Promise<ActionResult<{
     byCategory: Record<string, number>;
 }>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const statusCounts = await db
             .select({
                 isActive: applicationTypes.isActive,

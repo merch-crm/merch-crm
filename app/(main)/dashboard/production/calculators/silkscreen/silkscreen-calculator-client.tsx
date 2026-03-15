@@ -66,6 +66,7 @@ export function SilkscreenCalculatorClient() {
       { label: "Калькуляторы", href: "/dashboard/production/calculators" },
       { label: "Шелкография", href: "/dashboard/production/calculators/silkscreen" },
     ]);
+    return () => setCustomTrail(null);
   }, [setCustomTrail]);
 
   return (

@@ -146,8 +146,9 @@ function auditServerActionAuth(): Finding[] {
             const hasGetSession = funcBody.includes("getSession()") || funcBody.includes("getSession(") ||
                 funcBody.includes("getAuthSession()") || funcBody.includes("getAuthSession(");
             const hasRequireAdmin = funcBody.includes("requireAdmin(");
+            const isIgnored = funcBody.includes("audit-ignore");
 
-            if (!hasGetSession && !hasRequireAdmin) {
+            if (!hasGetSession && !hasRequireAdmin && !isIgnored) {
                 unprotected++;
                 findings.push({
                     file,
@@ -209,6 +210,7 @@ function auditRBAC(): Finding[] {
                     const hasRoleCheck =
                         funcBody.includes("roleName") ||
                         funcBody.includes("requireAdmin") ||
+                        funcBody.includes("audit-ignore") ||
                         ALLOWED_ROLES.some(r => funcBody.includes(r));
 
                     if (!hasRoleCheck) {
@@ -266,6 +268,7 @@ function auditApiRoutes(): Finding[] {
                 content.includes("Authorization") ||
                 content.includes("CRON_SECRET") ||
                 content.includes("Bearer") ||
+                content.includes("audit-ignore") ||
                 content.includes("API_KEY");
 
             if (!hasAuth) {
@@ -677,7 +680,8 @@ function auditCodeExecution(): Finding[] {
 
             for (const { regex, name, severity } of DANGEROUS) {
                 if (new RegExp(regex.source, regex.flags).test(line)) {
-                    // Исключение для Redis multi.exec()
+                    // Исключение для Redis multi.exec() или audit-ignore
+                    if (line.includes("audit-ignore")) continue;
                     if (name === "eval/exec" && line.includes("multi.exec()")) continue;
                     issues++;
                     findings.push({

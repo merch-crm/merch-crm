@@ -72,6 +72,7 @@ export const EmbroideryCalculatorClient = memo(function EmbroideryCalculatorClie
       { label: "Калькуляторы", href: "/dashboard/production/calculators" },
       { label: "Вышивка", href: "/dashboard/production/calculators/embroidery" },
     ]);
+    return () => setCustomTrail(null);
   }, [setCustomTrail]);
 
   // Хук расчёта

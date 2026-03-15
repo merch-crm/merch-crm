@@ -65,6 +65,7 @@ export function DTGCalculatorClient() {
       { label: "Калькуляторы", href: "/dashboard/production/calculators" },
       { label: "DTG печать", href: "/dashboard/production/calculators/dtg" },
     ]);
+    return () => setCustomTrail(null);
   }, [setCustomTrail]);
 
   return (

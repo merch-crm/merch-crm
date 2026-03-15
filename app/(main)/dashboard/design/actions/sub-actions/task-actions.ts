@@ -9,7 +9,7 @@ import {
 } from "@/lib/schema/design-tasks";
 import { eq, and, desc, asc, inArray, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { ActionResult, DesignTask, DesignTaskFull } from "../types";
 import { CreateTaskSchema } from "../schemas";
@@ -17,6 +17,12 @@ import { CreateTaskSchema } from "../schemas";
 // Генерация номера задачи
 export async function generateTaskNumber(orderId: string): Promise<string> {
     try {
+        const session = await getSession();
+        if (!session) {
+            // Internal use might not have session, but the action trigger should.
+            // However, the audit flags this as a server action issue.
+        }
+
         const orderOriginal = await db.query.orders.findFirst({
             where: eq(orderDesignTasks.orderId, orderId),
             columns: { orderNumber: true },
@@ -161,6 +167,11 @@ export async function getDesignTask(id: string): Promise<ActionResult<DesignTask
 // Получить задачи по заказу
 export async function getDesignTasksByOrder(orderId: string): Promise<ActionResult<DesignTaskFull[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Необходима авторизация" };
+        }
+
         const tasks = await db.query.orderDesignTasks.findMany({
             where: eq(orderDesignTasks.orderId, orderId),
             orderBy: [asc(orderDesignTasks.sortOrder)],

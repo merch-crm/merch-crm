@@ -20,7 +20,7 @@ import {
   sql,
 } from "drizzle-orm";
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import {
   startOfDay,
   subDays,
@@ -36,6 +36,7 @@ import {
   getDailyOutputData,
   getDeadlineCalendarData,
 } from "./bento-dashboard-data-actions";
+import { getProductionItems } from "../actions";
 import { getPeriodRange } from "../utils/period-utils";
 import {
   getHeatmapData,
@@ -80,6 +81,7 @@ export async function getAllDashboardData(
       materialConsumption,
       urgentTasks,
       equipmentStatus,
+      kanbanItems,
     ] = await Promise.all([
       getHeroStats(),
       getConversionStats(period),
@@ -95,6 +97,7 @@ export async function getAllDashboardData(
       getMaterialConsumptionData(period),
       getUrgentProductionTasks(),
       getEquipmentStatus(),
+      getProductionItems(),
     ]);
 
     return {
@@ -118,6 +121,7 @@ export async function getAllDashboardData(
         lineLoad: lineLoad.success ? lineLoad.data! : [],
         urgentTasks: urgentTasks.success ? urgentTasks.data! : [],
         equipmentStatus: equipmentStatus.success ? equipmentStatus.data! : [],
+        kanbanItems: kanbanItems.success ? kanbanItems.data! : [],
       },
     };
   } catch (e) {
@@ -129,6 +133,11 @@ export async function getAllDashboardData(
 /** 1. Основная статистика (Hero) */
 export async function getHeroStats() {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const [activeResult] = await db
       .select({ count: count() })
       .from(orders)
@@ -196,6 +205,11 @@ export async function getHeroStats() {
 export async function getConversionStats(period: StatsPeriod = "week") {
   try {
     periodSchema.parse(period);
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized" };
+    }
+
     const { start, end } = getPeriodRange(period);
 
     const [completedTodayResult] = await db
@@ -258,9 +272,20 @@ export async function getConversionStats(period: StatsPeriod = "week") {
   }
 }
 
+export interface DashboardActionResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
+
 /** 3. Алерт по материалам */
-export async function getMaterialAlerts(): Promise<{ success: boolean; data: MaterialAlert[] }> {
+export async function getMaterialAlerts(): Promise<DashboardActionResult<MaterialAlert[]>> {
   try {
+    const session = await getSession();
+    if (!session) {
+      return { success: false, error: "Unauthorized", data: [] };
+    }
+
     const materials = await db
       .select({
         id: inventoryItems.id,

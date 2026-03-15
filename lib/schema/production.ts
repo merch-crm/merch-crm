@@ -301,7 +301,6 @@ export const productionLogs = pgTable("production_logs", {
     id: uuid("id").defaultRandom().primaryKey(),
 
     taskId: uuid("task_id")
-        .notNull()
         .references(() => productionTasks.id, { onDelete: "cascade" }),
 
     // Тип события

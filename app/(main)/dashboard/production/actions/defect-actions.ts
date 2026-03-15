@@ -9,6 +9,7 @@ import { getSession } from "@/lib/auth";
 import { 
   DEFECT_CATEGORIES 
 } from "../types/bento-dashboard-types";
+import { logAction } from "@/lib/audit";
 import { z } from "zod";
 
 /** Схема валидации сохранения брака */
@@ -45,6 +46,12 @@ export async function saveTaskDefect(
         updatedAt: new Date(),
       })
       .where(eq(productionTasks.id, taskId));
+
+    await logAction("Зарегистрирован брак", "production_task", taskId, {
+        defectQuantity,
+        category,
+        comment
+    });
 
     revalidatePath("/dashboard/production");
     return { success: true };

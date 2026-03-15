@@ -8,7 +8,6 @@ import { useBreadcrumbs } from "@/components/layout/breadcrumbs-context";
 import { cn } from "@/lib/utils";
 
 import { HeroProductionCard } from "./hero-production-card";
-import { AttentionCard } from "./attention-card";
 import { StatsGrid } from "./stats-grid";
 import { QuickAccessGrid } from "./quick-access-grid";
 import { HeatmapCard } from "./heatmap-card";
@@ -20,9 +19,9 @@ import { DeadlineCalendarCard } from "./deadline-calendar-card";
 import { DefectStatsCard } from "./defect-stats-card";
 import { StaffOnShiftCard } from "./staff-on-shift-card";
 import { MaterialsLowCard } from "./materials-low-card";
-import { NotificationsCard } from "./notifications-card";
 import { EquipmentStatusCard } from "./equipment-status-card";
 import { CalculatorsGrid } from "./calculators-grid";
+import { ProductionBoard } from "../../production-board";
 
 import type { ProductionBentoDashboardData, UrgentTask, EquipmentStatusItem } from "../../types";
 
@@ -96,8 +95,7 @@ export function ProductionBentoDashboard({
       {/* Ряд 1: Герой + Внимание */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <div className="grid grid-cols-12 gap-3">
-        <HeroProductionCard stats={data.hero} className="col-span-12 lg:col-span-7" />
-        <AttentionCard stats={data.attention} className="col-span-12 lg:col-span-5" />
+        <HeroProductionCard stats={data.hero} className="col-span-12" />
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -152,16 +150,23 @@ export function ProductionBentoDashboard({
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* Ряд 8: Материалы + Уведомления + Оборудование */}
+      {/* Ряд 8: Материалы + Оборудование */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <MaterialsLowCard materials={data.materialAlerts} />
-        <NotificationsCard data={data.notifications ?? null} />
         <EquipmentStatusCard equipment={(data.equipmentStatus || []) as EquipmentStatusItem[]} />
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      {/* Ряд 9: Калькуляторы */}
+      {/* Ряд 9: Kanban Доска */}
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      <div className="crm-card !bg-slate-50/50 p-6 overflow-x-auto min-h-[600px]">
+        <h3 className="text-lg font-bold text-slate-900 mb-6">Доска производства</h3>
+        <ProductionBoard items={data.kanbanItems || []} />
+      </div>
+
+      {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
+      {/* Ряд 10: Калькуляторы */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <CalculatorsGrid />
     </div>

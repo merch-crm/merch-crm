@@ -72,6 +72,7 @@ export function DTFCalculatorClient() {
       { label: "Калькуляторы", href: "/dashboard/production/calculators" },
       { label: "DTF печать", href: "/dashboard/production/calculators/dtf" },
     ]);
+    return () => setCustomTrail(null);
   }, [setCustomTrail]);
 
   return (

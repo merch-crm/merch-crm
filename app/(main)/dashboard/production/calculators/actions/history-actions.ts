@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { printCalculations, printCalculationGroups } from '@/lib/schema/calculators'
 import { users } from '@/lib/schema/users'
 import { getSession } from '@/lib/auth'
+import { logAction } from '@/lib/audit'
 import { logError } from '@/lib/error-logger'
 import { eq, desc, and, gte, lte, sql, like, inArray } from 'drizzle-orm'
 import { type ActionResult } from '@/lib/types'
@@ -223,12 +224,16 @@ export async function deleteCalculation(
         .delete(printCalculationGroups)
         .where(eq(printCalculationGroups.calculationId, calculationId))
 
-      await tx
-        .delete(printCalculations)
-        .where(eq(printCalculations.id, calculationId))
-    })
+        await tx
+          .delete(printCalculations)
+          .where(eq(printCalculations.id, calculationId))
+      })
 
-    return { success: true, data: undefined }
+      await logAction("Удален расчет", "print_calculation", calculationId, {
+          calculationId
+      });
+
+      return { success: true, data: undefined }
   } catch (error) {
     logError({ error, details: { context: 'deleteCalculation' } })
     return { success: false, error: 'Ошибка удаления расчёта' }

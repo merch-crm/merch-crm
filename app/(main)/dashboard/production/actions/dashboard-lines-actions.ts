@@ -7,6 +7,7 @@ import {
     productionLines,
 } from "@/lib/schema";
 import { eq, and, sql, count, sum } from "drizzle-orm";
+import { getSession } from "@/lib/session";
 
 export interface LineLoad {
     id: string;
@@ -34,6 +35,11 @@ export async function getTasksByLine(): Promise<{
     error?: string;
 }> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Необходима авторизация" };
+        }
+
         const lines = await db
             .select({
                 id: productionLines.id,

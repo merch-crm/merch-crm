@@ -12,23 +12,9 @@ import { ModernImageGallery } from "@/components/ui/modern-image-gallery";
 import { pluralize } from "@/lib/pluralize";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import type { OrderItem } from "./types";
 
-export interface OrderItem {
-    id: string;
-    description: string | null;
-    quantity: number;
-    order: {
-        id: string;
-        orderNumber: string;
-        client: { name: string | null } | null;
-        priority: string | null;
-        attachments?: { id: string; fileUrl: string; fileName: string }[];
-    };
-    stagePrepStatus: string;
-    stagePrintStatus: string;
-    stageApplicationStatus: string;
-    stagePackagingStatus: string;
-}
+export { type OrderItem };
 
 interface ProductionBoardProps {
     items: OrderItem[];
@@ -152,7 +138,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                     <div className="absolute inset-0 bg-slate-900/60 opacity-0 group-hover/mockup:opacity-100 transition-all duration-300 flex flex-col items-center justify-center p-4">
                                                         <Button
                                                             variant="ghost"
-                                                            onClick={(e) => {
+                                                            onClick={(e: React.MouseEvent) => {
                                                                 e.stopPropagation();
                                                                 setLightboxImage(item.order.attachments?.[0]?.fileUrl || null);
                                                             }}
@@ -192,7 +178,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                 {currentStatus === 'pending' && (
                                                     <Button
                                                         variant="default"
-                                                        onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
+                                                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
                                                         disabled={loading === item.id}
                                                         className="flex-1 h-12 bg-primary text-white rounded-2xl text-xs font-bold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/20 border-0"
                                                     >
@@ -202,7 +188,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                 {currentStatus === 'in_progress' && (
                                                     <Button
                                                         variant="default"
-                                                        onClick={(e) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
+                                                        onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
                                                         disabled={loading === item.id}
                                                         className="flex-1 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl text-xs font-bold active:scale-95 transition-all shadow-lg shadow-emerald-500/20 border-0"
                                                     >

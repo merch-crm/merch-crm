@@ -13,7 +13,7 @@ import {
 import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { generateId } from "@/lib/utils";
 
@@ -265,6 +265,8 @@ export async function updateProductionTaskProgress(taskId: string, completedQuan
             details: { completedQuantity },
         });
 
+        await logAction("Обновлён прогресс задачи", "production_task", taskId, { completedQuantity });
+
         revalidatePath(`/dashboard/production/tasks/${taskId}`);
         return { success: true, data: updatedTask as ProductionTask };
     } catch (error) {
@@ -291,6 +293,8 @@ export async function updateProductionTaskAssignee(taskId: string, assigneeId: s
             details: { assigneeId },
         });
 
+        await logAction("Обновлён исполнитель задачи", "production_task", taskId, { assigneeId });
+
         revalidatePath(`/dashboard/production/tasks/${taskId}`);
         return { success: true };
     } catch (error) {
@@ -307,6 +311,11 @@ export async function deleteProductionTask(id: string) {
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
+        // RBAC: Только Администратор или Руководство могут удалять задачи
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "Недостаточно прав для удаления задачи" };
+        }
+
         await db.delete(productionTasks).where(eq(productionTasks.id, id));
         await logAction("Удалена производственная задача", "production_task", id);
         revalidatePath("/dashboard/production/tasks");

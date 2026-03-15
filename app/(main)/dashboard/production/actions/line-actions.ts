@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { productionLines, productionTasks, applicationTypes } from "@/lib/schema/production";
 import { eq, asc, and, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
+import { logAction } from "@/lib/audit";
 import { z } from "zod";
 
 type ActionResult<T = void> = {
@@ -29,6 +30,11 @@ export async function getProductionLines(options?: {
     activeOnly?: boolean;
 }): Promise<ActionResult<ProductionLineWithStats[]>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const conditions = [];
 
         if (options?.activeOnly) {
@@ -85,6 +91,11 @@ export async function getProductionLines(options?: {
 // Получить линию по ID
 export async function getProductionLineById(id: string): Promise<ActionResult<ProductionLineFull>> {
     try {
+        const session = await getSession();
+        if (!session) {
+            return { success: false, error: "Не авторизован" };
+        }
+
         const line = await db.query.productionLines.findFirst({
             where: eq(productionLines.id, id),
             with: {
@@ -211,6 +222,11 @@ export async function deleteProductionLine(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
+        // RBAC: Только Администратор или Руководство могут удалять
+        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+            return { success: false, error: "Недостаточно прав для удаления" };
+        }
+
         // Проверяем наличие активных задач
         const activeTasks = await db
             .select({ count: count() })
@@ -225,6 +241,11 @@ export async function deleteProductionLine(id: string): Promise<ActionResult> {
         }
 
         await db.delete(productionLines).where(eq(productionLines.id, id));
+
+        // Логируем критическое действие
+        await logAction("Удалена производственная линия", "production_line", id, { 
+            lineId: id 
+        });
 
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/production/lines");

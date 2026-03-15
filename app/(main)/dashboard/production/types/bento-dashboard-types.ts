@@ -420,6 +420,23 @@ export interface NotificationsData {
 // Общий тип данных дашборда
 // ============================================================================
 
+export interface OrderItem {
+    id: string;
+    description: string | null;
+    quantity: number;
+    order: {
+        id: string;
+        orderNumber: string;
+        client: { name: string | null } | null;
+        priority: string | null;
+        attachments?: { id: string; fileUrl: string; fileName: string }[];
+    };
+    stagePrepStatus: string;
+    stagePrintStatus: string;
+    stageApplicationStatus: string;
+    stagePackagingStatus: string;
+}
+
 /** Все данные для Bento-дашборда производства */
 export interface ProductionBentoDashboardData {
   hero: ProductionHeroStats;
@@ -440,6 +457,8 @@ export interface ProductionBentoDashboardData {
   notifications?: NotificationsData;
   urgentTasks?: UrgentTask[];
   equipmentStatus?: EquipmentStatusItem[];
+  /** Позиции для Kanban-доски */
+  kanbanItems?: OrderItem[];
 }
 
 export type StatsPeriod = "day" | "week" | "month";
