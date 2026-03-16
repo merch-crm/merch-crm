@@ -1,7 +1,7 @@
 import { db } from "./db";
 import { users } from "./schema";
 import { eq } from "drizzle-orm";
-import { Session } from "./auth";
+import type { Session } from "./session";
 
 /**
  * Validates that the current session belongs to an administrator.

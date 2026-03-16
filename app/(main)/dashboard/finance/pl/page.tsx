@@ -1,5 +1,5 @@
 import { getPLReport } from"../actions";;
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { PLClient } from"../pl-client";
 import { startOfDay, endOfDay, subDays } from"date-fns";

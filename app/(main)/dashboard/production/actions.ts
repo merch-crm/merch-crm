@@ -6,7 +6,7 @@ import { db } from"@/lib/db";
 import { orderItems, orders, inventoryItems, inventoryTransactions, clients, orderAttachments } from"@/lib/schema";
 import { revalidatePath } from"next/cache";
 import { eq, sql } from"drizzle-orm";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logAction } from"@/lib/audit";
 import { updateItemStage } from"@/lib/production";
 import { ActionResult } from"@/lib/types";

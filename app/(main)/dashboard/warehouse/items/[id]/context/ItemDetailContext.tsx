@@ -23,7 +23,7 @@ import { useItemGallery } from "../hooks/useItemGallery";
 import { useItemImages } from "../hooks/useItemImages";
 import { useItemDetailController, TabletTab } from "../hooks/useItemDetailController";
 import { useItemOperations } from "../hooks/useItemOperations";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { UploadState } from "@/hooks/use-image-uploader";
 
 interface ItemDetailContextType {

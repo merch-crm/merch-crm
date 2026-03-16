@@ -6,10 +6,10 @@ import { DesignPageClient } from"./design-page-client";
 import { DesignPageSkeleton } from"./loading";
 
 interface PageProps {
- params: {
- collectionId: string;
- designId: string;
- };
+    params: Promise<{
+        collectionId: string;
+        designId: string;
+    }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

@@ -7,7 +7,7 @@ import {
     AttributeType,
     StorageLocation,
 } from "../../types";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { ResponsiveDetailLayout } from "@/components/ui/responsive-detail-layout";
 import { ItemHeader } from "./components/ItemHeader";
 import { ItemEditingBar } from "./components/ItemEditingBar";

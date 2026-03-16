@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { db } from '@/lib/db'
 import { printCalculations, printCalculationGroups } from '@/lib/schema/calculators'
 import { revalidatePath } from 'next/cache'
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 import { logAction } from '@/lib/audit'
 import { eq, and, like, asc } from 'drizzle-orm'
 import { type ActionResult } from '@/lib/types'

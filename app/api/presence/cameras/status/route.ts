@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 import { db } from '@/lib/db'
 import { logError } from '@/lib/error-logger'
 

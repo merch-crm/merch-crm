@@ -169,11 +169,6 @@ export type BetterAuthSession = any;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type User = any;
 
-// Re-export getSession for backwards compatibility with existing code
-import { getSession } from "./session";
-export type Session = NonNullable<Awaited<ReturnType<typeof getSession>>>;
-export { getSession };
-
 /**
  * Cookie-опции для сессионной куки — единый источник истины.
  * Ранее определялось в auth-legacy.ts (устаревший файл удалён).

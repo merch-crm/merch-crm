@@ -4,7 +4,8 @@ import { okVoid } from "@/lib/types";
 
 import { db } from "@/lib/db";
 import { users, orders, tasks, auditLogs, clients, taskAssignees } from "@/lib/schema";
-import { auth, getSession } from "@/lib/auth";
+import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 

@@ -69,7 +69,9 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { type Session as _Session, auth } from '@/lib/auth';
+import { type Session as _Session, auth } from "@/lib/auth";
+import type { Session } from "@/lib/session";
+import type { Session } from "@/lib/session";
 import {
     getUserProfile,
     updateProfile,

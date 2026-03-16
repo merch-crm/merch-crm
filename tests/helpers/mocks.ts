@@ -3,7 +3,7 @@
  * Import from this file to get consistent mock objects.
  */
 import { vi } from 'vitest';
-import { type Session } from '@/lib/auth';
+import type { Session } from "@/lib/session";
 import { Task } from '@/app/(main)/dashboard/tasks/types';
 
 // ─── Session ─────────────────────────────────────────────────────────────────

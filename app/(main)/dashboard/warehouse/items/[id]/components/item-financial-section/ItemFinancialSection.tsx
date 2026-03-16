@@ -5,7 +5,7 @@ import { Banknote, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useBranding } from "@/components/branding-provider";
 import { InventoryItem, ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 
 import { useItemFinancials } from "./useItemFinancials";
 import { Timeframe } from "./types";

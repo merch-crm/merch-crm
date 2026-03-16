@@ -9,7 +9,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { StorageLocation } from "../../storage-locations-tab";
 
 import { useBranding } from "@/components/branding-provider";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { pluralize } from "@/lib/pluralize";
 
 import {

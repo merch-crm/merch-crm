@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { LayoutGrid } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { sortCategories } from "./category-utils";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { InventoryItem, Category } from "./types";
 import { EditCategoryDialog } from "./edit-category-dialog";
 import { EmptyState } from "@/components/ui/empty-state";

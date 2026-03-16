@@ -4,7 +4,7 @@ import { okVoid } from "@/lib/types";
 
 import { db } from"@/lib/db";
 import { systemSettings } from"@/lib/schema";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { requireAdmin } from"@/lib/admin";
 import { eq } from"drizzle-orm";
 import { revalidatePath } from"next/cache";

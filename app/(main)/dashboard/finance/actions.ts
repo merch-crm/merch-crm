@@ -2,7 +2,7 @@
 
 import { db } from"@/lib/db";
 import { orders, payments, expenses, inventoryTransactions } from"@/lib/schema";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { and, gte, lte, sql, eq, desc, type SQL } from"drizzle-orm";
 import { subDays } from"date-fns";
 import { logAction } from"@/lib/audit";

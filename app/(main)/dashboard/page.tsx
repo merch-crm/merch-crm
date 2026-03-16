@@ -1,5 +1,5 @@
 import { getDashboardStatsByPeriod } from"./actions";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { DashboardClient } from"./dashboard-client";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";

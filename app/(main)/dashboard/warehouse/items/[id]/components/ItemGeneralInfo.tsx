@@ -11,7 +11,7 @@ import { getColorHex, getParamConfig } from "./item-ui-utils";
 import { CLOTHING_QUALITIES } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { Select } from "@/components/ui/select";
 import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 

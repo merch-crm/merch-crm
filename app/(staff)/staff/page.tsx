@@ -1,4 +1,4 @@
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { StaffMonitoringClient, type PresenceStatus, type DailyReportRow } from './staff-monitoring-client'

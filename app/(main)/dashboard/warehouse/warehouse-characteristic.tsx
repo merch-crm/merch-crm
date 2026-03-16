@@ -1,7 +1,7 @@
 "use client";
 
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { InventoryAttribute as Attribute, AttributeType, Category } from "./types";
 import { useWarehouseCharacteristic } from "./hooks/use-warehouse-characteristic";
 import { CategoryTabs } from "./components/characteristic/CategoryTabs";

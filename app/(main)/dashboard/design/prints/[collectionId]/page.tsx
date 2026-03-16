@@ -6,7 +6,7 @@ import { CollectionPageClient } from "./collection-page-client";
 import { CollectionPageSkeleton } from "./loading";
 
 interface PageProps {
-    params: { collectionId: string };
+    params: Promise<{ collectionId: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

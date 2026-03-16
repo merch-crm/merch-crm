@@ -3,7 +3,7 @@ import React, { type Dispatch, type SetStateAction } from "react";
 import { Plus, Trash2, Loader2, Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize, Globe, Weight, Droplets, Package, Component, Waves, Wrench } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { AttributeType, type InventoryAttribute as Attribute, Category, AttributeMeta } from "../../types";
 import { type ValueFormState, type TypeFormState, type DeleteDialogState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
 import { getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";

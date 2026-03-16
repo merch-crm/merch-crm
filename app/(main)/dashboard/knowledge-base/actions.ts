@@ -5,7 +5,7 @@ import { okVoid } from "@/lib/types";
 import { db } from"@/lib/db";
 import { wikiFolders, wikiPages } from"@/lib/schema";
 import { eq, asc, desc } from"drizzle-orm";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { revalidatePath } from"next/cache";
 import { ActionResult } from"@/lib/types";
 import { logAction } from"@/lib/audit";

@@ -4,7 +4,7 @@ import { getDesignTask } from "../../actions/order-design-actions";
 import { DesignTaskPageClient } from "./design-task-page-client";
 
 interface PageProps {
-    params: { taskId: string };
+    params: Promise<{ taskId: string }>;
 }
 
 export const dynamic = "force-dynamic";

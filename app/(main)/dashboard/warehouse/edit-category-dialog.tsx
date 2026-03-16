@@ -9,7 +9,7 @@ import { Button } from"@/components/ui/button";
 import { updateInventoryCategory, deleteInventoryCategory } from"./category-actions";;
 import { useRouter } from"next/navigation";
 import { cn } from"@/lib/utils";
-import { Session } from"@/lib/auth";
+import type { Session } from "@/lib/session";
 import { useToast } from"@/components/ui/toast";
 
 

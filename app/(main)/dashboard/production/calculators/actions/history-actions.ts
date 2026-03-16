@@ -3,7 +3,7 @@
 import { db } from '@/lib/db'
 import { printCalculations, printCalculationGroups } from '@/lib/schema/calculators'
 import { users } from '@/lib/schema/users'
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 import { logAction } from '@/lib/audit'
 import { logError } from '@/lib/error-logger'
 import { eq, desc, and, gte, lte, sql, like, inArray } from 'drizzle-orm'

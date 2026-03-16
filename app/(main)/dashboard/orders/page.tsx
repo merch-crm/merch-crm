@@ -5,7 +5,7 @@ import { getOrders, getOrderStats } from"./actions/core.actions";;
 import type { Order } from"@/lib/types";
 import { startOfDay, endOfDay, subDays } from"date-fns";
 import { Pagination } from"@/components/ui/pagination";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { db } from"@/lib/db";
 import { users } from"@/lib/schema";
 import { eq } from"drizzle-orm";

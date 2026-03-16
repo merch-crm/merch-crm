@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 import { requireAdmin } from '@/lib/admin'
 import { logError } from '@/lib/error-logger'
 

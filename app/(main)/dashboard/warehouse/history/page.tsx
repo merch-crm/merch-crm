@@ -1,7 +1,7 @@
 import { getInventoryHistory } from"../history-actions";
 import { HistoryTable } from"../history-table";
 import { type Transaction } from"../history-types";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export const metadata = {
     title:"Склад | История",

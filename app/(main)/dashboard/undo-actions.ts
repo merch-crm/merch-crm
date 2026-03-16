@@ -5,7 +5,7 @@ import { okVoid } from "@/lib/types";
 import { db } from"@/lib/db";
 import { auditLogs, clients, inventoryItems, orders } from"@/lib/schema";
 import { eq, desc } from"drizzle-orm";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { revalidatePath } from"next/cache";
 import { logError } from"@/lib/error-logger";
 import { ActionResult } from"@/lib/types";

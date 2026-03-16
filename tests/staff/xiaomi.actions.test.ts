@@ -53,7 +53,9 @@ vi.mock('@/lib/crypto', () => ({ encrypt: mockEncrypt, decrypt: mockDecrypt }));
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
 import { getSession } from '@/lib/session';
-import { type Session as _Session } from '@/lib/auth';;
+import { type Session as _Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
+import type { Session } from "@/lib/session";;
 import { requireAdmin } from '@/lib/admin';
 import { mockSession } from '../helpers/mocks';
 

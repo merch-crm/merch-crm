@@ -1,4 +1,4 @@
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { getWikiFolders, getWikiPages } from"./actions";
 import { WikiClient } from"./wiki-client";

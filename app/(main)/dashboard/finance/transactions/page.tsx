@@ -1,5 +1,5 @@
 import { getFinanceTransactions } from"../actions";;
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { TransactionsClient } from"../transactions-client";
 import { startOfDay, endOfDay, subDays } from"date-fns";

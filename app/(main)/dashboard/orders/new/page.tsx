@@ -1,6 +1,6 @@
 import { getInventoryForSelect } from"../actions/core.actions";;
 import { CreateOrderPageClient } from"./page-client";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export const metadata = {
     title:"Новый заказ | CRM",

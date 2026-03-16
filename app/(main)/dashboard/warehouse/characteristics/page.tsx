@@ -2,7 +2,7 @@ import { getInventoryAttributes, getInventoryAttributeTypes } from"../attribute-
 import { getInventoryCategories } from"../category-actions";;
 import { WarehouseCharacteristic } from"../warehouse-characteristic";
 import { AttributeType } from"../types";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export const metadata = {
     title:"Склад | Характеристики",

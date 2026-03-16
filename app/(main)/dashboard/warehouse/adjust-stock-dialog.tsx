@@ -8,7 +8,7 @@ import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { useAdjustStock } from "./hooks/use-adjust-stock";
 
 interface AdjustStockDialogProps {

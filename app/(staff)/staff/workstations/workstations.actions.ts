@@ -7,7 +7,7 @@ import { eq, asc } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 import { CreateWorkstationSchema, UpdateWorkstationSchema, DeleteWorkstationSchema } from '../validation'
 import { type WorkstationInput } from './types'
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 
 export async function getWorkstations() {
     const session = await getSession()

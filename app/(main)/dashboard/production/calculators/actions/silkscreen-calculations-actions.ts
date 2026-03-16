@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/db'
 import { printCalculations, printCalculationGroups } from '@/lib/schema/calculators'
-import { getSession } from '@/lib/auth'
+import { getSession } from "@/lib/session";
 import { revalidatePath } from 'next/cache'
 import { logError } from '@/lib/error-logger'
 import { eq } from 'drizzle-orm'

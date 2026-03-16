@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from "react";
-import { getSession } from "@/lib/session";
 import { getAllUsers } from "../warehouse-stats-actions";
 import { isSuccess } from "@/lib/types";
 import { getInventoryItems } from "../item-actions";
@@ -8,7 +7,7 @@ import { getInventoryHistory } from "../history-actions";
 import { getInventoryCategories } from "../category-actions";
 import { getInventoryAttributeTypes } from "../attribute-actions";
 import { InventoryItem, StorageLocation, Category, AttributeType } from "../types";
-import type { Session } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 
 export interface HistoryEntry {
     id: string;
@@ -32,8 +31,15 @@ export function useWarehouseLayout(activeTab: string) {
 
     const fetchSession = useCallback(async () => {
         if (!session) {
-            const s = await getSession();
-            setSession(s);
+            try {
+                const response = await fetch("/api/auth/get-session");
+                if (response.ok) {
+                    const data = await response.json();
+                    setSession(data);
+                }
+            } catch (error) {
+                console.error("[useWarehouseLayout] Failed to fetch session:", error);
+            }
         }
     }, [session]);
 

@@ -59,8 +59,8 @@ export default async function WarehouseCategoriesPage() {
     );
 }
 
-import { Category } from"../types";
-import { Session } from"@/lib/auth";
+import { Category } from "../types";
+import type { Session } from "@/lib/session";
 
 async function InventoryListContainer({ session }: { session: Session | null }) {
     const [categoriesResult, orphanedResult] = await Promise.all([
