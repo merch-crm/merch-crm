@@ -1,5 +1,5 @@
+import { getSession, type Session } from "@/lib/session";
 import { auth } from "@/lib/auth";
-import type { Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { db } from '@/lib/db';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';

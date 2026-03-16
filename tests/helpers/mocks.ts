@@ -1,9 +1,9 @@
+import { type Session } from "@/lib/session";
 /**
  * Shared mock factories and helpers for all tests.
  * Import from this file to get consistent mock objects.
  */
 import { vi } from 'vitest';
-import type { Session } from "@/lib/session";
 import { Task } from '@/app/(main)/dashboard/tasks/types';
 
 // ─── Session ─────────────────────────────────────────────────────────────────

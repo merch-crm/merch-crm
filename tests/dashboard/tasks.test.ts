@@ -1,3 +1,4 @@
+import { getSession } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { db } from '@/lib/db';
 import { mockSession, createMockTask } from '../helpers/mocks';

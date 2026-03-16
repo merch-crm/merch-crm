@@ -1,4 +1,4 @@
-import type { Session } from "@/lib/session";
+import { getSession, type Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
     getClientContacts,
