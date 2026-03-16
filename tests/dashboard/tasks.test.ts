@@ -1,6 +1,7 @@
+```typescript
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { db } from '@/lib/db';
-import { mockSession, createMockTask, createFormData } from '../helpers/mocks';
+import { mockSession, createMockTask } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -30,11 +31,10 @@ const hoisted = vi.hoisted(() => {
             taskChecklists: { findFirst: mockFindFirst, findMany: mockFindMany },
         },
     };
-    const mockGetSession = vi.fn();
-    return { mockFindMany, mockFindFirst, mockSelect, mockTx, mockGetSession, createGenericMock };
+    return { mockFindMany, mockFindFirst, mockSelect, mockTx, createGenericMock };
 });
 
-const { mockFindMany, mockFindFirst, mockSelect, mockTx, mockGetSession, createGenericMock } = hoisted;
+const { mockFindMany, mockFindFirst, mockSelect, mockTx, createGenericMock } = hoisted;
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 

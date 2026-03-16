@@ -3,7 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { KanbanBoard } from './kanban/kanban-board';
 import { changeTaskStatus as updateTask } from './actions/task-actions';
 import { playSound } from '@/lib/sounds';
-import { SheetStackProvider } from '@/components/ui/sheet-stack-context';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { KanbanBoard } from './kanban/kanban-board';
 import { createMockTask } from '@/tests/helpers/mocks';
 
 vi.mock('./actions', () => ({ updateTask: vi.fn() }));
