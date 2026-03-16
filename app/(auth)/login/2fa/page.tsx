@@ -17,6 +17,7 @@ export default function TwoFactorPage() {
         const formData = new FormData(e.currentTarget);
         const code = formData.get("code") as string;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { error } = await (authClient as any).twoFactor.verifyTotp({
             code,
         });

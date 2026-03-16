@@ -86,6 +86,18 @@ vi.mock('@/lib/session', () => ({
 }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
+vi.mock('@/lib/auth', () => ({
+    auth: {
+        api: {
+            createUser: vi.fn().mockResolvedValue({ 
+                user: { id: 'new-id', email: 'new@test.com', name: 'New User' } 
+            }),
+            changePassword: vi.fn().mockResolvedValue({ success: true }),
+            getSession: hoisted.mockGetSession,
+        }
+    },
+    getSession: hoisted.mockGetSession,
+}));
 vi.mock('@/lib/security-logger', () => ({ logSecurityEvent: vi.fn() }));
 vi.mock('@/lib/password', () => ({
     hashPassword: vi.fn().mockResolvedValue('hashed-password'),

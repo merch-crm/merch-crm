@@ -96,6 +96,7 @@ export async function createUser(formData: FormData): Promise<ActionResult<User>
 
         const { email, password, name, roleId, departmentId } = validated.data;
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const newUser = await (auth as any).api.createUser({
             headers: await import("next/headers").then(h => h.headers()),
             body: {

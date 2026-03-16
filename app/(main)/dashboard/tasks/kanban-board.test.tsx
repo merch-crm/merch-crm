@@ -5,7 +5,7 @@ import { SheetStackProvider } from '@/components/ui/sheet-stack-context';
 import { createMockTask } from '@/tests/helpers/mocks';
 
 vi.mock('./actions', () => ({ updateTask: vi.fn() }));
-vi.mock('@/lib/sounds', () => ({ playSound: vi.fn() }));
+vi.mock('@/lib/sounds', () => ({ playSound: vi.fn(), initSoundSettings: vi.fn(), setGlobalSoundConfig: vi.fn() }));
 vi.mock('./task-details-dialog', () => ({
     TaskDetailsDialog: ({ task, onClose }: { task: { title: string }; onClose: () => void }) => (
         <div data-testid="task-dialog">

@@ -25,6 +25,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
     const queryMock = {
         clientContacts: { findMany: vi.fn().mockResolvedValue([]), findFirst: vi.fn().mockResolvedValue(null) },
         clients: { findFirst: vi.fn().mockResolvedValue(null) },
+        users: { findFirst: vi.fn().mockResolvedValue({ id: 'user-1', role: { name: 'Администратор' } }) },
     };
 
     const mockDb = {

@@ -46,11 +46,11 @@ describe('rateLimit()', () => {
     mockMultiInstance.incr.mockReturnThis()
     mockMultiInstance.ttl.mockReturnThis()
     mockRedis.multi.mockReturnValue(mockMultiInstance)
-    delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_E2E
+    delete (process.env as Record<string, string | undefined>).DISABLE_RATE_LIMIT
   })
 
   afterEach(() => {
-    delete (process.env as Record<string, string | undefined>).NEXT_PUBLIC_E2E
+    delete (process.env as Record<string, string | undefined>).DISABLE_RATE_LIMIT
   })
 
   // ─── Первый запрос (TTL = -1) ───────────────────────────────────────────
@@ -220,34 +220,34 @@ describe('rateLimit()', () => {
     })
   })
 
-  // ─── E2E / тестовый bypass ──────────────────────────────────────────────
-  describe('E2E bypass (NEXT_PUBLIC_E2E=true)', () => {
-    it('должен пропускать все запросы в E2E режиме', async () => {
-      (process.env as Record<string, string | undefined>).NEXT_PUBLIC_E2E = 'true'
+  // ─── Dev/Test bypass ──────────────────────────────────────────────
+  describe('Dev bypass (DISABLE_RATE_LIMIT=true)', () => {
+    it('должен пропускать все запросы при DISABLE_RATE_LIMIT=true', async () => {
+      (process.env as Record<string, string | undefined>).DISABLE_RATE_LIMIT = 'true'
 
-      const result = await rateLimit(TEST_KEY, 0, WINDOW_SEC) // лимит=0, но E2E
+      const result = await rateLimit(TEST_KEY, 0, WINDOW_SEC) // лимит=0, но отключено
 
       expect(result.success).toBe(true)
     })
 
-    it('должен вернуть remaining=limit в E2E режиме', async () => {
-      (process.env as Record<string, string | undefined>).NEXT_PUBLIC_E2E = 'true'
+    it('должен вернуть remaining=limit при DISABLE_RATE_LIMIT=true', async () => {
+      (process.env as Record<string, string | undefined>).DISABLE_RATE_LIMIT = 'true'
 
       const result = await rateLimit(TEST_KEY, LIMIT, WINDOW_SEC)
 
       expect(result.remaining).toBe(LIMIT)
     })
 
-    it('НЕ должен обращаться к Redis в E2E режиме', async () => {
-      (process.env as Record<string, string | undefined>).NEXT_PUBLIC_E2E = 'true'
+    it('НЕ должен обращаться к Redis при DISABLE_RATE_LIMIT=true', async () => {
+      (process.env as Record<string, string | undefined>).DISABLE_RATE_LIMIT = 'true'
 
       await rateLimit(TEST_KEY, LIMIT, WINDOW_SEC)
 
       expect(mockRedis.multi).not.toHaveBeenCalled()
     })
 
-    it('НЕ должен обходить лимит если E2E=false', async () => {
-      (process.env as Record<string, string | undefined>).NEXT_PUBLIC_E2E = 'false'
+    it('НЕ должен обходить лимит если DISABLE_RATE_LIMIT не задан', async () => {
+      delete (process.env as Record<string, string | undefined>).DISABLE_RATE_LIMIT
       mockRedisResponse(LIMIT + 1, 30)
 
       const result = await rateLimit(TEST_KEY, LIMIT, WINDOW_SEC)

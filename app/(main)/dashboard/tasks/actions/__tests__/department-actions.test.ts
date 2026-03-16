@@ -69,7 +69,7 @@ describe("department-actions", () => {
         
         const firstFuncName = Object.keys(actions).find(k => typeof (actions as (Record<string, unknown>))[k] === 'function');
         if (firstFuncName) {
-            const result = await (actions as unknown as Record<string, (...args: unknown[]) => Promise<{success: boolean, error?: string}>>)[firstFuncName]({});
+            const result = await (actions as unknown as Record<string, (...args: unknown[]) => Promise<{success: boolean, error?: string}>>)[firstFuncName]("123e4567-e89b-12d3-a456-426614174000");
             if (result && typeof result === 'object' && 'success' in result) {
                 expect(result.success).toBe(false);
                 expect(result.error).toBeTruthy(); // Generic test expects failure on unauthorized or validation

@@ -13,12 +13,14 @@ type ClientEntity = typeof schema.clients.$inferSelect;
 
 export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: ClientEntity[] } | void>> {
     const action = createSafeAction<any, { duplicates?: ClientEntity[] } | void>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         schema: ClientSchema as any,
         roles: ["Администратор", "Руководство", "Отдел продаж"],
         handler: async (data, _ctx) => {
             const res = await ClientService.createClient({
                 ...data,
                 ignoreDuplicates: data.ignoreDuplicates === "true" || data.ignoreDuplicates === true
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } as any, _ctx.userId);
             if ("duplicates" in res && res.duplicates) {
                 return { success: true, data: { duplicates: res.duplicates as ClientEntity[] } };

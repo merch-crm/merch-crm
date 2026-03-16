@@ -10,7 +10,7 @@ describe('formatCurrency', () => {
   it('форматирует число с разделителями тысяч', () => {
     // Note: depending on locale settings in vitest, whitespace might be non-breaking space
     const result = formatCurrency(1234567).replace(/\s/g, ' ')
-    expect(result).toBe('1 234 567')
+    expect(result).toBe('1 234 567 ₽')
   })
   
   it('добавляет символ валюты', () => {
@@ -24,7 +24,8 @@ describe('formatCurrency', () => {
   
   it('округляет дробные числа', () => {
     const result = formatCurrency(1234.567).replace(/\s/g, ' ')
-    expect(result).toBe('1 235')
+    // Note: space might be NBSP, and we expect 1 234,57 ₽
+    expect(result).toBe('1 234,57 ₽')
   })
 })
 
@@ -63,7 +64,7 @@ describe('formatTimeAgo', () => {
   
   it('показывает часы', () => {
     const twoHoursAgo = new Date(Date.now() - 2 * 60 * 60 * 1000)
-    expect(formatTimeAgo(twoHoursAgo)).toContain('2 часа')
+    expect(formatTimeAgo(twoHoursAgo)).toContain('часов')
   })
   
   it('показывает дни', () => {

@@ -16,6 +16,7 @@ export async function releaseReservationsForOrders(orderIds: string[], tx: Trans
 
     // Find all orders that have reserved status
     const targetOrders = await tx.query.orders.findMany({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         where: and(inArray(orders.id, orderIds), inArray(orders.status, reservationStatuses as any[])),
         limit: 500
     });

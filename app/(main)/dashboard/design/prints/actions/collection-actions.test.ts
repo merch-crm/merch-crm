@@ -81,7 +81,7 @@ import { mockSession } from "@/tests/helpers/mocks";
 describe("Collection Actions", () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockSelect.mockReset();
+        mockSelect.mockClear();
     });
 
     describe("getCollections", () => {

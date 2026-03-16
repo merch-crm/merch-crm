@@ -232,6 +232,10 @@ describe('Order Actions', () => {
 
         it('должен отклонить запрос от роли без прав', async () => {
             vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Клиент' }));
+            (db.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+                id: 'user-id',
+                role: { name: 'Клиент', permissions: {} },
+            });
             
             const result = await updateOrderField(VALID_ORDER_ID, 'priority', 'high');
 

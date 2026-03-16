@@ -23,6 +23,8 @@ vi.mock('next/navigation', () => ({
 // Мокаем звуки
 vi.mock('@/lib/sounds', () => ({
   playSound: vi.fn(),
+  initSoundSettings: vi.fn(),
+  setGlobalSoundConfig: vi.fn(),
 }))
 
 import { updateOrderField } from '../actions/core.actions'

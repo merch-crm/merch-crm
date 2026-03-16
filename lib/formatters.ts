@@ -16,7 +16,9 @@ export function formatCurrency(amount: number, symbol: string = "₽"): string {
         return new Intl.NumberFormat('ru-RU', {
             style: 'currency',
             currency: currencyCode,
-        }).format(amount).replace(currencyCode, symbol).replace("RUB", "₽");
+            minimumFractionDigits: Number.isInteger(amount) ? 0 : 2,
+            maximumFractionDigits: 2
+        }).format(amount).replace(currencyCode, symbol).replace("RUB", "₽").trim();
     } catch {
         return `${amount.toLocaleString('ru-RU')} ${symbol}`;
     }

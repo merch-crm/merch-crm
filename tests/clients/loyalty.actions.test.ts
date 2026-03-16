@@ -25,6 +25,7 @@ const { mockDb, queryMock } = vi.hoisted(() => {
     const queryMock = {
         loyaltyLevels: { findMany: vi.fn().mockResolvedValue([]) },
         clients: { findMany: vi.fn().mockResolvedValue([]) },
+        users: { findFirst: vi.fn().mockResolvedValue({ id: 'user-1', role: { name: 'Администратор' } }) },
     };
 
     const txMock = {
@@ -90,7 +91,7 @@ describe('Loyalty Actions', () => {
 
             expect(result.success).toBe(false);
             if (!result.success) {
-                expect(result.error).toBe("Не удалось загрузить уровни лояльности");
+                expect(result.error).toBe("Внутренняя ошибка сервера");
             }
             expect(logError).toHaveBeenCalled();
         });
@@ -114,12 +115,13 @@ describe('Loyalty Actions', () => {
 
         it('should deny access if not admin', async () => {
             vi.mocked(getSession).mockResolvedValueOnce(mockSession() as _Session);
+            queryMock.users.findFirst.mockResolvedValueOnce({ id: 'user-1', role: { name: 'Менеджер' } });
 
             const result = await createLoyaltyLevel({} as Parameters<typeof createLoyaltyLevel>[0]);
 
             expect(result.success).toBe(false);
             if (!result.success) {
-                expect(result.error).toBe("Ошибка создания уровня");
+                expect(result.error).toBe("Недостаточно прав");
             }
         });
     });

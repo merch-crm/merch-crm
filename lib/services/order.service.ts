@@ -4,6 +4,7 @@ import { eq, and, sql, desc } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
 import { releaseOrderReservation } from "@/app/(main)/dashboard/orders/actions/utils";
 import { queueClientStatsUpdate } from "@/lib/queue";
+import { ValidationError } from "@/lib/action-helpers";
 
 const { orders, orderItems, clients, inventoryItems, promocodes, payments } = schema;
 
@@ -89,7 +90,7 @@ export class OrderService {
                         ))
                         .returning();
 
-                    if (result.length === 0) throw new Error(`Недостаточно товара на складе для ID ${item.inventoryId}`);
+                    if (result.length === 0) throw ValidationError(`Недостаточно товара на складе для ID ${item.inventoryId}`);
                 }
                 totalAmount += (item.quantity * item.price);
             }

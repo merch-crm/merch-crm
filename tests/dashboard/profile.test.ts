@@ -4,11 +4,12 @@ import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword } = vi.hoisted(() => {
+const { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword, mockGetSession } = vi.hoisted(() => {
     const mockFindFirst = vi.fn();
     const mockFindMany = vi.fn();
     const mockSelect = vi.fn();
     const mockChangePassword = vi.fn().mockResolvedValue({ success: true });
+    const mockGetSession = vi.fn();
     const mockTx = {
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
@@ -16,19 +17,22 @@ const { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword } = 
             users: { findFirst: mockFindFirst },
         },
     };
-    return { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword };
+    return { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword, mockGetSession };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
 vi.mock('@/lib/session', () => ({ 
-    getSession: vi.fn(),
+    getSession: mockGetSession,
+}));
+vi.mock('@/lib/auth', () => ({
     auth: {
         api: {
             changePassword: mockChangePassword,
             signOut: vi.fn().mockResolvedValue(true),
         }
-    }
+    },
+    getSession: mockGetSession,
 }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
@@ -81,7 +85,7 @@ import {
 
 const setupMocks = () => {
     vi.clearAllMocks();
-    vi.mocked(getSession).mockReset();
+    mockGetSession.mockReset();
     mockSelect.mockReset();
     mockSelect.mockReturnValue({
         from: vi.fn().mockReturnValue({
@@ -107,20 +111,20 @@ describe('getUserProfile', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
+        mockGetSession.mockResolvedValueOnce(null);
         const result = await getUserProfile();
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает ошибку если пользователь не найден', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         mockFindFirst.mockResolvedValueOnce(null);
         const result = await getUserProfile();
         expect(result.success).toBe(false);
     });
 
     it('возвращает профиль пользователя', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const user = createMockUser();
         mockFindFirst.mockResolvedValueOnce(user);
         const result = await getUserProfile();
@@ -132,7 +136,7 @@ describe('updateProfile', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
+        mockGetSession.mockResolvedValueOnce(null);
         const fd = new FormData();
         fd.append('name', 'Test User');
         const result = await updateProfile(fd);
@@ -140,7 +144,7 @@ describe('updateProfile', () => {
     });
 
     it('возвращает ошибку при пустом имени', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const fd = new FormData();
         fd.append('name', '');
         const result = await updateProfile(fd);
@@ -148,7 +152,7 @@ describe('updateProfile', () => {
     });
 
     it('обновляет профиль при валидных данных', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const fd = new FormData();
         fd.append('name', 'Updated Name');
         fd.append('phone', '+79001234567');
@@ -161,20 +165,20 @@ describe('updatePassword', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
+        mockGetSession.mockResolvedValueOnce(null);
         const result = await updatePassword(createFormData({ currentPassword: 'p-old', newPassword: 'p-new-123', confirmPassword: 'p-new-123' })); // Safe
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает ошибку если пароли не совпадают', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const result = await updatePassword(createFormData({ currentPassword: 'p-old', newPassword: 'p-new-123', confirmPassword: 'different' })); // Safe
         expect(result.success).toBe(false);
         expect((result as { error: string }).error).toContain('совпадают');
     });
 
     it('возвращает ошибку при неверном текущем пароле', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         mockFindFirst.mockResolvedValueOnce(createMockUser());
         mockChangePassword.mockRejectedValueOnce({ code: 'INVALID_PASSWORD' });
         const result = await updatePassword(createFormData({ currentPassword: 'wrongold1', newPassword: 'newpass123', confirmPassword: 'newpass123' })); // Safe
@@ -184,7 +188,7 @@ describe('updatePassword', () => {
     });
 
     it('обновляет пароль при верных данных', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as _Session);
+        mockGetSession.mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as _Session);
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } }));
         mockChangePassword.mockResolvedValueOnce({ 
             token: 'test-token', 
@@ -200,13 +204,13 @@ describe('getUserStatistics', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
+        mockGetSession.mockResolvedValueOnce(null);
         const result = await getUserStatistics();
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает статистику пользователя', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         let callCount = 0;
         mockSelect.mockImplementation(() => {
             callCount++;
@@ -223,7 +227,7 @@ describe('getUserStatistics', () => {
 describe('getUpcomingBirthdays', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockReset();
+        mockGetSession.mockReset();
         mockSelect.mockReset();
         mockFindMany.mockReset();
         vi.useFakeTimers();
@@ -244,14 +248,14 @@ describe('getUpcomingBirthdays', () => {
 
         const birthdayUser = createMockUser({ birthday: birthdayString });
         mockFindMany.mockResolvedValueOnce([birthdayUser]);
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const result = await getUpcomingBirthdays();
         expect(result.success).toBe(true);
         expect((result as { data: unknown[] }).data).toHaveLength(1);
     });
 
     it('возвращает пустой массив если именинников нет', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         mockFindMany.mockResolvedValueOnce([createMockUser({ birthday: '1990-06-15' })]);
         const result = await getUpcomingBirthdays();
         expect(result.success).toBe(true);
@@ -262,13 +266,13 @@ describe('getUserSchedule', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
+        mockGetSession.mockResolvedValueOnce(null);
         const result = await getUserSchedule();
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает задачи пользователя', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const tasks = [{ id: 't1', title: 'Task 1', status: 'new', dueDate: new Date() }];
         mockSelect.mockReturnValueOnce({
             from: vi.fn().mockReturnValue({
@@ -293,13 +297,13 @@ describe('getUserActivities', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
+        mockGetSession.mockResolvedValueOnce(null);
         const result = await getUserActivities();
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает историю активности пользователя', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
+        mockGetSession.mockResolvedValueOnce(mockSession());
         const logs = [{ id: 'l1', action: 'login', createdAt: new Date() }];
         mockSelect.mockReturnValue({
             from: vi.fn().mockReturnValue({

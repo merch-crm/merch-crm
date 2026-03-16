@@ -24,6 +24,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
 
     const queryMock = {
         clients: { findFirst: vi.fn().mockResolvedValue(null), findMany: vi.fn().mockResolvedValue([]) },
+        users: { findFirst: vi.fn().mockResolvedValue({ id: 'user-1', role: { name: 'Администратор' } }) },
     };
 
     const mockDb = {
@@ -94,6 +95,7 @@ describe('Stats Actions', () => {
 
         it('should block non-admins', async () => {
             vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }) as _Session);
+            queryMock.users.findFirst.mockResolvedValueOnce({ id: 'user-1', role: { name: 'Менеджер' } });
             const result = await recalculateAllClientsStats();
             expect(result.success).toBe(false);
             if (!result.success) {

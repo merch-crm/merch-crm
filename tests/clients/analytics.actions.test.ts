@@ -28,6 +28,7 @@ const { mockDb, chainable } = vi.hoisted(() => {
 
     const queryMock = {
         clients: { findFirst: vi.fn().mockResolvedValue(null) },
+        users: { findFirst: vi.fn().mockResolvedValue({ id: 'user-1', name: 'Admin', email: 'a@b.com', role: { name: 'Администратор', permissions: {} }, department: null }) },
     };
 
     const mockDb = {
@@ -41,6 +42,13 @@ const { mockDb, chainable } = vi.hoisted(() => {
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
+vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
+vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
+vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
+
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';
+import { mockSession } from '../helpers/mocks';
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
@@ -48,6 +56,7 @@ describe('Analytics Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
     });
 
     describe('Overview Analytics', () => {
