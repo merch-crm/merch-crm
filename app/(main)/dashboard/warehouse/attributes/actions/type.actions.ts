@@ -11,7 +11,7 @@ import {
     accounts
 } from "@/lib/schema";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { comparePassword } from "@/lib/password";
 import { refreshWarehouse } from "../../warehouse-shared.actions";
 import { AttributeTypeSchema } from "../../validation";

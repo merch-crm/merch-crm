@@ -13,7 +13,7 @@ const { mockDelete, mockSelect } = vi.hoisted(() => {
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
-vi.mock('@/lib/auth', () => ({ getSession: vi.fn() }));
+vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
 vi.mock('@/lib/redis', () => ({ invalidateCache: vi.fn() }));

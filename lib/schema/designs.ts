@@ -6,15 +6,12 @@ import {
     integer,
     timestamp,
     index,
-    pgEnum,
     uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { users } from "./users";
+import {} from "./enums";
 
-// ============ ENUMS ============
-
-export const fileTypeEnum = pgEnum("print_file_type", ["preview", "source"]);
 
 // ============ КОЛЛЕКЦИИ ============
 
@@ -106,7 +103,7 @@ export const printDesignFiles = pgTable(
         filename: varchar("filename", { length: 255 }).notNull(),
         originalName: varchar("original_name", { length: 255 }).notNull(),
         format: varchar("format", { length: 20 }).notNull(),
-        fileType: fileTypeEnum("file_type").notNull(),
+        fileType: text("file_type").notNull(),
         size: integer("size").notNull(), // размер в байтах
         width: integer("width"), // ширина в пикселях (для изображений)
         height: integer("height"), // высота в пикселях (для изображений)

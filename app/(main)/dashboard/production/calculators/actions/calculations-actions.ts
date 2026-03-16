@@ -7,7 +7,7 @@ import {
 } from "@/lib/schema/calculators";
 import { eq, desc, and, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { saveCalculationSchema } from "./schemas";
 import type {

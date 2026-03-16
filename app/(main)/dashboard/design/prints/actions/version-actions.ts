@@ -12,7 +12,7 @@ import {
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { generateId } from "@/lib/utils";
 import { type ActionResult } from "@/lib/types";

@@ -6,7 +6,7 @@ import { getStorageLocations } from "../../storage-actions";
 import { getInventoryCategories } from "../../category-actions";
 import { getInventoryAttributeTypes, getInventoryAttributes } from "../../attribute-actions";;
 import { ItemDetailClient } from "./item-detail-client";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { serializeForClient, type Serialized } from "@/lib/serialize";
 import type { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from "../../types";
 

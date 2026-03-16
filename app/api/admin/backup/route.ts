@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
 
 export async function GET() {

@@ -1,143 +1,26 @@
 {
-  "timestamp": "15.03.2026, 14:26:29",
-  "duration": 18181,
+  "timestamp": "16.03.2026, 04:29:19",
+  "duration": 12715,
   "projectName": "MerchCRM",
-  "errors": [
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 603,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 611,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 615,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 646,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 701,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 751,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 777,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 787,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 823,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "line": 836,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/dashboard/production/actions/bento-dashboard-analytics-actions.ts",
-      "severity": "info",
-      "category": "Производительность",
-      "message": "Файл длинный: 507 строк"
-    },
-    {
-      "file": "app/(main)/dashboard/production/actions/reports-actions.ts",
-      "severity": "info",
-      "category": "Производительность",
-      "message": "Файл длинный: 515 строк"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "severity": "info",
-      "category": "Производительность",
-      "message": "Файл длинный: 879 строк"
-    },
-    {
-      "file": "app/(main)/dashboard/production/reports/reports-page-client.tsx",
-      "severity": "warning",
-      "category": "Размер компонента",
-      "message": "Много useState: 10",
-      "suggestion": "Используй useReducer или кастомный хук"
-    },
-    {
-      "file": "app/(main)/dashboard/production/actions/reports-actions.ts",
-      "severity": "info",
-      "category": "Тесты",
-      "message": "Нет теста для reports-actions"
-    }
-  ],
+  "errors": [],
   "stats": {
-    "totalFiles": 1311,
-    "totalLines": 184793,
-    "totalSize": 7821679,
-    "pagesCount": 85,
-    "componentsCount": 225,
+    "totalFiles": 1384,
+    "totalLines": 192766,
+    "totalSize": 8063165,
+    "pagesCount": 86,
+    "componentsCount": 226,
     "hooksCount": 10,
-    "actionsCount": 118,
-    "typesCount": 13,
-    "apiRoutesCount": 25,
-    "formsCount": 52,
-    "testsCount": 204,
-    "tablesCount": 78,
-    "migrationsCount": 34,
+    "actionsCount": 135,
+    "typesCount": 14,
+    "apiRoutesCount": 26,
+    "formsCount": 51,
+    "testsCount": 222,
+    "tablesCount": 83,
+    "migrationsCount": 35,
     "typescriptErrors": 0,
     "lintErrors": 0,
     "lintWarnings": 0,
-    "byCategory": {
-      "Null Safety": 10,
-      "Производительность": 3,
-      "Размер компонента": 1,
-      "Тесты": 1
-    }
+    "byCategory": {}
   },
   "health": {
     "score": 100,

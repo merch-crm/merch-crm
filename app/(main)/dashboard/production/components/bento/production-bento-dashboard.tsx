@@ -22,6 +22,7 @@ import { MaterialsLowCard } from "./materials-low-card";
 import { EquipmentStatusCard } from "./equipment-status-card";
 import { CalculatorsGrid } from "./calculators-grid";
 import { ProductionBoard } from "../../production-board";
+import { ProductionTasksWidget } from "../production-tasks-widget";
 
 import type { ProductionBentoDashboardData, UrgentTask, EquipmentStatusItem } from "../../types";
 
@@ -95,7 +96,10 @@ export function ProductionBentoDashboard({
       {/* Ряд 1: Герой + Внимание */}
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <div className="grid grid-cols-12 gap-3">
-        <HeroProductionCard stats={data.hero} className="col-span-12" />
+        <HeroProductionCard stats={data.hero} className="col-span-12 lg:col-span-8" />
+        <div className="col-span-12 lg:col-span-4 h-full">
+            <ProductionTasksWidget />
+        </div>
       </div>
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}

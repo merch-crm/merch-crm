@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { systemErrors } from "@/lib/schema";
 import { headers } from "next/headers";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 interface LogErrorParams {
     error: Error | unknown;

@@ -230,9 +230,8 @@ export async function getSecurityStats() {
 
 export async function toggleMaintenanceMode(enabled: boolean) {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { success: false, error: "Доступ запрещен" };
-
     try {
+        await requireAdmin(session);
         const { enabled: validEnabled } = z.object({ enabled: z.boolean() }).parse({ enabled });
 
         await db.insert(systemSettings)
@@ -244,10 +243,10 @@ export async function toggleMaintenanceMode(enabled: boolean) {
 
         await logSecurityEvent({
             eventType: "maintenance_mode_toggle",
-            userId: session.id,
+            userId: session!.id,
             severity: "critical",
             entityType: "system_settings",
-            details: { enabled, toggledBy: session.name }
+            details: { enabled, toggledBy: session!.name }
         });
         revalidatePath("/");
         return { success: true };

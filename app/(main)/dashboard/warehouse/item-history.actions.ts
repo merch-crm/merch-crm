@@ -8,7 +8,7 @@ import { logError } from "@/lib/error-logger";
 import { type ActionResult } from "@/lib/types";
 import { type ItemHistoryTransaction, type ActiveOrderItem } from "./types";
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 /**
  * Get full history of inventory transactions for a specific item

@@ -4,10 +4,11 @@ import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockFindFirst, mockFindMany, mockSelect, mockTx } = vi.hoisted(() => {
+const { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword } = vi.hoisted(() => {
     const mockFindFirst = vi.fn();
     const mockFindMany = vi.fn();
     const mockSelect = vi.fn();
+    const mockChangePassword = vi.fn().mockResolvedValue({ success: true });
     const mockTx = {
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) }),
@@ -15,7 +16,7 @@ const { mockFindFirst, mockFindMany, mockSelect, mockTx } = vi.hoisted(() => {
             users: { findFirst: mockFindFirst },
         },
     };
-    return { mockFindFirst, mockFindMany, mockSelect, mockTx };
+    return { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
@@ -24,7 +25,7 @@ vi.mock('@/lib/auth', () => ({
     getSession: vi.fn(),
     auth: {
         api: {
-            changePassword: vi.fn().mockResolvedValue({ success: true }),
+            changePassword: mockChangePassword,
             signOut: vi.fn().mockResolvedValue(true),
         }
     }
@@ -79,6 +80,18 @@ import {
 
 const setupMocks = () => {
     vi.clearAllMocks();
+    vi.mocked(getSession).mockReset();
+    mockSelect.mockReset();
+    mockSelect.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+            innerJoin: vi.fn().mockReturnValue({
+                where: vi.fn().mockResolvedValue([{ some: 'data' }])
+            })
+        })
+    });
+    mockFindMany.mockReset();
+    mockChangePassword.mockReset();
+    mockChangePassword.mockResolvedValue({ success: true });
     vi.mocked(db.transaction).mockImplementation((async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx)) as unknown as (fn: (tx: never) => Promise<unknown>) => Promise<unknown>);
     vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as ReturnType<typeof db.update>);
     mockTx.update.mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) });
@@ -159,7 +172,7 @@ describe('updatePassword', () => {
     it('возвращает ошибку при неверном текущем пароле', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindFirst.mockResolvedValueOnce(createMockUser());
-        vi.mocked(auth.api.changePassword).mockRejectedValueOnce({ code: 'INVALID_PASSWORD' });
+        mockChangePassword.mockRejectedValueOnce({ code: 'INVALID_PASSWORD' });
         const result = await updatePassword(createFormData({ currentPassword: 'wrongold1', newPassword: 'newpass123', confirmPassword: 'newpass123' })); // Safe
         if (!result.success && result.error !== 'Текущий пароль указан неверно') console.error('Password error mismatch:', result.error);
         expect(result.success).toBe(false);
@@ -169,7 +182,7 @@ describe('updatePassword', () => {
     it('обновляет пароль при верных данных', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as _Session);
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } }));
-        vi.mocked(auth.api.changePassword).mockResolvedValueOnce({ 
+        mockChangePassword.mockResolvedValueOnce({ 
             token: 'test-token', 
             user: createMockUser() as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>['user']
         } as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>);
@@ -195,7 +208,7 @@ describe('getUserStatistics', () => {
             callCount++;
             if (callCount === 1) return { from: vi.fn().mockReturnValue({ where: vi.fn().mockReturnValue({ limit: vi.fn().mockResolvedValue([{ count: 5, totalRevenue: 50000 }]) }) }) };
             if (callCount === 2) return { from: vi.fn().mockReturnValue({ where: vi.fn().mockReturnValue({ limit: vi.fn().mockResolvedValue([{ count: 2 }]) }) }) };
-            if (callCount === 3) return { from: vi.fn().mockReturnValue({ where: vi.fn().mockReturnValue({ groupBy: vi.fn().mockReturnValue({ limit: vi.fn().mockResolvedValue([{ status: 'done', count: 3 }]) }) }) }) };
+            if (callCount === 3) return { from: vi.fn().mockReturnValue({ innerJoin: vi.fn().mockReturnValue({ where: vi.fn().mockReturnValue({ groupBy: vi.fn().mockReturnValue({ limit: vi.fn().mockResolvedValue([{ status: 'done', count: 3 }]) }) }) }) }) };
             return { from: vi.fn().mockReturnValue({ where: vi.fn().mockReturnValue({ limit: vi.fn().mockResolvedValue([{ count: 20 }]) }) }) };
         });
         const result = await getUserStatistics();
@@ -206,6 +219,9 @@ describe('getUserStatistics', () => {
 describe('getUpcomingBirthdays', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(getSession).mockReset();
+        mockSelect.mockReset();
+        mockFindMany.mockReset();
         vi.useFakeTimers();
         vi.setSystemTime(new Date('2026-02-18T12:00:00Z')); // Set to a fixed date
     });
@@ -250,7 +266,17 @@ describe('getUserSchedule', () => {
     it('возвращает задачи пользователя', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const tasks = [{ id: 't1', title: 'Task 1', status: 'new', dueDate: new Date() }];
-        mockFindMany.mockResolvedValueOnce(tasks);
+        mockSelect.mockReturnValueOnce({
+            from: vi.fn().mockReturnValue({
+                innerJoin: vi.fn().mockReturnValue({
+                    where: vi.fn().mockReturnValue({
+                        orderBy: vi.fn().mockReturnValue({
+                            limit: vi.fn().mockResolvedValue(tasks.map(t => ({ tasks: t })))
+                        })
+                    })
+                })
+            })
+        });
         const result = await getUserSchedule();
         expect(result.success).toBe(true);
         if (result.success && result.data) {

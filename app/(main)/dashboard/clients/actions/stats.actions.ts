@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { clients, orders } from "@/lib/schema";
 import { eq, sql, desc, and, gte, lte, isNull, gt, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import type { ActionResult } from "@/lib/types";

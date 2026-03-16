@@ -9,26 +9,23 @@ import {
     ChevronRight
 } from"lucide-react";
 import { cn } from"@/lib/utils";
-import { toggleTaskStatus, deleteTask } from"./actions";
-import { format } from"date-fns";
-import { ru } from"date-fns/locale";
-import { TaskDetailsDialog } from"./task-details-dialog";
+import { changeTaskStatus, deleteTask } from "./actions/task-actions";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 import { useToast } from"@/components/ui/toast";
 import { Button } from"@/components/ui/button";
 import { playSound } from"@/lib/sounds";
 import { ConfirmDialog } from"@/components/ui/confirm-dialog";
 
-import { Task } from"./types";
+import type { Task, TaskStatus } from "@/lib/types/tasks";
 
 interface TasksListProps {
     tasks: Task[];
     currentUserId: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function TasksList({ tasks, currentUserId }: TasksListProps) {
+export function TasksList({ tasks, currentUserId: _currentUserId, onTaskClick }: TasksListProps & { onTaskClick?: (id: string) => void }) {
     const [, startTransition] = useTransition();
-    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
     const { toast } = useToast();
@@ -44,7 +41,7 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
     const handleToggle = (e: React.MouseEvent, taskId: string, status: string) => {
         e.stopPropagation();
         startTransition(async () => {
-            const res = await toggleTaskStatus(taskId, status);
+            const res = await changeTaskStatus(taskId, status as TaskStatus);
             if (res.success) {
                 toast(status ==="done" ?"Задача выполнена" :"Задача возвращена в работу","success");
                 if (status !=="done") playSound("task_completed");
@@ -102,7 +99,8 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                     return (
                         <div role="button" tabIndex={0}
                             key={task.id}
-                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => setSelectedTask(task)}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} 
+                            onClick={() => onTaskClick?.(task.id)}
                             className={cn("group relative flex items-center justify-between p-4 transition-all duration-300 cursor-pointer active:bg-slate-50",
                                 index !== tasks.length - 1 &&"border-b border-slate-100",
                                 isDone &&"bg-slate-50/50"
@@ -137,20 +135,15 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                                         <div className="flex items-center gap-1">
                                             <User className="w-3 h-3" />
                                             <span className="truncate max-w-[100px]">
-                                                {task.assignedToUser?.name || task.assignedToRole?.name ||"Все"}
+                                                {task.assignees?.map((a) => a.user?.name).join(', ') || "Не назначен"}
                                             </span>
                                         </div>
-                                        {task.dueDate && (
+                                        {task.deadline && (
                                             <div className={cn("flex items-center gap-1",
-                                                new Date(task.dueDate) < new Date() && !isDone ?"text-rose-500" :""
+                                                new Date(task.deadline) < new Date() && !isDone ?"text-rose-500" :""
                                             )}>
                                                 <Calendar className="w-3 h-3" />
-                                                <span>{format(new Date(task.dueDate),"d MMM", { locale: ru })}</span>
-                                            </div>
-                                        )}
-                                        {task.order && (
-                                            <div className="flex items-center gap-1 text-primary">
-                                                <span className="font-black">№{task.order.orderNumber}</span>
+                                                <span>{format(new Date(task.deadline),"d MMM", { locale: ru })}</span>
                                             </div>
                                         )}
                                     </div>
@@ -172,13 +165,6 @@ export function TasksList({ tasks, currentUserId }: TasksListProps) {
                     );
                 })}
             </div>
-
-            {selectedTask && (
-                <TaskDetailsDialog
-                    task={selectedTask}
-                    onClose={() => setSelectedTask(null)}
-                />
-            )}
 
             <ConfirmDialog
                 isOpen={!!taskToDelete}

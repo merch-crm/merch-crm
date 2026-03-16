@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { presenceLogs, dailyWorkStats, cameras, users } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { requireAdmin } from "@/lib/admin";
 import { logError } from "@/lib/error-logger";
 import { eq, and, gte, lte, desc, sql } from "drizzle-orm";

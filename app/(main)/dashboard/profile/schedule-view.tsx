@@ -20,8 +20,7 @@ interface ScheduleTask {
     description: string | null;
     status: string;
     priority: string;
-    dueDate: Date | null;
-    assignedToUserId: string | null;
+    deadline?: Date | null;
     createdAt: Date;
     updatedAt?: Date;
 }
@@ -32,9 +31,9 @@ interface ScheduleViewProps {
 
 export function ScheduleView({ tasks }: ScheduleViewProps) {
     const sortedTasks = [...tasks].sort((a, b) => {
-        if (!a.dueDate) return 1;
-        if (!b.dueDate) return -1;
-        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        if (!a.deadline) return 1;
+        if (!b.deadline) return -1;
+        return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
     });
 
     const getPriorityStyle = (priority: string) => {
@@ -46,13 +45,13 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
         return styles[priority] || styles.normal;
     };
 
-    const getStatusIcon = (status: string, dueDate: Date | null) => {
+    const getStatusIcon = (status: string, deadline?: Date | null) => {
         if (status === 'done') return (
             <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-100">
                 <CheckCircle2 className="w-6 h-6" />
             </div>
         );
-        if (dueDate && isPast(new Date(dueDate)) && status !== 'done') {
+        if (deadline && isPast(new Date(deadline)) && status !== 'done') {
             return (
                 <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center shadow-lg shadow-rose-100 animate-pulse">
                     <AlertCircle className="w-6 h-6" />
@@ -113,7 +112,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                         className="group/item relative flex items-start gap-3 p-6 rounded-3xl bg-slate-50/50 hover:bg-white border border-transparent hover:border-slate-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500"
                                     >
                                         <div className="mt-1 transition-transform duration-500 group-hover/item:scale-110">
-                                            {getStatusIcon(task.status, task.dueDate)}
+                                            {getStatusIcon(task.status, task.deadline)}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
@@ -132,11 +131,11 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                                             <div className="flex flex-wrap items-center gap-3">
                                                 <div className="flex items-center gap-2 text-slate-400 font-black text-xs bg-white/50 px-3 py-1.5 rounded-xl group-hover/item:bg-primary/5 transition-colors">
                                                     <CalendarIcon className="w-3.5 h-3.5" />
-                                                    {formatDateLabel(task.dueDate)}
+                                                    {formatDateLabel(task.deadline ?? null)}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-slate-400 font-black text-xs bg-white/50 px-3 py-1.5 rounded-xl group-hover/item:bg-primary/5 transition-colors">
                                                     <Clock className="w-3.5 h-3.5" />
-                                                    {formatTime(task.dueDate) ||"Весь день"}
+                                                    {formatTime(task.deadline ?? null) || "Весь день"}
                                                 </div>
                                             </div>
                                         </div>

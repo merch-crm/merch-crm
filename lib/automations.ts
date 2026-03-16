@@ -14,7 +14,7 @@ export async function autoGenerateTasks(orderId: string, status: string, userId:
         // Automation rules
         if (status === "design") {
             // Task for designers
-            const designerRole = await db.query.roles.findFirst({
+            const _designerRole = await db.query.roles.findFirst({
                 where: (r, { eq }) => eq(r.name, "Дизайнер")
             });
 
@@ -24,16 +24,17 @@ export async function autoGenerateTasks(orderId: string, status: string, userId:
                 status: "new",
                 priority: order.priority === "high" ? "high" : "normal",
                 type: "design",
-                orderId: order.id,
-                createdBy: userId,
-                assignedToRoleId: designerRole?.id || null,
-                dueDate: order.deadline,
+                creatorId: userId,
+                deadline: order.deadline || new Date(Date.now() + 86400000 * 3), // +3 дня
+                isAutoCreated: true,
+                autoCreatedSourceType: "order",
+                autoCreatedSourceId: order.id,
             });
         }
 
         if (status === "production") {
             // Task for production department
-            const productionRole = await db.query.roles.findFirst({
+            const _productionRole = await db.query.roles.findFirst({
                 where: (r, { eq }) => eq(r.name, "Производство")
             });
 
@@ -43,10 +44,11 @@ export async function autoGenerateTasks(orderId: string, status: string, userId:
                 status: "new",
                 priority: order.priority === "high" ? "high" : "normal",
                 type: "production",
-                orderId: order.id,
-                createdBy: userId,
-                assignedToRoleId: productionRole?.id || null,
-                dueDate: order.deadline,
+                creatorId: userId,
+                deadline: order.deadline || new Date(Date.now() + 86400000 * 5), // +5 дней
+                isAutoCreated: true,
+                autoCreatedSourceType: "order",
+                autoCreatedSourceId: order.id,
             });
         }
     } catch (error) {

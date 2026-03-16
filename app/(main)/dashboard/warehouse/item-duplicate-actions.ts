@@ -5,7 +5,7 @@ import Fuse from "fuse.js";
 import { db } from "@/lib/db";
 import { inventoryItems } from "@/lib/schema";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { CheckDuplicateItemSchema } from "./validation";
 
 /**

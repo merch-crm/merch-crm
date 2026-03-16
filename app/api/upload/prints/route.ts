@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { generateId } from "@/lib/utils";
 import sharp from "sharp";
 

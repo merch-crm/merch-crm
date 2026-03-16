@@ -26,11 +26,12 @@ async function ProductionDashboardData() {
   return <ProductionBentoDashboard data={result.data} />;
 }
 
+
 export default function ProductionPage() {
   return (
-    <div className="flex flex-col gap-3 max-w-[1480px] mx-auto">
+    <div className="flex flex-col gap-3 max-w-[1480px] mx-auto pb-8 w-full">
       <Suspense fallback={<ProductionDashboardSkeleton />}>
-        <ProductionDashboardData />
+          <ProductionDashboardData />
       </Suspense>
     </div>
   );

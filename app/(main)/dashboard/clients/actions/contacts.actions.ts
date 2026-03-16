@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { clientContacts, clients, type ClientContact } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { z } from "zod";

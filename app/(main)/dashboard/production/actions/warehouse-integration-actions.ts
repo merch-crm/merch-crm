@@ -16,7 +16,7 @@ import {
   count,
   sql,
 } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 

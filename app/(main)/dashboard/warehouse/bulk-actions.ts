@@ -7,7 +7,7 @@ import { inventoryItems, inventoryStocks, inventoryTransactions, storageLocation
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 import { type ActionResult } from "@/lib/types";
 import { BulkActionSchema, BulkMoveSchema, BulkUpdateCategorySchema } from "./validation";

@@ -1,12 +1,14 @@
-import { pgEnum } from "drizzle-orm/pg-core";
+import {
+    pgEnum,
+} from "drizzle-orm/pg-core";
 
-export const orderStatusEnum = pgEnum("order_status", ["new", "design", "production", "done", "shipped", "cancelled"]);
-export const orderItemDesignStatusEnum = pgEnum("order_item_design_status", ["pending", "in_progress", "review", "approved", "revision"]);
+export const orderStatusEnum = pgEnum("order_status", ["new", "design", "production", "done", "shipped", "cancelled", "completed", "archived"]);
+export const orderItemDesignStatusEnum = pgEnum("order_item_design_status", ["pending", "in_progress", "review", "approved", "revision", "not_required"]);
 export const paymentStatusEnum = pgEnum("payment_status", ["unpaid", "partial", "paid", "refunded"]);
 export const deliveryStatusEnum = pgEnum("delivery_status", ["not_started", "shipped", "delivered", "cancelled"]);
-export const taskStatusEnum = pgEnum("task_status", ["new", "in_progress", "review", "done", "archived"]);
-export const taskPriorityEnum = pgEnum("task_priority", ["low", "normal", "high"]);
-export const taskTypeEnum = pgEnum("task_type", ["design", "production", "acquisition", "delivery", "other"]);
+export const taskStatusEnum = pgEnum("task_status", ["new", "in_progress", "review", "done", "archived", "cancelled", "completed"]);
+export const taskPriorityEnum = pgEnum("task_priority", ["low", "normal", "high", "urgent"]);
+export const taskTypeEnum = pgEnum("task_type", ["general", "design", "production", "acquisition", "delivery", "inventory", "maintenance", "other"]);
 export const notificationTypeEnum = pgEnum("notification_type", ["info", "warning", "success", "error", "transfer"]);
 export const securityEventTypeEnum = pgEnum("security_event_type", [
     "login_success", "login_failed", "logout", "password_change", "password_reset_requested",
@@ -27,4 +29,5 @@ export const presenceEventTypeEnum = pgEnum("presence_event_type", ["detected", 
 export const sessionTypeEnum = pgEnum("session_type", ["work", "break", "idle"]);
 export const cameraStatusEnum = pgEnum("camera_status", ["online", "offline", "error", "connecting"]);
 export const brandingFileTypeEnum = pgEnum("branding_file_type", ["logo_main", "logo_accent", "icon", "font", "pattern", "other"]);
+export const printFileTypeEnum = pgEnum("print_file_type", ["preview", "source"]);
 export const defectReasonEnum = pgEnum("defect_reason", ["equipment_failure", "human_error", "material_defect", "other"]);

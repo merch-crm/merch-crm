@@ -35,9 +35,8 @@ export interface NotificationSettings {
 
 export async function getNotificationSettingsAction() {
     const session = await getSession();
-    if (!session) return { success: false, data: null, error: "Не авторизован" };
-
     try {
+        await requireAdmin(session);
         const setting = await db.query.systemSettings.findFirst({
             where: eq(systemSettings.key, "notifications")
         });

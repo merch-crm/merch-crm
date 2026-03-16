@@ -11,7 +11,7 @@ import OrderAttachments from "./order-attachments";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { RefundDialog } from "./refund-dialog";
 
 import { Button } from "@/components/ui/button";

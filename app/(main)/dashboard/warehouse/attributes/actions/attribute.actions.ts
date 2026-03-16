@@ -12,7 +12,7 @@ import {
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { refreshWarehouse } from "../../warehouse-shared.actions";
 import { AttributeSchema } from "../../validation";
 import { type ActionResult } from "@/lib/types";

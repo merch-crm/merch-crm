@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db";
 import { roles, users, accounts } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { requireAdmin } from "@/lib/admin";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";

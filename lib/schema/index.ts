@@ -15,6 +15,9 @@ export * from "./production";
 
 // Designs
 export * from "./designs";
+
+// Tasks
+export * from "./tasks";
 export { printDesigns, printCollections, printDesignVersions, printDesignFiles, printDesignMockups } from "./designs";
 export * from "./design-tasks";
 export { orderDesignTasks, orderDesignFiles, orderDesignHistory } from "./design-tasks";
@@ -30,7 +33,6 @@ export * from "./warehouse/categories";
 export * from "./warehouse/attributes";
 export * from "./warehouse/items";
 export * from "./warehouse/stock";
-export * from "./inventory-transactions.schema";
 
 // Orders & Finance
 export * from "./orders";
@@ -39,7 +41,15 @@ export * from "./order-chat";
 export * from "./order-defects";
 
 // Other
-export * from "./tasks";
+export * from "./task-assignees";
+export * from "./task-watchers";
+export * from "./task-dependencies";
+export * from "./task-filter-presets";
+export * from "./task-checklists";
+export * from "./task-comments";
+export * from "./task-attachments";
+export * from "./task-history";
+export * from "./task-deadline-notifications";
 export * from "./system";
 export * from "./wiki";
 export * from "./presence/hardware";

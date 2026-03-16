@@ -60,10 +60,10 @@ export async function getAllDashboardData(
   error?: string;
 }> {
   try {
-    periodSchema.parse(period);
     const session = await getSession();
     if (!session) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: "Unauthorized" }
+    periodSchema.parse(period);;
     }
 
     const [
@@ -204,10 +204,10 @@ export async function getHeroStats() {
 /** 2. Конверсия и общая эффективность */
 export async function getConversionStats(period: StatsPeriod = "week") {
   try {
-    periodSchema.parse(period);
     const session = await getSession();
     if (!session) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: "Unauthorized" }
+    periodSchema.parse(period);;
     }
 
     const { start, end } = getPeriodRange(period);

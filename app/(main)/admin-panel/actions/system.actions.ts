@@ -142,10 +142,9 @@ export async function checkSystemHealth() {
 
 export async function createDatabaseBackup() {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { success: false, error: "Недостаточно прав" };
-
     try {
-        const result = await performDatabaseBackup(session.id, "manual");
+        await requireAdmin(session);
+        const result = await performDatabaseBackup(session!.id, "manual");
         return result;
     } catch (error) {
         await logError({
@@ -159,9 +158,8 @@ export async function createDatabaseBackup() {
 
 export async function getBackupsList() {
     const session = await getSession();
-    if (!session || session.roleName !== "Администратор") return { success: false, error: "Недостаточно прав" };
-
     try {
+        await requireAdmin(session);
         const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
         if (!fs.existsSync(backupDir)) return { success: true, data: [] };
 

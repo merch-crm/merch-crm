@@ -1,0 +1,55 @@
+app/(main)/admin-panel/users/stats/actions.ts(53,29): error TS2339: Property 'assignedToUserId' does not exist on type 'PgTableWithColumns<{ name: "tasks"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 17 more ...; autoCreatedSourceId: PgColu...'.
+app/(main)/dashboard/design/page.tsx(18,29): error TS2724: '"./components/design-tasks-widget"' has no exported member named 'DesignTasksWidgetSkeleton'. Did you mean 'DesignTasksWidget'?
+app/(main)/dashboard/production/page.tsx(29,33): error TS2724: '"./components/production-tasks-widget"' has no exported member named 'ProductionTasksWidgetSkeleton'. Did you mean 'ProductionTasksWidget'?
+app/(main)/dashboard/profile/actions.ts(229,29): error TS2339: Property 'assignedToUserId' does not exist on type 'PgTableWithColumns<{ name: "tasks"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 17 more ...; autoCreatedSourceId: PgColu...'.
+app/(main)/dashboard/profile/actions.ts(333,29): error TS2339: Property 'assignedToUserId' does not exist on type 'PgTableWithColumns<{ name: "tasks"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 17 more ...; autoCreatedSourceId: PgColu...'.
+app/(main)/dashboard/profile/actions.ts(334,34): error TS2339: Property 'dueDate' does not exist on type 'PgTableWithColumns<{ name: "tasks"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 17 more ...; autoCreatedSourceId: PgColu...'.
+app/(main)/dashboard/profile/hooks/useProfile.ts(40,43): error TS2345: Argument of type '{ type: "production" | "design" | "general" | "acquisition" | "delivery" | "inventory" | "maintenance" | "other"; id: string; description: string | null; updatedAt: Date; createdAt: Date; ... 13 more ...; autoCreatedSourceId: string | null; }[]' is not assignable to parameter of type 'SetStateAction<ScheduleTask[]>'.
+  Type '{ type: "production" | "design" | "general" | "acquisition" | "delivery" | "inventory" | "maintenance" | "other"; id: string; description: string | null; updatedAt: Date; createdAt: Date; ... 13 more ...; autoCreatedSourceId: string | null; }[]' is not assignable to type 'ScheduleTask[]'.
+    Type '{ type: "production" | "design" | "general" | "acquisition" | "delivery" | "inventory" | "maintenance" | "other"; id: string; description: string | null; updatedAt: Date; createdAt: Date; ... 13 more ...; autoCreatedSourceId: string | null; }' is missing the following properties from type 'ScheduleTask': dueDate, assignedToUserId
+app/(main)/dashboard/profile/page.tsx(89,18): error TS2322: Type '{ tasks: any; userId: string; isOwnProfile: boolean; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'tasks' does not exist on type 'IntrinsicAttributes'.
+app/(main)/dashboard/tasks/actions/comment-actions.ts(61,7): error TS2345: Argument of type 'string' is not assignable to parameter of type 'string[]'.
+app/(main)/dashboard/tasks/actions/department-actions.ts(13,31): error TS2339: Property 'slug' does not exist on type 'PgTableWithColumns<{ name: "departments"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "departments"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 6 more ...; createdAt: PgCol...'.
+app/(main)/dashboard/tasks/actions/department-actions.ts(78,19): error TS2339: Property 'tags' does not exist on type '{ type: "production" | "design" | "general" | "acquisition" | "delivery" | "inventory" | "maintenance" | "other"; id: string; description: string | null; updatedAt: Date; createdAt: Date; ... 18 more ...; checklists: { ...; }[]; }'.
+app/(main)/dashboard/tasks/actions/department-actions.ts(79,23): error TS2339: Property 'metadata' does not exist on type '{ type: "production" | "design" | "general" | "acquisition" | "delivery" | "inventory" | "maintenance" | "other"; id: string; description: string | null; updatedAt: Date; createdAt: Date; ... 18 more ...; checklists: { ...; }[]; }'.
+app/(main)/dashboard/tasks/actions/department-actions.ts(80,21): error TS2339: Property 'dueDate' does not exist on type '{ type: "production" | "design" | "general" | "acquisition" | "delivery" | "inventory" | "maintenance" | "other"; id: string; description: string | null; updatedAt: Date; createdAt: Date; ... 18 more ...; checklists: { ...; }[]; }'.
+app/(main)/dashboard/tasks/components/filter-presets.tsx(34,5): error TS2322: Type 'null' is not assignable to type 'string'.
+app/(main)/dashboard/tasks/components/filter-presets.tsx(43,5): error TS2322: Type 'null' is not assignable to type 'string'.
+app/(main)/dashboard/tasks/components/filter-presets.tsx(49,16): error TS2322: Type 'string' is not assignable to type 'TaskPriority[]'.
+app/(main)/dashboard/tasks/components/filter-presets.tsx(52,5): error TS2322: Type 'null' is not assignable to type 'string'.
+app/(main)/dashboard/tasks/components/filter-presets.tsx(58,16): error TS2322: Type 'string' is not assignable to type 'TaskStatus[]'.
+app/(main)/dashboard/tasks/components/filter-presets.tsx(61,5): error TS2322: Type 'null' is not assignable to type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(54,11): error TS2304: Cannot find name 'toast'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(67,17): error TS2345: Argument of type '{ title: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(73,17): error TS2345: Argument of type '{ title: string; description: string; variant: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(85,19): error TS2345: Argument of type '{ title: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(87,19): error TS2345: Argument of type '{ title: string; description: string | undefined; variant: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(102,11): error TS2304: Cannot find name 'toast'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(115,17): error TS2345: Argument of type '{ title: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(124,19): error TS2345: Argument of type '{ title: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(126,19): error TS2345: Argument of type '{ title: string; description: string | undefined; variant: string; }' is not assignable to parameter of type 'string'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(194,15): error TS2322: Type 'User[]' is not assignable to type '{ id: string; name: string; avatar: string | null; email?: string | undefined; }[]'.
+  Type 'User' is not assignable to type '{ id: string; name: string; avatar: string | null; email?: string | undefined; }'.
+    Types of property 'avatar' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string | null'.
+        Type 'undefined' is not assignable to type 'string | null'.
+app/(main)/dashboard/tasks/dialogs/sections/task-assignees-section.tsx(282,15): error TS2322: Type 'User[]' is not assignable to type '{ id: string; name: string; avatar: string | null; email?: string | undefined; }[]'.
+  Type 'User' is not assignable to type '{ id: string; name: string; avatar: string | null; email?: string | undefined; }'.
+    Types of property 'avatar' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string | null'.
+        Type 'undefined' is not assignable to type 'string | null'.
+app/(main)/dashboard/tasks/dialogs/sections/task-history-section.tsx(106,38): error TS2339: Property 'changeType' does not exist on type 'TaskHistoryEntry'.
+app/(main)/dashboard/tasks/dialogs/sections/task-history-section.tsx(109,36): error TS2339: Property 'changeType' does not exist on type 'TaskHistoryEntry'.
+app/(main)/dashboard/tasks/dialogs/sections/task-history-section.tsx(117,43): error TS2339: Property 'changeType' does not exist on type 'TaskHistoryEntry'.
+app/(main)/dashboard/tasks/dialogs/sections/task-history-section.tsx(117,64): error TS2339: Property 'changeType' does not exist on type 'TaskHistoryEntry'.
+app/(main)/dashboard/tasks/dialogs/task-details-dialog.tsx(153,28): error TS2554: Expected 2 arguments, but got 1.
+app/(main)/dashboard/tasks/kanban-board.test.tsx(3,29): error TS2307: Cannot find module './kanban-board' or its corresponding type declarations.
+app/(main)/dashboard/tasks/kanban-board.test.tsx(30,9): error TS2353: Object literal may only specify known properties, and 'assignedToUser' does not exist in type 'Partial<Task>'.
+app/(main)/dashboard/tasks/kanban-board.test.tsx(39,9): error TS2353: Object literal may only specify known properties, and 'assignedToDepartment' does not exist in type 'Partial<Task>'.
+app/(main)/dashboard/tasks/kanban/avatar-stack.tsx(29,12): error TS2741: Property 'content' is missing in type '{ children: Element[]; key: string; }' but required in type 'TooltipProps'.
+app/(main)/dashboard/tasks/notifications/dependency-notification-hook.ts(45,15): error TS2554: Expected 3 arguments, but got 2.
+app/(main)/dashboard/tasks/page.tsx(3,10): error TS2724: '"./actions/department-actions"' has no exported member named 'getDepartments'. Did you mean 'getDepartmentTasks'?
+app/(main)/dashboard/users/[id]/page.tsx(47,27): error TS2322: Type '{ userId: string; userName: string; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'userId' does not exist on type 'IntrinsicAttributes'.
+app/api/cron/tasks/deadlines/route.ts(7,32): error TS2783: 'success' is specified more than once, so this usage will be overwritten.

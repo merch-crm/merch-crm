@@ -28,19 +28,7 @@ import {
 } from"lucide-react";
 import { formatFileSize } from"@/lib/utils/upload";
 
-interface DesignFile {
- id: string;
- versionId: string;
- filename: string;
- originalName: string;
- format: string;
- fileType:"preview"|"source";
- size: number;
- width: number | null;
- height: number | null;
- path: string;
- createdAt: Date;
-}
+import { DesignFile } from "@/lib/types";
 
 interface FileTableProps {
  files: DesignFile[];

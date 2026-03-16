@@ -6,7 +6,7 @@ import { eq, asc, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import type { ActionResult } from "@/lib/types";
 import { z } from "zod";
 

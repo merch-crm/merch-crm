@@ -16,7 +16,7 @@ import { logError } from "@/lib/error-logger";
 import { checkItemStockAlerts } from "@/lib/notifications";
 import { type ActionResult } from "@/lib/types";
 import { InventoryItemSchema } from "./validation";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { getCategoryPath, saveFile } from "./actions-utils";
 import { sanitizeFileName, sanitize } from "./shared-utils";
 

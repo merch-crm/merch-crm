@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from"@/lib/db";
-import { orders, tasks, users } from"@/lib/schema";
+import { orders, tasks, users, taskAssignees } from"@/lib/schema";
 import { eq, sql } from"drizzle-orm";
 import { getSession } from"@/lib/auth";
 import { logError } from"@/lib/error-logger";
@@ -47,10 +47,11 @@ export async function getUserStats(userId: string) {
         const tasksStats = await db.select({
             total: sql<number>`count(*)`,
             completed: sql<number>`count(*) filter (where ${tasks.status} = 'done')`,
-            monthCompleted: sql<number>`count(*) filter (where ${tasks.status} = 'done' and ${tasks.createdAt} >= ${startOfMonth})` // Using createdAt as proxy
+            monthCompleted: sql<number>`count(*) filter (where ${tasks.status} = 'done' and ${tasks.createdAt} >= ${startOfMonth})`
         })
             .from(tasks)
-            .where(eq(tasks.assignedToUserId, userId))
+            .innerJoin(taskAssignees, eq(tasks.id, taskAssignees.taskId))
+            .where(eq(taskAssignees.userId, userId))
             .limit(1);
 
         // 3. Efficiency (Placeholder logic)

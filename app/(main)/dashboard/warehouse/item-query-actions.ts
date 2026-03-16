@@ -7,7 +7,7 @@ import {
     inventoryItems,
     inventoryStocks,
 } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { type InventoryFilters, type InventoryItem } from "./types";
 import { type ActionResult } from "@/lib/types";

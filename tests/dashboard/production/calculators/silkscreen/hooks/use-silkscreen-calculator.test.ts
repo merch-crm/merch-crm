@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 
-vi.mock('@/lib/auth', () => ({ getSession: vi.fn() }));
+vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('@/lib/db', () => ({ db: {} }));
 
 describe('use-silkscreen-calculator', () => {

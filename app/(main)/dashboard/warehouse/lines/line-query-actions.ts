@@ -9,7 +9,7 @@ import {
     printCollections,
 } from "@/lib/schema";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 
 type ProductLine = InferSelectModel<typeof productLines>;

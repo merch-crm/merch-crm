@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, orders, tasks, auditLogs, clients } from "@/lib/schema";
+import { users, orders, tasks, auditLogs, clients, taskAssignees } from "@/lib/schema";
 import { auth, getSession } from "@/lib/auth";
 import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -226,7 +226,8 @@ export async function getUserStatistics() {
             status: tasks.status
         })
             .from(tasks)
-            .where(eq(tasks.assignedToUserId, session.id))
+            .innerJoin(taskAssignees, eq(tasks.id, taskAssignees.taskId))
+            .where(eq(taskAssignees.userId, session.id))
             .groupBy(tasks.status)
             .limit(20);
 
@@ -329,11 +330,14 @@ export async function getUserSchedule() {
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
-        const userTasks = await db.query.tasks.findMany({
-            where: eq(tasks.assignedToUserId, session.id),
-            orderBy: [desc(tasks.dueDate)],
-            limit: 100
-        });
+        const userTasksData = await db.select()
+            .from(tasks)
+            .innerJoin(taskAssignees, eq(tasks.id, taskAssignees.taskId))
+            .where(eq(taskAssignees.userId, session.id))
+            .orderBy(desc(tasks.deadline))
+            .limit(100);
+
+        const userTasks = userTasksData.map(d => d.tasks);
 
         return { success: true, data: userTasks };
     } catch (error) {

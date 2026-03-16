@@ -13,7 +13,7 @@ import {
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { slugify } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";

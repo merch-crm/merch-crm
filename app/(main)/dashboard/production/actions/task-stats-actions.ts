@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { productionTasks } from "@/lib/schema/production";
 import { and, gte, lte, sql, count } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { z } from "zod";
 
 const StatsOptionsSchema = z.object({

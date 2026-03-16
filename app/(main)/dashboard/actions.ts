@@ -12,7 +12,7 @@ import {
     endOfMonth,
     startOfQuarter
 } from "date-fns";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { z } from "zod";
 

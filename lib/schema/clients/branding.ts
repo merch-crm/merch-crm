@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, uuid, integer, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { brandingFileTypeEnum } from "../enums";
+import {} from "../enums";
 import { clients } from "./main";
 
 // ============ БРЕНДИНГ КЛИЕНТА (B2B) ============
@@ -8,7 +8,7 @@ import { clients } from "./main";
 export const clientBranding = pgTable("client_branding", {
     id: uuid("id").defaultRandom().primaryKey(),
     clientId: uuid("client_id").notNull().references(() => clients.id, { onDelete: "cascade" }),
-    fileType: brandingFileTypeEnum("file_type").notNull(),
+    fileType: text("file_type").notNull(),
     name: text("name").notNull(), // Название (Основной логотип, Альтернативный и т.д.)
     fileName: text("file_name").notNull(),
     filePath: text("file_path").notNull(),

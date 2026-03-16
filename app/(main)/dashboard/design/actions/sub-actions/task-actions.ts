@@ -60,9 +60,9 @@ export async function getDesignQueue(options?: {
 
         if (options?.status) {
             if (Array.isArray(options.status)) {
-                conditions.push(inArray(orderDesignTasks.status, options.status as ("pending" | "in_progress" | "review" | "approved" | "revision")[]));
+                conditions.push(inArray(orderDesignTasks.status, options.status as ("pending" | "in_progress" | "review" | "approved" | "revision" | "not_required")[]));
             } else {
-                conditions.push(eq(orderDesignTasks.status, options.status as "pending" | "in_progress" | "review" | "approved" | "revision"));
+                conditions.push(eq(orderDesignTasks.status, options.status as "pending" | "in_progress" | "review" | "approved" | "revision" | "not_required"));
             }
         }
 
@@ -243,7 +243,7 @@ export async function createDesignTask(
 // Обновить статус задачи
 export async function updateDesignTaskStatus(
     id: string,
-    status: "pending" | "in_progress" | "review" | "approved" | "revision",
+    status: "pending" | "in_progress" | "review" | "approved" | "revision" | "not_required",
     comment?: string
 ): Promise<ActionResult<DesignTask>> {
     try {

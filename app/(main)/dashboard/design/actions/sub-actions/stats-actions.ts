@@ -5,7 +5,7 @@ import {
     orderDesignTasks
 } from "@/lib/schema/design-tasks";
 import { eq, and, inArray, count, sql } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { ActionResult, DesignQueueStats } from "../types";
 import { GetStatsSchema } from "../schemas";
 

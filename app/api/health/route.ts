@@ -17,7 +17,7 @@ interface HealthStatus {
 
 const startTime = Date.now();
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export async function GET() {
     const session = await getSession();

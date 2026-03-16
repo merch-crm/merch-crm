@@ -8,7 +8,7 @@ import { type ActionResult } from "@/lib/types";
 // Schema for actions without parameters
 const VoidSchema = z.void();
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 /**
  * Standardized refresh for warehouse data across different layouts

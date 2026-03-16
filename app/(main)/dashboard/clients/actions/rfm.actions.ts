@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { eq, and, desc, sql, count, isNotNull } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { revalidatePath } from "next/cache";

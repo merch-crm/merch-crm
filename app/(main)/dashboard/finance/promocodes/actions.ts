@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 
 import { ActionResult } from "@/lib/types";
 import { logAction } from "@/lib/audit";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { z } from "zod";
 

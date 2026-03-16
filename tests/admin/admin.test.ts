@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockQuery, mockDb } = vi.hoisted(() => {
+const hoisted = vi.hoisted(() => {
     const mockQuery = {
         users: { findFirst: vi.fn().mockResolvedValue(null), findMany: vi.fn().mockResolvedValue([]) },
         roles: { findFirst: vi.fn().mockResolvedValue(null), findMany: vi.fn().mockResolvedValue([]) },
@@ -61,20 +61,25 @@ const { mockQuery, mockDb } = vi.hoisted(() => {
         execute: vi.fn().mockResolvedValue({ rows: [] }),
     };
 
-    return { mockTx, mockQuery, mockDb };
+    const mockGetSession = vi.fn();
+    return { mockTx, mockQuery, mockDb, mockGetSession };
 });
 
-vi.mock('@/lib/db', () => ({ db: mockDb, pool: { connect: vi.fn(), query: vi.fn() } }));
+const { mockTx, mockQuery, mockDb, mockGetSession } = hoisted;
+
+vi.mock('@/lib/db', () => ({ db: hoisted.mockDb, pool: { connect: vi.fn(), query: vi.fn() } }));
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
+vi.mock('@/lib/session', () => ({ getSession: hoisted.mockGetSession }));
 vi.mock('@/lib/auth', () => ({ 
-    getSession: vi.fn(), 
-    encrypt: vi.fn().mockResolvedValue('token'), 
-    decrypt: vi.fn(),
+    getSession: hoisted.mockGetSession, 
     auth: {
         api: {
-            createUser: vi.fn().mockResolvedValue({ user: { id: 'new-id', email: 'new@test.com' } }),
+            getSession: hoisted.mockGetSession,
+            createUser: vi.fn().mockResolvedValue({ 
+                user: { id: 'new-id', email: 'new@test.com', name: 'New User' } 
+            }),
             changePassword: vi.fn().mockResolvedValue({ success: true }),
         }
     }
@@ -92,21 +97,36 @@ vi.mock('next/headers', () => ({
     cookies: vi.fn().mockReturnValue({ set: vi.fn(), get: vi.fn(), delete: vi.fn() }),
     headers: vi.fn().mockResolvedValue(new Map()),
 }));
-vi.mock('@/lib/admin', () => ({
-    requireAdmin: vi.fn().mockImplementation(async (session: { roleName?: string }) => {
-        if (!session || session.roleName !== 'Администратор') throw new Error('Доступ запрещен');
-        return { id: 'test-user-id', role: { name: 'Администратор' } };
+vi.mock('@/lib/admin', () => ({ 
+    requireAdmin: vi.fn(async (session: unknown) => {
+        const s = session as { user?: { id: string; roleName: string }; id?: string; roleName?: string };
+        if (!s) throw new Error('Unauthorized');
+        if (s.user?.roleName === 'User' || s.roleName === 'User') {
+            throw new Error('Доступ запрещен');
+        }
+        return { id: s.user?.id || s.id || 'admin-id', role: { name: 'Администратор' } };
     }),
+    checkIsAdmin: vi.fn().mockResolvedValue(true)
 }));
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { auth, type Session as _Session, getSession } from '@/lib/auth';
+import { requireAdmin } from '@/lib/admin';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';
 
-import { getCurrentUserAction, getUsers, createUser, updateUser, deleteUser } from '@/app/(main)/admin-panel/actions/users.actions';
-import { getSystemSettings, createDatabaseBackup } from '@/app/(main)/admin-panel/actions/system.actions';
+import { 
+    getCurrentUserAction, 
+    getUsers, 
+    createUser, 
+    updateUser, 
+    deleteUser 
+} from '@/app/(main)/admin-panel/actions/users.actions';
+import { 
+    getSystemSettings, 
+    createDatabaseBackup 
+} from '@/app/(main)/admin-panel/actions/system.actions';
 import { clearAuditLogs } from '@/app/(main)/admin-panel/actions/security.actions';
 import { updateBrandingAction } from '@/app/(main)/admin-panel/actions/branding.actions';
 import { getNotificationSettingsAction } from '@/app/(main)/admin-panel/actions/notifications.actions';
@@ -115,6 +135,9 @@ import { getNotificationSettingsAction } from '@/app/(main)/admin-panel/actions/
 
 function setupMocks() {
     vi.clearAllMocks();
+    mockGetSession.mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
+    const mockAdmin = { id: 'admin-id', role: { name: 'Администратор' } };
+    vi.mocked(requireAdmin).mockResolvedValue(mockAdmin as unknown as { id: string; role: { name: string } } as never);
     mockQuery.users.findFirst.mockResolvedValue(createMockUser({ 
         role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
     }));
@@ -125,7 +148,6 @@ function setupMocks() {
     if (mockQuery.accounts) {
         mockQuery.accounts.findFirst = vi.fn().mockResolvedValue({ userId: '1', providerId: 'credential', password: 'hashed-password' });
     }
-    vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
     vi.mocked(performDatabaseBackup).mockResolvedValue({ success: true, fileName: 'backup.json' });
 }
 
@@ -135,6 +157,10 @@ describe('Admin Panel Actions', () => {
     });
 
     describe('getCurrentUserAction', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('возвращает текущего пользователя при наличии сессии', async () => {
             const user = createMockUser();
             mockQuery.users.findFirst.mockResolvedValueOnce(user);
@@ -152,6 +178,10 @@ describe('Admin Panel Actions', () => {
     });
 
     describe('getUsers', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('возвращает список пользователей', async () => {
             const users = [createMockUser(), createMockUser({ id: '2' })];
             mockQuery.users.findMany.mockResolvedValueOnce(users);
@@ -162,24 +192,33 @@ describe('Admin Panel Actions', () => {
     });
 
     describe('createUser', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('создает пользователя при валидных данных', async () => {
-            vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
             mockQuery.users.findFirst.mockResolvedValueOnce(createMockUser({ 
                 role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
             }));
-            const formData = createFormData({
-                name: 'New User',
-                email: 'new@test.com',
-                password: 'TestPassword123', // Full valid password
-                roleId: '55555555-5555-4555-8555-555555555555'
-            });
+            const formData = new FormData();
+            formData.append('name', 'New User');
+            formData.append('email', 'new@test.com');
+            formData.append('password', 'TestPassword123');
+            formData.append('roleId', '55555555-5555-4555-8555-555555555555');
+
             const result = await createUser(formData);
-            if (!result.success) console.error('Create user failed:', (result as { error: string }).error);
+            if (!result.success) {
+                console.error('Create user failed WITH ERROR:', (result as { error: string }).error);
+            }
             expect(result.success).toBe(true);
         });
     });
 
     describe('updateUser', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('обновляет пользователя при валидных данных', async () => {
             const formData = createFormData({
                 name: 'Updated Name',
@@ -192,6 +231,10 @@ describe('Admin Panel Actions', () => {
     });
 
     describe('deleteUser', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('удаляет пользователя', async () => {
             const result = await deleteUser('22222222-2222-4222-8222-222222222222');
             expect(result.success).toBe(true);
@@ -199,6 +242,10 @@ describe('Admin Panel Actions', () => {
     });
 
     describe('System Settings & Branding', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('getSystemSettings возвращает настройки', async () => {
             mockQuery.systemSettings.findFirst.mockResolvedValueOnce({ id: '1', key: 'test', value: {} });
             const result = await getSystemSettings();
@@ -214,12 +261,16 @@ describe('Admin Panel Actions', () => {
                 radiusOuter: 24,
                 radiusInner: 14,
                 crmBackgroundBrightness: 100
-            } as unknown as Parameters<typeof updateBrandingAction>[0]);
+            } as Parameters<typeof updateBrandingAction>[0]);
             expect(result).toEqual({ success: true });
         });
     });
 
     describe('Notifications', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('getNotificationSettingsAction возвращает настройки', async () => {
             const result = await getNotificationSettingsAction();
             expect(result.success).toBe(true);
@@ -227,6 +278,10 @@ describe('Admin Panel Actions', () => {
     });
 
     describe('Backup & Logs', () => {
+        beforeEach(() => {
+            setupMocks();
+        });
+
         it('createDatabaseBackup вызывает функцию бэкапа', async () => {
             const result = await createDatabaseBackup();
             expect(result.success).toBe(true);

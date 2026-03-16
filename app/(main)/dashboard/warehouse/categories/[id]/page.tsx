@@ -6,7 +6,7 @@ import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";
 import { CategoryDetailClient, type Category, type InventoryItem, type AttributeType, type InventoryAttribute } from "./category-detail-client";
 import type { StorageLocation, InventoryFilters, ProductLineWithStats } from "../../types";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { serializeForClient, type Serialized } from "@/lib/serialize";
 import { cache } from "react";
 import { getLinesByCategory } from "../../lines/actions";

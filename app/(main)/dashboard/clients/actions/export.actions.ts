@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { clients, users, loyaltyLevels } from "@/lib/schema";
 import { eq, and, inArray, asc, sql, gte, lte, isNull, or, ilike } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { z } from "zod";

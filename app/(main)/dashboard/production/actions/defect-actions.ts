@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { productionTasks } from "@/lib/schema/production";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { 
   DEFECT_CATEGORIES 
 } from "../types/bento-dashboard-types";

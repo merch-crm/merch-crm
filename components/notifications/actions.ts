@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { notifications } from "@/lib/schema";
 import { eq, desc, and, sql } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
 
 import { NotificationType, NotificationPriority } from "@/lib/types";

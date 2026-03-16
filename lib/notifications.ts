@@ -102,3 +102,23 @@ export async function checkItemStockAlerts(itemId: string) {
         console.error("Error in checkItemStockAlerts:", error);
     }
 }
+
+export async function sendNotifications(data: {
+    userIds: string[];
+    title: string;
+    message: string;
+    type: "info" | "warning" | "success" | "error" | "transfer";
+}) {
+    try {
+        for (const userId of data.userIds) {
+            await createNotification({
+                userId,
+                title: data.title,
+                message: data.message,
+                type: data.type,
+            });
+        }
+    } catch (error) {
+        console.error("Failed to send notifications:", error);
+    }
+}

@@ -8,7 +8,7 @@ import {
     productLines,
 } from "@/lib/schema";
 import { eq, inArray } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 

@@ -46,8 +46,7 @@ export interface ScheduleTask {
     description: string | null;
     status: string;
     priority: string;
-    dueDate: Date | null;
-    assignedToUserId: string | null;
+    deadline?: Date | null;
     createdAt: Date;
     updatedAt?: Date;
 }

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { PageHeader } from "@/components/layout/page-header";
 import { LoyaltySettingsClient } from "./loyalty-settings-client";
 import { Button } from "@/components/ui/button";

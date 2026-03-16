@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { calculatorConsumablesSettings } from "@/lib/schema/calculators";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { consumablesConfigSchema } from "./schemas";
 import type { ApplicationType, ConsumablesConfigData } from "../types";

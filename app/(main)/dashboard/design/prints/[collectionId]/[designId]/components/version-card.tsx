@@ -35,29 +35,12 @@ import { cn } from "@/lib/utils";
 import { FileUploadZone } from "./file-upload-zone";
 import { FileTable } from "./file-table";
 
-interface DesignFile {
-    id: string;
-    versionId: string;
-    filename: string;
-    originalName: string;
-    format: string;
-    fileType: "preview" | "source";
-    size: number;
-    width: number | null;
-    height: number | null;
-    path: string;
-    createdAt: Date;
-}
+import { VersionWithFiles } from "@/lib/types";
 
 interface VersionCardProps {
     collectionId: string;
     designId: string;
-    version: {
-        id: string;
-        name: string;
-        preview: string | null;
-        files: DesignFile[];
-    };
+    version: VersionWithFiles;
     isExpanded: boolean;
     isSortMode: boolean;
     onToggle: () => void;

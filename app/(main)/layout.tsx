@@ -4,7 +4,7 @@ import { BreadcrumbsProvider } from "@/components/layout/breadcrumbs-context";
 import { Navbar as DesktopHeader } from "@/components/layout/navbar";
 import { MobileHeader } from "@/components/layout/mobile-header";
 import { MobileBottomNav } from "@/components/layout/mobile-bottom-nav";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { db } from "@/lib/db";
 import { systemSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";

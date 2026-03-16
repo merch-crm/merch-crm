@@ -8,7 +8,7 @@ import { db } from "@/lib/db";
 import { inventoryTransactions } from "@/lib/schema";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 import { type ActionResult } from "@/lib/types";
 import { type ItemHistoryTransaction } from "./types";

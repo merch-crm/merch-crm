@@ -10,7 +10,7 @@ import {
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { generateCategoryPrefix } from "./category-utils";
 import { getCategoryFullPath, updateChildrenPaths, isDescendant } from "./actions-utils";
 import { InventoryCategorySchema } from "./validation";

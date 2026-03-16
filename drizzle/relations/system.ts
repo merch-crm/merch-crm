@@ -12,12 +12,6 @@ import {
 
 export const usersRelations = relations(users, ({ one, many }) => ({
 	orderAttachments: many(orderAttachments),
-	tasks_assignedToUserId: many(tasks, {
-		relationName: "tasks_assignedToUserId_users_id"
-	}),
-	tasks_createdBy: many(tasks, {
-		relationName: "tasks_createdBy_users_id"
-	}),
 	notifications: many(notifications),
 	orders_createdBy: many(orders, {
 		relationName: "orders_createdBy_users_id"
@@ -71,34 +65,6 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	printCollections: many(printCollections),
 }));
 
-export const tasksRelations = relations(tasks, ({ one, many }) => ({
-	department: one(departments, {
-		fields: [tasks.assignedToDepartmentId],
-		references: [departments.id]
-	}),
-	user_assignedToUserId: one(users, {
-		fields: [tasks.assignedToUserId],
-		references: [users.id],
-		relationName: "tasks_assignedToUserId_users_id"
-	}),
-	role: one(roles, {
-		fields: [tasks.assignedToRoleId],
-		references: [roles.id]
-	}),
-	user_createdBy: one(users, {
-		fields: [tasks.createdBy],
-		references: [users.id],
-		relationName: "tasks_createdBy_users_id"
-	}),
-	order: one(orders, {
-		fields: [tasks.orderId],
-		references: [orders.id]
-	}),
-	taskChecklists: many(taskChecklists),
-	taskHistories: many(taskHistory),
-	taskComments: many(taskComments),
-	taskAttachments: many(taskAttachments),
-}));
 
 export const departmentsRelations = relations(departments, ({ many }) => ({
 	tasks: many(tasks),

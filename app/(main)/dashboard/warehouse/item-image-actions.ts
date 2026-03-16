@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { inventoryItems } from "@/lib/schema";
 import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
 import { type ActionResult } from "@/lib/types";
 

@@ -1,169 +1,116 @@
-import { pgTable, text, timestamp, uuid, boolean, index, integer } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-import { taskStatusEnum, taskPriorityEnum, taskTypeEnum } from "./enums";
-import { users, roles, departments } from "./users";
-import { orders } from "./orders";
+/**
+ * Схема таблицы задач (обновлённая под финальную интеграцию)
+ */
 
-export const tasks = pgTable("tasks", {
-    id: uuid("id").defaultRandom().primaryKey(),
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  boolean,
+  index,
+} from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
+import { users, departments } from "./users";
+import { taskAssignees } from "./task-assignees";
+import { taskWatchers } from "./task-watchers";
+import { taskDependencies } from "./task-dependencies";
+import { taskChecklists } from "./task-checklists";
+import { taskComments } from "./task-comments";
+import { taskAttachments } from "./task-attachments";
+import { taskHistory } from "./task-history";
+import {
+  taskStatusEnum,
+  taskPriorityEnum,
+  taskTypeEnum,
+} from "./enums";
+
+export const tasks = pgTable(
+  "tasks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
     description: text("description"),
-    status: taskStatusEnum("status").default("new").notNull(),
-    priority: taskPriorityEnum("priority").default("normal").notNull(),
-    type: taskTypeEnum("task_type").default("other").notNull(),
-    assignedToUserId: uuid("assigned_to_user_id").references(() => users.id),
-    assignedToRoleId: uuid("assigned_to_role_id").references(() => roles.id),
-    assignedToDepartmentId: uuid("assigned_to_department_id").references(() => departments.id),
-    createdBy: uuid("created_by").references(() => users.id).notNull(),
-    orderId: uuid("order_id").references(() => orders.id),
-    dueDate: timestamp("due_date"),
-    deadline: timestamp("deadline"),
-    completedAt: timestamp("completed_at"),
+    
+    // Статус, приоритет, тип
+    status: taskStatusEnum("status").notNull().default("new"),
+    priority: taskPriorityEnum("priority").notNull().default("normal"),
+    type: taskTypeEnum("type").notNull().default("general"),
+    
+    // Даты
+    deadline: timestamp("deadline").notNull(), // Переименовано из due_date для соответствия экшнам
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (table) => {
-    return {
-        assignedUserIdx: index("tasks_assigned_user_idx").on(table.assignedToUserId),
-        assignedRoleIdx: index("tasks_assigned_role_idx").on(table.assignedToRoleId),
-        assignedDeptIdx: index("tasks_assigned_dept_idx").on(table.assignedToDepartmentId),
-        orderIdIdx: index("tasks_order_id_idx").on(table.orderId),
-        statusIdx: index("tasks_status_idx").on(table.status),
-        createdIdx: index("tasks_created_idx").on(table.createdAt),
-        createdByIdx: index("tasks_created_by_idx").on(table.createdBy),
-    }
-});
+    completedAt: timestamp("completed_at"),
+    
+    // Создатель
+    creatorId: uuid("creator_id") // Переименовано из created_by_user_id
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    
+    // Отдел (для группировки и автозадач)
+    departmentId: uuid("department_id").references(() => departments.id, {
+      onDelete: "set null",
+    }),
+    
+    // Делегирование
+    delegatedByUserId: uuid("delegated_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    delegatedAt: timestamp("delegated_at"),
+    originalAssigneeId: uuid("original_assignee_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    
+    // Автоматическое создание
+    isAutoCreated: boolean("is_auto_created").notNull().default(false),
+    autoCreatedReason: text("auto_created_reason"),
+    autoCreatedSourceType: text("auto_created_source_type"),
+    autoCreatedSourceId: uuid("auto_created_source_id"),
+  },
+  (table) => ({
+    statusIdx: index("tasks_status_idx").on(table.status),
+    priorityIdx: index("tasks_priority_idx").on(table.priority),
+    typeIdx: index("tasks_type_idx").on(table.type),
+    creatorIdx: index("tasks_creator_idx").on(table.creatorId),
+    departmentIdx: index("tasks_department_idx").on(table.departmentId),
+    deadlineIdx: index("tasks_deadline_idx").on(table.deadline),
+    createdAtIdx: index("tasks_created_at_idx").on(table.createdAt),
+    
+    // Составные индексы
+    statusDeadlineIdx: index("tasks_status_deadline_idx").on(table.status, table.deadline),
+  })
+);
 
 export const tasksRelations = relations(tasks, ({ one, many }) => ({
-    assignedToUser: one(users, {
-        fields: [tasks.assignedToUserId],
-        references: [users.id],
-        relationName: "assignedTasks",
-    }),
-    assignedToRole: one(roles, {
-        fields: [tasks.assignedToRoleId],
-        references: [roles.id],
-    }),
-    assignedToDepartment: one(departments, {
-        fields: [tasks.assignedToDepartmentId],
-        references: [departments.id],
-    }),
-    creator: one(users, {
-        fields: [tasks.createdBy],
-        references: [users.id],
-        relationName: "createdTasks",
-    }),
-    order: one(orders, {
-        fields: [tasks.orderId],
-        references: [orders.id],
-    }),
-    attachments: many(taskAttachments),
-    checklists: many(taskChecklists),
-    comments: many(taskComments),
-    history: many(taskHistory),
+  creator: one(users, {
+    fields: [tasks.creatorId],
+    references: [users.id],
+    relationName: "createdTasks",
+  }),
+  department: one(departments, {
+    fields: [tasks.departmentId],
+    references: [departments.id],
+  }),
+  delegatedBy: one(users, {
+    fields: [tasks.delegatedByUserId],
+    references: [users.id],
+    relationName: "taskDelegator",
+  }),
+  originalAssignee: one(users, {
+    fields: [tasks.originalAssigneeId],
+    references: [users.id],
+    relationName: "taskOriginalAssignee",
+  }),
+  assignees: many(taskAssignees),
+  watchers: many(taskWatchers),
+  dependencies: many(taskDependencies, { relationName: "taskDependencies" }),
+  dependentTasks: many(taskDependencies, { relationName: "dependentTasks" }),
+  checklists: many(taskChecklists),
+  comments: many(taskComments),
+  attachments: many(taskAttachments),
+  history: many(taskHistory),
 }));
 
-export const taskChecklists = pgTable("task_checklists", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
-    content: text("content").notNull(),
-    isCompleted: boolean("is_completed").default(false).notNull(),
-    sortOrder: integer("sort_order").default(0).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (table) => {
-    return {
-        taskIdx: index("task_checklists_task_idx").on(table.taskId),
-        createdIdx: index("task_checklists_created_idx").on(table.createdAt),
-    }
-});
-
-export const taskChecklistsRelations = relations(taskChecklists, ({ one }) => ({
-    task: one(tasks, {
-        fields: [taskChecklists.taskId],
-        references: [tasks.id],
-    }),
-}));
-
-export const taskHistory = pgTable("task_history", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
-    userId: uuid("user_id").references(() => users.id).notNull(),
-    type: text("type").notNull(), // 'status_change', 'priority_change', 'assignment', etc.
-    oldValue: text("old_value"),
-    newValue: text("new_value"),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (table) => {
-    return {
-        taskIdx: index("task_history_task_idx").on(table.taskId),
-        userIdx: index("task_history_user_idx").on(table.userId),
-        createdIdx: index("task_history_created_idx").on(table.createdAt),
-    }
-});
-
-export const taskHistoryRelations = relations(taskHistory, ({ one }) => ({
-    task: one(tasks, {
-        fields: [taskHistory.taskId],
-        references: [tasks.id],
-    }),
-    user: one(users, {
-        fields: [taskHistory.userId],
-        references: [users.id],
-    }),
-}));
-
-export const taskComments = pgTable("task_comments", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
-    userId: uuid("user_id").references(() => users.id).notNull(),
-    content: text("content").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (table) => {
-    return {
-        taskIdx: index("task_comments_task_idx").on(table.taskId),
-        userIdx: index("task_comments_user_idx").on(table.userId),
-        createdIdx: index("task_comments_created_idx").on(table.createdAt),
-    }
-});
-
-export const taskCommentsRelations = relations(taskComments, ({ one }) => ({
-    task: one(tasks, {
-        fields: [taskComments.taskId],
-        references: [tasks.id],
-    }),
-    user: one(users, {
-        fields: [taskComments.userId],
-        references: [users.id],
-    }),
-}));
-
-export const taskAttachments = pgTable("task_attachments", {
-    id: uuid("id").defaultRandom().primaryKey(),
-    taskId: uuid("task_id").references(() => tasks.id, { onDelete: "cascade" }).notNull(),
-    fileName: text("file_name").notNull(),
-    fileKey: text("file_key").notNull(),
-    fileUrl: text("file_url").notNull(),
-    fileSize: integer("file_size"),
-    contentType: text("content_type"),
-    createdBy: uuid("created_by").references(() => users.id).notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (table) => {
-    return {
-        taskIdx: index("task_attachments_task_idx").on(table.taskId),
-        createdIdx: index("task_attachments_created_idx").on(table.createdAt),
-        createdByIdx: index("task_attachments_created_by_idx").on(table.createdBy),
-    }
-});
-
-export const taskAttachmentsRelations = relations(taskAttachments, ({ one }) => ({
-    task: one(tasks, {
-        fields: [taskAttachments.taskId],
-        references: [tasks.id],
-    }),
-    creator: one(users, {
-        fields: [taskAttachments.createdBy],
-        references: [users.id],
-    }),
-}));
+export type TaskSelect = typeof tasks.$inferSelect;
+export type TaskInsert = typeof tasks.$inferInsert;

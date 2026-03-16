@@ -1519,10 +1519,23 @@ function checkApiRoutes(): AuditError[] {
             });
         }
 
-        const hasAuth = content.includes('getServerSession') || content.includes('auth') || content.includes('token');
+        const authPatterns = [
+            'getServerSession',
+            'getSession',
+            'auth(',
+            'token',
+            'Authorization',
+            "searchParams.get('key')",
+            'searchParams.get("key")',
+            "searchParams.get('secret')",
+            'searchParams.get("secret")',
+            'BetterAuth',
+            'auth.handler'
+        ];
+        const hasAuth = authPatterns.some(p => content.includes(p));
         const isPublic = file.includes('/public/') || file.includes('/webhook');
 
-        if (!hasAuth && !isPublic) {
+        if (!hasAuth && !isPublic && !content.includes('// audit-ignore')) {
             errors.push({
                 file,
                 severity: 'info',

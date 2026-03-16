@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export default async function ClientsPage(props: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;

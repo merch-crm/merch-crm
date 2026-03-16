@@ -5,7 +5,7 @@ import { systemSettings, users, clients, orders, notifications, roles } from "@/
 import { eq, sql, type InferInsertModel } from "drizzle-orm";
 import { z } from "zod";
 
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 const checkSchema = z.void();
 

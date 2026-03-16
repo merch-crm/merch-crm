@@ -98,8 +98,8 @@ export async function createUser(formData: FormData) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const data = Object.fromEntries(formData);
 
+        const data = Object.fromEntries(formData);
         const validated = CreateUserSchema.safeParse(data);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };
@@ -133,7 +133,8 @@ export async function createUser(formData: FormData) {
             path:"/admin-panel/users/create",
             method:"createUser"
         });
-        return { success: false, error:"Не удалось создать пользователя" };
+        const errorMessage = error instanceof Error ? error.message : "Неизвестная ошибка";
+        return { success: false, error: `Не удалось создать пользователя: ${errorMessage}` };
     }
 }
 
@@ -141,8 +142,8 @@ export async function updateUser(userId: string, formData: FormData) {
     const session = await getSession();
     try {
         await requireAdmin(session);
-        const data = Object.fromEntries(formData);
 
+        const data = Object.fromEntries(formData);
         const validated = UpdateUserSchema.safeParse(data);
         if (!validated.success) {
             return { success: false, error: validated.error.issues[0].message };

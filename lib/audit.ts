@@ -2,7 +2,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import * as schema from "@/lib/schema";
 import { db } from "@/lib/db";
 const { auditLogs } = schema;
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
 

@@ -1,7 +1,9 @@
-import { getUserProfile, getUserActivities } from"./actions";
-import { formatDistanceToNow, format } from"date-fns";
-import { ru } from"date-fns/locale";
-import { ProfileClient } from"./ProfileClient";
+import { getUserProfile, getUserActivities } from "./actions";
+import { formatDistanceToNow, format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { ProfileClient } from "./ProfileClient";
+import { ProfileTasksWidget } from "./components/profile-tasks-widget";
+import { getUserTasks } from "../tasks/actions/user-tasks-actions";
 
 // Profile page server component
 export default async function ProfilePage() {
@@ -71,18 +73,34 @@ export default async function ProfilePage() {
         };
     });
 
-    const tasks = [
-        { id: 1, text:"Связаться с клиентом #2024-156", time:"10:00", priority:"Высокий", priorityColor:"bg-orange-100 text-orange-700", completed: true },
-        { id: 2, text:"Подготовить коммерческое предложение", time:"11:30", priority:"Срочно", priorityColor:"bg-red-100 text-red-700", completed: false },
-        { id: 3, text:"Проверить статус заказа #2024-148", time:"14:00", priority:"Средний", priorityColor:"bg-yellow-100 text-yellow-700", completed: false },
-        { id: 4, text:"Встреча с отделом производства", time:"15:30", priority:"Средний", priorityColor:"bg-yellow-100 text-yellow-700", completed: false },
-    ];
+    const tasksResult = await getUserTasks(user.id);
+    const realTasks = tasksResult.success ? tasksResult.data || [] : [];
+    
+    // Map tasks to the local format expected by ProfileClient
+    const mappedProfileTasks = realTasks.map((t, idx) => ({
+        id: idx + 1,
+        text: t.title,
+        time: t.deadline ? formatDistanceToNow(new Date(t.deadline), { addSuffix: true, locale: ru }) : "Без срока",
+        priority: t.priority === "urgent" ? "Срочный" : t.priority === "high" ? "Высокий" : t.priority === "normal" ? "Средний" : "Низкий",
+        priorityColor: t.priority === "urgent" ? "bg-red-600" : t.priority === "high" ? "bg-red-500" : t.priority === "normal" ? "bg-amber-500" : "bg-emerald-500",
+        completed: t.status === "done" || t.status === "archived" || t.status === "cancelled"
+    }));
 
     return (
-        <ProfileClient
-            user={user}
-            activities={activities}
-            tasks={tasks}
-        />
+        <div className="space-y-3">
+            <ProfileClient
+                user={user}
+                activities={activities}
+                tasks={mappedProfileTasks}
+            />
+            {/* Real task widget integrated into the same page context */}
+            <div className="px-6 lg:px-[--padding-xl] pb-12">
+               <ProfileTasksWidget 
+                 tasks={realTasks}
+                 userId={user.id}
+                 isOwnProfile={true}
+               />
+            </div>
+        </div>
     );
 }

@@ -54,10 +54,10 @@ function calcTrend(current: number, previous: number): number {
 /** 4. Статистика брака */
 export async function getDefectStats(period: StatsPeriod = "week"): Promise<DashboardActionResult<DefectStats>> {
   try {
-    periodSchema.parse(period);
     const session = await getSession();
     if (!session) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: "Unauthorized" }
+    periodSchema.parse(period);;
     }
 
     const { start, end } = getPeriodRange(period);
@@ -133,10 +133,10 @@ export async function getDefectStats(period: StatsPeriod = "week"): Promise<Dash
 /** 7. Топ типов нанесения */
 export async function getTopApplicationTypes(period: StatsPeriod = "week"): Promise<DashboardActionResult<TopApplicationType[]>> {
   try {
-    periodSchema.parse(period);
     const session = await getSession();
     if (!session) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: "Unauthorized" }
+    periodSchema.parse(period);;
     }
 
     const { start } = getPeriodRange(period);
@@ -179,10 +179,10 @@ export async function getTopApplicationTypes(period: StatsPeriod = "week"): Prom
 /** 8. Дневная производительность */
 export async function getDailyOutputData(period: StatsPeriod = "week"): Promise<DashboardActionResult<DailyOutputItem[]>> {
   try {
-    periodSchema.parse(period);
     const session = await getSession();
     if (!session) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: "Unauthorized" }
+    periodSchema.parse(period);;
     }
 
     const { start, end } = getPeriodRange(period);

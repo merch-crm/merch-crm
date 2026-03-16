@@ -2,10 +2,11 @@ import { pgTable, text, timestamp, uuid, boolean, date, index, jsonb } from "dri
 import { relations } from "drizzle-orm";
 import { orders } from "./orders";
 import { payments, expenses } from "./finance";
-import { inventoryTransactions } from "./inventory-transactions.schema";
-import { inventoryTransfers } from "./warehouse/stock";
+import { inventoryTransactions, inventoryTransfers } from "./warehouse/stock";
 import { tasks } from "./tasks";
-import { notifications, auditLogs, securityEvents, systemErrors } from "./system";
+import { taskAssignees } from "./task-assignees";
+import { taskWatchers } from "./task-watchers";
+
 import { clients } from "./clients/main";
 import { wikiPages } from "./wiki";
 
@@ -98,12 +99,17 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     expenses: many(expenses),
     inventoryTransactions: many(inventoryTransactions),
     inventoryTransfers: many(inventoryTransfers),
-    assignedTasks: many(tasks, { relationName: "assignedTasks" }),
+    taskAssignments: many(taskAssignees, { relationName: "userAssignments" }),
+    taskAssignedBy: many(taskAssignees, { relationName: "taskAssignedBy" }),
     createdTasks: many(tasks, { relationName: "createdTasks" }),
-    notifications: many(notifications),
-    auditLogs: many(auditLogs),
-    securityEvents: many(securityEvents),
-    systemErrors: many(systemErrors),
+    taskDelegated: many(tasks, { relationName: "taskDelegator" }),
+    taskOriginalAssignments: many(tasks, { relationName: "taskOriginalAssignee" }),
+    taskWatching: many(taskWatchers, { relationName: "taskWatcherUser" }),
+    taskWatcherAdded: many(taskWatchers, { relationName: "taskWatcherAddedBy" }),
+    // notifications: many(notifications),
+    // auditLogs: many(auditLogs),
+    // securityEvents: many(securityEvents),
+    // systemErrors: many(systemErrors),
     managedClients: many(clients),
     wikiPages: many(wikiPages),
     sessions: many(sessions),

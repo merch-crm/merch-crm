@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, uuid, boolean, index, decimal, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { orderStatusEnum, paymentStatusEnum, deliveryStatusEnum, orderCategoryEnum, productionStageStatusEnum } from "./enums";
+import { orderStatusEnum, paymentStatusEnum, deliveryStatusEnum, orderCategoryEnum, productionStageStatusEnum, orderItemDesignStatusEnum } from "./enums";
 import { clients } from "./clients/main";
 import { users } from "./users";
 import { promocodes } from "./promocodes";
@@ -97,6 +97,7 @@ export const orderItems = pgTable("order_items", {
     stagePrintStatus: productionStageStatusEnum("stage_print_status").default("pending").notNull(),
     stageApplicationStatus: productionStageStatusEnum("stage_application_status").default("pending").notNull(),
     stagePackagingStatus: productionStageStatusEnum("stage_packaging_status").default("pending").notNull(),
+    designStatus: orderItemDesignStatusEnum("design_status").default("pending").notNull(),
     applicationTypeId: uuid("application_type_id"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),

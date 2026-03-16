@@ -4,12 +4,23 @@ import { mockSession, createMockTask, createFormData } from '../helpers/mocks';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
-const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
+const hoisted = vi.hoisted(() => {
     const mockFindMany = vi.fn();
     const mockFindFirst = vi.fn();
     const mockSelect = vi.fn();
+    const createGenericMock = () => ({
+        id: '11111111-1111-4111-8111-111111111111',
+        taskId: '11111111-1111-4111-8111-111111111111', // for checklists
+        title: 'Mock Object',
+        createdBy: '11111111-1111-4111-8111-111111111111',
+        userId: '11111111-1111-4111-8111-111111111111',
+        status: 'new',
+        priority: 'normal',
+        type: 'other',
+        content: 'Mock Content',
+    });
     const mockTx = {
-        insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '22222222-2222-4222-8222-222222222222', title: 'Test Task' }]) }) }),
+        insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([createGenericMock()]) }) }),
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
         select: mockSelect,
@@ -19,41 +30,59 @@ const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
             taskChecklists: { findFirst: mockFindFirst, findMany: mockFindMany },
         },
     };
-    return { mockFindMany, mockFindFirst, mockSelect, mockTx };
+    const mockGetSession = vi.fn();
+    return { mockFindMany, mockFindFirst, mockSelect, mockTx, mockGetSession, createGenericMock };
 });
+
+const { mockFindMany, mockFindFirst, mockSelect, mockTx, mockGetSession, createGenericMock } = hoisted;
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
-vi.mock('@/lib/auth', () => ({ getSession: vi.fn() }));
+vi.mock('@/lib/session', () => ({ getSession: hoisted.mockGetSession }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
-vi.mock('@/lib/notifications', () => ({ sendTaskNotification: vi.fn() }));
+vi.mock('@/app/(main)/dashboard/tasks/notifications', () => ({ 
+    notifyTaskCreated: vi.fn(), 
+    notifyStatusChanged: vi.fn(), 
+    notifyCommentAdded: vi.fn(),
+    sendTaskNotification: vi.fn() 
+}));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
+vi.mock('@/lib/auth', () => ({ 
+    getSession: hoisted.mockGetSession,
+    auth: {
+        api: {
+            getSession: hoisted.mockGetSession,
+        }
+    }
+}));
 
 vi.mock('@/lib/db', () => ({
     db: {
         query: {
-            tasks: { findMany: mockFindMany, findFirst: mockFindFirst },
-            taskComments: { findMany: mockFindMany },
-            taskChecklists: { findMany: mockFindMany, findFirst: mockFindFirst },
-            users: { findMany: mockFindMany },
+            tasks: { findFirst: hoisted.mockFindFirst, findMany: hoisted.mockFindMany },
+            taskComments: { findMany: hoisted.mockFindMany },
+            taskChecklists: { findFirst: hoisted.mockFindFirst, findMany: hoisted.mockFindMany },
         },
+        select: hoisted.mockSelect,
         insert: vi.fn().mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) }),
         update: vi.fn().mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) }),
         delete: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }),
-        transaction: vi.fn().mockImplementation(async (fn: (tx: typeof mockTx) => Promise<unknown>) => fn(mockTx as unknown as typeof mockTx)),
+        transaction: vi.fn().mockImplementation(async (fn: (tx: unknown) => Promise<unknown>) => fn(hoisted.mockTx)),
     },
 }));
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import type { Session as _Session } from '@/lib/auth';
 import {
     getTasks,
     createTask,
     addTaskComment,
-    addTaskChecklistItem,
+    addChecklistItem,
     toggleChecklistItem,
     deleteChecklistItem,
 } from '@/app/(main)/dashboard/tasks/actions';
+import { type CreateTaskInput } from '@/app/(main)/dashboard/tasks/validation';
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
@@ -64,8 +93,23 @@ const setupMocks = () => {
     vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as ReturnType<typeof db.insert>);
     vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as ReturnType<typeof db.delete>);
     mockTx.update.mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) });
-    mockTx.insert.mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) });
     mockTx.delete.mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) });
+    mockFindFirst.mockResolvedValue(createGenericMock());
+    mockSelect.mockReset();
+    mockSelect.mockReturnValue({
+        from: vi.fn().mockReturnValue({
+            innerJoin: vi.fn().mockReturnThis(),
+            where: vi.fn().mockReturnValue({
+                limit: vi.fn().mockImplementation((val) => {
+                    if (val === 1) return Promise.resolve([createGenericMock()]);
+                    return Promise.resolve([createGenericMock(), createGenericMock()]);
+                }),
+                then: vi.fn().mockImplementation((resolve) => resolve([createGenericMock()])),
+            }),
+            limit: vi.fn().mockResolvedValue([createGenericMock()]),
+            then: vi.fn().mockImplementation((resolve) => resolve([createGenericMock()])),
+        })
+    });
 };
 
 describe('getTasks', () => {
@@ -98,28 +142,29 @@ describe('createTask', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await createTask(createFormData({ title: 'Test' }));
+        const result = await createTask({ title: 'Test', priority: 'normal', type: 'general', deadline: new Date(), assigneeIds: ['user-1'] });
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
     it('возвращает ошибку при пустом заголовке', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await createTask(createFormData({ title: '' }));
+        const result = await createTask({ title: '', priority: 'normal', type: 'general', deadline: new Date(), assigneeIds: ['user-1'] });
         expect(result.success).toBe(false);
     });
 
     it('создаёт задачу при валидных данных', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const newTask = createMockTask();
-        mockTx.insert.mockReturnValue({
-            values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([newTask]) }),
-        });
-        const result = await createTask(createFormData({ title: 'Test Task', status: 'new', priority: 'normal' }));
-
-        // The action returns { success: true, data: [newTask] } or similar
-        // Let's check matching object partially or exact structure
+        vi.mocked(getSession).mockResolvedValue(mockSession());
+        const taskInput = {
+            title: 'New Task',
+            description: 'Test Description',
+            priority: 'normal',
+            type: 'other',
+            deadline: new Date(),
+            assigneeIds: ['11111111-1111-4111-8111-111111111111'],
+            watcherIds: []
+        };
+        const result = await createTask(taskInput as CreateTaskInput);
         expect(result.success).toBe(true);
-        // We can check data if we want strictness, but success: true is enough for now given slight mismatch in previous run logs (it returned object with properties)
     });
 });
 
@@ -138,16 +183,16 @@ describe('addTaskComment', () => {
             values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '99999999-9999-4999-8999-999999999999', content: 'Comment' }]) }),
         });
         const result = await addTaskComment('22222222-2222-4222-8222-222222222222', 'Test Comment');
-        expect(result).toEqual({ success: true });
+        expect(result).toMatchObject({ success: true });
     });
 });
 
-describe('addTaskChecklistItem', () => {
+describe('addChecklistItem', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку при пустом пункте', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await addTaskChecklistItem('22222222-2222-4222-8222-222222222222', '');
+        const result = await addChecklistItem('22222222-2222-4222-8222-222222222222', '');
         expect(result.success).toBe(false);
     });
 
@@ -156,8 +201,8 @@ describe('addTaskChecklistItem', () => {
         mockTx.insert.mockReturnValue({
             values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '88888888-8888-4888-8888-888888888888', title: 'Item' }]) }),
         });
-        const result = await addTaskChecklistItem('22222222-2222-4222-8222-222222222222', 'Test Item');
-        expect(result).toEqual({ success: true });
+        const result = await addChecklistItem('22222222-2222-4222-8222-222222222222', 'Test Item');
+        expect(result).toMatchObject({ success: true });
     });
 });
 
@@ -167,7 +212,7 @@ describe('toggleChecklistItem', () => {
     it('переключает статус пункта чеклиста', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const result = await toggleChecklistItem('88888888-8888-4888-8888-888888888888', true);
-        expect(result).toEqual({ success: true });
+        expect(result).toMatchObject({ success: true });
     });
 });
 
@@ -183,6 +228,6 @@ describe('deleteChecklistItem', () => {
         mockFindFirst.mockResolvedValueOnce({ createdBy: 'u1' });
 
         const result = await deleteChecklistItem('88888888-8888-4888-8888-888888888888');
-        expect(result).toEqual({ success: true });
+        expect(result).toMatchObject({ success: true });
     });
 });

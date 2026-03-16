@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
 import { sql, and, or, ilike, eq, lt, desc, asc, gte, lte, count, type SQL } from "drizzle-orm";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { ClientFiltersSchema, ClientIdSchema } from "../../validation";
 import {

@@ -40,7 +40,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
 });
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
-vi.mock('@/lib/auth', () => ({ getSession: vi.fn() }));
+vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('@/lib/admin', () => ({ requireAdmin: vi.fn() }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 

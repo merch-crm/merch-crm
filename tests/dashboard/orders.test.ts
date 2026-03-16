@@ -43,7 +43,7 @@ const { mockFindMany, mockFindFirst, mockSelect, mockTx } = vi.hoisted(() => {
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
-vi.mock('@/lib/auth', () => ({ getSession: vi.fn() }));
+vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 vi.mock('@/lib/audit', () => ({ logAction: vi.fn() }));
 vi.mock('@/lib/notifications', () => ({ sendStaffNotifications: vi.fn() }));

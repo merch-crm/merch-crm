@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, index, decimal, integer, varchar, jsonb, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uuid, index, decimal, integer, jsonb, boolean } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { inventoryItemTypeEnum, measurementUnitEnum } from "../enums";
 import { users } from "../users";
@@ -7,7 +7,6 @@ import { printDesigns, printDesignVersions } from "../designs";
 import { inventoryCategories } from "./categories";
 import { inventoryItemAttributes } from "./attributes";
 import { inventoryStocks, inventoryTransfers } from "./stock";
-import { inventoryTransactions } from "../inventory-transactions.schema";
 
 export const inventoryItems = pgTable("inventory_items", {
     id: uuid("id").defaultRandom().primaryKey(),
@@ -43,13 +42,10 @@ export const inventoryItems = pgTable("inventory_items", {
     attributes: jsonb("attributes").default("{}"),
     imageDetails: jsonb("image_details").default("[]"),
     materialComposition: jsonb("material_composition").default("{}"),
-    productLineId: varchar("product_line_id", { length: 36 })
-        .references(() => productLines.id),
-    baseItemId: varchar("base_item_id", { length: 36 }),
-    printDesignId: varchar("print_design_id", { length: 36 })
-        .references(() => printDesigns.id),
-    printVersionId: varchar("print_version_id", { length: 36 })
-        .references(() => printDesignVersions.id),
+    productLineId: text("product_line_id"),
+    baseItemId: text("base_item_id"),
+    printDesignId: text("print_design_id"),
+    printVersionId: text("print_version_id"),
 }, (table) => {
     return {
         categoryIdx: index("inv_items_category_idx").on(table.categoryId),
@@ -83,7 +79,7 @@ export const inventoryItemsRelations = relations(inventoryItems, ({ one, many })
     attributeValues: many(inventoryItemAttributes),
     stocks: many(inventoryStocks),
     transfers: many(inventoryTransfers),
-    transactions: many(inventoryTransactions),
+    // transactions: many(inventoryTransactions),
     productLine: one(productLines, {
         fields: [inventoryItems.productLineId],
         references: [productLines.id],

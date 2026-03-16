@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
 export async function GET(
     request: NextRequest,
