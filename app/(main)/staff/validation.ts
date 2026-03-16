@@ -8,7 +8,7 @@ export const XiaomiLoginSchema = z.object({
     username: z.string().min(1,"Введите логин или email"),
     password: z.string().min(1,"Введите пароль"),
     region: z.enum(["cn","de","us","ru","sg","in"], {
-        error:"Выберите регион"
+        message:"Выберите регион"
     }),
 });
 

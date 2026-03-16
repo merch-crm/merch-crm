@@ -29,6 +29,5 @@ export function invalidatePrintsCache(options?: {
     }
 
     // 3. Инвалидация тегов (если используются)
-    // @ts-expect-error - В Next.js 15 canary revalidateTag может требовать другой сигнатурыversions
     revalidateTag("prints");
 }

@@ -12,18 +12,21 @@ import * as schema from "@/lib/schema";
 type ClientEntity = typeof schema.clients.$inferSelect;
 
 export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: ClientEntity[] } | void>> {
-    const action = createSafeAction({
-        schema: ClientSchema,
+    const action = createSafeAction<any, { duplicates?: ClientEntity[] } | void>({
+        schema: ClientSchema as any,
         roles: ["Администратор", "Руководство", "Отдел продаж"],
         handler: async (data, _ctx) => {
-            const res = await ClientService.createClient(data, _ctx.userId);
+            const res = await ClientService.createClient({
+                ...data,
+                ignoreDuplicates: data.ignoreDuplicates === "true" || data.ignoreDuplicates === true
+            } as any, _ctx.userId);
             if ("duplicates" in res && res.duplicates) {
                 return { success: true, data: { duplicates: res.duplicates as ClientEntity[] } };
             }
             revalidatePath("/dashboard/clients");
             revalidatePath("/dashboard/orders");
             await invalidateCache("clients:*");
-            return { success: true, data: undefined };
+            return { success: true, data: undefined as void };
         }
     });
     return action(formData);
@@ -37,7 +40,7 @@ export async function updateClient(clientId: string, formData: FormData): Promis
             await ClientService.updateClient(clientId, data);
             revalidatePath("/dashboard/clients");
             await invalidateCache("clients:*");
-            return { success: true, data: undefined };
+            return { success: true, data: undefined as void };
         }
     });
     return action(formData);
@@ -49,7 +52,7 @@ export async function deleteClient(clientId: string): Promise<ActionResult> {
         handler:        async () => {
             await ClientService.deleteClient(clientId);
             revalidatePath("/dashboard/clients");
-            return { success: true, data: undefined };
+            return { success: true, data: undefined as void };
         }
     });
     return action();
@@ -62,7 +65,7 @@ export async function updateClientField(clientId: string, field: string, value: 
         handler: async (data) => {
             await ClientService.updateField(data.clientId, data.field, data.value);
             revalidatePath("/dashboard/clients");
-            return { success: true, data: undefined };
+            return { success: true, data: undefined as void };
         }
     });
     // Передаем как объект для Zod
@@ -75,7 +78,7 @@ export async function toggleClientArchived(clientId: string, isArchived: boolean
         handler: async () => {
             await ClientService.updateField(clientId, "isArchived", isArchived);
             revalidatePath("/dashboard/clients");
-            return { success: true, data: undefined };
+            return { success: true, data: undefined as void };
         }
     });
     return action();
@@ -87,7 +90,7 @@ export async function updateClientComments(clientId: string, comments: string): 
         handler:        async () => {
             await ClientService.updateField(clientId, "comments", comments);
             revalidatePath("/dashboard/clients");
-            return { success: true, data: undefined };
+            return { success: true, data: undefined as void };
         }
     });
     return action();

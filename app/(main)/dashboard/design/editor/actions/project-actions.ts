@@ -142,7 +142,7 @@ export async function createEditorProject(
             .values({
                 ...validated,
                 createdBy: session.id,
-            })
+            } as any)
             .returning();
 
         const result = results[0];

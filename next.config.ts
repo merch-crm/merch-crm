@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   transpilePackages: ["jspdf", "jspdf-autotable"],
   devIndicators: {
-    position: "top-right",
+    buildActivityPosition: "top-right",
   },
 
   output: "standalone",

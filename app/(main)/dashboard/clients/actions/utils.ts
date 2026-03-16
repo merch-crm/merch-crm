@@ -12,11 +12,11 @@ export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<
 export async function releaseReservationsForOrders(orderIds: string[], tx: Transaction) {
     if (orderIds.length === 0) return;
 
-    const reservationStatuses = ["new","design","production"] as const;
+    const reservationStatuses = ["new","design","production"];
 
     // Find all orders that have reserved status
     const targetOrders = await tx.query.orders.findMany({
-        where: and(inArray(orders.id, orderIds), inArray(orders.status, reservationStatuses)),
+        where: and(inArray(orders.id, orderIds), inArray(orders.status, reservationStatuses as any[])),
         limit: 500
     });
 
