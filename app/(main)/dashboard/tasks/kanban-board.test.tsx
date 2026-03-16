@@ -1,10 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { KanbanBoard } from './kanban/kanban-board';
-import { changeTaskStatus as updateTask } from './actions/task-actions';
-import { playSound } from '@/lib/sounds';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { KanbanBoard } from './kanban/kanban-board';
+import { SheetStackProvider } from '@/components/ui/sheet-stack-context';
 import { createMockTask } from '@/tests/helpers/mocks';
 
 vi.mock('./actions', () => ({ updateTask: vi.fn() }));
