@@ -34,7 +34,7 @@ const hoisted = vi.hoisted(() => {
     return { mockFindMany, mockFindFirst, mockSelect, mockTx, mockGetSession, createGenericMock };
 });
 
-const { mockFindMany, mockFindFirst, mockSelect, mockTx, mockGetSession, createGenericMock } = hoisted;
+const { mockFindMany, mockFindFirst, mockSelect, mockTx, _mockGetSession, createGenericMock } = hoisted;
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
