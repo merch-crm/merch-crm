@@ -12,6 +12,7 @@ import * as schema from "@/lib/schema";
 type ClientEntity = typeof schema.clients.$inferSelect;
 
 export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: ClientEntity[] } | void>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const action = createSafeAction<any, { duplicates?: ClientEntity[] } | void>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         schema: ClientSchema as any,

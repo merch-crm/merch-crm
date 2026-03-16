@@ -140,7 +140,6 @@ export const auth = betterAuth({
       },
     }),
 
-    // @ts-expect-error - Better Auth 1.5.5 type mismatch for admin plugin
     admin({
       impersonationSessionDuration: 60 * 60,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -165,7 +164,9 @@ export const auth = betterAuth({
 });
 
 // ── Типы для проекта ─────────────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type BetterAuthSession = any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type User = any;
 
 // Re-export getSession for backwards compatibility with existing code
