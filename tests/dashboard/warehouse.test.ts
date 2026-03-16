@@ -49,9 +49,6 @@ vi.mock('@/app/(main)/dashboard/warehouse/actions-utils', () => ({
     updateChildrenPaths: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { getSession } from '@/lib/session';
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";;
 import {
     getInventoryItems,
 } from '@/app/(main)/dashboard/warehouse/item-actions';

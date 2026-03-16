@@ -26,9 +26,6 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession } from '@/lib/session';
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";;
 import { deleteProductLine } from '@/app/(main)/dashboard/warehouse/lines/line-mutation-actions';
 
 // ─── Tests ────────────────────────────────────────────────────────────────────

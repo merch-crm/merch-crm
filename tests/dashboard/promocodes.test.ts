@@ -43,9 +43,6 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession } from '@/lib/session';
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";;
 import {
     getPromocodes,
     createPromocode,

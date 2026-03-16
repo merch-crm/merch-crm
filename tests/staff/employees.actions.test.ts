@@ -1,3 +1,4 @@
+import type { Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
     getEmployeesWithFaces,
@@ -45,9 +46,6 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";
-import { getSession } from '@/lib/session';
 import { checkIsAdmin } from '@/lib/admin';
 import { mockSession } from '../helpers/mocks';
 

@@ -1,3 +1,4 @@
+import type { Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
     getWorkstations,
@@ -43,9 +44,6 @@ vi.mock('@/lib/db', () => ({ db: mockDb }));
 vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
-import { getSession } from '@/lib/session';
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";;
 import { mockSession } from '../helpers/mocks';
 
 describe('Workstations Actions', () => {

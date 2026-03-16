@@ -1,3 +1,4 @@
+import type { Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockSession, createMockClient, createMockUser } from '../helpers/mocks';
 
@@ -45,9 +46,6 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession } from '@/lib/session';
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";;
 import { db } from '@/lib/db';
 import {
     getManagers,

@@ -1,3 +1,4 @@
+import type { Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
@@ -123,9 +124,6 @@ vi.mock('@/lib/admin', () => ({
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";
-import { getSession } from "@/lib/session";
 import { requireAdmin } from '@/lib/admin';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';

@@ -1,3 +1,5 @@
+import { auth } from "@/lib/auth";
+import type { Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { db } from '@/lib/db';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
@@ -69,9 +71,6 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { type Session as Session, auth } from "@/lib/auth";
-import type { Session } from "@/lib/session";
-import type { Session } from "@/lib/session";
 import {
     getUserProfile,
     updateProfile,
