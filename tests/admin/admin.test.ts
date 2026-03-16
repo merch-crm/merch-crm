@@ -65,7 +65,7 @@ const hoisted = vi.hoisted(() => {
     return { mockTx, mockQuery, mockDb, mockGetSession };
 });
 
-const { mockTx, mockQuery, mockDb, mockGetSession } = hoisted;
+const { mockQuery, mockGetSession } = hoisted;
 
 vi.mock('@/lib/db', () => ({ db: hoisted.mockDb, pool: { connect: vi.fn(), query: vi.fn() } }));
 
@@ -111,7 +111,7 @@ vi.mock('@/lib/admin', () => ({
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
-import { auth, type Session as _Session, getSession } from '@/lib/auth';
+import { type Session as _Session, getSession } from '@/lib/auth';
 import { requireAdmin } from '@/lib/admin';
 import { mockSession, createMockUser, createFormData } from '../helpers/mocks';
 import { performDatabaseBackup } from '@/lib/backup';

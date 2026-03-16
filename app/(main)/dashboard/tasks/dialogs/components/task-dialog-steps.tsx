@@ -6,21 +6,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { 
     Flag, 
     ListTodo, 
     Users, 
-    X, 
     Eye, 
     Building2, 
     Calendar, 
     CheckCircle2, 
     Plus, 
-    GripVertical, 
     Trash2,
-    Sparkles
+    Sparkles, 
+    X
 } from "lucide-react";
 import { UserMultiSelect } from "../../components/user-multi-select";
 import { TASK_PRIORITY_CONFIG } from "../../constants";

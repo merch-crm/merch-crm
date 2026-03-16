@@ -2,15 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Plus, Loader2, CheckCircle2, History } from "lucide-react";
+import { Plus, Loader2, CheckCircle2 } from "lucide-react";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { createTask } from "../actions/task-actions";
 import { TASK_PRIORITY_CONFIG, TASK_TYPE_CONFIG } from "../constants";
@@ -227,7 +221,7 @@ export function CreateTaskDialog({
 
           {/* Steps indicator */}
           <div className="flex items-center gap-2 mt-10 p-1.5 bg-slate-50/80 rounded-[22px] w-fit border border-slate-100 shadow-inner">
-            {steps.map((step, index) => (
+            {steps.map((step) => (
               <div key={step.number} className="flex items-center">
                 <button type="button"
                   onClick={() => {
