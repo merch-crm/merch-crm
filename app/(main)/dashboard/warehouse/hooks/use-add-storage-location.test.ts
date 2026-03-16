@@ -101,7 +101,7 @@ describe('useAddStorageLocation', () => {
     });
 
     it('should handle successful submission', async () => {
-        vi.mocked(addStorageLocation).mockResolvedValue({ success: true });
+        vi.mocked(addStorageLocation).mockResolvedValue({ success: true, data: undefined } as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
         const { result } = renderHook(() => useAddStorageLocation());
 
         // Set state that should be reset

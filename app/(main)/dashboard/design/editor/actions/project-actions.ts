@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { editorProjects, editorExports } from "@/lib/schema";
 import { eq, desc, and } from "drizzle-orm";
@@ -233,7 +235,7 @@ export async function deleteEditorProject(id: string): Promise<ActionResult> {
 
         revalidatePath("/dashboard/design/editor");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error deleting project:", error);
         return { success: false, error: "Не удалось удалить проект" };
@@ -259,7 +261,7 @@ export async function autoSaveProject(
             })
             .where(eq(editorProjects.id, id));
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error auto-saving:", error);
         return { success: false, error: "Ошибка автосохранения" };

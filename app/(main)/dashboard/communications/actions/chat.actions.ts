@@ -9,8 +9,6 @@ import {
     users
 } from "@/lib/schema";
 import { eq, and, desc, sql, count, isNull, or, ilike } from "drizzle-orm";
-import { getSession } from "@/lib/session";
-import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -21,6 +19,8 @@ import type {
 } from "@/lib/schema";
 import { SendMessageSchema, CreateConversationSchema } from "./chat.schemas";
 import { ConversationWithDetails, MessageWithSender } from "./chat.types";
+import { type ActionResult, ok } from "@/lib/types";
+import { withAuth } from "@/lib/action-helpers";
 
 
 /**
@@ -34,11 +34,8 @@ export async function getConversations(params: {
     unreadOnly?: boolean;
     limit?: number;
     offset?: number;
-}): Promise<{ success: boolean; data?: ConversationWithDetails[]; total?: number; error?: string }> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+}): Promise<ActionResult<ConversationWithDetails[] & { total: number }>> {
+    return withAuth(async () => {
         const { search, channelType, status, managerId, unreadOnly, limit = 50, offset = 0 } = params;
 
         const conditions = [];
@@ -70,6 +67,7 @@ export async function getConversations(params: {
                 clientAvatar: sql<string | null>`NULL`,
                 channelType: clientConversations.channelType,
                 channelName: sql<string>`COALESCE(${communicationChannels.name}, ${clientConversations.channelType})`,
+                channelNameStatic: communicationChannels.name,
                 channelColor: sql<string>`COALESCE(${communicationChannels.color}, '#6B7280')`,
                 status: clientConversations.status,
                 unreadCount: clientConversations.unreadCount,
@@ -97,22 +95,19 @@ export async function getConversations(params: {
             .limit(limit)
             .offset(offset);
 
-        const conversations = await query;
+        // TypeScript type assertion fix for complex select joins
+        const conversations = await query as unknown as ConversationWithDetails[];
 
-        const [{ total }] = await db
+        const [totalRes] = await db
             .select({ total: count() })
             .from(clientConversations)
             .where(conditions.length > 0 ? and(...conditions) : undefined);
 
-        return {
-            success: true,
-            data: conversations as ConversationWithDetails[],
-            total: Number(total)
-        };
-    } catch (error) {
-        logError({ error, details: { action: "getConversations" } });
-        return { success: false, error: "Не удалось загрузить диалоги" };
-    }
+        const total = Number(totalRes?.total || 0);
+
+        const result = Object.assign(conversations, { total });
+        return ok(result as ConversationWithDetails[] & { total: number });
+    }, { errorPath: "getConversations" });
 }
 
 /**
@@ -122,11 +117,8 @@ export async function getConversationMessages(
     conversationId: string,
     limit: number = 50,
     before?: string
-): Promise<{ success: boolean; data?: MessageWithSender[]; hasMore?: boolean; error?: string }> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-
+): Promise<ActionResult<MessageWithSender[] & { hasMore: boolean }>> {
+    return withAuth(async () => {
         const conditions = [eq(conversationMessages.conversationId, conversationId)];
 
         if (before) {
@@ -175,15 +167,11 @@ export async function getConversationMessages(
             .set({ unreadCount: 0 })
             .where(eq(clientConversations.id, conversationId));
 
-        return {
-            success: true,
-            data: data.reverse() as MessageWithSender[],
-            hasMore
-        };
-    } catch (error) {
-        logError({ error, details: { action: "getConversationMessages", conversationId } });
-        return { success: false, error: "Не удалось загрузить сообщения" };
-    }
+        const result = data.reverse() as MessageWithSender[];
+        const extendedResult = Object.assign(result, { hasMore });
+
+        return ok(extendedResult as MessageWithSender[] & { hasMore: boolean });
+    }, { errorPath: "getConversationMessages" });
 }
 
 /**
@@ -191,11 +179,8 @@ export async function getConversationMessages(
  */
 export async function sendMessage(
     data: z.infer<typeof SendMessageSchema>
-): Promise<{ success: boolean; data?: MessageWithSender; error?: string }> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-
+): Promise<ActionResult<MessageWithSender>> {
+    return withAuth(async (session) => {
         const validated = SendMessageSchema.parse(data);
 
         const [message] = await db
@@ -205,7 +190,7 @@ export async function sendMessage(
                 direction: "outbound",
                 messageType: validated.messageType,
                 content: validated.content,
-                mediaUrl: validated.mediaUrl,
+                mediaUrl: validated.mediaUrl || null,
                 status: "sent",
                 sentById: session.id,
                 sentAt: new Date(),
@@ -234,18 +219,12 @@ export async function sendMessage(
 
         revalidatePath("/dashboard/communications");
 
-        return {
-            success: true,
-            data: {
-                ...message,
-                sentByName: user?.name || null,
-                sentByAvatar: user?.avatar || null,
-            } as MessageWithSender,
-        };
-    } catch (error) {
-        logError({ error, details: { action: "sendMessage", data } });
-        return { success: false, error: "Не удалось отправить сообщение" };
-    }
+        return ok({
+            ...message,
+            sentByName: user?.name || null,
+            sentByAvatar: user?.avatar || null,
+        } as MessageWithSender);
+    }, { errorPath: "sendMessage" });
 }
 
 /**
@@ -253,11 +232,8 @@ export async function sendMessage(
  */
 export async function createConversation(
     data: z.infer<typeof CreateConversationSchema>
-): Promise<{ success: boolean; data?: ClientConversation; error?: string }> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-
+): Promise<ActionResult<ClientConversation>> {
+    return withAuth(async (session) => {
         const validated = CreateConversationSchema.parse(data);
 
         const existing = await db.query.clientConversations.findFirst({
@@ -268,7 +244,7 @@ export async function createConversation(
         });
 
         if (existing) {
-            return { success: true, data: existing };
+            return ok(existing);
         }
 
         const channel = await db.query.communicationChannels.findFirst({
@@ -279,7 +255,7 @@ export async function createConversation(
             .insert(clientConversations)
             .values({
                 clientId: validated.clientId,
-                channelId: channel?.id,
+                channelId: channel?.id || null,
                 channelType: validated.channelType as ChannelType,
                 status: "active",
                 assignedManagerId: session.id,
@@ -295,21 +271,15 @@ export async function createConversation(
 
         revalidatePath("/dashboard/communications");
 
-        return { success: true, data: conversation };
-    } catch (error) {
-        logError({ error, details: { action: "createConversation", data } });
-        return { success: false, error: "Не удалось создать диалог" };
-    }
+        return ok(conversation);
+    }, { errorPath: "createConversation" });
 }
 
 /**
  * Получить диалоги клиента
  */
-export async function getClientConversations(clientId: string) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+export async function getClientConversations(clientId: string): Promise<ActionResult<Record<string, unknown>[]>> {
+    return withAuth(async () => {
         const conversations = await db
             .select({
                 id: clientConversations.id,
@@ -326,9 +296,7 @@ export async function getClientConversations(clientId: string) {
             .where(eq(clientConversations.clientId, clientId))
             .orderBy(desc(clientConversations.lastMessageAt));
 
-        return { success: true, data: conversations };
-    } catch (error) {
-        logError({ error, details: { action: "getClientConversations", clientId } });
-        return { success: false, error: "Не удалось загрузить диалоги клиента" };
-    }
+        // Fix any types by using Record<string, unknown>
+        return ok(conversations as unknown as Record<string, unknown>[]);
+    }, { errorPath: "getClientConversations" });
 }

@@ -43,7 +43,7 @@ export function CategoryItemsList({
 
     return (
         <div className="space-y-3">
-            <ResponsiveDataView
+            <ResponsiveDataView<InventoryItem>
                 data={items || []}
                 renderTable={() => (
                     <div className="table-container">

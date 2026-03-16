@@ -8,25 +8,10 @@ import {
     inventoryCategories,
     storageLocations
 } from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
 import { z } from "zod";
-import { getSession as getAuthSession } from "@/lib/auth";
+import { withAuth } from "@/lib/action-helpers";
+import { ok, type ActionResult } from "@/lib/types";
 import { getBrandingSettings } from "@/lib/branding";
-
-export async function getSession() {
-    try {
-        return await getAuthSession();
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/warehouse-stats-actions",
-            method: "getSession"
-        });
-        return null; // Return null on error as session might be unavailable
-    }
-}
-
-import { type ActionResult } from "@/lib/types";
 
 /**
  * Defined transaction type for the warehouse dashboard
@@ -101,191 +86,149 @@ interface WarehouseStats {
 }
 
 export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>> {
-    const session = await getAuthSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
         thirtyDaysAgo.setHours(0, 0, 0, 0);
 
         const [itemsRes, stockRes, archivedRes, categoriesRes, subCategoriesRes, storagesRes, criticalRes, activityRes, recentTransactionsRes, financialsRes, writeOffRes, topSoldRes, stagnantRes] = await Promise.all([
             // 0. Total Items (non-archived SKUs count)
-            (async () => {
-                const res = await db.select({ count: count() })
-                    .from(inventoryItems)
-                    .where(eq(inventoryItems.isArchived, false));
-                return res;
-            })(),
+            db.select({ count: count() })
+                .from(inventoryItems)
+                .where(eq(inventoryItems.isArchived, false)),
 
             // 1. Total Quantity and Reserved (SUM of units)
-            (async () => {
-                const res = await db.select({
-                    totalQuantity: sql<number>`COALESCE(SUM(${inventoryItems.quantity}), 0)::int`,
-                    totalReserved: sql<number>`COALESCE(SUM(${inventoryItems.reservedQuantity}), 0)::int`,
-                }).from(inventoryItems).where(eq(inventoryItems.isArchived, false));
-                return res;
-            })(),
+            db.select({
+                totalQuantity: sql<number>`COALESCE(SUM(${inventoryItems.quantity}), 0)::int`,
+                totalReserved: sql<number>`COALESCE(SUM(${inventoryItems.reservedQuantity}), 0)::int`,
+            }).from(inventoryItems).where(eq(inventoryItems.isArchived, false)),
 
             // 2. Archived count
-            (async () => {
-                const res = await db.select({ count: count() })
-                    .from(inventoryItems)
-                    .where(eq(inventoryItems.isArchived, true));
-                return res;
-            })(),
+            db.select({ count: count() })
+                .from(inventoryItems)
+                .where(eq(inventoryItems.isArchived, true)),
 
             // 3. Root Categories count
-            (async () => {
-                const res = await db.select({ count: count() })
-                    .from(inventoryCategories)
-                    .where(isNull(inventoryCategories.parentId));
-                return res;
-            })(),
+            db.select({ count: count() })
+                .from(inventoryCategories)
+                .where(isNull(inventoryCategories.parentId)),
 
             // 4. Subcategories count
-            (async () => {
-                const res = await db.select({ count: count() })
-                    .from(inventoryCategories)
-                    .where(isNotNull(inventoryCategories.parentId));
-                return res;
-            })(),
+            db.select({ count: count() })
+                .from(inventoryCategories)
+                .where(isNotNull(inventoryCategories.parentId)),
 
             // 5. Total Storages count
-            (async () => {
-                const res = await db.select({ count: count() })
-                    .from(storageLocations)
-                    .where(eq(storageLocations.isActive, true));
-                return res;
-            })(),
+            db.select({ count: count() })
+                .from(storageLocations)
+                .where(eq(storageLocations.isActive, true)),
 
             // 6. Critical items
-            (async () => {
-                const res = await db.select({
-                    id: inventoryItems.id,
-                    name: inventoryItems.name,
-                    quantity: inventoryItems.quantity,
-                    unit: inventoryItems.unit
-                })
-                    .from(inventoryItems)
-                    .where(and(
-                        eq(inventoryItems.isArchived, false),
-                        sql`${inventoryItems.quantity} <= ${inventoryItems.lowStockThreshold}`
-                    ))
-                    .limit(20);
-                return res;
-            })(),
+            db.select({
+                id: inventoryItems.id,
+                name: inventoryItems.name,
+                quantity: inventoryItems.quantity,
+                unit: inventoryItems.unit
+            })
+                .from(inventoryItems)
+                .where(and(
+                    eq(inventoryItems.isArchived, false),
+                    sql`${inventoryItems.quantity} <= ${inventoryItems.lowStockThreshold}`
+                ))
+                .limit(20),
 
             // 7. Activity counts
-            (async () => {
-                const res = await db.select({
-                    type: inventoryTransactions.type,
-                    reason: inventoryTransactions.reason,
-                    count: sql<number>`count(*)`
-                })
-                    .from(inventoryTransactions)
-                    .where(gte(inventoryTransactions.createdAt, thirtyDaysAgo))
-                    .groupBy(inventoryTransactions.type, inventoryTransactions.reason)
-                    .limit(100);
-                return res;
-            })(),
+            db.select({
+                type: inventoryTransactions.type,
+                reason: inventoryTransactions.reason,
+                count: sql<number>`count(*)`
+            })
+                .from(inventoryTransactions)
+                .where(gte(inventoryTransactions.createdAt, thirtyDaysAgo))
+                .groupBy(inventoryTransactions.type, inventoryTransactions.reason)
+                .limit(100),
 
             // 8. Recent transactions
-            (async () => {
-                const res = await db.query.inventoryTransactions.findMany({
-                    where: inArray(inventoryTransactions.type, ['in', 'transfer']),
-                    with: {
-                        item: true,
-                        storageLocation: true,
-                        fromStorageLocation: true,
-                        creator: {
-                            with: {
-                                role: true
-                            }
-                        },
+            db.query.inventoryTransactions.findMany({
+                where: inArray(inventoryTransactions.type, ['in', 'transfer']),
+                with: {
+                    item: true,
+                    storageLocation: true,
+                    fromStorageLocation: true,
+                    creator: {
+                        with: {
+                            role: true
+                        }
                     },
-                    orderBy: [desc(inventoryTransactions.createdAt)],
-                    limit: 100
-                });
-                return res;
-            })(),
+                },
+                orderBy: [desc(inventoryTransactions.createdAt)],
+                limit: 100
+            }),
 
             // 9. Financial aggregations (cost, retail, frozen)
-            (async () => {
-                const res = await db.select({
-                    totalCostValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
-                    totalRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
-                    frozenCostValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
-                    frozenRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
-                }).from(inventoryItems).where(eq(inventoryItems.isArchived, false));
-                return res;
-            })(),
+            db.select({
+                totalCostValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
+                totalRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.quantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
+                frozenCostValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
+                frozenRetailValue: sql<string>`COALESCE(SUM(${inventoryItems.reservedQuantity}::numeric * COALESCE(${inventoryItems.sellingPrice}, 0)), 0)`,
+            }).from(inventoryItems).where(eq(inventoryItems.isArchived, false)),
 
             // 10. Write-off value for last 30 days
-            (async () => {
-                const res = await db.select({
-                    writeOffValue: sql<string>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
-                })
-                    .from(inventoryTransactions)
-                    .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
-                    .where(and(
-                        eq(inventoryTransactions.type, 'out'),
-                        gte(inventoryTransactions.createdAt, thirtyDaysAgo)
-                    ));
-                return res;
-            })(),
+            db.select({
+                writeOffValue: sql<string>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})::numeric * COALESCE(${inventoryItems.costPrice}, 0)), 0)`,
+            })
+                .from(inventoryTransactions)
+                .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
+                .where(and(
+                    eq(inventoryTransactions.type, 'out'),
+                    gte(inventoryTransactions.createdAt, thirtyDaysAgo)
+                )),
 
             // 11. Top-5 sold items
-            (async () => {
-                const res = await db.select({
-                    id: inventoryItems.id,
-                    name: inventoryItems.name,
-                    unit: inventoryItems.unit,
-                    totalSold: sql<number>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})), 0)::int`,
-                })
-                    .from(inventoryTransactions)
-                    .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
-                    .where(and(
-                        eq(inventoryTransactions.type, 'out'),
-                        gte(inventoryTransactions.createdAt, thirtyDaysAgo),
-                        eq(inventoryItems.isArchived, false)
-                    ))
-                    .groupBy(inventoryItems.id, inventoryItems.name, inventoryItems.unit)
-                    .orderBy(sql`SUM(ABS(${inventoryTransactions.changeAmount})) DESC`)
-                    .limit(5);
-                return res;
-            })(),
+            db.select({
+                id: inventoryItems.id,
+                name: inventoryItems.name,
+                unit: inventoryItems.unit,
+                totalSold: sql<number>`COALESCE(SUM(ABS(${inventoryTransactions.changeAmount})), 0)::int`,
+            })
+                .from(inventoryTransactions)
+                .innerJoin(inventoryItems, eq(inventoryTransactions.itemId, inventoryItems.id))
+                .where(and(
+                    eq(inventoryTransactions.type, 'out'),
+                    gte(inventoryTransactions.createdAt, thirtyDaysAgo),
+                    eq(inventoryItems.isArchived, false)
+                ))
+                .groupBy(inventoryItems.id, inventoryItems.name, inventoryItems.unit)
+                .orderBy(sql`SUM(ABS(${inventoryTransactions.changeAmount})) DESC`)
+                .limit(5),
 
             // 12. Stagnant items
-            (async () => {
-                const res = await db.select({
-                    id: inventoryItems.id,
-                    name: inventoryItems.name,
-                    quantity: inventoryItems.quantity,
-                    unit: inventoryItems.unit,
-                    lastActivityAt: sql<Date | null>`(
-                        SELECT MAX(created_at)
-                        FROM inventory_transactions
+            db.select({
+                id: inventoryItems.id,
+                name: inventoryItems.name,
+                quantity: inventoryItems.quantity,
+                unit: inventoryItems.unit,
+                lastActivityAt: sql<Date | null>`(
+                    SELECT MAX(created_at)
+                    FROM inventory_transactions
+                    WHERE inventory_transactions.item_id = ${inventoryItems.id}
+                )`,
+            })
+                .from(inventoryItems)
+                .where(and(
+                    eq(inventoryItems.isArchived, false),
+                    sql`NOT EXISTS (
+                        SELECT 1 FROM inventory_transactions
                         WHERE inventory_transactions.item_id = ${inventoryItems.id}
-                    )`,
-                })
-                    .from(inventoryItems)
-                    .where(and(
-                        eq(inventoryItems.isArchived, false),
-                        sql`NOT EXISTS (
-                            SELECT 1 FROM inventory_transactions
-                            WHERE inventory_transactions.item_id = ${inventoryItems.id}
-                            AND inventory_transactions.created_at >= ${thirtyDaysAgo}
-                        )`
-                    ))
-                    .orderBy(sql`(
-                        SELECT MAX(created_at)
-                        FROM inventory_transactions
-                        WHERE inventory_transactions.item_id = ${inventoryItems.id}
-                    ) ASC NULLS FIRST`)
-                    .limit(50);
-                return res;
-            })(),
+                        AND inventory_transactions.created_at >= ${thirtyDaysAgo}
+                    )`
+                ))
+                .orderBy(sql`(
+                    SELECT MAX(created_at)
+                    FROM inventory_transactions
+                    WHERE inventory_transactions.item_id = ${inventoryItems.id}
+                ) ASC NULLS FIRST`)
+                .limit(50),
         ]);
 
 
@@ -303,89 +246,58 @@ export async function getWarehouseStats(): Promise<ActionResult<WarehouseStats>>
             }
         });
 
-        const [branding] = await Promise.all([getBrandingSettings()]);
+        const branding = await getBrandingSettings();
         const currencySymbol = branding.currencySymbol || '₽';
 
-        return {
-            success: true,
-            data: {
-                totalItems: Number(itemsRes[0]?.count || 0),
-                totalQuantity: Number(stockRes[0]?.totalQuantity || 0),
-                totalReserved: Number(stockRes[0]?.totalReserved || 0),
-                totalStorages: Number(storagesRes[0]?.count || 0),
-                archivedCount: Number(archivedRes[0]?.count || 0),
-                totalCategories: Number(categoriesRes[0]?.count || 0),
-                totalSubCategories: Number(subCategoriesRes[0]?.count || 0),
-                criticalItems: criticalRes,
-                activity,
-                financials: {
-                    totalCostValue: parseFloat(financialsRes[0]?.totalCostValue || '0'),
-                    totalRetailValue: parseFloat(financialsRes[0]?.totalRetailValue || '0'),
-                    frozenCostValue: parseFloat(financialsRes[0]?.frozenCostValue || '0'),
-                    frozenRetailValue: parseFloat(financialsRes[0]?.frozenRetailValue || '0'),
-                    writeOffValue30d: parseFloat(writeOffRes[0]?.writeOffValue || '0'),
-                },
-                currencySymbol,
-                recentTransactions: recentTransactionsRes || [],
-                topSoldItems: topSoldRes || [],
-                stagnantItems: stagnantRes || [],
-            }
-        };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/warehouse-stats-actions",
-            method: "getWarehouseStats"
+        return ok({
+            totalItems: Number(itemsRes[0]?.count || 0),
+            totalQuantity: Number(stockRes[0]?.totalQuantity || 0),
+            totalReserved: Number(stockRes[0]?.totalReserved || 0),
+            totalStorages: Number(storagesRes[0]?.count || 0),
+            archivedCount: Number(archivedRes[0]?.count || 0),
+            totalCategories: Number(categoriesRes[0]?.count || 0),
+            totalSubCategories: Number(subCategoriesRes[0]?.count || 0),
+            criticalItems: criticalRes,
+            activity,
+            financials: {
+                totalCostValue: parseFloat(financialsRes[0]?.totalCostValue || '0'),
+                totalRetailValue: parseFloat(financialsRes[0]?.totalRetailValue || '0'),
+                frozenCostValue: parseFloat(financialsRes[0]?.frozenCostValue || '0'),
+                frozenRetailValue: parseFloat(financialsRes[0]?.frozenRetailValue || '0'),
+                writeOffValue30d: parseFloat(writeOffRes[0]?.writeOffValue || '0'),
+            },
+            currencySymbol,
+            recentTransactions: (recentTransactionsRes as unknown as RecentTransaction[]) || [],
+            topSoldItems: topSoldRes || [],
+            stagnantItems: stagnantRes || [],
         });
-        return { success: false, error: "Не удалось загрузить статистику склада" };
-    }
+    }, { errorPath: "getWarehouseStats" });
 }
 
-export async function findItemBySKU(sku: string): Promise<string | null> {
-    const session = await getAuthSession();
-    if (!session) return null;
+export async function findItemBySKU(sku: string): Promise<ActionResult<string | null>> {
+    return withAuth(async () => {
+        const validation = z.string().min(1).max(100).safeParse(sku);
+        if (!validation.success) return ok(null);
 
-    const validation = z.string().min(1).max(100).safeParse(sku);
-    if (!validation.success) return null;
-
-    try {
         const item = await db.query.inventoryItems.findFirst({
             where: eq(inventoryItems.sku, validation.data),
             columns: { id: true }
         });
-        return item?.id || null;
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/warehouse-stats-actions",
-            method: "findItemBySKU",
-            details: { sku }
-        });
-        return null;
-    }
+        return ok(item?.id || null);
+    }, { errorPath: "findItemBySKU" });
 }
 
 /**
  * Get all users with names and IDs
  */
 export async function getAllUsers(): Promise<ActionResult<{ id: string; name: string; roleName?: string }[]>> {
-    const session = await getAuthSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const allUsers = await db.query.users.findMany({
             columns: { id: true, name: true },
             with: { role: { columns: { name: true } } },
             orderBy: (users, { asc }) => [asc(users.name)],
             limit: 1000
         });
-        return { success: true, data: allUsers.map(u => ({ id: u.id, name: u.name, roleName: u.role?.name })) };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/warehouse-stats-actions",
-            method: "getAllUsers"
-        });
-        return { success: false, error: "Не удалось загрузить список пользователей" };
-    }
+        return ok(allUsers.map(u => ({ id: u.id, name: u.name, roleName: u.role?.name })));
+    }, { errorPath: "getAllUsers" });
 }

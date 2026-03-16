@@ -12,9 +12,8 @@ import {
     productLines,
 } from "@/lib/schema";
 import { invalidateCache } from "@/lib/redis";
+import { withAuth } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { generateId } from "@/lib/utils";
 
@@ -23,6 +22,9 @@ import {
     DesignWithFullData,
     ActionResult,
     VersionWithFiles,
+    ok,
+    okVoid,
+    ERRORS
 } from "@/lib/types";
 
 
@@ -38,13 +40,10 @@ const DesignSchema = z.object({
 export async function getDesignsByCollection(collectionId: string): Promise<ActionResult<DesignWithVersionsCount[]>> {
     const idValidation = z.string().uuid().safeParse(collectionId);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID коллекции" };
+        return ERRORS.VALIDATION("Некорректный ID коллекции");
     }
 
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const designs = await db
             .select({
                 id: printDesigns.id,
@@ -61,12 +60,12 @@ export async function getDesignsByCollection(collectionId: string): Promise<Acti
                 createdAt: printDesigns.createdAt,
                 updatedAt: printDesigns.updatedAt,
                 versionsCount: sql<number>`(
-                    SELECT COUNT(*)::int 
-                    FROM print_design_versions 
+                    SELECT COUNT(*)::int
+                    FROM print_design_versions
                     WHERE print_design_versions.design_id = print_designs.id
                 )`,
                 filesCount: sql<number>`(
-                    SELECT COUNT(*)::int 
+                    SELECT COUNT(*)::int
                     FROM print_design_files
                     JOIN print_design_versions ON print_design_files.version_id = print_design_versions.id
                     WHERE print_design_versions.design_id = print_designs.id
@@ -76,28 +75,17 @@ export async function getDesignsByCollection(collectionId: string): Promise<Acti
             .where(eq(printDesigns.collectionId, idValidation.data))
             .orderBy(asc(printDesigns.sortOrder), asc(printDesigns.name));
 
-        return { success: true, data: designs as DesignWithVersionsCount[] };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/design-actions",
-            method: "getDesignsByCollection",
-            details: { collectionId },
-        });
-        return { success: false, error: "Не удалось загрузить макеты" };
-    }
+        return ok(designs as DesignWithVersionsCount[]);
+    }, { errorPath: "getDesignsByCollection" });
 }
 
 export async function getDesignById(id: string): Promise<ActionResult<DesignWithFullData>> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID макета" };
+        return ERRORS.VALIDATION("Некорректный ID макета");
     }
 
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const [design] = await db
             .select()
             .from(printDesigns)
@@ -105,7 +93,7 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
             .limit(1);
 
         if (!design) {
-            return { success: false, error: "Макет не найден" };
+            return ERRORS.NOT_FOUND("Макет");
         }
 
         const [collection] = await db
@@ -155,28 +143,17 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
             .where(eq(printDesignMockups.designId, idValidation.data))
             .orderBy(asc(printDesignMockups.sortOrder));
 
-        return {
-            success: true,
-            data: {
-                ...design,
-                collection,
-                versions: versionsWithFiles,
-                linkedLines: linkedLines.map(line => ({
-                    ...line,
-                    categoryName: line.categoryName || "Без категории"
-                })),
-                mockups,
-            } as DesignWithFullData
-        };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/design-actions",
-            method: "getDesignById",
-            details: { id },
-        });
-        return { success: false, error: "Не удалось загрузить макет" };
-    }
+        return ok({
+            ...design,
+            collection,
+            versions: versionsWithFiles,
+            linkedLines: linkedLines.map(line => ({
+                ...line,
+                categoryName: line.categoryName || "Без категории"
+            })),
+            mockups,
+        } as DesignWithFullData);
+    }, { errorPath: "getDesignById" });
 }
 
 export async function createDesign(data: {
@@ -185,15 +162,10 @@ export async function createDesign(data: {
     description?: string | null;
     preview?: string | null;
 }): Promise<ActionResult<PrintDesign>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
     const validated = DesignSchema.safeParse(data);
-    if (!validated.success) {
-        return { success: false, error: validated.error.issues[0].message };
-    }
+    if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
-    try {
+    return withAuth(async () => {
         const [collection] = await db
             .select({ id: printCollections.id })
             .from(printCollections)
@@ -201,7 +173,7 @@ export async function createDesign(data: {
             .limit(1);
 
         if (!collection) {
-            return { success: false, error: "Коллекция не найдена" };
+            return ERRORS.NOT_FOUND("Коллекция");
         }
 
         const [design] = await db
@@ -223,15 +195,8 @@ export async function createDesign(data: {
         invalidateCache("design:collections");
         revalidatePath(`/dashboard/design/prints/${validated.data.collectionId}`);
 
-        return { success: true, data: design };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/design-actions",
-            method: "createDesign",
-        });
-        return { success: false, error: "Не удалось создать макет" };
-    }
+        return ok(design);
+    }, { errorPath: "createDesign" });
 }
 
 export async function updateDesign(
@@ -239,14 +204,9 @@ export async function updateDesign(
     data: Partial<PrintDesign>
 ): Promise<ActionResult<PrintDesign>> {
     const idValidation = z.string().uuid().safeParse(id);
-    if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID макета" };
-    }
+    if (!idValidation.success) return ERRORS.VALIDATION("Некорректный ID макета");
 
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const [design] = await db
             .update(printDesigns)
             .set({
@@ -257,7 +217,7 @@ export async function updateDesign(
             .returning();
 
         if (!design) {
-            return { success: false, error: "Макет не найден" };
+            return ERRORS.NOT_FOUND("Макет");
         }
 
         await logAction("Обновлён макет дизайна", "print_design", id, {
@@ -268,28 +228,15 @@ export async function updateDesign(
         revalidatePath(`/dashboard/design/prints/${design.collectionId}`);
         revalidatePath(`/dashboard/design/prints/${design.collectionId}/${id}`);
 
-        return { success: true, data: design };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/design-actions",
-            method: "updateDesign",
-            details: { id },
-        });
-        return { success: false, error: "Не удалось обновить макет" };
-    }
+        return ok(design);
+    }, { errorPath: "updateDesign" });
 }
 
 export async function deleteDesign(id: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
-    if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID макета" };
-    }
+    if (!idValidation.success) return ERRORS.VALIDATION("Некорректный ID макета");
 
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async (session) => {
         const [design] = await db
             .select({
                 collectionId: printDesigns.collectionId,
@@ -301,12 +248,12 @@ export async function deleteDesign(id: string): Promise<ActionResult> {
             .limit(1);
 
         if (!design) {
-            return { success: false, error: "Макет не найден" };
+            return ERRORS.NOT_FOUND("Макет");
         }
 
         const isAdmin = session.roleName === "Администратор" || session.roleName === "Руководство";
         if (!isAdmin && design.creator !== session.id) {
-            return { success: false, error: "Недостаточно прав для удаления" }
+            return ERRORS.FORBIDDEN("Вы не можете удалить этот макет");
         }
 
         await db.delete(printDesigns).where(eq(printDesigns.id, idValidation.data));
@@ -316,25 +263,14 @@ export async function deleteDesign(id: string): Promise<ActionResult> {
         invalidateCache("design:collections");
         revalidatePath(`/dashboard/design/prints/${design.collectionId}`);
 
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/design-actions",
-            method: "deleteDesign",
-            details: { id },
-        });
-        return { success: false, error: "Не удалось удалить макет" };
-    }
+        return okVoid();
+    }, { errorPath: "deleteDesign" });
 }
 
 export async function setDesignPreview(designId: string, fileId: string): Promise<ActionResult<PrintDesign>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const [file] = await db.select().from(printDesignFiles).where(eq(printDesignFiles.id, fileId)).limit(1);
-        if (!file) return { success: false, error: "Файл не найден" };
+        if (!file) return ERRORS.NOT_FOUND("Файл");
 
         const [design] = await db
             .update(printDesigns)
@@ -342,27 +278,21 @@ export async function setDesignPreview(designId: string, fileId: string): Promis
             .where(eq(printDesigns.id, designId))
             .returning();
 
-        if (!design) return { success: false, error: "Макет не найден" };
+        if (!design) return ERRORS.NOT_FOUND("Макет");
 
         invalidateCache("design:collections");
         revalidatePath(`/dashboard/design/prints/${design.collectionId}`);
         revalidatePath(`/dashboard/design/prints/${design.collectionId}/${designId}`);
 
-        return { success: true, data: design };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions/design-actions", method: "setDesignPreview", details: { designId, fileId } });
-        return { success: false, error: "Не удалось обновить превью" };
-    }
+        return ok(design);
+    }, { errorPath: "setDesignPreview" });
 }
 
 export async function updateDesignsOrder(
     collectionId: string,
     items: { id: string; sortOrder: number }[]
 ): Promise<ActionResult<void>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         await db.transaction(async (tx) => {
             for (const item of items) {
                 await tx
@@ -375,40 +305,24 @@ export async function updateDesignsOrder(
         invalidateCache("design:collections");
         revalidatePath(`/dashboard/design/prints/${collectionId}`);
 
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/design/prints/actions/design-actions",
-            method: "updateDesignsOrder",
-        });
-        return { success: false, error: "Не удалось обновить порядок макетов" };
-    }
+        return okVoid();
+    }, { errorPath: "updateDesignsOrder" });
 }
 
 export async function getPrintsStats(): Promise<ActionResult<{ collections: number, designs: number, versions: number, files: number, linkedLines: number }>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const [collectionsCount] = await db.select({ count: sql<number>`count(*)::int` }).from(printCollections);
         const [designsCount] = await db.select({ count: sql<number>`count(*)::int` }).from(printDesigns);
         const [versionsCount] = await db.select({ count: sql<number>`count(*)::int` }).from(printDesignVersions);
         const [filesCount] = await db.select({ count: sql<number>`count(*)::int` }).from(printDesignFiles);
         const [linkedLinesCount] = await db.select({ count: sql<number>`count(*)::int` }).from(productLines).where(sql`${productLines.printCollectionId} IS NOT NULL`);
 
-        return {
-            success: true,
-            data: {
-                collections: collectionsCount.count,
-                designs: designsCount.count,
-                versions: versionsCount.count,
-                files: filesCount.count,
-                linkedLines: linkedLinesCount.count,
-            }
-        };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/design/prints/actions/design-actions", method: "getPrintsStats" });
-        return { success: false, error: "Не удалось получить статистику" };
-    }
+        return ok({
+            collections: collectionsCount.count,
+            designs: designsCount.count,
+            versions: versionsCount.count,
+            files: filesCount.count,
+            linkedLines: linkedLinesCount.count,
+        });
+    }, { errorPath: "getPrintsStats" });
 }

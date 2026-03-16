@@ -293,6 +293,8 @@ export const productionTasks = pgTable("production_tasks", {
     defectCategoryIdx: index("idx_production_tasks_defect_category")
         .on(table.defectCategory)
         .where(sql`${table.defectQuantity} > 0`),
+    // Контроль целостности количества
+    quantityCheck: sql`CHECK (completed_quantity + defect_quantity <= quantity)`,
 }));
 
 // === ЛОГИ ПРОИЗВОДСТВА ===

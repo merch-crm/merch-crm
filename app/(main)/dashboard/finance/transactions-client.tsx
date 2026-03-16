@@ -191,7 +191,7 @@ export function TransactionsClient({
             </div>
 
             <div className="crm-card border-none bg-white overflow-hidden shadow-sm">
-                <ResponsiveDataView
+                <ResponsiveDataView<Transaction>
                     data={filtered}
                     mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                     desktopClassName="hidden md:block"

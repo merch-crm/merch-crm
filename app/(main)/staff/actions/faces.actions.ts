@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { employeeFaces, users } from "@/lib/schema";
 import { getSession } from "@/lib/session";
@@ -227,7 +229,7 @@ export async function deleteFace(faceId: string) {
 
         revalidatePath("/staff/employees");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

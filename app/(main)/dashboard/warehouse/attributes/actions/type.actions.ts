@@ -10,12 +10,11 @@ import {
     inventoryTransactions,
     accounts
 } from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { comparePassword } from "@/lib/password";
 import { refreshWarehouse } from "../../warehouse-shared.actions";
 import { AttributeTypeSchema } from "../../validation";
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult, okVoid, ok, ERRORS } from "@/lib/types";
 
 export type AttributeType = InferSelectModel<typeof inventoryAttributeTypes>;
 
@@ -23,22 +22,12 @@ export type AttributeType = InferSelectModel<typeof inventoryAttributeTypes>;
  * Get all inventory attribute types
  */
 export async function getInventoryAttributeTypes(): Promise<ActionResult<AttributeType[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const types = await db.select().from(inventoryAttributeTypes)
             .orderBy(asc(inventoryAttributeTypes.sortOrder), asc(inventoryAttributeTypes.createdAt))
             .limit(100);
-        return { success: true, data: types };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "getInventoryAttributeTypes"
-        });
-        return { success: false, error: "Failed to fetch attribute types" };
-    }
+        return ok(types);
+    }, { errorPath: "getInventoryAttributeTypes" });
 }
 
 /**
@@ -47,58 +36,50 @@ export async function getInventoryAttributeTypes(): Promise<ActionResult<Attribu
 export async function createInventoryAttributeType(
     rawInput: unknown
 ): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
+    return withAuth(async (session) => {
+        const validation = AttributeTypeSchema.safeParse(rawInput);
+        if (!validation.success) {
+            return ERRORS.VALIDATION(validation.error.issues[0].message);
+        }
 
-    const validation = AttributeTypeSchema.safeParse(rawInput);
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
+        const { name, slug, isSystem, showInSku, showInName, dataType, hasColor, hasUnits, hasComposition } = validation.data;
+        const categoryId = validation.data.category || null;
 
-    const { name, slug, isSystem, showInSku, showInName, dataType, hasColor, hasUnits, hasComposition } = validation.data;
-    const categoryId = validation.data.category;
-
-    try {
         const baseSlug = slug.toLowerCase().replace(/[^a-z0-9_]/g, "_");
-        const resolvedCategoryId = categoryId || null;
 
         // --- EXPLICIT DUPLICATE CHECK ---
-        // 1. Check if this dataType already exists in this category
         const existingByType = await db
-            .select({ id: inventoryAttributeTypes.id, name: inventoryAttributeTypes.name })
+            .select({ id: inventoryAttributeTypes.id })
             .from(inventoryAttributeTypes)
             .where(
                 and(
                     eq(inventoryAttributeTypes.dataType, dataType),
-                    resolvedCategoryId
-                        ? eq(inventoryAttributeTypes.categoryId, resolvedCategoryId)
+                    categoryId
+                        ? eq(inventoryAttributeTypes.categoryId, categoryId)
                         : isNull(inventoryAttributeTypes.categoryId)
                 )
             )
             .limit(1);
 
         if (existingByType.length > 0) {
-            return { success: false, error: `Характеристика типа «${name}» уже существует в этой категории` };
+            return ERRORS.VALIDATION(`Характеристика типа «${name}» уже существует в этой категории`);
         }
 
-        // 2. Check if a type with the same slug/name already exists
         const existingBySlug = await db
             .select({ id: inventoryAttributeTypes.id })
             .from(inventoryAttributeTypes)
             .where(
                 and(
                     eq(inventoryAttributeTypes.slug, baseSlug),
-                    resolvedCategoryId
-                        ? eq(inventoryAttributeTypes.categoryId, resolvedCategoryId)
+                    categoryId
+                        ? eq(inventoryAttributeTypes.categoryId, categoryId)
                         : isNull(inventoryAttributeTypes.categoryId)
                 )
             )
             .limit(1);
 
         if (existingBySlug.length > 0) {
-            return { success: false, error: `Характеристика с названием «${name}» уже существует в этой категории` };
+            return ERRORS.VALIDATION(`Характеристика с названием «${name}» уже существует в этой категории`);
         }
 
         const cleanSlug = baseSlug;
@@ -107,7 +88,7 @@ export async function createInventoryAttributeType(
             await tx.insert(inventoryAttributeTypes).values({
                 name,
                 slug: cleanSlug,
-                categoryId: resolvedCategoryId,
+                categoryId: categoryId,
                 isSystem,
                 showInSku,
                 showInName,
@@ -196,25 +177,11 @@ export async function createInventoryAttributeType(
         });
 
         refreshWarehouse();
-        return { success: true };
-    } catch (error: unknown) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "createInventoryAttributeType",
-            details: { name, slug }
-        });
-
-        // Surface real DB errors for debugging; unique-violation code 23505
-        const err = error as { code?: string; message?: string };
-        const isUniqueViolation = err?.code === "23505" || err?.message?.includes("unique");
-
-        return {
-            success: false, error: isUniqueViolation
-                ? "Характеристика с таким названием уже существует в этой категории"
-                : (err?.message || "Ошибка создания характеристики")
-        };
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "createInventoryAttributeType" 
+    });
 }
 
 /**
@@ -223,29 +190,23 @@ export async function createInventoryAttributeType(
 export async function deleteInventoryAttributeType(id: string, password?: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID типа атрибута" };
+        return ERRORS.VALIDATION("Некорректный ID типа атрибута");
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-
-    try {
+    return withAuth(async (session) => {
         const [type] = await db.select().from(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id)).limit(1);
-        if (!type) return { success: false, error: "Тип не найден" };
+        if (!type) return ERRORS.NOT_FOUND("Тип атрибута");
 
         const isAdmin = session.roleName === "Администратор";
 
         if (type.isSystem) {
             if (!isAdmin) {
-                return { success: false, error: "Системные разделы может удалять только Администратор" };
+                return ERRORS.FORBIDDEN("Системные разделы может удалять только Администратор");
             }
             if (!password) {
-                return { success: false, error: "Для удаления системного раздела требуется пароль от вашей учетной записи" };
+                return ERRORS.VALIDATION("Для удаления системного раздела требуется пароль от вашей учетной записи");
             }
 
-            // Получаем хеш пароля пользователя из таблицы accounts
             const userAccount = await db.query.accounts.findFirst({
                 where: and(
                     eq(accounts.userId, session.id),
@@ -254,56 +215,49 @@ export async function deleteInventoryAttributeType(id: string, password?: string
             });
 
             if (!userAccount || !userAccount.password) {
-                return { success: false, error: "У пользователя не установлен пароль в Better Auth" };
+                return ERRORS.VALIDATION("У пользователя не установлен пароль в Better Auth");
             }
 
             const isMatch = await comparePassword(password, userAccount.password);
             if (!isMatch) {
-                return { success: false, error: "Неверный пароль" };
+                return ERRORS.VALIDATION("Неверный пароль");
             }
         }
 
-        // 1. Find all child attributes for this type
         const childAttrs = await db.select({ id: inventoryAttributes.id })
             .from(inventoryAttributes)
             .where(eq(inventoryAttributes.type, type.slug))
             .limit(1000);
 
-        if (childAttrs.length > 0) {
-            const childAttrIds = childAttrs.map(a => a.id);
+        await db.transaction(async (tx) => {
+            if (childAttrs.length > 0) {
+                const childAttrIds = childAttrs.map(a => a.id);
 
-            // 2. Delete item-attribute join rows (to avoid FK restrict violation)
-            await db.delete(inventoryItemAttributes)
-                .where(inArray(inventoryItemAttributes.attributeId, childAttrIds));
+                await tx.delete(inventoryItemAttributes)
+                    .where(inArray(inventoryItemAttributes.attributeId, childAttrIds));
 
-            // 3. Delete the attribute values themselves
-            await db.delete(inventoryAttributes)
-                .where(eq(inventoryAttributes.type, type.slug));
-        }
+                await tx.delete(inventoryAttributes)
+                    .where(eq(inventoryAttributes.type, type.slug));
+            }
 
-        // 4. Delete the attribute type
-        await db.delete(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
+            await tx.delete(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id));
 
-        await db.insert(inventoryTransactions).values({
-            type: "attribute_change",
-            reason: `Удален тип атрибута: ${type.name}${childAttrs.length > 0 ? ` (вместе с ${childAttrs.length} значениями)` : ''}`,
-            createdBy: session.id,
+            await tx.insert(inventoryTransactions).values({
+                type: "attribute_change",
+                reason: `Удален тип атрибута: ${type.name}${childAttrs.length > 0 ? ` (вместе с ${childAttrs.length} значениями)` : ''}`,
+                createdBy: session.id,
+            });
         });
 
         const { logAction } = await import("@/lib/audit");
         await logAction("Удален тип атрибута", "inventory_attribute_type", id, { name: type.name });
 
         refreshWarehouse();
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "deleteInventoryAttributeType",
-            details: { id }
-        });
-        return { success: false, error: "Не удалось удалить раздел" };
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "deleteInventoryAttributeType" 
+    });
 }
 
 /**
@@ -315,44 +269,36 @@ export async function updateInventoryAttributeType(
 ): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID типа атрибута" };
+        return ERRORS.VALIDATION("Некорректный ID типа атрибута");
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
+    return withAuth(async (session) => {
+        const validation = AttributeTypeSchema.safeParse(rawInput);
+        if (!validation.success) {
+            return ERRORS.VALIDATION(validation.error.issues[0].message);
+        }
 
-    const validation = AttributeTypeSchema.safeParse(rawInput);
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
+        const { name, isSystem, showInSku, showInName, dataType, hasColor, hasUnits, hasComposition } = validation.data;
+        const categoryId = validation.data.category || null;
 
-    const { name, isSystem, showInSku, showInName, dataType, hasColor, hasUnits, hasComposition } = validation.data;
-    const categoryId = validation.data.category;
+        await db.transaction(async (tx) => {
+            await tx.update(inventoryAttributeTypes)
+                .set({ name, categoryId, isSystem, showInSku, showInName, dataType, hasColor, hasUnits, hasComposition })
+                .where(eq(inventoryAttributeTypes.id, id));
 
-    try {
-        await db.update(inventoryAttributeTypes)
-            .set({ name, categoryId, isSystem, showInSku, showInName, dataType, hasColor, hasUnits, hasComposition })
-            .where(eq(inventoryAttributeTypes.id, id));
-
-        await db.insert(inventoryTransactions).values({
-            type: "attribute_change",
-            reason: `Изменен тип атрибута: ${name}`,
-            createdBy: session.id,
+            await tx.insert(inventoryTransactions).values({
+                type: "attribute_change",
+                reason: `Изменен тип атрибута: ${name}`,
+                createdBy: session.id,
+            });
         });
 
         refreshWarehouse();
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "updateInventoryAttributeType",
-            details: { id }
-        });
-        return { success: false, error: "Не удалось обновить раздел" };
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "updateInventoryAttributeType" 
+    });
 }
 
 /**
@@ -361,12 +307,7 @@ export async function updateInventoryAttributeType(
 export async function reorderInventoryAttributeTypes(
     updates: { id: string; sortOrder: number }[]
 ): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-
-    try {
+    return withAuth(async () => {
         await db.transaction(async (tx) => {
             for (const update of updates) {
                 await tx.update(inventoryAttributeTypes)
@@ -376,13 +317,9 @@ export async function reorderInventoryAttributeTypes(
         });
 
         refreshWarehouse();
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/type.actions",
-            method: "reorderInventoryAttributeTypes"
-        });
-        return { success: false, error: "Не удалось сохранить порядок" };
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "reorderInventoryAttributeTypes" 
+    });
 }

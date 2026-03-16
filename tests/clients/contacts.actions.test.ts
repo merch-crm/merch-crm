@@ -47,7 +47,8 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { mockSession } from '../helpers/mocks';
 
 describe('Contacts Actions', () => {

@@ -1,5 +1,5 @@
 import React from"react";
-import { getCurrentUserAction } from"./actions/users.actions";;
+import { getCurrentUserAction } from "./actions/users.actions";
 import { getNotifications } from"@/components/notifications/actions";
 import { getBrandingAction } from"@/app/(main)/admin-panel/actions";
 import { BrandingSettings } from"@/lib/types";
@@ -11,7 +11,7 @@ export default async function AdminLayout({
     children: React.ReactNode;
 }) {
     const res = await getCurrentUserAction();
-    const currentUser = res.data || null;
+    const currentUser = res.success ? res.data : null;
 
     // Fetch notifications and branding
     const notifications = await getNotifications();
@@ -29,8 +29,8 @@ export default async function AdminLayout({
         name: currentUser.name,
         email: currentUser.email,
         avatar: currentUser.avatar,
-        roleName: currentUser.role?.name ||"Администратор",
-        departmentName: currentUser.department?.name ||"Руководство"
+        roleName: currentUser.role?.name || "Администратор",
+        departmentName: currentUser.department?.name || "Руководство"
     } : null;
 
     if (!currentUser || !user) return null;

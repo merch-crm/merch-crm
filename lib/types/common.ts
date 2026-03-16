@@ -1,164 +1,167 @@
-// @/lib/types/common.ts
+/**
+ * Discriminated union для результатов server actions.
+ * 
+ * При success: true — TypeScript знает, что есть data
+ * При success: false — TypeScript знает, что есть error
+ * 
+ * @example
+ * const result = await getOrders();
+ * if (result.success) {
+ *   console.log(result.data); // ✅ TypeScript знает что data существует
+ * } else {
+ *   console.log(result.error); // ✅ TypeScript знает что error существует
+ * }
+ */
+export type ActionResult<T = void> = 
+  | ActionSuccess<T>
+  | ActionFailure;
 
-// Пагинация
-export interface Pagination {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
+export interface ActionSuccess<T> {
+  success: true;
+  data: T;
 }
 
-export interface PaginationParams {
-    page?: number;
-    pageSize?: number;
+export interface ActionFailure {
+  success: false;
+  error: string;
+  code?: ErrorCode;
+  issues?: string[];
 }
 
-// Сортировка
-export type SortDirection = "asc" | "desc";
-
-export interface SortOrder {
-    field: string;
-    direction: SortDirection;
+/**
+ * Type guard для проверки успешности результата
+ */
+export function isSuccess<T>(result: ActionResult<T>): result is ActionSuccess<T> {
+  return result.success;
 }
 
-export interface SortParams {
-    sortBy?: string;
-    sortDirection?: SortDirection;
+/**
+ * Коды ошибок для программной обработки
+ */
+export type ErrorCode = 
+  | 'UNAUTHORIZED'
+  | 'FORBIDDEN'
+  | 'NOT_FOUND'
+  | 'VALIDATION_ERROR'
+  | 'CONFLICT'
+  | 'INTERNAL_ERROR'
+  | 'RATE_LIMITED'
+  | 'INSUFFICIENT_STOCK';
+
+// ═══════════════════════════════════════════════════════════
+// Хелперы для создания результатов
+// ═══════════════════════════════════════════════════════════
+
+/**
+ * Создаёт успешный результат с данными
+ * @example return ok(users);
+ */
+export function ok<T>(data: T): ActionSuccess<T> {
+  return { success: true, data };
 }
 
-// Диапазон дат
-export interface DateRange {
-    from: Date | null;
-    to: Date | null;
+/**
+ * Создаёт успешный результат без данных (для void-операций)
+ * @example return okVoid();
+ */
+export function okVoid(): ActionSuccess<void> {
+  return { success: true, data: undefined as void };
 }
 
-// API ответ
-export interface ApiResponse<T> {
-    data: T;
-    success: boolean;
-    message?: string;
-    errors?: Record<string, string[]>;
-    pagination?: Pagination;
+/**
+ * Создаёт результат с ошибкой
+ * @example return err("Не авторизован", "UNAUTHORIZED");
+ */
+export function err(error: string, code?: ErrorCode): ActionFailure {
+  return { success: false, error, code };
 }
 
-export interface ApiError {
-    code: string;
-    message: string;
-    details?: Record<string, unknown>;
-}
+// ═══════════════════════════════════════════════════════════
+// Предопределённые ошибки
+// ═══════════════════════════════════════════════════════════
 
-// Списки с фильтрацией
-export interface ListParams extends PaginationParams, SortParams {
-    search?: string;
-    filters?: Record<string, unknown>;
-}
+export const ERRORS = {
+  UNAUTHORIZED: err("Не авторизован", "UNAUTHORIZED"),
+  FORBIDDEN: (msg?: string) => err(msg || "Недостаточно прав", "FORBIDDEN"),
+  NOT_FOUND: (entity: string) => err(`${entity} не найден`, "NOT_FOUND"),
+  VALIDATION: (message: string) => err(message, "VALIDATION_ERROR"),
+  INTERNAL: (msg?: string) => err(msg || "Внутренняя ошибка сервера", "INTERNAL_ERROR"),
+  RATE_LIMITED: err("Слишком много запросов", "RATE_LIMITED"),
+  INSUFFICIENT_STOCK: err("Недостаточно товара на складе", "INSUFFICIENT_STOCK"),
+} as const;
 
-export interface ListResponse<T> {
-    items: T[];
-    pagination: Pagination;
-}
+// ═══════════════════════════════════════════════════════════
+// Остальные общие типы
+// ═══════════════════════════════════════════════════════════
 
-// Выбор элементов
-export interface SelectOption<T = string> {
-    value: T;
-    label: string;
-    description?: string;
-    disabled?: boolean;
-    icon?: string;
-}
-
-// Базовая сущность
 export interface BaseEntity {
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
 }
 
-// Сущность с мягким удалением
-export interface SoftDeletableEntity extends BaseEntity {
-    deletedAt: Date | null;
-    isDeleted: boolean;
-}
-
-// Аудит
-export interface AuditInfo {
-    createdBy: string;
-    createdAt: Date;
-    updatedBy?: string;
-    updatedAt?: Date;
-}
-
-export interface AuditLogDetails {
-    fileName?: string;
-    name?: string;
-    reason?: string;
-    oldKey?: string;
-    newKey?: string;
-    oldPath?: string;
-    newPath?: string;
-    key?: string;
-    path?: string;
-    count?: number;
-    [key: string]: unknown;
-}
-
-// Файл / Вложение
-export interface Attachment {
-    id: string;
-    name: string;
-    url: string;
-    size: number;
-    mimeType: string;
-    createdAt: Date;
-}
-
-// Адрес
 export interface Address {
-    country?: string;
-    region?: string;
-    city: string;
-    street?: string;
-    building?: string;
-    apartment?: string;
-    postalCode?: string;
-    fullAddress?: string;
-    coordinates?: {
-        lat: number;
-        lng: number;
-    };
+  country?: string;
+  region?: string;
+  city?: string;
+  street?: string;
+  building?: string;
+  apartment?: string;
+  postalCode?: string;
+  full?: string;
 }
 
-// Контактная информация
 export interface ContactInfo {
-    phone?: string;
-    email?: string;
-    website?: string;
-    telegram?: string;
-    whatsapp?: string;
+  phone?: string;
+  email?: string;
+  telegram?: string;
+  instagram?: string;
+  whatsapp?: string;
+  vk?: string;
 }
 
-// Денежная сумма
-export interface Money {
-    amount: number;
-    currency: string;
+export interface AuditInfo {
+  createdBy?: string;
+  createdByName?: string;
+  updatedBy?: string;
+  updatedByName?: string;
 }
 
-// Временной интервал
-export interface TimeSlot {
-    start: string; // HH:mm
-    end: string; // HH:mm
-}
-
-// Мета-информация
 export interface Meta {
-    [key: string]: string | number | boolean | null;
+  [key: string]: unknown;
 }
 
-// ActionResult
-export type ActionResult<T = void> =
-    | { success: true; data?: T; pagination?: Pagination }
-    | { success: false; error: string; issues?: string[] };
+export interface DateRange {
+  from?: Date;
+  to?: Date;
+}
 
-export function isSuccess<T>(result: ActionResult<T>): result is { success: true; data: T } {
-    return result.success === true && result.data !== undefined;
+export interface PaginatedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+/**
+ * Детали лога аудита
+ */
+export interface AuditLogDetails {
+  [key: string]: unknown;
+  fileName?: string;
+  name?: string;
+  reason?: string;
+  oldKey?: string;
+  newKey?: string;
+  oldPath?: string;
+  newPath?: string;
+  key?: string;
+  path?: string;
+  count?: number;
 }

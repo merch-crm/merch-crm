@@ -2,12 +2,12 @@
 
 import { db } from "@/lib/db";
 import { systemSettings } from "@/lib/schema";
-import { getSession } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { NotificationSettingsSchema } from "../validation";
+import { ActionResult, ok, okVoid, ERRORS } from "@/lib/types";
 
 export interface NotificationSettings {
     system: {
@@ -33,10 +33,8 @@ export interface NotificationSettings {
     };
 }
 
-export async function getNotificationSettingsAction() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function getNotificationSettingsAction(): Promise<ActionResult<NotificationSettings>> {
+    return withAuth(async () => {
         const setting = await db.query.systemSettings.findFirst({
             where: eq(systemSettings.key, "notifications")
         });
@@ -66,20 +64,16 @@ export async function getNotificationSettingsAction() {
             }
         };
 
-        if (!setting) return { success: true, data: defaultSettings };
-        return { success: true, data: { ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) } };
-    } catch {
-        return { success: true, data: null, error: "Не удалось загрузить настройки уведомлений" };
-    }
+        if (!setting) return ok(defaultSettings);
+        return ok({ ...defaultSettings, ...(setting.value as unknown as Partial<NotificationSettings>) });
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getNotificationSettingsAction" });
 }
 
-export async function updateNotificationSettingsAction(data: NotificationSettings) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function updateNotificationSettingsAction(data: NotificationSettings): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         const validated = NotificationSettingsSchema.safeParse(data);
         if (!validated.success) {
-            return { success: false, error: validated.error.issues[0].message };
+            return ERRORS.VALIDATION(validated.error.issues[0].message);
         }
 
         const validData = validated.data;
@@ -92,8 +86,6 @@ export async function updateNotificationSettingsAction(data: NotificationSetting
 
         revalidatePath("/admin-panel/notifications");
         await logAction("Изменение настроек уведомлений", "system", "notifications", data as unknown as Record<string, unknown>);
-        return { success: true };
-    } catch {
-        return { success: false, error: "Не удалось обновить настройки уведомлений" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateNotificationSettingsAction" });
 }

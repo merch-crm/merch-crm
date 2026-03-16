@@ -7,8 +7,6 @@ import {
     clientConversations
 } from "@/lib/schema";
 import { eq, and, desc, sql, count } from "drizzle-orm";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import type {
@@ -20,35 +18,29 @@ import {
     GetTemplatesSchema
 } from "./chat.schemas";
 
+import { type ActionResult, ok, okVoid } from "@/lib/types";
+import { withAuth } from "@/lib/action-helpers";
+
 /**
  * Получить список каналов коммуникации
  */
-export async function getCommunicationChannels() {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+export async function getCommunicationChannels(): Promise<ActionResult<Record<string, unknown>[]>> {
+    return withAuth(async () => {
         const channels = await db
             .select()
             .from(communicationChannels)
             .where(eq(communicationChannels.isActive, true))
             .orderBy(communicationChannels.name);
 
-        return { success: true, data: channels };
-    } catch (error) {
-        logError({ error, details: { action: "getCommunicationChannels" } });
-        return { success: false, error: "Не удалось загрузить каналы" };
-    }
+        return ok(channels as unknown as Record<string, unknown>[]);
+    }, { errorPath: "getCommunicationChannels" });
 }
 
 /**
  * Получить шаблоны сообщений
  */
-export async function getMessageTemplates(category?: string) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+export async function getMessageTemplates(category?: string): Promise<ActionResult<Record<string, unknown>[]>> {
+    return withAuth(async () => {
         const validated = GetTemplatesSchema.parse({ category });
         const conditions = [eq(messageTemplates.isActive, true)];
 
@@ -62,21 +54,15 @@ export async function getMessageTemplates(category?: string) {
             .where(and(...conditions))
             .orderBy(desc(messageTemplates.usageCount));
 
-        return { success: true, data: templates };
-    } catch (error) {
-        logError({ error, details: { action: "getMessageTemplates", category } });
-        return { success: false, error: "Не удалось загрузить шаблоны" };
-    }
+        return ok(templates as unknown as Record<string, unknown>[]);
+    }, { errorPath: "getMessageTemplates" });
 }
 
 /**
  * Использовать шаблон (увеличить счётчик)
  */
-export async function useTemplate(templateId: string) {
-    const session = await getSession();
-    if (!session) return { success: false };
-
-    try {
+export async function useTemplate(templateId: string): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         const validated = TemplateUsageSchema.parse({ templateId });
         await db
             .update(messageTemplates)
@@ -85,21 +71,15 @@ export async function useTemplate(templateId: string) {
             })
             .where(eq(messageTemplates.id, validated.templateId));
 
-        return { success: true };
-    } catch (error) {
-        logError({ error, details: { action: "useTemplate", templateId } });
-        return { success: false };
-    }
+        return okVoid();
+    }, { errorPath: "useTemplate" });
 }
 
 /**
  * Получить статистику по коммуникациям
  */
-export async function getCommunicationsStats() {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+export async function getCommunicationsStats(): Promise<ActionResult<Record<string, unknown>>> {
+    return withAuth(async () => {
         const [stats] = await db
             .select({
                 totalConversations: count(),
@@ -119,17 +99,11 @@ export async function getCommunicationsStats() {
             .from(clientConversations)
             .groupBy(clientConversations.channelType);
 
-        return {
-            success: true,
-            data: {
-                ...stats,
-                byChannel: channelStats,
-            },
-        };
-    } catch (error) {
-        logError({ error, details: { action: "getCommunicationsStats" } });
-        return { success: false, error: "Не удалось загрузить статистику" };
-    }
+        return ok({
+            ...stats,
+            byChannel: channelStats,
+        });
+    }, { errorPath: "getCommunicationsStats" });
 }
 
 /**
@@ -138,11 +112,8 @@ export async function getCommunicationsStats() {
 export async function assignConversationManager(
     conversationId: string,
     managerId: string | null
-): Promise<{ success: boolean; error?: string }> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-
+): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         const validated = AssignManagerSchema.parse({ conversationId, managerId });
 
         await db
@@ -162,9 +133,6 @@ export async function assignConversationManager(
 
         revalidatePath("/dashboard/communications");
 
-        return { success: true };
-    } catch (error) {
-        logError({ error, details: { action: "assignConversationManager", conversationId, managerId } });
-        return { success: false, error: "Не удалось назначить менеджера" };
-    }
+        return okVoid();
+    }, { errorPath: "assignConversationManager" });
 }

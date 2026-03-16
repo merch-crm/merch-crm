@@ -32,7 +32,7 @@ export function useAddDepartment(onSuccess: () => void) {
             getRoles().then(res => {
                 if (isMounted) {
                     updateState({
-                        roles: (res.data as Role[]) || [],
+                        roles: res.success ? res.data : [],
                         fetchingRoles: false
                     });
                 }
@@ -54,7 +54,7 @@ export function useAddDepartment(onSuccess: () => void) {
         updateState({ loading: true, error: null });
         const res = await createDepartment(formData, state.selectedRoleIds);
 
-        if (res?.error) {
+        if (!res.success) {
             updateState({ loading: false, error: res.error });
         } else {
             updateState({

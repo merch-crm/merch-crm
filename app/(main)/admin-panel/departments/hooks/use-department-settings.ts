@@ -49,8 +49,8 @@ export function useDepartmentSettings(
             ]);
 
             updateState({
-                departmentRoles: (deptRolesRes.data as Role[]) || [],
-                allRoles: (allRolesRes.data as Role[]) || []
+                departmentRoles: (deptRolesRes.success ? deptRolesRes.data : []) as Role[],
+                allRoles: (allRolesRes.success ? allRolesRes.data : []) as Role[]
             });
         } catch (err) {
             console.error("Error fetching roles:", err);
@@ -70,7 +70,7 @@ export function useDepartmentSettings(
         if (!department) return;
         updateState({ actionLoading: roleId });
         const res = await updateRoleDepartment(roleId, department.id);
-        if (res?.error) {
+        if (!res.success) {
             updateState({ error: res.error, actionLoading: null });
         } else {
             await fetchRoles();
@@ -82,7 +82,7 @@ export function useDepartmentSettings(
     const handleRemoveRole = async (roleId: string) => {
         updateState({ actionLoading: roleId });
         const res = await updateRoleDepartment(roleId, null);
-        if (res?.error) {
+        if (!res.success) {
             updateState({ error: res.error, actionLoading: null });
         } else {
             await fetchRoles();
@@ -97,7 +97,7 @@ export function useDepartmentSettings(
 
         const res = await updateDepartment(department.id, formData);
 
-        if (res?.error) {
+        if (!res.success) {
             updateState({ loading: false, error: res.error });
         } else {
             updateState({ loading: false });

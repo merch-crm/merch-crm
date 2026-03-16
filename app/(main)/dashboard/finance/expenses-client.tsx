@@ -83,7 +83,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
             </div>
 
             <div className="crm-card !p-0 border-slate-200/60 shadow-sm overflow-hidden">
-                <ResponsiveDataView
+                <ResponsiveDataView<Expense>
                     data={filteredExpenses}
                     mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                     desktopClassName="hidden md:block"

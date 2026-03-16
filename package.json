@@ -16,10 +16,12 @@
     "audit:fix": "npm run lint -- --fix",
     "test": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:update": "playwright test --update-snapshots",
+    "test:all": "npm run test && npm run test:integration && npm run test:e2e",
     "generate-favicon": "node scripts/generate-favicon.cjs"
   },
   "dependencies": {
@@ -51,6 +53,7 @@
     "@radix-ui/react-toggle-group": "^1.1.11",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@tabler/icons-react": "^3.36.1",
+    "@tanstack/react-virtual": "^3.13.22",
     "@types/uuid": "^10.0.0",
     "bcryptjs": "^3.0.3",
     "better-auth": "^1.5.5",
@@ -98,6 +101,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
+    "@faker-js/faker": "^10.3.0",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "10.4.1",
@@ -109,7 +113,7 @@
     "@types/heic-decode": "^1.1.3",
     "@types/jest": "^30.0.0",
     "@types/node": "^20",
-    "@types/pg": "^8.16.0",
+    "@types/pg": "^8.18.0",
     "@types/qrcode.react": "^1.0.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -120,10 +124,8 @@
     "eslint": "^9.12.0",
     "eslint-config-next": "^15.1.0",
     "jsdom": "^28.1.0",
-    "mongodb": "^7.1.0",
     "msw": "^2.12.10",
     "tailwindcss": "^4",
-    "tar": "^7.5.10",
     "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.0.18"

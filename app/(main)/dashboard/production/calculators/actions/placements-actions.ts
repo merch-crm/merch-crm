@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { printPlacements } from "@/lib/schema/calculators";
 import { eq, and, asc } from "drizzle-orm";
@@ -297,7 +299,7 @@ export async function deletePlacement(
 
         revalidatePath(REVALIDATE_PATH);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         logError({ error, details: { context: "deletePlacement", input } });
         return { success: false, error: "Ошибка удаления нанесения" };
@@ -337,7 +339,7 @@ export async function bulkUpdatePlacementPrices(
 
         revalidatePath(REVALIDATE_PATH);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         logError({ error, details: { context: "bulkUpdatePlacementPrices", updates } });
         return { success: false, error: "Ошибка сохранения цен" };

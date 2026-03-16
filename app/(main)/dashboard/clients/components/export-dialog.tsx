@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
     Download,
     Check,
@@ -19,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 import { getExportData, getExportPresets } from "../actions";
 import { EXPORT_COLUMNS, ExportColumn } from "../actions/export.types";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ExportDialogProps {
     open: boolean;
@@ -131,22 +131,23 @@ export function ExportDialog({
                 includeArchived: includeArchived,
             });
 
-            if (res.success && res.data && res.filename) {
+            if (res.success && res.data) {
+                const { data, filename } = res.data;
                 // Создаём и скачиваем файл
-                const blob = new Blob([res.data], { type: "text/csv;charset=utf-8;" });
+                const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.href = url;
-                link.download = res.filename;
+                link.download = filename;
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(url);
 
-                toast(`Экспорт завершён: ${res.filename}`, "success");
+                toast(`Экспорт завершён: ${filename}`, "success");
                 onClose();
             } else {
-                toast(res.error || "Не удалось выполнить экспорт", "error");
+                toast(res.success === false ? res.error : "Не удалось выполнить экспорт", "error");
             }
         } catch (_error) {
             toast("Произошла ошибка при экспорте", "error");
@@ -195,29 +196,32 @@ export function ExportDialog({
                     </label>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
                         {presets.map(preset => (
-                            <button
+                            <Button
                                 type="button"
                                 key={preset.id}
                                 onClick={() => applyPreset(preset.id)}
                                 className={cn(
                                     "p-3 rounded-2xl border-2 text-left transition-all",
+                                    "p-3 rounded-2xl border-2 text-left transition-all h-auto", // h-auto to allow content to dictate height
                                     activePreset === preset.id
-                                        ? "border-primary bg-primary/5 shadow-inner"
-                                        : "border-slate-100 hover:border-slate-200 bg-slate-50/50"
+                                        ? "border-primary bg-primary/5 shadow-inner hover:bg-primary/10" // Added hover state for active
+                                        : "border-slate-100 hover:border-slate-200 bg-slate-50/50 hover:bg-slate-100/50" // Adjusted hover state
                                 )}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="font-bold text-[13px] text-slate-900">
-                                        {preset.name}
-                                    </span>
-                                    {activePreset === preset.id && (
-                                        <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                                            <Check className="w-2.5 h-2.5 text-white stroke-[4]" />
-                                        </div>
-                                    )}
+                                <div className="flex flex-col w-full"> {/* Added flex-col and w-full to contain content */}
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="font-bold text-[13px] text-slate-900">
+                                            {preset.name}
+                                        </span>
+                                        {activePreset === preset.id && (
+                                            <div className="w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                                                <Check className="w-2.5 h-2.5 text-white stroke-[4]" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-[11px] font-medium text-slate-500 line-clamp-2">{preset.description}</p>
                                 </div>
-                                <p className="text-[11px] font-medium text-slate-500 line-clamp-2">{preset.description}</p>
-                            </button>
+                            </Button>
                         ))}
                     </div>
                 </div>
@@ -246,8 +250,9 @@ export function ExportDialog({
                                         onClick={() => toggleCategory(category)}
                                     >
                                         <div className="flex items-center gap-3">
-                                            <button
-                                                type="button"
+                                            <div
+                                                role="button"
+                                                tabIndex={-1}
                                                 onClick={(e) => { e.stopPropagation(); e.preventDefault(); }}
                                                 className="flex bg-transparent border-none p-0"
                                             >
@@ -255,7 +260,7 @@ export function ExportDialog({
                                                     checked={allSelected ? true : someSelected ? "indeterminate" : false}
                                                     onCheckedChange={(checked) => toggleAllInCategory(category, !!checked)}
                                                 />
-                                            </button>
+                                            </div>
                                             <span className="text-xl">{categoryIcons[category]}</span>
                                             <span className="font-bold text-slate-900 text-[14px]">
                                                 {categoryLabels[category]}

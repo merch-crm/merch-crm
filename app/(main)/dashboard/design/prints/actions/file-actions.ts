@@ -13,7 +13,7 @@ import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { getSession } from "@/lib/session";
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult, okVoid } from "@/lib/types";
 import { generateId } from "@/lib/utils";
 import { z } from "zod";
 import { writeFile, unlink, mkdir } from "fs/promises";
@@ -193,7 +193,7 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
         await logAction("Удалён файл", "print_design_file", id);
         invalidateCache("design:collections");
 
-        return { success: true };
+        return okVoid();
     } catch (_error) {
         return { success: false, error: "Ошибка удаления файла" };
     }

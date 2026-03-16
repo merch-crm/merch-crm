@@ -22,14 +22,7 @@ import { OrderItemsTable } from "./order-items-table";
 
 
 
-interface OrderPayment {
-    id: string;
-    amount: string;
-    comment: string | null;
-    isAdvance: boolean;
-    createdAt: string | Date;
-    method: string;
-}
+
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -203,14 +196,14 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                     <span className="text-slate-500">Сумма товаров:</span>
                                     <span className="font-bold text-slate-400">{(Number(order.totalAmount) + Number(order.discountAmount || 0)).toFixed(2)} {currencySymbol}</span>
                                 </div>
-                                {order.promocode && (
+                                {order.promocode && typeof order.promocode === 'object' && 'code' in order.promocode ? (
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500 font-bold">Промокод:</span>
                                         <div className="flex items-center gap-1.5">
                                             <span className="font-bold text-slate-900">{order.promocode.code}</span>
                                         </div>
                                     </div>
-                                )}
+                                ) : null}
                                 {Number(order.discountAmount || 0) > 0 && (
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500 font-bold">Скидка:</span>
@@ -224,20 +217,20 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                 <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500">Оплачено:</span>
                                     <span className="font-bold text-emerald-600">
-                                        {order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0).toFixed(2) || 0} {currencySymbol}
+                                        {(order.payments)?.reduce((acc: number, p) => acc + Number(p.amount), 0).toFixed(2) || 0} {currencySymbol}
                                     </span>
                                 </div>
                                 <div className="pt-4 border-t border-slate-200 flex justify-between items-center">
                                     <span className="text-sm font-bold text-slate-900">Остаток:</span>
                                     <span className="text-xl font-bold text-rose-600">
-                                        {(Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)).toFixed(2)} {currencySymbol}
+                                        {(Number(order.totalAmount) - ((order.payments)?.reduce((acc: number, p) => acc + Number(p.amount), 0) || 0)).toFixed(2)} {currencySymbol}
                                     </span>
                                 </div>
 
                                 <div className="pt-2">
                                     <AddPaymentDialog
                                         orderId={order.id}
-                                        remainingAmount={Number(order.totalAmount) - (order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0)}
+                                        remainingAmount={Number(order.totalAmount) - ((order.payments)?.reduce((acc: number, p) => acc + Number(p.amount), 0) || 0)}
                                     />
                                 </div>
 
@@ -248,7 +241,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                             <Receipt className="w-3 h-3 mr-2" />
                                             История платежей
                                         </div>
-                                        {order.payments.map((p: OrderPayment) => (
+                                        {order.payments.map((p) => (
                                             <div key={p.id} className="flex justify-between items-center p-3 rounded-2xl bg-slate-50 border border-slate-200">
                                                 <div className="min-w-0">
                                                     <div className="text-xs font-bold text-slate-900 truncate">{p.comment || (p.isAdvance ? "Предоплата" : "Платеж")}</div>
@@ -265,7 +258,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                 <div className="pt-6">
                                     <RefundDialog
                                         orderId={order.id}
-                                        maxAmount={order.payments?.reduce((acc: number, p: OrderPayment) => acc + Number(p.amount), 0) || 0}
+                                        maxAmount={(order.payments)?.reduce((acc: number, p) => acc + Number(p.amount), 0) || 0}
                                     />
                                 </div>
                             </div>
@@ -306,11 +299,11 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            order.creator?.name?.[0]
+                                            (order.creator?.name?.[0] as React.ReactNode)
                                         )}
                                     </div>
+                                    {order.creator?.name}
                                 </div>
-                                {order.creator?.name}
                             </div>
                         </div>
                     </div>

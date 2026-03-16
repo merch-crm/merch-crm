@@ -19,6 +19,7 @@ import { ClientBulkActions } from "./components/client-bulk-actions";
 import { ClientListHeader } from "./components/client-list-header";
 
 import { useClientsState, type ClientsInitialData } from "./hooks/use-clients-state";
+import { useClientsUI } from "./hooks/use-clients-ui";
 
 export function ClientsTable({ userRoleName, showFinancials, initialData }: { userRoleName?: string | null, showFinancials?: boolean, initialData?: ClientsInitialData }) {
     const router = useRouter();
@@ -108,14 +109,10 @@ export function ClientsTable({ userRoleName, showFinancials, initialData }: { us
         return () => clearTimeout(t);
     }, [setUiState, setViewState]);
 
-    const addToHistory = useCallback((query: string) => {
-        if (!query || query.length < 2) return;
-        setUiState(prev => {
-            const newHistory = [query, ...prev.searchHistory.filter((h: string) => h !== query)].slice(0, 5);
-            localStorage.setItem("client_search_history", JSON.stringify(newHistory));
-            return { ...prev, searchHistory: newHistory };
-        });
-    }, [setUiState]);
+    const {
+        addToHistory,
+        handleExportClick
+    } = useClientsUI(setUiState, setViewState);
 
     const isFetchingRef = useRef(false);
 
@@ -227,10 +224,6 @@ export function ClientsTable({ userRoleName, showFinancials, initialData }: { us
         router.replace(`?${params.toString()}`, { scroll: false });
         setFilters(prev => ({ ...prev, activityStatus: status as "all" | "active" | "attention" | "at_risk" | "inactive", page: 1 }));
     }, [router, searchParams, setFilters]);
-
-    const handleExportClick = useCallback(() => {
-        setUiState(prev => ({ ...prev, showExportDialog: true }));
-    }, [setUiState]);
 
     if (viewState.loading && !viewState.data) {
         return <div className="text-slate-400 p-[--padding-xl] text-center font-bold text-xs">Загрузка...</div>;

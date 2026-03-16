@@ -23,7 +23,7 @@ export const pool = globalForDb.pool || new Pool({
             connectionString.includes('sslmode=disable')
         )
     ) || process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false },
-    max: 20,
+    max: process.env.DB_POOL_MAX ? parseInt(process.env.DB_POOL_MAX) : 10, // Оптимизировано для баланса serverless/standalone
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
 });

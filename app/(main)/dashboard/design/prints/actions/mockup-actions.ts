@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -126,7 +128,7 @@ export async function deleteMockup(id: string) {
             revalidatePath(`/dashboard/design/prints/${mockup.designId}`);
         }
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path: "/dashboard/design/prints/actions/mockup-actions", method: "deleteMockup" });
         return { success: false, error: "Не удалось удалить мокап" };
@@ -159,7 +161,7 @@ export async function updateMockupsOrder(designId: string, items: { id: string; 
 
         revalidatePath(`/dashboard/design/prints/${designId}`);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path: "/dashboard/design/prints/actions/mockup-actions", method: "updateMockupsOrder" });
         return { success: false, error: "Не удалось обновить порядок мокапов" };

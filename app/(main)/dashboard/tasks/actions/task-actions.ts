@@ -1,6 +1,8 @@
 "use server";
 
-import { eq, and, or, inArray, desc, like, lt } from "drizzle-orm";
+import { okVoid } from "@/lib/types";
+
+import { eq, and, or, inArray, desc, like, lt, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import {
@@ -91,9 +93,19 @@ export async function getTasks(
             )
           : undefined
       ),
+      columns: {
+        id: true,
+        title: true,
+        status: true,
+        priority: true,
+        deadline: true,
+        createdAt: true,
+        departmentId: true,
+        creatorId: true,
+      },
       with: {
         creator: {
-          columns: { id: true, name: true, email: true, avatar: true },
+          columns: { id: true, name: true, avatar: true },
         },
         department: {
           columns: { id: true, name: true },
@@ -101,14 +113,14 @@ export async function getTasks(
         assignees: {
           with: {
             user: {
-              columns: { id: true, name: true, email: true, avatar: true },
+              columns: { id: true, name: true, avatar: true },
             },
           },
         },
         watchers: {
           with: {
             user: {
-              columns: { id: true, name: true, email: true, avatar: true },
+              columns: { id: true, name: true, avatar: true },
             },
           },
         },
@@ -431,7 +443,7 @@ export async function deleteTask(taskId: string): Promise<TaskActionResult<void>
 
     revalidatePath("/dashboard/tasks");
 
-    return { success: true };
+    return okVoid();
   } catch (error) {
     logError({ error, method: "deleteTask" });
     return { success: false, error: "Не удалось удалить задачу" };
@@ -447,35 +459,28 @@ export async function getTaskStats(): Promise<
   }>
 > {
   try {
-    const session = await getSession();
-    if (!session?.id) {
-      return { success: false, error: "Не авторизован" };
-    }
-
-    const allTasks = await db.select().from(tasks).limit(1000);
-
-    const byStatus: Record<string, number> = {};
-    let overdue = 0;
-    const now = new Date();
-
-    allTasks.forEach((task) => {
-      byStatus[task.status] = (byStatus[task.status] || 0) + 1;
-      if (
-        task.deadline &&
-        new Date(task.deadline) < now &&
-        task.status !== "done" &&
-        task.status !== "cancelled"
-      ) {
-        overdue++;
-      }
-    });
+    const [stats] = await db.select({
+      total: sql<number>`count(*)`,
+      overdue: sql<number>`count(*) filter (where ${tasks.deadline} < now() and ${tasks.status} not in ('done', 'cancelled'))`,
+      new: sql<number>`count(*) filter (where ${tasks.status} = 'new')`,
+      in_progress: sql<number>`count(*) filter (where ${tasks.status} = 'in_progress')`,
+      review: sql<number>`count(*) filter (where ${tasks.status} = 'review')`,
+      done: sql<number>`count(*) filter (where ${tasks.status} = 'done')`,
+      cancelled: sql<number>`count(*) filter (where ${tasks.status} = 'cancelled')`,
+    }).from(tasks).limit(1);
 
     return {
       success: true,
       data: {
-        total: allTasks.length,
-        byStatus,
-        overdue,
+        total: Number(stats.total),
+        byStatus: {
+          new: Number(stats.new),
+          in_progress: Number(stats.in_progress),
+          review: Number(stats.review),
+          done: Number(stats.done),
+          cancelled: Number(stats.cancelled),
+        },
+        overdue: Number(stats.overdue),
       },
     };
   } catch (error) {

@@ -1,33 +1,49 @@
 "use server";
 
+import { ActionResult, okVoid, ok, ERRORS, type ClientSummary } from "@/lib/types";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+
 import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { eq, and, isNull, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
 import { z } from "zod";
+export interface FunnelClient {
+    id: string;
+    lastName: string;
+    firstName: string;
+    company: string | null;
+    phone: string | null;
+    funnelStage: string | null;
+    managerId: string | null;
+    totalOrdersAmount: number | string | null;
+    lastOrderAt: Date | string | null;
+}
 
 /**
  * Получить список клиентов для воронки (не в архиве, не потеряны)
  */
-export async function getClientsForFunnel() {
-    const session = await getSession();
-    if (!session) return [];
-
-    try {
+export async function getClientsForFunnel(): Promise<ActionResult<ClientSummary[]>> {
+    return withAuth(async () => {
         const data = await db
             .select({
                 id: clients.id,
                 lastName: clients.lastName,
                 firstName: clients.firstName,
+                displayName: sql<string>`concat_ws(' ', ${clients.lastName}, ${clients.firstName})`,
                 company: clients.company,
                 phone: clients.phone,
+                email: clients.email,
+                clientType: clients.clientType,
+                type: clients.clientType,
                 funnelStage: clients.funnelStage,
                 managerId: clients.managerId,
-                totalOrdersAmount: clients.totalOrdersAmount,
+                totalOrders: sql<number>`0`, // Placeholder or calculate
+                totalSpent: sql<number>`coalesce(${clients.totalOrdersAmount}, 0)::float`,
+                isVip: sql<boolean>`false`,
                 lastOrderAt: clients.lastOrderAt,
+                createdAt: clients.createdAt,
             })
             .from(clients)
             .where(
@@ -37,24 +53,15 @@ export async function getClientsForFunnel() {
                 )
             );
 
-        return data;
-    } catch (error) {
-        await logError({
-            error,
-            details: { context: "getClientsForFunnel" }
-        });
-        return [];
-    }
+        return ok(data);
+    }, { errorPath: "getClientsForFunnel" });
 }
 
 /**
  * Получить статистику по этапам воронки
  */
-export async function getFunnelStats() {
-    const session = await getSession();
-    if (!session) return {};
-
-    try {
+export async function getFunnelStats(): Promise<ActionResult<Record<string, { count: number; amount: number }>>> {
+    return withAuth(async () => {
         const stats = await db
             .select({
                 stage: clients.funnelStage,
@@ -79,33 +86,19 @@ export async function getFunnelStats() {
             };
         });
 
-        return result;
-    } catch (error) {
-        await logError({
-            error,
-            details: { context: "getFunnelStats" }
-        });
-        return {};
-    }
+        return ok(result);
+    }, { errorPath: "getFunnelStats" });
 }
 
-/**
- * Обновить этап воронки клиента
- */
-export async function updateClientFunnelStage(clientId: string, stage: string) {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) throw new Error("Unauthorized");
-
+export async function updateClientFunnelStage(clientId: string, stage: string): Promise<ActionResult> {
     const validated = z.object({
         clientId: z.string().uuid(),
         stage: z.string().min(1)
     }).safeParse({ clientId, stage });
 
-    if (!validated.success) {
-        throw new Error("Invalid input data");
-    }
+    if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
-    try {
+    return withAuth(async () => {
         await db
             .update(clients)
             .set({
@@ -123,41 +116,33 @@ export async function updateClientFunnelStage(clientId: string, stage: string) {
         );
 
         revalidatePath("/dashboard/clients/funnel");
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            details: { context: "updateClientFunnelStage", clientId, stage }
-        });
-        throw error;
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "updateClientFunnelStage"
+    });
 }
 
 /**
  * Отметить клиента как потерянного
  */
-export async function markClientAsLost(clientId: string, reason: string, comment?: string) {
-    const session = await getSession();
-    if (!session) throw new Error("Unauthorized");
-
+export async function markClientAsLost(clientId: string, reason: string, comment?: string): Promise<ActionResult> {
     const validated = z.object({
         clientId: z.string().uuid(),
         reason: z.string().min(1),
         comment: z.string().optional()
     }).safeParse({ clientId, reason, comment });
 
-    if (!validated.success) {
-        throw new Error("Invalid input data");
-    }
+    if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
-    try {
+    return withAuth(async () => {
         await db
             .update(clients)
             .set({
                 lostAt: new Date(),
                 lostReason: reason,
                 comments: comment ? sql`${clients.comments} || '\n--- Причина отказа: ' || ${comment}` : clients.comments,
-                isArchived: true, // Потерянных обычно в архив
+                isArchived: true,
                 updatedAt: new Date(),
             })
             .where(eq(clients.id, clientId));
@@ -171,12 +156,9 @@ export async function markClientAsLost(clientId: string, reason: string, comment
 
         revalidatePath("/dashboard/clients/funnel");
         revalidatePath("/dashboard/clients");
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            details: { context: "markClientAsLost", clientId, reason }
-        });
-        throw error;
-    }
+        return okVoid();
+    }, {
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "markClientAsLost"
+    });
 }

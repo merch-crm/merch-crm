@@ -5,7 +5,7 @@ import { promocodes, orders } from "@/lib/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-import { ActionResult } from "@/lib/types";
+import { ActionResult, okVoid } from "@/lib/types";
 import { logAction } from "@/lib/audit";
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
@@ -131,7 +131,7 @@ export async function createPromocode(values: z.infer<typeof PromocodeSchema>): 
 
         revalidatePath("/dashboard/finance");
         revalidatePath("/dashboard/finance/promocodes");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -175,7 +175,7 @@ export async function updatePromocode(id: string, values: z.infer<typeof Promoco
         });
         revalidatePath("/dashboard/finance");
         revalidatePath("/dashboard/finance/promocodes");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -206,7 +206,7 @@ export async function togglePromocodeActive(id: string, isActive: boolean): Prom
         });
         revalidatePath("/dashboard/finance");
         revalidatePath("/dashboard/finance/promocodes");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -286,7 +286,7 @@ export async function deletePromocode(id: string): Promise<ActionResult> {
         });
         revalidatePath("/dashboard/finance");
         revalidatePath("/dashboard/finance/promocodes");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

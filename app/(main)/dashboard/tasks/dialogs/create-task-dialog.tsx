@@ -205,7 +205,7 @@ export function CreateTaskDialog({
       <div className="flex flex-col relative bg-white overflow-hidden">
         {/* Header */}
         <div className="p-8 pb-6 relative z-10">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
             <div className="w-16 h-16 rounded-[22px] bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-sm transition-colors transform hover:rotate-3 duration-300 shrink-0">
               <Plus className="h-8 w-8 stroke-[2.5px]" />
             </div>
@@ -213,7 +213,7 @@ export function CreateTaskDialog({
               <h2 className="text-3xl font-black tracking-tight text-slate-900 leading-none">
                 Новая задача
               </h2>
-              <p className="text-sm font-bold text-slate-400 mt-2 uppercase tracking-widest">
+              <p className="text-sm font-bold text-slate-400 mt-2">
                 Создание рабочего поручения
               </p>
             </div>
@@ -229,7 +229,7 @@ export function CreateTaskDialog({
                       setActiveStep(step.number);
                     }
                   }}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-[18px] transition-all font-black text-xs uppercase tracking-wider select-none ${
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-[18px] transition-all font-black text-xs select-none ${
                     activeStep === step.number
                       ? "bg-white text-indigo-600 shadow-sm ring-1 ring-black/5"
                       : activeStep > step.number
@@ -237,7 +237,7 @@ export function CreateTaskDialog({
                         : "text-slate-400 hover:text-slate-600 hover:bg-white/60"
                   }`}
                 >
-                  <span className={`flex items-center justify-center w-5 h-5 rounded-full text-[10px] ${
+                  <span className={`flex items-center justify-center w-5 h-5 rounded-full text-xs ${
                     activeStep === step.number 
                       ? "bg-indigo-600 text-white" 
                       : activeStep > step.number
@@ -297,7 +297,7 @@ export function CreateTaskDialog({
             {activeStep > 1 ? "Назад" : "Отмена"}
           </Button>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {activeStep < 3 ? (
               <Button
                 variant="btn-dark"
@@ -312,7 +312,7 @@ export function CreateTaskDialog({
                 variant="btn-dark"
                 onClick={handleSubmit}
                 disabled={isSubmitting || !canProceed()}
-                className="bg-indigo-600 border-none hover:bg-indigo-700 text-white rounded-[18px] px-10 h-12 min-w-[200px] shadow-lg shadow-indigo-500/20 transition-all font-black uppercase tracking-wider text-[11px] active:scale-95 disabled:opacity-50"
+                className="bg-indigo-600 border-none hover:bg-indigo-700 text-white rounded-[18px] px-10 h-12 min-w-[200px] shadow-lg shadow-indigo-500/20 transition-all font-black text-xs active:scale-95 disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>

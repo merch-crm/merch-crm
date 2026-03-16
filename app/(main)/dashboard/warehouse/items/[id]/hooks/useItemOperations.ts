@@ -47,7 +47,7 @@ export function useItemOperations({
     const { toast } = useToast();
 
     const handleSave = useCallback(async (forceDuplicate = false) => {
-        if (!editData || !uploads || !thumbSettings || !setIsEditing || !resetUploads) {
+        if (!editData || !uploads || !thumbSettings || !setIsEditing) {
             console.error("Missing required props for handleSave");
             return;
         }
@@ -56,9 +56,9 @@ export function useItemOperations({
         try {
             // Duplicate Detection
             if (!forceDuplicate && (editData.name !== item.name || editData.sku !== item.sku)) {
-                const dup = await checkDuplicateItem(editData.name || "", editData.sku || undefined, item.id);
-                if (dup.duplicate) {
-                    setDialogs((prev: DialogState) => ({ ...prev, duplicateConfirm: { open: true, item: dup.duplicate as { id: string; name: string; sku: string | null } } }));
+                const resMatch = await checkDuplicateItem(editData.name || "", editData.sku || undefined, item.id);
+                if (resMatch.success && resMatch.data?.duplicate) {
+                    setDialogs((prev: DialogState) => ({ ...prev, duplicateConfirm: { open: true, item: resMatch.data!.duplicate as { id: string; name: string; sku: string | null } } }));
                     setIsSaving(false);
                     return;
                 }
@@ -75,7 +75,7 @@ export function useItemOperations({
                 if (navigator.vibrate) navigator.vibrate(50);
 
                 // Immediate local state sync
-                if (res.data) {
+                if (res.success && res.data) {
                     setItem(res.data as InventoryItem);
                 } else {
                     setItem(prev => ({

@@ -19,10 +19,9 @@ export async function rateLimit(
 ): Promise<RateLimitResult> {
     // Skip limits in non-production environments OR when E2E is specifically enabled outside production.
     // We never bypass rate limits in production unless absolutely necessary and securely verified.
-    if (process.env.NODE_ENV !== 'production') {
-        if (process.env.NEXT_PUBLIC_E2E === 'true') {
-            return { success: true, remaining: limit, resetIn: 0 };
-        }
+    // Использовать безопасную серверную переменную для отключения лимитов в dev/test окружении
+    if (process.env.NODE_ENV !== 'production' && process.env.DISABLE_RATE_LIMIT === 'true') {
+        return { success: true, remaining: limit, resetIn: 0 };
     }
     const redisKey = `ratelimit:${key}`;
 

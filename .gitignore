@@ -61,3 +61,14 @@ debug-warehouse.png
 !e2e/ui/visual-regression.spec.ts-snapshots/*.png
 playwright/.auth/
 TECHNICAL_PASS.md
+
+# Временные отчёты и артефакты — не версионировать
+audit-report*.md
+audit-report*.json
+lint_output.txt
+
+# Архивы и временные пакеты
+*.tgz
+tmp_tsc_errors.txt
+lint_output.txt
+*.js.map

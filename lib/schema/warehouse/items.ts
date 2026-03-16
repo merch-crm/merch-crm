@@ -42,10 +42,10 @@ export const inventoryItems = pgTable("inventory_items", {
     attributes: jsonb("attributes").default("{}"),
     imageDetails: jsonb("image_details").default("[]"),
     materialComposition: jsonb("material_composition").default("{}"),
-    productLineId: text("product_line_id"),
-    baseItemId: text("base_item_id"),
-    printDesignId: text("print_design_id"),
-    printVersionId: text("print_version_id"),
+    productLineId: uuid("product_line_id").references(() => productLines.id),
+    baseItemId: uuid("base_item_id"),
+    printDesignId: uuid("print_design_id").references(() => printDesigns.id),
+    printVersionId: uuid("print_version_id").references(() => printDesignVersions.id),
 }, (table) => {
     return {
         categoryIdx: index("inv_items_category_idx").on(table.categoryId),

@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import { xiaomiAccounts, cameras } from"@/lib/schema";
 import { getSession } from"@/lib/auth";
@@ -359,7 +361,7 @@ export async function deleteXiaomiAccount(accountId: string) {
 
         revalidatePath("/staff/cameras");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

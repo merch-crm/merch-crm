@@ -3,475 +3,429 @@
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
 import { revalidatePath } from "next/cache";
-import { desc, eq, and, gte, lte, sql, ilike, or, type SQL } from "drizzle-orm";
-import { getSession } from "@/lib/session";
+import { eq, sql, and, or, ilike, desc, gte, lte, type SQL, InferSelectModel } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { sendStaffNotifications } from "@/lib/notifications";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { 
+  withAuth, 
+  ROLE_GROUPS,
+  NotFoundError,
+  ValidationError,
+} from "@/lib/action-helpers";
+import { 
+  ActionResult, 
+  ok, 
+  okVoid, 
+} from "@/lib/types";
 import { CreateOrderSchema, OrderIdSchema } from "../validation";
-import { ActionResult } from "@/lib/types";
-import { releaseOrderReservation } from "./utils";
+import { OrderService } from "@/lib/services/order.service";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { sendStaffNotifications } from "@/lib/notifications";
 
-const { orders, orderItems, clients, users, inventoryItems, promocodes, payments } = schema;
+const { orders, clients, inventoryItems } = schema;
 
-export async function getOrders(from?: Date, to?: Date, page = 1, limit = 20, showArchived = false, search?: string): Promise<ActionResult<{
-    orders: (typeof orders.$inferSelect & {
-        client: typeof clients.$inferSelect | null;
-        items: (typeof orderItems.$inferSelect)[];
-        creator: (typeof users.$inferSelect & { role: typeof schema.roles.$inferSelect | null }) | null;
-        attachments: (typeof schema.orderAttachments.$inferSelect)[];
-    })[];
-    total: number;
-    totalPages: number;
-    currentPage: number;
-}>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+// ═══════════════════════════════════════════════════════════
+// Типы
+// ═══════════════════════════════════════════════════════════
 
-    try {
-        const offset = (page - 1) * limit;
-        const whereClause: (SQL | undefined)[] = [eq(orders.isArchived, showArchived)];
-        if (from) whereClause.push(gte(orders.createdAt, from));
-        if (to) whereClause.push(lte(orders.createdAt, to));
-        if (search) {
-            const searchPattern = `%${search}%`;
-            whereClause.push(or(
-                ilike(orders.orderNumber, searchPattern),
-                ilike(clients.name, searchPattern),
-                ilike(clients.phone, searchPattern),
-                ilike(clients.email, searchPattern),
-                ilike(orders.totalAmount, searchPattern)
-            ));
+export interface OrderWithRelations {
+  id: string;
+  orderNumber: string | null;
+  status: string;
+  priority: string | null;
+  isUrgent: boolean;
+  totalAmount: string | null;
+  paidAmount: string | null;
+  discountAmount: string | null;
+  deadline: Date | null;
+  isArchived: boolean;
+  source: string | null;
+  cancelReason: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  client: {
+    id: string;
+    name: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    phone: string | null;
+    email: string | null;
+    telegram: string | null;
+    instagram: string | null;
+    address: string | null;
+    company: string | null;
+  } | null;
+  items: Array<{
+    id: string;
+    description: string | null;
+    quantity: number;
+    price: string | null;
+    inventoryId: string | null;
+  }>;
+  creator: {
+    id: string;
+    name: string;
+    role: { name: string } | null;
+    avatar: string | null;
+  } | null;
+  attachments?: Array<{
+    id: string;
+    fileName: string | null;
+    fileUrl: string | null;
+    fileSize: number | null;
+    contentType: string | null;
+  }>;
+  payments?: Array<{
+    id: string;
+    amount: string;
+    comment: string | null;
+    isAdvance: boolean;
+    createdAt: Date;
+    method: string;
+  }>;
+  promocode?: {
+    id: string;
+    code: string;
+    discount?: number;
+    type?: string;
+  } | null;
+}
+
+interface GetOrdersResult {
+  orders: OrderWithRelations[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
+}
+
+interface GetOrdersParams {
+  from?: Date;
+  to?: Date;
+  page?: number;
+  limit?: number;
+  showArchived?: boolean;
+  search?: string;
+}
+
+// ═══════════════════════════════════════════════════════════
+// Actions
+// ═══════════════════════════════════════════════════════════
+
+export async function getOrders(params: GetOrdersParams = {}): Promise<ActionResult<GetOrdersResult>> {
+  const { from, to, page = 1, limit = 20, showArchived = false, search } = params;
+
+  return withAuth(async (session) => {
+    const offset = (page - 1) * limit;
+    
+    // Строим WHERE условие
+    const conditions: (SQL | undefined)[] = [
+      eq(orders.isArchived, showArchived)
+    ];
+    
+    if (from) conditions.push(gte(orders.createdAt, from));
+    if (to) conditions.push(lte(orders.createdAt, to));
+    
+    if (search) {
+      const pattern = `%${search}%`;
+      conditions.push(or(
+        ilike(orders.orderNumber, pattern),
+        ilike(clients.name, pattern),
+        ilike(clients.phone, pattern),
+        ilike(clients.email, pattern),
+        ilike(orders.totalAmount, pattern)
+      ));
+    }
+
+    const whereClause = and(...conditions);
+
+    // Получаем общее количество
+    const totalResult = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(orders)
+      .leftJoin(clients, eq(orders.clientId, clients.id))
+      .where(whereClause);
+    
+    const total = Number(totalResult[0]?.count || 0);
+
+    // Получаем заказы
+    const rawOrders = await db.query.orders.findMany({
+      where: whereClause,
+      with: {
+        client: true,
+        items: true,
+        creator: {
+          with: { role: true }
+        },
+        attachments: true,
+      },
+      orderBy: desc(orders.createdAt),
+      limit,
+      offset,
+    });
+
+    // Трансформируем данные
+    const transformedOrders = (rawOrders || [])
+      .filter(order => order.client)
+      .map(order => {
+        const client = order.client!;
+        
+        let displayName = client.name || '';
+        if (!displayName && (client.firstName || client.lastName)) {
+          displayName = [client.lastName, client.firstName].filter(Boolean).join(' ');
         }
+        displayName = displayName || 'Неизвестный клиент';
 
-        const finalWhere = and(...whereClause);
-
-        const totalRes = await db.select({ count: sql<number>`count(*)` })
-            .from(orders)
-            .leftJoin(clients, eq(orders.clientId, clients.id))
-            .where(finalWhere)
-            .limit(1);
-        const total = Number(totalRes[0]?.count || 0);
-
-        const rawData = await db.query.orders.findMany({
-            where: finalWhere,
-            with: {
-                client: true,
-                items: {
-                    with: {
-                        inventory: true
-                    }
-                },
-                creator: {
-                    with: {
-                        role: true
-                    }
-                },
-                attachments: true,
-            },
-            orderBy: desc(orders.createdAt),
-            limit,
-            offset
-        });
-
-        const data = (rawData || []).filter(order => order.client).map(order => {
-            const client = order.client!;
-            let displayName = client.name || "";
-
-            if (!displayName && (client.firstName || client.lastName)) {
-                displayName = [client.lastName, client.firstName].filter(Boolean).join(' ');
-            }
-
-            return {
-                ...order,
-                client: {
-                    ...client,
-                    name: displayName || 'Unnamed Client'
-                }
-            };
-        });
-
-        const userRole = session.roleName;
-        const shouldHidePhone = ["Печатник", "Дизайнер"].includes(userRole || "");
-
-        if (shouldHidePhone && Array.isArray(data)) {
-            data.forEach(order => {
-                if (order.client) {
-                    order.client.phone = "HIDDEN";
-                }
-            });
-        }
+        const shouldHidePhone = ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleName);
 
         return {
-            success: true,
-            data: {
-                orders: data as never,
-                total,
-                totalPages: Math.ceil(total / limit),
-                currentPage: page
-            }
-        };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/orders",
-            method: "getOrders",
-            details: { from, to, page, limit, showArchived }
-        });
-        return { success: false, error: "Не удалось загрузить заказы" };
-    }
+          ...order,
+          client: {
+            ...client,
+            name: displayName,
+            phone: shouldHidePhone ? 'HIDDEN' : client.phone,
+          },
+        } as unknown as OrderWithRelations;
+      });
+
+    return ok({
+      orders: transformedOrders,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+    });
+  }, { 
+    errorPath: '/dashboard/orders' 
+  });
 }
 
-export async function archiveOrder(orderId: string, archive: boolean = true): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+export async function getOrderById(id: string): Promise<ActionResult<OrderWithRelations>> {
+  return withAuth(async (session) => {
+    const order = await db.query.orders.findFirst({
+      where: eq(orders.id, id),
+      with: {
+        client: true,
+        items: true,
+        creator: {
+          with: { role: true }
+        },
+        attachments: true,
+        payments: true,
+        promocode: true,
+      },
+    });
 
-    const validatedId = OrderIdSchema.safeParse({ orderId });
-    if (!validatedId.success) return { success: false, error: validatedId.error.issues[0].message };
-
-    try {
-        const user = await db.query.users.findFirst({
-            where: eq(users.id, session.id),
-            with: { role: true, department: true }
-        });
-
-        if (user?.role?.name !== "Администратор" && user?.department?.name !== "Руководство") {
-            return { success: false, error: "Недостаточно прав" };
-        }
-
-        await db.transaction(async (tx) => {
-            await tx.update(orders)
-                .set({ isArchived: archive, updatedAt: new Date() })
-                .where(eq(orders.id, orderId));
-
-            await logAction(archive ? "Архивация заказа" : "Разархивация заказа", "order", orderId, { isArchived: archive }, tx);
-        });
-        revalidatePath("/dashboard/orders");
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/orders",
-            method: "archiveOrder",
-            details: { orderId, archive }
-        });
-        return { success: false, error: "Не удалось изменить статус архивации" };
+    if (!order) {
+      throw NotFoundError('Заказ');
     }
+
+    if (order.client) {
+      const client = order.client;
+      if (!client.name && (client.firstName || client.lastName)) {
+        client.name = [client.lastName, client.firstName].filter(Boolean).join(' ');
+      }
+      client.name = client.name || 'Неизвестный клиент';
+
+      if (ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleName)) {
+        client.phone = 'HIDDEN';
+      }
+    }
+
+    return ok(order as unknown as OrderWithRelations);
+  }, { 
+    errorPath: `/dashboard/orders/${id}` 
+  });
 }
 
-type OrderComplete = typeof schema.orders.$inferSelect & {
-    client: typeof schema.clients.$inferSelect | null;
-    items: typeof schema.orderItems.$inferSelect[];
-    creator: (typeof schema.users.$inferSelect & { role: typeof schema.roles.$inferSelect | null }) | null;
-    attachments: (typeof schema.orderAttachments.$inferSelect)[];
-    payments: typeof schema.payments.$inferSelect[];
-    promocode: typeof schema.promocodes.$inferSelect | null;
-};
-
-export async function getOrderById(id: string): Promise<ActionResult<OrderComplete>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        const order = await db.query.orders.findFirst({
-            where: eq(orders.id, id),
-            with: {
-                client: true,
-                items: true,
-                creator: {
-                    with: {
-                        role: true
-                    }
-                },
-                attachments: true,
-                payments: true,
-                promocode: true,
-            }
-        });
-
-        if (!order) return { success: false, error: "Заказ не найден" };
-
-        if (order.client) {
-            const client = order.client;
-            if (!client.name && (client.firstName || client.lastName)) {
-                client.name = [client.lastName, client.firstName].filter(Boolean).join(' ');
-            }
-            if (!client.name) client.name = 'Неизвестный клиент';
-
-            const userRole = session?.roleName;
-            const shouldHidePhone = ["Печатник", "Дизайнер"].includes(userRole || "");
-
-            if (shouldHidePhone) {
-                client.phone = "HIDDEN";
-            }
-        }
-
-        return { success: true, data: order };
-    } catch (error) {
-        await logError({
-            error,
-            path: `/dashboard/orders/${id}`,
-            method: "getOrderById",
-            details: { id }
-        });
-        return { success: false, error: "Не удалось загрузить заказ" };
-    }
-}
-
-export async function createOrder(formData: FormData): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+export async function createOrder(formData: FormData): Promise<ActionResult<{ orderId: string }>> {
+  return withAuth(async (session) => {
+    const rawData = Object.fromEntries(formData);
+    const parsedItems = typeof rawData.items === 'string' ? JSON.parse(rawData.items) : [];
 
     const validation = CreateOrderSchema.safeParse({
-        clientId: formData.get("clientId"),
-        priority: formData.get("priority"),
-        isUrgent: formData.get("isUrgent") === "true",
-        advanceAmount: formData.get("advanceAmount"),
-        promocodeId: formData.get("promocodeId"),
-        paymentMethod: formData.get("paymentMethod"),
-        deadline: formData.get("deadline"),
-        items: JSON.parse(formData.get("items") as string || "[]"),
+      ...rawData,
+      items: parsedItems,
     });
 
     if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
+      throw ValidationError(validation.error.issues[0].message);
     }
 
-    const {
-        clientId, priority, isUrgent, advanceAmount,
-        promocodeId, paymentMethod, deadline, items
-    } = validation.data;
+    const result = await OrderService.createOrder({
+      ...validation.data,
+      priority: validation.data.priority as "low" | "normal" | "medium" | "high" | "urgent",
+      advanceAmount: validation.data.advanceAmount || 0,
+      promocodeId: validation.data.promocodeId || undefined,
+    }, session.id);
 
-    try {
-        await db.transaction(async (tx) => {
-            const year = new Date().getFullYear().toString().slice(-2);
-            const [lastOrder] = await tx
-                .select({ orderNumber: orders.orderNumber })
-                .from(orders)
-                .orderBy(desc(orders.id))
-                .limit(1);
+    const branding = await getBrandingSettings();
+    await sendStaffNotifications({
+      title: "Новый заказ",
+      message: `Создан заказ #${result.orderNumber} на сумму ${validation.data.advanceAmount || 0} ${branding?.currencySymbol || "₽"}`,
+      type: "success"
+    });
 
-            let nextNum = 1000;
-            if (lastOrder && lastOrder.orderNumber && lastOrder.orderNumber.includes('-')) {
-                const parts = lastOrder.orderNumber.split('-');
-                const lastNum = parseInt(parts[parts.length - 1]);
-                if (!isNaN(lastNum)) nextNum = lastNum + 1;
-            }
-
-            const orderNumber = `ORD-${year}-${nextNum}`;
-
-            const [newOrder] = await tx.insert(orders).values({
-                orderNumber,
-                clientId,
-                status: "new",
-                priority,
-                isUrgent,
-                paidAmount: String(advanceAmount),
-                promocodeId,
-                deadline: deadline ? new Date(deadline) : null,
-                createdBy: session.id,
-                totalAmount: "0",
-            }).returning();
-
-            const client = await tx.query.clients.findFirst({ where: eq(clients.id, clientId) });
-
-            await logAction("Создан заказ", "order", newOrder.id, {
-                name: `Заказ для ${client?.name || client?.firstName || "неизвестного клиента"}`,
-                orderNumber,
-                isUrgent
-            }, tx);
-
-            let totalAmount = 0;
-            for (const item of items) {
-                await tx.insert(orderItems).values({
-                    orderId: newOrder.id,
-                    description: item.description,
-                    quantity: item.quantity,
-                    price: String(item.price),
-                    inventoryId: item.inventoryId || null,
-                });
-
-                if (item.inventoryId) {
-                    const result = await tx.update(inventoryItems)
-                        .set({ reservedQuantity: sql`${inventoryItems.reservedQuantity} + ${item.quantity}` })
-                        .where(and(
-                            eq(inventoryItems.id, item.inventoryId),
-                            sql`${inventoryItems.reservedQuantity} + ${item.quantity} <= ${inventoryItems.quantity}`
-                        ))
-                        .returning();
-
-                    if (result.length === 0) throw new Error(`Недостаточно товара на складе`);
-                }
-                totalAmount += (item.quantity * item.price);
-            }
-
-            let discountAmount = 0;
-            if (promocodeId) {
-                const promo = await tx.query.promocodes.findFirst({ where: eq(promocodes.id, promocodeId) });
-                if (promo?.isActive) {
-                    // Basic promo logic (simplified for brevity, can be expanded)
-                    if (promo.discountType === 'percentage') {
-                        discountAmount = (totalAmount * Number(promo.value)) / 100;
-                    } else if (promo.discountType === 'fixed') {
-                        discountAmount = Number(promo.value);
-                    }
-                    await tx.update(promocodes).set({ usageCount: (promo.usageCount || 0) + 1 }).where(eq(promocodes.id, promo.id));
-                }
-            }
-
-            const finalTotal = Math.max(0, totalAmount - discountAmount);
-            await tx.update(orders).set({ totalAmount: String(finalTotal), discountAmount: String(discountAmount) }).where(eq(orders.id, newOrder.id));
-
-            if (Number(advanceAmount) > 0) {
-                await tx.insert(payments).values({
-                    orderId: newOrder.id,
-                    amount: String(advanceAmount),
-                    method: paymentMethod as "cash" | "bank" | "online" | "account",
-                    isAdvance: true,
-                    comment: "Предоплата"
-                });
-            }
-        });
-
-        const branding = await getBrandingSettings();
-        await sendStaffNotifications({
-            title: "Новый заказ",
-            message: `Создан заказ на сумму ${advanceAmount} ${branding?.currencySymbol || "₽"}`,
-            type: "success"
-        });
-
-        revalidatePath("/dashboard/orders");
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/orders/new", method: "createOrder", details: { clientId } });
-        return { success: false, error: error instanceof Error ? error.message : "Не удалось создать заказ" };
-    }
+    revalidatePath("/dashboard/orders");
+    return ok({ orderId: result.id });
+  }, { 
+    roles: ROLE_GROUPS.CAN_EDIT_ORDERS,
+    errorPath: '/dashboard/orders/new' 
+  });
 }
 
-export async function deleteOrder(orderId: string): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+export async function updateOrderField(
+  orderId: string,
+  field: string,
+  value: unknown
+): Promise<ActionResult<void>> {
+  return withAuth(async (_session) => {
+    await db.transaction(async (tx) => {
+      const order = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+      if (!order) throw NotFoundError('Заказ');
 
-    try {
-        const user = await db.query.users.findFirst({
-            where: eq(users.id, session.id),
-            with: { role: true, department: true }
-        });
+      const updateData: Record<string, unknown> = { updatedAt: new Date() };
+      
+      switch (field) {
+        case 'isUrgent':
+          updateData.isUrgent = Boolean(value);
+          break;
+        case 'priority':
+          updateData.priority = value as string;
+          break;
+        case 'deadline':
+          updateData.deadline = value ? new Date(value as string) : null;
+          break;
+        case 'status':
+          updateData.status = value as string;
+          break;
+        default:
+          throw ValidationError(`Неизвестное поле: ${field}`);
+      }
 
-        if (user?.role?.name !== "Администратор" && user?.department?.name !== "Руководство") {
-            return { success: false, error: "Недостаточно прав" };
-        }
+      await tx.update(orders).set(updateData).where(eq(orders.id, orderId));
 
-        await db.transaction(async (tx) => {
-            const orderObj = await tx.query.orders.findFirst({ where: eq(orders.id, orderId), with: { client: true } });
-            if (orderObj) {
-                if (["new", "design", "production"].includes(orderObj.status)) {
-                    await releaseOrderReservation(orderId, tx);
-                }
-                await logAction("Удален заказ", "order", orderId, { name: `Заказ #${orderObj.orderNumber}` }, tx);
-                await tx.delete(orders).where(eq(orders.id, orderId));
-            }
-        });
+      await logAction(
+        `Изменение поля ${field}`,
+        "order",
+        orderId,
+        { field, oldValue: (order as Record<string, unknown>)[field], newValue: value },
+        tx
+      );
+    });
 
-        revalidatePath("/dashboard/orders");
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: `/dashboard/orders/${orderId}`, method: "deleteOrder" });
-        return { success: false, error: "Не удалось удалить заказ" };
-    }
+    revalidatePath("/dashboard/orders");
+    return okVoid();
+  }, { 
+    roles: ROLE_GROUPS.CAN_EDIT_ORDERS,
+    errorPath: '/dashboard/orders' 
+  });
 }
 
-export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResult<{ total: number; new: number; inProduction: number; completed: number; revenue: number }>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+export async function archiveOrder(
+  orderId: string,
+  archive: boolean = true
+): Promise<ActionResult<void>> {
+  const validated = OrderIdSchema.safeParse({ orderId });
+  if (!validated.success) {
+    throw ValidationError(validated.error.issues[0].message);
+  }
 
-    try {
-        const whereClause: (SQL | undefined)[] = [];
-        if (from) whereClause.push(gte(orders.createdAt, from));
-        if (to) whereClause.push(lte(orders.createdAt, to));
+  return withAuth(async (_session) => {
+    await db.transaction(async (tx) => {
+      await tx.update(orders)
+        .set({ isArchived: archive, updatedAt: new Date() })
+        .where(eq(orders.id, orderId));
 
-        const [stats] = await db.select({
-            total: sql<number>`count(*)`,
-            new: sql<number>`count(*) filter (where ${orders.status} = 'new')`,
-            inProduction: sql<number>`count(*) filter (where ${orders.status} in ('design', 'production'))`,
-            completed: sql<number>`count(*) filter (where ${orders.status} in ('done', 'shipped'))`,
-            revenue: sql<number>`coalesce(sum(${orders.totalAmount}::numeric), 0)`
-        }).from(orders).where(and(...whereClause)).limit(1);
+      await logAction(
+        archive ? "Архивация заказа" : "Разархивация заказа",
+        "order",
+        orderId,
+        { isArchived: archive },
+        tx
+      );
+    });
 
-        return { success: true, data: { ...stats, revenue: Number(stats.revenue) } };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/orders/stats", method: "getOrderStats" });
-        return { success: false, error: "Не удалось загрузить статистику" };
-    }
+    revalidatePath("/dashboard/orders");
+    return okVoid();
+  }, { 
+    roles: ROLE_GROUPS.ADMINS,
+    errorPath: '/dashboard/orders' 
+  });
 }
 
-export async function updateOrderField(orderId: string, field: string, value: unknown): Promise<ActionResult> {
-    const session = await getSession();
-    const allowedRoles = ["Администратор", "Руководство", "Отдел продаж", "Дизайнер", "Печать", "Вышивка", "Склад"];
-    if (!session || !allowedRoles.includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для редактирования заказа" };
-    }
+export async function deleteOrder(orderId: string): Promise<ActionResult<void>> {
+  return withAuth(async (_session) => {
+    await OrderService.deleteOrder(orderId);
+    revalidatePath("/dashboard/orders");
+    return okVoid();
+  }, { 
+    roles: ROLE_GROUPS.ADMINS,
+    errorPath: `/dashboard/orders/${orderId}` 
+  });
+}
 
-    try {
-        await db.transaction(async (tx) => {
-            const order = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
-            if (!order) throw new Error("Заказ не найден");
+export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResult<{
+  total: number;
+  new: number;
+  inProduction: number;
+  completed: number;
+  revenue: number;
+}>> {
+  return withAuth(async () => {
+    const conditions: (SQL | undefined)[] = [];
+    if (from) conditions.push(gte(orders.createdAt, from));
+    if (to) conditions.push(lte(orders.createdAt, to));
 
-            const updateData: Record<string, unknown> = { updatedAt: new Date() };
-            if (field === "isUrgent") updateData.isUrgent = Boolean(value);
-            else if (field === "priority") updateData.priority = value;
-            else if (field === "deadline") updateData.deadline = value ? new Date(value as string) : null;
-            else if (field === "status") updateData.status = value;
+    const [stats] = await db
+      .select({
+        total: sql<number>`count(*)`,
+        new: sql<number>`count(*) filter (where ${orders.status} = 'new')`,
+        inProduction: sql<number>`count(*) filter (where ${orders.status} in ('design', 'production'))`,
+        completed: sql<number>`count(*) filter (where ${orders.status} in ('done', 'shipped', 'completed'))`,
+        revenue: sql<number>`coalesce(sum(${orders.totalAmount}::numeric), 0)`,
+      })
+      .from(orders)
+      .where(conditions.length > 0 ? and(...conditions) : undefined);
 
-            await tx.update(orders).set(updateData).where(eq(orders.id, orderId));
-            
-            await logAction(
-                `Изменение поля ${field}`, 
-                "order", 
-                orderId, 
-                { field, value }, 
-                tx
-            );
-        });
-        revalidatePath("/dashboard/orders");
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/orders", method: "updateOrderField" });
-        return { success: false, error: "Ошибка обновления" };
-    }
+    return ok({
+      total: Number(stats.total),
+      new: Number(stats.new),
+      inProduction: Number(stats.inProduction),
+      completed: Number(stats.completed),
+      revenue: Number(stats.revenue),
+    });
+  }, { 
+    errorPath: '/dashboard/orders/stats' 
+  });
 }
 
 export async function getClientsForSelect(): Promise<ActionResult<{ id: string; name: string | null }[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        const data = await db.select({ id: clients.id, name: clients.name }).from(clients).where(eq(clients.isArchived, false)).limit(100);
-        return { success: true, data };
-    } catch { return { success: false, error: "Ошибка" }; }
+  return withAuth(async () => {
+    const data = await db
+      .select({ id: clients.id, name: clients.name })
+      .from(clients)
+      .where(eq(clients.isArchived, false))
+      .limit(100);
+    return ok(data);
+  });
 }
 
 export async function getInventoryForSelect(): Promise<ActionResult<{ id: string; name: string | null; quantity: number | null }[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
-        const data = await db.select({ id: inventoryItems.id, name: inventoryItems.name, quantity: inventoryItems.quantity }).from(inventoryItems).limit(100);
-        return { success: true, data };
-    } catch { return { success: false, error: "Ошибка" }; }
+  return withAuth(async () => {
+    const data = await db
+      .select({ id: inventoryItems.id, name: inventoryItems.name, quantity: inventoryItems.quantity })
+      .from(inventoryItems)
+      .limit(100);
+    return ok(data);
+  });
 }
 
-export async function searchClients(query: string): Promise<ActionResult<typeof clients.$inferSelect[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    if (!query || query.length <= 2) return { success: true, data: [] };
-    try {
-        const results = await db.query.clients.findMany({
-            where: (c, { or, ilike }) => or(ilike(c.name, `%${query}%`), ilike(c.phone, `%${query}%`)),
-            limit: 10
-        });
-        return { success: true, data: results };
-    } catch { return { success: false, error: "Ошибка" }; }
+export async function searchClients(query: string): Promise<ActionResult<Array<InferSelectModel<typeof clients>>>> {
+  return withAuth(async () => {
+    if (!query || query.length <= 2) return ok([]);
+    
+    const results = await db.query.clients.findMany({
+      where: (c, { or, ilike }) => or(ilike(c.name, `%${query}%`), ilike(c.phone, `%${query}%`)),
+      limit: 10
+    });
+    return ok(results as Array<InferSelectModel<typeof clients>>);
+  });
 }

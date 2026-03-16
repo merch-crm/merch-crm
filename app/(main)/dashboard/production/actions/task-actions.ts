@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { revalidatePath } from "next/cache";
 import { eq, and, desc, inArray, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -296,7 +298,7 @@ export async function updateProductionTaskAssignee(taskId: string, assigneeId: s
         await logAction("Обновлён исполнитель задачи", "production_task", taskId, { assigneeId });
 
         revalidatePath(`/dashboard/production/tasks/${taskId}`);
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path: "/dashboard/production/actions/task-actions", method: "updateProductionTaskAssignee", details: { taskId } });
         return { success: false, error: "Не удалось обновить исполнителя" };
@@ -319,7 +321,7 @@ export async function deleteProductionTask(id: string) {
         await db.delete(productionTasks).where(eq(productionTasks.id, id));
         await logAction("Удалена производственная задача", "production_task", id);
         revalidatePath("/dashboard/production/tasks");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path: "/dashboard/production/actions/task-actions", method: "deleteProductionTask", details: { id } });
         return { success: false, error: "Не удалось удалить задачу" };

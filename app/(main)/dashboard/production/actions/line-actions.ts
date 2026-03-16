@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { productionLines, productionTasks, applicationTypes } from "@/lib/schema/production";
 import { eq, asc, and, count } from "drizzle-orm";
@@ -250,7 +252,7 @@ export async function deleteProductionLine(id: string): Promise<ActionResult> {
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/production/lines");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error deleting line:", error);
         return { success: false, error: "Не удалось удалить линию" };
@@ -278,7 +280,7 @@ export async function updateLinesOrder(
 
         revalidatePath("/dashboard/production/lines");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error updating order:", error);
         return { success: false, error: "Не удалось обновить порядок" };

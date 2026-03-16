@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { productionStaff, productionTasks } from "@/lib/schema/production";
 import { users } from "@/lib/schema/users";
@@ -262,7 +264,7 @@ export async function deleteProductionStaff(id: string): Promise<ActionResult> {
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/production/staff");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error deleting staff:", error);
         return { success: false, error: "Не удалось удалить сотрудника" };

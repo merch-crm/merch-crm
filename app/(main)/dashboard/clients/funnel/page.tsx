@@ -8,7 +8,7 @@ import { getManagers } from "../actions/core.actions";
 import { Loader2, ArrowLeft, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import type { ClientSummary } from "@/lib/types/client";
+
 
 export const metadata = {
     title: "Воронка клиентов | CRM",
@@ -32,16 +32,19 @@ function LoadingSpinner() {
 }
 
 async function FunnelContent() {
-    const clients = await getClientsForFunnel();
-    const stats = await getFunnelStats();
+    const clientsRes = await getClientsForFunnel();
+    const statsRes = await getFunnelStats();
     const managersResult = await getManagers();
+
+    const clients = clientsRes.success ? (clientsRes.data || []) : [];
+    const stats = statsRes.success ? (statsRes.data || {}) : {};
     const managers = managersResult.success ? (managersResult.data || []) : [];
 
     return (
         <FunnelBoardClient
-            initialClients={clients as unknown as ClientSummary[]}
-            initialStats={stats}
+            initialClients={clients}
             managers={managers}
+            initialStats={stats}
         />
     );
 }

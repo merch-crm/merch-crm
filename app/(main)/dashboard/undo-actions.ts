@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import { auditLogs, clients, inventoryItems, orders } from"@/lib/schema";
 import { eq, desc } from"drizzle-orm";
@@ -72,7 +74,7 @@ export async function undoLastAction(): Promise<ActionResult> {
         });
 
         revalidatePath("/dashboard");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

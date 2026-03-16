@@ -12,12 +12,10 @@ import {
 } from "@/lib/schema";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
 import { checkItemStockAlerts } from "@/lib/notifications";
 import { AdjustStockSchema, TransferStockSchema, MoveItemSchema } from "./validation";
-
-import { type ActionResult } from "@/lib/types";
+import { withAuth } from "@/lib/action-helpers";
+import { type ActionResult, okVoid, ok, ERRORS } from "@/lib/types";
 
 /**
  * Adjust stock of an item (in, out, or set)
@@ -35,15 +33,10 @@ export async function adjustInventoryStock(
     });
 
     if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
+        return ERRORS.VALIDATION(validation.error.issues[0].message);
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для корректировки остатков" };
-    }
-
-    try {
+    return withAuth(async (session) => {
         await db.transaction(async (tx) => {
             const [item] = await tx.select().from(inventoryItems).where(eq(inventoryItems.id, itemId)).limit(1);
             if (!item) throw new Error("Item not found");
@@ -149,7 +142,6 @@ export async function adjustInventoryStock(
             );
         });
 
-
         try {
             await invalidateCache("warehouse:*");
         } catch (cacheError) {
@@ -165,17 +157,11 @@ export async function adjustInventoryStock(
             console.error("[AdjustStock] Stock alerts check failed (non-critical):", alertError);
         }
 
-        return { success: true };
-    } catch (error) {
-        console.error(`[AdjustStock] CRITICAL ERROR for item ${itemId}:`, error);
-        await logError({
-            error,
-            path: `/dashboard/warehouse/adjust/${itemId}`,
-            method: "adjustInventoryStock",
-            details: { itemId, amount, type, reason, storageLocationId }
-        });
-        return { success: false, error: error instanceof Error ? error.message : "Не удалось скорректировать остаток" };
-    }
+        return okVoid();
+    }, { 
+        roles: ["Администратор", "Руководство", "Склад"],
+        errorPath: "adjustInventoryStock" 
+    });
 }
 
 /**
@@ -184,17 +170,12 @@ export async function adjustInventoryStock(
 export async function transferInventoryStock(itemId: string, fromLocationId: string, toLocationId: string, amount: number, reason: string): Promise<ActionResult> {
     const validation = TransferStockSchema.safeParse({ itemId, fromLocationId, toLocationId, amount, reason });
     if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
+        return ERRORS.VALIDATION(validation.error.issues[0].message);
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для перемещения товаров" };
-    }
+    if (fromLocationId === toLocationId) return ERRORS.VALIDATION("Точка отправления и назначения должны быть разными");
 
-    if (fromLocationId === toLocationId) return { success: false, error: "Точка отправления и назначения должны быть разными" };
-
-    try {
+    return withAuth(async (session) => {
         await db.transaction(async (tx) => {
             const [fromLoc, toLoc] = await Promise.all([
                 tx.select().from(storageLocations).where(eq(storageLocations.id, fromLocationId)).limit(1),
@@ -263,10 +244,11 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
         invalidateCache("warehouse:*");
         revalidatePath("/dashboard/warehouse");
         revalidatePath(`/dashboard/warehouse/items/${itemId}`);
-        return { success: true };
-    } catch (error) {
-        return { success: false, error: error instanceof Error ? error.message : "Не удалось переместить товары" };
-    }
+        return okVoid();
+    }, { 
+        roles: ["Администратор", "Руководство", "Склад"],
+        errorPath: "transferInventoryStock" 
+    });
 }
 
 /**
@@ -276,10 +258,7 @@ type InventoryStock = InferSelectModel<typeof inventoryStocks>;
 type StorageLocation = InferSelectModel<typeof storageLocations>;
 
 export async function getItemStocks(itemId: string): Promise<ActionResult<(InventoryStock & { storageLocation: StorageLocation })[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const stocks = await db.query.inventoryStocks.findMany({
             where: eq(inventoryStocks.itemId, itemId),
             with: {
@@ -287,39 +266,27 @@ export async function getItemStocks(itemId: string): Promise<ActionResult<(Inven
             },
             limit: 100
         });
-        return { success: true, data: stocks };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/stock-actions",
-            method: "getItemStocks",
-            details: { itemId }
-        });
-        return { success: false, error: "Не удалось загрузить остатки" };
-    }
+        return ok(stocks as (InventoryStock & { storageLocation: StorageLocation })[]);
+    }, { errorPath: "getItemStocks" });
 }
 
 /**
  * Move inventory item between storage locations (single item transfer via FormData)
  */
 export async function moveInventoryItem(formData: FormData): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для перемещения товаров" };
-    }
-
-    const validation = MoveItemSchema.safeParse(Object.fromEntries(formData));
+    const data = Object.fromEntries(formData);
+    const validation = MoveItemSchema.safeParse(data);
     if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
+        return ERRORS.VALIDATION(validation.error.issues[0].message);
     }
 
     const { itemId, fromLocationId, toLocationId, quantity, comment } = validation.data;
 
     if (fromLocationId === toLocationId) {
-        return { success: false, error: "Source and destination cannot be the same" };
+        return ERRORS.VALIDATION("Source and destination cannot be the same");
     }
 
-    try {
+    return withAuth(async (session) => {
         await db.transaction(async (tx) => {
             const [fromLocation] = await tx.select({ name: storageLocations.name }).from(storageLocations).where(eq(storageLocations.id, fromLocationId)).limit(1);
             const [toLocation] = await tx.select({ name: storageLocations.name }).from(storageLocations).where(eq(storageLocations.id, toLocationId)).limit(1);
@@ -383,7 +350,7 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
                 toLocationId,
                 quantity,
                 comment,
-                createdBy: session?.id
+                createdBy: session.id
             });
 
             await tx.insert(inventoryTransactions).values({
@@ -393,7 +360,7 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
                 reason: logMessage,
                 storageLocationId: toLocationId,
                 fromStorageLocationId: fromLocationId,
-                createdBy: session?.id
+                createdBy: session.id
             });
 
             const stocksForThisItem = await tx.query.inventoryStocks.findMany({
@@ -412,14 +379,9 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
 
         revalidatePath("/dashboard/warehouse", "layout");
         await checkItemStockAlerts(itemId);
-        return { success: true };
-    } catch (error: unknown) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/move",
-            method: "moveInventoryItem",
-            details: { itemId, fromLocationId, toLocationId, quantity }
-        });
-        return { success: false, error: (error as Error).message || "Failed to move inventory" };
-    }
+        return okVoid();
+    }, { 
+        roles: ["Администратор", "Руководство", "Склад"],
+        errorPath: "moveInventoryItem" 
+    });
 }

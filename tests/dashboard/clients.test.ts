@@ -45,7 +45,8 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { db } from '@/lib/db';
 import {
     getManagers,
@@ -192,7 +193,7 @@ describe('addClient', () => {
         fd.append('lastName', 'Иванов');
         fd.append('firstName', 'Иван');
         const result = await addClient(fd);
-        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
+        expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('возвращает ошибку при невалидных данных', async () => {
@@ -241,7 +242,7 @@ describe('updateClient', () => {
         fd.append('lastName', 'Updated');
         // updateClient takes (clientId: string, formData: FormData)
         const result = await updateClient('33333333-3333-4333-8333-333333333333', fd);
-        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
+        expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('обновляет клиента при валидных данных', async () => {
@@ -268,7 +269,7 @@ describe('deleteClient', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await deleteClient('33333333-3333-4333-8333-333333333333');
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: 'Не авторизован', code: 'UNAUTHORIZED' });
     });
 
     it('возвращает ошибку если не администратор', async () => {
@@ -278,7 +279,7 @@ describe('deleteClient', () => {
         const result = await deleteClient('33333333-3333-4333-8333-333333333333');
         expect(result.success).toBe(false);
         if (!result.success) {
-            expect(result.error).toContain('Только администратор');
+            expect(result.error).toContain('Недостаточно прав');
         }
     });
 
@@ -300,7 +301,7 @@ describe('toggleClientArchived', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await toggleClientArchived('33333333-3333-4333-8333-333333333333', true);
-        expect(result).toEqual({ success: false, error: "Недостаточно прав для управления клиентами" });
+        expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('архивирует клиента', async () => {
@@ -316,7 +317,7 @@ describe('bulkDeleteClients', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await bulkDeleteClients(['33333333-3333-4333-8333-333333333333']);
-        expect(result).toEqual({ success: false, error: "Не авторизован" });
+        expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('возвращает ошибку при пустом массиве', async () => {

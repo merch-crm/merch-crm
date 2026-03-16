@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import {
     orderDesignTasks,
@@ -156,7 +158,7 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
 
         revalidatePath(`/dashboard/design/queue/${file.taskId}`);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error deleting file:", error);
         return { success: false, error: "Не удалось удалить файл" };

@@ -19,6 +19,20 @@ export interface ClientTypeCounts {
     b2b: number;
 }
 
+export interface ClientsData {
+    clients: Client[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+}
+
+export interface ClientViewState {
+    data: ClientsData | null;
+    loading: boolean;
+    mounted: boolean;
+    now: number;
+}
+
 export interface ActivityCounts {
     active: number;
     attention: number;
@@ -37,18 +51,13 @@ export interface ClientsInitialData {
     sources: string[];
     typeCounts: ClientTypeCounts;
     activityCounts: ActivityCounts;
-    clientsData: {
-        clients: Client[];
-        total: number;
-        totalPages: number;
-        currentPage: number;
-    };
+    clientsData: ClientsData;
 }
 
 export function useClientsState(initialData?: ClientsInitialData) {
     const searchParams = useSearchParams();
 
-    const [viewState, setViewState] = useState({
+    const [viewState, setViewState] = useState<ClientViewState>({
         data: initialData?.clientsData || null,
         loading: !initialData,
         mounted: false,

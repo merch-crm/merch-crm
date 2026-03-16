@@ -1,9 +1,7 @@
 #!/bin/sh
 
-# Running migrations
-echo "⏳ Running database sync (drizzle-kit push)..."
-# In some environments we need to be careful with paths
-npm run db:push
+# Migrations are now handled by the dedicated 'migrate' init-container.
+# This entrypoint only starts the Next.js application server.
 
-echo "🚀 Starting Next.js server with GC enabled..."
+echo "🚀 Starting Next.js server..."
 node --expose-gc server.js

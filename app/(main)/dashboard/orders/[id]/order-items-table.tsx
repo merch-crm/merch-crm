@@ -9,7 +9,7 @@ interface OrderItem {
     id: string;
     description: string | null;
     quantity: number;
-    price: string;
+    price: string | null;
 }
 
 interface OrderItemsTableProps {
@@ -32,7 +32,7 @@ export function OrderItemsTable({ items, currencySymbol, showFinancials, totalAm
                 <span className="text-xs font-bold text-slate-400">{safeItems.length} {pluralize(safeItems.length, 'позиция', 'позиции', 'позиций')}</span>
             </div>
 
-            <ResponsiveDataView
+            <ResponsiveDataView<OrderItem>
                 data={safeItems}
                 renderTable={() => (
                     <table className="crm-table">

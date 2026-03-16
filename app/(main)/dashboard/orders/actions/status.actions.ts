@@ -4,26 +4,19 @@ import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
 import { revalidatePath } from "next/cache";
 import { eq, and, gte, sql, desc } from "drizzle-orm";
-import { getSession } from "@/lib/session";
+import { withAuth, ROLE_GROUPS, ROLES } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
 import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema } from "../validation";
-import { ActionResult } from "@/lib/types";
+import { ActionResult, okVoid, ERRORS } from "@/lib/types";
 import { releaseOrderReservation } from "./utils";
 
 const { orders, inventoryItems, inventoryTransactions, inventoryStocks } = schema;
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
-    const session = await getSession();
-    const allowedRoles = ["Администратор", "Руководство", "Отдел продаж", "Дизайнер", "Печать", "Вышивка", "Склад"];
-    if (!session || !allowedRoles.includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для изменения статуса заказа" };
-    }
+    const validated = UpdateOrderStatusSchema.safeParse({ orderId, newStatus, reason });
+    if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
-    try {
-        const validated = UpdateOrderStatusSchema.safeParse({ orderId, newStatus, reason });
-        if (!validated.success) return { success: false, error: validated.error.issues[0].message };
-
+    return withAuth(async (session) => {
         await db.transaction(async (tx) => {
             const order = await tx.query.orders.findFirst({
                 where: eq(orders.id, orderId),
@@ -36,7 +29,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
 
             // Status transition validation
             // Admins and Management can jump any status
-            const isAdmin = ["Администратор", "Руководство"].includes(session.roleName);
+            const isAdmin = ROLE_GROUPS.ADMINS.includes(session.roleName);
             
             const allowedTransitions: Record<string, string[]> = {
                 "new": ["design", "production", "cancelled"], 
@@ -58,10 +51,9 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             const isCancellation = (newStatus === "cancelled") && (oldStatus !== "cancelled") && !deductionStatuses.includes(oldStatus as string);
 
             for (const item of order.items) {
-                const inventory = (item as typeof item & { inventory: typeof inventoryItems.$inferSelect | null }).inventory;
+                const inventory = item.inventory;
                 if (item.inventoryId && inventory) {
                     const qty = item.quantity || 0;
-                    const inventoryItemData = inventory;
 
                     if (isDeduction) {
                         await tx.update(inventoryItems)
@@ -90,7 +82,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
                             reason: `Отгрузка: Заказ #${order.orderNumber}`,
                             createdBy: session.id,
                             storageLocationId: bestStock?.storageLocationId || null,
-                            costPrice: inventoryItemData.costPrice || "0",
+                            costPrice: inventory.costPrice || "0",
                         });
                     } else if (isCancellation) {
                         await releaseOrderReservation(orderId, tx);
@@ -101,7 +93,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
 
             await tx.update(orders)
                 .set({
-                    status: newStatus as typeof orders.$inferSelect.status,
+                    status: newStatus as typeof orders.$inferInsert.status,
                     cancelReason: reason || null,
                     updatedAt: new Date()
                 })
@@ -110,36 +102,25 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
             await logAction("Обновлен статус", "order", orderId, { from: oldStatus, to: newStatus }, tx);
 
             const { autoGenerateTasks } = await import("@/lib/automations");
-            await autoGenerateTasks(orderId, newStatus as typeof orders.$inferSelect.status, session.id);
+            await autoGenerateTasks(orderId, newStatus, session.id!);
         });
 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: `/dashboard/orders/${orderId}`, method: "updateOrderStatus" });
-        return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.CAN_EDIT_ORDERS, errorPath: "updateOrderStatus" });
 }
 
 export async function updateOrderPriority(orderId: string, newPriority: string): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для изменения приоритета заказа" };
-    }
+    const validated = UpdateOrderPrioritySchema.safeParse({ priority: newPriority });
+    if (!validated.success) return ERRORS.VALIDATION("Некорректный приоритет");
 
-    try {
-        const validated = UpdateOrderPrioritySchema.safeParse({ priority: newPriority });
-        if (!validated.success) return { success: false, error: "Некорректный приоритет" };
-
+    return withAuth(async () => {
         await db.update(orders).set({ priority: validated.data.priority, updatedAt: new Date() }).where(eq(orders.id, orderId));
         await logAction("Обновлен приоритет", "order", orderId, { priority: newPriority });
 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: `/dashboard/orders/${orderId}`, method: "updateOrderPriority" });
-        return { success: false, error: "Ошибка" };
-    }
+        return okVoid();
+    }, { roles: [ROLES.ADMIN, ROLES.MANAGEMENT, ROLES.SALES], errorPath: "updateOrderPriority" });
 }

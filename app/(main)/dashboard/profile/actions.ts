@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { users, orders, tasks, auditLogs, clients, taskAssignees } from "@/lib/schema";
 import { auth, getSession } from "@/lib/auth";
@@ -138,7 +140,7 @@ export async function updateProfile(formData: FormData) {
         revalidatePath("/dashboard/profile");
         revalidatePath("/", "layout");
 
-        return { success: true };
+        return okVoid();
     } catch (error: unknown) {
         await logError({
             error,
@@ -177,7 +179,7 @@ export async function updatePassword(formData: FormData) {
             return { success: false, error: "Не удалось изменить пароль через Better Auth" };
         }
 
-        return { success: true };
+        return okVoid();
     } catch (error: unknown) {
         if (error && typeof error === 'object' && 'code' in error && error.code === "INVALID_PASSWORD") {
             return { success: false, error: "Текущий пароль указан неверно" };

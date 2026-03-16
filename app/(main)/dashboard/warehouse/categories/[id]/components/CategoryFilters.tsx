@@ -1,7 +1,14 @@
 "use client";
 
 import React from"react";
-import { Search, X, Layers, CheckCircle2, AlertTriangle, XCircle } from"lucide-react";
+import {
+    Search,
+    X,
+    Layers,
+    CheckCircle2,
+    AlertTriangle,
+    XCircle,
+} from "lucide-react";
 import { motion } from"framer-motion";
 import { cn } from"@/lib/utils";
 import { Button } from"@/components/ui/button";

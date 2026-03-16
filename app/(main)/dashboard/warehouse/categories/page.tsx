@@ -1,6 +1,6 @@
 import { getInventoryCategories, getOrphanedItemStats } from"../category-actions";
 import { sortCategories } from"../category-utils";
-import { getSession } from"../warehouse-stats-actions";;
+import { getSession } from "@/lib/session";
 import { InventoryClient } from"../inventory-client";
 import { Suspense } from"react";
 import { PageContainer } from"@/components/ui/page-container";

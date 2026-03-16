@@ -87,10 +87,10 @@ export function ProfileForm({ user }: { user: UserProfile }) {
 
         const result = await updateProfile(formData);
 
-        if (result.error) {
-            setMessage({ type: "error", text: result.error });
-        } else {
+        if (result.success) {
             setMessage({ type: "success", text: "Профиль успешно обновлен!" });
+        } else {
+            setMessage({ type: "error", text: result.error });
         }
         setLoading(false);
     }

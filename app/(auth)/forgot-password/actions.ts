@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rate-limit";
 import { RATE_LIMITS } from "@/lib/rate-limit-config";
@@ -110,7 +112,7 @@ export async function forgotPasswordAction(
             details: { ip, email, userAgent },
         });
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -120,6 +122,6 @@ export async function forgotPasswordAction(
         });
 
         // Всегда возвращаем успех — не раскрываем внутренние ошибки
-        return { success: true };
+        return okVoid();
     }
 }

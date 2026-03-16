@@ -25,7 +25,7 @@ interface CommunicationsClientProps {
         unreadConversations: number;
         totalUnreadMessages: number;
         byChannel: Array<{ channelType: string; count: number; unread: number }>;
-    };
+    } | Record<string, unknown>;
 }
 
 export function CommunicationsClient({
@@ -47,7 +47,7 @@ export function CommunicationsClient({
         searchQuery: "",
     });
 
-    const channelStats = stats?.byChannel.reduce((acc, ch) => {
+    const channelStats = (Array.isArray(stats?.byChannel) ? stats.byChannel : []).reduce((acc, ch) => {
         acc[ch.channelType] = { count: ch.count, unread: ch.unread };
         return acc;
     }, {} as Record<string, { count: number; unread: number }>) || {};
@@ -77,9 +77,9 @@ export function CommunicationsClient({
         setUi(prev => ({ ...prev, isLoadingMessages: true }));
         try {
             const res = await getConversationMessages(conversationId);
-            if (res.success && res.data) {
+            if (res.success) {
                 setMessages(res.data);
-                setUi(prev => ({ ...prev, hasMoreMessages: res.hasMore || false }));
+                setUi(prev => ({ ...prev, hasMoreMessages: res.data.hasMore || false }));
             }
         } catch (error) {
             console.error("Failed to load messages:", error);
@@ -108,8 +108,8 @@ export function CommunicationsClient({
                 messageType: "text",
             });
 
-            if (res.success && res.data) {
-                setMessages(prev => [...prev, res.data!]);
+            if (res.success) {
+                setMessages(prev => [...prev, res.data]);
 
                 setConversations(prev =>
                     prev.map(c =>
@@ -140,9 +140,9 @@ export function CommunicationsClient({
             oldestMessage.sentAt.toString()
         );
 
-        if (res.success && res.data) {
-            setMessages(prev => [...res.data!, ...prev]);
-            setUi(prev => ({ ...prev, hasMoreMessages: res.hasMore || false }));
+        if (res.success) {
+            setMessages(prev => [...res.data, ...prev]);
+            setUi(prev => ({ ...prev, hasMoreMessages: res.data.hasMore || false }));
         }
     };
 

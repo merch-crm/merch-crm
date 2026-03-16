@@ -16,8 +16,8 @@ import { useToast } from"@/components/ui/toast";
 
 interface Attachment {
     id: string;
-    fileUrl: string;
-    fileName: string;
+    fileUrl: string | null;
+    fileName: string | null;
     fileSize: number | null;
     contentType: string | null;
 }
@@ -91,7 +91,7 @@ export default function OrderAttachments({ orderId, attachments = [] }: OrderAtt
                 {attachments.map((file: Attachment) => (
                     <a
                         key={file.id}
-                        href={file.fileUrl}
+                        href={file.fileUrl || "#"}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-4 bg-slate-50/50 border border-slate-200 rounded-2xl hover:border-primary/20 hover:bg-white hover:shadow-xl hover:shadow-primary/5 transition-all group"

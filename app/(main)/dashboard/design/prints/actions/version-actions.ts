@@ -15,7 +15,7 @@ import { logError } from "@/lib/error-logger";
 import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { generateId } from "@/lib/utils";
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult, okVoid } from "@/lib/types";
 
 type PrintDesignVersion = InferSelectModel<typeof printDesignVersions>;
 
@@ -195,7 +195,7 @@ export async function deleteDesignVersion(id: string): Promise<ActionResult> {
             revalidatePath(`/dashboard/design/prints/${design.collectionId}/${version.designId}`);
         }
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -238,7 +238,7 @@ export async function updateVersionsOrder(
             revalidatePath(`/dashboard/design/prints/${design.collectionId}/${designId}`);
         }
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

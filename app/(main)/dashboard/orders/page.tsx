@@ -10,7 +10,11 @@ import { db } from"@/lib/db";
 import { users } from"@/lib/schema";
 import { eq } from"drizzle-orm";
 import { PageContainer } from"@/components/ui/page-container";
-import { PageHeader } from"@/components/layout/page-header";
+import { PageHeader } from "@/components/layout/page-header";
+import { isAdmin } from "@/lib/roles";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function OrdersPage({
     searchParams: searchParamsPromise,
@@ -47,10 +51,18 @@ export default async function OrdersPage({
         to = endOfDay(now);
     }
 
-    const ordersRes = await getOrders(from, to, page, 10, showArchived, search);
-    const allOrders = ordersRes.success && ordersRes.data ? (ordersRes.data.orders as unknown as Order[]) : [];
-    const total = ordersRes.success && ordersRes.data ? ordersRes.data.total : 0;
-    const error = ordersRes.success ? undefined : ordersRes.error;
+    const ordersRes = await getOrders({ from, to, page, limit: 10, showArchived, search });
+    
+    let allOrders: Order[] = [];
+    let total = 0;
+    let error: string | undefined;
+
+    if (ordersRes.success) {
+        allOrders = ordersRes.data.orders as unknown as Order[];
+        total = ordersRes.data.total;
+    } else {
+        error = ordersRes.error;
+    }
 
     const session = await getSession();
     const user = session ? await db.query.users.findFirst({
@@ -58,44 +70,50 @@ export default async function OrdersPage({
         with: { role: true, department: true }
     }) : null;
 
+    const isSystemAdmin = isAdmin(user?.role?.name);
+
     const showFinancials =
-        user?.role?.name ==="Администратор" ||
-        ["Руководство","Отдел продаж"].includes(user?.department?.name ||"");
+        isSystemAdmin ||
+        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
     const statsRes = await getOrderStats(from, to);
     const stats = statsRes.success && statsRes.data ? statsRes.data : { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
 
     return (
-        <PageContainer>
-            {/* Header Area */}
-            <PageHeader
-                title="Заказы"
-                description="Управление производственным циклом и логистикой"
-                className="px-1"
-            />
+        <ErrorBoundary moduleName="Заказы">
+            <Suspense fallback={<Loading />}>
+                <PageContainer>
+                    {/* Header Area */}
+                    <PageHeader
+                        title="Заказы"
+                        description="Управление производственным циклом и логистикой"
+                        className="px-1"
+                    />
 
-            <OrdersToolbar />
+                    <OrdersToolbar />
 
-            {/* Bento Grid Widgets */}
-            <OrdersWidgets stats={stats} showFinancials={showFinancials} />
+                    {/* Bento Grid Widgets */}
+                    <OrdersWidgets stats={stats} showFinancials={showFinancials} />
 
-            {/* Main Content Area */}
-            <div className="space-y-3">
-                <OrdersTable
-                    orders={allOrders}
-                    error={error}
-                    isAdmin={user?.role?.name ==="Администратор"}
-                    showFinancials={showFinancials}
-                    showArchived={showArchived}
-                />
+                    {/* Main Content Area */}
+                    <div className="space-y-3">
+                        <OrdersTable
+                            orders={allOrders}
+                            error={error}
+                            isAdmin={isSystemAdmin}
+                            showFinancials={showFinancials}
+                            showArchived={showArchived}
+                        />
 
-                <Pagination
-                    totalItems={total}
-                    pageSize={10}
-                    currentPage={page}
-                    itemNames={['заказ', 'заказа', 'заказов']}
-                />
-            </div>
-        </PageContainer>
+                        <Pagination
+                            totalItems={total}
+                            pageSize={10}
+                            currentPage={page}
+                            itemNames={['заказ', 'заказа', 'заказов']}
+                        />
+                    </div>
+                </PageContainer>
+            </Suspense>
+        </ErrorBoundary>
     );
 }

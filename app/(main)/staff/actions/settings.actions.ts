@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import { presenceSettings } from"@/lib/schema";
 import { getSession } from"@/lib/auth";
@@ -63,7 +65,7 @@ export async function updatePresenceSetting(formData: FormData) {
         await logAction("Изменена настройка присутствия","presence_settings", key, { value });
         revalidatePath("/staff/settings");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -113,7 +115,7 @@ export async function updateAllPresenceSettings(formData: FormData) {
         await logAction("Обновлены настройки присутствия","presence_settings","all", validated.data);
         revalidatePath("/staff/settings");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

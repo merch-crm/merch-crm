@@ -91,7 +91,8 @@ export const auth = betterAuth({
 
     password: {
       hash: async (password: string) => {
-        return await bcrypt.hash(password, 10);
+        // Увеличено значение salt rounds до 12 для повышения безопасности (GPU-резистентность).
+        return await bcrypt.hash(password, 12);
       },
       verify: async ({ hash, password }: { hash: string; password: string }) => {
         return await bcrypt.compare(password, hash);
@@ -169,4 +170,17 @@ export type User = typeof auth.$Infer.Session.user;
 import { getSession } from "./session";
 export type Session = NonNullable<Awaited<ReturnType<typeof getSession>>>;
 export { getSession };
-export { getSessionCookieOptions } from "./auth-legacy";
+
+/**
+ * Cookie-опции для сессионной куки — единый источник истины.
+ * Ранее определялось в auth-legacy.ts (устаревший файл удалён).
+ */
+export function getSessionCookieOptions(expires: Date) {
+    return {
+        expires,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax" as const,
+        path: "/",
+    };
+}

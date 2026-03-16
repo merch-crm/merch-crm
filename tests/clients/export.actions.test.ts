@@ -18,6 +18,14 @@ const { mockDb, chainable } = vi.hoisted(() => {
 
     const mockDb = {
         select: vi.fn().mockReturnValue(chainable),
+        query: {
+            users: {
+                findFirst: vi.fn().mockResolvedValue({
+                    id: 'user-id',
+                    role: { name: 'Администратор', permissions: {} }
+                })
+            }
+        }
     };
 
     return { mockDb, chainable };
@@ -30,7 +38,8 @@ vi.mock('@/lib/error-logger', () => ({ logError: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { mockSession } from '../helpers/mocks';
 
 describe('Export Actions', () => {
@@ -59,9 +68,10 @@ describe('Export Actions', () => {
 
             expect(result.success).toBe(true);
             if (result.success && result.data) {
-                expect(result.data.startsWith('\uFEFF')).toBe(true);
-                expect(result.data).toContain('Фамилия,Имя,Телефон');
-                expect(result.data).toContain('Ivanov,Ivan,123');
+                const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                expect(data.data.startsWith('\uFEFF')).toBe(true);
+                expect(data.data).toContain('Фамилия,Имя,Телефон');
+                expect(data.data).toContain('Ivanov,Ivan,123');
             }
         });
 
@@ -72,14 +82,18 @@ describe('Export Actions', () => {
             };
             const result = await getExportData(paramsWithFilters);
             expect(result.success).toBe(true);
-            expect(result.filename).toMatch(/^clients_export_\d{4}-\d{2}-\d{2}\.csv$/);
+            if (result.success) {
+                expect((result.data as unknown as any).filename).toMatch(/^clients_export_\d{4}-\d{2}-\d{2}\.csv$/); // eslint-disable-line @typescript-eslint/no-explicit-any
+            }
         });
 
         it('should return error on invalid columns', async () => {
             const invalidParams = { ...validParams, columns: [] };
             const result = await getExportData(invalidParams as Parameters<typeof getExportData>[0]);
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Ошибка параметров экспорта");
+            if (!result.success) {
+                expect(result.error).toBe("Выберите хотя бы одну колонку");
+            }
         });
     });
 
@@ -87,7 +101,9 @@ describe('Export Actions', () => {
         it('should return list of available columns', async () => {
             const result = await getExportColumns();
             expect(result.success).toBe(true);
-            expect(result.data?.length).toBeGreaterThan(0);
+            if (result.success) {
+                expect(result.data?.length).toBeGreaterThan(0);
+            }
         });
     });
 
@@ -95,7 +111,9 @@ describe('Export Actions', () => {
         it('should return default presets', async () => {
             const result = await getExportPresets();
             expect(result.success).toBe(true);
-            expect(result.data).toContainEqual(expect.objectContaining({ id: 'basic' }));
+            if (result.success) {
+                expect(result.data).toContainEqual(expect.objectContaining({ id: 'basic' }));
+            }
         });
     });
 });

@@ -1,40 +1,69 @@
 "use client";
 
-import React from"react";
-
+import React, { memo } from "react";
 
 interface ResponsiveDataViewProps<T> {
-    data: T[];
-    renderTable: () => React.ReactNode;
-    renderCard: (item: T, index: number) => React.ReactNode;
-    mobileGridClassName?: string;
-    desktopClassName?: string;
+  /** Массив данных для отображения */
+  data?: T[];
+  /** Функция рендера таблицы для десктопа */
+  renderTable: () => React.ReactNode;
+  /** Функция рендера карточки для мобильных */
+  renderCard: (item: T, index: number) => React.ReactNode;
+  /** Функция для получения уникального ключа элемента */
+  getItemKey?: (item: T, index: number) => string | number;
+  /** CSS-классы для мобильного контейнера (alias for mobileGridClassName) */
+  mobileClassName?: string;
+  /** Alias for mobileClassName for backward compatibility */
+  mobileGridClassName?: string;
+  /** CSS-классы для десктопного контейнера */
+  desktopClassName?: string;
+  /** Компонент для пустого состояния */
+  emptyState?: React.ReactNode;
 }
 
-/**
- * A component that renders a table on desktop and a vertical list of cards on mobile.
- * Ensures that the desktop UI remains unchanged while providing a purpose-built mobile experience.
- */
-export function ResponsiveDataView<T>({
-    data = [],
-    renderTable,
-    renderCard,
-    mobileGridClassName ="grid grid-cols-1 md:grid-cols-2 gap-3 md:hidden",
-    desktopClassName ="hidden md:block"
+function ResponsiveDataViewInner<T>({
+  data,
+  renderTable,
+  renderCard,
+  getItemKey,
+  mobileClassName,
+  mobileGridClassName,
+  desktopClassName = "hidden md:block",
+  emptyState,
 }: ResponsiveDataViewProps<T>) {
-    if (!data || !Array.isArray(data)) return null;
+  const finalMobileClassName = mobileClassName || mobileGridClassName || "flex flex-col divide-y divide-slate-100 md:hidden";
+  // Проверка на пустые данные
+  if (!data || !Array.isArray(data)) {
+    return emptyState || null;
+  }
 
-    return (
-        <div className="w-full">
-            {/* Mobile/Tablet View: Grid of cards */}
-            <div className={mobileGridClassName}>
-                {(data || []).map((item, index) => renderCard(item, index))}
-            </div>
+  if (data.length === 0) {
+    return <>{emptyState}</>;
+  }
 
-            {/* Desktop View: Original Table */}
-            <div className={desktopClassName}>
-                {renderTable()}
-            </div>
-        </div>
-    );
+  return (
+    <div className="w-full">
+      {/* Mobile View */}
+      <div className={finalMobileClassName}>
+        {data?.map((item, index) => {
+          const key = getItemKey ? getItemKey(item, index) : index;
+          return (
+            <React.Fragment key={key}>
+              {renderCard(item, index)}
+            </React.Fragment>
+          );
+        })}
+      </div>
+
+      {/* Desktop View */}
+      <div className={desktopClassName}>
+        {renderTable()}
+      </div>
+    </div>
+  );
 }
+
+// Мемоизированная версия с правильной типизацией
+export const ResponsiveDataView = memo(ResponsiveDataViewInner) as <T>(
+  props: ResponsiveDataViewProps<T>
+) => React.ReactElement;

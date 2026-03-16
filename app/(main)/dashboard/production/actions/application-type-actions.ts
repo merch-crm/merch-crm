@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { applicationTypes, printDesigns, productionLogs } from "@/lib/schema";
 import { eq, asc, ilike, and, count } from "drizzle-orm";
@@ -246,7 +248,7 @@ export async function deleteApplicationType(id: string): Promise<ActionResult> {
 
         revalidatePath("/dashboard/production/application-types");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error deleting application type:", error);
         return { success: false, error: "Не удалось удалить тип нанесения" };
@@ -274,7 +276,7 @@ export async function updateApplicationTypesOrder(
 
         revalidatePath("/dashboard/production/application-types");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error updating order:", error);
         return { success: false, error: "Не удалось обновить порядок" };

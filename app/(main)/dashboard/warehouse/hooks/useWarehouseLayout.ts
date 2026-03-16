@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import { getSession, getAllUsers } from "../warehouse-stats-actions";
+import { getSession } from "@/lib/session";
+import { getAllUsers } from "../warehouse-stats-actions";
 import { isSuccess } from "@/lib/types";
 import { getInventoryItems } from "../item-actions";
 import { getStorageLocations } from "../storage-actions";

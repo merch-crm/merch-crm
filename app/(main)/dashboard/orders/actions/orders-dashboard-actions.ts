@@ -54,11 +54,9 @@ export interface OrderRequiringAction {
     deadline?: string;
 }
 
-export async function getOrdersStats(): Promise<{
-    success: boolean;
-    data?: OrdersStats;
-    error?: string;
-}> {
+import { type ActionResult } from "@/lib/types";
+
+export async function getOrdersStats(): Promise<ActionResult<OrdersStats>> {
     try {
         const session = await getSession();
         if (!session) {
@@ -165,11 +163,7 @@ export async function getOrdersStats(): Promise<{
     }
 }
 
-export async function getOrdersByStatus(): Promise<{
-    success: boolean;
-    data?: OrdersByStatus[];
-    error?: string;
-}> {
+export async function getOrdersByStatus(): Promise<ActionResult<OrdersByStatus[]>> {
     try {
         const session = await getSession();
         if (!session) {
@@ -199,11 +193,7 @@ export async function getOrdersByStatus(): Promise<{
     }
 }
 
-export async function getSalesData(days: number = 7): Promise<{
-    success: boolean;
-    data?: SalesDataPoint[];
-    error?: string;
-}> {
+export async function getSalesData(days: number = 7): Promise<ActionResult<SalesDataPoint[]>> {
     try {
         const session = await getSession();
         if (!session) {
@@ -242,11 +232,7 @@ export async function getSalesData(days: number = 7): Promise<{
     }
 }
 
-export async function getRecentOrders(limit: number = 5): Promise<{
-    success: boolean;
-    data?: RecentOrder[];
-    error?: string;
-}> {
+export async function getRecentOrders(limit: number = 5): Promise<ActionResult<RecentOrder[]>> {
     try {
         const session = await getSession();
         if (!session) {
@@ -303,11 +289,7 @@ export async function getRecentOrders(limit: number = 5): Promise<{
     }
 }
 
-export async function getOrdersRequiringAction(): Promise<{
-    success: boolean;
-    data?: OrderRequiringAction[];
-    error?: string;
-}> {
+export async function getOrdersRequiringAction(): Promise<ActionResult<OrderRequiringAction[]>> {
     try {
         const session = await getSession();
         if (!session) {
@@ -386,11 +368,7 @@ export async function getOrdersRequiringAction(): Promise<{
     }
 }
 
-export async function getSalesDataExtended(days: number = 7): Promise<{
-    success: boolean;
-    data?: SalesDataPoint[];
-    error?: string;
-}> {
+export async function getSalesDataExtended(days: number = 7): Promise<ActionResult<SalesDataPoint[]>> {
     try {
         const session = await getSession();
         if (!session) {

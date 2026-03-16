@@ -84,7 +84,7 @@ export function SystemStats() {
       try {
         // Try to fetch stats to see if server is back
         const res = await getSystemStats();
-        if (res.data) {
+        if (res.success) {
           // Server is back! Reload page to reset state and show fresh data
           window.location.reload();
         }
@@ -105,10 +105,10 @@ export function SystemStats() {
     try {
       // Basic stats always needed
       const res = await getSystemStats();
-      if (res.data) {
+      if (res.success) {
         setMonitoring(prev => ({ ...prev, stats: res.data as StatsData }));
         setUiState(prev => ({ ...prev, lastUpdated: new Date() }));
-      } else if (res.error) {
+      } else {
         setUiState(prev => ({ ...prev, error: res.error || "" }));
       }
 
@@ -136,7 +136,7 @@ export function SystemStats() {
         }
       } else if (uiState.activeTab === "backups") {
         const backRes = await getBackupsList();
-        if (backRes.data) {
+        if (backRes.success) {
           setBackups(prev => ({ ...prev, list: backRes.data as BackupFile[] }));
         }
       }
@@ -156,7 +156,7 @@ export function SystemStats() {
       if (!uiState.isAdmin) {
         try {
           const userRes = await getCurrentUserAction();
-          if (isMounted && userRes.data?.role?.name === "Администратор") {
+          if (isMounted && userRes.success && userRes.data?.role?.name === "Администратор") {
             setUiState(prev => ({ ...prev, isAdmin: true }));
           }
         } catch (e) {
@@ -235,10 +235,10 @@ export function SystemStats() {
   const runDiagnostics = async () => {
     setDiagnostics(prev => ({ ...prev, diagnosing: true }));
     const res = await checkSystemHealth();
-    if (res.data) {
+    if (res.success) {
       setDiagnostics(prev => ({ ...prev, healthData: res.data as HealthData }));
       toast("Параметры системы успешно проверены", "success");
-    } else if (res.error) {
+    } else {
       toast(res.error, "error");
     }
     setDiagnostics(prev => ({ ...prev, diagnosing: false }));
@@ -271,7 +271,7 @@ export function SystemStats() {
     setMonitoring(prev => ({ ...prev, clearingRam: true }));
     const res = await clearRamAction();
     if (res.success) {
-      toast(res.message || "RAM очищена", "success");
+      toast(res.data || "RAM очищена", "success");
       fetchStats();
     } else {
       toast(res.error || "Ошибка", "error");
@@ -284,7 +284,7 @@ export function SystemStats() {
     setUiState(prev => ({ ...prev, showRestartConfirm: false }));
     const res = await restartServerAction();
     if (res.success) {
-      toast(res.message || "Перезапуск...", "success");
+      toast(res.data || "Перезапуск...", "success");
       setUiState(prev => ({ ...prev, isRestarting: true }));
     } else {
       toast(res.error || "Ошибка", "error");

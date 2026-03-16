@@ -1,6 +1,8 @@
 // app/(main)/dashboard/production/actions/defect-actions.ts
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { revalidatePath } from "next/cache";
 import { eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -54,7 +56,7 @@ export async function saveTaskDefect(
     });
 
     revalidatePath("/dashboard/production");
-    return { success: true };
+    return okVoid();
   } catch (error) {
     console.error("Error saving defect:", error);
     return { success: false, error: "Ошибка при сохранении брака" };

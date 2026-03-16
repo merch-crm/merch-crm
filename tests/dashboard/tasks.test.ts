@@ -48,7 +48,7 @@ vi.mock('@/app/(main)/dashboard/tasks/notifications', () => ({
     sendTaskNotification: vi.fn() 
 }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
-vi.mock('@/lib/auth', () => ({ 
+vi.mock('@/lib/session', () => ({ 
     getSession: hoisted.mockGetSession,
     auth: {
         api: {

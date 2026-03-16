@@ -1,10 +1,14 @@
 import { db } from "./db";
-import { orderItems, orders } from "./schema";
-import { eq } from "drizzle-orm";
+import { type ExtractTablesWithRelations, eq } from "drizzle-orm";
+import { type NodePgDatabase, type NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
+import { type PgTransaction } from "drizzle-orm/pg-core";
+import * as schema from "./schema";
 
+const { orderItems, orders } = schema;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DBOrTx = any;
+type DB = NodePgDatabase<typeof schema>;
+type Transaction = PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
+type DBOrTx = DB | Transaction;
 
 /**
  * Управление этапами производства для позиций заказа.
@@ -45,8 +49,9 @@ async function checkAndUpdateOrderStatus(orderItemId: string, tx?: DBOrTx) {
     if (!item) return;
 
     const orderId = item.orderId;
+    if (!orderId) return;
 
-    const allItems = await db.query.orderItems.findMany({
+    const allItems = await d.query.orderItems.findMany({
         where: eq(orderItems.orderId, orderId),
         limit: 100
     });

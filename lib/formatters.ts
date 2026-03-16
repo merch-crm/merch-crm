@@ -79,3 +79,39 @@ export function formatTimeAgo(date: string | Date) {
         return "";
     }
 }
+
+/**
+ * Отрезает строку до указанной длины и добавляет многоточие.
+ */
+export function truncate(str: string, length: number, suffix: string = "..."): string {
+    if (!str || str.length <= length) return str;
+    return str.slice(0, length) + suffix;
+}
+
+/**
+ * Форматирует номер телефона в формат +7 (999) 123-45-67.
+ */
+export function formatPhone(phone: string | null): string {
+    if (!phone) return "";
+    
+    // Оставляем только цифры
+    let cleaned = phone.replace(/\D/g, "");
+    
+    // Если начинается с 8 или 7 и длина 11
+    if (cleaned.length === 11) {
+        if (cleaned.startsWith("8")) {
+            cleaned = "7" + cleaned.slice(1);
+        }
+    } else if (cleaned.length === 10) {
+        cleaned = "7" + cleaned;
+    }
+    
+    if (cleaned.length !== 11) return phone;
+    
+    const matched = cleaned.match(/^(\d)(\d{3})(\d{3})(\d{2})(\d{2})$/);
+    if (matched) {
+        return `+${matched[1]} (${matched[2]}) ${matched[3]}-${matched[4]}-${matched[5]}`;
+    }
+    
+    return phone;
+}

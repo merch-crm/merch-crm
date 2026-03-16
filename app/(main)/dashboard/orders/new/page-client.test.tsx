@@ -1,7 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CreateOrderPageClient } from './page-client';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { searchClients, createOrder } from"../actions/core.actions";
+import { searchClients, createOrder } from "../actions/core.actions";
 import { validatePromocode } from '../../finance/actions';
 
 // Mocks
@@ -79,9 +79,9 @@ describe('CreateOrderPageClient', () => {
     it('flows through all steps to create an order', async () => {
         vi.mocked(searchClients).mockResolvedValue({
             success: true,
-            data: mockClients as unknown as never[]
+            data: mockClients as unknown as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
         });
-        vi.mocked(createOrder).mockResolvedValue({ success: true });
+        vi.mocked(createOrder).mockResolvedValue({ success: true, data: { orderId: '123' } } as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
         render(<CreateOrderPageClient initialInventory={mockInventory} />);
 
@@ -137,7 +137,7 @@ describe('CreateOrderPageClient', () => {
     it('applies promocode correctly', async () => {
         vi.mocked(searchClients).mockResolvedValue({
             success: true,
-            data: mockClients as unknown as never[]
+            data: mockClients as unknown as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
         });
         vi.mocked(validatePromocode).mockResolvedValue({
             success: true,
@@ -148,7 +148,7 @@ describe('CreateOrderPageClient', () => {
                 value: '10',
                 message: 'Скидка 10%',
                 calculatedDiscount: 50
-            } as unknown as never
+            } as unknown as any // eslint-disable-line @typescript-eslint/no-explicit-any
         });
 
         render(<CreateOrderPageClient initialInventory={mockInventory} />);

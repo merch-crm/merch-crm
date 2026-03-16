@@ -22,7 +22,9 @@ export default function AdminRolesPage() {
 
     const fetchRoles = useCallback(() => {
         getRoles().then(res => {
-            if (res.data) setRoles(res.data as RoleDetail[]);
+            if (res.success) {
+                setRoles(res.data as RoleDetail[]);
+            }
             setLoading(false);
         });
     }, []);
@@ -33,11 +35,11 @@ export default function AdminRolesPage() {
 
     const handleDeleteRole = async (id: string, password?: string) => {
         const res = await deleteRole(id, password);
-        if (res.error) {
-            toast(res.error,"error");
-        } else {
+        if (res.success) {
             toast("Роль успешно удалена","success");
             fetchRoles();
+        } else {
+            toast(res.error,"error");
         }
     };
 

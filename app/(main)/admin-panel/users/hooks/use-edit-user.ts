@@ -31,9 +31,16 @@ export function useEditUser(
         if (isOpen) {
             Promise.all([getRoles(), getDepartments()]).then(([rolesRes, deptsRes]) => {
                 if (isMounted) {
+                    const roles = (rolesRes.success && rolesRes.data) ? rolesRes.data : [];
+                    const depts = (deptsRes.success && deptsRes.data) ? deptsRes.data : [];
+                    
                     updateState({
-                        roles: (rolesRes.data as { id: string, name: string, departmentId: string | null }[]) || [],
-                        departments: (deptsRes.data as { id: string, name: string }[]) || []
+                        roles: roles.map(r => ({
+                            id: r.id,
+                            name: r.name,
+                            departmentId: r.departmentId
+                        })),
+                        departments: depts
                     });
                 }
             });
@@ -70,7 +77,7 @@ export function useEditUser(
         const formData = new FormData(e.currentTarget);
         const res = await updateUser(user.id, formData);
 
-        if (res?.error) {
+        if (!res.success) {
             updateState({ loading: false, error: res.error });
         } else {
             updateState({ loading: false });

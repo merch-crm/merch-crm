@@ -98,7 +98,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
             } as typeof g & { groupIconName: string }));
 
             const result = await updateIconGroups(serializedData);
-            if (result.error) {
+            if (!result.success) {
                 toast(`Ошибка при сохранении: ${result.error}`,"error");
             }
         } catch (error) {
@@ -129,7 +129,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
             } as typeof g & { groupIconName: string }));
 
             const result = await updateIconGroups(serializedData);
-            if (result.error) {
+            if (!result.success) {
                 toast(`Ошибка при сохранении: ${result.error}`,"error");
             }
         } catch (error) {

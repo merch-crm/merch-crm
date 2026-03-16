@@ -3,11 +3,11 @@
 import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { eq, and, desc, sql, count, isNotNull } from "drizzle-orm";
-import { getSession } from "@/lib/session";
-import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
 
 import { RFMSegment, rfmSegmentLabels, rfmSegmentColors } from "./rfm.types";
 
@@ -65,23 +65,16 @@ function determineSegment(r: number, f: number, m: number): RFMSegment {
 /**
  * Рассчитать RFM для одного клиента
  */
-export async function calculateClientRFM(clientId: string): Promise<{
-    success: boolean;
-    data?: {
-        recency: number;
-        frequency: number;
-        monetary: number;
-        score: string;
-        segment: RFMSegment;
-    };
-    error?: string;
-}> {
-    const validatedId = z.string().uuid().safeParse(clientId);
-    if (!validatedId.success) return { success: false, error: "Invalid client ID" };
-
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
+export async function calculateClientRFM(clientId: string): Promise<ActionResult<{
+    recency: number;
+    frequency: number;
+    monetary: number;
+    score: string;
+    segment: RFMSegment;
+}>> {
+    return withAuth(async () => {
+        const validatedId = z.string().uuid().safeParse(clientId);
+        if (!validatedId.success) return ERRORS.VALIDATION("Invalid client ID");
 
         // Получаем данные клиента
         const client = await db.query.clients.findFirst({
@@ -89,7 +82,7 @@ export async function calculateClientRFM(clientId: string): Promise<{
         });
 
         if (!client) {
-            return { success: false, error: "Клиент не найден" };
+            return ERRORS.NOT_FOUND("Клиент");
         }
 
         // Пороги для Recency (меньше = лучше, инвертируем)
@@ -126,34 +119,24 @@ export async function calculateClientRFM(clientId: string): Promise<{
 
         revalidatePath("/dashboard/clients");
 
-        return {
-            success: true,
-            data: {
-                recency: recencyScore,
-                frequency: frequencyScore,
-                monetary: monetaryScore,
-                score,
-                segment,
-            },
-        };
-    } catch (error) {
-        logError({ error, details: { action: "calculateClientRFM", clientId } });
-        return { success: false, error: "Не удалось рассчитать RFM" };
-    }
+        return ok({
+            recency: recencyScore,
+            frequency: frequencyScore,
+            monetary: monetaryScore,
+            score,
+            segment,
+        });
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "calculateClientRFM" 
+    });
 }
 
 /**
  * Рассчитать RFM для всех клиентов
  */
-export async function calculateAllClientsRFM(): Promise<{
-    success: boolean;
-    data?: { updated: number };
-    error?: string;
-}> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-
+export async function calculateAllClientsRFM(): Promise<ActionResult<{ updated: number }>> {
+    return withAuth(async () => {
         // Получаем всех активных клиентов
         const allClients = await db
             .select({
@@ -206,33 +189,26 @@ export async function calculateAllClientsRFM(): Promise<{
 
         revalidatePath("/dashboard/clients");
 
-        return { success: true, data: { updated } };
-    } catch (error) {
-        logError({ error, details: { action: "calculateAllClientsRFM" } });
-        return { success: false, error: "Не удалось рассчитать RFM" };
-    }
+        return ok({ updated });
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "calculateAllClientsRFM" 
+    });
 }
 
 /**
  * Получить статистику по RFM-сегментам
  */
-export async function getRFMStats(): Promise<{
-    success: boolean;
-    data?: Array<{
-        segment: string;
-        label: string;
-        color: string;
-        count: number;
-        percentage: number;
-        averageCheck: number;
-        totalAmount: number;
-    }>;
-    error?: string;
-}> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+export async function getRFMStats(): Promise<ActionResult<Array<{
+    segment: string;
+    label: string;
+    color: string;
+    count: number;
+    percentage: number;
+    averageCheck: number;
+    totalAmount: number;
+}>>> {
+    return withAuth(async () => {
         const segmentData = await db
             .select({
                 segment: clients.rfmSegment,
@@ -255,11 +231,11 @@ export async function getRFMStats(): Promise<{
             totalAmount: Math.round(Number(row.avgRevenue) * Number(row.count)),
         }));
 
-        return { success: true, data: result };
-    } catch (error) {
-        logError({ error, details: { action: "getRFMStats" } });
-        return { success: false, error: "Не удалось загрузить статистику RFM" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getRFMStats" 
+    });
 }
 
 /**
@@ -268,29 +244,22 @@ export async function getRFMStats(): Promise<{
 export async function getClientsByRFMSegment(
     segment: RFMSegment,
     limit: number = 50
-): Promise<{
-    success: boolean;
-    data?: Array<{
-        id: string;
-        fullName: string;
-        company: string | null;
-        rfmScore: string | null;
-        totalOrdersAmount: number | null;
-        daysSinceLastOrder: number | null;
-    }>;
-    error?: string;
-}> {
-    const validated = z.object({
-        segment: z.string().min(1),
-        limit: z.number().int().min(1).max(500).optional()
-    }).safeParse({ segment, limit });
+): Promise<ActionResult<Array<{
+    id: string;
+    fullName: string;
+    company: string | null;
+    rfmScore: string | null;
+    totalOrdersAmount: number | null;
+    daysSinceLastOrder: number | null;
+}>>> {
+    return withAuth(async () => {
+        const validated = z.object({
+            segment: z.string().min(1),
+            limit: z.number().int().min(1).max(500).optional()
+        }).safeParse({ segment, limit });
 
-    if (!validated.success) return { success: false, error: "Invalid input" };
+        if (!validated.success) return ERRORS.VALIDATION("Invalid input");
 
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
         const clientsData = await db
             .select({
                 id: clients.id,
@@ -315,9 +284,9 @@ export async function getClientsByRFMSegment(
             daysSinceLastOrder: c.daysSinceLastOrder,
         }));
 
-        return { success: true, data: result };
-    } catch (error) {
-        logError({ error, details: { action: "getClientsByRFMSegment", segment } });
-        return { success: false, error: "Не удалось загрузить клиентов" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "getClientsByRFMSegment" 
+    });
 }

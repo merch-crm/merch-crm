@@ -17,11 +17,9 @@ import { getSession } from "@/lib/session";
 import { z } from "zod";
 import { slugify } from "@/lib/utils";
 import { v4 as uuidv4 } from "uuid";
-import {
-    CollectionWithStats,
+import { CollectionWithStats,
     CollectionWithFullStats,
-    ActionResult
-} from "@/lib/types";
+    ActionResult, okVoid } from "@/lib/types";
 import { inventoryCategories } from "@/lib/schema";
 
 type PrintCollection = InferSelectModel<typeof printCollections>;
@@ -234,7 +232,7 @@ export async function deleteCollection(id: string): Promise<ActionResult> {
         invalidateCache("design:collections");
         revalidatePath("/dashboard/design/prints");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -340,7 +338,7 @@ export async function updateCollectionsOrder(
         invalidateCache("design:collections");
         revalidatePath("/dashboard/design/prints");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

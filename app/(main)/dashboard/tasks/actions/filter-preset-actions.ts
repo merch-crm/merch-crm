@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { revalidatePath } from "next/cache";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -82,7 +84,7 @@ export async function deleteFilterPreset(
       );
 
     revalidatePath("/dashboard/tasks");
-    return { success: true };
+    return okVoid();
   } catch (error) {
     logError({ error, method: "deleteFilterPreset" });
     return { success: false, error: "Не удалось удалить пресет" };
@@ -114,7 +116,7 @@ export async function togglePresetFavorite(
       );
 
     revalidatePath("/dashboard/tasks");
-    return { success: true };
+    return okVoid();
   } catch (error) {
     logError({ error, method: "togglePresetFavorite" });
     return { success: false, error: "Не удалось обновить пресет" };

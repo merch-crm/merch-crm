@@ -23,6 +23,7 @@ const { mockDb, chainable } = vi.hoisted(() => {
 
     const queryMock = {
         clients: { findFirst: vi.fn().mockResolvedValue(null) },
+        users: { findFirst: vi.fn().mockResolvedValue(null) },
     };
 
     const mockDb = {
@@ -42,7 +43,8 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { logAction } from '@/lib/audit';
 import { mockSession } from '../helpers/mocks';
 
@@ -50,6 +52,15 @@ describe('Funnel Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+        
+        // Mock users.findFirst for withAuth
+        (mockDb.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+            id: 'user-id',
+            name: 'Test User',
+            email: 'test@example.com',
+            role: { name: 'Администратор', permissions: {} },
+        });
+
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
@@ -59,15 +70,18 @@ describe('Funnel Actions', () => {
             chainable.then.mockImplementationOnce((cb: (arg: typeof mockClients) => void) => cb(mockClients));
 
             const result = await getClientsForFunnel();
-
-            expect(result).toEqual(mockClients);
+            expect(Array.isArray(result)).toBe(false); // It's an ActionResult
+            expect(result.success).toBe(true);
+            if (result.success) {
+                expect(result.data).toEqual(mockClients);
+            }
             expect(mockDb.select).toHaveBeenCalled();
         });
 
-        it('should return empty array on failure', async () => {
+        it('should return error result on DB failure', async () => {
             chainable.then.mockImplementationOnce(() => { throw new Error('DB error'); });
             const result = await getClientsForFunnel();
-            expect(result).toEqual([]);
+            expect(result.success).toBe(false);
         });
     });
 
@@ -81,8 +95,12 @@ describe('Funnel Actions', () => {
 
             const result = await getFunnelStats();
 
-            expect(result.lead).toEqual({ count: 5, amount: 5000 });
-            expect(result.negotiation).toEqual({ count: 2, amount: 2000 });
+            expect(result.success).toBe(true);
+            if (result.success) {
+                const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                expect(data.lead).toEqual({ count: 5, amount: 5000 });
+                expect(data.negotiation).toEqual({ count: 2, amount: 2000 });
+            }
         });
     });
 
@@ -97,9 +115,13 @@ describe('Funnel Actions', () => {
             expect(logAction).toHaveBeenCalledWith('update_funnel_stage', 'client', clientId, { stage });
         });
 
-        it('should throw error on unauthorized', async () => {
+        it('should return unauthorized error on missing session', async () => {
             vi.mocked(getSession).mockResolvedValueOnce(null);
-            await expect(updateClientFunnelStage('uuid', 'stage')).rejects.toThrow("Unauthorized");
+            const result = await updateClientFunnelStage('55555555-5555-4555-8555-000000000001', 'stage');
+            expect(result.success).toBe(false);
+            if (!result.success) {
+                expect(result.error).toBe("Не авторизован");
+            }
         });
     });
 

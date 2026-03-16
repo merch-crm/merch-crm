@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { meterPriceTiers } from "@/lib/schema/calculators";
 import { eq, and, asc } from "drizzle-orm";
@@ -263,7 +265,7 @@ export async function deleteMeterPriceTier(
 
         revalidatePath(REVALIDATE_PATH);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         logError({ error, details: { context: "deleteMeterPriceTier", input } });
         return { success: false, error: "Ошибка удаления уровня цены" };
@@ -331,7 +333,7 @@ export async function bulkUpdateMeterPricing(
 
         revalidatePath(REVALIDATE_PATH);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         logError({ error, details: { context: "bulkUpdateMeterPricing", applicationType, rollWidthMm } });
         return { success: false, error: "Ошибка сохранения цен" };

@@ -4,25 +4,20 @@ import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { inventoryTransactions, orderItems } from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
-import { type ActionResult } from "@/lib/types";
+import { withAuth } from "@/lib/action-helpers";
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
 import { type ItemHistoryTransaction, type ActiveOrderItem } from "./types";
-
-import { getSession } from "@/lib/session";
 
 /**
  * Get full history of inventory transactions for a specific item
  */
 export async function getItemHistory(itemId: string): Promise<ActionResult<ItemHistoryTransaction[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    const validation = z.string().uuid().safeParse(itemId);
-    if (!validation.success) {
-        return { success: false, error: "Некорректный ID товара" };
+    const idValidation = z.string().uuid().safeParse(itemId);
+    if (!idValidation.success) {
+        return ERRORS.VALIDATION("Некорректный ID товара");
     }
 
-    try {
+    return withAuth(async () => {
         const history = await db.query.inventoryTransactions.findMany({
             where: eq(inventoryTransactions.itemId, itemId),
             with: {
@@ -36,31 +31,20 @@ export async function getItemHistory(itemId: string): Promise<ActionResult<ItemH
             orderBy: [desc(inventoryTransactions.createdAt)],
             limit: 1000
         });
-        return { success: true, data: history as unknown as ItemHistoryTransaction[] };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-history.actions",
-            method: "getItemHistory",
-            details: { itemId }
-        });
-        return { success: false, error: "Не удалось загрузить историю товара" };
-    }
+        return ok(history as unknown as ItemHistoryTransaction[]);
+    }, { errorPath: "getItemHistory" });
 }
 
 /**
  * Get active (non-shipped/non-cancelled) orders containing a specific item
  */
 export async function getItemActiveOrders(itemId: string): Promise<ActionResult<ActiveOrderItem[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    const validation = z.string().uuid().safeParse(itemId);
-    if (!validation.success) {
-        return { success: false, error: "Некорректный ID товара" };
+    const idValidation = z.string().uuid().safeParse(itemId);
+    if (!idValidation.success) {
+        return ERRORS.VALIDATION("Некорректный ID товара");
     }
 
-    try {
+    return withAuth(async () => {
         const activeOrders = await db.query.orderItems.findMany({
             where: eq(orderItems.inventoryId, itemId),
             with: {
@@ -79,14 +63,6 @@ export async function getItemActiveOrders(itemId: string): Promise<ActionResult<
             !["cancelled", "shipped"].includes(oi.order.status)
         );
 
-        return { success: true, data: filtered as unknown as ActiveOrderItem[] };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-history.actions",
-            method: "getItemActiveOrders",
-            details: { itemId }
-        });
-        return { success: false, error: "Не удалось загрузить заказы товара" };
-    }
+        return ok(filtered as unknown as ActiveOrderItem[]);
+    }, { errorPath: "getItemActiveOrders" });
 }

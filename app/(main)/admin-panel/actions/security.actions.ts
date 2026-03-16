@@ -2,16 +2,19 @@
 
 import { db } from "@/lib/db";
 import { auditLogs, securityEvents, systemErrors, users, systemSettings } from "@/lib/schema";
-import { getSession, auth } from "@/lib/auth";
-import { requireAdmin } from "@/lib/admin";
+import { auth } from "@/lib/auth";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logSecurityEvent } from "@/lib/security-logger";
-import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
-import { eq, desc, and, gte, sql, count, ilike, lte } from "drizzle-orm";
+import { eq, desc, and, gte, sql, count, ilike, lte, type InferSelectModel } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-
+import { ActionResult, ok, okVoid, ERRORS } from "@/lib/types";
 import { z } from "zod";
+
+type AuditLog = InferSelectModel<typeof auditLogs>;
+type SecurityEvent = InferSelectModel<typeof securityEvents>;
+type SystemError = InferSelectModel<typeof systemErrors>;
 
 
 // Audit Logs
@@ -23,10 +26,11 @@ export async function getAuditLogs(
     entityType?: string | null,
     startDate?: string | null,
     endDate?: string | null
-) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+): Promise<ActionResult<{
+    logs: AuditLog[];
+    pagination: { total: number; page: number; limit: number; totalPages: number };
+}>> {
+    return withAuth(async () => {
         const offset = (page - 1) * limit;
 
         // Security risk fix: prevent DB DoS via extremely long search strings
@@ -52,50 +56,40 @@ export async function getAuditLogs(
             offset
         });
 
-        return {
-            success: true,
-            data: logs,
+        return ok({
+            logs: logs as AuditLog[],
             pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
-        };
-    } catch {
-        return { success: false, error: "Не удалось загрузить логи аудита" };
-    }
+        });
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getAuditLogs" });
 }
 
-export async function clearAuditLogs() {
-    const session = await getSession();
-    try {
-        const currentUser = await requireAdmin(session);
+export async function clearAuditLogs(): Promise<ActionResult<void>> {
+    return withAuth(async (session) => {
         await db.transaction(async (tx) => {
             await tx.delete(auditLogs);
-            await logAction("Логи аудита очищены", "system", currentUser.id, undefined, tx);
+            await logAction("Логи аудита очищены", "system", session.id, undefined, tx);
         });
         revalidatePath("/admin-panel/audit");
-        return { success: true };
-    } catch {
-        return { success: false, error: "Не удалось очистить логи" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "clearAuditLogs" });
 }
 
 // Impersonation
-export async function impersonateUser(userId: string) {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+export async function impersonateUser(userId: string): Promise<ActionResult<void>> {
+    const validated = z.object({ userId: z.string().uuid("Некорректный ID пользователя") }).safeParse({ userId });
+    if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
-    try {
-        await requireAdmin(session);
-        const { userId: validUserId } = z.object({ userId: z.string().uuid("Некорректный ID пользователя") }).parse({ userId });
-
+    return withAuth(async (session) => {
         const targetUser = await db.query.users.findFirst({
-            where: eq(users.id, validUserId),
+            where: eq(users.id, userId),
         });
 
-        if (!targetUser) return { success: false, error: "Пользователь не найден" };
+        if (!targetUser) return ERRORS.NOT_FOUND("Пользователь");
 
         const defaultHeaders = await headers();
         await auth.api.impersonateUser({
             headers: defaultHeaders,
-            body: { userId: validUserId }
+            body: { userId }
         });
 
         await logSecurityEvent({
@@ -108,20 +102,12 @@ export async function impersonateUser(userId: string) {
         });
 
         revalidatePath("/");
-        return { success: true };
-    } catch (e) {
-        console.error("Impersonate error:", e);
-        return { success: false, error: "Ошибка при смене пользователя" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "impersonateUser" });
 }
 
-export async function stopImpersonating() {
-    const session = await getSession();
-    // better-auth doesn't expose impersonatorId directly in user by default unless mapped, 
-    // but the stopImpersonating API figures it out from the cookie
-    if (!session) return { success: false, error: "Нет активной сессии" };
-
-    try {
+export async function stopImpersonating(): Promise<ActionResult<void>> {
+    return withAuth(async (session) => {
         const defaultHeaders = await headers();
         await auth.api.stopImpersonating({
             headers: defaultHeaders,
@@ -136,18 +122,16 @@ export async function stopImpersonating() {
         });
 
         revalidatePath("/");
-        return { success: true };
-    } catch (e) {
-        console.error("Stop impersonating error:", e);
-        return { success: false, error: "Не удалось вернуться в режим администратора" };
-    }
+        return okVoid();
+    }, { errorPath: "stopImpersonating" });
 }
 
-// Security & Monitoring Stats
-export async function getMonitoringStats() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function getMonitoringStats(): Promise<ActionResult<{
+    activeUsers: { id: string; name: string; email: string; role: string | undefined; lastActiveAt: Date | null }[];
+    activityStats: { hour: number; type: string; count: number }[];
+    entityStats: { type: string; count: number }[];
+}>> {
+    return withAuth(async () => {
         const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
         const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -173,25 +157,27 @@ export async function getMonitoringStats() {
             `)
         ]);
 
-        return {
-            success: true,
-            data: {
-                activeUsers: activeUsers.map(u => ({
-                    id: u.id, name: u.name, email: u.email, role: u.role?.name, lastActiveAt: u.lastActiveAt
-                })),
-                activityStats: activityStats.rows,
-                entityStats: entityStats.rows
-            }
-        };
-    } catch {
-        return { success: false, error: "Ошибка получения данных мониторинга" };
-    }
+        return ok({
+            activeUsers: activeUsers.map(u => ({
+                id: u.id, 
+                name: u.name, 
+                email: u.email, 
+                role: u.role?.name, 
+                lastActiveAt: u.lastActiveAt
+            })),
+            activityStats: activityStats.rows as { hour: number; type: string; count: number }[],
+            entityStats: entityStats.rows as { type: string; count: number }[]
+        });
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getMonitoringStats" });
 }
 
-export async function getSecurityStats() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function getSecurityStats(): Promise<ActionResult<{
+    failedLogins: SecurityEvent[];
+    sensitiveActions: AuditLog[];
+    systemErrors: SystemError[];
+    maintenanceMode: boolean;
+}>> {
+    return withAuth(async () => {
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
         const [failedLogins, sensitiveActions, errors, maintenanceSetting] = await Promise.all([
@@ -214,45 +200,37 @@ export async function getSecurityStats() {
             db.query.systemSettings.findFirst({ where: eq(systemSettings.key, 'maintenance_mode') })
         ]);
 
-        return {
-            success: true,
-            data: {
-                failedLogins,
-                sensitiveActions,
-                systemErrors: errors,
-                maintenanceMode: maintenanceSetting?.value === true
-            }
-        };
-    } catch {
-        return { success: false, error: "Ошибка получения данных безопасности" };
-    }
+        return ok({
+            failedLogins: failedLogins as SecurityEvent[],
+            sensitiveActions: sensitiveActions as AuditLog[],
+            systemErrors: errors as SystemError[],
+            maintenanceMode: maintenanceSetting?.value === true
+        });
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getSecurityStats" });
 }
 
-export async function toggleMaintenanceMode(enabled: boolean) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
-        const { enabled: validEnabled } = z.object({ enabled: z.boolean() }).parse({ enabled });
+export async function toggleMaintenanceMode(enabled: boolean): Promise<ActionResult<void>> {
+    const validated = z.boolean().safeParse(enabled);
+    if (!validated.success) return ERRORS.VALIDATION("Некорректное значение");
 
+    return withAuth(async (session) => {
         await db.insert(systemSettings)
-            .values({ key: 'maintenance_mode', value: validEnabled, updatedAt: new Date() })
+            .values({ key: 'maintenance_mode', value: enabled, updatedAt: new Date() })
             .onConflictDoUpdate({
                 target: [systemSettings.key],
-                set: { value: validEnabled, updatedAt: new Date() }
+                set: { value: enabled, updatedAt: new Date() }
             });
 
         await logSecurityEvent({
             eventType: "maintenance_mode_toggle",
-            userId: session!.id,
+            userId: session.id,
             severity: "critical",
             entityType: "system_settings",
-            details: { enabled, toggledBy: session!.name }
+            details: { enabled, toggledBy: session.name }
         });
         revalidatePath("/");
-        return { success: true };
-    } catch {
-        return { success: false, error: "Ошибка переключения режима" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "toggleMaintenanceMode" });
 }
 
 export async function getSecurityEvents(
@@ -262,18 +240,17 @@ export async function getSecurityEvents(
     severity?: string | null,
     startDate?: Date | null,
     endDate?: Date | null
-) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+): Promise<ActionResult<{
+    events: SecurityEvent[];
+    pagination: { page: number; limit: number; total: number; totalPages: number };
+}>> {
+    return withAuth(async () => {
         const offset = (page - 1) * limit;
-
-        // Security risk fix: prevent DB DoS via extremely long eventType strings
         const safeEventType = eventType?.slice(0, 100);
 
         const conditions = [];
         if (safeEventType) conditions.push(eq(securityEvents.eventType, safeEventType as typeof securityEvents.$inferSelect.eventType));
-        if (severity) conditions.push(eq(securityEvents.severity, severity as typeof securityEvents.$inferSelect.severity));
+        if (severity) conditions.push(eq(securityEvents.severity, severity));
         if (startDate) conditions.push(gte(securityEvents.createdAt, startDate));
         if (endDate) conditions.push(sql`${securityEvents.createdAt} <= ${endDate}`);
 
@@ -294,23 +271,23 @@ export async function getSecurityEvents(
             offset
         });
 
-        return {
-            success: true,
-            data: {
-                events,
-                pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
-            }
-        };
-    } catch (error) {
-        await logError({ error, path: "/admin-panel/security/events", method: "getSecurityEvents" });
-        return { success: false, error: "Ошибка получения событий безопасности" };
-    }
+        return ok({
+            events: events as SecurityEvent[],
+            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
+        });
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getSecurityEvents" });
 }
 
-export async function getSecurityEventsSummary() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function getSecurityEventsSummary(): Promise<ActionResult<{
+    summary: {
+        loginAttempts: number;
+        successfulLogins: number;
+        permissionChanges: number;
+        criticalEvents: number;
+    };
+    recentCritical: SecurityEvent[];
+}>> {
+    return withAuth(async () => {
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
         const eventCounts = await db
@@ -324,9 +301,9 @@ export async function getSecurityEventsSummary() {
             .groupBy(securityEvents.eventType, securityEvents.severity);
 
         const totals = {
-            loginAttempts: eventCounts.filter(e => e.eventType.startsWith("login_")).reduce((sum, e) => sum + Number(e.count), 0),
+            loginAttempts: eventCounts.filter(e => e.eventType?.startsWith("login_")).reduce((sum, e) => sum + Number(e.count), 0),
             successfulLogins: eventCounts.filter(e => e.eventType === "login_success").reduce((sum, e) => sum + Number(e.count), 0),
-            permissionChanges: eventCounts.filter(e => e.eventType.includes("permission") || e.eventType.includes("role")).reduce((sum, e) => sum + Number(e.count), 0),
+            permissionChanges: eventCounts.filter(e => e.eventType?.includes("permission") || e.eventType?.includes("role")).reduce((sum, e) => sum + Number(e.count), 0),
             criticalEvents: eventCounts.filter(e => e.severity === "critical").reduce((sum, e) => sum + Number(e.count), 0)
         };
 
@@ -337,50 +314,32 @@ export async function getSecurityEventsSummary() {
             limit: 5
         });
 
-        return {
-            success: true,
-            data: { summary: totals, recentCritical }
-        };
-    } catch {
-        return { success: false, error: "Ошибка получения сводки безопасности" };
-    }
+        return ok({ summary: totals, recentCritical: recentCritical as SecurityEvent[] });
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getSecurityEventsSummary" });
 }
 
-export async function trackActivity() {
-    try {
-        const session = await getSession();
-        if (!session?.id) return { success: false };
-
+export async function trackActivity(): Promise<ActionResult<void>> {
+    return withAuth(async (session) => {
         await db.update(users)
             .set({ lastActiveAt: new Date() })
             .where(eq(users.id, session.id));
 
-        return { success: true };
-    } catch {
-        return { success: false };
-    }
+        return okVoid();
+    }, { errorPath: "trackActivity" });
 }
 
-export async function clearSecurityErrors() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function clearSecurityErrors(): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         await db.delete(systemErrors);
         revalidatePath("/admin-panel/security");
-        return { success: true };
-    } catch {
-        return { success: false, error: "Не удалось очистить ошибки системы" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "clearSecurityErrors" });
 }
 
-export async function clearFailedLogins() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function clearFailedLogins(): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         await db.delete(securityEvents).where(eq(securityEvents.eventType, "login_failed"));
         revalidatePath("/admin-panel/security");
-        return { success: true };
-    } catch {
-        return { success: false, error: "Не удалось очистить историю входов" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "clearFailedLogins" });
 }

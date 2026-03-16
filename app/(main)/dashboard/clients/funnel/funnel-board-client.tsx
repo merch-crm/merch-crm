@@ -296,12 +296,16 @@ export function FunnelBoardClient({ initialClients, managers, initialStats }: Fu
 
         if (oldClient.funnelStage !== nextStage) {
             try {
-                await updateClientFunnelStage(activeId, nextStage);
-                toast("Стадия обновлена", "success");
+                const res = await updateClientFunnelStage(activeId, nextStage);
+                if (res.success) {
+                    toast("Стадия обновлена", "success");
+                } else {
+                    toast(res.error || "Не удалось обновить стадию", "error");
+                    setClients(initialClients);
+                }
             } catch (error) {
                 console.error("Failed to update funnel stage:", error);
                 toast("Не удалось обновить стадию", "error");
-                // Возвращаем назад при ошибке (упрощенно - перечиткой или локально)
                 setClients(initialClients);
             }
         }
@@ -311,11 +315,15 @@ export function FunnelBoardClient({ initialClients, managers, initialStats }: Fu
         if (!lostClient) return;
 
         try {
-            await markClientAsLost(lostClient, reason, comment);
-            setClients(prev => prev.filter(c => c.id !== lostClient));
-            toast("Клиент отмечен как потерянный", "success");
-            setIsLostModalOpen(false);
-            setLostClient(null);
+            const res = await markClientAsLost(lostClient, reason, comment);
+            if (res.success) {
+                setClients(prev => prev.filter(c => c.id !== lostClient));
+                toast("Клиент отмечен как потерянный", "success");
+                setIsLostModalOpen(false);
+                setLostClient(null);
+            } else {
+                toast(res.error || "Не удалось обновить статус клиента", "error");
+            }
         } catch (error) {
             console.error("Failed to mark client as lost:", error);
             toast("Не удалось обновить статус клиента", "error");

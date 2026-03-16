@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import {
   inventoryItems,
@@ -472,7 +474,7 @@ export async function releaseMaterialsReservation(
     revalidatePath("/dashboard/warehouse");
     revalidatePath("/dashboard/production");
 
-    return { success: true };
+    return okVoid();
   } catch (error) {
     console.error("[releaseMaterialsReservation]", error);
     return { success: false, error: "Ошибка отмены резервирования" };

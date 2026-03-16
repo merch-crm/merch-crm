@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { revalidatePath } from "next/cache";
 import { eq, sql, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -227,7 +229,7 @@ export async function deleteProductLine(id: string): Promise<{ success: boolean;
         invalidateCache("warehouse:lines");
         revalidatePath("/dashboard/warehouse");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

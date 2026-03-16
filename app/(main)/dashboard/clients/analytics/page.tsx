@@ -75,6 +75,17 @@ export default async function ClientAnalyticsPage() {
 
     const currencySymbol = branding?.currencySymbol || "₽";
 
+    // Обработка данных для дашборда
+    const overview = overviewRes.success ? overviewRes.data : undefined;
+    const funnelData = funnelRes.success ? funnelRes.data : [];
+    const growthData = growthRes.success ? growthRes.data : [];
+    const rfmRevenueData = rfmRevenueRes.success ? rfmRevenueRes.data : [];
+    const managersData = managersRes.success ? managersRes.data : [];
+    const topClients = topClientsRes.success ? topClientsRes.data : [];
+    const sourcesData = sourcesRes.success ? sourcesRes.data : [];
+    const loyaltyData = loyaltyRes.success ? loyaltyRes.data : [];
+    const rfmDistribution = rfmDistRes.success ? rfmDistRes.data : [];
+
     return (
         <div className="space-y-3">
             <PageHeader
@@ -85,15 +96,15 @@ export default async function ClientAnalyticsPage() {
 
             <Suspense fallback={<LoadingSpinner />}>
                 <ClientAnalyticsDashboard
-                    overview={overviewRes.data}
-                    funnelData={funnelRes.data || []}
-                    growthData={growthRes.data || []}
-                    rfmRevenueData={rfmRevenueRes.data || []}
-                    managersData={managersRes.data || []}
-                    topClients={topClientsRes.data || []}
-                    sourcesData={sourcesRes.data || []}
-                    loyaltyData={loyaltyRes.data || []}
-                    rfmDistribution={rfmDistRes.data || []}
+                    overview={overview}
+                    funnelData={funnelData}
+                    growthData={growthData}
+                    rfmRevenueData={rfmRevenueData}
+                    managersData={managersData}
+                    topClients={topClients}
+                    sourcesData={sourcesData}
+                    loyaltyData={loyaltyData}
+                    rfmDistribution={rfmDistribution}
                     currencySymbol={currencySymbol}
                     showFinancials={showFinancials}
                 />

@@ -3,30 +3,27 @@
 import { db } from"@/lib/db";
 import { systemSettings } from"@/lib/schema";
 import { eq } from"drizzle-orm";
-import { getSession } from"@/lib/auth";
-import { requireAdmin } from"@/lib/admin";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { revalidatePath } from"next/cache";
 import { logAction } from"@/lib/audit";
 import { saveLocalFile } from"@/lib/local-storage";
-import { logError } from"@/lib/error-logger";
 import { BrandingSettingsSchema, IconGroupsSchema } from"./validation";
 import sharp from"sharp";
+import { logError } from "@/lib/error-logger";
 
 import type { BrandingSettings } from"@/lib/types";
+import { ActionResult, ok, okVoid, err, ERRORS } from "@/lib/types";
 
 import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from"@/app/(main)/dashboard/warehouse/category-utils";
 import { getBrandingSettings as getBrandingSettingsLib } from"@/lib/branding";
 
 export const getBrandingSettings = getBrandingSettingsLib;
 
-export async function updateBrandingSettings(data: BrandingSettings) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
-
+export async function updateBrandingSettings(data: BrandingSettings): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         const validatedData = BrandingSettingsSchema.safeParse(data);
         if (!validatedData.success) {
-            return { error: validatedData.error.issues[0].message };
+            return ERRORS.VALIDATION(validatedData.error.issues[0].message);
         }
 
         const validData = validatedData.data;
@@ -60,30 +57,18 @@ export async function updateBrandingSettings(data: BrandingSettings) {
         revalidatePath("/admin-panel/branding");
         revalidatePath("/","layout");
 
-        return { success: true };
-    } catch (error: unknown) {
-        await logError({
-            error,
-            path:"/admin-panel/branding",
-            method:"updateBrandingSettings",
-            details: { data }
-        });
-        const errorMessage = error instanceof Error ? error.message :"Ошибка при обновлении настроек";
-        return { error: errorMessage };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateBrandingSettings" });
 }
 
-export async function uploadBrandingFile(formData: FormData) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
-
+export async function uploadBrandingFile(formData: FormData): Promise<ActionResult<{ url: string }>> {
+    return withAuth(async () => {
         const file = formData.get("file") as File;
         const type = formData.get("type") as"logo" |"favicon" |"background" |"sound" |"print_logo" |"crm_background" |"email_logo";
         const soundKey = formData.get("soundKey") as string | null;
 
         if (!file || !type) {
-            return { error:"Отсутствуют необходимые данные" };
+            return ERRORS.VALIDATION("Отсутствуют необходимые данные");
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -135,34 +120,23 @@ export async function uploadBrandingFile(formData: FormData) {
                 fileName = `sounds/sound_${Date.now()}.${extension}`;
             }
         } else {
-            return { error:"Некорректный тип" };
+            return ERRORS.VALIDATION("Некорректный тип");
         }
 
         const result = await saveLocalFile(fileName, processedBuffer);
 
         if (result.success) {
-            return {
-                success: true,
+            return ok({
                 url: `/api/storage/local/${fileName}`
-            };
+            });
         } else {
-            return { error: result.error ||"Failed to save file" };
+            return err(result.error ||"Failed to save file", "INTERNAL_ERROR");
         }
-    } catch (error) {
-        await logError({
-            error,
-            path:"/admin-panel/branding",
-            method:"uploadBrandingFile"
-        });
-        return { error:"Не удалось обработать файл" };
-    }
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "uploadBrandingFile" });
 }
 
-export async function exportDatabaseBackup() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
-
+export async function exportDatabaseBackup(): Promise<ActionResult<Record<string, unknown>>> {
+    return withAuth(async () => {
         const data = {
             users: await db.query.users.findMany(),
             roles: await db.query.roles.findMany(),
@@ -183,16 +157,8 @@ export async function exportDatabaseBackup() {
             timestamp: new Date().toISOString(),
         };
 
-        return { success: true, data };
-    } catch (error: unknown) {
-        await logError({
-            error,
-            path:"/admin-panel/branding",
-            method:"exportDatabaseBackup"
-        });
-        const errorMessage = error instanceof Error ? error.message :"Ошибка при экспорте базы данных";
-        return { error: errorMessage };
-    }
+        return ok(data);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "exportDatabaseBackup" });
 }
 
 export async function getIconGroups(): Promise<SerializedIconGroup[]> {
@@ -216,14 +182,11 @@ export async function getIconGroups(): Promise<SerializedIconGroup[]> {
     }
 }
 
-export async function updateIconGroups(groups: SerializedIconGroup[]) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
-
+export async function updateIconGroups(groups: SerializedIconGroup[]): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         const validated = IconGroupsSchema.safeParse(groups);
         if (!validated.success) {
-            return { error: validated.error.issues[0].message };
+            return ERRORS.VALIDATION(validated.error.issues[0].message);
         }
         const serialized = validated.data;
         await db.transaction(async (tx) => {
@@ -244,15 +207,6 @@ export async function updateIconGroups(groups: SerializedIconGroup[]) {
         revalidatePath("/dashboard");
         revalidatePath("/admin-panel/branding");
 
-        return { success: true };
-    } catch (error: unknown) {
-        await logError({
-            error,
-            path:"/admin-panel/branding",
-            method:"updateIconGroups",
-            details: { groupsCount: groups.length }
-        });
-        const errorMessage = error instanceof Error ? error.message :"Ошибка при обновлении групп иконок";
-        return { error: errorMessage };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateIconGroups" });
 }

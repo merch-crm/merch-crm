@@ -4,11 +4,10 @@ import { db } from "@/lib/db";
 import { clientContacts, clients, type ClientContact } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
 import { z } from "zod";
-import type { ActionResult } from "@/lib/types";
+import { ActionResult, ok, okVoid, ERRORS } from "@/lib/types";
+import { withAuth, ROLE_GROUPS, ActionError } from "@/lib/action-helpers";
 
 // === Схемы валидации ===
 
@@ -34,38 +33,33 @@ const UpdateContactSchema = ClientContactSchema.omit({ clientId: true }).partial
  * Получить все контакты клиента
  */
 export async function getClientContacts(clientId: string): Promise<ActionResult<ClientContact[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    return withAuth(async () => {
+        try {
+            const contacts = await db.query.clientContacts.findMany({
+                where: eq(clientContacts.clientId, clientId),
+                orderBy: [desc(clientContacts.isPrimary), desc(clientContacts.createdAt)],
+                limit: 100,
+            });
 
-    try {
-        const contacts = await db.query.clientContacts.findMany({
-            where: eq(clientContacts.clientId, clientId),
-            orderBy: [desc(clientContacts.isPrimary), desc(clientContacts.createdAt)],
-            limit: 100,
-        });
-
-        return { success: true, data: contacts };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/contacts", method: "getClientContacts" });
-        return { success: false, error: "Не удалось загрузить контакты" };
-    }
+            return ok(contacts);
+        } catch (_error) {
+            throw new ActionError("Не удалось загрузить контакты", "INTERNAL_ERROR");
+        }
+    }, { errorPath: "getClientContacts" });
 }
 
 /**
  * Добавить контактное лицо
  */
 export async function addClientContact(data: z.infer<typeof ClientContactSchema>): Promise<ActionResult<ClientContact>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    return withAuth(async () => {
+        const validation = ClientContactSchema.safeParse(data);
+        if (!validation.success) {
+            return ERRORS.VALIDATION(validation.error.issues[0].message);
+        }
 
-    const validation = ClientContactSchema.safeParse(data);
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
+        const { clientId, isPrimary, ...contactData } = validation.data;
 
-    const { clientId, isPrimary, ...contactData } = validation.data;
-
-    try {
         // Проверяем, что клиент существует и является B2B
         const client = await db.query.clients.findFirst({
             where: eq(clients.id, clientId),
@@ -73,11 +67,11 @@ export async function addClientContact(data: z.infer<typeof ClientContactSchema>
         });
 
         if (!client) {
-            return { success: false, error: "Клиент не найден" };
+            return ERRORS.NOT_FOUND("Клиент");
         }
 
         if (client.clientType !== "b2b") {
-            return { success: false, error: "Контактные лица доступны только для организаций (B2B)" };
+            return ERRORS.VALIDATION("Контактные лица доступны только для организаций (B2B)");
         }
 
         // Проверяем лимит контактов (максимум 5)
@@ -88,7 +82,7 @@ export async function addClientContact(data: z.infer<typeof ClientContactSchema>
         });
 
         if (existingContacts.length >= 5) {
-            return { success: false, error: "Достигнут лимит контактных лиц (максимум 5)" };
+            return ERRORS.VALIDATION("Достигнут лимит контактных лиц (максимум 5)");
         }
 
         // Если это первый контакт или isPrimary=true, сбрасываем primary у других
@@ -122,11 +116,8 @@ export async function addClientContact(data: z.infer<typeof ClientContactSchema>
 
         revalidatePath(`/dashboard/clients`);
 
-        return { success: true, data: newContact };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/contacts", method: "addClientContact" });
-        return { success: false, error: "Не удалось добавить контакт" };
-    }
+        return ok(newContact);
+    }, { errorPath: "addClientContact" });
 }
 
 /**
@@ -136,21 +127,18 @@ export async function updateClientContact(
     contactId: string,
     data: z.infer<typeof UpdateContactSchema>
 ): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    return withAuth(async () => {
+        const validation = UpdateContactSchema.safeParse(data);
+        if (!validation.success) {
+            return ERRORS.VALIDATION(validation.error.issues[0].message);
+        }
 
-    const validation = UpdateContactSchema.safeParse(data);
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
-
-    try {
         const existingContact = await db.query.clientContacts.findFirst({
             where: eq(clientContacts.id, contactId),
         });
 
         if (!existingContact) {
-            return { success: false, error: "Контакт не найден" };
+            return ERRORS.NOT_FOUND("Контакт");
         }
 
         const { isPrimary, ...updateData } = validation.data;
@@ -181,83 +169,81 @@ export async function updateClientContact(
         });
 
         revalidatePath(`/dashboard/clients`);
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/contacts", method: "updateClientContact" });
-        return { success: false, error: "Не удалось обновить контакт" };
-    }
+        return okVoid();
+    }, { errorPath: "updateClientContact" });
 }
 
 /**
  * Удалить контактное лицо
  */
 export async function deleteClientContact(contactId: string): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-    if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) return { success: false, error: "Недостаточно прав" };
+    return withAuth(async (session) => {
+        if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+            return ERRORS.FORBIDDEN();
+        }
 
-    try {
         const contact = await db.query.clientContacts.findFirst({
             where: eq(clientContacts.id, contactId),
         });
 
         if (!contact) {
-            return { success: false, error: "Контакт не найден" };
+            return ERRORS.NOT_FOUND("Контакт");
         }
 
-        await db.transaction(async (tx) => {
-            await tx.delete(clientContacts).where(eq(clientContacts.id, contactId));
+        try {
+            await db.transaction(async (tx) => {
+                await tx.delete(clientContacts).where(eq(clientContacts.id, contactId));
 
-            // Если удалили primary контакт, назначаем нового
-            if (contact.isPrimary) {
-                const remainingContacts = await tx.query.clientContacts.findMany({
-                    where: eq(clientContacts.clientId, contact.clientId),
-                    orderBy: [desc(clientContacts.createdAt)],
-                    limit: 1,
-                });
+                // Если удалили primary контакт, назначаем нового
+                if (contact.isPrimary) {
+                    const remainingContacts = await tx.query.clientContacts.findMany({
+                        where: eq(clientContacts.clientId, contact.clientId),
+                        orderBy: [desc(clientContacts.createdAt)],
+                        limit: 1,
+                    });
 
-                if (remainingContacts.length > 0) {
-                    await tx.update(clientContacts)
-                        .set({ isPrimary: true, updatedAt: new Date() })
-                        .where(eq(clientContacts.id, remainingContacts[0].id));
+                    if (remainingContacts.length > 0) {
+                        await tx.update(clientContacts)
+                            .set({ isPrimary: true, updatedAt: new Date() })
+                            .where(eq(clientContacts.id, remainingContacts[0].id));
+                    }
                 }
-            }
 
-            await logAction(
-                "Удалено контактное лицо",
-                "client",
-                contact.clientId,
-                { contactName: contact.name },
-                tx
-            );
-        });
+                await logAction(
+                    "Удалено контактное лицо",
+                    "client",
+                    contact.clientId,
+                    { contactName: contact.name },
+                    tx
+                );
+            });
+        } catch (_error) {
+            throw new ActionError("Ошибка при удалении контакта", "INTERNAL_ERROR");
+        }
 
         revalidatePath(`/dashboard/clients`);
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/contacts", method: "deleteClientContact" });
-        return { success: false, error: "Не удалось удалить контакт" };
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "deleteClientContact" 
+    });
 }
 
 /**
  * Установить контакт как основной
  */
 export async function setPrimaryContact(contactId: string): Promise<ActionResult> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const contact = await db.query.clientContacts.findFirst({
             where: eq(clientContacts.id, contactId),
         });
 
         if (!contact) {
-            return { success: false, error: "Контакт не найден" };
+            return ERRORS.NOT_FOUND("Контакт");
         }
 
         if (contact.isPrimary) {
-            return { success: true }; // Уже основной
+            return okVoid(); // Уже основной
         }
 
         await db.transaction(async (tx) => {
@@ -281,9 +267,6 @@ export async function setPrimaryContact(contactId: string): Promise<ActionResult
         });
 
         revalidatePath(`/dashboard/clients`);
-        return { success: true };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/contacts", method: "setPrimaryContact" });
-        return { success: false, error: "Не удалось назначить основной контакт" };
-    }
+        return okVoid();
+    }, { errorPath: "setPrimaryContact" });
 }

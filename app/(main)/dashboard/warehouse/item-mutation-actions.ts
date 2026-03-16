@@ -12,11 +12,17 @@ import {
 } from "@/lib/schema";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
 import { checkItemStockAlerts } from "@/lib/notifications";
-import { type ActionResult } from "@/lib/types";
+import { 
+  ActionResult, 
+  ok, 
+} from "@/lib/types";
+import { 
+  withAuth, 
+  ValidationError,
+  NotFoundError,
+} from "@/lib/action-helpers";
 import { InventoryItemSchema } from "./validation";
-import { getSession } from "@/lib/session";
 import { getCategoryPath, saveFile } from "./actions-utils";
 import { sanitizeFileName, sanitize } from "./shared-utils";
 
@@ -24,40 +30,36 @@ import { sanitizeFileName, sanitize } from "./shared-utils";
  * Add new inventory item
  */
 export async function addInventoryItem(formData: FormData): Promise<ActionResult<{ id: string }>> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав для добавления товаров" };
-    }
+    return withAuth(async (session) => {
+        const dataObj = Object.fromEntries(formData);
+        const validation = InventoryItemSchema.safeParse(dataObj);
+        if (!validation.success) {
+            throw ValidationError(validation.error.issues[0].message);
+        }
 
-    const validation = InventoryItemSchema.safeParse(Object.fromEntries(formData));
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
+        const {
+            itemType, name, sku, quantity, unit, lowStockThreshold, criticalStockThreshold,
+            categoryId, description, storageLocationId,
+            qualityCode, materialCode, attributeCode, sizeCode, brandCode,
+            costPrice, sellingPrice,
+            attributes: baseAttributes, thumbnailSettings,
+            width, height, depth, weight, packagingType: pkgType, supplierName, supplierLink, minBatch, features,
+            department
+        } = validation.data;
 
-    const {
-        itemType, name, sku, quantity, unit, lowStockThreshold, criticalStockThreshold,
-        categoryId, description, storageLocationId,
-        qualityCode, materialCode, attributeCode, sizeCode, brandCode,
-        costPrice, sellingPrice,
-        attributes: baseAttributes, thumbnailSettings,
-        width, height, depth, weight, packagingType: pkgType, supplierName, supplierLink, minBatch, features,
-        department
-    } = validation.data;
+        const attributes: Record<string, unknown> = { ...baseAttributes };
 
-    const attributes: Record<string, unknown> = { ...baseAttributes };
+        if (itemType === "packaging") {
+            Object.assign(attributes, {
+                width, height, depth, weight,
+                packagingType: pkgType,
+                supplierName, supplierLink, minBatch,
+                features
+            });
+        } else if (itemType === "consumables") {
+            Object.assign(attributes, { department });
+        }
 
-    if (itemType === "packaging") {
-        Object.assign(attributes, {
-            width, height, depth, weight,
-            packagingType: pkgType,
-            supplierName, supplierLink, minBatch,
-            features
-        });
-    } else if (itemType === "consumables") {
-        Object.assign(attributes, { department });
-    }
-
-    try {
         const newItem = await db.transaction(async (tx) => {
             let finalSku = sku;
             if (categoryId && (qualityCode || materialCode || attributeCode || sizeCode || brandCode)) {
@@ -85,7 +87,7 @@ export async function addInventoryItem(formData: FormData): Promise<ActionResult
                 if (url) detailImageUrls.push(url);
             }
 
-            const [item] = await tx.insert(inventoryItems).values({
+            const values = {
                 itemType: (itemType as "clothing" | "packaging" | "consumables") || "clothing",
                 name: name || "Без названия",
                 sku: finalSku || null,
@@ -108,8 +110,10 @@ export async function addInventoryItem(formData: FormData): Promise<ActionResult
                 sizeCode,
                 attributes,
                 thumbnailSettings: thumbnailSettings ? (typeof thumbnailSettings === 'string' ? JSON.parse(thumbnailSettings) : thumbnailSettings) : null,
-                createdBy: session.id
-            }).returning();
+                createdBy: session.id,
+            };
+
+            const [item] = await tx.insert(inventoryItems).values(values).returning();
 
             if (storageLocationId) {
                 await tx.insert(inventoryStocks).values({
@@ -139,31 +143,22 @@ export async function addInventoryItem(formData: FormData): Promise<ActionResult
             await checkItemStockAlerts(newItem.id);
         }
 
-        return { success: true, data: { id: newItem.id } };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-mutation-actions",
-            method: "addInventoryItem",
-            details: { name, sku }
-        });
-        return { success: false, error: error instanceof Error ? error.message : "Не удалось добавить товар" };
-    }
+        return ok({ id: newItem.id });
+    }, { 
+        roles: ["Администратор", "Руководство", "Склад", "Отдел продаж"],
+        errorPath: "/dashboard/warehouse/add" 
+    });
 }
 
 /**
  * Update inventory item
  */
-export async function updateInventoryItem(id: string, formData: FormData): Promise<ActionResult> {
-    try {
-        const session = await getSession();
-        if (!session || !["Администратор", "Руководство", "Склад", "Отдел продаж"].includes(session.roleName)) {
-            return { success: false, error: "Недостаточно прав для изменения товаров" };
-        }
-
-        const validation = InventoryItemSchema.safeParse(Object.fromEntries(formData));
+export async function updateInventoryItem(id: string, formData: FormData): Promise<ActionResult<typeof inventoryItems.$inferSelect>> {
+    return withAuth(async (session) => {
+        const dataObj = Object.fromEntries(formData);
+        const validation = InventoryItemSchema.safeParse(dataObj);
         if (!validation.success) {
-            return { success: false, error: validation.error.issues[0].message };
+            throw ValidationError(validation.error.issues[0].message);
         }
 
         const {
@@ -192,17 +187,12 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
             Object.assign(attributes, { department });
         }
 
-        const [existingItem] = await db.select({
-            itemType: inventoryItems.itemType,
-            costPrice: inventoryItems.costPrice,
-            categoryId: inventoryItems.categoryId,
-            image: inventoryItems.image,
-            imageBack: inventoryItems.imageBack,
-            imageSide: inventoryItems.imageSide,
-            imageDetails: inventoryItems.imageDetails
-        }).from(inventoryItems).where(eq(inventoryItems.id, id)).limit(1);
+        const [existingItem] = await db.select().from(inventoryItems).where(eq(inventoryItems.id, id)).limit(1);
+        if (!existingItem) {
+            throw NotFoundError("Товар");
+        }
 
-        if (existingItem?.itemType === "clothing") {
+        if (existingItem.itemType === "clothing") {
             unit = "шт.";
         }
 
@@ -214,9 +204,9 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
         const imageSideFile = formData.get("imageSide") as File;
         const imageDetailsFiles = formData.getAll("imageDetails") as File[];
 
-        let imageUrl = (formData.get("currentImage") as string) || existingItem?.image || null;
-        let imageBackUrl = (formData.get("currentImageBack") as string) || existingItem?.imageBack || null;
-        let imageSideUrl = (formData.get("currentImageSide") as string) || existingItem?.imageSide || null;
+        let imageUrl = (formData.get("currentImage") as string) || existingItem.image || null;
+        let imageBackUrl = (formData.get("currentImageBack") as string) || existingItem.imageBack || null;
+        let imageSideUrl = (formData.get("currentImageSide") as string) || existingItem.imageSide || null;
 
         const newImageUrl = await saveFile(imageFile, itemFolderPath);
         if (newImageUrl) imageUrl = newImageUrl;
@@ -233,7 +223,7 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
             try {
                 imageDetailsUrls = JSON.parse(currentDetailsStr);
             } catch {
-                imageDetailsUrls = (existingItem?.imageDetails as string[]) || [];
+                imageDetailsUrls = (existingItem.imageDetails as string[]) || [];
             }
         }
 
@@ -244,8 +234,8 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
 
         const isArchived = formData.get("isArchived") === "true";
 
-        await db.transaction(async (tx) => {
-            await tx.update(inventoryItems).set({
+        const updatedItem = await db.transaction(async (tx) => {
+            const [item] = await tx.update(inventoryItems).set({
                 name,
                 sku: sku || null,
                 itemType: (itemType as "clothing" | "packaging" | "consumables") || "clothing",
@@ -272,9 +262,9 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
                 materialComposition: materialComposition || {},
                 isArchived,
                 updatedAt: new Date()
-            }).where(eq(inventoryItems.id, id));
+            }).where(eq(inventoryItems.id, id)).returning();
 
-            const oldPrice = parseFloat(existingItem?.costPrice || "0");
+            const oldPrice = parseFloat(existingItem.costPrice || "0");
             const newPrice = parseFloat(costPrice?.toString() || "0");
 
             if (Math.abs(oldPrice - newPrice) > 0.01) {
@@ -285,22 +275,18 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
                     reason: "Корректировка цены (редактирование)",
                     storageLocationId: storageLocationId || null,
                     costPrice: costPrice?.toString() || "0",
-                    createdBy: session?.id,
+                    createdBy: session.id,
                 });
             }
+            return item;
         });
 
         await checkItemStockAlerts(id);
         revalidatePath("/dashboard/warehouse");
         if (categoryId) revalidatePath(`/dashboard/warehouse/categories/${categoryId}`);
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-mutation-actions",
-            method: "updateInventoryItem",
-            details: { id }
-        });
-        return { success: false, error: "Не удалось обновить товар" };
-    }
+        return ok(updatedItem);
+    }, { 
+        roles: ["Администратор", "Руководство", "Склад", "Отдел продаж"],
+        errorPath: `/dashboard/warehouse/edit/${id}` 
+    });
 }

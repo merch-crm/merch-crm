@@ -31,7 +31,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
     useEffect(() => {
         if (isOpen) {
             getDepartments().then(res => {
-                if (res.data) setDepartments(res.data);
+                if (res.success) setDepartments(res.data);
             });
         }
     }, [isOpen]);
@@ -45,7 +45,7 @@ export function EditRoleDialog({ role, isOpen, onClose, onSuccess }: EditRoleDia
         const res = await updateRole(role.id, formData);
         setLoading(false);
 
-        if (res?.error) {
+        if (!res.success) {
             setError(res.error);
         } else {
             onClose();

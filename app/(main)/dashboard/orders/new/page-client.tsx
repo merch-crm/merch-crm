@@ -10,7 +10,7 @@ import {
     ChevronRight
 } from "lucide-react";
 import { createOrder, searchClients } from "../actions/core.actions";
-import { ActionResult, Client, ClientType } from "@/lib/types";
+import { ActionResult, Client } from "@/lib/types";
 import { validatePromocode } from "../../finance/actions";
 import { useToast } from "@/components/ui/toast";
 import { playSound } from "@/lib/sounds";
@@ -128,14 +128,14 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                         ...prev,
                         results: (data || []).map((c) => ({
                             ...c,
-                            type: (c.clientType === "b2b" ? "b2b" : "b2c") as ClientType,
-                            status: "active",
+                            type: (c.clientType === "b2b" ? "b2b" : "b2c") as "b2b" | "b2c",
+                            status: "active" as const,
                             firstName: c.firstName || "",
                             lastName: c.lastName || "",
                             displayName: c.name || [c.lastName, c.firstName].filter(Boolean).join(' ') || "Unnamed",
                             fullName: [c.lastName, c.firstName].filter(Boolean).join(' ') || "Unnamed",
                             company: c.company ? (typeof c.company === 'object' ? c.company : { name: String(c.company) }) : undefined,
-                        } as unknown as Client))
+                        } as unknown as Client)) as Client[]
                     }));
                 } else {
                     setSearchState(prev => ({ ...prev, results: [] }));
@@ -204,7 +204,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             description: item.name || ""
         }))));
 
-        const res: ActionResult = await createOrder(formData);
+        const res: ActionResult<{ orderId: string }> = await createOrder(formData);
         setUiState(prev => ({ ...prev, loading: false }));
 
         if (!res.success) {

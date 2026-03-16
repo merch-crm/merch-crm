@@ -11,7 +11,7 @@ import { applicationTypes } from "./production";
 
 export const orders = pgTable("orders", {
     id: uuid("id").defaultRandom().primaryKey(),
-    clientId: uuid("client_id").references(() => clients.id),
+    clientId: uuid("client_id").references(() => clients.id, { onUpdate: 'cascade' }),
     status: orderStatusEnum("status").default("new").notNull(),
     totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull().default("0"),
     paidAmount: decimal("paid_amount", { precision: 10, scale: 2 }).default("0"),

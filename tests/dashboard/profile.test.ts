@@ -21,7 +21,7 @@ const { mockFindFirst, mockFindMany, mockSelect, mockTx, mockChangePassword } = 
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
-vi.mock('@/lib/auth', () => ({ 
+vi.mock('@/lib/session', () => ({ 
     getSession: vi.fn(),
     auth: {
         api: {
@@ -65,7 +65,8 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession, type Session as _Session, auth } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session, auth } from '@/lib/auth';;
 import {
     getUserProfile,
     updateProfile,
@@ -96,7 +97,10 @@ const setupMocks = () => {
     vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as ReturnType<typeof db.update>);
     mockTx.update.mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) });
     mockTx.insert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
-    mockFindFirst.mockResolvedValue(createMockUser({ role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } }));
+    mockFindFirst.mockResolvedValue(createMockUser({ 
+        id: 'user-id', 
+        role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
+    }));
 };
 
 describe('getUserProfile', () => {

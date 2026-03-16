@@ -52,6 +52,9 @@ vi.mock('@/lib/db', () => ({
             clients: {
                 findFirst: vi.fn(),
             },
+            users: {
+                findFirst: vi.fn(),
+            },
         },
         transaction: vi.fn(async (cb: (tx: ReturnType<typeof createTxMock>) => Promise<unknown>) => {
             const tx = createTxMock();
@@ -85,6 +88,12 @@ describe('contacts.actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         (getSession as ReturnType<typeof vi.fn>).mockResolvedValue(mockSession);
+        (db.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+            id: mockSession.id,
+            name: mockSession.name,
+            email: mockSession.email,
+            role: { name: mockSession.roleName, permissions: {} },
+        });
     });
 
     // ─── getClientContacts ─────────────────────────

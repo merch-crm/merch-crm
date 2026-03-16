@@ -32,7 +32,7 @@ export interface ClientChatPreview {
     id: string;
     channelType: string;
     channelColor?: string | null;
-    channelName: string | null;
+    channelName?: string | null;
     lastMessageAt?: string | null | Date;
     lastMessagePreview?: string | null;
     unreadCount: number | null;
@@ -85,7 +85,9 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
         if (isOpen && clientId) {
             loadClientProfile(clientId);
             getClientConversations(clientId).then(res => {
-                if (res.success) setClientChats(res.data || []);
+                if (res.success && res.data) {
+                    setClientChats(res.data as unknown as ClientChatPreview[]);
+                }
             });
         }
     }, [isOpen, clientId, loadClientProfile]);

@@ -72,7 +72,7 @@ vi.mock('@/lib/db', () => ({ db: hoisted.mockDb, pool: { connect: vi.fn(), query
 // ─── Module mocks ─────────────────────────────────────────────────────────────
 
 vi.mock('@/lib/session', () => ({ getSession: hoisted.mockGetSession }));
-vi.mock('@/lib/auth', () => ({ 
+vi.mock('@/lib/session', () => ({ 
     getSession: hoisted.mockGetSession, 
     auth: {
         api: {
@@ -166,14 +166,18 @@ describe('Admin Panel Actions', () => {
             mockQuery.users.findFirst.mockResolvedValueOnce(user);
             const result = await getCurrentUserAction();
             expect(result.success).toBe(true);
-            expect(result.data).toEqual(user);
+            if (result.success) {
+                expect(result.data).toEqual(user);
+            }
         });
 
         it('возвращает ошибку если нет сессии', async () => {
             vi.mocked(getSession).mockResolvedValueOnce(null);
             const result = await getCurrentUserAction();
             expect(result.success).toBe(false);
-            expect(result.error).toBe('Не авторизован');
+            if (!result.success) {
+                expect(result.error).toBe('Не авторизован');
+            }
         });
     });
 
@@ -187,7 +191,9 @@ describe('Admin Panel Actions', () => {
             mockQuery.users.findMany.mockResolvedValueOnce(users);
             const result = await getUsers();
             expect(result.success).toBe(true);
-            expect(result.data?.users).toHaveLength(2);
+            if (result.success) {
+                expect(result.data?.users).toHaveLength(2);
+            }
         });
     });
 

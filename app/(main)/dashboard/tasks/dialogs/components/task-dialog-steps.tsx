@@ -52,9 +52,9 @@ export function BasicInfoStep({ data, actions, options }: BasicInfoStepProps) {
     const { priorityOptions, typeOptions } = options;
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+        <div className="space-y-3 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="space-y-2.5">
-                <Label htmlFor="title" className="text-[13px] font-black text-slate-900 ml-1 uppercase tracking-wider">
+                <Label htmlFor="title" className="text-[13px] font-black text-slate-900 ml-1  ">
                     Название задачи <span className="text-destructive">*</span>
                 </Label>
                 <Input
@@ -68,7 +68,7 @@ export function BasicInfoStep({ data, actions, options }: BasicInfoStepProps) {
             </div>
 
             <div className="space-y-2.5">
-                <Label htmlFor="description" className="text-[13px] font-black text-slate-900 ml-1 uppercase tracking-wider">
+                <Label htmlFor="description" className="text-[13px] font-black text-slate-900 ml-1  ">
                     Описание
                 </Label>
                 <Textarea
@@ -81,9 +81,9 @@ export function BasicInfoStep({ data, actions, options }: BasicInfoStepProps) {
                 />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2.5">
-                    <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+                    <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                         <Flag className="h-4 w-4 text-indigo-500" />
                         Приоритет
                     </Label>
@@ -96,7 +96,7 @@ export function BasicInfoStep({ data, actions, options }: BasicInfoStepProps) {
                 </div>
 
                 <div className="space-y-2.5">
-                    <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+                    <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                         <ListTodo className="h-4 w-4 text-indigo-500" />
                         Тип
                     </Label>
@@ -138,9 +138,9 @@ export function ParticipantsStep({ data, actions, options }: ParticipantsStepPro
     const { users, departmentOptions } = options;
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+        <div className="space-y-3 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="space-y-3">
-                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                     <Users className="h-4 w-4 text-indigo-500" />
                     Исполнители <span className="text-destructive">*</span>
                 </Label>
@@ -163,7 +163,7 @@ export function ParticipantsStep({ data, actions, options }: ParticipantsStepPro
                                 >
                                     <Avatar className="h-6 w-6 ring-2 ring-white">
                                         <AvatarImage src={user.avatar || undefined} />
-                                        <AvatarFallback className="text-[10px] bg-indigo-100 text-indigo-700">
+                                        <AvatarFallback className="text-xs bg-indigo-100 text-indigo-700">
                                             {user.name?.[0]}
                                         </AvatarFallback>
                                     </Avatar>
@@ -184,7 +184,7 @@ export function ParticipantsStep({ data, actions, options }: ParticipantsStepPro
             </div>
 
             <div className="space-y-3">
-                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                     <Eye className="h-4 w-4 text-indigo-500" />
                     Наблюдатели
                 </Label>
@@ -197,7 +197,7 @@ export function ParticipantsStep({ data, actions, options }: ParticipantsStepPro
             </div>
 
             <div className="space-y-2.5">
-                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                     <Building2 className="h-4 w-4 text-indigo-500" />
                     Отдел
                 </Label>
@@ -244,9 +244,9 @@ export function DetailsStep({ data, actions }: DetailsStepProps) {
     const { setDeadline, handleAddChecklistItem, handleRemoveChecklistItem, setNewChecklistItem } = actions;
 
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
+        <div className="space-y-3 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="space-y-2.5">
-                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                     <Calendar className="h-4 w-4 text-indigo-500" />
                     Дедлайн
                 </Label>
@@ -258,8 +258,8 @@ export function DetailsStep({ data, actions }: DetailsStepProps) {
                 />
             </div>
 
-            <div className="space-y-3.5">
-                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2 uppercase tracking-wider">
+            <div className="space-y-3">
+                <Label className="text-[13px] font-black text-slate-900 ml-1 flex items-center gap-2  ">
                     <CheckCircle2 className="h-4 w-4 text-indigo-500" />
                     Чек-лист
                 </Label>
@@ -290,9 +290,9 @@ export function DetailsStep({ data, actions }: DetailsStepProps) {
                         {checklist.map((item, index) => (
                             <div
                                 key={item.id}
-                                className="flex items-center gap-4 p-4 bg-white border border-slate-100/50 rounded-[18px] group transition-all shadow-sm"
+                                className="flex items-center gap-3 p-4 bg-white border border-slate-100/50 rounded-[18px] group transition-all shadow-sm"
                             >
-                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black">
+                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-50 text-indigo-600 text-xs font-black">
                                     {index + 1}
                                 </span>
                                 <span className="flex-1 text-sm font-bold text-slate-700">{item.text}</span>
@@ -312,17 +312,17 @@ export function DetailsStep({ data, actions }: DetailsStepProps) {
             <div className="mt-8 p-6 bg-slate-50 border border-slate-100 rounded-[28px] shadow-sm relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl -mr-16 -mt-16 pointer-events-none group-hover:bg-indigo-500/10 transition-colors" />
                 
-                <h4 className="font-black text-slate-900 mb-5 flex items-center gap-2.5 uppercase tracking-widest text-xs">
+                <h4 className="font-black text-slate-900 mb-5 flex items-center gap-2.5   text-xs">
                     <Sparkles className="h-4 w-4 text-indigo-600" />
                     Сводка задачи
                 </h4>
-                <div className="grid grid-cols-2 gap-y-5 gap-x-6">
+                <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-0.5">Название</span>
+                        <span className="text-xs font-black   text-slate-400 ml-0.5">Название</span>
                         <p className="font-bold text-slate-700 truncate text-sm">{title || "—"}</p>
                     </div>
                     <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-0.5">Приоритет</span>
+                        <span className="text-xs font-black   text-slate-400 ml-0.5">Приоритет</span>
                         <div className="flex items-center gap-2">
                              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: TASK_PRIORITY_CONFIG[priority as TaskPriority]?.color || '#cbd5e1' }} />
                              <p className="font-bold text-slate-700 text-sm">
@@ -331,13 +331,13 @@ export function DetailsStep({ data, actions }: DetailsStepProps) {
                         </div>
                     </div>
                     <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-0.5">Исполнители</span>
+                        <span className="text-xs font-black   text-slate-400 ml-0.5">Исполнители</span>
                         <p className="font-bold text-slate-700 text-sm">
                             {assigneeIds.length > 0 ? `${assigneeIds.length} чел.` : "—"}
                         </p>
                     </div>
                     <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 ml-0.5">Дедлайн</span>
+                        <span className="text-xs font-black   text-slate-400 ml-0.5">Дедлайн</span>
                         <p className="font-bold text-slate-700 text-sm">
                             {deadline ? new Date(deadline).toLocaleDateString("ru-RU", { day: 'numeric', month: 'long' }) : "—"}
                         </p>

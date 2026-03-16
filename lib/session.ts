@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema/users";
 import { eq } from "drizzle-orm";
+import { getOrSetCache } from "./redis";
 
 export async function getSession() {
   try {
@@ -17,14 +18,21 @@ export async function getSession() {
 
     const { session, user } = result;
 
-    // Fetch user details for backward compatibility
-    const dbUser = await db.query.users.findFirst({
-        where: eq(users.id, user.id),
-        with: {
-            role: true,
-            department: true,
-        }
-    });
+    // Кэширование данных пользователя для исключения лишних JOIN на каждый запрос
+    const cacheKey = `user-profile:${user.id}`;
+    const dbUser = await getOrSetCache(
+        cacheKey,
+        async () => {
+            return db.query.users.findFirst({
+                where: eq(users.id, user.id),
+                with: {
+                    role: true,
+                    department: true,
+                }
+            });
+        },
+        300 // 5 минут кэша (SHORT)
+    );
 
     if (!dbUser) return null;
 

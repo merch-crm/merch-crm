@@ -1,4 +1,4 @@
-import { pgTable, timestamp, uuid, index, integer, text, decimal, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uuid, index, integer, text, decimal } from "drizzle-orm/pg-core";
 import { sql, relations } from "drizzle-orm";
 import { users } from "../users";
 import { storageLocations } from "../storage";
@@ -76,7 +76,7 @@ export const inventoryTransfersRelations = relations(inventoryTransfers, ({ one 
 }));
 
 export const inventoryTransactions = pgTable("inventory_transactions", {
-    id: uuid("id").defaultRandom().notNull(),
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
     itemId: uuid("item_id").references(() => inventoryItems.id),
     orderId: uuid("order_id").references(() => orders.id),
     changeAmount: integer("change_amount").notNull().default(0),
@@ -90,7 +90,6 @@ export const inventoryTransactions = pgTable("inventory_transactions", {
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
     return {
-        pk: primaryKey({ columns: [table.id, table.createdAt] }),
         itemIdx: index("inv_tx_item_idx").on(table.itemId),
         storageIdx: index("inv_tx_storage_idx").on(table.storageLocationId),
         fromStorageIdx: index("inv_tx_from_storage_idx").on(table.fromStorageLocationId),

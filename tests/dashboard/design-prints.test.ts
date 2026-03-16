@@ -32,7 +32,8 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { deleteCollection } from '@/app/(main)/dashboard/design/prints/actions/collection-actions';
 import { deleteDesign } from '@/app/(main)/dashboard/design/prints/actions/design-actions';
 import { deleteDesignVersion } from '@/app/(main)/dashboard/design/prints/actions/version-actions';

@@ -51,7 +51,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
     useEffect(() => {
         if (isOpen) {
             getDepartments().then(res => {
-                if (res.data) setDepartments(res.data);
+                if (res.success) setDepartments(res.data);
             });
         }
     }, [isOpen]);
@@ -92,7 +92,7 @@ export function RolePermissionsDialog({ role, isOpen, onClose }: RolePermissions
         setLoading(true);
         try {
             const res = await deleteRole(role.id);
-            if (res.error) {
+            if (!res.success) {
                 toast(res.error,"error");
                 setLoading(false);
             } else {

@@ -124,7 +124,7 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
 
         const result = await updateBrandingSettings(validation.data as BrandingSettings);
 
-        if (result.error) {
+        if (!result.success) {
             showModal("error", "Ошибка", result.error);
             playSound("notification_error");
         } else {

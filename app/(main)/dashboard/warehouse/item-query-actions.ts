@@ -7,10 +7,9 @@ import {
     inventoryItems,
     inventoryStocks,
 } from "@/lib/schema";
-import { getSession } from "@/lib/session";
-import { logError } from "@/lib/error-logger";
+import { withAuth } from "@/lib/action-helpers";
 import { type InventoryFilters, type InventoryItem } from "./types";
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
 import { InventoryFiltersSchema } from "./validation";
 import { logAction } from "@/lib/audit";
 
@@ -22,13 +21,10 @@ export async function getInventoryItems(filters: InventoryFilters = {}): Promise
     total: number;
     totalPages: number;
 }>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const validated = InventoryFiltersSchema.safeParse(filters || {});
         if (!validated.success) {
-            return { success: false, error: "Неверные параметры фильтрации" };
+            return ERRORS.VALIDATION("Неверные параметры фильтрации");
         }
 
         const {
@@ -124,23 +120,12 @@ export async function getInventoryItems(filters: InventoryFilters = {}): Promise
 
         const totalCount = Number(countRes?.count || 0);
 
-        return {
-            success: true,
-            data: {
-                items: items as InventoryItem[],
-                total: totalCount,
-                totalPages: limit > 0 ? Math.ceil(totalCount / limit) : 1
-            }
-        };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-query-actions",
-            method: "getInventoryItems",
-            details: { ...filters }
+        return ok({
+            items: items as InventoryItem[],
+            total: totalCount,
+            totalPages: limit > 0 ? Math.ceil(totalCount / limit) : 1
         });
-        return { success: false, error: "Не удалось загрузить товары" };
-    }
+    }, { errorPath: "getInventoryItems" });
 }
 
 /**
@@ -151,41 +136,32 @@ export async function getArchivedItems(filters: InventoryFilters = {}): Promise<
     total: number;
     totalPages: number;
 }>> {
-    try {
+    return withAuth(async () => {
         const validated = InventoryFiltersSchema.safeParse(filters || {});
         const baseFilters = validated.success ? validated.data : (InventoryFiltersSchema.parse({}));
 
         await logAction("Просмотр архива товаров", "inventory_item", "list", {}, undefined, "list");
 
-        return getInventoryItems({
+        const result = await getInventoryItems({
             ...baseFilters,
             showArchived: true,
             sortBy: baseFilters.sortBy || "archivedAt"
         } as InventoryFilters);
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-query-actions",
-            method: "getArchivedItems",
-            details: { ...filters }
-        });
-        return { success: false, error: "Не удалось загрузить архив" };
-    }
+
+        return result;
+    }, { errorPath: "getArchivedItems" });
 }
 
 /**
  * Get a single inventory item by ID
  */
 export async function getInventoryItem(id: string): Promise<ActionResult<InventoryItem>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    return withAuth(async () => {
+        const validation = z.string().uuid().safeParse(id);
+        if (!validation.success) {
+            return ERRORS.VALIDATION("Некорректный ID товара");
+        }
 
-    const validation = z.string().uuid().safeParse(id);
-    if (!validation.success) {
-        return { success: false, error: "Некорректный ID товара" };
-    }
-
-    try {
         const item = await db.query.inventoryItems.findFirst({
             where: eq(inventoryItems.id, id),
             with: {
@@ -203,14 +179,8 @@ export async function getInventoryItem(id: string): Promise<ActionResult<Invento
             }
         }) as unknown as InventoryItem;
 
-        return { success: true, data: item };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-query-actions",
-            method: "getInventoryItem",
-            details: { id }
-        });
-        return { success: false, error: "Не удалось загрузить товар" };
-    }
+        if (!item) return ERRORS.NOT_FOUND("Товар");
+
+        return ok(item);
+    }, { errorPath: "getInventoryItem" });
 }

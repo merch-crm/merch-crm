@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import { orderItems, orders, inventoryItems, inventoryTransactions, clients, orderAttachments } from"@/lib/schema";
 import { revalidatePath } from"next/cache";
@@ -64,7 +66,7 @@ export async function updateProductionStageAction(
         revalidatePath("/dashboard/orders");
         if (item?.orderId) revalidatePath(`/dashboard/orders/${item.orderId}`);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -210,7 +212,7 @@ export async function reportProductionDefect(orderItemId: string, quantity: numb
 
         revalidatePath("/dashboard/production");
         revalidatePath("/dashboard/warehouse");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

@@ -43,7 +43,8 @@ vi.mock('@/lib/db', () => ({ db: mockDb }));
 vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { mockSession } from '../helpers/mocks';
 
 describe('Workstations Actions', () => {

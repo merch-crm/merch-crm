@@ -26,8 +26,8 @@ export function useAddUser(onSuccess?: () => void) {
             Promise.all([getRoles(), getDepartments()]).then(([rolesRes, deptsRes]) => {
                 if (isMounted) {
                     updateState({
-                        roles: (rolesRes.data as { id: string, name: string, departmentId: string | null }[]) || [],
-                        departments: (deptsRes.data as { id: string, name: string }[]) || []
+                        roles: (rolesRes.success ? rolesRes.data : []) as { id: string, name: string, departmentId: string | null }[],
+                        departments: (deptsRes.success ? deptsRes.data : []) as { id: string, name: string }[]
                     });
                 }
             });
@@ -52,8 +52,8 @@ export function useAddUser(onSuccess?: () => void) {
 
         const formData = new FormData(e.currentTarget);
         const res = await createUser(formData);
-
-        if (res?.error) {
+ 
+        if (!res.success) {
             updateState({ loading: false, error: res.error });
         } else {
             updateState({ loading: false, isOpen: false });

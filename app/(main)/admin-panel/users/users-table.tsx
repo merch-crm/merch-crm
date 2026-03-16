@@ -73,7 +73,7 @@ export function UsersTable({ initialUsers, error, currentPage, totalItems }: Use
                 )}
             </div>
 
-            <ResponsiveDataView
+            <ResponsiveDataView<User>
                 data={initialUsers}
                 mobileGridClassName="grid grid-cols-1 gap-3 md:hidden"
                 desktopClassName="hidden md:block"

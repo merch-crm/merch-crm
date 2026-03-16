@@ -91,7 +91,7 @@ describe("Design Actions", () => {
 
             expect(result.success).toBe(false);
             if (!result.success) {
-                expect(result.error).toBe("Коллекция не найдена");
+                expect(result.error).toBe("Коллекция не найден");
             }
         });
     });

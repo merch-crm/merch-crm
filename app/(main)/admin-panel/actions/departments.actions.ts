@@ -1,46 +1,34 @@
 "use server";
 
-import { db } from"@/lib/db";
-import { departments, roles, users, accounts } from"@/lib/schema";
-import { getSession } from"@/lib/auth";
-import { requireAdmin } from"@/lib/admin";
-import { logError } from"@/lib/error-logger";
-import { logAction } from"@/lib/audit";
-import { comparePassword } from"@/lib/password";
-import { eq, asc, inArray, and } from"drizzle-orm";
-import { revalidatePath } from"next/cache";
-import { CreateDepartmentSchema, UpdateDepartmentSchema } from"../validation";
+import { db } from "@/lib/db";
+import { departments, roles, users, accounts } from "@/lib/schema";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+import { logAction } from "@/lib/audit";
+import { comparePassword } from "@/lib/password";
+import { eq, asc, inArray, and, type InferSelectModel } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { CreateDepartmentSchema, UpdateDepartmentSchema } from "../validation";
+import { ActionResult, ok, okVoid, err, ERRORS } from "@/lib/types";
 
-// Department Actions
-export async function getDepartments() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+type Department = InferSelectModel<typeof departments>;
+type Role = InferSelectModel<typeof roles>;
+
+export async function getDepartments(): Promise<ActionResult<Department[]>> {
+    return withAuth(async () => {
         const allDepts = await db.query.departments.findMany({
             orderBy: [asc(departments.name)],
-            limit: 500 // audit-ignore: административный список, нужны все записи
+            limit: 500
         });
-        return { success: true, data: allDepts };
-    } catch (error) {
-        await logError({
-            error,
-            path:"/admin-panel/departments",
-            method:"getDepartments"
-        });
-        return { success: false, error:"Не удалось загрузить отделы" };
-    }
+        return ok(allDepts);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getDepartments" });
 }
 
-export async function createDepartment(formData: FormData, roleIds?: string[]) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function createDepartment(formData: FormData, roleIds?: string[]): Promise<ActionResult<Department>> {
+    return withAuth(async () => {
         const data = Object.fromEntries(formData);
-
         const validated = CreateDepartmentSchema.safeParse(data);
-        if (!validated.success) {
-            return { success: false, error: validated.error.issues[0].message };
-        }
+        
+        if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
         const newDept = await db.transaction(async (tx) => {
             const [dept] = await tx.insert(departments).values({
@@ -57,29 +45,18 @@ export async function createDepartment(formData: FormData, roleIds?: string[]) {
             return dept;
         });
 
-        await logAction("Создание отдела","department", newDept.id, { name: newDept.name });
+        await logAction("Создание отдела", "department", newDept.id, { name: newDept.name });
         revalidatePath("/admin-panel/departments");
-        return { success: true, data: newDept };
-    } catch (error) {
-        await logError({
-            error,
-            path:"/admin-panel/departments/create",
-            method:"createDepartment"
-        });
-        return { success: false, error:"Не удалось создать отдел" };
-    }
+        return ok(newDept);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "createDepartment" });
 }
 
-export async function updateDepartment(deptId: string, formData: FormData, roleIds?: string[]) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function updateDepartment(deptId: string, formData: FormData, roleIds?: string[]): Promise<ActionResult<Department>> {
+    return withAuth(async () => {
         const data = Object.fromEntries(formData);
-
         const validated = UpdateDepartmentSchema.safeParse(data);
-        if (!validated.success) {
-            return { success: false, error: validated.error.issues[0].message };
-        }
+        
+        if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
         const updatedDept = await db.transaction(async (tx) => {
             const [dept] = await tx.update(departments)
@@ -99,27 +76,17 @@ export async function updateDepartment(deptId: string, formData: FormData, roleI
             return dept;
         });
 
-        await logAction("Обновление отдела","department", deptId, validated.data);
+        if (!updatedDept) return ERRORS.NOT_FOUND("Отдел");
+
+        await logAction("Обновление отдела", "department", deptId, validated.data);
         revalidatePath("/admin-panel/departments");
-        return { success: true, data: updatedDept };
-    } catch (error) {
-        await logError({
-            error,
-            path:"/admin-panel/departments/update",
-            method:"updateDepartment"
-        });
-        return { success: false, error:"Не удалось обновить отдел" };
-    }
+        return ok(updatedDept);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateDepartment" });
 }
 
-export async function deleteDepartment(deptId: string, password?: string) {
-    const session = await getSession();
-    try {
-        if (!session) return { success: false, error: "Не авторизован" };
-        await requireAdmin(session);
-
+export async function deleteDepartment(deptId: string, password?: string): Promise<ActionResult<void>> {
+    return withAuth(async (session) => {
         if (password) {
-            // Получаем хеш пароля администратора из таблицы accounts
             const adminAccount = await db.query.accounts.findFirst({
                 where: and(
                     eq(accounts.userId, session.id),
@@ -128,47 +95,33 @@ export async function deleteDepartment(deptId: string, password?: string) {
             });
 
             if (!adminAccount || !adminAccount.password) {
-                return { success: false, error: "У администратора не установлен пароль в Better Auth" };
+                return err("Пароль администратора не найден");
             }
 
             const isMatch = await comparePassword(password, adminAccount.password);
-            if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
+            if (!isMatch) return err("Неверный пароль администратора");
         }
 
-        // check if users belong to this department
         const usersInDept = await db.query.users.findFirst({
             where: eq(users.departmentId, deptId)
         });
 
-        if (usersInDept) {
-            return { success: false, error:"Нельзя удалить отдел, в котором есть пользователи" };
-        }
+        if (usersInDept) return err("Нельзя удалить отдел, в котором есть пользователи");
 
         await db.delete(departments).where(eq(departments.id, deptId));
-        await logAction("Удаление отдела","department", deptId);
+        await logAction("Удаление отдела", "department", deptId);
         revalidatePath("/admin-panel/departments");
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path:"/admin-panel/departments/delete",
-            method:"deleteDepartment"
-        });
-        return { success: false, error:"Не удалось удалить отдел" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "deleteDepartment" });
 }
 
-export async function getRolesByDepartment(departmentId: string) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function getRolesByDepartment(departmentId: string): Promise<ActionResult<Role[]>> {
+    return withAuth(async () => {
         const rolesInDept = await db.query.roles.findMany({
             where: eq(roles.departmentId, departmentId),
             orderBy: [asc(roles.name)],
-            limit: 500 // audit-ignore: административный список, нужны все записи
+            limit: 500
         });
-        return { success: true, data: rolesInDept };
-    } catch {
-        return { success: false, error:"Не удалось загрузить роли отдела" };
-    }
+        return ok(rolesInDept);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getRolesByDepartment" });
 }

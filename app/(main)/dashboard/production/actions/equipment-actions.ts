@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from "@/lib/db";
 import { equipment } from "@/lib/schema/production";
 import { eq, asc, ilike, and, count, sql } from "drizzle-orm";
@@ -203,7 +205,7 @@ export async function deleteEquipment(id: string): Promise<ActionResult> {
 
         revalidatePath("/dashboard/production/equipment");
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         console.error("Error deleting equipment:", error);
         return { success: false, error: "Не удалось удалить оборудование" };

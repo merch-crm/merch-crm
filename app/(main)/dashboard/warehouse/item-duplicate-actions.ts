@@ -4,29 +4,29 @@ import { eq } from "drizzle-orm";
 import Fuse from "fuse.js";
 import { db } from "@/lib/db";
 import { inventoryItems } from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
+import { withAuth } from "@/lib/action-helpers";
 import { CheckDuplicateItemSchema } from "./validation";
 
-/**
- * Check for duplicate items by name or SKU
- */
-export async function checkDuplicateItem(name: string, sku?: string, currentItemId?: string): Promise<{
+import { type ActionResult, ok } from "@/lib/types";
+
+interface DuplicateCheckResult {
     duplicate: { id: string; name: string; sku: string | null } | null;
     type?: "sku_exact" | "name_fuzzy";
     isArchived?: boolean;
     score?: number;
-}> {
-    const session = await getSession();
-    if (!session) return { duplicate: null };
+}
 
-    const validation = CheckDuplicateItemSchema.safeParse({ name, sku, currentItemId });
+/**
+ * Check for duplicate items by name or SKU
+ */
+export async function checkDuplicateItem(name: string, sku?: string, currentItemId?: string): Promise<ActionResult<DuplicateCheckResult | null>> {
+    return withAuth<DuplicateCheckResult | null>(async () => {
+        const validation = CheckDuplicateItemSchema.safeParse({ name, sku, currentItemId });
 
-    if (!validation.success) {
-        return { duplicate: null };
-    }
+        if (!validation.success) {
+            return ok(null);
+        }
 
-    try {
         const allItems = await db.query.inventoryItems.findMany({
             columns: { id: true, name: true, sku: true },
             limit: 2000
@@ -41,11 +41,11 @@ export async function checkDuplicateItem(name: string, sku?: string, currentItem
                     where: eq(inventoryItems.id, exactSku.id),
                     columns: { isArchived: true }
                 });
-                return {
+                return ok({
                     duplicate: exactSku,
                     type: "sku_exact",
                     isArchived: res?.isArchived || false
-                };
+                });
             }
         }
 
@@ -57,17 +57,14 @@ export async function checkDuplicateItem(name: string, sku?: string, currentItem
 
         const results = fuse.search(name);
         if ((results?.length ?? 0) > 0 && (results[0].score ?? 1) < 0.2) {
-            return { duplicate: results[0].item, type: "name_fuzzy", score: results[0].score ?? undefined };
+            return ok({ 
+                duplicate: results[0].item, 
+                type: "name_fuzzy", 
+                score: results[0].score ?? undefined,
+                isArchived: false
+            });
         }
 
-        return { duplicate: null };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-duplicate-actions",
-            method: "checkDuplicateItem",
-            details: { name, sku }
-        });
-        return { duplicate: null };
-    }
+        return ok(null);
+    }, { errorPath: "checkDuplicateItem" });
 }

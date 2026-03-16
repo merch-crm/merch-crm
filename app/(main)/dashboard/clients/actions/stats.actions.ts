@@ -4,10 +4,9 @@ import { db } from "@/lib/db";
 import { clients, orders } from "@/lib/schema";
 import { eq, sql, desc, and, gte, lte, isNull, gt, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import type { ActionResult } from "@/lib/types";
+import { ActionResult, ok } from "@/lib/types";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { z } from "zod";
 
 // === Типы ===
@@ -55,13 +54,10 @@ interface StatsOverview {
  * Пересчитать статистику для одного клиента
  */
 export async function recalculateClientStats(clientId: string): Promise<ActionResult<ClientStatsData>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
+    return withAuth(async () => {
+        const validatedId = z.string().uuid().safeParse(clientId);
+        if (!validatedId.success) return { success: false, error: "Invalid client ID", code: "VALIDATION_ERROR" };
 
-    const validatedId = z.string().uuid().safeParse(clientId);
-    if (!validatedId.success) return { success: false, error: "Invalid client ID" };
-
-    try {
         // Используем SQL функцию если она существует, иначе считаем вручную
         const [stats] = await db.select({
             totalCount: sql<number>`COUNT(*)`.as("total_count"),
@@ -103,34 +99,22 @@ export async function recalculateClientStats(clientId: string): Promise<ActionRe
             })
             .where(eq(clients.id, clientId));
 
-        return {
-            success: true,
-            data: {
-                totalOrdersCount,
-                totalOrdersAmount,
-                averageCheck,
-                lastOrderAt,
-                firstOrderAt,
-                daysSinceLastOrder,
-            }
-        };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "recalculateClientStats" });
-        return { success: false, error: "Не удалось пересчитать статистику" };
-    }
+        return ok({
+            totalOrdersCount,
+            totalOrdersAmount,
+            averageCheck,
+            lastOrderAt,
+            firstOrderAt,
+            daysSinceLastOrder,
+        });
+    }, { errorPath: "recalculateClientStats" });
 }
 
 /**
  * Массовый пересчёт статистики всех клиентов
  */
 export async function recalculateAllClientsStats(): Promise<ActionResult<{ processed: number }>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-    if (session.roleName !== "Администратор") {
-        return { success: false, error: "Недостаточно прав" };
-    }
-
-    try {
+    return withAuth(async () => {
         // Получаем всех клиентов
         const allClients = await db.query.clients.findMany({
             columns: { id: true },
@@ -150,20 +134,18 @@ export async function recalculateAllClientsStats(): Promise<ActionResult<{ proce
         );
 
         revalidatePath("/dashboard/clients");
-        return { success: true, data: { processed: allClients.length } };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "recalculateAllClientsStats" });
-        return { success: false, error: "Ошибка пересчёта" };
-    }
+        return ok({ processed: allClients.length });
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "recalculateAllClientsStats" 
+    });
 }
 
 /**
  * Обновить daysSinceLastOrder для всех клиентов (вызывать по cron)
  */
 export async function updateDaysSinceLastOrder(): Promise<ActionResult<{ updated: number }>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-    try {
+    return withAuth(async () => {
         // Атомарное обновление через SQL
         const result = await db.execute(sql`
             UPDATE clients 
@@ -177,11 +159,8 @@ export async function updateDaysSinceLastOrder(): Promise<ActionResult<{ updated
             WHERE last_order_at IS NOT NULL
         `);
 
-        return { success: true, data: { updated: Number(result.rowCount || 0) } };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "updateDaysSinceLastOrder" });
-        return { success: false, error: "Ошибка обновления" };
-    }
+        return ok({ updated: Number(result.rowCount || 0) });
+    }, { errorPath: "updateDaysSinceLastOrder" });
 }
 
 /**
@@ -192,21 +171,17 @@ export async function getClientsAtRisk(options: {
     limit?: number;
     managerId?: string;
 }): Promise<ActionResult<ClientsAtRisk[]>> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-    const { daysThreshold = 90, limit = 50, managerId } = options;
+    return withAuth(async () => {
+        const { daysThreshold = 90, limit = 50, managerId } = options;
 
-    const validated = z.object({
-        daysThreshold: z.number().int().optional(),
-        limit: z.number().int().optional(),
-        managerId: z.string().optional()
-    }).safeParse(options);
+        const validated = z.object({
+            daysThreshold: z.number().int().optional(),
+            limit: z.number().int().optional(),
+            managerId: z.string().optional()
+        }).safeParse(options);
 
-    if (!validated.success) return { success: false, error: "Invalid options" };
+        if (!validated.success) return { success: false, error: "Invalid options", code: "VALIDATION_ERROR" };
 
-    try {
         const conditions = [
             eq(clients.isArchived, false),
             gte(clients.daysSinceLastOrder, daysThreshold),
@@ -245,22 +220,18 @@ export async function getClientsAtRisk(options: {
             managerName: c.manager?.name,
         }));
 
-        return { success: true, data: atRiskClients };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "getClientsAtRisk" });
-        return { success: false, error: "Не удалось загрузить клиентов" };
-    }
+        return ok(atRiskClients);
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "getClientsAtRisk" 
+    });
 }
 
 /**
  * Получить общую статистику по клиентам
  */
 export async function getClientsStatsOverview(): Promise<ActionResult<StatsOverview>> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-    try {
+    return withAuth(async () => {
         const now = new Date();
         const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
         const ninetyDaysAgo = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
@@ -332,26 +303,23 @@ export async function getClientsStatsOverview(): Promise<ActionResult<StatsOverv
             limit: 10,
         });
 
-        return {
-            success: true,
-            data: {
-                totalClients: Number(totalResult?.count || 0),
-                activeClients: Number(activeResult?.count || 0),
-                atRiskClients: Number(atRiskResult?.count || 0),
-                newClients: Number(newResult?.count || 0),
-                avgOrdersPerClient: Number(avgResult?.avgOrders || 0),
-                avgRevenuePerClient: Number(avgResult?.avgRevenue || 0),
-                topClientsByRevenue: topClients.map(c => ({
-                    id: c.id,
-                    name: c.name || `${c.lastName} ${c.firstName}`,
-                    totalOrdersAmount: Number(c.totalOrdersAmount || 0),
-                })),
-            }
-        };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "getClientsStatsOverview" });
-        return { success: false, error: "Не удалось загрузить статистику" };
-    }
+        return ok({
+            totalClients: Number(totalResult?.count || 0),
+            activeClients: Number(activeResult?.count || 0),
+            atRiskClients: Number(atRiskResult?.count || 0),
+            newClients: Number(newResult?.count || 0),
+            avgOrdersPerClient: Number(avgResult?.avgOrders || 0),
+            avgRevenuePerClient: Number(avgResult?.avgRevenue || 0),
+            topClientsByRevenue: topClients.map(c => ({
+                id: c.id,
+                name: c.name || `${c.lastName} ${c.firstName}`,
+                totalOrdersAmount: Number(c.totalOrdersAmount || 0),
+            })),
+        });
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "getClientsStatsOverview" 
+    });
 }
 
 /**
@@ -362,11 +330,7 @@ export async function getOrdersDistribution(): Promise<ActionResult<{
     count: number;
     percentage: number;
 }[]>> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-    try {
+    return withAuth(async () => {
         const [total] = await db.select({
             count: sql<number>`COUNT(*)`,
         })
@@ -376,7 +340,7 @@ export async function getOrdersDistribution(): Promise<ActionResult<{
 
         const totalCount = Number(total?.count || 0);
         if (totalCount === 0) {
-            return { success: true, data: [] };
+            return ok([]);
         }
 
         // Получаем распределение
@@ -417,11 +381,11 @@ export async function getOrdersDistribution(): Promise<ActionResult<{
             percentage: Math.round((d.count / totalCount) * 100),
         }));
 
-        return { success: true, data: distribution };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "getOrdersDistribution" });
-        return { success: false, error: "Не удалось загрузить распределение" };
-    }
+        return ok(distribution);
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "getOrdersDistribution" 
+    });
 }
 
 /**
@@ -434,11 +398,7 @@ export async function getActivityStats(): Promise<ActionResult<{
     inactive: number;
     total: number;
 }>> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-    try {
+    return withAuth(async () => {
         const [stats] = await db
             .select({
                 total: count(),
@@ -460,18 +420,15 @@ export async function getActivityStats(): Promise<ActionResult<{
             .from(clients)
             .where(and(eq(clients.isArchived, false), isNull(clients.lostAt)));
 
-        return {
-            success: true,
-            data: {
-                active: Number(stats?.active || 0),
-                attention: Number(stats?.attention || 0),
-                atRisk: Number(stats?.atRisk || 0),
-                inactive: Number(stats?.inactive || 0),
-                total: Number(stats?.total || 0),
-            },
-        };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/stats", method: "getActivityStats" });
-        return { success: false, error: "Не удалось загрузить статистику активности" };
-    }
+        return ok({
+            active: Number(stats?.active || 0),
+            attention: Number(stats?.attention || 0),
+            atRisk: Number(stats?.atRisk || 0),
+            inactive: Number(stats?.inactive || 0),
+            total: Number(stats?.total || 0),
+        });
+    }, { 
+        roles: ROLE_GROUPS.CAN_EDIT_CLIENTS,
+        errorPath: "getActivityStats" 
+    });
 }

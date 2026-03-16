@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CommunicationsClient } from "./communications-client";
 import { getConversations, getMessageTemplates, getCommunicationsStats } from "./actions";
 import { Loader2, MessageSquare } from "lucide-react";
+import { MessageTemplate } from "@/lib/schema";
 
 export const metadata = {
     title: "Коммуникации | CRM",
@@ -35,6 +36,10 @@ export default async function CommunicationsPage() {
         getCommunicationsStats(),
     ]);
 
+    const initialConversations = conversationsRes.success ? conversationsRes.data : [];
+    const templates = (templatesRes.success ? templatesRes.data : []) as MessageTemplate[];
+    const stats = statsRes.success ? statsRes.data : undefined;
+
     return (
         <div className="flex flex-col h-full space-y-3">
             <PageHeader
@@ -54,9 +59,9 @@ export default async function CommunicationsPage() {
 
             <Suspense fallback={<LoadingSpinner />}>
                 <CommunicationsClient
-                    initialConversations={conversationsRes.data || []}
-                    templates={templatesRes.data || []}
-                    stats={statsRes.data}
+                    initialConversations={initialConversations}
+                    templates={templates}
+                    stats={stats}
                 />
             </Suspense>
         </div>

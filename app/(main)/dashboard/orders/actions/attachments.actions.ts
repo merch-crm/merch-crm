@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import * as schema from"@/lib/schema";
 import { revalidatePath } from"next/cache";
@@ -47,7 +49,7 @@ export async function uploadOrderFile(orderId: string, formData: FormData): Prom
 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

@@ -52,11 +52,11 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
             if (res.success && res.data) {
                 setDataState(prev => ({
                     ...prev,
-                    logs: (res.data as unknown as AuditLog[]).map(log => ({
+                    logs: (res.data.logs as unknown as AuditLog[]).map(log => ({
                         ...log,
                         details: log.details as AuditLogDetails | null
                     })),
-                    totalLogs: res.pagination?.total || 0
+                    totalLogs: res.data.pagination?.total || 0
                 }));
             }
         } catch (error) {

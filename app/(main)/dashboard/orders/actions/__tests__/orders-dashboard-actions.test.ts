@@ -33,9 +33,11 @@ describe("orders-dashboard-actions", () => {
             const result = await getOrdersStats();
 
             expect(result.success).toBe(true);
-            expect(result.data).toBeDefined();
-            expect(result.data?.total).toBe(10);
-            expect(result.data?.totalSales).toBe(1000);
+            if (result.success) {
+                expect(result.data).toBeDefined();
+                expect(result.data?.total).toBe(10);
+                expect(result.data?.totalSales).toBe(1000);
+            }
         });
 
         it("should return error when database call fails", async () => {
@@ -46,7 +48,9 @@ describe("orders-dashboard-actions", () => {
             const result = await getOrdersStats();
 
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Не удалось получить статистику");
+            if (!result.success) {
+                expect(result.error).toBe("Не удалось получить статистику");
+            }
         });
     });
 });

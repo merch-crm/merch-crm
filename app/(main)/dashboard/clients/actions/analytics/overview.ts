@@ -3,7 +3,8 @@
 import { db } from "@/lib/db";
 import { clients } from "@/lib/schema";
 import { sql, and, gte, count, eq } from "drizzle-orm";
-import { logError } from "@/lib/error-logger";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
 import { ClientAnalyticsOverview, ClientGrowthData, PeriodSchema } from "./types";
 import { getDateRange } from "./constants";
 
@@ -12,8 +13,8 @@ import { getDateRange } from "./constants";
  */
 export async function getClientAnalyticsOverview(
     period: string = "all"
-): Promise<{ success: boolean; data?: ClientAnalyticsOverview; error?: string }> {
-    try {
+): Promise<ActionResult<ClientAnalyticsOverview>> {
+    return withAuth(async () => {
         const validatedPeriod = PeriodSchema.parse(period);
         const { start } = getDateRange(validatedPeriod);
 
@@ -46,31 +47,30 @@ export async function getClientAnalyticsOverview(
                 )
             );
 
+        if (!stats) return ERRORS.NOT_FOUND("Статистика не найдена");
+
         const newClientsGrowth = stats.newClientsLastMonth > 0
             ? Math.round(((stats.newClientsThisMonth - stats.newClientsLastMonth) / stats.newClientsLastMonth) * 100)
             : stats.newClientsThisMonth > 0 ? 100 : 0;
 
-        return {
-            success: true,
-            data: {
-                totalClients: Number(stats.totalClients),
-                activeClients: Number(stats.activeClients),
-                atRiskClients: Number(stats.atRiskClients),
-                lostClients: Number(stats.lostClients),
-                newClientsThisMonth: Number(stats.newClientsThisMonth),
-                newClientsLastMonth: Number(stats.newClientsLastMonth),
-                newClientsGrowth,
-                totalRevenue: Number(stats.totalRevenue),
-                averageCheck: Math.round(Number(stats.averageCheck)),
-                averageLTV: Math.round(Number(stats.averageLTV)),
-                b2cCount: Number(stats.b2cCount),
-                b2bCount: Number(stats.b2bCount),
-            },
-        };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getClientAnalyticsOverview" });
-        return { success: false, error: "Не удалось загрузить сводку" };
-    }
+        return ok({
+            totalClients: Number(stats.totalClients),
+            activeClients: Number(stats.activeClients),
+            atRiskClients: Number(stats.atRiskClients),
+            lostClients: Number(stats.lostClients),
+            newClientsThisMonth: Number(stats.newClientsThisMonth),
+            newClientsLastMonth: Number(stats.newClientsLastMonth),
+            newClientsGrowth,
+            totalRevenue: Number(stats.totalRevenue),
+            averageCheck: Math.round(Number(stats.averageCheck)),
+            averageLTV: Math.round(Number(stats.averageLTV)),
+            b2cCount: Number(stats.b2cCount),
+            b2bCount: Number(stats.b2bCount),
+        });
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getClientAnalyticsOverview" 
+    });
 }
 
 /**
@@ -78,8 +78,8 @@ export async function getClientAnalyticsOverview(
  */
 export async function getClientGrowthData(
     months: number = 12
-): Promise<{ success: boolean; data?: ClientGrowthData[]; error?: string }> {
-    try {
+): Promise<ActionResult<ClientGrowthData[]>> {
+    return withAuth(async () => {
         const startDate = new Date();
         startDate.setMonth(startDate.getMonth() - months);
         startDate.setDate(1);
@@ -120,11 +120,9 @@ export async function getClientGrowthData(
             };
         });
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getClientGrowthData" });
-        return { success: false, error: "Не удалось загрузить динамику роста" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getClientGrowthData" 
+    });
 }
-
-

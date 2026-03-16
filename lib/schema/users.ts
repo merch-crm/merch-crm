@@ -61,7 +61,8 @@ export const users = pgTable("users", {
     roleId: uuid("role_id").references(() => roles.id),
     phone: text("phone"),
     birthday: date("birthday"),
-    avatar: text("avatar"),
+    image: text("image"), // Better Auth standard field.
+    avatar: text("avatar"), // Legacy field, kept for reverse compatibility with existing UI. Use 'image' for new features.
     telegram: text("telegram"),
     instagram: text("instagram"),
     socialMax: text("social_max"),
@@ -71,7 +72,6 @@ export const users = pgTable("users", {
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
     emailVerified: boolean("email_verified").default(false).notNull(),
-    image: text("image"),
     twoFactorEnabled: boolean("two_factor_enabled").default(false),
 }, (table) => {
     return {

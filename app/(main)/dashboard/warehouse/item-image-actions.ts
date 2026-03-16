@@ -5,10 +5,9 @@ import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { inventoryItems } from "@/lib/schema";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
-import { type ActionResult } from "@/lib/types";
+import { withAuth } from "@/lib/action-helpers";
+import { type ActionResult, okVoid, ERRORS } from "@/lib/types";
 
 /**
  * Delete a specific image from an inventory item
@@ -20,17 +19,12 @@ export async function deleteInventoryItemImage(
 ): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(itemId);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID товара" };
+        return ERRORS.VALIDATION("Некорректный ID товара");
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Склад"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-
-    try {
+    return withAuth(async () => {
         const [item] = await db.select().from(inventoryItems).where(eq(inventoryItems.id, itemId)).limit(1);
-        if (!item) return { success: false, error: "Товар не найден" };
+        if (!item) return ERRORS.NOT_FOUND("Товар");
 
         const updates: Partial<typeof item> = { updatedAt: new Date() };
 
@@ -49,14 +43,9 @@ export async function deleteInventoryItemImage(
         await logAction("Удалено изображение товара", "inventory_item", itemId, { type, index });
         revalidatePath("/dashboard/warehouse");
 
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/item-image-actions",
-            method: "deleteInventoryItemImage",
-            details: { itemId, type, index }
-        });
-        return { success: false, error: "Ошибка при удалении изображения" };
-    }
+        return okVoid();
+    }, { 
+        roles: ["Администратор", "Руководство", "Склад"],
+        errorPath: "deleteInventoryItemImage" 
+    });
 }

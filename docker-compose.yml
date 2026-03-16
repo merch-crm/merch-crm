@@ -1,6 +1,22 @@
 version: '3.8'
 
 services:
+  # ─── Init: Run Drizzle migrations before starting the app ────────────────────
+  migrate:
+    image: ghcr.io/merch-crm/merch-crm:latest
+    # Uses the 'migrator' target from the multi-stage Dockerfile
+    target: migrator
+    container_name: merch-crm-migrate
+    restart: on-failure
+    env_file:
+      - .env
+    networks:
+      - app_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ─── App: Next.js production server ──────────────────────────────────────────
   app:
     image: ghcr.io/merch-crm/merch-crm:latest
     container_name: merch-crm
@@ -18,7 +34,7 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/health" ]
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/ping || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -26,7 +42,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
 
+  # ─── Nginx Proxy Manager ──────────────────────────────────────────────────────
   nginx-proxy:
     image: 'jc21/nginx-proxy-manager:latest'
     container_name: nginx-proxy
@@ -41,6 +60,7 @@ services:
     networks:
       - app_network
 
+  # ─── PostgreSQL ───────────────────────────────────────────────────────────────
   db:
     image: postgres:15-alpine
     container_name: merch-crm-db
@@ -56,11 +76,12 @@ services:
     networks:
       - app_network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres -d merch_crm" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d merch_crm"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # ─── go2rtc: видеопоток ───────────────────────────────────────────────────────
   go2rtc:
     image: alexxit/go2rtc:latest
     container_name: merch-go2rtc
@@ -76,6 +97,7 @@ services:
     networks:
       - app_network
 
+  # ─── Face Recognition сервис ──────────────────────────────────────────────────
   face-recognition:
     image: ghcr.io/merch-crm/merch-crm-face-recognition:latest
     container_name: merch-face-recognition
@@ -97,14 +119,13 @@ services:
           devices:
             - driver: nvidia
               count: 1
-              capabilities: [ gpu ]
+              capabilities: [gpu]
     networks:
       - app_network
 
 volumes:
   postgres_data:
   face-models:
-
 
 networks:
   app_network:

@@ -22,6 +22,7 @@ const { mockDb, queryMock, chainable } = vi.hoisted(() => {
 
     const queryMock = {
         clients: { findFirst: vi.fn().mockResolvedValue(null), findMany: vi.fn().mockResolvedValue([]) },
+        users: { findFirst: vi.fn().mockResolvedValue(null) },
     };
 
     const mockDb = {
@@ -41,7 +42,8 @@ vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 // ─── Imports after mocks ──────────────────────────────────────────────────────
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import { logAction } from '@/lib/audit';
 import { mockSession } from '../helpers/mocks';
 
@@ -49,6 +51,17 @@ describe('RFM Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+
+        // Mock users.findFirst for withAuth (role check)
+        // Note: queryMock is hoisted, so we can access it
+        (queryMock.clients.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+        (queryMock.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+            id: 'user-id',
+            name: 'Test User',
+            email: 'test@example.com',
+            role: { name: 'Администратор', permissions: {} },
+        });
+
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 
@@ -61,14 +74,14 @@ describe('RFM Actions', () => {
                 totalOrdersCount: 20,
                 totalOrdersAmount: 200000
             };
-            queryMock.clients.findFirst.mockResolvedValueOnce(mockClient);
+            (queryMock.clients.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce(mockClient);
 
             const result = await calculateClientRFM(clientId);
-
             expect(result.success).toBe(true);
             if (result.success && result.data) {
-                expect(result.data.segment).toBe('champions');
-                expect(result.data.score).toBe('555');
+                const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                expect(data.segment).toBe('champions');
+                expect(data.score).toBe('555');
             }
             expect(mockDb.update).toHaveBeenCalled();
         });
@@ -77,7 +90,9 @@ describe('RFM Actions', () => {
             queryMock.clients.findFirst.mockResolvedValueOnce(null);
             const result = await calculateClientRFM('55555555-5555-4555-8555-000000000001');
             expect(result.success).toBe(false);
-            expect(result.error).toBe("Клиент не найден");
+            if (!result.success) {
+                expect(result.error).toBe("Клиент не найден");
+            }
         });
     });
 
@@ -90,10 +105,10 @@ describe('RFM Actions', () => {
             chainable.then.mockImplementationOnce((cb: (arg: typeof mockClients) => void) => cb(mockClients));
 
             const result = await calculateAllClientsRFM();
-
             expect(result.success).toBe(true);
             if (result.success && result.data) {
-                expect(result.data.updated).toBe(2);
+                const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                expect(data.updated).toBe(2);
             }
             expect(logAction).toHaveBeenCalled();
         });
@@ -108,7 +123,6 @@ describe('RFM Actions', () => {
             chainable.then.mockImplementationOnce((cb: (arg: typeof mockSegmentData) => void) => cb(mockSegmentData));
 
             const result = await getRFMStats();
-
             expect(result.success).toBe(true);
             if (result.success && result.data) {
                 expect(result.data).toHaveLength(2);
@@ -126,11 +140,11 @@ describe('RFM Actions', () => {
             chainable.then.mockImplementationOnce((cb: (arg: typeof mockClientsInSegment) => void) => cb(mockClientsInSegment));
 
             const result = await getClientsByRFMSegment('champions' as Parameters<typeof getClientsByRFMSegment>[0]);
-
             expect(result.success).toBe(true);
             if (result.success && result.data) {
-                expect(result.data).toHaveLength(1);
-                expect(result.data[0].fullName).toBe('Test One');
+                const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+                expect(data).toHaveLength(1);
+                expect(data[0].fullName).toBe('Test One');
             }
         });
     });

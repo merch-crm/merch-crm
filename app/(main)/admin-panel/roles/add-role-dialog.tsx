@@ -45,7 +45,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
     useEffect(() => {
         if (isOpen) {
             getDepartments().then(res => {
-                if (res.data) setDepartments(res.data);
+                if (res.success) setDepartments(res.data);
             });
         }
     }, [isOpen]);
@@ -74,7 +74,7 @@ export function AddRoleDialog({ onSuccess }: AddRoleDialogProps) {
 
         const res = await createRole(formData);
         setLoading(false);
-        if (res?.error) {
+        if (!res.success) {
             setError(res.error);
         } else {
             setIsOpen(false);

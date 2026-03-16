@@ -10,6 +10,9 @@ class RedisMock {
     async get(key: string) { return this.data.get(key) || null; }
     async set(key: string, value: string, ..._args: unknown[]) { this.data.set(key, value); return "OK"; }
     async del(key: string) { return this.data.delete(key) ? 1 : 0; }
+    async mget(...keys: string[]) {
+        return keys.map(key => this.data.get(key) || null);
+    }
     async unlink(keys: string[]) { keys.forEach(k => this.data.delete(k)); return keys.length; }
     scanStream(options: { match?: string; count?: number }) {
         const s = new Readable({ objectMode: true });
@@ -68,26 +71,55 @@ export const CACHE_TTL = {
     LONG: 60 * 60 * 24, // 1 day
 };
 
-// Хелпер для кэширования
+// Хелпер для кэширования с продвинутой поддержкой stale-while-revalidate и защитой от cache stampede
 export async function getOrSetCache<T>(
     key: string,
     fetcher: () => Promise<T>,
-    ttl: number = CACHE_TTL.MEDIUM
+    ttl: number = CACHE_TTL.MEDIUM,
+    staleTime: number = 60 // возвращать stale данные ещё 60 сек
 ): Promise<T> {
-    const cached = await redis.get(key);
+    const [cached, metadata] = await redis.mget(key, `${key}:meta`);
+    
     if (cached) {
         try {
-            return JSON.parse(cached);
+            const data = JSON.parse(cached);
+            const meta = metadata ? JSON.parse(metadata) : null;
+            const isStale = meta && Date.now() > meta.expiresAt;
+            
+            if (isStale) {
+                // Фоновое обновление с блокировкой (fire-and-forget)
+                (async () => {
+                    const lockKey = `${key}:lock`;
+                    const lock = await redis.set(lockKey, '1', 'EX', 10, 'NX');
+                    if (lock) {
+                        try {
+                            const fresh = await fetcher();
+                            if (fresh !== undefined && fresh !== null) {
+                                await redis.set(key, JSON.stringify(fresh), "EX", ttl + staleTime);
+                                await redis.set(`${key}:meta`, JSON.stringify({ expiresAt: Date.now() + ttl * 1000 }), "EX", ttl + staleTime);
+                            }
+                        } catch (e) {
+                            console.error(`[Redis] SWR bg fetch error for ${key}:`, e);
+                        } finally {
+                            await redis.del(lockKey);
+                        }
+                    }
+                })();
+            }
+            
+            return data;
         } catch (e) {
-            console.error("Redis parse error", e);
+            console.error("[Redis] Parse error", e);
         }
     }
 
-    const data = await fetcher();
-    if (data !== undefined && data !== null) {
-        await redis.set(key, JSON.stringify(data), "EX", ttl);
+    // Cache miss или ошибка парсинга: полный fetch
+    const fresh = await fetcher();
+    if (fresh !== undefined && fresh !== null) {
+        await redis.set(key, JSON.stringify(fresh), "EX", ttl + staleTime);
+        await redis.set(`${key}:meta`, JSON.stringify({ expiresAt: Date.now() + ttl * 1000 }), "EX", ttl + staleTime);
     }
-    return data;
+    return fresh;
 }
 
 export async function invalidateCache(pattern: string) {

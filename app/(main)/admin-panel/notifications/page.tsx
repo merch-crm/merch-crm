@@ -3,7 +3,8 @@ import { NotificationSettings } from"../actions";;
 import { NotificationsClient } from"@/app/(main)/admin-panel/notifications/notifications-client";
 
 export default async function AdminNotificationsPage() {
-    const { data: settings } = await getNotificationSettingsAction();
+    const res = await getNotificationSettingsAction();
+    const settings = res.success ? res.data : null;
 
     const defaultSettings: NotificationSettings = {
         system: { enabled: true, browserPush: false },

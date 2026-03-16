@@ -3,19 +3,16 @@
 import { db } from "@/lib/db";
 import { clients, users, loyaltyLevels } from "@/lib/schema";
 import { eq, sql, desc, and } from "drizzle-orm";
-import { logError } from "@/lib/error-logger";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+import { type ActionResult, ok } from "@/lib/types";
 import { ManagerPerformanceData, TopClientData, AcquisitionSourceData } from "./types";
 import { acquisitionSourceLabels, acquisitionSourceIcons } from "./constants";
 
 /**
  * Получить эффективность менеджеров
  */
-export async function getManagerPerformance(): Promise<{
-    success: boolean;
-    data?: ManagerPerformanceData[];
-    error?: string;
-}> {
-    try {
+export async function getManagerPerformance(): Promise<ActionResult<ManagerPerformanceData[]>> {
+    return withAuth(async () => {
         const managersData = await db
             .select({
                 managerId: clients.managerId,
@@ -48,11 +45,11 @@ export async function getManagerPerformance(): Promise<{
                 : 0,
         }));
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getManagerPerformance" });
-        return { success: false, error: "Не удалось загрузить данные по менеджерам" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getManagerPerformance" 
+    });
 }
 
 /**
@@ -60,8 +57,8 @@ export async function getManagerPerformance(): Promise<{
  */
 export async function getTopClients(
     limit: number = 10
-): Promise<{ success: boolean; data?: TopClientData[]; error?: string }> {
-    try {
+): Promise<ActionResult<TopClientData[]>> {
+    return withAuth(async () => {
         const topClients = await db
             .select({
                 id: clients.id,
@@ -97,22 +94,18 @@ export async function getTopClients(
             lastOrderAt: row.lastOrderAt,
         }));
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getTopClients" });
-        return { success: false, error: "Не удалось загрузить топ клиентов" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getTopClients" 
+    });
 }
 
 /**
  * Получить статистику по источникам привлечения
  */
-export async function getAcquisitionSourceStats(): Promise<{
-    success: boolean;
-    data?: AcquisitionSourceData[];
-    error?: string;
-}> {
-    try {
+export async function getAcquisitionSourceStats(): Promise<ActionResult<AcquisitionSourceData[]>> {
+    return withAuth(async () => {
         const sourcesData = await db
             .select({
                 source: sql<string>`COALESCE(NULLIF(${clients.acquisitionSource}, ''), '')`,
@@ -137,11 +130,9 @@ export async function getAcquisitionSourceStats(): Promise<{
             icon: acquisitionSourceIcons[row.source.toLowerCase()] || "HelpCircle",
         }));
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getAcquisitionSourceStats" });
-        return { success: false, error: "Не удалось загрузить статистику по источникам" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getAcquisitionSourceStats" 
+    });
 }
-
-

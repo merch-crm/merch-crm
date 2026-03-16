@@ -3,10 +3,10 @@
 import { db } from "@/lib/db";
 import { clients, users, loyaltyLevels } from "@/lib/schema";
 import { eq, and, inArray, asc, sql, gte, lte, isNull, or, ilike } from "drizzle-orm";
-import { getSession } from "@/lib/session";
-import { logError } from "@/lib/error-logger";
 import { logAction } from "@/lib/audit";
 import { z } from "zod";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+import { ActionResult, ok } from "@/lib/types";
 
 import { ExportColumn, EXPORT_COLUMNS } from "./export.types";
 
@@ -31,6 +31,13 @@ const ExportParamsSchema = z.object({
 });
 
 type ExportParams = z.infer<typeof ExportParamsSchema>;
+
+export interface ExportPreset {
+    id: string;
+    name: string;
+    description: string;
+    columns: string[];
+}
 
 // Маппинг этапов воронки
 const funnelStageLabels: Record<string, string> = {
@@ -64,21 +71,20 @@ const clientTypeLabels: Record<string, string> = {
 /**
  * Получить данные для экспорта
  */
-export async function getExportData(params: ExportParams): Promise<{
-    success: boolean;
-    data?: string;
-    filename?: string;
-    error?: string;
-}> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-        if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-            return { success: false, error: "Недостаточно прав для экспорта данных" };
+export async function getExportData(params: ExportParams): Promise<ActionResult<{
+    data: string;
+    filename: string;
+}>> {
+    return withAuth(async () => {
+        const validated = ExportParamsSchema.safeParse(params);
+        if (!validated.success) {
+            return { 
+                success: false, 
+                error: validated.error.issues[0]?.message || "Ошибка параметров экспорта",
+                code: "VALIDATION_ERROR"
+            };
         }
-
-        const validated = ExportParamsSchema.parse(params);
-        const { columns, filters, clientIds, includeArchived } = validated;
+        const { columns, filters, clientIds, includeArchived } = validated.data;
 
         // Формируем условия
         const conditions = [];
@@ -250,48 +256,32 @@ export async function getExportData(params: ExportParams): Promise<{
         const date = new Date().toISOString().split("T")[0];
         const filename = `clients_export_${date}.csv`;
 
-        return { success: true, data: csvWithBom, filename };
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return { success: false, error: "Ошибка параметров экспорта" };
-        }
-        await logError({ error, path: "/dashboard/clients/export", method: "getExportData" });
-        return { success: false, error: "Не удалось выполнить экспорт" };
-    }
+        return ok({ data: csvWithBom, filename });
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getExportData" 
+    });
 }
 
 /**
  * Получить доступные колонки для экспорта
  */
-export async function getExportColumns(): Promise<{
-    success: boolean;
-    data?: ExportColumn[];
-    error?: string;
-}> {
-    try {
-        const session = await getSession();
-        if (!session) return { success: false, error: "Не авторизован" };
-        if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-            return { success: false, error: "Недостаточно прав" };
-        }
+export async function getExportColumns(): Promise<ActionResult<ExportColumn[]>> {
+    return withAuth(async () => {
         await logAction("Запрос колонок экспорта", "client", "config");
-        return { success: true, data: EXPORT_COLUMNS };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/export", method: "getExportColumns" });
-        return { success: false, error: "Failed to get columns" };
-    }
+        return ok(EXPORT_COLUMNS as ExportColumn[]);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getExportColumns" 
+    });
 }
 
 /**
  * Получить пресеты экспорта
  */
-export async function getExportPresets() {
-    try {
-        const session = await getSession();
-        if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
-            return { success: false, error: "Недостаточно прав" };
-        }
-        const presets = [
+export async function getExportPresets(): Promise<ActionResult<ExportPreset[]>> {
+    return withAuth(async () => {
+        const presets: ExportPreset[] = [
             {
                 id: "basic",
                 name: "Базовый",
@@ -319,9 +309,9 @@ export async function getExportPresets() {
         ];
 
         await logAction("Запрос пресетов экспорта", "client", "config");
-        return { success: true, data: presets };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/export", method: "getExportPresets" });
-        return { success: false, error: "Failed to get presets" };
-    }
+        return ok(presets);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getExportPresets" 
+    });
 }

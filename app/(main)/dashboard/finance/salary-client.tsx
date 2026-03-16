@@ -81,7 +81,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                                     <div className="text-2xl font-black text-slate-900">{deptTotal.toLocaleString('ru-RU')} <span className="text-sm font-bold text-slate-400">{currencySymbol}</span></div>
                                 </div>
                             </div>
-                            <ResponsiveDataView
+                            <ResponsiveDataView<SalaryStats['employeePayments'][number]>
                                 data={emps}
                                 mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                                 desktopClassName="hidden md:block"

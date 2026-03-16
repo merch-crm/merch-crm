@@ -2,7 +2,10 @@ import { getDashboardStatsByPeriod } from"./actions";
 import { getSession } from"@/lib/auth";
 import { redirect } from"next/navigation";
 import { DashboardClient } from"./dashboard-client";
-import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
+import { ErrorBoundary } from "@/components/error-boundary";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export default async function DashboardPage({
     searchParams,
@@ -27,11 +30,15 @@ export default async function DashboardPage({
     // const userData = null; // Removed failing query
 
     return (
-        <DashboardClient
-            initialStats={statsData}
-            period={period}
-            userName={session.name ||"Пользователь"}
-            branding={branding}
-        />
+        <ErrorBoundary moduleName="Главная">
+            <Suspense fallback={<Loading />}>
+                <DashboardClient
+                    initialStats={statsData}
+                    period={period}
+                    userName={session.name || "Пользователь"}
+                    branding={branding}
+                />
+            </Suspense>
+        </ErrorBoundary>
     );
 }

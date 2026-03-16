@@ -8,7 +8,7 @@ import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { AddPaymentSchema, RefundOrderSchema } from "../validation";
-import { ActionResult } from "@/lib/types";
+import { ActionResult, okVoid } from "@/lib/types";
 
 const { orders, payments } = schema;
 
@@ -44,7 +44,7 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path: "/dashboard/orders/refund", method: "refundOrder" });
         return { success: false, error: error instanceof Error ? error.message : "Ошибка" };
@@ -79,7 +79,7 @@ export async function addPayment(orderId: string, amount: number, method: string
 
         revalidatePath("/dashboard/orders");
         revalidatePath(`/dashboard/orders/${orderId}`);
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path: "/dashboard/orders/payment", method: "addPayment" });
         return { success: false, error: "Ошибка" };

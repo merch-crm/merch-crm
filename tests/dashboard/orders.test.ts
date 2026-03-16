@@ -72,7 +72,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
 import {
     getOrders,
     searchClients,
@@ -98,10 +98,13 @@ const setupMocks = () => {
     mockTx.insert.mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) });
     mockTx.delete.mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) });
 
+    // Restore users.findFirst for withAuth
+    mockFindFirst.mockResolvedValue(createMockUser({ role: { name: 'Администратор' } }));
+
     // Restore db.update/insert/delete (used outside transactions)
-    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as ReturnType<typeof db.update>);
-    vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as ReturnType<typeof db.insert>);
-    vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as ReturnType<typeof db.delete>);
+    vi.mocked(db.update).mockReturnValue({ set: vi.fn().mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) }) } as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    vi.mocked(db.insert).mockReturnValue({ values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([]) }) } as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+    vi.mocked(db.delete).mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) } as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Default select chain (thenable)
     const chainObj: Record<string, unknown> = {};
@@ -124,19 +127,19 @@ describe('getOrders', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает список заказов с пагинацией', async () => {
-        const orders = [createMockOrder(), createMockOrder({ id: 'o2' })];
-        // getOrders calls:
-        // 1. db.select({count}).from(orders).innerJoin(clients).where().limit(1) => [{count: N}]
-        // 2. db.query.orders.findMany({...}) => orders data
-        // 3. getSession() for role check
+        const orders = [
+            createMockOrder({ client: { name: 'Иван Петров' } }), 
+            createMockOrder({ id: 'o2', client: { name: 'Иван Петров' } })
+        ];
 
         // Mock db.select for count query
         vi.mocked(db.select).mockImplementation(() => ({
             from: vi.fn().mockReturnThis(),
             leftJoin: vi.fn().mockReturnThis(),
-            where: vi.fn().mockReturnThis(),
-            limit: vi.fn().mockResolvedValue([{ count: 2 }])
-        } as unknown as ReturnType<typeof db.select>));
+            where: vi.fn().mockReturnValue({
+              then: (resolve: (val: unknown) => void) => resolve([{ count: 2 }] as unknown as any) // eslint-disable-line @typescript-eslint/no-explicit-any
+            })
+        } as unknown as any)); // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Mock db.query.orders.findMany for paginated data
         mockFindMany.mockResolvedValueOnce(orders);
@@ -146,6 +149,10 @@ describe('getOrders', () => {
 
         const result = await getOrders();
         expect(result.success).toBe(true);
+        if (result.success) {
+            expect(result.data.orders).toEqual(orders);
+            expect(result.data.total).toBe(2);
+        }
     });
 
     it('возвращает ошибку при сбое БД', async () => {
@@ -158,7 +165,6 @@ describe('getOrders', () => {
 describe('searchClients', () => {
     beforeEach(() => setupMocks());
 
-    // searchClients: query.length < 2 => returns { success: true, data: [] }
     it('возвращает пустой результат при слишком коротком запросе', async () => {
         vi.mocked(getSession).mockResolvedValue(mockSession());
         const result = await searchClients('ab');
@@ -192,7 +198,7 @@ describe('getClientsForSelect', () => {
                     limit: vi.fn().mockResolvedValue(clients),
                 }),
             }),
-        } as unknown as ReturnType<typeof db.select>));
+        } as unknown as any)); // eslint-disable-line @typescript-eslint/no-explicit-any
         const result = await getClientsForSelect();
         expect(result).toEqual({ success: true, data: clients });
     });
@@ -208,7 +214,7 @@ describe('getInventoryForSelect', () => {
             from: vi.fn().mockReturnValue({
                 limit: vi.fn().mockResolvedValue(items),
             }),
-        } as unknown as ReturnType<typeof db.select>));
+        } as unknown as any)); // eslint-disable-line @typescript-eslint/no-explicit-any
         const result = await getInventoryForSelect();
         expect(result).toEqual({ success: true, data: items });
     });
@@ -220,7 +226,7 @@ describe('createOrder', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await createOrder(createFormData({ clientId: '33333333-3333-4333-8333-333333333333' }));
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: 'Не авторизован', code: 'UNAUTHORIZED' });
     });
 
     it('возвращает ошибку при невалидных данных', async () => {
@@ -238,7 +244,7 @@ describe('createOrder', () => {
         selectChain.from = vi.fn().mockReturnValue(selectChain);
         selectChain.orderBy = vi.fn().mockReturnValue(selectChain);
         selectChain.limit = vi.fn().mockResolvedValue([]);
-        mockTx.select.mockImplementation(() => selectChain as unknown as ReturnType<typeof db.select>);
+        mockTx.select.mockImplementation(() => selectChain as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Mock tx.insert for order creation
         mockTx.insert.mockReturnValue({
@@ -273,8 +279,10 @@ describe('createOrder', () => {
             items: items
         }));
 
-        if (!result.success) console.error('createOrder failed:', result.error);
         expect(result.success).toBe(true);
+        if (result.success) {
+            expect(result.data).toEqual({ orderId: newOrder.id });
+        }
     });
 });
 
@@ -284,7 +292,7 @@ describe('updateOrderStatus', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'new');
-        expect(result).toEqual({ success: false, error: "Недостаточно прав для изменения статуса заказа" });
+        expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('возвращает ошибку при невалидном статусе', async () => {
@@ -295,12 +303,11 @@ describe('updateOrderStatus', () => {
 
     it('обновляет статус заказа', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        // updateOrderStatus uses tx.query.orders.findFirst
         const mockOrder = { ...createMockOrder({ status: 'new' }), items: [] };
         mockTx.query.orders.findFirst = vi.fn().mockResolvedValue(mockOrder);
 
         const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'design');
-        expect(result).toEqual({ success: true });
+        expect(result).toEqual({ success: true, data: undefined });
     });
 });
 
@@ -310,7 +317,7 @@ describe('updateOrderPriority', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'high');
-        expect(result).toEqual({ success: false, error: "Недостаточно прав для изменения приоритета заказа" });
+        expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('возвращает ошибку при невалидном приоритете', async () => {
@@ -321,10 +328,8 @@ describe('updateOrderPriority', () => {
 
     it('обновляет приоритет заказа', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        // updateOrderPriority uses db.update(orders).set(...).where(...) — NOT transaction
-        // db.update is restored by setupMocks, so it should work
         const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'high');
-        expect(result).toEqual({ success: true });
+        expect(result).toEqual({ success: true, data: undefined });
     });
 });
 
@@ -334,25 +339,29 @@ describe('archiveOrder', () => {
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
         const result = await archiveOrder('44444444-4444-4444-8444-444444444444');
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+        expect(result).toEqual({ success: false, error: 'Не авторизован', code: 'UNAUTHORIZED' });
     });
 
     it('возвращает ошибку если нет прав', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Дизайнер' }));
-        // archiveOrder uses db.query.users.findFirst (NOT tx)
-        mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Дизайнер' }, department: { name: 'Дизайн' } }));
+        mockFindFirst.mockResolvedValueOnce({ 
+            id: 'mock-id', 
+            name: 'Designer', 
+            email: 'd@d.com', 
+            role: { id: 'd-role', name: 'Дизайнер', permissions: {} },
+            department: { id: 'd-dept', name: 'Дизайн' }
+        });
 
         const result = await archiveOrder('44444444-4444-4444-8444-444444444444');
-        expect(result.success).toBe(false);
+        expect(result).toEqual({ success: false, error: 'Недостаточно прав', code: 'FORBIDDEN' });
     });
 
     it('архивирует заказ для администратора', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
-        // archiveOrder uses db.query.users.findFirst (NOT tx)
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' }, department: null }));
 
         const result = await archiveOrder('44444444-4444-4444-8444-444444444444');
-        expect(result).toEqual({ success: true });
+        expect(result).toEqual({ success: true, data: undefined });
     });
 });
 
@@ -367,23 +376,21 @@ describe('bulkDeleteOrders', () => {
 
     it('возвращает ошибку если нет прав', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Дизайнер' }));
-        // bulkDeleteOrders uses db.query.users.findFirst (NOT tx)
-        mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Дизайнер' }, department: { name: 'Дизайн' } }));
+        mockFindFirst.mockResolvedValueOnce({ 
+            id: 'id', role: { name: 'Дизайнер' }, department: { name: 'Дизайн' } 
+        });
 
         const result = await bulkDeleteOrders(['44444444-4444-4444-8444-444444444444']);
-        expect(result.success).toBe(false);
+        expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('удаляет заказы массово для администратора', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
-        // bulkDeleteOrders uses db.query.users.findFirst (NOT tx) for permission check
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' }, department: null }));
-        // Inside tx: tx.query.orders.findMany returns orders to delete
         mockTx.query.orders.findMany = vi.fn().mockResolvedValue([{ id: '44444444-4444-4444-8444-444444444444', status: 'new' }]);
-        // releaseOrderReservation calls tx.query.orderItems.findMany
         mockTx.query.orderItems = { findMany: vi.fn().mockResolvedValue([]), findFirst: vi.fn() };
 
         const result = await bulkDeleteOrders(['44444444-4444-4444-8444-444444444444', '44444444-4444-4444-8444-444444444445']);
-        expect(result).toEqual({ success: true });
+        expect(result).toEqual({ success: true, data: undefined });
     });
 });

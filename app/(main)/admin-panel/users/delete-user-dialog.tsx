@@ -29,16 +29,13 @@ export function DeleteUserDialog({ user, isOpen, onClose, onSuccess }: DeleteUse
 
         try {
             const result = await deleteUser(user.id, password);
-            if (result.error) {
-                setError(result.error);
-                setPassword("");
-            } else {
+            if (result.success) {
                 onSuccess();
                 onClose();
+            } else {
+                setError(result.error);
+                setPassword("");
             }
-        } catch {
-            setError("Произошла ошибка при удалении");
-            setPassword("");
         } finally {
             setIsLoading(false);
         }

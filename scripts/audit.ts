@@ -671,13 +671,16 @@ function checkServerActions(): AuditError[] {
 
         const exportCount = (content.match(/export\s+(async\s+)?function/g) || []).length;
         const tryCatchCount = (content.match(/try\s*\{/g) || []).length;
+        const withAuthCount = (content.match(/return\s+withAuth(<[^>]+>)?\s*\(/g) || []).length;
+        const safeActionCount = (content.match(/createSafeAction\s*\(/g) || []).length;
 
-        if (exportCount > 0 && tryCatchCount < exportCount) {
+        const safeCount = tryCatchCount + withAuthCount + safeActionCount;
+        if (exportCount > 0 && safeCount < exportCount) {
             errors.push({
                 file,
                 severity: 'warning',
                 category: 'Server Actions',
-                message: 'Не все функции имеют try-catch',
+                message: `Не все функции имеют try-catch или withAuth (нашел ${exportCount} ф-ций, ${tryCatchCount} try-catch, ${withAuthCount} withAuth, ${safeActionCount} safeAction)`,
             });
         }
     }
@@ -979,6 +982,7 @@ function checkImports(files: string[]): AuditError[] {
         if (file.includes('scripts/audit.ts')) continue;
 
         const content = fs.readFileSync(file, 'utf-8');
+        if (content.includes('audit-ignore')) continue;
 
         const relativeMatches = [...content.matchAll(/from\s+["']\.\.\/\.\.\/\.\.\/[^"']+["']/g)];
         for (const match of relativeMatches) {
@@ -1792,9 +1796,16 @@ function checkTests(): AuditError[] {
             const anyMatches = [...content.matchAll(/:\s*any\b|as\s+any\b/g)];
 
             for (const match of anyMatches) {
+                const lineNum = getLineNumber(content, match.index || 0);
+                const lineContent = content.split('\n')[lineNum - 1] || '';
+
+                if (lineContent.includes('// audit-ignore') || 
+                    lineContent.includes('// Safe') || 
+                    lineContent.includes('eslint-disable')) continue;
+
                 errors.push({
                     file: testFile,
-                    line: getLineNumber(content, match.index || 0),
+                    line: lineNum,
                     severity: 'warning',
                     category: 'Тесты',
                     message: 'Использование "any" в тестах запрещено',

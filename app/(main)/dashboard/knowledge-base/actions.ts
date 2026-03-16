@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import { wikiFolders, wikiPages } from"@/lib/schema";
 import { eq, asc, desc } from"drizzle-orm";
@@ -114,6 +116,7 @@ export async function getWikiPageDetail(id: string): Promise<ActionResult<WikiPa
                 folder: true,
             }
         });
+        if (!page) return { success: false, error: "Статья не найдена" };
         return { success: true, data: page };
     } catch (error) {
         await logError({
@@ -189,7 +192,7 @@ export async function updateWikiPage(id: string, data: { title?: string, content
         revalidatePath("/dashboard/knowledge-base");
         revalidatePath(`/dashboard/knowledge-base/${id}`);
 
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,
@@ -215,7 +218,7 @@ export async function deleteWikiPage(id: string): Promise<ActionResult> {
             await logAction("Удалена страница базы знаний","wiki_page", id, undefined, tx);
         });
         revalidatePath("/dashboard/knowledge-base");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({
             error,

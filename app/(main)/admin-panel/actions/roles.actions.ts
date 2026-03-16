@@ -2,48 +2,38 @@
 
 import { db } from "@/lib/db";
 import { roles, users, accounts } from "@/lib/schema";
-import { getSession } from "@/lib/session";
-import { requireAdmin } from "@/lib/admin";
-import { logError } from "@/lib/error-logger";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
 import { comparePassword } from "@/lib/password";
-import { eq, asc, and } from "drizzle-orm";
+import { eq, asc, and, type InferSelectModel } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { CreateRoleSchema, UpdateRoleSchema } from "../validation";
+import { ActionResult, ok, okVoid, err, ERRORS } from "@/lib/types";
+
+type Role = InferSelectModel<typeof roles>;
 
 // Role Actions
-export async function getRoles() {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function getRoles(): Promise<ActionResult<(Role & { department: { name: string } | null })[]>> {
+    return withAuth(async () => {
         const allRoles = await db.query.roles.findMany({
             with: {
-                department: true
+                department: {
+                    columns: { name: true }
+                }
             },
             orderBy: [asc(roles.name)],
-            limit: 500 // audit-ignore: административный список, нужны все записи
+            limit: 500
         });
-        return { success: true, data: allRoles };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/admin-panel/roles",
-            method: "getRoles"
-        });
-        return { success: false, error: "Не удалось загрузить список ролей" };
-    }
+        return ok(allRoles);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getRoles" });
 }
 
-export async function createRole(formData: FormData) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function createRole(formData: FormData): Promise<ActionResult<Role>> {
+    return withAuth(async () => {
         const data = Object.fromEntries(formData);
-
         const validated = CreateRoleSchema.safeParse(data);
-        if (!validated.success) {
-            return { success: false, error: validated.error.issues[0].message };
-        }
+        
+        if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
         const [newRole] = await db.insert(roles).values({
             ...validated.data,
@@ -53,27 +43,16 @@ export async function createRole(formData: FormData) {
 
         await logAction("Создание роли", "role", newRole.id, { name: newRole.name });
         revalidatePath("/admin-panel/roles");
-        return { success: true, data: newRole };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/admin-panel/roles/create",
-            method: "createRole"
-        });
-        return { success: false, error: "Не удалось создать роль" };
-    }
+        return ok(newRole);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "createRole" });
 }
 
-export async function updateRole(roleId: string, formData: FormData) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function updateRole(roleId: string, formData: FormData): Promise<ActionResult<Role>> {
+    return withAuth(async () => {
         const data = Object.fromEntries(formData);
-
         const validated = UpdateRoleSchema.safeParse(data);
-        if (!validated.success) {
-            return { success: false, error: validated.error.issues[0].message };
-        }
+        
+        if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
         const updateData: Record<string, unknown> = { ...validated.data };
         if (updateData.departmentId === "") updateData.departmentId = null;
@@ -86,27 +65,17 @@ export async function updateRole(roleId: string, formData: FormData) {
             .where(eq(roles.id, roleId))
             .returning();
 
+        if (!updatedRole) return ERRORS.NOT_FOUND("Роль");
+
         await logAction("Обновление роли", "role", roleId, updateData);
         revalidatePath("/admin-panel/roles");
-        return { success: true, data: updatedRole };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/admin-panel/roles/update",
-            method: "updateRole"
-        });
-        return { success: false, error: "Не удалось обновить роль" };
-    }
+        return ok(updatedRole);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateRole" });
 }
 
-export async function deleteRole(roleId: string, password?: string) {
-    const session = await getSession();
-    try {
-        if (!session) return { success: false, error: "Не авторизован" };
-        await requireAdmin(session);
-
+export async function deleteRole(roleId: string, password?: string): Promise<ActionResult<void>> {
+    return withAuth(async (session) => {
         if (password) {
-            // Получаем хеш пароля администратора из таблицы accounts
             const adminAccount = await db.query.accounts.findFirst({
                 where: and(
                     eq(accounts.userId, session.id),
@@ -115,41 +84,28 @@ export async function deleteRole(roleId: string, password?: string) {
             });
 
             if (!adminAccount || !adminAccount.password) {
-                return { success: false, error: "У администратора не установлен пароль в Better Auth" };
+                return err("Пароль администратора не найден");
             }
 
             const isMatch = await comparePassword(password, adminAccount.password);
-            if (!isMatch) return { success: false, error: "Неверный пароль администратора" };
+            if (!isMatch) return err("Неверный пароль администратора");
         }
 
-        // Check if role is assigned to any users
         const usersWithRole = await db.query.users.findFirst({
             where: eq(users.roleId, roleId)
         });
 
-        if (usersWithRole) {
-            return { success: false, error: "Нельзя удалить роль, которая назначена пользователям" };
-        }
+        if (usersWithRole) return err("Нельзя удалить роль, которая назначена пользователям");
 
         await db.delete(roles).where(eq(roles.id, roleId));
         await logAction("Удаление роли", "role", roleId);
         revalidatePath("/admin-panel/roles");
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/admin-panel/roles/delete",
-            method: "deleteRole"
-        });
-        return { success: false, error: "Не удалось удалить роль" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "deleteRole" });
 }
 
-export async function updateRolePermissions(roleId: string, permissions: Record<string, unknown>) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
-
+export async function updateRolePermissions(roleId: string, permissions: Record<string, unknown>): Promise<ActionResult<Role>> {
+    return withAuth(async () => {
         const [updatedRole] = await db.update(roles)
             .set({
                 permissions,
@@ -158,31 +114,22 @@ export async function updateRolePermissions(roleId: string, permissions: Record<
             .where(eq(roles.id, roleId))
             .returning();
 
+        if (!updatedRole) return ERRORS.NOT_FOUND("Роль");
+
         await logAction("Обновление прав роли", "role", roleId, { permissions });
         revalidatePath("/admin-panel/roles");
-        return { success: true, data: updatedRole };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/admin-panel/roles/permissions",
-            method: "updateRolePermissions"
-        });
-        return { success: false, error: "Не удалось обновить права доступа" };
-    }
+        return ok(updatedRole);
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateRolePermissions" });
 }
 
-export async function updateRoleDepartment(roleId: string, departmentId: string | null) {
-    const session = await getSession();
-    try {
-        await requireAdmin(session);
+export async function updateRoleDepartment(roleId: string, departmentId: string | null): Promise<ActionResult<void>> {
+    return withAuth(async () => {
         await db.update(roles)
             .set({ departmentId, updatedAt: new Date() })
             .where(eq(roles.id, roleId));
 
         await logAction("Изменение отдела роли", "role", roleId, { departmentId });
         revalidatePath("/admin-panel/roles");
-        return { success: true };
-    } catch {
-        return { success: false, error: "Не удалось обновить отдел роли" };
-    }
+        return okVoid();
+    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateRoleDepartment" });
 }

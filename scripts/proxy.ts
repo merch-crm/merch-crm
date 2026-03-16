@@ -1,10 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { jwtVerify } from "jose";
-import { env } from "@/lib/env";
-
-const SECRET_KEY = env.JWT_SECRET_KEY;
-const key = new TextEncoder().encode(SECRET_KEY);
-
+import { auth } from "../lib/auth";
+import { headers } from "next/headers";
 const PUBLIC_PATHS = [
     "/login",
     "/api/auth/login",
@@ -57,22 +53,22 @@ export async function proxy(req: NextRequest) {
         return NextResponse.next();
     }
 
-    // --- 3. Check for session cookie ---
+    // --- 3. Check for Better Auth session ---
     if (pathname.includes("warehouse")) console.log(`[DEBUG] Middleware: Checking session...`);
-    const token = req.cookies.get("session")?.value;
     let isValid = false;
 
-    if (token && key) {
-        try {
-            if (pathname.includes("warehouse")) console.log(`[DEBUG] Middleware: Verifying JWT...`);
-            await jwtVerify(token, key, { algorithms: ["HS256"] });
-            if (pathname.includes("warehouse")) console.log(`[DEBUG] Middleware: JWT Valid`);
+    try {
+        if (pathname.includes("warehouse")) console.log(`[DEBUG] Middleware: Verifying Better Auth Session...`);
+        const session = await auth.api.getSession({
+            headers: await headers()
+        });
+        
+        if (session && session.session) {
             isValid = true;
-        } catch (error) {
-            console.warn(`[Middleware] Token invalid for ${pathname}:`, error instanceof Error ? error.message : error);
+            if (pathname.includes("warehouse")) console.log(`[DEBUG] Middleware: Session Valid`);
         }
-    } else if (token && !key) {
-        console.error("[Middleware] SECRET_KEY is missing! Cannot verify token.");
+    } catch (error) {
+        console.warn(`[Middleware] Session verification failed for ${pathname}:`, error instanceof Error ? error.message : error);
     }
 
     // --- 4. Handle Public Paths ---

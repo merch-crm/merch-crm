@@ -1,5 +1,7 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import { systemSettings } from"@/lib/schema";
 import { getSession } from"@/lib/auth";
@@ -76,7 +78,7 @@ export async function updateStorageQuotaSettings(settings: StorageQuotaSettings)
         });
 
         revalidatePath("/admin-panel/storage");
-        return { success: true };
+        return okVoid();
     } catch (e) {
         await logError({
             error: e,

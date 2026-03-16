@@ -40,7 +40,7 @@ export function DepartmentsTable() {
     const fetchDepartments = useCallback((isInitial = true) => {
         // if (isInitial) setLoading(true); // Optimistic updates, relying on initial state for first load
         getDepartments().then(res => {
-            if (res.data) {
+            if (res.success) {
                 setDepartments(res.data as Department[]);
             }
             if (isInitial) setLoading(false);
@@ -63,10 +63,10 @@ export function DepartmentsTable() {
 
     const handleDeleteConfirm = async (id: string, password?: string) => {
         const res = await deleteDepartment(id, password);
-        if (res.error) {
-            toast(res.error,"error");
+        if (!res.success) {
+            toast(res.error, "error");
         } else {
-            toast("Отдел успешно удален","success");
+            toast("Отдел успешно удален", "success");
             fetchDepartments();
         }
         setDeleteDialogOpen(false);

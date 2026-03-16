@@ -11,11 +11,10 @@ import {
 } from "@/lib/schema";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { refreshWarehouse } from "../../warehouse-shared.actions";
 import { AttributeSchema } from "../../validation";
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult, okVoid, ok, ERRORS } from "@/lib/types";
 
 export type InventoryAttribute = InferSelectModel<typeof inventoryAttributes>;
 
@@ -23,23 +22,13 @@ export type InventoryAttribute = InferSelectModel<typeof inventoryAttributes>;
  * Get all inventory attributes
  */
 export async function getInventoryAttributes(): Promise<ActionResult<InventoryAttribute[]>> {
-    const session = await getSession();
-    if (!session) return { success: false, error: "Не авторизован" };
-
-    try {
+    return withAuth(async () => {
         const attributes = await db.query.inventoryAttributes.findMany({
             orderBy: (attributes, { asc }) => [asc(attributes.name)],
             limit: 1000
         });
-        return { success: true, data: attributes };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "getInventoryAttributes"
-        });
-        return { success: false, error: "Не удалось загрузить атрибуты" };
-    }
+        return ok(attributes);
+    }, { errorPath: "getInventoryAttributes" });
 }
 
 /**
@@ -48,37 +37,32 @@ export async function getInventoryAttributes(): Promise<ActionResult<InventoryAt
 export async function createInventoryAttribute(
     rawInput: unknown
 ): Promise<ActionResult<InventoryAttribute>> {
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
+    return withAuth(async (session) => {
+        const validation = AttributeSchema.safeParse(rawInput);
+        if (!validation.success) {
+            return ERRORS.VALIDATION(validation.error.issues[0].message);
+        }
 
-    const validation = AttributeSchema.safeParse(rawInput);
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
+        const { type, value, categoryId } = validation.data;
+        let { name, meta } = validation.data;
 
-    const { type, value, categoryId } = validation.data;
-    let { name, meta } = validation.data;
+        // Capitalize if it's a country
+        if (type.toLowerCase() === "country") {
+            name = name.trim();
+            name = name.charAt(0).toUpperCase() + name.slice(1);
+        }
 
-    // Capitalize if it's a country
-    if (type.toLowerCase() === "country") {
-        name = name.trim();
-        name = name.charAt(0).toUpperCase() + name.slice(1);
-    }
+        // Auto-fill fullName if missing for standard units
+        const nameMap: Record<string, string> = {
+            "шт": "штуки", "пар": "пары", "компл": "комплекты", "уп": "упаковки", "рул": "рулоны",
+            "л": "литры", "м": "метры", "мм": "миллиметры", "см": "сантиметры", "г": "граммы",
+            "кг": "килограммы", "мл": "миллилитры"
+        };
+        const short = name.toLowerCase().replace(/\.$/, "");
+        if (nameMap[short] && (!meta || !meta.fullName)) {
+            meta = { ...((meta as object) || {}), fullName: nameMap[short] };
+        }
 
-    // Auto-fill fullName if missing for standard units
-    const nameMap: Record<string, string> = {
-        "шт": "штуки", "пар": "пары", "компл": "комплекты", "уп": "упаковки", "рул": "рулоны",
-        "л": "литры", "м": "метры", "мм": "миллиметры", "см": "сантиметры", "г": "граммы",
-        "кг": "килограммы", "мл": "миллилитры"
-    };
-    const short = name.toLowerCase().replace(/\.$/, "");
-    if (nameMap[short] && (!meta || !meta.fullName)) {
-        meta = { ...((meta as object) || {}), fullName: nameMap[short] };
-    }
-
-    try {
         const attribute = await db.transaction(async (tx) => {
             const [newAttr] = await tx.insert(inventoryAttributes).values({
                 type,
@@ -101,16 +85,11 @@ export async function createInventoryAttribute(
         invalidateCache("warehouse:attributes");
         refreshWarehouse();
 
-        return { success: true, data: attribute };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "createInventoryAttribute",
-            details: { type, name, value, meta }
-        });
-        return { success: false, error: "Не удалось создать атрибут" };
-    }
+        return ok(attribute);
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "createInventoryAttribute" 
+    });
 }
 
 /**
@@ -122,26 +101,21 @@ export async function updateInventoryAttribute(
 ): Promise<ActionResult<InventoryAttribute>> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID атрибута" };
+        return ERRORS.VALIDATION("Некорректный ID атрибута");
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
+    return withAuth(async (session) => {
+        const validation = AttributeSchema.safeParse(rawInput);
+        if (!validation.success) {
+            return ERRORS.VALIDATION(validation.error.issues[0].message);
+        }
 
-    const validation = AttributeSchema.safeParse(rawInput);
-    if (!validation.success) {
-        return { success: false, error: validation.error.issues[0].message };
-    }
+        const { value, categoryId } = validation.data;
+        let { name } = validation.data;
+        const { meta } = validation.data;
 
-    const { value, categoryId } = validation.data;
-    let { name } = validation.data;
-    const { meta } = validation.data;
-
-    try {
         const [oldAttr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id)).limit(1);
-        if (!oldAttr) return { success: false, error: "Атрибут не найден" };
+        if (!oldAttr) return ERRORS.NOT_FOUND("Атрибут");
 
         // Capitalize if it's a country
         if (oldAttr.type.toLowerCase() === "country") {
@@ -208,16 +182,11 @@ export async function updateInventoryAttribute(
         invalidateCache("warehouse:attributes");
         refreshWarehouse();
 
-        return { success: true, data: attribute };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "updateInventoryAttribute",
-            details: { id, name, value, meta }
-        });
-        return { success: false, error: "Не удалось обновить атрибут" };
-    }
+        return ok(attribute);
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "updateInventoryAttribute" 
+    });
 }
 
 /**
@@ -226,17 +195,12 @@ export async function updateInventoryAttribute(
 export async function deleteInventoryAttribute(id: string): Promise<ActionResult> {
     const idValidation = z.string().uuid().safeParse(id);
     if (!idValidation.success) {
-        return { success: false, error: "Некорректный ID атрибута" };
+        return ERRORS.VALIDATION("Некорректный ID атрибута");
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-
-    try {
+    return withAuth(async (session) => {
         const [attr] = await db.select().from(inventoryAttributes).where(eq(inventoryAttributes.id, id)).limit(1);
-        if (!attr) return { success: false, error: "Атрибут не найден" };
+        if (!attr) return ERRORS.NOT_FOUND("Атрибут");
 
         const typeToColumn: Record<string, AnyPgColumn> = {
             'color': inventoryItems.attributeCode,
@@ -256,7 +220,7 @@ export async function deleteInventoryAttribute(id: string): Promise<ActionResult
                 .limit(1);
 
             if (usage) {
-                return { success: false, error: "Этот атрибут используется в товарах и не может быть удален" };
+                return ERRORS.VALIDATION("Этот атрибут используется в товарах и не может быть удален");
             }
         }
 
@@ -272,14 +236,9 @@ export async function deleteInventoryAttribute(id: string): Promise<ActionResult
         invalidateCache("warehouse:attributes");
         refreshWarehouse();
 
-        return { success: true };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/attribute.actions",
-            method: "deleteInventoryAttribute",
-            details: { id }
-        });
-        return { success: false, error: "Не удалось удалить атрибут" };
-    }
+        return okVoid();
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "deleteInventoryAttribute" 
+    });
 }

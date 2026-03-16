@@ -10,10 +10,9 @@ import {
     inventoryCategories,
 } from "@/lib/schema";
 import { logAction } from "@/lib/audit";
-import { logError } from "@/lib/error-logger";
-import { getSession } from "@/lib/session";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { refreshWarehouse } from "../../warehouse-shared.actions";
-import { type ActionResult } from "@/lib/types";
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
 import { generateItemName, generateItemSku } from "../libs/sku-generator";
 
 const regenerateSchema = z.object({
@@ -27,15 +26,10 @@ const regenerateSchema = z.object({
 export async function regenerateAllItemSKUs(input?: z.infer<typeof regenerateSchema>): Promise<ActionResult<{ updatedCount: number; totalItems: number }>> {
     const validated = regenerateSchema.safeParse(input || {});
     if (!validated.success) {
-        return { success: false, error: "Неверные параметры запроса" };
+        return ERRORS.VALIDATION("Неверные параметры запроса");
     }
 
-    const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) {
-        return { success: false, error: "Недостаточно прав" };
-    }
-
-    try {
+    return withAuth(async () => {
         const items = await db.select().from(inventoryItems).limit(10000);
         const allAttributes = await db.select().from(inventoryAttributes).limit(10000);
         const allCategories = await db.select().from(inventoryCategories).limit(1000);
@@ -80,13 +74,9 @@ export async function regenerateAllItemSKUs(input?: z.infer<typeof regenerateSch
         );
 
         refreshWarehouse();
-        return { success: true, data: { updatedCount, totalItems: items?.length } };
-    } catch (error) {
-        await logError({
-            error,
-            path: "/dashboard/warehouse/attributes/actions/maintenance.actions",
-            method: "regenerateAllItemSKUs"
-        });
-        return { success: false, error: "Не удалось обновить данные" };
-    }
+        return ok({ updatedCount, totalItems: items?.length });
+    }, { 
+        roles: ROLE_GROUPS.ADMINS,
+        errorPath: "regenerateAllItemSKUs" 
+    });
 }

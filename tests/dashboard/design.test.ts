@@ -21,7 +21,8 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { getSession, type Session as _Session } from '@/lib/auth';
+import { getSession } from '@/lib/session';
+import { type Session as _Session } from '@/lib/auth';;
 import {
     getDesignStats,
     getDesignOrders,

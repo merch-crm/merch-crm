@@ -1,10 +1,12 @@
 "use server";
 
+import { okVoid } from "@/lib/types";
+
 import { db } from"@/lib/db";
 import * as schema from"@/lib/schema";
 import { revalidatePath } from"next/cache";
 import { eq, inArray } from"drizzle-orm";
-import { getSession } from"@/lib/auth";
+import { getSession } from "@/lib/session";
 import { logAction } from"@/lib/audit";
 import { logError } from"@/lib/error-logger";
 import { BulkOrdersSchema, UpdateOrderPrioritySchema } from"../validation";
@@ -29,7 +31,7 @@ export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (type
             }
         }
         revalidatePath("/dashboard/orders");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path:"/dashboard/orders/bulk", method:"bulkUpdateOrderStatus" });
         return { success: false, error:"Ошибка" };
@@ -52,7 +54,7 @@ export async function bulkUpdateOrderPriority(orderIds: string[], newPriority: s
             }
         });
         revalidatePath("/dashboard/orders");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path:"/dashboard/orders/bulk", method:"bulkUpdateOrderPriority" });
         return { success: false, error:"Ошибка" };
@@ -64,7 +66,10 @@ export async function bulkArchiveOrders(orderIds: string[], archive: boolean = t
     if (!session) return { success: false, error:"Не авторизован" };
 
     try {
-        const user = await db.query.users.findFirst({ where: eq(users.id, session.id), with: { role: true, department: true } });
+        const user = await db.query.users.findFirst({ 
+            where: eq(users.id, session.id), 
+            with: { role: true, department: true } 
+        });
         const canArchive = user?.role?.name ==="Администратор" || user?.department?.name ==="Руководство" || user?.department?.name ==="Отдел продаж";
         if (!canArchive) return { success: false, error:"Недостаточно прав" };
 
@@ -75,7 +80,7 @@ export async function bulkArchiveOrders(orderIds: string[], archive: boolean = t
             }
         });
         revalidatePath("/dashboard/orders");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path:"/dashboard/orders/bulk", method:"bulkArchiveOrders" });
         return { success: false, error:"Ошибка" };
@@ -87,7 +92,10 @@ export async function bulkDeleteOrders(orderIds: string[]): Promise<ActionResult
     if (!session) return { success: false, error:"Не авторизован" };
 
     try {
-        const user = await db.query.users.findFirst({ where: eq(users.id, session.id), with: { role: true, department: true } });
+        const user = await db.query.users.findFirst({ 
+            where: eq(users.id, session.id), 
+            with: { role: true, department: true } 
+        });
         if (user?.role?.name !=="Администратор" && user?.department?.name !=="Руководство") return { success: false, error:"Недостаточно прав" };
 
         await db.transaction(async (tx) => {
@@ -101,7 +109,7 @@ export async function bulkDeleteOrders(orderIds: string[]): Promise<ActionResult
             await tx.delete(orders).where(inArray(orders.id, orderIds));
         });
         revalidatePath("/dashboard/orders");
-        return { success: true };
+        return okVoid();
     } catch (error) {
         await logError({ error, path:"/dashboard/orders/bulk", method:"bulkDeleteOrders" });
         return { success: false, error:"Ошибка" };

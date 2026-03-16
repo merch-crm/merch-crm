@@ -3,19 +3,16 @@
 import { db } from "@/lib/db";
 import { clients, loyaltyLevels, funnelStages, funnelStageLabels, funnelStageColors } from "@/lib/schema";
 import { eq, sql, and, count, isNull, isNotNull } from "drizzle-orm";
-import { logError } from "@/lib/error-logger";
+import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
+import { type ActionResult, ok } from "@/lib/types";
 import { rfmSegmentLabels, rfmSegmentColors } from "../rfm.types";
 import { FunnelAnalyticsData, RevenueBySegmentData, LoyaltyDistributionData, RFMDistributionData } from "./types";
 
 /**
  * Получить статистику по воронке продаж
  */
-export async function getFunnelAnalytics(): Promise<{
-    success: boolean;
-    data?: FunnelAnalyticsData[];
-    error?: string;
-}> {
-    try {
+export async function getFunnelAnalytics(): Promise<ActionResult<FunnelAnalyticsData[]>> {
+    return withAuth(async () => {
         const stagesData = await db
             .select({
                 stage: clients.funnelStage,
@@ -46,22 +43,18 @@ export async function getFunnelAnalytics(): Promise<{
             };
         });
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getFunnelAnalytics" });
-        return { success: false, error: "Не удалось загрузить данные воронки" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getFunnelAnalytics" 
+    });
 }
 
 /**
  * Получить выручку по RFM-сегментам
  */
-export async function getRevenueByRFMSegment(): Promise<{
-    success: boolean;
-    data?: RevenueBySegmentData[];
-    error?: string;
-}> {
-    try {
+export async function getRevenueByRFMSegment(): Promise<ActionResult<RevenueBySegmentData[]>> {
+    return withAuth(async () => {
         const segmentData = await db
             .select({
                 segment: clients.rfmSegment,
@@ -87,22 +80,18 @@ export async function getRevenueByRFMSegment(): Promise<{
             }))
             .sort((a, b) => b.revenue - a.revenue);
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getRevenueByRFMSegment" });
-        return { success: false, error: "Не удалось загрузить данные по сегментам" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getRevenueByRFMSegment" 
+    });
 }
 
 /**
  * Получить распределение по уровням лояльности
  */
-export async function getLoyaltyDistribution(): Promise<{
-    success: boolean;
-    data?: LoyaltyDistributionData[];
-    error?: string;
-}> {
-    try {
+export async function getLoyaltyDistribution(): Promise<ActionResult<LoyaltyDistributionData[]>> {
+    return withAuth(async () => {
         const loyaltyDataResult = await db
             .select({
                 levelId: loyaltyLevels.id,
@@ -131,22 +120,18 @@ export async function getLoyaltyDistribution(): Promise<{
             totalRevenue: Number(row.totalRevenue),
         }));
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getLoyaltyDistribution" });
-        return { success: false, error: "Не удалось загрузить распределение лояльности" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getLoyaltyDistribution" 
+    });
 }
 
 /**
  * Получить распределение по RFM-сегментам
  */
-export async function getRFMDistribution(): Promise<{
-    success: boolean;
-    data?: RFMDistributionData[];
-    error?: string;
-}> {
-    try {
+export async function getRFMDistribution(): Promise<ActionResult<RFMDistributionData[]>> {
+    return withAuth(async () => {
         const rfmData = await db
             .select({
                 segment: clients.rfmSegment,
@@ -170,9 +155,9 @@ export async function getRFMDistribution(): Promise<{
             }))
             .sort((a, b) => b.count - a.count);
 
-        return { success: true, data: result };
-    } catch (error) {
-        await logError({ error, path: "/dashboard/clients/actions", method: "getRFMDistribution" });
-        return { success: false, error: "Не удалось загрузить RFM-распределение" };
-    }
+        return ok(result);
+    }, { 
+        roles: ROLE_GROUPS.CAN_VIEW_ANALYTICS,
+        errorPath: "getRFMDistribution" 
+    });
 }

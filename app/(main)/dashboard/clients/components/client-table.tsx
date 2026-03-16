@@ -159,7 +159,7 @@ export const ClientTable = memo(function ClientTable({
 
     return (
         <div className="crm-card !p-0 border-none overflow-hidden shadow-sm">
-            <ResponsiveDataView
+            <ResponsiveDataView<ClientSummary>
                 data={clients}
                 mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                 desktopClassName="hidden md:block"
@@ -283,7 +283,7 @@ export const ClientTable = memo(function ClientTable({
                                                         toast("Этап обновлён", "success");
                                                         router.refresh();
                                                     } else {
-                                                        toast((result as { success: false; error?: string }).error || "Ошибка", "error");
+                                                        toast(result.error || "Ошибка", "error");
                                                     }
                                                 }}
                                             />
@@ -297,7 +297,7 @@ export const ClientTable = memo(function ClientTable({
                                                         toast("Уровень обновлён", "success");
                                                         router.refresh();
                                                     } else {
-                                                        toast((result as { success: false; error?: string }).error || "Ошибка", "error");
+                                                        toast(result.error || "Ошибка", "error");
                                                     }
                                                 }}
                                                 isManual={client.loyaltyLevelSetManually}
