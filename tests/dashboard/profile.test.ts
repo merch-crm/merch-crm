@@ -69,7 +69,7 @@ vi.mock('@/lib/db', () => ({
     },
 }));
 
-import { type Session as _Session, auth } from "@/lib/auth";
+import { type Session as Session, auth } from "@/lib/auth";
 import type { Session } from "@/lib/session";
 import type { Session } from "@/lib/session";
 import {
@@ -189,7 +189,7 @@ describe('updatePassword', () => {
     });
 
     it('обновляет пароль при верных данных', async () => {
-        mockGetSession.mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as _Session);
+        mockGetSession.mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as Session);
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } }));
         mockChangePassword.mockResolvedValueOnce({ 
             token: 'test-token', 

@@ -57,7 +57,7 @@ describe('Analytics Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
-        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
     });
 
     describe('Overview Analytics', () => {

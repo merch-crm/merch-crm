@@ -149,7 +149,7 @@ import { getNotificationSettingsAction } from '@/app/(main)/admin-panel/actions/
 
 function setupMocks() {
     vi.clearAllMocks();
-    mockGetSession.mockResolvedValue(mockSession({ roleName: 'Администратор' }) as _Session);
+    mockGetSession.mockResolvedValue(mockSession({ roleName: 'Администратор' }) as Session);
     const mockAdmin = { id: 'admin-id', role: { name: 'Администратор' } };
     vi.mocked(requireAdmin).mockResolvedValue(mockAdmin as unknown as { id: string; role: { name: string } } as never);
     mockQuery.users.findFirst.mockResolvedValue(createMockUser({ 

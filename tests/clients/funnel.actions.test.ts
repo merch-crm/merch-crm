@@ -52,7 +52,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Funnel Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
         
         // Mock users.findFirst for withAuth
         (mockDb.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({

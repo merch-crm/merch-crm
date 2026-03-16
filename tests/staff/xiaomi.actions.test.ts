@@ -63,7 +63,7 @@ describe('Xiaomi Actions', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
         vi.mocked(requireAdmin).mockResolvedValue(undefined as never);
         chainable.then.mockImplementation((cb: (args: unknown[]) => void) => cb([]));
         global.fetch = vi.fn();

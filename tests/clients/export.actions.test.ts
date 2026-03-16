@@ -46,7 +46,7 @@ import { mockSession } from '../helpers/mocks';
 describe('Export Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
         chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
     });
 

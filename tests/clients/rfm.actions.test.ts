@@ -51,7 +51,7 @@ import { mockSession } from '../helpers/mocks';
 describe('RFM Actions', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as _Session);
+        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
 
         // Mock users.findFirst for withAuth (role check)
         // Note: queryMock is hoisted, so we can access it
