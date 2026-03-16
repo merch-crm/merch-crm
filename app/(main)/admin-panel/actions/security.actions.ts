@@ -87,7 +87,7 @@ export async function impersonateUser(userId: string): Promise<ActionResult<void
         if (!targetUser) return ERRORS.NOT_FOUND("Пользователь");
 
         const defaultHeaders = await headers();
-        await auth.api.impersonateUser({
+        await (auth as any).api.impersonateUser({
             headers: defaultHeaders,
             body: { userId }
         });
@@ -109,7 +109,7 @@ export async function impersonateUser(userId: string): Promise<ActionResult<void
 export async function stopImpersonating(): Promise<ActionResult<void>> {
     return withAuth(async (session) => {
         const defaultHeaders = await headers();
-        await auth.api.stopImpersonating({
+        await (auth as any).api.stopImpersonating({
             headers: defaultHeaders,
         });
 

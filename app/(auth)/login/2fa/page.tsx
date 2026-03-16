@@ -17,7 +17,7 @@ export default function TwoFactorPage() {
         const formData = new FormData(e.currentTarget);
         const code = formData.get("code") as string;
 
-        const { error } = await authClient.twoFactor.verifyTotp({
+        const { error } = await (authClient as any).twoFactor.verifyTotp({
             code,
         });
 

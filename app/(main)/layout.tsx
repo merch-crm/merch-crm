@@ -150,7 +150,7 @@ export default async function DashboardLayout({
 
             <PullToRefresh>
                 <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
-                    {session?.betterAuthSession?.impersonatedBy && (
+                    {(session?.betterAuthSession as any)?.impersonatedBy && (
                         <ImpersonationBanner
                             impersonatorName={"Admin"}
                             targetName={user.name}

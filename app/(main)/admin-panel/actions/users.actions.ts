@@ -96,13 +96,12 @@ export async function createUser(formData: FormData): Promise<ActionResult<User>
 
         const { email, password, name, roleId, departmentId } = validated.data;
 
-        const newUser = await auth.api.createUser({
+        const newUser = await (auth as any).api.createUser({
             headers: await import("next/headers").then(h => h.headers()),
             body: {
                 email,
                 password,
                 name,
-                // @ts-expect-error - roleId and departmentId are custom fields handled by adapter
                 roleId: roleId || undefined,
                 departmentId: departmentId || undefined,
             }

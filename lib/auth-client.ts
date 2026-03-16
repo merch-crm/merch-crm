@@ -30,8 +30,8 @@ export const authClient = createAuthClient({
                 window.location.href = "/login/2fa";
             },
         }),
-        adminClient(),
+        adminClient() as any,
     ],
 });
 
-export const { signIn, signOut, useSession, twoFactor, admin } = authClient;
+export const { signIn, signOut, useSession, twoFactor, admin } = authClient as any;

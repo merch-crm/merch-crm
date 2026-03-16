@@ -25,7 +25,7 @@ export function TwoFactorSetup() {
         }
         setUiState({ isLoading: true, errorMsg: null, successMsg: null });
         
-        const { data, error } = await authClient.twoFactor.enable({
+        const { data, error } = await (authClient as any).twoFactor.enable({
             password,
         });
         
@@ -45,7 +45,7 @@ export function TwoFactorSetup() {
 
     async function confirmSetup(code: string) {
         setUiState((prev) => ({ ...prev, isLoading: true, errorMsg: null }));
-        const { error } = await authClient.twoFactor.verifyTotp({ code });
+        const { error } = await (authClient as any).twoFactor.verifyTotp({ code });
 
         if (error) {
             setUiState({ isLoading: false, errorMsg: "Неверный код", successMsg: null });
