@@ -9,6 +9,8 @@ const envSchema = z.object({
     RESEND_API_KEY: z.string().optional(),
     FROM_EMAIL: z.string().email().default("noreply@merch-crm.ru"),
     BETTER_AUTH_URL: z.string().url().optional(),
+    BETTER_AUTH_SECRET: z.string().min(16).optional(),
+    PRESENCE_SERVICE_API_KEY: z.string().min(16).optional(),
 
     // S3
     S3_ACCESS_KEY: z.string().optional(),
@@ -24,6 +26,16 @@ const envSchema = z.object({
 // Opaque aliasing for CI build-time validation:
 if (process.env.SKIP_ENV_VALIDATION === "true" && process.env.NX_PLD_VLD_01 && !process.env.JWT_SECRET_KEY) {
     process.env.JWT_SECRET_KEY = process.env.NX_PLD_VLD_01;
+}
+
+// Алиасы для удобства из .env.example
+if (process.env.RESEND_FROM_EMAIL && !process.env.FROM_EMAIL) {
+    process.env.FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
+}
+if (process.env.BETTER_AUTH_SECRET && !process.env.JWT_SECRET_KEY) {
+    process.env.JWT_SECRET_KEY = process.env.BETTER_AUTH_SECRET;
+} else if (process.env.JWT_SECRET_KEY && !process.env.BETTER_AUTH_SECRET) {
+    process.env.BETTER_AUTH_SECRET = process.env.JWT_SECRET_KEY;
 }
 
 const result = envSchema.safeParse(process.env);

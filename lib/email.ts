@@ -1,10 +1,11 @@
+import { env } from "@/lib/env";
 import { Resend } from "resend";
 
 // Инициализируем клиент лениво, чтобы не падать при импорте если нет ключа (например, в CI)
 let resendInstance: Resend | null = null;
 function getResend() {
     if (!resendInstance) {
-        resendInstance = new Resend(process.env.RESEND_API_KEY || "re_123");
+        resendInstance = new Resend(env.RESEND_API_KEY || "re_123");
     }
     return resendInstance;
 }
@@ -17,7 +18,7 @@ export interface SendEmailParams {
 }
 
 export async function sendEmail({ to, subject, html, text }: SendEmailParams): Promise<void> {
-    const from = process.env.FROM_EMAIL ?? "noreply@merch-crm.ru";
+    const from = env.FROM_EMAIL;
 
     const resend = getResend();
     const { error } = await resend.emails.send({
@@ -29,7 +30,7 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams): P
     });
 
     if (error) {
-        // Логируем ошибку, но не бросаем исключение чтобы не блокировать UX
+        // Логируем ошибку и пробрасываем исключение
         console.error("[Email] Ошибка отправки письма:", {
             to,
             subject,

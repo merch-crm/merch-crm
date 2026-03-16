@@ -3,15 +3,16 @@ import { db } from '@/lib/db'
 import { presenceLogs, employeeFaces, cameras, workstations } from '@/lib/schema'
 import { eq, sql } from 'drizzle-orm'
 import { logError } from '@/lib/error-logger'
+import { env } from "@/lib/env"
 
 // Секретный ключ для Python-сервиса
-const SERVICE_API_KEY = process.env.PRESENCE_SERVICE_API_KEY || 'presence-secret-key'
+const SERVICE_API_KEY = env.PRESENCE_SERVICE_API_KEY
 
 export async function POST(request: NextRequest) {
     try {
         // Проверка API ключа
         const authHeader = request.headers.get('Authorization')
-        if (!authHeader || authHeader !== `Bearer ${SERVICE_API_KEY}`) {
+        if (!SERVICE_API_KEY || !authHeader || authHeader !== `Bearer ${SERVICE_API_KEY}`) {
             return NextResponse.json(
                 { success: false, error: 'Unauthorized' },
                 { status: 401 }

@@ -8,7 +8,9 @@ dotenv.config({ path: path.resolve(__dirname, '.env.local') })
 
 // Fallback values for env validation in lib/env.ts
 process.env.DATABASE_URL = process.env.DATABASE_URL || 'postgresql://user:pass@localhost:5432/db';
-process.env.JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'test-secret-key-at-least-10-chars';
+process.env.JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || 'test-secret-key-at-least-16-chars-long';
+process.env.BETTER_AUTH_SECRET = process.env.BETTER_AUTH_SECRET || 'test-secret-key-at-least-16-chars-long';
+process.env.PRESENCE_SERVICE_API_KEY = process.env.PRESENCE_SERVICE_API_KEY || 'test-presence-key-at-least-16-chars';
 
 // Mock matchMedia - must be at top level or early beforeAll
 Object.defineProperty(window, 'matchMedia', {

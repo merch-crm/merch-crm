@@ -15,14 +15,21 @@ export const pool = globalForDb.pool || new Pool({
     connectionString: connectionString,
     // Standard SSL config. Reg.ru typically uses valid certificates.
     // If they use self-signed, user can add sslmode=no-verify to the connection string.
-    ssl: (
-        connectionString && (
+    ssl: (function() {
+        const isLocalConnection = connectionString && (
             connectionString.includes('localhost') ||
             connectionString.includes('127.0.0.1') ||
             connectionString.includes('@db') ||
             connectionString.includes('sslmode=disable')
-        )
-    ) || process.env.DB_SSL === 'false' ? false : { rejectUnauthorized: false },
+        );
+        const forceDisableSsl = process.env.DB_SSL === 'false';
+
+        if (isLocalConnection || forceDisableSsl) {
+            return false;
+        }
+        
+        return { rejectUnauthorized: false };
+    })(),
     max: process.env.DB_POOL_MAX ? parseInt(process.env.DB_POOL_MAX) : 10, // Оптимизировано для баланса serverless/standalone
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 10000,
