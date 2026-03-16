@@ -50,7 +50,6 @@ vi.mock('@/app/(main)/dashboard/warehouse/actions-utils', () => ({
 }));
 
 import { getSession } from '@/lib/session';
-import { type Session as _Session } from "@/lib/auth";
 import type { Session } from "@/lib/session";
 import type { Session } from "@/lib/session";;
 import {

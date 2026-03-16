@@ -123,7 +123,6 @@ vi.mock('@/lib/admin', () => ({
 
 // ─── Imports ──────────────────────────────────────────────────────────────────
 
-import { type Session as _Session } from "@/lib/auth";
 import type { Session } from "@/lib/session";
 import type { Session } from "@/lib/session";
 import { getSession } from "@/lib/session";

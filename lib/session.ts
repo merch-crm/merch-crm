@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth, type User, type BetterAuthSession } from "@/lib/auth";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema/users";
@@ -15,8 +15,8 @@ export interface Session {
     departmentName: string;
     ua: string;
     expires: Date;
-    betterAuthUser: any;
-    betterAuthSession: any;
+    betterAuthUser: User;
+    betterAuthSession: BetterAuthSession;
 }
 
 export async function getSession() {

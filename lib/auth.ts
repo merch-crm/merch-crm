@@ -164,10 +164,9 @@ export const auth = betterAuth({
 });
 
 // ── Типы для проекта ─────────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type BetterAuthSession = any;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type User = any;
+// ── Типы для проекта ─────────────────────────────────
+export type User = (typeof auth.$Infer.Session)["user"];
+export type BetterAuthSession = (typeof auth.$Infer.Session)["session"];
 
 /**
  * Cookie-опции для сессионной куки — единый источник истины.
