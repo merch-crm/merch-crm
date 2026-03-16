@@ -150,7 +150,7 @@ export default async function DashboardLayout({
 
             <PullToRefresh>
                 <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {(session?.betterAuthSession as any)?.impersonatedBy && (
                         <ImpersonationBanner
                             impersonatorName={"Admin"}
