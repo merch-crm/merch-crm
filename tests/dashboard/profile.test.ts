@@ -1,4 +1,4 @@
-import { getSession, type Session } from "@/lib/session";
+import { type Session } from "@/lib/session";
 import { auth } from "@/lib/auth";
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { db } from '@/lib/db';

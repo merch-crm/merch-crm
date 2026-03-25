@@ -6,7 +6,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 // @ts-nocheck
 import { db } from "@/lib/db";
 import { orders, clients, orderItems, users, roles, departments } from "@/lib/schema";
-import { getOrders, getOrderById } from "@/lib/services/orders/queries";
+import { getOrders } from "@/lib/services/orders/queries";
 import { createOrder, updateOrderStatus } from "@/lib/services/orders/mutations";
 import { eq } from "drizzle-orm";
 
@@ -31,7 +31,6 @@ describe("Orders Service", () => {
       .values({
         name: "Тест Юзер",
         email: "test@test.com",
-        passwordHash: "hash",
         roleId: role.id,
         departmentId: dept.id,
       })
@@ -134,10 +133,9 @@ describe("Orders Service", () => {
           { description: "Футболка", quantity: 10, price: "500" },
           { description: "Кружка", quantity: 5, price: "300" },
         ],
-        createdBy: testUserId,
       });
 
-      expect(result.success).toBe(true);
+      if (!result.success) throw new Error(result.error);
       expect(result.data?.orderNumber).toMatch(/^ORD-\d{2}-\d{4}$/);
 
       // Проверяем что позиции созданы
@@ -156,9 +154,9 @@ describe("Orders Service", () => {
           { description: "Товар 1", quantity: 10, price: "100" }, // 1000
           { description: "Товар 2", quantity: 5, price: "200" },  // 1000
         ],
-        createdBy: testUserId,
       });
 
+      if (!result.success) throw new Error(result.error);
       expect(result.data?.totalAmount).toBe("2000.00");
     });
   });
@@ -178,7 +176,6 @@ describe("Orders Service", () => {
       const result = await updateOrderStatus({
         orderId: order.id,
         status: "production",
-        userId: testUserId,
       });
 
       expect(result.success).toBe(true);

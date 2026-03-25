@@ -71,6 +71,8 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<GetOrders
         columns: {
           id: true,
           name: true,
+          firstName: true,
+          lastName: true,
           phone: true,
           clientType: true,
           company: true,

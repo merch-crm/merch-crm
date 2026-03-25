@@ -70,6 +70,8 @@ export interface OrderWithRelations extends Order {
   client: {
     id: string;
     name: string | null;
+    firstName: string;
+    lastName: string;
     phone: string;
     clientType: "b2b" | "b2c";
     company: string | null;
