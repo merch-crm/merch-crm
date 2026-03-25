@@ -4,7 +4,7 @@
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 import { db } from "@/lib/db";
-import { orders, clients, orderItems, users, roles, departments } from "@/lib/schema";
+import { orders, clients, orderItems, users, roles, departments, auditLogs, inventoryItems } from "@/lib/schema";
 import { getOrders } from "@/lib/services/orders/queries";
 import { createOrder, updateOrderStatus } from "@/lib/services/orders/mutations";
 import { eq } from "drizzle-orm";
@@ -63,7 +63,8 @@ describe("Orders Service", () => {
   });
 
   afterAll(async () => {
-    // Очищаем тестовые данные
+    // Очищаем тестовые данные в правильном порядке
+    await db.delete(auditLogs);
     await db.delete(orderItems);
     await db.delete(orders);
     await db.delete(clients).where(eq(clients.id, testClientId));

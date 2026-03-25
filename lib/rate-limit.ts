@@ -74,13 +74,15 @@ export function getClientIP(req: { headers?: Headers | Record<string, string | s
     const headers = req?.headers;
     if (!headers) return "unknown";
 
-    // Helper to extract header value regardless of type (Headers object or plan object)
+    // Helper to extract header value regardless of type (Headers object or plain object)
     const getHeader = (name: string): string | null => {
-        if (headers instanceof Headers) {
-            return headers.get(name);
+        if (typeof (headers as any).get === "function") {
+            const val = (headers as any).get(name);
+            return typeof val === "string" ? val : null;
         }
+        
         // Handle Record<string, string | string[] | undefined>
-        const value = (headers as Record<string, unknown>)[name];
+        const value = (headers as Record<string, unknown>)[name] || (headers as Record<string, unknown>)[name.toLowerCase()];
         if (Array.isArray(value)) return value[0] as string;
         return value ? String(value) : null;
     };
