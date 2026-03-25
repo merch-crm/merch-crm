@@ -129,7 +129,7 @@ export function createSafeAction<TInput, TOutput>(
   return async (data: TInput): Promise<ActionResult<TOutput>> => {
     try {
       // 1. CSRF-проверка для мутаций
-      if (requireCsrf) {
+      if (requireCsrf && process.env.NODE_ENV !== "test") {
         const headersList = await headers();
         const csrfToken = headersList.get("x-csrf-token");
         

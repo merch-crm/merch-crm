@@ -45,7 +45,12 @@ export function queueClientStatsUpdate(clientId: string) {
 
   // Используем after() если доступен, иначе setImmediate
   if (typeof after === "function") {
-    after(() => executeWithRetry());
+    try {
+      after(() => executeWithRetry());
+    } catch {
+      // Fallback if after is called outside a request scope (e.g. in tests)
+      setImmediate(() => executeWithRetry());
+    }
   } else {
     setImmediate(() => executeWithRetry());
   }
@@ -53,10 +58,6 @@ export function queueClientStatsUpdate(clientId: string) {
 
 /**
  * Универсальная функция для добавления задачи в очередь
- * 
- * @param taskName - Название задачи для логов
- * @param task - Асинхронная функция-задача
- * @param options - Опции выполнения
  */
 export function queueTask(
   taskName: string,
@@ -79,7 +80,11 @@ export function queueTask(
   };
 
   if (typeof after === "function") {
-    after(() => executeWithRetry());
+    try {
+      after(() => executeWithRetry());
+    } catch {
+      setImmediate(() => executeWithRetry());
+    }
   } else {
     setImmediate(() => executeWithRetry());
   }
