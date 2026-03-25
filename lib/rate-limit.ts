@@ -24,32 +24,43 @@ export async function rateLimit(
   limit: number,
   windowSeconds: number
 ): Promise<RateLimitResult> {
+  // Check for bypass in dev/test
+  if (process.env.DISABLE_RATE_LIMIT === "true") {
+      return { success: true, limit, remaining: limit, resetIn: windowSeconds };
+  }
+
   const identifier = `ratelimit:${key}`;
   
   try {
-    const pipeline = (redis as unknown as { multi: () => RedisPipeline }).multi();
+    const pipeline = (redis as any).multi();
     pipeline.incr(identifier);
-    pipeline.expire(identifier, windowSeconds);
+    pipeline.ttl(identifier);
     
-    // exec() returns Array of [error, result]
     const results = await pipeline.exec();
     
     if (!results || !results[0]) {
-        return { success: true, limit, remaining: limit, resetIn: windowSeconds };
+        return { success: true, limit, remaining: limit, resetIn: 0 };
     }
 
+    // [[err, val], [err, val]]
     const current = Number(results[0][1] || 0);
+    const ttl = Number(results[1][1] || -1);
     
+    // Set expiration if not already set
+    if (ttl === -1) {
+        await redis.expire(identifier, windowSeconds);
+    }
+
     return {
       success: current <= limit,
       limit,
       remaining: Math.max(0, limit - current),
-      resetIn: windowSeconds,
+      resetIn: ttl > 0 ? ttl : windowSeconds,
     };
   } catch (error) {
     console.error("Rate limit error:", error);
-    // Fail safe - allow request if Redis is down
-    return { success: true, limit, remaining: 1, resetIn: windowSeconds };
+    // Fail safe
+    return { success: true, limit, remaining: limit, resetIn: windowSeconds };
   }
 }
 
@@ -63,16 +74,26 @@ export async function resetRateLimit(key: string): Promise<void> {
 /**
  * Extract client IP from request headers or socket
  */
-export function getClientIP(req: unknown): string {
-    const r = req as { headers?: Record<string, string | string[] | undefined> | { get?: (name: string) => string | null } };
-    const headers = r?.headers;
-    const forwarded = typeof headers?.get === "function" 
-        ? (headers as { get: (name: string) => string | null }).get("x-forwarded-for") 
-        : (headers as Record<string, string | string[] | undefined>)?.[ "x-forwarded-for"];
-    
-    const forwardedStr = Array.isArray(forwarded) ? forwarded[0] : forwarded;
-    if (forwardedStr) return forwardedStr.split(",")[0].trim();
-    return "127.0.0.1";
+export function getClientIP(req: any): string {
+    const headers = req?.headers;
+    if (!headers) return "unknown";
+
+    // Standard way to get headers from Next.js Request or similar
+    const getHeader = (name: string) => {
+        if (typeof headers.get === "function") return headers.get(name);
+        return headers[name];
+    };
+
+    const forwarded = getHeader("x-forwarded-for");
+    if (forwarded) {
+        const ip = Array.isArray(forwarded) ? forwarded[0] : forwarded;
+        return ip.split(",")[0].trim();
+    }
+
+    const realIp = getHeader("x-real-ip");
+    if (realIp) return String(realIp);
+
+    return "unknown";
 }
 
 /**

@@ -21,7 +21,7 @@ const { mockRedis, mockExec, mockMultiInstance } = vi.hoisted(() => {
 })
 
 vi.mock('@/lib/redis', () => ({
-  default: mockRedis,
+  redis: mockRedis,
   CACHE_TTL: { SHORT: 300, MEDIUM: 3600, LONG: 86400 },
 }))
 
