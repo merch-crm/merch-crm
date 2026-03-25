@@ -109,7 +109,7 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<GetOrders
     .where(eq(orders.isArchived, isArchived));
 
   return {
-    orders: result as OrderWithRelations[],
+    orders: (result as unknown) as OrderWithRelations[],
     pagination: {
       page,
       limit,
@@ -203,7 +203,7 @@ export async function getOrderById(orderId: string): Promise<OrderWithRelations 
     },
   });
 
-  return order as OrderWithRelations | null;
+  return (order as unknown) as OrderWithRelations | null;
 }
 
 /**

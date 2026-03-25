@@ -21,91 +21,13 @@ import { OrderService } from "@/lib/services/order.service";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
 import { sendStaffNotifications } from "@/lib/notifications";
 import { redisCache, CACHE_KEYS, CACHE_TTL, INVALIDATION_PATTERNS } from "@/lib/cache";
+import type { OrderWithRelations, GetOrdersResult, GetOrdersParams } from "@/lib/types/orders";
 
 const { orders, clients, inventoryItems } = schema;
 
 // ═══════════════════════════════════════════════════════════
 // Типы
 // ═══════════════════════════════════════════════════════════
-
-export interface OrderWithRelations {
-  id: string;
-  orderNumber: string | null;
-  status: string;
-  priority: string | null;
-  isUrgent: boolean;
-  totalAmount: string | null;
-  paidAmount: string | null;
-  discountAmount: string | null;
-  deadline: Date | null;
-  isArchived: boolean;
-  source: string | null;
-  cancelReason: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  client: {
-    id: string;
-    name: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    phone: string | null;
-    email: string | null;
-    telegram: string | null;
-    instagram: string | null;
-    address: string | null;
-    company: string | null;
-  } | null;
-  items: Array<{
-    id: string;
-    description: string | null;
-    quantity: number;
-    price: string | null;
-    inventoryId: string | null;
-  }>;
-  creator: {
-    id: string;
-    name: string;
-    role: { name: string } | null;
-    avatar: string | null;
-  } | null;
-  attachments?: Array<{
-    id: string;
-    fileName: string | null;
-    fileUrl: string | null;
-    fileSize: number | null;
-    contentType: string | null;
-  }>;
-  payments?: Array<{
-    id: string;
-    amount: string;
-    comment: string | null;
-    isAdvance: boolean;
-    createdAt: Date;
-    method: string;
-  }>;
-  promocode?: {
-    id: string;
-    code: string;
-    discount?: number;
-    type?: string;
-  } | null;
-}
-
-interface GetOrdersResult {
-  orders: OrderWithRelations[];
-  total: number;
-  totalPages: number;
-  currentPage: number;
-}
-
-interface GetOrdersParams {
-  from?: Date;
-  to?: Date;
-  page?: number;
-  limit?: number;
-  showArchived?: boolean;
-  search?: string;
-}
 
 // ═══════════════════════════════════════════════════════════
 // Actions
@@ -162,9 +84,9 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<ActionRes
 
     // Трансформируем данные
     const transformedOrders = (rawOrders || [])
-      .filter(order => order.client)
       .map(order => {
-        const client = order.client!;
+        const client = order.client;
+        if (!client) return null;
         
         let displayName = client.name || '';
         if (!displayName && (client.firstName || client.lastName)) {
@@ -174,21 +96,25 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<ActionRes
 
         const shouldHidePhone = ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleName);
 
-        return {
+        return ({
           ...order,
           client: {
             ...client,
             name: displayName,
             phone: shouldHidePhone ? 'HIDDEN' : client.phone,
           },
-        } as unknown as OrderWithRelations;
-      });
+        } as unknown) as OrderWithRelations;
+      })
+      .filter((o): o is OrderWithRelations => o !== null);
 
     return ok({
       orders: transformedOrders,
-      total,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   }, { 
     errorPath: '/dashboard/orders' 

@@ -76,7 +76,14 @@ export interface OrderWithRelations extends Order {
     clientType: "b2b" | "b2c";
     company: string | null;
   };
-  items: OrderItem[];
+  items: Array<OrderItem & {
+    inventory: {
+      id: string;
+      name: string;
+      sku?: string | null;
+      image?: string | null;
+    } | null;
+  }>;
   creator: {
     id: string;
     name: string;
@@ -117,8 +124,11 @@ export interface GetOrdersParams {
   search?: string;
   dateFrom?: Date;
   dateTo?: Date;
+  from?: Date; // Alias for dateFrom
+  to?: Date;   // Alias for dateTo
   clientId?: string;
   isArchived?: boolean;
+  showArchived?: boolean; // Alias for isArchived
 }
 
 /**
