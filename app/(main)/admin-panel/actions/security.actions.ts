@@ -57,7 +57,7 @@ export async function getAuditLogs(
         });
 
         return ok({
-            logs: logs as AuditLog[],
+            logs: logs as unknown as AuditLog[],
             pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
         });
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getAuditLogs" });
@@ -87,8 +87,7 @@ export async function impersonateUser(userId: string): Promise<ActionResult<void
         if (!targetUser) return ERRORS.NOT_FOUND("Пользователь");
 
         const defaultHeaders = await headers();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (auth as any).api.impersonateUser({
+        await auth.api.impersonateUser({
             headers: defaultHeaders,
             body: { userId }
         });
@@ -110,8 +109,7 @@ export async function impersonateUser(userId: string): Promise<ActionResult<void
 export async function stopImpersonating(): Promise<ActionResult<void>> {
     return withAuth(async (session) => {
         const defaultHeaders = await headers();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (auth as any).api.stopImpersonating({
+        await auth.api.stopImpersonating({
             headers: defaultHeaders,
         });
 
@@ -167,8 +165,8 @@ export async function getMonitoringStats(): Promise<ActionResult<{
                 role: u.role?.name, 
                 lastActiveAt: u.lastActiveAt
             })),
-            activityStats: activityStats.rows as { hour: number; type: string; count: number }[],
-            entityStats: entityStats.rows as { type: string; count: number }[]
+            activityStats: activityStats.rows as unknown as { hour: number; type: string; count: number }[],
+            entityStats: entityStats.rows as unknown as { type: string; count: number }[]
         });
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getMonitoringStats" });
 }
@@ -204,7 +202,7 @@ export async function getSecurityStats(): Promise<ActionResult<{
 
         return ok({
             failedLogins: failedLogins as SecurityEvent[],
-            sensitiveActions: sensitiveActions as AuditLog[],
+            sensitiveActions: sensitiveActions as unknown as AuditLog[],
             systemErrors: errors as SystemError[],
             maintenanceMode: maintenanceSetting?.value === true
         });
@@ -251,8 +249,8 @@ export async function getSecurityEvents(
         const safeEventType = eventType?.slice(0, 100);
 
         const conditions = [];
-        if (safeEventType) conditions.push(eq(securityEvents.eventType, safeEventType as typeof securityEvents.$inferSelect.eventType));
-        if (severity) conditions.push(eq(securityEvents.severity, severity));
+        if (safeEventType) conditions.push(eq(securityEvents.eventType, safeEventType as SecurityEvent["eventType"]));
+        if (severity) conditions.push(eq(securityEvents.severity, severity as SecurityEvent["severity"]));
         if (startDate) conditions.push(gte(securityEvents.createdAt, startDate));
         if (endDate) conditions.push(sql`${securityEvents.createdAt} <= ${endDate}`);
 
@@ -274,7 +272,7 @@ export async function getSecurityEvents(
         });
 
         return ok({
-            events: events as SecurityEvent[],
+            events: events as unknown as SecurityEvent[],
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
         });
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getSecurityEvents" });
@@ -316,7 +314,7 @@ export async function getSecurityEventsSummary(): Promise<ActionResult<{
             limit: 5
         });
 
-        return ok({ summary: totals, recentCritical: recentCritical as SecurityEvent[] });
+        return ok({ summary: totals, recentCritical: recentCritical as unknown as SecurityEvent[] });
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getSecurityEventsSummary" });
 }
 

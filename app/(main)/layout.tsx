@@ -11,7 +11,8 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ActivityTracker } from "@/components/layout/activity-tracker";
 import { getNotifications } from "@/components/notifications/actions";
-import { getBrandingAction } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/lib/branding";
+import { getMaintenanceMode } from "@/lib/system-settings";
 import { BrandingSettings } from "@/lib/types";
 import { NotificationManager } from "@/components/notifications/notification-manager";
 import { CommandMenu } from "@/components/layout/command-menu";
@@ -80,26 +81,13 @@ export default async function DashboardLayout({
     const { notifications, unreadCount } = await getNotifications();
 
     // Fetch branding settings
-    const brandingRes = await getBrandingAction();
-    const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
-        companyName: "",
-        logoUrl: null,
-        primaryColor: "#5d00ff",
-        faviconUrl: null,
-        backgroundColor: "#f2f2f2",
-        crmBackgroundUrl: null,
-        crmBackgroundBlur: 0,
-        crmBackgroundBrightness: 100,
-        currencySymbol: "₽",
-    } as BrandingSettings;
+    const branding = await getBrandingSettings();
 
     // Maintenance Mode Check
     try {
-        const maintenanceSetting = await db.query.systemSettings.findFirst({
-            where: eq(systemSettings.key, "maintenance_mode")
-        });
+        const isMaintenance = await getMaintenanceMode();
 
-        if (maintenanceSetting?.value === true && user.roleName !== "Администратор") {
+        if (isMaintenance && user.roleName !== "Администратор") {
             return (
                 <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
                     <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-[--padding-xl] space-y-3 animate-in zoom-in-95 duration-700">
@@ -150,8 +138,7 @@ export default async function DashboardLayout({
 
             <PullToRefresh>
                 <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    {(session?.betterAuthSession as any)?.impersonatedBy && (
+                    {(session?.betterAuthSession as { impersonatedBy?: string })?.impersonatedBy && (
                         <ImpersonationBanner
                             impersonatorName={"Admin"}
                             targetName={user.name}

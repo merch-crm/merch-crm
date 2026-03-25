@@ -1,5 +1,5 @@
 import { pool } from '@/lib/db';
-import redis from '@/lib/redis';
+import { redis } from '@/lib/redis';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;

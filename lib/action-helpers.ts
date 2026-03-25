@@ -103,3 +103,77 @@ export async function withAuth<T>(
   }
 }
 
+// ═══════════════════════════════════════════════════════════
+// Новые хелперы с CSRF-защитой (Double Submit Cookie)
+// ═══════════════════════════════════════════════════════════
+
+import { z } from "zod";
+import { verifyCsrfToken } from "@/lib/csrf";
+import { headers } from "next/headers";
+
+interface SafeActionOptions {
+  /** Требовать CSRF-токен (по умолчанию true для мутаций) */
+  requireCsrf?: boolean;
+}
+
+/**
+ * Создаёт безопасный Server Action с валидацией и CSRF-защитой
+ */
+export function createSafeAction<TInput, TOutput>(
+  schema: z.ZodSchema<TInput>,
+  action: (validatedData: TInput) => Promise<TOutput>,
+  options: SafeActionOptions = {}
+) {
+  const { requireCsrf = true } = options;
+
+  return async (data: TInput): Promise<ActionResult<TOutput>> => {
+    try {
+      // 1. CSRF-проверка для мутаций
+      if (requireCsrf) {
+        const headersList = await headers();
+        const csrfToken = headersList.get("x-csrf-token");
+        
+        const isValidCsrf = await verifyCsrfToken(csrfToken);
+        if (!isValidCsrf) {
+          return {
+            success: false,
+            error: "Недействительный CSRF-токен. Обновите страницу и попробуйте снова.",
+          };
+        }
+      }
+
+      // 2. Валидация входных данных
+      const validationResult = schema.safeParse(data);
+      if (!validationResult.success) {
+        const errorMessage = validationResult.error.errors
+          .map((e) => e.message)
+          .join(", ");
+        return { success: false, error: errorMessage };
+      }
+
+      // 3. Выполнение действия
+      const result = await action(validationResult.data);
+      return { success: true, data: result };
+
+    } catch (error) {
+      console.error("[SafeAction Error]:", error);
+      
+      if (error instanceof Error) {
+        return { success: false, error: error.message };
+      }
+      
+      return { success: false, error: "Произошла непредвиденная ошибка" };
+    }
+  };
+}
+
+/**
+ * Вариант для запросов (без CSRF, только валидация)
+ */
+export function createSafeQuery<TInput, TOutput>(
+  schema: z.ZodSchema<TInput>,
+  query: (validatedData: TInput) => Promise<TOutput>
+) {
+  return createSafeAction(schema, query, { requireCsrf: false });
+}
+

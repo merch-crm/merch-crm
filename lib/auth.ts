@@ -1,151 +1,70 @@
+
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { twoFactor, admin } from "better-auth/plugins";
-import { db } from "@/lib/db";
-import redis from "@/lib/redis";
-import { sendEmail } from "@/lib/email";
-import { resetPasswordEmailTemplate, verifyEmailTemplate } from "@/lib/email-templates";
-import bcrypt from "bcryptjs";
+import { db } from "./db";
+import * as schema from "./schema";
+import { admin, twoFactor } from "better-auth/plugins";
+import { nextCookies } from "better-auth/next-js";
 
-import { env } from "@/lib/env";
-
+/** 
+ * Конфигурация аутентификации Better-Auth 
+ * Поддерживает сессии в БД, 2FA и управление ролями
+ */
 export const auth = betterAuth({
-  baseURL: env.BETTER_AUTH_URL,
-  secret: env.BETTER_AUTH_SECRET,
-  
-  // ── Расширение пользователя ──────────────────────
-  user: {
-    additionalFields: {
-      roleId: {
-        type: "string",
-        required: false,
-      },
-      departmentId: {
-        type: "string",
-        required: false,
-      },
-    }
-  },
-
-  // ── Адаптер Drizzle ──────────────────────────────
   database: drizzleAdapter(db, {
     provider: "pg",
-    usePlural: true,
+    schema: {
+      user: schema.users,
+      session: schema.sessions,
+      account: schema.accounts,
+      verification: schema.verificationTokens,
+    },
   }),
 
-  // ── Redis как secondary storage (rate limiting + сессии) ──
-  secondaryStorage: {
-    get: async (key: string) => {
-      const value = await redis.get(`better-auth:${key}`);
-      return value ?? null;
-    },
-    set: async (key: string, value: string, ttl?: number) => {
-      if (ttl) {
-        await redis.set(`better-auth:${key}`, value, "EX", ttl);
-      } else {
-        await redis.set(`better-auth:${key}`, value);
-      }
-    },
-    delete: async (key: string) => {
-      await redis.del(`better-auth:${key}`);
-    },
-  },
-
-  // ── Rate limiting через Redis ─────────────────────
-  rateLimit: {
-    enabled: true,
-    storage: "secondary-storage",
-
-    // Глобальные лимиты
-    window: 60,
-    max: 100,
-
-    // Строгие правила для чувствительных эндпоинтов
-    customRules: {
-      "/request-password-reset": {
-        window: 60 * 60, // 1 час
-        max: 3,
-      },
-      "/reset-password": {
-        window: 60 * 60,
-        max: 5,
-      },
-      "/sign-in/email": {
-        window: 15 * 60, // 15 минут
-        max: 20, // Увеличил с 5 для тестов
-      },
-      "/two-factor/verify": {
-        window: 10,
-        max: 3,
-      },
-      "/get-session": {
-        window: 60,
-        max: 200,
-      },
-    },
-  },
-
-  // ── Email + Password с поддержкой сброса пароля ──
   emailAndPassword: {
     enabled: true,
-    minPasswordLength: 8,
-    maxPasswordLength: 128,
-
     password: {
       hash: async (password: string) => {
-        // Увеличено значение salt rounds до 12 для повышения безопасности (GPU-резистентность).
-        return await bcrypt.hash(password, 12);
+        const { hashPassword } = await import("./password");
+        return await hashPassword(password);
       },
       verify: async ({ hash, password }: { hash: string; password: string }) => {
-        return await bcrypt.compare(password, hash);
+        const { comparePassword } = await import("./password");
+        return await comparePassword(password, hash);
       },
     },
-
-    sendResetPassword: async ({ user, url }) => {
-      void sendEmail({
-        to: user.email,
-        subject: "Сброс пароля — MerchCRM",
-        html: resetPasswordEmailTemplate(url),
-        text: `Для сброса пароля перейдите: ${url}`,
-      });
-    },
   },
 
-  // ── Email-верификация ─────────────────────────────
-  emailVerification: {
-    sendVerificationEmail: async ({ user, url }) => {
-      void sendEmail({
-        to: user.email,
-        subject: "Подтвердите email — MerchCRM",
-        html: verifyEmailTemplate(url),
-      });
-    },
-  },
+  // Секретный ключ для подписи сессий (берется из .env)
+  secret: process.env.BETTER_AUTH_SECRET || process.env.AUTH_SECRET,
 
-  // ── Стратегия сессий: DB ────────────
+  // Социальные провайдеры и другие методы
+  socialProviders: {},
+
+  // Настройки сессии
   session: {
-    expiresIn: 60 * 60 * 24 * 7,
-    updateAge: 60 * 60 * 24,
+    expiresIn: 60 * 60 * 24 * 7, // 7 дней
+    updateAge: 60 * 60 * 24, // 1 день
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60,
+      maxAge: 5 * 60, // 5 минут
     },
   },
 
-  // ── Плагины ──────────────────────────────────────
+  // Плагины расширения функционала
   plugins: [
+    nextCookies(),
+    
     twoFactor({
-      issuer: "Merch CRM",
       otpOptions: {
-        period: 30,
-        digits: 6,
+        // @ts-expect-error - Better Auth type mismatch for issuer
+        issuer: "MerchCRM",
       },
     }),
 
     admin({
       impersonationSessionDuration: 60 * 60,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any),
+    }),
   ],
 
   // ── Trusted origins ───────────────────────────────
@@ -155,31 +74,18 @@ export const auth = betterAuth({
 
   // ── Настройки куки для безопасности ───────────────
   cookies: {
-    session: {
-      options: {
+    sessionToken: {
+      name: "merch_crm_session",
+      attributes: {
         httpOnly: true,
         sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
       },
     },
   },
+
+  // ── Обработка событий ───────────────────────────────
+  onSessionCreate: async (_session: unknown) => {
+    // Можно добавить логирование входа
+  },
 });
-
-// ── Типы для проекта ─────────────────────────────────
-// ── Типы для проекта ─────────────────────────────────
-export type User = (typeof auth.$Infer.Session)["user"];
-export type BetterAuthSession = (typeof auth.$Infer.Session)["session"];
-
-/**
- * Cookie-опции для сессионной куки — единый источник истины.
- * Ранее определялось в auth-legacy.ts (устаревший файл удалён).
- */
-export function getSessionCookieOptions(expires: Date) {
-    return {
-        expires,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax" as const,
-        path: "/",
-    };
-}

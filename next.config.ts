@@ -1,49 +1,58 @@
 import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
 
 const nextConfig: NextConfig = {
   transpilePackages: ["jspdf", "jspdf-autotable"],
   devIndicators: {
-    buildActivityPosition: "top-right",
+    position: "top-right",
   },
-
   output: "standalone",
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
   typescript: {
-    // We want the build to fail if there are type errors to ensure stability
     ignoreBuildErrors: false,
   },
   experimental: {
     serverActions: {
-      bodySizeLimit: "500mb", // Increase limit for large print file uploads
+      bodySizeLimit: "10mb",
     },
+    optimizePackageImports: [
+      "lucide-react",
+      "@phosphor-icons/react",
+      "@tabler/icons-react",
+      "react-icons",
+      "date-fns",
+      "recharts",
+      "framer-motion",
+      "@radix-ui/react-icons",
+    ],
   },
   images: {
     localPatterns: [
-      {
-        pathname: "/api/storage/local/**",
-      },
+      { pathname: "/api/storage/local/**" },
     ],
-    // Разрешаем оптимизацию локальных загруженных файлов
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
+      { protocol: 'https', hostname: '**' },
     ],
-
-    // Размеры для responsive изображений
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
-
-    // Размеры для превью и иконок
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512],
-
-    // Форматы (WebP — лучшее сжатие)
     formats: ['image/webp'],
-
-    // Кеширование: 1 год для prod, 1 минута для dev
     minimumCacheTTL: process.env.NODE_ENV === 'production' ? 31536000 : 60,
+  },
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.devtool = "eval";
+      config.cache = {
+        type: "memory",
+        maxMemoryGenerations: 1,
+      };
+    }
+    return config;
   },
   async redirects() {
     return [
@@ -78,4 +87,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withBundleAnalyzer(nextConfig);

@@ -51,7 +51,11 @@ export default async function OrdersPage({
         to = endOfDay(now);
     }
 
-    const ordersRes = await getOrders({ from, to, page, limit: 10, showArchived, search });
+    const [ordersRes, session, statsRes] = await Promise.all([
+        getOrders({ from, to, page, limit: 10, showArchived, search }),
+        getSession(),
+        getOrderStats(from, to)
+    ]);
     
     let allOrders: Order[] = [];
     let total = 0;
@@ -64,7 +68,6 @@ export default async function OrdersPage({
         error = ordersRes.error;
     }
 
-    const session = await getSession();
     const user = session ? await db.query.users.findFirst({
         where: eq(users.id, session.id),
         with: { role: true, department: true }
@@ -76,7 +79,6 @@ export default async function OrdersPage({
         isSystemAdmin ||
         ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
-    const statsRes = await getOrderStats(from, to);
     const stats = statsRes.success && statsRes.data ? statsRes.data : { total: 0, new: 0, inProduction: 0, completed: 0, revenue: 0 };
 
     return (

@@ -3,8 +3,7 @@ import { getSession } from "@/lib/session";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { v4 as uuidv4 } from "uuid";
-import { rateLimit, getClientIP } from "@/lib/rate-limit";
-import { RATE_LIMITS } from "@/lib/rate-limit-config";
+import { rateLimit, getClientIP, RATE_LIMITS } from "@/lib/rate-limit";
 
 function getExtensionFromMagicBytes(buffer: Buffer): string | null {
     if (buffer.length < 12) return null;
@@ -20,10 +19,10 @@ function getExtensionFromMagicBytes(buffer: Buffer): string | null {
 
 export async function POST(req: NextRequest) {
     const ip = getClientIP(req);
-    const rlResult = await rateLimit(`upload:${ip}`, RATE_LIMITS.upload.limit, RATE_LIMITS.upload.windowSec);
+    const rlResult = await rateLimit(`upload:${ip}`, RATE_LIMITS.upload.limit, RATE_LIMITS.upload.window);
 
     if (!rlResult.success) {
-        return NextResponse.json({ success: false, error: RATE_LIMITS.upload.message }, { status: 429 });
+        return NextResponse.json({ success: false, error: "Превышен лимит загрузок" }, { status: 429 });
     }
 
     const session = await getSession();

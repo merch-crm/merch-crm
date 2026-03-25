@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import sharp from "sharp";
+import { Readable } from "stream";
 
 const s3Client = new S3Client({
     endpoint: process.env.S3_ENDPOINT || "https://s3.regru.cloud",
@@ -68,6 +69,42 @@ export async function uploadFile(
     } catch (error) {
         console.error("S3 upload error:", error);
         throw new Error("Failed to upload file to S3");
+    }
+}
+
+/**
+ * Загрузка файла в S3 через поток (Stream)
+ * Поддерживает большие файлы без перегрузки RAM
+ */
+export async function uploadToS3({
+    stream,
+    fileName,
+    mimeType,
+    destination = "uploads",
+}: {
+    stream: Readable | Buffer | Uint8Array;
+    fileName: string;
+    mimeType: string;
+    destination?: string;
+}) {
+    const key = `${destination}/${Date.now()}-${fileName}`;
+
+    const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: key,
+        Body: stream as Buffer | Uint8Array | import("stream").Readable,
+        ContentType: mimeType,
+    });
+
+    try {
+        await s3Client.send(command);
+        return {
+            key,
+            url: `${process.env.S3_ENDPOINT}/${BUCKET_NAME}/${key}`,
+        };
+    } catch (error) {
+        console.error("[S3 Stream Upload Error]:", error);
+        throw new Error("Ошибка загрузки в S3");
     }
 }
 

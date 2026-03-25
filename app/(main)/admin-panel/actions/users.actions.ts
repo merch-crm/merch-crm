@@ -31,7 +31,10 @@ export async function getCurrentUserAction(): Promise<ActionResult<User & {
         });
 
         if (!currentUser) return ERRORS.NOT_FOUND("Пользователь");
-        return ok(currentUser);
+        return ok(currentUser as User & { 
+            role: { id: string; name: string } | null, 
+            department: { id: string; name: string } | null 
+        });
     }, { errorPath: "getCurrentUserAction" });
 }
 
@@ -76,7 +79,7 @@ export async function getUsers(page = 1, limit = 20, search = ""): Promise<Actio
         });
 
         return ok({
-            users: allUsers as unknown as User[],
+            users: allUsers as User[],
             total,
             pagination: {
                 total,
@@ -96,14 +99,15 @@ export async function createUser(formData: FormData): Promise<ActionResult<User>
 
         const { email, password, name, roleId, departmentId } = validated.data;
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const newUser = await (auth as any).api.createUser({
+        const newUser = await auth.api.createUser({
             headers: await import("next/headers").then(h => h.headers()),
             body: {
                 email,
                 password,
                 name,
+                // @ts-expect-error - Custom fields in schema
                 roleId: roleId || undefined,
+
                 departmentId: departmentId || undefined,
             }
         });
@@ -122,7 +126,7 @@ export async function updateUser(userId: string, formData: FormData): Promise<Ac
         const validated = UpdateUserSchema.safeParse(data);
         if (!validated.success) return ERRORS.VALIDATION(validated.error.issues[0].message);
 
-        const updateData: Record<string, unknown> = { ...validated.data };
+        const updateData: Partial<User> = { ...validated.data };
         if (updateData.departmentId === "") updateData.departmentId = null;
 
         const [updatedUser] = await db.update(users)
@@ -137,7 +141,7 @@ export async function updateUser(userId: string, formData: FormData): Promise<Ac
 
         await logAction("Обновление пользователя", "user", userId, updateData);
         revalidatePath("/admin-panel/users");
-        return ok(updatedUser);
+        return ok(updatedUser as User);
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateUser" });
 }
 

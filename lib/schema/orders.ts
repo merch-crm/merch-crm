@@ -12,6 +12,7 @@ import { applicationTypes } from "./production";
 export const orders = pgTable("orders", {
     id: uuid("id").defaultRandom().primaryKey(),
     clientId: uuid("client_id").references(() => clients.id, { onUpdate: 'cascade' }),
+    clientName: text("client_name"),
     status: orderStatusEnum("status").default("new").notNull(),
     totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull().default("0"),
     paidAmount: decimal("paid_amount", { precision: 10, scale: 2 }).default("0"),
@@ -52,6 +53,7 @@ export const orders = pgTable("orders", {
         statusDateIdx: index("orders_status_date_idx").on(table.status, table.createdAt),
         archivedByIdx: index("orders_archived_by_idx").on(table.archivedBy),
         promocodeIdx: index("orders_promocode_idx").on(table.promocodeId),
+        statusArchivedCreatedIdx: index("orders_status_archived_created_idx").on(table.status, table.isArchived, table.createdAt),
     }
 });
 

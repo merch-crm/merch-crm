@@ -1,10 +1,11 @@
 "use server";
 
-import { eq, sql, and, inArray } from"drizzle-orm";
-import * as schema from"@/lib/schema";
-import { NodePgDatabase } from"drizzle-orm/node-postgres";
+import { eq, sql, and, inArray } from "drizzle-orm";
+import * as schema from "@/lib/schema";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { OrderStatus } from "@/lib/types/orders";
 
-const { orders, orderItems, inventoryItems } = schema;
+const { orders, inventoryItems } = schema;
 
 export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
 
@@ -12,12 +13,14 @@ export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<
 export async function releaseReservationsForOrders(orderIds: string[], tx: Transaction) {
     if (orderIds.length === 0) return;
 
-    const reservationStatuses = ["new","design","production"];
+    const reservationStatuses: OrderStatus[] = ["new", "design", "production"];
 
     // Find all orders that have reserved status
     const targetOrders = await tx.query.orders.findMany({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        where: and(inArray(orders.id, orderIds), inArray(orders.status, reservationStatuses as any[])),
+        where: and(
+            inArray(orders.id, orderIds), 
+            inArray(orders.status, reservationStatuses)
+        ),
         limit: 500
     });
 
@@ -27,7 +30,7 @@ export async function releaseReservationsForOrders(orderIds: string[], tx: Trans
 
     // Find all items for these orders
     const items = await tx.query.orderItems.findMany({
-        where: inArray(orderItems.orderId, actualOrderIds),
+        where: inArray(schema.orderItems.orderId, actualOrderIds),
         limit: 1000
     });
 

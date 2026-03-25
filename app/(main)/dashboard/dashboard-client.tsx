@@ -86,8 +86,10 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         </div>
 
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-2">
-                            <p className="text-slate-500 font-medium max-w-sm leading-relaxed text-sm">
-                                Система работает стабильно. У вас <span className="text-primary font-bold">4 новых заказа</span>, которые ожидают внимания.
+                            <p className="text-slate-500 font-medium max-w-sm leading-relaxed text-sm" suppressHydrationWarning>
+                                {`Система работает стабильно. У вас `}
+                                <span className="text-primary font-bold">{statsData.inProduction} новых {getOrdersWord(statsData.inProduction)}</span>
+                                {`, которые ожидают внимания.`}
                             </p>
                             <Link
                                 href="/dashboard/orders"
@@ -163,4 +165,13 @@ export function DashboardClient({ initialStats, period, userName, branding: init
             </div>
         </div>
     );
+}
+
+function getOrdersWord(count: number) {
+    const lastDigit = count % 10;
+    const lastTwoDigits = count % 100;
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return "заказов";
+    if (lastDigit === 1) return "заказ";
+    if (lastDigit >= 2 && lastDigit <= 4) return "заказа";
+    return "заказов";
 }

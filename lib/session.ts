@@ -1,9 +1,11 @@
-import { auth, type User, type BetterAuthSession } from "@/lib/auth";
+import { auth } from "@/lib/auth";
+import type { User, Session as BetterAuthSession } from "better-auth";
 import { headers } from "next/headers";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema/users";
 import { eq } from "drizzle-orm";
-import { getOrSetCache } from "./redis";
+import { redisCache } from "./cache";
+import { cache } from "react";
 
 export interface Session {
     id: string;
@@ -19,7 +21,7 @@ export interface Session {
     betterAuthSession: BetterAuthSession;
 }
 
-export async function getSession() {
+export const getSession = cache(async () => {
   try {
     const result = await auth.api.getSession({
       headers: await headers(),
@@ -34,7 +36,7 @@ export async function getSession() {
 
     // Кэширование данных пользователя для исключения лишних JOIN на каждый запрос
     const cacheKey = `user-profile:${user.id}`;
-    const dbUser = await getOrSetCache(
+    const cacheResult = await redisCache.getOrSet(
         cacheKey,
         async () => {
             return db.query.users.findFirst({
@@ -45,8 +47,9 @@ export async function getSession() {
                 }
             });
         },
-        300 // 5 минут кэша (SHORT)
+        { ttl: 300 }
     );
+    const dbUser = cacheResult.data;
 
     if (!dbUser) return null;
 
@@ -69,4 +72,4 @@ export async function getSession() {
     console.error("[Session] Failed to get session:", error);
     return null;
   }
-}
+});

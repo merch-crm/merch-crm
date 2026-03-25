@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import * as schema from "@/lib/schema";
 import { sql, and, or, ilike, eq, lt, desc, asc, gte, lte, count, type SQL } from "drizzle-orm";
-import { getOrSetCache, CACHE_TTL } from "@/lib/redis";
+import { redisCache, CACHE_TTL } from "@/lib/cache";
 import { ClientFiltersSchema } from "../../validation";
 import { createSafeAction } from "@/lib/safe-action";
 import {
@@ -21,14 +21,15 @@ const { clients, orders, payments, auditLogs } = schema;
 export async function getAcquisitionSources(): Promise<ActionResult<string[]>> {
     const action = createSafeAction({
         handler: async () => {
-            const data = await getOrSetCache("clients:acquisition_sources", async () => {
+            const result = await redisCache.getOrSet("clients:acquisition_sources", async () => {
                 const result = await db.selectDistinct({ source: clients.acquisitionSource })
                     .from(clients)
                     .where(sql`${clients.acquisitionSource} IS NOT NULL AND ${clients.acquisitionSource} != ''`)
                     .orderBy(asc(clients.acquisitionSource))
                     .limit(100);
                 return result.map(r => r.source as string).filter(Boolean);
-            }, CACHE_TTL.MEDIUM);
+            }, { ttl: CACHE_TTL.DICTIONARIES });
+            const data = result.data;
 
             return { success: true, data };
         }
@@ -40,14 +41,15 @@ export async function getAcquisitionSources(): Promise<ActionResult<string[]>> {
 export async function getManagers(): Promise<ActionResult<{ id: string; name: string }[]>> {
     const action = createSafeAction({
         handler: async () => {
-            const data = await getOrSetCache("clients:managers", async () => {
+            const result = await redisCache.getOrSet("clients:managers", async () => {
                 return await db.query.users.findMany({
                     columns: { id: true, name: true },
                     where: (users, { eq }) => eq(users.isSystem, false),
                     orderBy: (users, { asc }) => [asc(users.name)],
                     limit: 100,
                 });
-            }, CACHE_TTL.MEDIUM);
+            }, { ttl: CACHE_TTL.DICTIONARIES });
+            const data = result.data;
             
             return { success: true, data };
         }
@@ -59,12 +61,13 @@ export async function getManagers(): Promise<ActionResult<{ id: string; name: st
 export async function getRegions(): Promise<ActionResult<string[]>> {
     const action = createSafeAction({
         handler: async () => {
-            const data = await getOrSetCache("clients:regions", async () => {
+            const result = await redisCache.getOrSet("clients:regions", async () => {
                 const result = await db.selectDistinct({ city: clients.city }).from(clients)
                     .where(sql`${clients.city} IS NOT NULL AND ${clients.city} != ''`)
                     .orderBy(asc(clients.city)).limit(100);
                 return result.map(r => r.city as string);
-            }, CACHE_TTL.MEDIUM);
+            }, { ttl: CACHE_TTL.DICTIONARIES });
+            const data = result.data;
 
             return { success: true, data };
         }

@@ -1,6 +1,6 @@
 import { getInventoryCategories, getOrphanedItemStats } from"../category-actions";
 import { sortCategories } from"../category-utils";
-import { getSession } from "@/lib/session";
+import { getSession, type Session } from "@/lib/session";
 import { InventoryClient } from"../inventory-client";
 import { Suspense } from"react";
 import { PageContainer } from"@/components/ui/page-container";
@@ -60,7 +60,6 @@ export default async function WarehouseCategoriesPage() {
 }
 
 import { Category } from "../types";
-import type { Session } from "@/lib/session";
 
 async function InventoryListContainer({ session }: { session: Session | null }) {
     const [categoriesResult, orphanedResult] = await Promise.all([

@@ -1,18 +1,21 @@
-import { defineConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig, mergeConfig } from "vitest/config";
+import baseConfig from "./vitest.config";
 
-export default defineConfig({
-    plugins: [react()],
+export default mergeConfig(
+  baseConfig,
+  defineConfig({
     test: {
-        environment: 'node', // Actions are server-side
-        setupFiles: ['./vitest.setup.ts'],
-        globals: true,
-        testTimeout: 60000,
-        alias: {
-            '@': path.resolve(__dirname, './')
+      include: ["__tests__/integration/**/*.test.ts"],
+      // Интеграционные тесты запускаются последовательно
+      pool: "forks",
+      poolOptions: {
+        forks: {
+          singleFork: true,
         },
-        include: ['**/__tests__/**/*.actions.test.ts'],
-        exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**', '**/.next/**'],
+      },
+      // Больше времени для работы с БД
+      testTimeout: 30000,
+      hookTimeout: 30000,
     },
-})
+  })
+);

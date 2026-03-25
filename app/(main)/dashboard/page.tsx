@@ -23,8 +23,10 @@ export default async function DashboardPage({
 
     const { period ="month" } = await searchParams;
 
-    const statsData = await getDashboardStatsByPeriod(period);
-    const branding = await getBrandingSettings();
+    const [statsData, branding] = await Promise.all([
+        getDashboardStatsByPeriod(period),
+        getBrandingSettings()
+    ]);
 
     // Use session name directly or refactor to raw SQL if needed
     // const userData = null; // Removed failing query

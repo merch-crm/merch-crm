@@ -4,7 +4,6 @@ import { okVoid } from "@/lib/types";
 
 import { headers } from "next/headers";
 import { rateLimit } from "@/lib/rate-limit";
-import { RATE_LIMITS } from "@/lib/rate-limit-config";
 import { logSecurityEvent } from "@/lib/security-logger";
 import { logError } from "@/lib/error-logger";
 import { auth } from "@/lib/auth";
@@ -44,8 +43,8 @@ export async function forgotPasswordAction(
     const ipKey = `password-reset:ip:${ip}`;
     const ipLimit = await rateLimit(
         ipKey,
-        RATE_LIMITS.passwordReset.limit,
-        RATE_LIMITS.passwordReset.windowSec
+        3,
+        3600
     );
 
     if (!ipLimit.success) {
@@ -62,7 +61,7 @@ export async function forgotPasswordAction(
 
         return {
             success: false,
-            error: RATE_LIMITS.passwordReset.message,
+            error: "Слишком много попыток сброса пароля. Попробуйте позже.",
             retryAfter: ipLimit.resetIn,
         };
     }
@@ -71,8 +70,8 @@ export async function forgotPasswordAction(
     const emailKey = `password-reset:email:${email.toLowerCase()}`;
     const emailLimit = await rateLimit(
         emailKey,
-        RATE_LIMITS.passwordReset.limit,
-        RATE_LIMITS.passwordReset.windowSec
+        3,
+        3600
     );
 
     if (!emailLimit.success) {
@@ -91,7 +90,7 @@ export async function forgotPasswordAction(
         return {
             success: false,
             // Не раскрываем, что лимит по email — anti-enumeration
-            error: RATE_LIMITS.passwordReset.message,
+            error: "Слишком много попыток сброса пароля. Попробуйте позже.",
             retryAfter: emailLimit.resetIn,
         };
     }

@@ -25,8 +25,7 @@ export function TwoFactorSetup() {
         }
         setUiState({ isLoading: true, errorMsg: null, successMsg: null });
         
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data, error } = await (authClient as any).twoFactor.enable({
+        const { data, error } = await authClient.twoFactor.enable({
             password,
         });
         
@@ -46,8 +45,7 @@ export function TwoFactorSetup() {
 
     async function confirmSetup(code: string) {
         setUiState((prev) => ({ ...prev, isLoading: true, errorMsg: null }));
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (authClient as any).twoFactor.verifyTotp({ code });
+        const { error } = await authClient.twoFactor.verifyTotp({ code });
 
         if (error) {
             setUiState({ isLoading: false, errorMsg: "Неверный код", successMsg: null });

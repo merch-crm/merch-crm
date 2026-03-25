@@ -3,7 +3,7 @@
 import { db } from "@/lib/db";
 import { orders, clients, notifications } from "@/lib/schema";
 import { count, sum, inArray, and, gte, lte, eq, desc } from "drizzle-orm";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import {
     startOfDay,
     endOfDay,
@@ -15,11 +15,12 @@ import {
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { z } from "zod";
+import { redisCache } from "@/lib/cache";
 
 const DashboardPeriodSchema = z.enum(["today", "week", "month", "quarter", "all"]).default("month");
 const NotificationLimitSchema = z.number().int().min(1).max(50).default(5);
 
-export async function getDashboardStatsByPeriod(period: string = "month") {
+export async function getDashboardStatsByPeriod(period: string = "month"): Promise<Awaited<ReturnType<typeof getDashboardStats>>> {
     try {
         const session = await getSession();
         if (!session) throw new Error("Unauthorized");
@@ -27,34 +28,47 @@ export async function getDashboardStatsByPeriod(period: string = "month") {
         const validated = DashboardPeriodSchema.safeParse(period);
         const finalPeriod = validated.success ? validated.data : "month";
 
-        const now = new Date();
-        let startDate: Date;
-        let endDate: Date = endOfDay(now);
+        // Кэшируем статистику для всего дашборда на 5 минут
+        const cacheKey = `dashboard:stats:${finalPeriod}`;
+        
+        const result = await redisCache.getOrSet(
+            cacheKey,
+            async () => {
+                const now = new Date();
+                let startDate: Date;
+                let endDate: Date = endOfDay(now);
 
-        switch (finalPeriod) {
-            case "today":
-                startDate = startOfDay(now);
-                break;
-            case "week":
-                startDate = startOfWeek(now, { weekStartsOn: 1 });
-                break;
-            case "month":
-                startDate = startOfMonth(now);
-                endDate = endOfMonth(now);
-                break;
-            case "quarter":
-                startDate = startOfQuarter(now);
-                break;
-            case "all":
-                startDate = new Date(2000, 0, 1);
-                endDate = new Date(2100, 0, 1);
-                break;
-            default:
-                startDate = startOfMonth(now);
-                endDate = endOfMonth(now);
-        }
+                switch (finalPeriod) {
+                    case "today":
+                        startDate = startOfDay(now);
+                        break;
+                    case "week":
+                        startDate = startOfWeek(now, { weekStartsOn: 1 });
+                        break;
+                    case "month":
+                        startDate = startOfMonth(now);
+                        endDate = endOfMonth(now);
+                        break;
+                    case "quarter":
+                        startDate = startOfQuarter(now);
+                        break;
+                    case "all":
+                        startDate = new Date(2000, 0, 1);
+                        endDate = new Date(2100, 0, 1);
+                        break;
+                    default:
+                        startDate = startOfMonth(now);
+                        endDate = endOfMonth(now);
+                }
 
-        return await getDashboardStats(startDate, endDate);
+                return await getDashboardStats(startDate, endDate);
+            },
+            { ttl: 300 }
+        );
+
+        return (result && typeof result === "object" && "data" in result) 
+            ? (result as unknown as { data: Awaited<ReturnType<typeof getDashboardStats>> }).data 
+            : result as unknown as Awaited<ReturnType<typeof getDashboardStats>>;
     } catch (error) {
         await logError({
             error,

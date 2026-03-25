@@ -142,8 +142,7 @@ export async function createEditorProject(
             .values({
                 ...validated,
                 createdBy: session.id,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } as any)
+            } as typeof editorProjects.$inferInsert)
             .returning();
 
         const result = results[0];

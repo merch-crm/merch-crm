@@ -2,9 +2,8 @@ import Link from "next/link";
 import { Plus, Users, UserPlus, CreditCard, BarChart3, TrendingUp, TrendingDown, Kanban, Target } from "lucide-react";
 import { ClientsTable } from "./clients-list";
 import { getClientStats, getClientsInitialData } from "./actions/core.actions";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getCachedBranding } from "@/lib/cache/branding";
 import { PageHeader } from "@/components/layout/page-header";
-
 
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
@@ -15,7 +14,25 @@ export default async function ClientsPage(props: {
     searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
     const searchParams = await props.searchParams || {};
-    const session = await getSession();
+    
+    const page = Number(searchParams.page) || 1;
+    const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
+    const clientType = typeof searchParams.type === "string" ? searchParams.type : "all";
+    const activityStatus = typeof searchParams.activityStatus === "string" ? searchParams.activityStatus : "all";
+
+    const [session, statsRes, initialDataRes, branding] = await Promise.all([
+        getSession(),
+        getClientStats(),
+        getClientsInitialData({
+            page,
+            limit: 10,
+            search,
+            clientType,
+            activityStatus
+        }),
+        getCachedBranding()
+    ]);
+
     const user = session ? await db.query.users.findFirst({
         where: eq(users.id, session.id),
         with: { role: true, department: true }
@@ -24,22 +41,6 @@ export default async function ClientsPage(props: {
     const showFinancials =
         user?.role?.name === "Администратор" ||
         ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
-
-    const page = Number(searchParams.page) || 1;
-    const search = typeof searchParams.search === "string" ? searchParams.search : undefined;
-    const clientType = typeof searchParams.type === "string" ? searchParams.type : "all";
-    const activityStatus = typeof searchParams.activityStatus === "string" ? searchParams.activityStatus : "all";
-
-    const [statsRes, initialDataRes] = await Promise.all([
-        getClientStats(),
-        getClientsInitialData({
-            page,
-            limit: 10,
-            search,
-            clientType,
-            activityStatus
-        })
-    ]);
 
     const stats = (statsRes.success && statsRes.data) ? statsRes.data : {
         totalClients: 0,
@@ -57,8 +58,6 @@ export default async function ClientsPage(props: {
             currentPage: initialDataRes.data.currentPage
         }
     } : undefined;
-
-    const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol || "₽";
 
     const statCards = [

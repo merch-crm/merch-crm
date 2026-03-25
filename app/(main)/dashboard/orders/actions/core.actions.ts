@@ -20,6 +20,7 @@ import { CreateOrderSchema, OrderIdSchema } from "../validation";
 import { OrderService } from "@/lib/services/order.service";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
 import { sendStaffNotifications } from "@/lib/notifications";
+import { redisCache, CACHE_KEYS, CACHE_TTL, INVALIDATION_PATTERNS } from "@/lib/cache";
 
 const { orders, clients, inventoryItems } = schema;
 
@@ -128,9 +129,7 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<ActionRes
       const pattern = `%${search}%`;
       conditions.push(or(
         ilike(orders.orderNumber, pattern),
-        ilike(clients.name, pattern),
-        ilike(clients.phone, pattern),
-        ilike(clients.email, pattern),
+        ilike(orders.clientName, pattern),
         ilike(orders.totalAmount, pattern)
       ));
     }
@@ -141,7 +140,6 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<ActionRes
     const totalResult = await db
       .select({ count: sql<number>`count(*)` })
       .from(orders)
-      .leftJoin(clients, eq(orders.clientId, clients.id))
       .where(whereClause);
     
     const total = Number(totalResult[0]?.count || 0);
@@ -263,6 +261,9 @@ export async function createOrder(formData: FormData): Promise<ActionResult<{ or
       type: "success"
     });
 
+    // Инвалидируем кеш статистики
+    await redisCache.invalidateByPattern(INVALIDATION_PATTERNS.allOrders);
+
     revalidatePath("/dashboard/orders");
     return ok({ orderId: result.id });
   }, { 
@@ -370,28 +371,47 @@ export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResul
   revenue: number;
 }>> {
   return withAuth(async () => {
-    const conditions: (SQL | undefined)[] = [];
-    if (from) conditions.push(gte(orders.createdAt, from));
-    if (to) conditions.push(lte(orders.createdAt, to));
+    // Формируем ключ кеша
+    const rangeKey = from && to 
+      ? `${from.toISOString().slice(0, 10)}_${to.toISOString().slice(0, 10)}`
+      : "all";
+    const cacheKey = CACHE_KEYS.orderStats(rangeKey);
 
-    const [stats] = await db
-      .select({
-        total: sql<number>`count(*)`,
-        new: sql<number>`count(*) filter (where ${orders.status} = 'new')`,
-        inProduction: sql<number>`count(*) filter (where ${orders.status} in ('design', 'production'))`,
-        completed: sql<number>`count(*) filter (where ${orders.status} in ('done', 'shipped', 'completed'))`,
-        revenue: sql<number>`coalesce(sum(${orders.totalAmount}::numeric), 0)`,
-      })
-      .from(orders)
-      .where(conditions.length > 0 ? and(...conditions) : undefined);
+    // Используем cache-aside паттерн
+    const { data, fromCache } = await redisCache.getOrSet(
+      cacheKey,
+      async () => {
+        const conditions: (SQL | undefined)[] = [];
+        if (from) conditions.push(gte(orders.createdAt, from));
+        if (to) conditions.push(lte(orders.createdAt, to));
 
-    return ok({
-      total: Number(stats.total),
-      new: Number(stats.new),
-      inProduction: Number(stats.inProduction),
-      completed: Number(stats.completed),
-      revenue: Number(stats.revenue),
-    });
+        const [stats] = await db
+          .select({
+            total: sql<number>`count(*)`,
+            new: sql<number>`count(*) filter (where ${orders.status} = 'new')`,
+            inProduction: sql<number>`count(*) filter (where ${orders.status} in ('design', 'production'))`,
+            completed: sql<number>`count(*) filter (where ${orders.status} in ('done', 'shipped', 'completed'))`,
+            revenue: sql<number>`coalesce(sum(${orders.totalAmount}::numeric), 0)`,
+          })
+          .from(orders)
+          .where(conditions.length > 0 ? and(...conditions) : undefined);
+
+        return {
+          total: Number(stats.total),
+          new: Number(stats.new),
+          inProduction: Number(stats.inProduction),
+          completed: Number(stats.completed),
+          revenue: Number(stats.revenue),
+        };
+      },
+      { ttl: CACHE_TTL.ORDER_STATS, tags: ["orders"] }
+    );
+
+    if (process.env.NODE_ENV === "development" && fromCache) {
+      console.log(`[Cache HIT] ${cacheKey}`);
+    }
+
+    return ok(data);
   }, { 
     errorPath: '/dashboard/orders/stats' 
   });

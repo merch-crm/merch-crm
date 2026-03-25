@@ -14,3 +14,9 @@ export type AppRole =
   | "Печатник" 
   | "Вышивальщик" 
   | "Кладовщик";
+
+export const canManageOrders = (role: string | null | undefined): boolean => {
+  if (!role) return false;
+  return ["Администратор", "Руководство", "Менеджер"].includes(role);
+};
+

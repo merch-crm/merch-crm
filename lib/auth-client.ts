@@ -30,10 +30,8 @@ export const authClient = createAuthClient({
                 window.location.href = "/login/2fa";
             },
         }),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        adminClient() as any,
+        adminClient(),
     ],
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const { signIn, signOut, useSession, twoFactor, admin } = authClient as any;
+export const { signIn, signOut, useSession, twoFactor, admin } = authClient;

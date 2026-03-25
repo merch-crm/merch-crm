@@ -2,8 +2,20 @@ import { db } from "@/lib/db";
 import { systemSettings } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { BrandingSettings } from "@/lib/types";
+import { cache } from "react";
 
-export async function getBrandingSettings(): Promise<BrandingSettings> {
+const globalForBranding = global as unknown as {
+    cachedBranding: BrandingSettings | null;
+    lastCacheUpdate: number;
+};
+
+const CACHE_TTL = 60 * 1000; // 1 minute
+
+export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => {
+    const now = Date.now();
+    if (globalForBranding.cachedBranding && (now - globalForBranding.lastCacheUpdate < CACHE_TTL)) {
+        return globalForBranding.cachedBranding;
+    }
     const defaultBranding: BrandingSettings = {
         companyName: "MerchCRM",
         logoUrl: null,
@@ -36,7 +48,7 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
         if (!settings) return defaultBranding;
 
         const val = settings.value as Record<string, unknown>;
-        return {
+        const finalSettings = {
             ...defaultBranding,
             ...val,
             primaryColor: (val.primaryColor as string) || (val.primary_color as string) || "#5d00ff",
@@ -47,8 +59,12 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
             isVibrationEnabled: val.isVibrationEnabled !== undefined ? (val.isVibrationEnabled as boolean) : (val.vibrationEnabled !== undefined ? (val.vibrationEnabled as boolean) : true),
             soundConfig: (val.soundConfig as BrandingSettings['soundConfig']) || {}
         } as BrandingSettings;
+
+        globalForBranding.cachedBranding = finalSettings;
+        globalForBranding.lastCacheUpdate = Date.now();
+        return finalSettings;
     } catch (error) {
         console.error("Error fetching branding settings:", error);
         return defaultBranding;
     }
-}
+});

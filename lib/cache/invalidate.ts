@@ -1,5 +1,5 @@
 import { revalidatePath, revalidateTag } from "next/cache";
-import { cache } from "./index";
+import { redisCache } from "./index";
 
 /**
  * Инвалидация кэша для принтов и коллекций
@@ -13,10 +13,10 @@ export function invalidatePrintsCache(options?: {
 
     // 1. Очистка in-memory кэша
     if (all) {
-        cache.invalidateByPattern("prints");
+        redisCache.invalidateByPattern("prints");
     } else {
-        if (collectionId) cache.invalidateByPattern(`prints:collection:${collectionId}`);
-        if (designId) cache.invalidateByPattern(`prints:design:${designId}`);
+        if (collectionId) redisCache.invalidateByPattern(`prints:collection:${collectionId}`);
+        if (designId) redisCache.invalidateByPattern(`prints:design:${designId}`);
     }
 
     // 2. Инвалидация путей Next.js

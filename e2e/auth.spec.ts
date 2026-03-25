@@ -1,31 +1,37 @@
-import { test, expect } from '@playwright/test'
+/**
+ * E2E тесты авторизации
+ */
 
-test.describe('Авторизация', () => {
-  test('успешный вход в систему', async ({ page }) => {
-    await page.goto('/login')
-    
-    await page.fill('input[name="email"]', 'admin@test.com')
-    await page.fill('input[name="password"]', 'testpassword123')
-    await page.click('button[type="submit"]')
-    
-    // Ожидаем редирект на дашборд
-    await expect(page).toHaveURL(/\/dashboard/)
-    
-    // Проверяем наличие меню пользователя
-    await expect(page.locator('button:has-text("Администратор")')).toBeVisible()
-  })
+import { test, expect } from "@playwright/test";
 
-  test('ошибка при неверном пароле', async ({ page }) => {
-    await page.goto('/login')
-    
-    await page.fill('input[name="email"]', 'admin@test.com')
-    await page.fill('input[name="password"]', 'wrongpassword')
-    await page.click('button[type="submit"]')
-    
-    // Остаёмся на странице входа
-    await expect(page).toHaveURL(/\/login/)
-    
-    // Отображается ошибка (используем текст из sonner или сообщения об ошибке)
-    await expect(page.locator('text=/неверный|ошибка|пароль/i')).toBeVisible()
-  })
-})
+test.describe("Авторизация", () => {
+  test("должен показывать форму входа", async ({ page }) => {
+    await page.goto("/login");
+
+    await expect(page.getByRole("heading", { name: /вход/i })).toBeVisible();
+    await expect(page.getByLabel(/email/i)).toBeVisible();
+    await expect(page.getByLabel(/пароль/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: /войти/i })).toBeVisible();
+  });
+
+  test("должен показывать ошибку при неверных данных", async ({ page }) => {
+    await page.goto("/login");
+
+    await page.getByLabel(/email/i).fill("wrong@example.com");
+    await page.getByLabel(/пароль/i).fill("wrongpassword");
+    await page.getByRole("button", { name: /войти/i }).click();
+
+    await expect(page.getByText(/неверный email или пароль/i)).toBeVisible();
+  });
+
+  test("должен перенаправлять на дашборд после входа", async ({ page }) => {
+    await page.goto("/login");
+
+    // Используем тестовые credentials
+    await page.getByLabel(/email/i).fill(process.env.TEST_USER_EMAIL!);
+    await page.getByLabel(/пароль/i).fill(process.env.TEST_USER_PASSWORD!);
+    await page.getByRole("button", { name: /войти/i }).click();
+
+    await expect(page).toHaveURL(/dashboard/);
+  });
+});

@@ -35,9 +35,23 @@ export const pool = globalForDb.pool || new Pool({
     connectionTimeoutMillis: 10000,
 });
 
+import { queryMonitor } from "./db/query-monitor";
+
 export const db = globalForDb.db || drizzle(pool, {
     schema,
-    logger: process.env.NODE_ENV === "development",
+    logger: process.env.NODE_ENV === "development" ? {
+        logQuery(query: string, params: unknown[]): void {
+            const start = performance.now();
+            // We use a small timeout to capture the execution after results are returned
+            // to get a better duration estimate if possible, 
+            // but Drizzle's logger is usually called before execution.
+            // For more accuracy, we could wrap the client, but this is a good start.
+            setTimeout(() => {
+                const duration = performance.now() - start;
+                queryMonitor.logQuery(query, duration, params);
+            }, 0);
+        },
+    } : undefined,
 });
 
 if (process.env.NODE_ENV !== "production") {
