@@ -19,26 +19,30 @@ const BrandingContext = createContext<BrandingSettings>({
 
 export const useBranding = () => useContext(BrandingContext);
 
-export function BrandingProvider({ children }: { children: React.ReactNode }) {
-    const [branding, setBranding] = useState<BrandingSettings | null>(null);
+export function BrandingProvider({ children, initialData }: { children: React.ReactNode; initialData?: BrandingSettings | null }) {
+    const [branding, setBranding] = useState<BrandingSettings | null>(initialData || null);
 
     useEffect(() => {
         async function loadBranding() {
-            const data = await getBrandingSettings();
-            if (data) {
-                setBranding(data);
-
-                // Initialize sounds
-                initSoundSettings();
-                if (data.soundConfig) {
-                    setGlobalSoundConfig(data.soundConfig);
+            // Only fetch if not already provided or to refresh
+            if (!initialData) {
+                const data = await getBrandingSettings();
+                if (data) {
+                    setBranding(data);
                 }
+            }
+
+            // Initialize sounds
+            initSoundSettings();
+            const currentBranding = branding || initialData;
+            if (currentBranding?.soundConfig) {
+                setGlobalSoundConfig(currentBranding.soundConfig);
             }
         }
         loadBranding();
-    }, []);
+    }, [initialData]);
 
-    const values = branding || {
+    const values = branding || initialData || {
         companyName: "MerchCRM",
         logoUrl: null,
         primaryColor: "#5d00ff",

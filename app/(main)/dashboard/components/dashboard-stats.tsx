@@ -38,7 +38,7 @@ export function DashboardStats({ statsData, currencySymbol }: DashboardStatsProp
 
             <ModernStatCard
                 icon={Rouble}
-                value={statsData?.averageCheck?.replace(' ' + currencySymbol, '') || '0'}
+                value={statsData?.averageCheck?.replace(new RegExp(`[\\s\\u00A0]*${(currencySymbol || "₽").replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\u00A0]*`, 'g'), '') || '0'}
                 suffix={currencySymbol}
                 label="Средний чек"
                 badge={{ text: "-2.4%", variant: "error" }}

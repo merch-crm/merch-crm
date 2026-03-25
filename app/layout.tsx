@@ -50,16 +50,18 @@ import { SheetStackProvider } from "@/components/ui/sheet-stack-context";
 import { TypographyProvider } from "@/components/typography-provider";
 import { CsrfProvider } from "@/components/csrf-provider";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const branding = await getBrandingSettings();
+
   return (
     <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning>
       <body className="antialiased font-sans">
         <CsrfProvider>
-          <BrandingProvider>
+          <BrandingProvider initialData={branding}>
             <SheetStackProvider>
               <TypographyProvider>
                 {children}

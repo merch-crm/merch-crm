@@ -118,10 +118,10 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-2xl text-xs font-bold mb-2 border border-emerald-100">
                                 +18.4% рост
                             </div>
-                            <h3 className="text-slate-500 text-sm font-semibold mb-1">Выручка за период</h3>
+                            <h3 className="text-slate-500 text-sm font-semibold mb-1" suppressHydrationWarning>Выручка за период</h3>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-4xl sm:text-5xl font-bold text-slate-900">
-                                    {statsData?.revenue?.replace(' ' + currencySymbol, '') || '0'}
+                                <span className="text-4xl sm:text-5xl font-bold text-slate-900" suppressHydrationWarning>
+                                    {statsData?.revenue?.replace(new RegExp(`[\\s\\u00A0]*${(currencySymbol || "₽").replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}[\\s\\u00A0]*`, 'g'), '') || '0'}
                                 </span>
                                 <span className="text-2xl font-bold text-slate-400">{currencySymbol}</span>
                             </div>

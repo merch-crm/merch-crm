@@ -7,9 +7,21 @@ interface WrapperProps {
   children: ReactNode
 }
 
+const mockBranding = {
+    companyName: "MerchCRM",
+    logoUrl: null,
+    primaryColor: "#5d00ff",
+    faviconUrl: null,
+    radiusOuter: 24,
+    radiusInner: 14,
+    currencySymbol: "₽",
+    dateFormat: "DD.MM.YYYY",
+    timezone: "Europe/Moscow"
+};
+
 function AllProviders({ children }: WrapperProps) {
   return (
-    <BrandingProvider>
+    <BrandingProvider initialData={mockBranding}>
       {children}
       <Toaster />
     </BrandingProvider>
