@@ -2,17 +2,24 @@
  * Интеграционные тесты сервиса заказов
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 // @ts-nocheck
 import { db } from "@/lib/db";
 import { orders, clients, orderItems, users, roles, departments } from "@/lib/schema";
 import { getOrders } from "@/lib/services/orders/queries";
 import { createOrder, updateOrderStatus } from "@/lib/services/orders/mutations";
 import { eq } from "drizzle-orm";
+import { getSession } from "@/lib/session";
+
+// Мокаем сессию
+vi.mock("@/lib/session", () => ({
+  getSession: vi.fn(),
+}));
 
 describe("Orders Service", () => {
   let testClientId: string;
   let testUserId: string;
+  let testRoleId: string;
 
   beforeAll(async () => {
     // Создаём тестовые данные
@@ -23,7 +30,7 @@ describe("Orders Service", () => {
 
     const [role] = await db
       .insert(roles)
-      .values({ name: "Test Role", departmentId: dept.id, permissions: {} })
+      .values({ name: "Администратор", departmentId: dept.id, permissions: { all: true } })
       .returning();
 
     const [user] = await db
@@ -47,6 +54,7 @@ describe("Orders Service", () => {
 
     testClientId = client.id;
     testUserId = user.id;
+    testRoleId = role.id;
   });
 
   afterAll(async () => {
@@ -55,13 +63,22 @@ describe("Orders Service", () => {
     await db.delete(orders);
     await db.delete(clients).where(eq(clients.id, testClientId));
     await db.delete(users).where(eq(users.id, testUserId));
-    // ... очистка остальных данных
+    await db.delete(roles).where(eq(roles.id, testRoleId));
   });
 
   beforeEach(async () => {
     // Очищаем заказы перед каждым тестом
     await db.delete(orderItems);
     await db.delete(orders);
+
+    // Настраиваем мок сессии
+    vi.mocked(getSession).mockResolvedValue({
+      id: testUserId,
+      email: "test@test.com",
+      name: "Тест Юзер",
+      roleId: testRoleId,
+      roleName: "Администратор",
+    } as any);
   });
 
   describe("getOrders()", () => {
