@@ -6,7 +6,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, orderItems, inventoryItems, auditLogs } from "@/lib/schema";
+import { orders, orderItems, inventoryItems, auditLogs, payments } from "@/lib/schema";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -104,11 +104,22 @@ export const createOrder = createSafeAction(
 
       const orderNumber = `ORD-${year}-${String(nextNumber).padStart(4, "0")}`;
 
-      // 2. Расчёт суммы заказа
-      const totalAmount = data.items.reduce(
-        (sum, item) => sum + parseFloat(item.price) * item.quantity,
-        0
-      );
+      // 2. Расчёт суммы заказа и проверка остатков
+      let totalAmount = 0;
+      for (const item of data.items) {
+        if (item.inventoryId) {
+          const [inventory] = await tx
+            .select({ quantity: inventoryItems.quantity, reserved: inventoryItems.reservedQuantity })
+            .from(inventoryItems)
+            .where(eq(inventoryItems.id, item.inventoryId))
+            .limit(1);
+
+          if (!inventory || (inventory.reserved || 0) + item.quantity > (inventory.quantity || 0)) {
+            throw new Error(`Недостаточно товара на складе для позиции: ${item.description}`);
+          }
+        }
+        totalAmount += parseFloat(item.price) * item.quantity;
+      }
 
       // 3. Создание заказа
       const [order] = await tx
@@ -118,6 +129,7 @@ export const createOrder = createSafeAction(
           clientId: data.clientId,
           status: "new",
           totalAmount: totalAmount.toFixed(2),
+          paidAmount: data.advanceAmount || "0.00",
           isUrgent: data.isUrgent,
           priority: data.priority,
           deadline: data.deadline,
@@ -136,7 +148,6 @@ export const createOrder = createSafeAction(
           inventoryId: item.inventoryId,
         });
 
-        // Резервируем товар на складе
         if (item.inventoryId) {
           await tx
             .update(inventoryItems)
@@ -145,6 +156,16 @@ export const createOrder = createSafeAction(
             })
             .where(eq(inventoryItems.id, item.inventoryId));
         }
+      }
+
+      if (data.advanceAmount && parseFloat(data.advanceAmount) > 0) {
+        await tx.insert(payments).values({
+          orderId: order.id,
+          amount: data.advanceAmount,
+          method: "cash", // По умолчанию
+          isAdvance: true,
+          comment: "Предоплата при создании заказа",
+        });
       }
 
       // 5. Аудит-лог

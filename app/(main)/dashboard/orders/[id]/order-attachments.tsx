@@ -19,7 +19,7 @@ interface Attachment {
     fileUrl: string | null;
     fileName: string | null;
     fileSize: number | null;
-    contentType: string | null;
+    contentType: string | null | undefined;
 }
 
 interface OrderAttachmentsProps {

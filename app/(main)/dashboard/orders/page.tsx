@@ -63,7 +63,7 @@ export default async function OrdersPage({
 
     if (ordersRes.success) {
         allOrders = ordersRes.data.orders as unknown as Order[];
-        total = ordersRes.data.total;
+        total = ordersRes.data.pagination.total;
     } else {
         error = ordersRes.error;
     }

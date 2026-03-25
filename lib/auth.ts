@@ -51,15 +51,15 @@ export const auth = betterAuth({
     },
   },
 
+  // Название приложения
+  appName: "MerchCRM",
+
   // Плагины расширения функционала
   plugins: [
     nextCookies(),
     
     twoFactor({
-      otpOptions: {
-        // @ts-expect-error - Better Auth type mismatch for issuer
-        issuer: "MerchCRM",
-      },
+      issuer: "MerchCRM",
     }),
 
     admin({

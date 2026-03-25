@@ -14,6 +14,7 @@ import { DashboardStats as DashboardStatsComponent } from "./components/dashboar
 import { DashboardNotifications } from "./components/dashboard-notifications";
 import { DashboardActions } from "./components/dashboard-actions";
 import { useDashboardData } from "./hooks/use-dashboard-data";
+import { pluralize } from "@/lib/pluralize";
 import type { BrandingSettings } from "@/lib/types";
 
 interface DashboardStats {
@@ -88,7 +89,9 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mt-2">
                             <p className="text-slate-500 font-medium max-w-sm leading-relaxed text-sm" suppressHydrationWarning>
                                 {`Система работает стабильно. У вас `}
-                                <span className="text-primary font-bold">{statsData.inProduction} новых {getOrdersWord(statsData.inProduction)}</span>
+                                <span className="text-primary font-bold">
+                                    {statsData.inProduction} новых {pluralize(statsData.inProduction, "заказ", "заказа", "заказов")}
+                                </span>
                                 {`, которые ожидают внимания.`}
                             </p>
                             <Link
@@ -118,7 +121,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                             <h3 className="text-slate-500 text-sm font-semibold mb-1">Выручка за период</h3>
                             <div className="flex items-baseline gap-1">
                                 <span className="text-4xl sm:text-5xl font-bold text-slate-900">
-                                    {statsData?.revenue.replace(' ' + currencySymbol, '')}
+                                    {statsData?.revenue?.replace(' ' + currencySymbol, '') || '0'}
                                 </span>
                                 <span className="text-2xl font-bold text-slate-400">{currencySymbol}</span>
                             </div>
@@ -167,11 +170,4 @@ export function DashboardClient({ initialStats, period, userName, branding: init
     );
 }
 
-function getOrdersWord(count: number) {
-    const lastDigit = count % 10;
-    const lastTwoDigits = count % 100;
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 19) return "заказов";
-    if (lastDigit === 1) return "заказ";
-    if (lastDigit >= 2 && lastDigit <= 4) return "заказа";
-    return "заказов";
-}
+

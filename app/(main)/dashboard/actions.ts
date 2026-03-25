@@ -66,9 +66,8 @@ export async function getDashboardStatsByPeriod(period: string = "month"): Promi
             { ttl: 300 }
         );
 
-        return (result && typeof result === "object" && "data" in result) 
-            ? (result as unknown as { data: Awaited<ReturnType<typeof getDashboardStats>> }).data 
-            : result as unknown as Awaited<ReturnType<typeof getDashboardStats>>;
+        const stats = (result as unknown) as Awaited<ReturnType<typeof getDashboardStats>>;
+        return stats;
     } catch (error) {
         await logError({
             error,
@@ -112,7 +111,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
 
         // 1. Total Clients (Lifetime)
         const totalClientsResult = await db.select({ value: count() }).from(clients).limit(1);
-        const totalClients = totalClientsResult[0].value;
+        const totalClients = totalClientsResult[0]?.value || 0;
 
         // 2. New Clients count in period
         const newClientsResult = await db.select({ value: count() })
@@ -122,21 +121,21 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
                 lte(clients.createdAt, endDate)
             ))
             .limit(1);
-        const newClients = newClientsResult[0].value;
+        const newClients = newClientsResult[0]?.value || 0;
 
         // 3. Total Orders count in period
         const totalOrdersResult = await db.select({ value: count() })
             .from(orders)
             .where(dateFilter)
             .limit(1);
-        const totalOrders = totalOrdersResult[0].value;
+        const totalOrders = totalOrdersResult[0]?.value || 0;
 
         // 4. In Production count (Current snapshot)
         const inProductionResult = await db.select({ value: count() })
             .from(orders)
             .where(inArray(orders.status, ["new", "design", "production"]))
             .limit(1);
-        const inProduction = inProductionResult[0].value;
+        const inProduction = inProductionResult[0]?.value || 0;
 
         // 7. Total Revenue for period
         const revenueResult = await db.select({
@@ -146,7 +145,7 @@ export async function getDashboardStats(startDate?: Date, endDate?: Date) {
             .where(dateFilter)
             .limit(1);
 
-        const rawRevenue = Number(revenueResult[0].value || 0);
+        const rawRevenue = Number(revenueResult[0]?.value || 0);
 
         // 8. Average Check
         const averageCheck = totalOrders > 0 ? (rawRevenue / totalOrders) : 0;

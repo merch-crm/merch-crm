@@ -76,9 +76,13 @@ export function getClientIP(req: { headers?: Headers | Record<string, string | s
 
     // Helper to extract header value regardless of type (Headers object or plain object)
     const getHeader = (name: string): string | null => {
-        if (typeof (headers as any).get === "function") {
-            const val = (headers as any).get(name);
-            return typeof val === "string" ? val : null;
+        if (headers instanceof Headers) {
+            return headers.get(name);
+        }
+        
+        if (typeof (headers as Record<string, unknown>).get === "function") {
+            const val = (headers as unknown as { get: (n: string) => string | null }).get(name);
+            return val;
         }
         
         // Handle Record<string, string | string[] | undefined>

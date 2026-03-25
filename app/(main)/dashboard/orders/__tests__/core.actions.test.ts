@@ -104,7 +104,6 @@ describe('Order Actions (Integration)', () => {
       ]))
 
       const result = await createOrder(formData)
-      
       expect(result.success).toBe(true)
 
       // Проверяем что заказ создан в БД

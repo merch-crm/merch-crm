@@ -75,6 +75,10 @@ export interface OrderWithRelations extends Order {
     phone: string;
     clientType: "b2b" | "b2c";
     company: string | null;
+    email?: string | null;
+    telegram?: string | null;
+    instagram?: string | null;
+    address?: string | null;
   };
   items: Array<OrderItem & {
     inventory: {
@@ -94,6 +98,7 @@ export interface OrderWithRelations extends Order {
     amount: string;
     method: string;
     isAdvance: boolean;
+    comment: string | null;
     createdAt: Date;
   }>;
   attachments: Array<{
@@ -101,8 +106,15 @@ export interface OrderWithRelations extends Order {
     fileName: string;
     fileUrl: string;
     fileSize: number | null;
+    contentType: string | null;
     createdAt: Date;
   }>;
+  promocode: {
+    id: string;
+    code: string;
+    discountType: string;
+    discountValue: string;
+  } | null;
 }
 
 /**

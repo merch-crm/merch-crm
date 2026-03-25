@@ -76,6 +76,10 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<GetOrders
           phone: true,
           clientType: true,
           company: true,
+          email: true,
+          telegram: true,
+          instagram: true,
+          address: true,
         },
       },
       items: {

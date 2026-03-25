@@ -151,7 +151,7 @@ describe('getOrders', () => {
         expect(result.success).toBe(true);
         if (result.success) {
             expect(result.data.orders).toEqual(orders);
-            expect(result.data.total).toBe(2);
+            expect(result.data.pagination.total).toBe(2);
         }
     });
 

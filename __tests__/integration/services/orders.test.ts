@@ -4,7 +4,7 @@
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 import { db } from "@/lib/db";
-import { orders, clients, orderItems, users, roles, departments, auditLogs, inventoryItems } from "@/lib/schema";
+import { orders, clients, orderItems, users, roles, departments, auditLogs } from "@/lib/schema";
 import { getOrders } from "@/lib/services/orders/queries";
 import { createOrder, updateOrderStatus } from "@/lib/services/orders/mutations";
 import { eq } from "drizzle-orm";

@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env.local" });
+
 /**
  * Глобальная настройка тестов
  */
@@ -12,8 +15,12 @@ if (!process.env.AUTH_SECRET) {
 if (!process.env.JWT_SECRET_KEY) {
   process.env.JWT_SECRET_KEY = process.env.BETTER_AUTH_SECRET;
 }
+if (process.env.TEST_DATABASE_URL) {
+  process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
+}
+
 if (!process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = "postgresql://test:test@localhost:5432/test";
+  process.env.DATABASE_URL = "postgresql://postgres:postgres@127.0.0.1:5432/merch_crm_test";
 }
 
 import "@testing-library/jest-dom";
