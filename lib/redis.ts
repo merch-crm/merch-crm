@@ -29,6 +29,7 @@ class RedisMock {
     return val;
   }
   async expire(_key: string, _seconds: number) { return 1; }
+  async ttl(_key: string) { return 60; }
   
   multi() {
     const commands: (() => Promise<unknown>)[] = [];
@@ -39,6 +40,10 @@ class RedisMock {
       },
       expire: (key: string, seconds: number) => {
         commands.push(() => this.expire(key, seconds));
+        return proxy;
+      },
+      ttl: (key: string) => {
+        commands.push(() => this.ttl(key));
         return proxy;
       },
       exec: async () => {

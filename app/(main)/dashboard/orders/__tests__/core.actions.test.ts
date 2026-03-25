@@ -67,7 +67,7 @@ describe('Order Actions (Integration)', () => {
         clientId: client.id,
         status: 'new',
         priority: 'medium',
-        totalAmount: '5000',
+        totalAmount: '5000.00',
         createdBy: testData.user.id,
       })
 
@@ -110,7 +110,7 @@ describe('Order Actions (Integration)', () => {
       // Проверяем что заказ создан в БД
       const orders = await db.select().from(schema.orders)
       expect(orders.length).toBe(1)
-      expect(orders[0].totalAmount).toBe('5000')
+      expect(orders[0].totalAmount).toBe('5000.00')
     })
   })
 
@@ -130,7 +130,7 @@ describe('Order Actions (Integration)', () => {
         status: 'new',
         priority: 'medium',
         isUrgent: false,
-        totalAmount: '5000',
+        totalAmount: '5000.00',
         createdBy: testData.user.id,
       }).returning()
     })

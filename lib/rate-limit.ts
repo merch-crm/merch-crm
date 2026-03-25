@@ -9,12 +9,6 @@ export interface RateLimitResult {
   resetIn: number;
 }
 
-interface RedisPipeline {
-  incr(key: string): RedisPipeline;
-  expire(key: string, seconds: number): RedisPipeline;
-  exec(): Promise<Array<[Error | null, unknown]>>;
-}
-
 /**
  * Advanced Redis-based rate limiter using sliding window / atomic pipeline
  * Higher precision and performance compared to basic INCR
@@ -32,11 +26,13 @@ export async function rateLimit(
   const identifier = `ratelimit:${key}`;
   
   try {
-    const pipeline = (redis as any).multi();
+    // Используем multi() для атомарности
+    const pipeline = redis.multi();
     pipeline.incr(identifier);
     pipeline.ttl(identifier);
     
-    const results = await pipeline.exec();
+    // Выполняем pipeline
+    const results = await pipeline.exec() as [Error | null, number][] | null;
     
     if (!results || !results[0]) {
         return { success: true, limit, remaining: limit, resetIn: 0 };
@@ -74,24 +70,28 @@ export async function resetRateLimit(key: string): Promise<void> {
 /**
  * Extract client IP from request headers or socket
  */
-export function getClientIP(req: any): string {
+export function getClientIP(req: { headers?: Headers | Record<string, string | string[] | undefined> }): string {
     const headers = req?.headers;
     if (!headers) return "unknown";
 
-    // Standard way to get headers from Next.js Request or similar
-    const getHeader = (name: string) => {
-        if (typeof headers.get === "function") return headers.get(name);
-        return headers[name];
+    // Helper to extract header value regardless of type (Headers object or plan object)
+    const getHeader = (name: string): string | null => {
+        if (headers instanceof Headers) {
+            return headers.get(name);
+        }
+        // Handle Record<string, string | string[] | undefined>
+        const value = (headers as Record<string, unknown>)[name];
+        if (Array.isArray(value)) return value[0] as string;
+        return value ? String(value) : null;
     };
 
     const forwarded = getHeader("x-forwarded-for");
     if (forwarded) {
-        const ip = Array.isArray(forwarded) ? forwarded[0] : forwarded;
-        return ip.split(",")[0].trim();
+        return forwarded.split(",")[0].trim();
     }
 
     const realIp = getHeader("x-real-ip");
-    if (realIp) return String(realIp);
+    if (realIp) return realIp;
 
     return "unknown";
 }

@@ -3,13 +3,18 @@
  */
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
-// @ts-nocheck
 import { db } from "@/lib/db";
 import { orders, clients, orderItems, users, roles, departments } from "@/lib/schema";
 import { getOrders } from "@/lib/services/orders/queries";
 import { createOrder, updateOrderStatus } from "@/lib/services/orders/mutations";
 import { eq } from "drizzle-orm";
-import { getSession } from "@/lib/session";
+import { getSession, type Session } from "@/lib/session";
+
+// Мокаем зависимости Next.js
+vi.mock("next/cache", () => ({
+  revalidatePath: vi.fn(),
+  revalidateTag: vi.fn(),
+}));
 
 // Мокаем сессию
 vi.mock("@/lib/session", () => ({
@@ -78,7 +83,7 @@ describe("Orders Service", () => {
       name: "Тест Юзер",
       roleId: testRoleId,
       roleName: "Администратор",
-    } as any);
+    } as unknown as Session);
   });
 
   describe("getOrders()", () => {
