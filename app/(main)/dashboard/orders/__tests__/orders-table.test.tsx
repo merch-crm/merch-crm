@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '@/test-utils/render'
-import userEvent from '@testing-library/user-event'
+import { render, screen, fireEvent } from '@/test-utils/render'
 import { OrdersTable } from '../orders-table'
 import { createOrders, createOrder } from '@/test-utils/factories'
 
@@ -27,11 +26,18 @@ vi.mock('@/lib/sounds', () => ({
   setGlobalSoundConfig: vi.fn(),
 }))
 
+vi.mock('@/components/branding-provider', () => ({
+  useBranding: vi.fn(() => ({
+    currencySymbol: '₽',
+    primaryColor: '#5d00ff',
+    companyName: 'MerchCRM',
+  })),
+  BrandingProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
+
 import { updateOrderField } from '../actions/core.actions'
 
 describe('OrdersTable', () => {
-  const user = userEvent.setup()
-
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -84,12 +90,12 @@ describe('OrdersTable', () => {
       const checkbox = container.querySelector('table tbody tr:first-child input[type="checkbox"]') as HTMLElement 
         || screen.getAllByRole('checkbox', { hidden: true }).find(c => c.id.startsWith('select-order-'))!
       
-      await user.click(checkbox)
+      fireEvent.click(checkbox)
       
       expect(checkbox).toHaveAttribute('aria-checked', 'true')
     })
 
-    it('выбирает все заказы', async () => {
+    it('выбирает все заказы', () => {
       const orders = createOrders(3)
       
       const { container } = render(<OrdersTable orders={orders} isAdmin={false} />)
@@ -97,20 +103,20 @@ describe('OrdersTable', () => {
       const selectAll = container.querySelector('#select-all-orders') as HTMLElement
         || screen.getByRole('checkbox', { name: /Выбрать все заказы/i, hidden: true })
         
-      await user.click(selectAll)
+      fireEvent.click(selectAll)
       
       expect(selectAll).toHaveAttribute('aria-checked', 'true')
     })
   })
 
   describe('Действия с заказами', () => {
-    it('переключает флаг срочности', async () => {
+    it('переключает флаг срочности', () => {
       const order = createOrder({ isUrgent: false })
       
       render(<OrdersTable orders={[order]} isAdmin={false} />)
       
       const urgentButton = screen.getByLabelText(/Сделать срочным/i)
-      await user.click(urgentButton)
+      fireEvent.click(urgentButton)
       
       expect(updateOrderField).toHaveBeenCalledWith(order.id, 'isUrgent', true)
     })

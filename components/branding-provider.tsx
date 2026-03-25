@@ -23,6 +23,15 @@ export function BrandingProvider({ children, initialData }: { children: React.Re
     const [branding, setBranding] = useState<BrandingSettings | null>(initialData || null);
 
     useEffect(() => {
+        // Skip background fetching in tests or if initial data is fully provided
+        if (process.env.NODE_ENV === 'test' && initialData) {
+            initSoundSettings();
+            if (initialData.soundConfig) {
+                setGlobalSoundConfig(initialData.soundConfig);
+            }
+            return;
+        }
+
         async function loadBranding() {
             // Only fetch if not already provided or to refresh
             if (!initialData) {

@@ -27,6 +27,21 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 })
 
+// Mock branding settings to avoid server action issues during tests
+vi.mock('@/app/(main)/admin-panel/branding/actions', () => ({
+  getBrandingSettings: vi.fn(() => Promise.resolve({
+    companyName: "MerchCRM",
+    logoUrl: null,
+    primaryColor: "#5d00ff",
+    faviconUrl: null,
+    radiusOuter: 24,
+    radiusInner: 14,
+    currencySymbol: "₽",
+    dateFormat: "DD.MM.YYYY",
+    timezone: "Europe/Moscow"
+  }))
+}))
+
 // Establish API mocking before all tests.
 beforeAll(() => {
     server.listen()
