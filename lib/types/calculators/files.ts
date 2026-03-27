@@ -22,13 +22,13 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'tiff', 'tif'],
       mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/tiff'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения для печати',
     },
     {
       extensions: ['ai', 'eps', 'pdf', 'cdr', 'svg'],
       mimeTypes: ['application/postscript', 'application/pdf', 'image/svg+xml', 'application/x-cdr'],
-      maxSizeMB: 50,
+      maxSizeMB: 100,
       description: 'Векторные файлы',
     },
   ],
@@ -36,13 +36,13 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg', 'tiff', 'tif'],
       mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml', 'image/tiff'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения для печати',
     },
     {
       extensions: ['ai', 'eps', 'pdf', 'cdr', 'svg'],
       mimeTypes: ['application/postscript', 'application/pdf', 'image/svg+xml', 'application/x-cdr'],
-      maxSizeMB: 50,
+      maxSizeMB: 100,
       description: 'Векторные файлы',
     },
   ],
@@ -50,7 +50,7 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg'],
       mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения для печати',
     },
   ],
@@ -58,7 +58,7 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['png', 'jpg', 'jpeg', 'webp', 'svg'],
       mimeTypes: ['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения для печати',
     },
   ],
@@ -66,7 +66,7 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['png', 'jpg', 'jpeg', 'svg'],
       mimeTypes: ['image/png', 'image/jpeg', 'image/svg+xml'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения для оцифровки',
     },
     {
@@ -90,13 +90,13 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['ai', 'eps', 'pdf', 'svg', 'cdr'],
       mimeTypes: ['application/postscript', 'application/pdf', 'image/svg+xml'],
-      maxSizeMB: 50,
+      maxSizeMB: 100,
       description: 'Векторные макеты',
     },
     {
       extensions: ['png', 'jpg', 'jpeg', 'tiff'],
       mimeTypes: ['image/png', 'image/jpeg', 'image/tiff'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения',
     },
   ],
@@ -104,13 +104,13 @@ export const CALCULATOR_FILE_FORMATS: Record<CalculatorType, FileFormatConfig[]>
     {
       extensions: ['ai', 'eps', 'pdf', 'svg', 'cdr'],
       mimeTypes: ['application/postscript', 'application/pdf', 'image/svg+xml'],
-      maxSizeMB: 50,
+      maxSizeMB: 100,
       description: 'Векторные макеты',
     },
     {
       extensions: ['png', 'jpg', 'jpeg'],
       mimeTypes: ['image/png', 'image/jpeg'],
-      maxSizeMB: 20,
+      maxSizeMB: 50,
       description: 'Изображения',
     },
   ],
