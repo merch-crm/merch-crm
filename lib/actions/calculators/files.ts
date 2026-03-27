@@ -8,7 +8,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { writeFile, mkdir, unlink } from 'fs/promises';
+import { writeFile, mkdir, unlink, appendFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -112,10 +112,22 @@ async function getImageDimensions(
  * @param calculatorType - Тип калькулятора
  * @returns Результат загрузки
  */
+async function debugLog(message: string) {
+  const timestamp = new Date().toISOString();
+  const logMessage = `[${timestamp}] ${message}\n`;
+  console.log(message);
+  try {
+    await appendFile(path.join(process.cwd(), 'upload-debug.log'), logMessage);
+  } catch (err) {
+    // игнорируем ошибки записи лога
+  }
+}
+
 export async function uploadDesignFile(
   formData: FormData,
   calculatorType: CalculatorType
 ): Promise<UploadResult> {
+  await debugLog(`[START] uploadDesignFile for ${calculatorType}`);
   try {
     const user = await getCurrentUser();
     if (!user) {
@@ -124,16 +136,16 @@ export async function uploadDesignFile(
 
     const file = formData.get('file') as File;
     if (!file) {
-      console.error('[uploadDesignFile] Файл не найден в FormData');
+      await debugLog('[uploadDesignFile] Файл не найден в FormData');
       return { success: false, error: 'Файл не найден' };
     }
 
-    console.log(`[uploadDesignFile] Начало загрузки: ${file.name}, размер: ${file.size} байт, тип: ${file.type}`);
+    await debugLog(`[uploadDesignFile] Начало загрузки: ${file.name}, размер: ${file.size} байт, тип: ${file.type}`);
 
     // Валидация
     const validation = validateDesignFile(file, calculatorType);
     if (!validation.isValid) {
-      console.warn(`[uploadDesignFile] Ошибка валидации для ${file.name}: ${validation.error}`);
+      await debugLog(`[uploadDesignFile] Ошибка валидации для ${file.name}: ${validation.error}`);
       return { success: false, error: validation.error };
     }
 
@@ -146,17 +158,17 @@ export async function uploadDesignFile(
     const fullPath = path.join(STORAGE_BASE, filePath);
     const dirPath = path.dirname(fullPath);
 
-    console.log(`[uploadDesignFile] Путь сохранения: ${fullPath}`);
+    await debugLog(`[uploadDesignFile] Путь сохранения: ${fullPath}`);
 
     // Создаём директорию
     await ensureDir(dirPath);
 
     // Сохраняем файл
-    console.log('[uploadDesignFile] Чтение ArrayBuffer...');
+    await debugLog('[uploadDesignFile] Чтение ArrayBuffer...');
     const buffer = Buffer.from(await file.arrayBuffer());
-    console.log('[uploadDesignFile] Запись файла на диск...');
+    await debugLog('[uploadDesignFile] Запись файла на диск...');
     await writeFile(fullPath, buffer);
-    console.log('[uploadDesignFile] Файл сохранен успешно');
+    await debugLog('[uploadDesignFile] Файл сохранен успешно');
 
     // Инициализируем данные файла
     let thumbnailPath: string | undefined;
@@ -263,9 +275,13 @@ export async function uploadDesignFile(
       uploadedAt: dbRecord.uploadedAt,
     };
 
+    await debugLog(`[SUCCESS] File uploaded: ${dbRecord.id}`);
     return { success: true, data: uploadedFile };
   } catch (error) {
-    console.error('Ошибка загрузки файла:', error);
+    await debugLog(`[ERROR] uploadDesignFile: ${error instanceof Error ? error.message : String(error)}`);
+    if (error instanceof Error && error.stack) {
+      await debugLog(`[STACK] ${error.stack}`);
+    }
     return { success: false, error: 'Не удалось загрузить файл' };
   }
 }
