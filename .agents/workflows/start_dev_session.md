@@ -7,6 +7,13 @@ It sets up an adaptive SSH tunnel to the remote PostgreSQL + Redis database and 
 
 ## Steps
 
+0. **Align with Project Standards (Mandatory)**
+   The agent MUST read and analyze:
+   - `.agent/development_standards.md`
+   - `.agent/UX_STANDARDS.md`
+   - `.agent/skills/`
+   This ensures compliance with technical hurdles and UI/UX rules (e.g., using the Russian language).
+
 1. **Start the automated dev session**
    ```bash
    npm run dev:ssh

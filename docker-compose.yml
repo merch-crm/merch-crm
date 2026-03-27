@@ -3,9 +3,8 @@ version: '3.8'
 services:
   # ─── Init: Run Drizzle migrations before starting the app ────────────────────
   migrate:
-    image: ghcr.io/merch-crm/merch-crm:latest
+    image: ghcr.io/merch-crm/merch-crm-migrator:latest
     container_name: merch-crm-migrate
-    command: npm run db:push
     restart: on-failure
     env_file:
       - .env

@@ -118,7 +118,7 @@ async function debugLog(message: string) {
   console.log(message);
   try {
     await appendFile(path.join(process.cwd(), 'upload-debug.log'), logMessage);
-  } catch (err) {
+  } catch (_err) {
     // игнорируем ошибки записи лога
   }
 }
@@ -263,7 +263,7 @@ export async function uploadDesignFile(
         width: (fileDimensions.widthMm || fileDimensions.widthPx || 0) as number,
         height: (fileDimensions.heightMm || fileDimensions.heightPx || 0) as number,
       } : undefined,
-      embroideryData: dbRecord.embroideryData as import('@/lib/types/calculators').EmbroideryFileData | undefined,
+      embroideryData: dbRecord.embroideryData ? (typeof dbRecord.embroideryData === 'string' ? JSON.parse(dbRecord.embroideryData) : dbRecord.embroideryData) as import('@/lib/types/calculators').EmbroideryFileData : undefined,
       userDimensions: embroideryData
         ? {
             widthMm: embroideryData.widthMm,
@@ -281,11 +281,12 @@ export async function uploadDesignFile(
 
     await debugLog(`[SUCCESS] File uploaded: ${dbRecord.id}`);
     return { success: true, data: uploadedFile };
-  } catch (err: any) {
+  } catch (caughtErr: unknown) {
+    const err = caughtErr as { code?: string, detail?: string, constraint?: string, message?: string, stack?: string };
     console.error(`[ERROR] uploadDesignFile:`, err);
     console.error(`[ERROR DETAILS] Code:`, err?.code, `Detail:`, err?.detail, `Constraint:`, err?.constraint, `Message:`, err?.message);
-    if (err instanceof Error && err.stack) {
-      console.error(`[STACK]`, err.stack);
+    if (caughtErr instanceof Error && caughtErr.stack) {
+      console.error(`[STACK]`, caughtErr.stack);
     }
     
     // Пишем ошибку в лог файл для надежности
@@ -297,7 +298,7 @@ export async function uploadDesignFile(
         constraint: err?.constraint,
         stack: err?.stack
       })}\n`);
-    } catch (e) {}
+    } catch (_e) {}
 
     return {
       success: false,

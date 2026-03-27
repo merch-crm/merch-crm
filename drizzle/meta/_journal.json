@@ -232,6 +232,13 @@
       "when": 1773637038423,
       "tag": "0032_fix_schema_integrity",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1774643387861,
+      "tag": "0033_flaky_wilson_fisk",
+      "breakpoints": true
     }
   ]
 }

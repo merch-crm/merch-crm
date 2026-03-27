@@ -1,0 +1,2 @@
+lib/actions/calculators/files.ts(266,23): error TS2352: Conversion of type 'string | null' to type 'EmbroideryFileData | undefined' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Type 'string' is not comparable to type 'EmbroideryFileData'.

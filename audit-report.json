@@ -1,12 +1,207 @@
 {
-  "timestamp": "27.03.2026, 19:42:35",
-  "duration": 22661,
+  "timestamp": "27.03.2026, 23:33:38",
+  "duration": 24182,
   "projectName": "MerchCRM",
-  "errors": [],
+  "errors": [
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/lib/actions/calculators/files.ts",
+      "line": 284,
+      "column": 17,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/repro_upload.ts",
+      "line": 12,
+      "column": 10,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/repro_upload.ts",
+      "line": 26,
+      "column": 66,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/test-db-insert.ts",
+      "line": 4,
+      "column": 16,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-unused-vars",
+      "message": "'uuidv4' is defined but never used. Allowed unused vars must match /^_/u."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/test-db-insert.ts",
+      "line": 16,
+      "column": 32,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type."
+    },
+    {
+      "file": "/Users/leonidmolchanov/Desktop/merch-crm/test-db-insert.ts",
+      "line": 22,
+      "column": 14,
+      "severity": "warning",
+      "category": "ESLint",
+      "rule": "@typescript-eslint/no-explicit-any",
+      "message": "Unexpected any. Specify a different type."
+    },
+    {
+      "file": "lib/actions/calculators/files.ts",
+      "line": 284,
+      "severity": "error",
+      "category": "Типизация",
+      "message": "Тип any запрещён",
+      "suggestion": "Укажи конкретный тип или unknown"
+    },
+    {
+      "file": "repro_upload.ts",
+      "line": 12,
+      "severity": "error",
+      "category": "Типизация",
+      "message": "Приведение к any запрещено",
+      "suggestion": "Используй as unknown as T"
+    },
+    {
+      "file": "repro_upload.ts",
+      "line": 26,
+      "severity": "error",
+      "category": "Типизация",
+      "message": "Приведение к any запрещено",
+      "suggestion": "Используй as unknown as T"
+    },
+    {
+      "file": "test-db-insert.ts",
+      "line": 22,
+      "severity": "error",
+      "category": "Типизация",
+      "message": "Тип any запрещён",
+      "suggestion": "Укажи конкретный тип или unknown"
+    },
+    {
+      "file": "test-db-insert.ts",
+      "line": 16,
+      "severity": "error",
+      "category": "Типизация",
+      "message": "Приведение к any запрещено",
+      "suggestion": "Используй as unknown as T"
+    },
+    {
+      "file": "next.config.ts",
+      "severity": "warning",
+      "category": "Security Headers",
+      "message": "Отсутствует заголовок: X-Frame-Options - Заголовок безопасности X-Frame-Options не настроен в Next.js конфигурации.",
+      "suggestion": "Добавь X-Frame-Options в headers() функцию в next.config"
+    },
+    {
+      "file": "next.config.ts",
+      "severity": "warning",
+      "category": "Security Headers",
+      "message": "Отсутствует заголовок: X-Content-Type-Options - Заголовок безопасности X-Content-Type-Options не настроен в Next.js конфигурации.",
+      "suggestion": "Добавь X-Content-Type-Options в headers() функцию в next.config"
+    },
+    {
+      "file": "next.config.ts",
+      "severity": "warning",
+      "category": "Security Headers",
+      "message": "Отсутствует заголовок: Strict-Transport-Security - Заголовок безопасности Strict-Transport-Security не настроен в Next.js конфигурации.",
+      "suggestion": "Добавь Strict-Transport-Security в headers() функцию в next.config"
+    },
+    {
+      "file": "next.config.ts",
+      "severity": "info",
+      "category": "Security Headers",
+      "message": "Отсутствует заголовок: Content-Security-Policy - Заголовок безопасности Content-Security-Policy не настроен в Next.js конфигурации.",
+      "suggestion": "Добавь Content-Security-Policy в headers() функцию в next.config"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-calculation-history.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-calculation-history"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-calculator-settings.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-calculator-settings"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-calculator.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-calculator"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-consumables-config.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-consumables-config"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-consumables-draft.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-consumables-draft"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-design-files.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-design-files"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-layout-optimizer.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-layout-optimizer"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-pdf-generator.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-pdf-generator"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-placements-management.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-placements-management"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-placements.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-placements"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-urgency-settings.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-urgency-settings"
+    },
+    {
+      "file": "app/(main)/dashboard/production/calculators/hooks/use-warehouse-items.ts",
+      "severity": "info",
+      "category": "Тесты",
+      "message": "Нет теста для use-warehouse-items"
+    }
+  ],
   "stats": {
-    "totalFiles": 1820,
-    "totalLines": 231248,
-    "totalSize": 9628469,
+    "totalFiles": 1564,
+    "totalLines": 213882,
+    "totalSize": 8950454,
     "pagesCount": 90,
     "componentsCount": 233,
     "hooksCount": 12,
@@ -14,18 +209,25 @@
     "typesCount": 30,
     "apiRoutesCount": 37,
     "formsCount": 53,
-    "testsCount": 258,
+    "testsCount": 246,
     "tablesCount": 90,
-    "migrationsCount": 38,
+    "migrationsCount": 39,
     "typescriptErrors": 0,
     "lintErrors": 0,
-    "lintWarnings": 0,
-    "byCategory": {}
+    "lintWarnings": 6,
+    "byCategory": {
+      "ESLint": 6,
+      "Типизация": 5,
+      "Security Headers": 4,
+      "Тесты": 12
+    }
   },
   "health": {
-    "score": 100,
+    "score": 98,
     "grade": "A",
     "summary": "Отличное состояние",
-    "recommendations": []
+    "recommendations": [
+      "Мигрируй локальные типы в lib/types"
+    ]
   }
 }
