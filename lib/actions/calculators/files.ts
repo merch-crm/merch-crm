@@ -237,8 +237,8 @@ export async function uploadDesignFile(
         filePath,
         thumbnailPath: thumbnailPath || null,
         calculatorType,
-        fileDimensions,
-        embroideryData,
+        fileDimensions: fileDimensions || null,
+        embroideryData: embroideryData || null,
         uploadedBy: user.id,
       })
       .returning();
