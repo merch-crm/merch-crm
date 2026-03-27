@@ -164,25 +164,25 @@ export function calculateSilkscreenConsumablesCost(
     let consumption = 0;
     const unit = (item.consumptionUnit || '').toLowerCase();
 
-    // Краска — расход на общую площадь всех принтов (area уже содержит сумму площадей тиража)
+    // Краска — расход на (площадь * тираж). colorCount НЕ множим, если area — суммарная площадь оттисков
     if (item.id === 'plastisol_ink' || item.id.includes('ink') || unit === 'м²' || unit === 'm2') {
-      consumption = item.consumptionPerUnit * area * colorCount;
+      consumption = item.consumptionPerUnit * area * printCount;
     }
-    // Сетка — по одной на каждый цвет
-    else if (item.id === 'mesh_frame' || unit === 'рамка' || unit === 'кадр') {
+    // Сетка (рамы) — фиксированно 1 штука на каждый цвет (не зависит от тиража)
+    else if (item.id === 'mesh_frame' || unit === 'pcs' || unit === 'шт' || unit === 'рамка') {
       consumption = colorCount;
     }
-    // Эмульсия — расход на каждый кадр
-    else if (item.id === 'emulsion') {
+    // Эмульсия — расход на подготовку каждого кадра (colorCount), не зависит от тиража
+    else if (item.id === 'emulsion' || unit === 'g/screen') {
       consumption = item.consumptionPerUnit * colorCount;
     }
-    // Если расход на единицу продукции
+    // Прочее на единицу тиража (обработка и т.д.)
     else if (unit === 'шт' || unit === 'изделие' || unit === 'принт') {
-      consumption = item.consumptionPerUnit * quantity;
+      consumption = item.consumptionPerUnit * printCount;
     }
-    // Фолбек
+    // Дефолт — на тираж
     else {
-      consumption = item.consumptionPerUnit * quantity;
+      consumption = item.consumptionPerUnit * printCount;
     }
 
     const normalizedPrice = normalizePrice(item.pricePerUnit, item.priceUnit, item.unit);
