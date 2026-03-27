@@ -125,6 +125,8 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          timeout: 40m
+          command_timeout: 30m
           script: |
             cd ~/merch-crm
             git pull origin main
