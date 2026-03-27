@@ -124,12 +124,16 @@ export async function uploadDesignFile(
 
     const file = formData.get('file') as File;
     if (!file) {
+      console.error('[uploadDesignFile] Файл не найден в FormData');
       return { success: false, error: 'Файл не найден' };
     }
+
+    console.log(`[uploadDesignFile] Начало загрузки: ${file.name}, размер: ${file.size} байт, тип: ${file.type}`);
 
     // Валидация
     const validation = validateDesignFile(file, calculatorType);
     if (!validation.isValid) {
+      console.warn(`[uploadDesignFile] Ошибка валидации для ${file.name}: ${validation.error}`);
       return { success: false, error: validation.error };
     }
 
@@ -142,12 +146,17 @@ export async function uploadDesignFile(
     const fullPath = path.join(STORAGE_BASE, filePath);
     const dirPath = path.dirname(fullPath);
 
+    console.log(`[uploadDesignFile] Путь сохранения: ${fullPath}`);
+
     // Создаём директорию
     await ensureDir(dirPath);
 
     // Сохраняем файл
+    console.log('[uploadDesignFile] Чтение ArrayBuffer...');
     const buffer = Buffer.from(await file.arrayBuffer());
+    console.log('[uploadDesignFile] Запись файла на диск...');
     await writeFile(fullPath, buffer);
+    console.log('[uploadDesignFile] Файл сохранен успешно');
 
     // Инициализируем данные файла
     let thumbnailPath: string | undefined;
