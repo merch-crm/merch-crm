@@ -22,22 +22,22 @@ export const designFiles = pgTable('design_files', {
   originalName: varchar('original_name', { length: 255 }).notNull(),
   
   /** Имя файла на сервере (UUID.ext) */
-  storedName: varchar('stored_name', { length: 100 }).notNull().unique(),
+  storedName: varchar('stored_name', { length: 255 }).notNull().unique(),
   
   /** MIME-тип */
-  mimeType: varchar('mime_type', { length: 100 }).notNull(),
+  mimeType: varchar('mime_type', { length: 150 }).notNull(),
   
   /** Расширение файла */
-  extension: varchar('extension', { length: 20 }).notNull(),
+  extension: varchar('extension', { length: 50 }).notNull(),
   
   /** Размер в байтах */
   sizeBytes: integer('size_bytes').notNull(),
   
   /** Путь к файлу (относительный) */
-  filePath: varchar('file_path', { length: 500 }).notNull(),
+  filePath: varchar('file_path', { length: 1000 }).notNull(),
   
   /** Путь к превью (для изображений) */
-  thumbnailPath: varchar('thumbnail_path', { length: 500 }),
+  thumbnailPath: varchar('thumbnail_path', { length: 1000 }),
   
   /** Тип калькулятора */
   calculatorType: varchar('calculator_type', { length: 50 }).notNull(),
