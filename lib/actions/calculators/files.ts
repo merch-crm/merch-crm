@@ -226,21 +226,25 @@ export async function uploadDesignFile(
     }
 
     // Сохраняем в БД
+    const dbData = {
+      originalName: file.name,
+      storedName,
+      mimeType: file.type || 'application/octet-stream',
+      extension,
+      sizeBytes: file.size,
+      filePath,
+      thumbnailPath: thumbnailPath || null,
+      calculatorType,
+      fileDimensions: fileDimensions ? JSON.stringify(fileDimensions) : null,
+      embroideryData: (embroideryData && Object.keys(embroideryData).length > 0) ? JSON.stringify(embroideryData) : null,
+      uploadedBy: user.id,
+    };
+    
+    await appendFile('upload-debug.log', `[DEBUG] DB Insert Data: ${JSON.stringify(dbData)}\n`);
+
     const [dbRecord] = await db
       .insert(designFiles)
-      .values({
-        originalName: file.name,
-        storedName,
-        mimeType: file.type || 'application/octet-stream',
-        extension,
-        sizeBytes: file.size,
-        filePath,
-        thumbnailPath: thumbnailPath || null,
-        calculatorType,
-        fileDimensions: fileDimensions || null,
-        embroideryData: embroideryData || null,
-        uploadedBy: user.id,
-      })
+      .values(dbData)
       .returning();
 
     // Формируем ответ
@@ -277,12 +281,28 @@ export async function uploadDesignFile(
 
     await debugLog(`[SUCCESS] File uploaded: ${dbRecord.id}`);
     return { success: true, data: uploadedFile };
-  } catch (error) {
-    await debugLog(`[ERROR] uploadDesignFile: ${error instanceof Error ? error.message : String(error)}`);
-    if (error instanceof Error && error.stack) {
-      await debugLog(`[STACK] ${error.stack}`);
+  } catch (err: any) {
+    console.error(`[ERROR] uploadDesignFile:`, err);
+    console.error(`[ERROR DETAILS] Code:`, err?.code, `Detail:`, err?.detail, `Constraint:`, err?.constraint, `Message:`, err?.message);
+    if (err instanceof Error && err.stack) {
+      console.error(`[STACK]`, err.stack);
     }
-    return { success: false, error: 'Не удалось загрузить файл' };
+    
+    // Пишем ошибку в лог файл для надежности
+    try {
+      await appendFile('upload-debug.log', `[FATAL] DB Error: ${JSON.stringify({
+        message: err?.message || String(err),
+        code: err?.code,
+        detail: err?.detail,
+        constraint: err?.constraint,
+        stack: err?.stack
+      })}\n`);
+    } catch (e) {}
+
+    return {
+      success: false,
+      error: 'Ошибка при сохранении файла (DB): ' + (err?.message || String(err))
+    };
   }
 }
 
