@@ -55,8 +55,7 @@ export const handlers = [
   }),
 
   // Файлы брендинга
-  http.get('/api/files/branding/:filename', ({ params }) => {
-    const { filename } = params;
+  http.get('/api/files/branding/:filename', () => {
     
     return new HttpResponse(new Blob(['mock-image-content'], { type: 'image/png' }), {
       status: 200,

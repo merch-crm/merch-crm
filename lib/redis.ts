@@ -72,7 +72,7 @@ const isTest = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 
 /** Singleton Redis instance */
 declare global {
-
+  // eslint-disable-next-line no-var
   var redis: Redis | RedisMock | undefined;
 }
 
