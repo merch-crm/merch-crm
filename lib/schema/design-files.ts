@@ -4,7 +4,7 @@
  * @audit files
  */
 
-import { pgTable, uuid, varchar, integer, jsonb, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, integer, jsonb, timestamp, index, text } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { users } from './users';
 
@@ -46,13 +46,13 @@ export const designFiles = pgTable('design_files', {
    * Размеры из файла (JSON)
    * { widthPx, heightPx, widthMm, heightMm }
    */
-  fileDimensions: jsonb('file_dimensions'),
+  fileDimensions: text('file_dimensions'),
   
   /**
    * Данные вышивки (JSON, для DST и др.)
    * { format, stitchCount, colorCount, colorSequence, widthMm, heightMm, estimatedTimeMin }
    */
-  embroideryData: jsonb('embroidery_data'),
+  embroideryData: text('embroidery_data'),
   
   /** ID пользователя, загрузившего файл */
   uploadedBy: uuid('uploaded_by').notNull().references(() => users.id),
