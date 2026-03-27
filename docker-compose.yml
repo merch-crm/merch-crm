@@ -112,18 +112,18 @@ services:
       - PRESENCE_SERVICE_API_KEY=${PRESENCE_SERVICE_API_KEY:-presence-secret-key}
       - GO2RTC_URL=http://go2rtc:1984
       - CRM_URL=http://app:3000
-      - NVIDIA_VISIBLE_DEVICES=all
+#      - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - face-models:/app/models
-#    depends_on:
-#      - go2rtc
+    depends_on:
+      - go2rtc
 #    deploy:
 #      resources:
 #        reservations:
 #          devices:
 #            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+#              count: 1
+#              capabilities: [gpu]
     networks:
       - app_network
 
