@@ -7,7 +7,7 @@
 
 'use client';
 
-import { ReactNode, ElementType } from 'react';
+import React, { ReactNode, ElementType } from 'react';
 import { Settings, ArrowLeft, Save, FileDown, Printer } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -227,8 +227,29 @@ export function UnifiedCalculatorLayout({
   resultBlock,
   headerActions,
 }: UnifiedCalculatorLayoutProps) {
+  const [isMounted, setIsMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="flex flex-col gap-3 pb-20 max-w-[1600px] mx-auto animate-pulse">
+        <div className="h-20 bg-slate-100 rounded-xl" />
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-3">
+          <div className="xl:col-span-8 h-96 bg-slate-50 rounded-xl" />
+          <div className="xl:col-span-4 h-96 bg-slate-50 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-3 pb-20 max-w-[1600px] mx-auto">
+    <div 
+      className="flex flex-col gap-3 pb-20 max-w-[1600px] mx-auto"
+      suppressHydrationWarning
+    >
       <CalculatorHeader
         calculatorType={calculatorType}
         onSettingsClick={onSettingsClick}

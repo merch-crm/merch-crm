@@ -157,8 +157,7 @@ export function calculateSilkscreenConsumablesCost(
   config: ConsumablesConfig,
   area: number,
   colorCount: number,
-  printCount: number,
-  quantity: number
+  printCount: number
 ): ConsumablesCostResult {
   const items = (config?.items || []).map((item) => {
     let consumption = 0;

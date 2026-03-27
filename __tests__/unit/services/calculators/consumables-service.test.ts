@@ -62,7 +62,7 @@ describe('ConsumablesService', () => {
     };
 
     it('should calculate silkscreen cost', () => {
-      const result = calculateSilkscreenConsumablesCost(mockSilkConfig, 0.5, 2, 100, 1); 
+      const result = calculateSilkscreenConsumablesCost(mockSilkConfig, 0.5, 2, 100); 
       // Ink: 40 * 0.5 * 100 * 2 = 4000
       // Mesh: 2 * 500 = 1000
       // Emulsion: 10 * 2 * 3 = 60

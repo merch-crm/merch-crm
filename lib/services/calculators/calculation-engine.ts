@@ -157,8 +157,7 @@ export class CalculationEngine {
           consumablesConfig,
           input.totalFilmArea,
           input.colorCount || 1,
-          input.printRuns || input.quantity,
-          input.quantity
+          input.printRuns || input.quantity
         );
 
       default:
