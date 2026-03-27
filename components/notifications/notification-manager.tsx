@@ -172,7 +172,12 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        const interval = setInterval(async () => {
+        let timerId: NodeJS.Timeout;
+        let retryDelay = 15000;
+        const baseDelay = 15000;
+        const maxDelay = 60000;
+
+        const poll = async () => {
             try {
                 const [nRes, oRes] = await Promise.all([
                     fetch("/api/notifications/unread-count"),
@@ -188,12 +193,23 @@ export function NotificationManager({ initialUnreadCount, customSoundUrl }: Noti
                     const oData = await oRes.json();
                     if (typeof oData.count === "number") setOrderCount(oData.count);
                 }
-            } catch {
-                // Ignore
+                
+                // Success: reset delay
+                retryDelay = baseDelay;
+            } catch (err) {
+                console.error("[NotificationManager] Polling error:", err);
+                // Increase delay on error (exponential backoff)
+                retryDelay = Math.min(retryDelay * 1.5, maxDelay);
+            } finally {
+                timerId = setTimeout(poll, retryDelay);
             }
-        }, 15000);
+        };
 
-        return () => clearInterval(interval);
+        timerId = setTimeout(poll, baseDelay);
+
+        return () => {
+            if (timerId) clearTimeout(timerId);
+        };
     }, []);
 
     return null;

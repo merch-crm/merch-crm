@@ -153,7 +153,7 @@ export function TaskChecklistSection({
           )}
         </div>
         {progress === 100 && checklist.length > 0 && (
-          <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium text-center">
+          <p className="text-sm text-emerald-600 font-medium text-center">
             Все пункты выполнены!
           </p>
         )}

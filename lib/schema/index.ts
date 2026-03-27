@@ -2,6 +2,11 @@
 export * from "./enums";
 
 // ./calculators
+export * from "./calculation-history";
+export * from "./calculator-defaults";
+export * from "./placement-items";
+export * from "./design-files";
+// Legacy calculators (to be migrated)
 export { meterPriceTiers, printPlacements, calculatorConsumablesSettings, printCalculations, printCalculationGroups, printCalculationsRelations, printCalculationGroupsRelations } from "./calculators";
 export type { ConsumptionDataItem, ConsumptionData, MeterPriceTier, NewMeterPriceTier, PrintPlacement, NewPrintPlacement, CalculatorConsumablesSettings, NewCalculatorConsumablesSettings, PrintCalculation, NewPrintCalculation, PrintCalculationGroup, NewPrintCalculationGroup } from "./calculators";
 // ./clients/branding
@@ -104,3 +109,10 @@ export { inventoryItems, inventoryItemsRelations } from "./warehouse/items";
 export { inventoryStocks, inventoryStocksRelations, inventoryTransfers, inventoryTransfersRelations, inventoryTransactions, inventoryTransactionsRelations } from "./warehouse/stock";
 // ./wiki
 export { wikiFolders, wikiFoldersRelations, wikiPages, wikiPagesRelations } from "./wiki";
+
+// ./calculators (New)
+export * from './calculation-history';
+export * from './calculator-defaults';
+export * from './placement-items';
+export * from './design-files';
+export * from './branding';

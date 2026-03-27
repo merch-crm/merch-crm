@@ -47,7 +47,7 @@ describe('OrdersTable', () => {
     
     render(<OrdersTable orders={orders} isAdmin={false} />)
     
-    orders.forEach(order => {
+    orders!.forEach(order => {
       expect(screen.getAllByText(new RegExp(`ORD-.*${order.id.slice(0, 4)}`, 'i'))[0]).toBeInTheDocument()
     })
   })

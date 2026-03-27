@@ -29,24 +29,41 @@ export function useDashboardData(initialStats: DashboardStats, period: string) {
     }, []);
 
     useEffect(() => {
+        let isStale = false;
+
         const fetchData = async () => {
+            if (isStale) return;
             try {
                 const [stats, notifs] = await Promise.all([
                     getDashboardStatsByPeriod(period),
                     getDashboardNotifications()
                 ]);
-                setStatsData(stats);
-                setNotifications(notifs as Notification[]);
-            } catch (error) {
-                console.error("Failed to fetch dashboard data", error);
+                if (!isStale) {
+                    setStatsData(stats);
+                    setNotifications(notifs as Notification[]);
+                }
+            } catch (error: unknown) {
+                // Ignore silent fetch errors often caused by HMR or cancelled requests
+                const err = error instanceof Error ? error : new Error(String(error));
+                if (err.message.includes('fetch') || err.name === 'TypeError') {
+                    console.warn("Silent fetch cancellation:", err.message);
+                } else {
+                    console.error("Failed to fetch dashboard data", err);
+                }
             }
         };
 
-        fetchData();
+        // Delay the first fetch slightly, so if strict mode unmounts it we don't throw multiple fetch errors immediately
+        const firstFetchTimer = setTimeout(() => {
+            fetchData();
+        }, 300);
+
         const interval = setInterval(fetchData, 15000);
         const clockInterval = setInterval(() => setTime(new Date()), 60000);
 
         return () => {
+            isStale = true;
+            clearTimeout(firstFetchTimer);
             clearInterval(interval);
             clearInterval(clockInterval);
         };

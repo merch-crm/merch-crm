@@ -22,7 +22,7 @@ export const ChargingWidget = () => {
     `;
 
     return (
-        <div className="flex items-center justify-center p-[--padding-xl] bg-[#f0f0f0] dark:bg-black rounded-[4rem]">
+        <div className="flex items-center justify-center p-[--padding-xl] bg-[#f0f0f0] rounded-[4rem]">
             {/* Main Card Container */}
             <motion.div
                 initial={{ opacity: 0, y: 30 }}

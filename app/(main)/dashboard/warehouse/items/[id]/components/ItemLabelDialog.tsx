@@ -160,7 +160,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                                 <Image
                                     src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${item.sku || item.id}`}
                                     alt="QR Code"
-                                    className="w-full h-full object-contain invert dark:invert-0"
+                                    className="w-full h-full object-contain invert"
                                     width={80}
                                     height={80}
                                 />

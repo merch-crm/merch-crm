@@ -25,8 +25,8 @@ import type {
   StaffLoadData,
   UrgentTask,
   EquipmentStatusItem,
+  DashboardActionResult,
 } from "../types";
-import type { DashboardActionResult } from "./types";
 
 const emptyParamsSchema = z.object({}).optional();
 

@@ -1,4 +1,7 @@
 // app/(main)/dashboard/production/calculators/page.tsx
+"use client";
+
+import React from "react";
 import Link from "next/link";
 import { 
   Layers, 
@@ -7,165 +10,223 @@ import {
   Grid3X3, 
   Scissors, 
   Stamp,
-  ArrowRight,
-  Calculator
+  Sun,
+  History,
+  Info,
+  ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/layout/page-header";
 
-interface CalculatorCardData {
+interface CalculatorItem {
   id: string;
-  name: string;
+  title: string;
   description: string;
   href: string;
   icon: React.ElementType;
-  gradient: string;
-  shadowColor: string;
+  iconColor: string;
+  iconBgColor: string;
+  featured?: boolean;
+  className?: string; // For Bento grid layout control
 }
 
-const calculators: CalculatorCardData[] = [
+const calculators: CalculatorItem[] = [
   {
     id: "dtf",
-    name: "DTF-печать",
-    description: "Прямая печать на плёнку с переносом на ткань",
+    title: "DTF-печать",
+    description: "Прямая печать на плёнку с переносом на ткань. Отлично подходит для полноцветных изображений и мелких деталей.",
     href: "/dashboard/production/calculators/dtf",
     icon: Layers,
-    gradient: "from-blue-500 via-blue-600 to-indigo-600",
-    shadowColor: "shadow-blue-500/30",
+    iconColor: "text-white",
+    iconBgColor: "bg-white/20",
+    featured: true,
+    className: "md:col-span-2 lg:col-span-2 row-span-2",
   },
   {
     id: "sublimation",
-    name: "Сублимация",
-    description: "Перенос красителя в структуру ткани",
+    title: "Сублимация",
+    description: "Надежный перенос красителя в структуру...",
     href: "/dashboard/production/calculators/sublimation",
     icon: Droplets,
-    gradient: "from-cyan-500 via-teal-500 to-emerald-500",
-    shadowColor: "shadow-teal-500/30",
+    iconColor: "text-blue-600",
+    iconBgColor: "bg-blue-50",
+    className: "md:col-span-1 lg:col-span-1",
   },
   {
     id: "dtg",
-    name: "DTG-печать",
+    title: "DTG-печать",
     description: "Прямая цифровая печать на текстиль",
     href: "/dashboard/production/calculators/dtg",
     icon: Shirt,
-    gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
-    shadowColor: "shadow-purple-500/30",
+    iconColor: "text-violet-600",
+    iconBgColor: "bg-violet-50",
+    className: "md:col-span-1 lg:col-span-1",
   },
   {
     id: "silkscreen",
-    name: "Шелкография",
+    title: "Шелкография",
     description: "Трафаретная печать через сетку",
     href: "/dashboard/production/calculators/silkscreen",
     icon: Grid3X3,
-    gradient: "from-amber-500 via-orange-500 to-red-500",
-    shadowColor: "shadow-orange-500/30",
+    iconColor: "text-slate-600",
+    iconBgColor: "bg-slate-50",
+    className: "md:col-span-1 lg:col-span-1",
   },
   {
     id: "embroidery",
-    name: "Вышивка",
-    description: "Машинная вышивка нитками на ткани",
+    title: "Вышивка",
+    description: "Логотипы нитками на текстиле",
     href: "/dashboard/production/calculators/embroidery",
     icon: Scissors,
-    gradient: "from-rose-500 via-pink-500 to-fuchsia-500",
-    shadowColor: "shadow-pink-500/30",
+    iconColor: "text-rose-600",
+    iconBgColor: "bg-rose-50",
+    className: "md:col-span-1 lg:col-span-1",
   },
   {
-    id: "print-application",
-    name: "Нанесение принта",
+    id: "uv-dtf",
+    title: "UV DTF-печать",
+    description: "УФ-печать для брендирования сувениров",
+    href: "/dashboard/production/calculators/uv-dtf",
+    icon: Sun,
+    iconColor: "text-cyan-600",
+    iconBgColor: "bg-cyan-50",
+    className: "md:col-span-2 lg:col-span-2", // Wide bento block
+  },
+  {
+    id: "thermotransfer",
+    title: "Нанесение принта",
     description: "Термотрансферы, нашивки, шевроны",
-    href: "/dashboard/production/calculators/print-application",
+    href: "/dashboard/production/calculators/thermotransfer",
     icon: Stamp,
-    gradient: "from-slate-600 via-slate-700 to-slate-800",
-    shadowColor: "shadow-slate-500/30",
+    iconColor: "text-orange-600",
+    iconBgColor: "bg-orange-50",
+    className: "md:col-span-2 lg:col-span-2", // Wide bento block
   },
 ];
 
+const utilities: CalculatorItem[] = [
+  {
+    id: "history",
+    title: "История",
+    description: "Архив сохраненных расчётов",
+    href: "/dashboard/production/calculators/history",
+    icon: History,
+    iconColor: "text-slate-600",
+    iconBgColor: "bg-slate-50",
+    className: "lg:col-span-2 md:col-span-1",
+  },
+  {
+    id: "placements",
+    title: "База нанесений",
+    description: "Управление стандартными зонами",
+    href: "/dashboard/production/calculators/placements",
+    icon: Info,
+    iconColor: "text-emerald-600",
+    iconBgColor: "bg-emerald-50",
+    className: "lg:col-span-2 md:col-span-1",
+  },
+];
+
+function BentoCard({ calc }: { calc: CalculatorItem }) {
+  const Icon = calc.icon;
+  const isLarge = calc.featured;
+  const isWide = calc.className?.includes('lg:col-span-2') && !isLarge;
+
+  if (isLarge) {
+    return (
+      <Link href={calc.href} className={cn("group block", calc.className)}>
+        <div className="relative h-full overflow-hidden rounded-2xl bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] p-8 text-white transition-all duration-500 hover:shadow-xl hover:shadow-indigo-500/20 hover:-translate-y-1">
+          {/* Decorative Icon inside Hero */}
+          <Icon className="absolute -right-6 -bottom-6 h-64 w-64 opacity-[0.07] text-white transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-12" />
+          
+          <div className="absolute top-0 right-0 p-8">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md transition-colors group-hover:bg-white/25">
+              <ArrowRight className="h-6 w-6 text-white" />
+            </div>
+          </div>
+          
+          <div className="flex h-full flex-col justify-between pt-2">
+            <div className="flex h-16 w-16 items-center justify-center rounded-[20px] bg-white/20 backdrop-blur-sm shadow-inner ring-1 ring-white/30">
+              <Icon className="h-8 w-8 text-white" strokeWidth={2.5} />
+            </div>
+            
+            <div className="mt-8 z-10 w-full lg:w-[85%]">
+              <h3 className="text-3xl font-bold tracking-tight mb-3 text-white">{calc.title}</h3>
+              <p className="text-indigo-100/90 text-sm md:text-base leading-relaxed font-medium">{calc.description}</p>
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
+  // Regular & Wide Bento Cards
+  return (
+    <Link href={calc.href} className={cn("group block", calc.className)}>
+      <div className={cn(
+        "relative flex h-full rounded-2xl bg-white border border-slate-200 p-6 transition-all duration-300",
+        "hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-indigo-100 hover:-translate-y-1 overflow-hidden",
+        isWide ? "flex-col lg:flex-row lg:items-center gap-3" : "flex-col gap-3"
+      )}>
+        {/* Subtle decorative background glow on hover */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/0 via-transparent to-slate-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <div className={cn(
+          "flex items-center justify-center rounded-[20px] shrink-0 transition-transform duration-500 group-hover:scale-105", 
+          calc.iconBgColor,
+          isWide ? "h-16 w-16" : "h-14 w-14"
+        )}>
+          <Icon className={cn("h-7 w-7", calc.iconColor)} strokeWidth={2.5} />
+        </div>
+        
+        <div className="relative z-10 flex-1">
+          <h3 className="font-bold text-slate-900 text-lg tracking-tight mb-2 group-hover:text-indigo-600 transition-colors">
+            {calc.title}
+          </h3>
+          <p className="text-slate-500 text-sm leading-relaxed font-medium">{calc.description}</p>
+        </div>
+
+        {isWide && (
+          <div className="relative z-10 hidden lg:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-400 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:bg-indigo-50 group-hover:text-indigo-600 group-hover:translate-x-1">
+            <ArrowRight className="h-5 w-5" />
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+}
+
 export default function CalculatorsOverviewPage() {
   return (
-    <div className="space-y-3">
-      {/* Заголовок */}
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-          <Calculator className="w-6 h-6" />
-        </div>
-        <div>
-          <h1 className="text-xl font-bold text-slate-900">Калькулятор расчета себестоимости</h1>
-          <p className="text-sm font-medium text-slate-500">
-            Выберите тип нанесения для расчёта стоимости
-          </p>
-        </div>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 w-full">
+      {/* Standard Page Header (no icon) */}
+      <PageHeader
+        title="Калькулятор расчета себестоимости"
+        description="Выберите тип нанесения для расчёта стоимости"
+        className="mb-8 pt-2 px-1"
+      />
+
+      {/* Main Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+        {calculators.map((calc) => (
+          <BentoCard key={calc.id} calc={calc} />
+        ))}
       </div>
 
-      {/* Сетка калькуляторов */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {calculators.map((calc) => (
-          <CalculatorCard key={calc.id} calculator={calc} />
-        ))}
+      {/* Utilities Section mapped as Wide Bento Cards */}
+      <div className="mt-8 pt-8 border-t border-slate-100/80">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-sm font-bold text-slate-400">
+            Инструменты и история
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          {utilities.map((calc) => (
+            <BentoCard key={calc.id} calc={calc} />
+          ))}
+        </div>
       </div>
     </div>
   );
 }
 
-interface CalculatorCardProps {
-  calculator: CalculatorCardData;
-}
-
-function CalculatorCard({ calculator }: CalculatorCardProps) {
-  const Icon = calculator.icon;
-
-  return (
-    <Link
-      href={calculator.href}
-      className={cn(
-        "crm-card group relative overflow-hidden",
-        "hover:shadow-xl transition-all duration-300",
-        "hover:-translate-y-1",
-        calculator.shadowColor
-      )}
-    >
-      {/* Градиентный фон (появляется при ховере) */}
-      <div className={cn(
-        "absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-300",
-        calculator.gradient
-      )} />
-
-      {/* Декоративный элемент */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/10 to-transparent rounded-full -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-      {/* Контент */}
-      <div className="relative z-10">
-        {/* Иконка */}
-        <div className={cn(
-          "w-14 h-14 rounded-2xl flex items-center justify-center mb-4 transition-colors duration-300",
-          "bg-slate-100 text-slate-600",
-          "group-hover:bg-white/20 group-hover:text-white"
-        )}>
-          <Icon className="w-7 h-7" />
-        </div>
-
-        {/* Текст */}
-        <h3 className={cn(
-          "text-lg font-bold mb-1 transition-colors duration-300",
-          "text-slate-900 group-hover:text-white"
-        )}>
-          {calculator.name}
-        </h3>
-        <p className={cn(
-          "text-sm font-medium transition-colors duration-300",
-          "text-slate-500 group-hover:text-white/80"
-        )}>
-          {calculator.description}
-        </p>
-
-        {/* Стрелка */}
-        <div className={cn(
-          "absolute bottom-6 right-6 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300",
-          "bg-slate-100 text-slate-400",
-          "group-hover:bg-white/20 group-hover:text-white",
-          "opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0"
-        )}>
-          <ArrowRight className="w-5 h-5" />
-        </div>
-      </div>
-    </Link>
-  );
-}

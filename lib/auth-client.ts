@@ -2,7 +2,7 @@ import { createAuthClient } from "better-auth/client";
 import { twoFactorClient, adminClient } from "better-auth/client/plugins";
 
 export const authClient = createAuthClient({
-    baseURL: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    baseURL: process.env.NEXT_PUBLIC_APP_URL,
 
     // Глобальная обработка rate limit (429)
     fetchOptions: {

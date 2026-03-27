@@ -25,9 +25,9 @@ import type {
   StatsPeriod,
   HeatmapData,
   ShiftEfficiencyData,
+  DashboardActionResult,
 } from "../types";
 import { getPeriodRange } from "../utils/period-utils";
-import type { DashboardActionResult } from "./types";
 
 const periodSchema = z.enum(["day", "week", "month"]);
 

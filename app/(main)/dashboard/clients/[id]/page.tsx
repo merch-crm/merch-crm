@@ -13,16 +13,23 @@ import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
 import { OrderHistoryTable } from"./order-history-table";
 import { ClientTimeline } from"./client-timeline";
 import { ClientProfileActions } from"./client-profile-actions";
+import { ClientCalculationsTable } from "./client-calculations-table";
+import { getClientCalculations } from "@/lib/actions/calculators/history";
 import { Button } from"@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from"@/components/ui/tabs";
 import { Badge } from"@/components/ui/badge";
 import { cn } from"@/lib/utils";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
+import { Calculator } from "lucide-react";
 
 export default async function ClientPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const result = await getClientDetails(id);
     const branding = await getBrandingSettings();
     const currencySymbol = branding?.currencySymbol ||"₽";
+
+    const calculationsRes = await getClientCalculations({ clientId: id });
+    const calculations = calculationsRes.success ? (calculationsRes.data || []) : [];
 
     if (!result.success || !result.data) {
         notFound();
@@ -33,6 +40,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
 
     return (
         <div className="flex flex-col gap-3 animate-in fade-in duration-500">
+            <BreadcrumbLabelSync id={id} label={client.name ?? 'Клиент'} />
             {/* Minimal Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
@@ -191,6 +199,10 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
                                 <Wallet className="w-4 h-4" />
                                 Финансы
                             </TabsTrigger>
+                            <TabsTrigger value="calculations" className="flex-1 sm:flex-none gap-2">
+                                <Calculator className="w-4 h-4" />
+                                Расчеты
+                            </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="orders" className="mt-0">
@@ -199,6 +211,10 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
 
                         <TabsContent value="activity" className="mt-4">
                             <ClientTimeline activity={client.activity || []} />
+                        </TabsContent>
+
+                        <TabsContent value="calculations" className="mt-0">
+                             <ClientCalculationsTable calculations={calculations} currencySymbol={currencySymbol} />
                         </TabsContent>
 
                         <TabsContent value="finance" className="mt-0">

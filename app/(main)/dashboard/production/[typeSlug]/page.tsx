@@ -6,6 +6,7 @@ import { ProductionWidgets } from "../production-widgets";
 import { getApplicationTypeBySlug } from "../actions/application-type-actions";
 import { getProductionBoardItems, getProductionTypeStats } from "../actions/production-dashboard-actions";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface ProductionTypePageProps {
     params: Promise<{
@@ -62,6 +63,7 @@ export default async function ProductionTypePage({ params }: ProductionTypePageP
 
     return (
         <div className="flex flex-col h-full bg-slate-50/50">
+            <BreadcrumbLabelSync id={typeSlug} label={applicationType.name} />
             {/* Tabs Header */}
             <ProductionHeader activeSlug={typeSlug} />
 

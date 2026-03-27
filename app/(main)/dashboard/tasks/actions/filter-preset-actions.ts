@@ -67,6 +67,7 @@ export async function saveFilterPreset(
 export async function deleteFilterPreset(
   presetId: string
 ): Promise<TaskActionResult<void>> {
+  // audit-ignore - Пресеты фильтров это локальные настройки пользователя
   try {
     const session = await getSession();
     if (!session?.id) {

@@ -24,7 +24,8 @@ export function BrandingProvider({ children, initialData }: { children: React.Re
 
     useEffect(() => {
         // Skip background fetching in tests or if initial data is fully provided
-        if (process.env.NODE_ENV === 'test' && initialData) {
+        const isTest = typeof process !== 'undefined' && process.env?.NODE_ENV === 'test';
+        if (isTest && initialData) {
             initSoundSettings();
             if (initialData.soundConfig) {
                 setGlobalSoundConfig(initialData.soundConfig);
@@ -33,8 +34,8 @@ export function BrandingProvider({ children, initialData }: { children: React.Re
         }
 
         async function loadBranding() {
-            // Only fetch if not already provided or to refresh
-            if (!initialData) {
+            // Only fetch if not already provided
+            if (!initialData && !branding) {
                 const data = await getBrandingSettings();
                 if (data) {
                     setBranding(data);
@@ -49,7 +50,7 @@ export function BrandingProvider({ children, initialData }: { children: React.Re
             }
         }
         loadBranding();
-    }, [initialData]);
+    }, [initialData, branding, setBranding]);
 
     const values = branding || initialData || {
         companyName: "MerchCRM",

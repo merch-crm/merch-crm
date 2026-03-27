@@ -5,6 +5,7 @@ import { tasks } from "@/lib/db/schema";
 import { eq, and, ne, desc } from "drizzle-orm";
 import type { Task } from "@/lib/types/tasks";
 import { z } from "zod";
+import { getSession } from "@/lib/session";
 
 
 
@@ -13,6 +14,9 @@ import { z } from "zod";
  */
 export async function getDepartmentTasks(departmentId: string): Promise<Task[]> {
   try {
+    const session = await getSession();
+    if (!session?.id) return [];
+
     z.string().uuid().parse(departmentId);
     const data = await db.query.tasks.findMany({
       where: and(

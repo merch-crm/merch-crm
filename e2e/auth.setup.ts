@@ -9,14 +9,27 @@ if (!fs.existsSync(authDir)) {
 const authFile = path.join(authDir, 'user.json')
 
 setup('authenticate', async ({ page }) => {
-  await page.goto('/login')
-  await page.fill('input[name="email"]', 'admin@test.com')
-  await page.fill('input[name="password"]', 'testpassword123')
-  await page.click('button[type="submit"]')
-  
-  // Ждём успешной авторизации (переход на дашборд)
-  await expect(page).toHaveURL(/\/dashboard/)
-  
-  // Сохраняем состояние аутентификации
-  await page.context().storageState({ path: authFile })
+  try {
+    console.log('Navigating to login page...');
+    await page.goto(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000', { timeout: 60000 });
+    
+    // Explicitly wait for the page to load
+    await page.waitForLoadState('networkidle', { timeout: 60000 });
+    
+    console.log('Filling login form...');
+    await page.fill('input[name="email"]', 'admin@test.com');
+    await page.fill('input[name="password"]', 'testpassword123');
+    
+    console.log('Submitting form...');
+    await Promise.all([
+      page.waitForURL(/\/dashboard/, { timeout: 30000 }),
+      page.click('button[type="submit"]')
+    ]);
+    
+    console.log('Authentication successful, saving state...');
+    await page.context().storageState({ path: authFile });
+  } catch (error) {
+    console.error('Authentication failed:', error);
+    throw error;
+  }
 })

@@ -30,15 +30,11 @@ import type {
   DefectStats,
   DeadlineCalendarData,
   TopApplicationType,
-  DailyOutputItem
+  DailyOutputItem,
+  DashboardActionResult,
 } from "../types";
 import { getPeriodRange } from "../utils/period-utils";
 
-export interface DashboardActionResult<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
 
 const periodSchema = z.enum(["day", "week", "month"]);
 

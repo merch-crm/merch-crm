@@ -1,13 +1,29 @@
 // @/lib/types/branding.ts
 
 export interface BrandingSettings {
+    id?: string;
+    userId?: string;
     companyName: string;
     logoUrl: string | null;
     primaryColor: string;
-    faviconUrl: string | null;
+    secondaryColor?: string;
+    faviconUrl?: string | null;
     radiusOuter?: number;
     radiusInner?: number;
-    // New fields
+    phone?: string | null;
+    email?: string | null;
+    website?: string | null;
+    address?: string | null;
+    inn?: string | null;
+    kpp?: string | null;
+    ogrn?: string | null;
+    bankDetails?: string | null;
+    footerText?: string | null;
+    showQrCode?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
+    
+    // UI/Legacy fields
     loginSlogan?: string | null;
     loginBackgroundUrl?: string | null;
     dashboardWelcome?: string | null;
@@ -31,3 +47,43 @@ export interface BrandingSettings {
     dateFormat?: string;
     timezone?: string;
 }
+
+/**
+ * Пользовательский брендинг (полная структура из базы)
+ */
+export interface UserBrandingSettings {
+  id: string;
+  userId: string;
+  companyName: string;
+  logoUrl: string | null;
+  primaryColor: string;
+  secondaryColor: string;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  address: string | null;
+  inn: string | null;
+  kpp: string | null;
+  ogrn: string | null;
+  bankDetails: string | null;
+  footerText: string | null;
+  showQrCode: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type BrandingFormData = {
+  companyName: string;
+  primaryColor: string;
+  secondaryColor: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  address?: string;
+  inn?: string;
+  kpp?: string;
+  ogrn?: string;
+  bankDetails?: string;
+  footerText?: string;
+  showQrCode: boolean;
+};

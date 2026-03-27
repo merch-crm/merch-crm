@@ -255,7 +255,7 @@ export function TaskInfoSection({
               <Zap className="h-5 w-5 text-violet-500" />
             </div>
             <div>
-              <p className="font-medium text-violet-700 dark:text-violet-300">
+              <p className="font-medium text-violet-700">
                 Автоматически созданная задача
               </p>
               <p className="text-sm text-muted-foreground mt-0.5">
@@ -353,7 +353,7 @@ export function TaskInfoSection({
               <Share2 className="h-5 w-5 text-amber-600" />
             </div>
             <div>
-              <p className="font-medium text-amber-700 dark:text-amber-300">
+              <p className="font-medium text-amber-700">
                 Задача делегирована
               </p>
               <p className="text-sm text-muted-foreground mt-0.5">

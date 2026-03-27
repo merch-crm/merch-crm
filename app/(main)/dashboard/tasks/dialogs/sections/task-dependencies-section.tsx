@@ -154,7 +154,7 @@ export function TaskDependenciesSection({
               <AlertTriangle className="h-5 w-5 text-orange-500" />
             </div>
             <div>
-              <p className="font-medium text-orange-700 dark:text-orange-300">
+              <p className="font-medium text-orange-700">
                 Задача заблокирована
               </p>
               <p className="text-sm text-muted-foreground mt-0.5">

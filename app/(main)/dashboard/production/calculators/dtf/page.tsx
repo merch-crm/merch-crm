@@ -1,10 +1,22 @@
-import { DTFCalculatorClient } from './dtf-calculator-client'
+// app/(main)/dashboard/production/calculators/dtf/page.tsx
 
-export const metadata = {
+import { Suspense } from 'react';
+import { Metadata } from 'next';
+import { DTFCalculatorClient } from './dtf-calculator-client';
+import { CalculatorPageSkeleton } from '../components/CalculatorPageSkeleton';
+
+export const metadata: Metadata = {
   title: 'DTF калькулятор | MerchCRM',
-  description: 'Расчёт себестоимости DTF-печати'
-}
+  description: 'Расчёт стоимости DTF печати',
+};
 
-export default function DtfCalculatorPage() {
-  return <DTFCalculatorClient />
+/**
+ * Страница DTF калькулятора
+ */
+export default function DTFCalculatorPage() {
+  return (
+    <Suspense fallback={<CalculatorPageSkeleton />}>
+      <DTFCalculatorClient />
+    </Suspense>
+  );
 }

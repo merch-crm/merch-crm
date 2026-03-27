@@ -4,12 +4,14 @@ import { env } from "@/lib/env";
 
 const redisOptions = {
   host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
   password: env.REDIS_PASSWORD || undefined,
+  connectTimeout: 2000,
   retryStrategy: (times: number) => {
-    const delay = Math.min(times * 50, 2000);
+    const delay = Math.min(times * 100, 3000);
     return delay;
   },
-  maxRetriesPerRequest: 3,
+  maxRetriesPerRequest: 1,
 };
 
 // Mock Redis for test environments without a real Redis server

@@ -3,6 +3,7 @@ import { PageContainer } from "@/components/ui/page-container";
 import { LineDetailClient } from "./line-detail-client";
 import { getLineById } from "../actions";
 import { getInventoryItems } from "../../actions";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface LinePageProps {
     params: Promise<{ id: string }>;
@@ -38,6 +39,7 @@ export default async function LinePage({ params }: LinePageProps) {
 
     return (
         <PageContainer>
+            <BreadcrumbLabelSync id={id} label={line.name} />
             <LineDetailClient line={line} items={items} />
         </PageContainer>
     );

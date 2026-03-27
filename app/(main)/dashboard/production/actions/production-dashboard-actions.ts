@@ -12,43 +12,24 @@ import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, subDays, format } from "date-fns";
 import { z } from "zod";
 import { getSession } from "@/lib/session";
+import { 
+    ProductionStats, 
+    LineLoad, 
+    ProductionTaskSummary, 
+    EquipmentStatus, 
+    StaffOnShift,
+    ProductionBoardItem
+} from "../types";
 
-export type { ProductionStats } from "./dashboard-stats-actions";
-export type { LineLoad } from "./dashboard-lines-actions";
-
-export interface ProductionTaskSummary {
-    id: string;
-    taskNumber: string;
-    title: string;
-    status: string;
-    priority: string;
-    progress: number;
-    quantity: number;
-    lineId: string | null;
-    lineName?: string;
-    assigneeId: string | null;
-    assigneeName?: string;
-    dueDate: string | null;
-    createdAt: string;
-}
-
-export interface EquipmentStatus {
-    id: string;
-    name: string;
-    status: string;
-    category: string;
-    nextMaintenanceDate: string | null;
-    needsMaintenance: boolean;
-}
-
-export interface StaffOnShift {
-    id: string;
-    name: string;
-    position: string | null;
-    lineId: string | null;
-    lineName?: string;
-    activeTasks: number;
-}
+// Реэкспорт типов для возможности импорта из данного файла в клиентских компонентах
+export type { 
+    ProductionStats, 
+    LineLoad, 
+    ProductionTaskSummary, 
+    EquipmentStatus, 
+    StaffOnShift,
+    ProductionBoardItem
+};
 
 export async function getUrgentProductionTasks(): Promise<{
     success: boolean;
@@ -280,17 +261,6 @@ export async function getDailyOutputData(days: number = 7): Promise<{
     }
 }
 
-export interface ProductionBoardItem {
-    id: string;
-    description: string | null;
-    quantity: number;
-    order: {
-        id: string;
-        orderNumber: string | null;
-        status: string;
-        attachments: { id: string; fileUrl: string; fileName: string }[];
-    } | null;
-}
 
 export async function getProductionBoardItems(applicationTypeId: string): Promise<{
     success: boolean;

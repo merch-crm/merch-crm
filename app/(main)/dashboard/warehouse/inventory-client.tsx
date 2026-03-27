@@ -90,8 +90,8 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
         const overId = over.id as string;
         if (lastOverIdRef.current === overId) return;
 
-        // Throttle updates during drag to prevent React depth error
-        const now = Date.now();
+        // Throttle updates during drag
+        const now = typeof window !== 'undefined' ? Date.now() : 0;
         if (now - lastDragUpdateTimeRef.current < 50) return;
         lastDragUpdateTimeRef.current = now;
         lastOverIdRef.current = overId;

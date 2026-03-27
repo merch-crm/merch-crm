@@ -9,6 +9,7 @@ import { ItemDetailClient } from "./item-detail-client";
 import { getSession } from "@/lib/session";
 import { serializeForClient, type Serialized } from "@/lib/serialize";
 import type { InventoryItem, StorageLocation, Category, AttributeType, InventoryAttribute } from "../../types";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 type PageParams = {
     params: Promise<{ id: string }>;
@@ -67,6 +68,7 @@ export default async function ItemPage({ params }: PageParams) {
 
     return (
         <div>
+            <BreadcrumbLabelSync id={id} label={itemRes.data.name} />
             <ItemDetailClient
                 item={item as InventoryItem}
                 storageLocations={locations as StorageLocation[]}

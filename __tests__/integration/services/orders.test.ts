@@ -35,7 +35,7 @@ describe("Orders Service", () => {
 
     const [role] = await db
       .insert(roles)
-      .values({ name: "Администратор", departmentId: dept.id, permissions: { all: true } })
+      .values({ name: `Test Admin ${Math.random()}`, departmentId: dept.id, permissions: { all: true } })
       .returning();
 
     const [user] = await db

@@ -10,8 +10,8 @@ interface BreadcrumbItem {
 interface BreadcrumbsContextType {
     labels: Map<string, string>;
     customTrail: BreadcrumbItem[] | null;
-    setLabels: (labels: Map<string, string>) => void;
-    setCustomTrail: (trail: BreadcrumbItem[] | null) => void;
+    setLabels: (update: Map<string, string> | ((prev: Map<string, string>) => Map<string, string>)) => void;
+    setCustomTrail: (update: BreadcrumbItem[] | null | ((prev: BreadcrumbItem[] | null) => BreadcrumbItem[] | null)) => void;
 }
 
 const BreadcrumbsContext = createContext<BreadcrumbsContextType | undefined>(undefined);

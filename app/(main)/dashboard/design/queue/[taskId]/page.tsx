@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getDesignTask } from "../../actions/order-design-actions";
 import { DesignTaskPageClient } from "./design-task-page-client";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface PageProps {
     params: Promise<{ taskId: string }>;
@@ -31,5 +32,10 @@ export default async function DesignTaskPage({ params }: PageProps) {
         notFound();
     }
 
-    return <DesignTaskPageClient task={result.data} />;
+    return (
+        <div className="flex flex-col gap-3">
+            <BreadcrumbLabelSync id={taskId} label={result.data.number} />
+            <DesignTaskPageClient task={result.data} />
+        </div>
+    );
 }

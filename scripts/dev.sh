@@ -9,31 +9,24 @@ NC='\033[0m' # No Color
 echo -e "${GREEN}🚀 Запуск dev-окружения MerchCRM${NC}"
 echo ""
 
-# 1. Очистка порта 5432
-echo -e "${YELLOW}📌 Шаг 1: Очистка порта 5432...${NC}"
-lsof -ti:5432 | xargs kill -9 2>/dev/null || true
-lsof -ti:6379 | xargs kill -9 2>/dev/null || true
-lsof -ti:1984 | xargs kill -9 2>/dev/null || true
-sleep 1
-
-# 2. Установка SSH-туннеля
-echo -e "${YELLOW}📌 Шаг 2: Установка SSH-туннеля к удаленной БД...${NC}"
-ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:6379 -L 1984:127.0.0.1:1984 root@89.104.69.25
+# 1. Настройка адаптивного SSH-туннеля
+echo -e "${YELLOW}📌 Шаг 1: Настройка SSH-туннеля...${NC}"
+node scripts/setup-ssh-tunnel.mjs
 if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ SSH-туннель установлен${NC}"
-    sleep 2
+    echo -e "${GREEN}✅ SSH-туннель настроен (адаптивно)${NC}"
+    sleep 1
 else
-    echo -e "${RED}❌ Ошибка установки туннеля${NC}"
+    echo -e "${RED}❌ Ошибка настройки туннеля${NC}"
     exit 1
 fi
 
-# 3. Синхронизация пароля БД (на случай, если он сбросился)
-echo -e "${YELLOW}📌 Шаг 3: Синхронизация пароля БД...${NC}"
+# 2. Синхронизация пароля БД (на случай, если он сбросился)
+echo -e "${YELLOW}📌 Шаг 2: Синхронизация пароля БД...${NC}"
 ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD '5738870192e24949b02a700547743048';\"" > /dev/null 2>&1
 echo -e "${GREEN}✅ Пароль синхронизирован${NC}"
 
-# 4. Проверка подключения
-echo -e "${YELLOW}📌 Шаг 4: Проверка подключения к БД...${NC}"
+# 3. Проверка подключения
+echo -e "${YELLOW}📌 Шаг 3: Проверка подключения к БД...${NC}"
 node scripts/check-connection.js
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Не удалось подключиться к БД${NC}"

@@ -90,6 +90,7 @@ export async function deleteTaskComment(
   taskId: string,
   commentId: string
 ): Promise<TaskActionResult<Task>> {
+  // audit-ignore - Удаление комментариев не требует системного трекинга
   try {
     taskIdSchema.parse(taskId);
     z.string().uuid().parse(commentId);

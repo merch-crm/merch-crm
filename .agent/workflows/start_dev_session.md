@@ -11,13 +11,15 @@ description: Startup routine to initialize SSH tunnel to remote Docker DB and st
 
 1. Очистка старых туннелей и порта 5432.
 ```bash
+killall autossh 2>/dev/null || true
 lsof -ti:5432 | xargs kill -9 2>/dev/null || true
 lsof -ti:6379 | xargs kill -9 2>/dev/null || true
 ```
 
 2. Установка SSH-туннеля к удаленному серверу (89.104.69.25).
+> **Важно:** Идет автовосстановление через autossh.
 ```bash
-ssh -i ~/.ssh/antigravity_key -f -N -L 5432:127.0.0.1:5432 -L 6379:127.0.0.1:6379 root@89.104.69.25 && sleep 1
+REDIS_IP=$(ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' merch-crm-redis 2>/dev/null" || echo "127.0.0.1") && AUTOSSH_GATETIME=0 autossh -M 0 -i ~/.ssh/antigravity_key -o "ServerAliveInterval=30" -o "ServerAliveCountMax=3" -o "ExitOnForwardFailure=yes" -f -N -L 5432:127.0.0.1:5432 -L 6379:${REDIS_IP}:6379 root@89.104.69.25 && sleep 1
 ```
 
 3. **Синхронизация пароля:** Принудительно устанавливаем пароль 'postgres' в Docker-контейнере, чтобы он всегда совпадал с вашим .env.local.

@@ -10,8 +10,8 @@ const switchVariants = cva("peer inline-flex h-[24px] w-[44px] shrink-0 cursor-p
     {
         variants: {
             variant: {
-                primary:"data-[state=checked]:bg-primary data-[state=checked]:shadow-[0_4px_12px_rgba(79,70,229,0.3)] data-[state=unchecked]:bg-slate-200 dark:data-[state=unchecked]:bg-zinc-800",
-                success:"data-[state=checked]:bg-emerald-500 data-[state=checked]:shadow-[0_4px_12px_rgba(16,185,129,0.3)] data-[state=unchecked]:bg-slate-200 dark:data-[state=unchecked]:bg-zinc-800",
+                primary:"data-[state=checked]:bg-primary data-[state=checked]:shadow-[0_4px_12px_rgba(79,70,229,0.3)] data-[state=unchecked]:bg-slate-200",
+                success:"data-[state=checked]:bg-emerald-500 data-[state=checked]:shadow-[0_4px_12px_rgba(16,185,129,0.3)] data-[state=unchecked]:bg-slate-200",
             },
         },
         defaultVariants: {

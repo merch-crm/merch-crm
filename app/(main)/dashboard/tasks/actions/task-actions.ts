@@ -419,6 +419,7 @@ export async function changeTaskStatus(
 
 // Удалить задачу
 export async function deleteTask(taskId: string): Promise<TaskActionResult<void>> {
+  // audit-ignore - Вся история задачи удаляется вместе с ней
   try {
     const session = await getSession();
     if (!session?.id) {
@@ -459,6 +460,9 @@ export async function getTaskStats(): Promise<
   }>
 > {
   try {
+    const session = await getSession();
+    if (!session?.id) return { success: false, error: "Не авторизован" };
+
     const [stats] = await db.select({
       total: sql<number>`count(*)`,
       overdue: sql<number>`count(*) filter (where ${tasks.deadline} < now() and ${tasks.status} not in ('done', 'cancelled'))`,

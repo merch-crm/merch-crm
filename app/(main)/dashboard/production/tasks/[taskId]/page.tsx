@@ -5,6 +5,7 @@ import { getProductionTask } from "../../actions/task-actions";
 import { getProductionLines } from "../../actions/line-actions";
 import { getProductionStaff } from "../../actions/staff-actions";
 import { ProductionTaskPageClient } from "./production-task-page-client";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 type PageProps = {
     params: Promise<{ taskId: string }>;
@@ -39,6 +40,7 @@ export default async function ProductionTaskPage(props: PageProps) {
 
     return (
         <div className="container py-6">
+            <BreadcrumbLabelSync id={params.taskId} label={taskResult.data!.title} />
             <ProductionTaskPageClient
                 task={taskResult.data!}
                 lines={lines as ProductionLine[]}

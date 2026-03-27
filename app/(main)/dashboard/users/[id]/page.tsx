@@ -6,6 +6,7 @@ import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { UserTasksSection } from "./components/user-tasks-section";
 import { Skeleton } from "@/components/ui/skeleton";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface UserPageProps {
   params: Promise<{ id: string }>;
@@ -33,6 +34,7 @@ export default async function UserPage({ params }: UserPageProps) {
 
   return (
     <div className="p-6 lg:p-[--padding-xl] space-y-3">
+      <BreadcrumbLabelSync id={id} label={userName} />
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-black text-slate-900 tracking-tight">
           Профиль сотрудника

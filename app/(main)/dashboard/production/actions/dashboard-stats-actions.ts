@@ -10,20 +10,7 @@ import {
 import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek } from "date-fns";
 import { getSession } from "@/lib/session";
-
-export interface ProductionStats {
-    inQueue: number;
-    inProgress: number;
-    completedToday: number;
-    completedWeek: number;
-    overdue: number;
-    paused: number;
-    totalQuantityToday: number;
-    activeStaff: number;
-    totalStaff: number;
-    activeLines: number;
-    totalLines: number;
-}
+import { ProductionStats } from "../types";
 
 const ProductionStatsSchema = z.object({
     inQueue: z.number(),

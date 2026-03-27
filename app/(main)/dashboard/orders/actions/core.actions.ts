@@ -281,6 +281,7 @@ export async function archiveOrder(
 export async function deleteOrder(orderId: string): Promise<ActionResult<void>> {
   return withAuth(async (_session) => {
     await OrderService.deleteOrder(orderId);
+    await logAction("Удаление заказа", "order", orderId);
     revalidatePath("/dashboard/orders");
     return okVoid();
   }, { 
@@ -304,7 +305,7 @@ export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResul
     const cacheKey = CACHE_KEYS.orderStats(rangeKey);
 
     // Используем cache-aside паттерн
-    const { data, fromCache } = await redisCache.getOrSet(
+    const { data } = await redisCache.getOrSet(
       cacheKey,
       async () => {
         const conditions: (SQL | undefined)[] = [];
@@ -333,9 +334,7 @@ export async function getOrderStats(from?: Date, to?: Date): Promise<ActionResul
       { ttl: CACHE_TTL.ORDER_STATS, tags: ["orders"] }
     );
 
-    if (process.env.NODE_ENV === "development" && fromCache) {
-      console.log(`[Cache HIT] ${cacheKey}`);
-    }
+    // Cache HIT логирование убрано (Правило 11)
 
     return ok(data);
   }, { 

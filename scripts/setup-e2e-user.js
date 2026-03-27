@@ -1,7 +1,26 @@
+const fs = require('fs');
+const path = require('path');
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
 
-const connectionString = 'postgresql://postgres:5738870192e24949b02a700547743048@localhost:5432/postgres?sslmode=disable';
+function loadEnv() {
+    const envPath = path.join(process.cwd(), '.env.local');
+    if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        envContent.split('\n').forEach(line => {
+            const index = line.indexOf('=');
+            if (index !== -1) {
+                const key = line.substring(0, index).trim();
+                const value = line.substring(index + 1).trim().replace(/^"(.*)"$/, '$1');
+                process.env[key] = value;
+            }
+        });
+    }
+}
+
+loadEnv();
+
+const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:5738870192e24949b02a700547743048@localhost:5432/postgres';
 
 async function main() {
     const client = new Client({ connectionString });

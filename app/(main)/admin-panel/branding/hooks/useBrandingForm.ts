@@ -6,36 +6,8 @@ import { playSound, setGlobalSoundConfig } from "@/lib/sounds";
 import { useImageUploader } from "@/hooks/use-image-uploader";
 import { useToast } from "@/components/ui/toast";
 
-export interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-    radiusOuter?: number;
-    radiusInner?: number;
-    loginSlogan?: string | null;
-    loginBackgroundUrl?: string | null;
-    dashboardWelcome?: string | null;
-    socialTelegram?: string | null;
-    socialWhatsapp?: string | null;
-    socialWebsite?: string | null;
-    notificationSound?: string | null;
-    isVibrationEnabled?: boolean;
-    printLogoUrl?: string | null;
-    soundConfig?: Record<string, { enabled: boolean; vibration: boolean; customUrl?: string | null }>;
-    backgroundColor?: string | null;
-    crmBackgroundUrl?: string | null;
-    crmBackgroundBlur?: number;
-    crmBackgroundBrightness?: number;
-    emailLogoUrl?: string | null;
-    emailPrimaryColor?: string;
-    emailContrastColor?: string;
-    emailFooter?: string | null;
-    emailSignature?: string | null;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-}
+import { BrandingSettings } from "@/lib/types/branding";
+export type { BrandingSettings };
 
 export interface BrandingUiState {
     isLoading: boolean;

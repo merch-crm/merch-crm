@@ -19,3 +19,11 @@ export { HistoryModal } from './history-modal'
 
 // PDF
 export { DownloadPdfButton } from './download-pdf-button'
+
+// Загрузка файлов
+export { DesignFileUploader } from './DesignFileUploader'
+export { FilePreviewCard } from './FilePreviewCard'
+export { DesignFilesList } from './DesignFilesList'
+export { SchematicRollVisualizer } from './SchematicRollVisualizer'
+export { EmbroiderySchematicVisualizer } from './EmbroiderySchematicVisualizer'
+export { PlacementsSection } from './PlacementsSection'

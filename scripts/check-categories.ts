@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function loadEnv() {
-    const envPath = path.join(__dirname, '.env.local');
+    const envPath = path.join(process.cwd(), '.env.local');
     if (fs.existsSync(envPath)) {
         const envContent = fs.readFileSync(envPath, 'utf8');
         envContent.split('\n').forEach(line => {

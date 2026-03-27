@@ -74,7 +74,7 @@ describe('export.actions', () => {
             const result = await getExportPresets();
             expect(result.success).toBe(true);
             if (result.success) {
-                const ids = result.data.map(p => p.id);
+                const ids = result.data!.map(p => p.id);
                 expect(ids).toEqual(['basic', 'analytics', 'marketing', 'full']);
             }
         });

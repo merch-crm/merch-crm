@@ -9,9 +9,11 @@ function loadEnv() {
     if (fs.existsSync(envPath)) {
         const envContent = fs.readFileSync(envPath, 'utf8');
         envContent.split('\n').forEach(line => {
-            const parts = line.split('=');
-            if (parts.length === 2) {
-                process.env[parts[0].trim()] = parts[1].trim().replace(/^"(.*)"$/, '$1');
+            const index = line.indexOf('=');
+            if (index !== -1) {
+                const key = line.substring(0, index).trim();
+                const value = line.substring(index + 1).trim().replace(/^"(.*)"$/, '$1');
+                process.env[key] = value;
             }
         });
     }

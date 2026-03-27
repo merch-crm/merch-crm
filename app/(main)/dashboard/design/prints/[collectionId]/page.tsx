@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { getCollectionById, getDesignsByCollection } from "../actions/index";
 import { CollectionPageClient } from "./collection-page-client";
 import { CollectionPageSkeleton } from "./loading";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface PageProps {
     params: Promise<{ collectionId: string }>;
@@ -39,11 +40,14 @@ export default async function CollectionPage({ params }: PageProps) {
     }
 
     return (
-        <Suspense fallback={<CollectionPageSkeleton />}>
+        <div className="flex flex-col gap-3">
+            <BreadcrumbLabelSync id={collectionId} label={collectionResult.data.name} />
+            <Suspense fallback={<CollectionPageSkeleton />}>
             <CollectionPageClient
                 collection={collectionResult.data}
                 initialDesigns={(designsResult.success && designsResult.data) ? designsResult.data : []}
             />
         </Suspense>
+    </div>
     );
 }

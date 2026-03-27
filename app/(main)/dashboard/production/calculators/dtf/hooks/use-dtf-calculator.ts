@@ -1,25 +1,21 @@
-"use client";
+/**
+ * @fileoverview Хук для расчёта стоимости DTF-печати с поддержкой нескольких файлов и раскладки
+ * @module calculators/dtf/hooks/use-dtf-calculator
+ * @requires @/lib/types/calculators
+ * @audit Создан 2026-03-25
+ */
 
 import { useState, useCallback, useMemo } from "react";
 import type { SelectedMaterial } from "@/app/(main)/dashboard/production/components/warehouse-materials-list";
+import { useCalculator } from "../../hooks/use-calculator";
+import { CalculatorType, PrintOption } from "@/lib/types/calculators";
+import { useLayoutOptimizer } from "../../hooks/use-layout-optimizer";
 
 // ============================================
 // ТИПЫ
 // ============================================
 
-export interface DTFDesign {
-  id: string;
-  name: string;
-  width: number; // см
-  height: number; // см
-  colors: number;
-  imageUrl?: string;
-}
-
 export interface DTFSettings {
-  quantity: number;
-  width: number;
-  height: number;
   filmType: "standard" | "premium" | "glitter" | "glow" | "metallic";
   printQuality: "draft" | "standard" | "high";
   whiteLayerMode: "none" | "auto" | "full";
@@ -28,7 +24,8 @@ export interface DTFSettings {
 }
 
 export interface DTFPricing {
-  pricePerSqCm: number;
+  /** Цена за погонный метр печати (при ширине 60см) */
+  pricePerLinearMeter: number;
   filmPrices: Record<string, number>;
   qualityMultipliers: Record<string, number>;
   whiteLayerPrices: Record<string, number>;
@@ -36,13 +33,13 @@ export interface DTFPricing {
   urgencyMultipliers: Record<string, number>;
   setupFee: number;
   minOrderFee: number;
-  minAreaSqCm: number;
 }
 
 export interface CalculationResult {
   perItem: number;
   total: number;
-  areaSqCm: number;
+  totalLengthMm: number;
+  efficiency: number;
   materialsCost: number;
   printCost: number;
   filmCost: number;
@@ -56,195 +53,200 @@ export interface CalculationResult {
   }[];
 }
 
-// ============================================
-// КОНСТАНТЫ
-// ============================================
 
-const DEFAULT_PRICING: DTFPricing = {
-  pricePerSqCm: 0.8,
-  filmPrices: {
-    standard: 0,
-    premium: 0.15,
-    glitter: 0.4,
-    glow: 0.5,
-    metallic: 0.35,
-  },
-  qualityMultipliers: {
-    draft: 0.7,
-    standard: 1,
-    high: 1.4,
-  },
-  whiteLayerPrices: {
-    none: 0,
-    auto: 0.2,
-    full: 0.4,
-  },
-  cuttingPrices: {
-    none: 0,
-    contour: 15,
-    rectangle: 5,
-  },
-  urgencyMultipliers: {
-    normal: 1,
-    express: 1.3,
-    urgent: 1.5,
-  },
-  setupFee: 200,
-  minOrderFee: 300,
-  minAreaSqCm: 25,
-};
 
-const QUANTITY_DISCOUNTS = [
-  { min: 500, discount: 0.2 },
-  { min: 200, discount: 0.15 },
-  { min: 100, discount: 0.1 },
-  { min: 50, discount: 0.07 },
-  { min: 20, discount: 0.05 },
-];
-
-// ============================================
-// ХУК
-// ============================================
-
+/**
+ * Хук калькулятора DTF-печати
+ */
 export function useDTFCalculator() {
-  const [design, setDesign] = useState<DTFDesign | null>(null);
+  const calculatorType: CalculatorType = 'dtf';
+
+  // Управление всеми общими настройками (расходники, пленки, маржа, наценки)
+  const calculator = useCalculator(calculatorType);
+  const { globalSettings, params, updateParams, designFiles } = calculator;
+  const { printConfig, urgencyConfig, marginConfig } = globalSettings.settings;
+
+  const { 
+  } = designFiles;
+
+  // Настройки специфичные для DTF
   const [settings, setSettings] = useState<DTFSettings>({
-    quantity: 1,
-    width: 10,
-    height: 10,
     filmType: "standard",
     printQuality: "standard",
     whiteLayerMode: "auto",
     cutting: "contour",
     urgency: "normal",
   });
+
+
+  // Управление раскладкой
+  const { 
+    layoutResult, 
+    settings: layoutSettings, 
+    updateSettings: updateLayoutSettings 
+  } = useLayoutOptimizer({ 
+    files: calculator.designFiles.files,
+    initialSettings: { rollWidthMm: 600 } 
+  });
+
   const [materials, setMaterials] = useState<SelectedMaterial[]>([]);
-  const [pricing, setPricing] = useState<DTFPricing>(DEFAULT_PRICING);
-  const [margin, setMargin] = useState(30);
 
-  const updateSettings = useCallback((updates: Partial<DTFSettings>) => {
-    setSettings((prev) => ({ ...prev, ...updates }));
-  }, []);
-
-  const updateDesign = useCallback((newDesign: DTFDesign | null) => {
-    setDesign(newDesign);
-    if (newDesign) {
-      setSettings((prev) => ({
-        ...prev,
-        width: newDesign.width,
-        height: newDesign.height,
-      }));
-    }
+  const updateDtfSettings = useCallback((updates: Partial<DTFSettings>) => {
+    setSettings((prev: DTFSettings) => ({ ...prev, ...updates }));
   }, []);
 
   const materialsCost = useMemo(() => {
-    return materials.reduce((sum, m) => sum + m.price * m.quantity, 0);
+    return materials.reduce((sum: number, m: SelectedMaterial) => sum + m.price * m.quantity, 0);
   }, [materials]);
 
+  /**
+   * Основной расчёт
+   */
   const calculation = useMemo((): CalculationResult => {
-    const { quantity, width, height, filmType, printQuality, whiteLayerMode, cutting, urgency } = settings;
+    const { filmType, printQuality, whiteLayerMode, cutting } = settings;
+    const { totalLengthMm, efficiency, printCount } = layoutResult.stats;
 
-    // Площадь в см²
-    const areaSqCm = Math.max(width * height, pricing.minAreaSqCm);
+    // Длина в погонных метрах
+    const lengthMeters = totalLengthMm / 1000;
 
-    // Базовая стоимость печати
-    const qualityMult = pricing.qualityMultipliers[printQuality];
-    const printCostPerItem = areaSqCm * pricing.pricePerSqCm * qualityMult;
+    // 1. Базовая стоимость печати (берем из printConfig)
+    const basePricePerMeter = printConfig.basePrice || 1200;
+    
+    // Множители качества (временно оставляем фиксированными или вынесем в конфиг позже)
+    const qualityMultipliers: Record<string, number> = {
+      draft: 0.7,
+      standard: 1,
+      high: 1.4,
+    };
+    const qualityMult = qualityMultipliers[printQuality] || 1;
+    const basePrintCost = lengthMeters * basePricePerMeter * qualityMult;
 
-    // Стоимость плёнки
-    const filmAddition = pricing.filmPrices[filmType];
-    const filmCostPerItem = areaSqCm * filmAddition;
+    // 2. Стоимость плёнки (динамически ищем в конфиге пленок)
+    const selectedFilm = printConfig.filmTypes?.find((f: PrintOption) => f.id === filmType);
+    const filmAddition = selectedFilm?.priceAddition || 0;
+    const filmCost = lengthMeters * filmAddition;
 
-    // Белый слой
-    const whiteLayerAddition = pricing.whiteLayerPrices[whiteLayerMode];
-    const whiteLayerCost = areaSqCm * whiteLayerAddition;
+    // 3. Белый слой (динамически из конфига)
+    const selectedWhite = printConfig.whiteLayerOptions?.find((w: PrintOption) => w.id === whiteLayerMode);
+    const whiteLayerAddition = selectedWhite?.priceAddition || 0;
+    const whiteLayerCost = lengthMeters * whiteLayerAddition;
 
-    // Резка
-    const cuttingCostPerItem = pricing.cuttingPrices[cutting];
+    // 4. Резка (из конфига или фикс)
+    const cuttingOptions: Record<string, number> = {
+      none: 0,
+      contour: 15,
+      rectangle: 5,
+    };
+    const cuttingCost = printCount * (cuttingOptions[cutting] || 0);
 
-    // Базовая себестоимость за единицу
-    let costPerItem = printCostPerItem + filmCostPerItem + whiteLayerCost + cuttingCostPerItem;
+    // Суммарная себестоимость производства
+    let productionCost = basePrintCost + filmCost + whiteLayerCost + cuttingCost;
 
-    // Срочность
-    const urgencyMult = pricing.urgencyMultipliers[urgency];
-    costPerItem *= urgencyMult;
+    // 5. Срочность (берем из параметров калькулятора, которые синхронизированы с UI)
+    const isUrgent = !!params.isUrgent;
+    const expressMarkup = urgencyConfig?.expressMarkup || 30; // %
+    const urgencyMult = isUrgent ? (1 + expressMarkup / 100) : 1;
+    
+    productionCost *= urgencyMult;
 
-    // Материалы на единицу
-    const materialsPerItem = quantity > 0 ? materialsCost / quantity : 0;
-    costPerItem += materialsPerItem;
+    // Материалы со склада
+    productionCost += materialsCost;
 
-    // Скидка за объём
+    // Нанесения (работа)
+    productionCost += calculator.placements.costResults.totalCost;
+
+    // Скидка за объём (от общей длины плёнки)
     let discount = 0;
+    const QUANTITY_DISCOUNTS = [
+      { min: 50, discount: 0.2 },
+      { min: 20, discount: 0.15 },
+      { min: 10, discount: 0.1 },
+      { min: 5, discount: 0.05 },
+    ];
     for (const tier of QUANTITY_DISCOUNTS) {
-      if (quantity >= tier.min) {
+      if (lengthMeters >= tier.min / 10) {
         discount = tier.discount;
         break;
       }
     }
 
-    // Цена с наценкой и скидкой
-    const pricePerItem = costPerItem * (1 + margin / 100) * (1 - discount);
+    // 6. Цена продажи с наценкой (маржа из конфига или стейта)
+    const currentMargin = params.marginPercent ?? marginConfig?.defaultMargin ?? 30;
+    const sellingPrice = productionCost * (1 + currentMargin / 100) * (1 - discount);
 
-    // Общая стоимость
-    let total = pricePerItem * quantity + pricing.setupFee;
+    // 7. Итоговая стоимость с учётом минимального заказа и настройки
+    const setupFee = printConfig.setupFee || 200;
+    const minOrderFee = printConfig.minOrderFee || 300;
 
-    if (total < pricing.minOrderFee) {
-      total = pricing.minOrderFee;
+    let total = sellingPrice + setupFee;
+    if (total < minOrderFee && printCount > 0) {
+      total = minOrderFee;
     }
+
+    // Цена за единицу (усреднённая)
+    const perItem = printCount > 0 ? total / printCount : 0;
 
     // Breakdown
     const breakdown: CalculationResult["breakdown"] = [
-      { label: `Печать (${areaSqCm.toFixed(1)} см²)`, value: printCostPerItem * quantity, type: "cost" },
+      { 
+        label: `Печать (${(totalLengthMm / 10).toFixed(1)} см)`, 
+        value: basePrintCost, 
+        type: "cost" 
+      },
     ];
 
-    if (filmCostPerItem > 0) {
-      breakdown.push({ label: `Плёнка (${filmType})`, value: filmCostPerItem * quantity, type: "cost" });
+    if (filmCost > 0) {
+      const filmName = selectedFilm?.name || filmType;
+      breakdown.push({ label: `Плёнка (${filmName})`, value: filmCost, type: "cost" });
     }
 
     if (whiteLayerCost > 0) {
-      breakdown.push({ label: "Белый слой", value: whiteLayerCost * quantity, type: "cost" });
+      breakdown.push({ label: `Белый слой (${selectedWhite?.name})`, value: whiteLayerCost, type: "cost" });
     }
 
-    if (cuttingCostPerItem > 0) {
-      breakdown.push({ label: "Резка", value: cuttingCostPerItem * quantity, type: "cost" });
+    if (cuttingCost > 0) {
+      breakdown.push({ label: `Резка (${printCount} шт)`, value: cuttingCost, type: "cost" });
     }
 
     if (materialsCost > 0) {
       breakdown.push({ label: "Материалы со склада", value: materialsCost, type: "cost" });
     }
 
-    breakdown.push({ label: "Настройка", value: pricing.setupFee, type: "fee" });
+    if (calculator.placements.costResults.totalCost > 0) {
+      breakdown.push({ label: "Нанесения", value: calculator.placements.costResults.totalCost, type: "cost" });
+    }
+
+    breakdown.push({ label: "Настройка оборудования", value: setupFee, type: "fee" });
 
     if (discount > 0) {
-      const discountValue = (pricePerItem * quantity * discount) / (1 - discount);
+      const discountValue = (sellingPrice * discount) / (1 - discount);
       breakdown.push({ label: `Скидка ${Math.round(discount * 100)}%`, value: -discountValue, type: "discount" });
     }
 
     if (urgencyMult > 1) {
-      const urgencyValue = (costPerItem / urgencyMult) * (urgencyMult - 1) * quantity;
+      const urgencyValue = (productionCost / urgencyMult) * (urgencyMult - 1);
       breakdown.push({ label: "Срочность", value: urgencyValue, type: "fee" });
     }
 
     return {
-      perItem: Math.round(pricePerItem),
+      perItem: Math.round(perItem),
       total: Math.round(total),
-      areaSqCm,
+      totalLengthMm,
+      efficiency,
       materialsCost: Math.round(materialsCost),
-      printCost: Math.round(printCostPerItem * quantity),
-      filmCost: Math.round(filmCostPerItem * quantity),
-      cuttingCost: Math.round(cuttingCostPerItem * quantity),
-      setupCost: pricing.setupFee,
+      printCost: Math.round(basePrintCost),
+      filmCost: Math.round(filmCost),
+      cuttingCost: Math.round(cuttingCost),
+      setupCost: setupFee,
       discount: Math.round(discount * 100),
       breakdown,
     };
-  }, [settings, materialsCost, pricing, margin]);
+  }, [layoutResult, settings, materialsCost, printConfig, urgencyConfig, marginConfig, params, calculator.placements.costResults]);
 
   const reset = useCallback(() => {
-    setDesign(null);
+    calculator.designFiles.clearAll();
+    calculator.placements.clearPlacements();
     setSettings({
-      quantity: 1,
-      width: 10,
-      height: 10,
       filmType: "standard",
       printQuality: "standard",
       whiteLayerMode: "auto",
@@ -252,21 +254,19 @@ export function useDTFCalculator() {
       urgency: "normal",
     });
     setMaterials([]);
-    setMargin(30);
-  }, []);
+    updateParams({ marginPercent: marginConfig?.defaultMargin ?? 30 });
+    updateLayoutSettings({ rollWidthMm: 600 });
+  }, [calculator, marginConfig, updateLayoutSettings, updateParams]);
 
   return {
-    design,
+    ...calculator,
     settings,
+    updateSettings: updateDtfSettings,
+    layoutSettings,
+    layoutResult,
     materials,
-    pricing,
-    margin,
+    margin: params.marginPercent ?? marginConfig?.defaultMargin ?? 30,
     calculation,
-    updateDesign,
-    updateSettings,
-    setMaterials,
-    setPricing,
-    setMargin,
     reset,
   };
 }

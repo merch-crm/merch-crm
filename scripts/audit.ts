@@ -1,8 +1,8 @@
 #!/usr/bin/env npx tsx
 
 /**
- * MerchCRM Full Project Audit Script v4.1
- * 29 категорий проверок (включая БД)
+ * MerchCRM Full Project Audit Script v5.0
+ * 33 категории проверок (включая БД)
  * 
  * Исправлены ложные срабатывания на самом себе.
  */
@@ -696,72 +696,1239 @@ function checkServerActions(): AuditError[] {
 // 10. БЕЗОПАСНОСТЬ
 // ============================================
 
-function checkSecurity(files: string[]): AuditError[] {
-    logSubSection('10. Безопасность');
+// ============================================
+// 10. РАСШИРЕННАЯ БЕЗОПАСНОСТЬ (22 категории)
+// ============================================
 
+// 1. АВТОРИЗАЦИЯ SERVER ACTIONS
+// ============================================
+
+function auditServerActionAuth(): AuditError[] {
+    logSubSection('1. Авторизация Server Actions');
     const errors: AuditError[] = [];
 
-    const securityPatterns = [
-        { regex: /dangerouslySetInnerHTML/g, severity: 'warning' as const, message: 'dangerouslySetInnerHTML — потенциальный XSS', suggestion: 'Санитизируй HTML через DOMPurify' },
-        { regex: /innerHTML\s*=/g, severity: 'error' as const, message: 'innerHTML — XSS уязвимость', suggestion: 'Используй textContent' },
-        { regex: /password\s*[:=]\s*["'](?!Error|Failed|Не удалось|Ошибка)[^"']+["']/gi, severity: 'critical' as const, message: 'Харкод пароля', suggestion: 'Используй env' },
-        { regex: /api[_-]?key\s*[:=]\s*["'][^"']+["']/gi, severity: 'critical' as const, message: 'Харкод API ключа', suggestion: 'Используй env' },
-        { regex: /secret\s*[:=]\s*["'][^"']+["']/gi, severity: 'critical' as const, message: 'Харкод секрета', suggestion: 'Используй env' },
-        { regex: /\beval\s*\(/g, severity: 'critical' as const, message: 'eval() — критическая уязвимость', suggestion: 'Никогда не используй eval' },
-        { regex: /new\s+Function\s*\(/g, severity: 'error' as const, message: 'new Function() — уязвимость', suggestion: 'Избегай динамического создания функций' },
-    ];
+    const actionFiles = getAllFiles("app")
+        .filter(f => f.endsWith("actions.ts") && !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
 
-    for (const file of files) {
-        if (file.includes('scripts/') || isTestFile(file)) continue; // Исключаем скрипты аудита и тесты
+    let unprotected = 0;
+    let total = 0;
 
-        const content = fs.readFileSync(file, 'utf-8');
+    // Функции, которые по дизайну не требуют авторизации
+    const AUTH_WHITELIST = new Set([
+        "loginAction",           // Страница логина — до авторизации
+        "logout",                // Выход — должен работать всегда
+        "getBrandingAction",     // Настройки оформления — нужны на странице логина
+        "getBrandingSettings",   // Обёртка над getBrandingAction
+        "updateBrandingSettings",// Делегирует в updateBrandingAction (requireAdmin)
+        "getIconGroups",         // Категории иконок — нужны публично
+        "getArchivedItems",      // Делегирует в getInventoryItems (с getSession)
+        "recordPresenceEvent",   // Вызывается Python ML-сервисом (не пользователем)
+        "createAutoTask",        // Системная функция, вызывается из backend
+    ]);
 
-        for (const { regex, severity, message, suggestion } of securityPatterns) {
-            const matches = [...content.matchAll(new RegExp(regex))];
+    for (const file of actionFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        const isBarrel = !content.includes("export async function") && !content.includes("export function");
+        if (isBarrel) continue;
 
-            for (const match of matches) {
-                const line = getLineNumber(content, match.index || 0);
-                const lineContent = content.split('\n')[line - 1] || '';
+        const hasUseServer = content.includes('"use server"') || content.includes("'use server'");
+        if (!hasUseServer) continue;
 
-                // Allow ignoring via comments
-                if (lineContent.includes('// Safe') || lineContent.includes('// audit-ignore')) continue;
+        // Если файл в целом содержит getSession - скорее всего всё OK (вызывается через вспомогательную функцию)
+        const fileHasAuth = content.includes("getSession") || content.includes("requireAdmin") || content.includes("withAuth");
 
+        // Найти все экспортируемые функции
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+        while ((match = funcRegex.exec(content)) !== null) {
+            total++;
+            const funcName = match[2];
+            const funcStart = match.index;
+
+            // Пропускаем функции из белого списка
+            if (AUTH_WHITELIST.has(funcName)) continue;
+
+            // Get/fetch/read-only префиксы — не мутируют данные, audit-ignore их как warning
+            const isReadOnly = /^(get|fetch|read|list|find|search|count|check|is|has|can|validate)/.test(funcName);
+
+            // Ищем тело функции — от начала до следующей экспортной функции или конца файла
+            const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+            const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+            const hasGetSession = funcBody.includes("getSession") || funcBody.includes("getAuthSession") || funcBody.includes("getCurrentUser");
+            const hasRequireAdmin = funcBody.includes("requireAdmin(");
+            const hasWithAuth = funcBody.includes("withAuth") || funcBody.includes("withSession") || funcBody.includes("createSafeAction");
+            const isIgnored = funcBody.includes("audit-ignore");
+
+            if (!hasGetSession && !hasRequireAdmin && !hasWithAuth && !isIgnored) {
+                // Если файл имеет auth в нём — понижаем до warning (функция косвенно защищена)
+                const severity = fileHasAuth || isReadOnly ? 'warning' as const : 'critical' as const;
+                unprotected++;
                 errors.push({
                     file,
-                    line,
+                    line: getLineNumber(content, funcStart),
                     severity,
-                    category: 'Безопасность',
-                    message,
-                    suggestion,
+                    category: "Авторизация",
+                    message: `${funcName}() без явной проверки авторизации`,
+                    suggestion: "Добавь const session = await getSession(); if (!session) return { error: 'Не авторизован' };",
                 });
             }
         }
     }
 
-    if (fs.existsSync('.env') && fs.existsSync('.gitignore')) {
-        const gitignore = fs.readFileSync('.gitignore', 'utf-8');
-        if (!gitignore.includes('.env')) {
-            errors.push({
-                file: '.gitignore',
-                severity: 'critical',
-                category: 'Безопасность',
-                message: '.env не в .gitignore',
-            });
-        }
-    }
-
-    if (errors.length === 0) {
-        logSuccess('Проблем не найдено');
-    } else {
-        const critical = errors.filter(e => e.severity === 'critical').length;
-        if (critical > 0) logError(`Критических: ${critical}`);
-        else logWarning(`Проблем: ${errors.length}`);
-    }
+    if (unprotected === 0) logSuccess(`Все ${total} Server Action функций защищены`);
+    else logError(`${unprotected} из ${total} функций без авторизации`);
 
     return errors;
 }
 
 // ============================================
+// 2. РОЛЕВАЯ МОДЕЛЬ (RBAC)
+// ============================================
+
+function auditRBAC(): AuditError[] {
+    logSubSection('2. Ролевая модель (RBAC)');
+    const errors: AuditError[] = [];
+
+    const SENSITIVE_PATTERNS = [
+        { pattern: /delete|remove|destroy|drop/i, action: "удаление" },
+        { pattern: /export|download|backup/i, action: "экспорт/бэкап" },
+        { pattern: /update.*role|change.*role|assign.*role/i, action: "управление ролями" },
+        { pattern: /create.*user|delete.*user|update.*user/i, action: "управление пользователями" },
+        { pattern: /refund|payment|финанс/i, action: "финансовые операции" },
+    ];
+
+    const ALLOWED_ROLES = ["Администратор", "Руководство", "Отдел продаж"];
+
+    const actionFiles = getAllFiles("app")
+        .filter(f => f.endsWith("actions.ts") && !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    for (const file of actionFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        if (!content.includes('"use server"')) continue;
+
+        // Пропускаем модуль задач — удаление своих items доступно всем авторизованным
+        if (file.includes("/tasks/actions/")) continue;
+
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+        while ((match = funcRegex.exec(content)) !== null) {
+            const funcName = match[2];
+            const funcStart = match.index;
+            const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+            const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+            for (const { pattern, action } of SENSITIVE_PATTERNS) {
+                if (pattern.test(funcName)) {
+                    const hasRoleCheck =
+                        funcBody.includes("roleName") ||
+                        funcBody.includes("requireAdmin") ||
+                        funcBody.includes("audit-ignore") ||
+                        funcBody.includes("ROLE_GROUPS") ||
+                        funcBody.includes("roles:") ||
+                        funcBody.includes("session.role") ||
+                        ALLOWED_ROLES.some(r => funcBody.includes(r));
+
+                    if (!hasRoleCheck) {
+                        issues++;
+                        errors.push({
+                            file,
+                            line: getLineNumber(content, funcStart),
+                            severity: 'error',
+                            category: "RBAC",
+                            message: `${funcName}() — ${action} без проверки роли` + ' - ' + `Функция выполняет "${action}", но не проверяет роль пользователя. Это может дать рядовым сотрудникам доступ к опасным операциям.`,
+                            suggestion: `Добавь проверку: if (!["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Недостаточно прав" };`,
+                            
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("RBAC: все чувствительные функции проверяют роли");
+    else logWarning(`${issues} чувствительных функций без проверки ролей`);
+
+    return errors;
+}
+
+// ============================================
+// 3. API ROUTES АВТОРИЗАЦИЯ
+// ============================================
+
+function auditApiRoutes(): AuditError[] {
+    logSubSection('3. API Routes авторизация');
+    const errors: AuditError[] = [];
+
+    const routeFiles = getAllFiles("app/api", [".ts"])
+        .filter(f => f.endsWith("route.ts") && !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")));
+
+    let unprotected = 0;
+
+    for (const file of routeFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+
+        // Пропускаем login / health / callbacks / csrf (публичные по дизайну)
+        if (file.includes("/auth/login") || file.includes("/health") || file.includes("/callback") || file.includes("/csrf")) continue;
+
+        const handlers = ["GET", "POST", "PUT", "PATCH", "DELETE"];
+        for (const method of handlers) {
+            const handlerRegex = new RegExp(`export\\s+async\\s+function\\s+${method}\\b`);
+            const handlerMatch = handlerRegex.exec(content);
+            if (!handlerMatch) continue;
+
+            const hasAuth =
+                content.includes("getSession") ||
+                content.includes("getCurrentUser") ||
+                content.includes("requireAdmin") ||
+                content.includes("Authorization") ||
+                content.includes("CRON_SECRET") ||
+                content.includes("Bearer") ||
+                content.includes("audit-ignore") ||
+                content.includes("createSafeAction") ||
+                content.includes("API_KEY");
+
+            if (!hasAuth) {
+                unprotected++;
+                errors.push({
+                    file,
+                    line: getLineNumber(content, handlerMatch.index),
+                    severity: 'critical',
+                    category: "API Auth",
+                    message: `${method} ${file.replace("app/api", "/api").replace("/route.ts", "")} — без авторизации — API эндпоинт не проверяет ни сессию, ни API ключ. Доступен публично.`,
+                    suggestion: "Добавь проверку getSession() или Bearer токена",
+                });
+            }
+        }
+    }
+
+    if (unprotected === 0) logSuccess("Все API роуты защищены");
+    else logError(`${unprotected} публичных API роутов`);
+
+    return errors;
+}
+
+// ============================================
+// 4. SQL INJECTION
+// ============================================
+
+function auditSqlInjection(): AuditError[] {
+    logSubSection('4. SQL Injection');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx"])
+        .filter(f => !(f.includes("scripts/") || f.includes("test-utils/")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes("audit-ignore")) continue;
+
+            // Шаблонные строки в sql`` с переменными через ${} — нормально для drizzle-orm sql tag,
+            // но опасно для db.execute(sql`...${userInput}...`) с raw input
+            if (line.includes("db.execute(") && line.includes("${")) {
+                // Проверяем, параметризован ли запрос через sql`` tag
+                if (!line.includes("sql`") && !line.includes("sql(")) {
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'critical',
+                        category: "SQL Injection",
+                        message: "Потенциальная SQL Injection через db.execute()" + ' - ' + `Строка содержит db.execute() с интерполяцией без sql tag. Это может привести к SQL injection.`,
+                        suggestion: "Используй sql`...` tag из drizzle-orm для параметризации запросов",
+                        
+                    });
+                }
+            }
+
+            // Конкатенация строк в SQL
+            if (/(SELECT|INSERT|UPDATE|DELETE|DROP|ALTER)\s/.test(line) && /\+\s*(req|params|body|query|input|search|filter|value)/.test(line)) {
+                issues++;
+                errors.push({
+                    file,
+                    line: i + 1,
+                    severity: 'critical',
+                    category: "SQL Injection",
+                    message: "Конкатенация пользовательского ввода в SQL запрос" + ' - ' + `Обнаружена конкатенация переменных с SQL-ключевыми словами.`,
+                    suggestion: "Используй параметризованные запросы через drizzle-orm",
+                    
+                });
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("SQL Injection уязвимостей не найдено");
+    else logError(`${issues} потенциальных SQL Injection`);
+
+    return errors;
+}
+
+// ============================================
+// 5. XSS (Cross-Site Scripting)
+// ============================================
+
+function auditXSS(): AuditError[] {
+    logSubSection('5. XSS (Cross-Site Scripting)');
+    const errors: AuditError[] = [];
+
+    const tsxFiles = getAllFiles(".", [".tsx"])
+        .filter(f => !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    for (const file of tsxFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // dangerouslySetInnerHTML
+            if (line.includes("dangerouslySetInnerHTML")) {
+                // Проверяем наличие DOMPurify
+                const hasSanitize = content.includes("DOMPurify") || content.includes("sanitize") || content.includes("purify");
+                if (!hasSanitize) {
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'error',
+                        category: "XSS",
+                        message: "dangerouslySetInnerHTML без санитизации" + ' - ' + "Использование dangerouslySetInnerHTML без DOMPurify может привести к XSS.",
+                        suggestion: "Используй DOMPurify.sanitize() перед вставкой HTML",
+                        
+                    });
+                }
+            }
+
+            // innerHTML в обработчиках
+            if (/\.innerHTML\s*=/.test(line)) {
+                issues++;
+                errors.push({
+                    file,
+                    line: i + 1,
+                    severity: 'error',
+                    category: "XSS",
+                    message: "Присвоение innerHTML" + ' - ' + "Прямое присвоение innerHTML создает XSS уязвимость",
+                    suggestion: "Используй textContent или React компоненты",
+                    
+                });
+            }
+
+            // document.write
+            if (/document\.write\s*\(/.test(line)) {
+                if (!line.includes("printWindow")) {
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'error',
+                        category: "XSS",
+                        message: "document.write()" + ' - ' + "document.write() создает XSS уязвимость",
+                        suggestion: "Используй DOM API или React",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("XSS уязвимостей не найдено");
+    else logError(`${issues} XSS уязвимостей`);
+
+    return errors;
+}
+
+// ============================================
+// 6. HARDCODED SECRETS
+// ============================================
+
+function auditSecrets(): AuditError[] {
+    logSubSection('6. Захардкоженные секреты и ключи');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx", ".js", ".json"])
+        .filter(f => !f.includes("scripts/") && !f.includes("test-utils/") && !f.includes("node_modules") && !f.includes(".next")
+            && !f.includes(".test.") && !f.includes(".spec.") && !f.includes("package.json") && !f.includes("package-lock") && !f.includes(".env"));
+
+    const SECRET_PATTERNS: Array<{ regex: RegExp; name: string; exclude?: RegExp }> = [
+        { regex: /password\s*[:=]\s*["'](?!Error|Failed|Не удалось|Ошибка|Пароль|password|confirm|new|old|current|hash)[^"']{4,}["']/gi, name: "Хардкод пароля", exclude: /placeholder|example|label|hint|message|error|type=/i },
+        { regex: /api[_-]?key\s*[:=]\s*["'][A-Za-z0-9_\-]{10,}["']/gi, name: "API ключ в коде" },
+        { regex: /secret\s*[:=]\s*["'][A-Za-z0-9_\-]{10,}["']/gi, name: "Секрет в коде", exclude: /process\.env|CRON_SECRET|env\./i },
+        { regex: /token\s*[:=]\s*["'][A-Za-z0-9_\-]{20,}["']/gi, name: "Токен в коде", exclude: /csrf|session|cookie|jwt/i },
+        { regex: /private[_-]?key\s*[:=]\s*["'][^"']+["']/gi, name: "Приватный ключ в коде" },
+        { regex: /-----BEGIN (?:RSA |EC )?PRIVATE KEY-----/g, name: "PEM ключ в коде" },
+        { regex: /process\.env\.([^ \t\n\r.;,(){}[\]]+)/g, name: "Доступ к env напрямую (не через lib/env)" },
+    ];
+
+    let issues = 0;
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes("// audit-ignore") || line.includes("// Safe") || line.includes("process.env")) continue;
+
+            for (const { regex, name, exclude } of SECRET_PATTERNS) {
+                const re = new RegExp(regex.source, regex.flags);
+                if (re.test(line)) {
+                    if (exclude && exclude.test(line)) continue;
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'critical',
+                        category: "Secrets",
+                        message: name + ' - ' + `Обнаружен секрет в исходном коде: ${line.trim().substring(0, 80)}...`,
+                        suggestion: "Перенеси значение в .env файл и используй process.env.VARIABLE_NAME",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    // Проверка .env в .gitignore
+    if (fs.existsSync(".gitignore")) {
+        const gitignore = fs.readFileSync(".gitignore", "utf-8");
+        if (!gitignore.includes(".env")) {
+            issues++;
+            errors.push({
+                file: ".gitignore",
+                severity: 'critical',
+                category: "Secrets",
+                message: ".env файл не исключен из Git" + ' - ' + ".env файл может быть отправлен в репозиторий с секретами",
+                suggestion: "Добавь .env* в .gitignore",
+                
+            });
+        }
+    }
+
+    if (issues === 0) logSuccess("Захардкоженных секретов не найдено");
+    else logError(`${issues} захардкоженных секретов`);
+
+    return errors;
+}
+
+// ============================================
+// 7. FILE UPLOAD SECURITY
+// ============================================
+
+function auditFileUploads(): AuditError[] {
+    logSubSection('7. Безопасность загрузки файлов');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx"])
+        .filter(f => !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // writeFile без валидации
+            if ((line.includes("writeFile(") || line.includes("writeFileSync(")) && file.includes("route")) {
+                const surroundingCode = lines.slice(Math.max(0, i - 15), i + 5).join("\n");
+                const hasValidation =
+                    surroundingCode.includes("mime") ||
+                    surroundingCode.includes("fileType") ||
+                    surroundingCode.includes("extension") ||
+                    surroundingCode.includes("allowedTypes") ||
+                    surroundingCode.includes("MAX_SIZE") ||
+                    surroundingCode.includes("maxSize") ||
+                    surroundingCode.includes("size >") ||
+                    surroundingCode.includes("image/");
+
+                if (!hasValidation) {
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'error',
+                        category: "File Upload",
+                        message: "Загрузка файлов без валидации типа/размера" + ' - ' + "Файл записывается на диск без проверки MIME-типа и размера",
+                        suggestion: "Добавь проверку MIME-типа (image/jpeg, image/png) и максимального размера (10MB)",
+                        
+                    });
+                }
+            }
+
+            // Path traversal через пользовательский ввод в путях
+            if ((line.includes("path.join") || line.includes("path.resolve")) && file.includes("route")) {
+                const surroundingCode = lines.slice(Math.max(0, i - 5), i + 5).join("\n");
+                if ((surroundingCode.includes("req.") || surroundingCode.includes("params") || surroundingCode.includes("body")) &&
+                    !surroundingCode.includes("path.basename") &&
+                    !surroundingCode.includes("sanitize") &&
+                    !surroundingCode.includes("replace(/\\.\\./")) {
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'error',
+                        category: "Path Traversal",
+                        message: "Пользовательский ввод в пути к файлу" + ' - ' + "Потенциальная атака Path Traversal: пользовательский ввод используется в пути файла без санитизации",
+                        suggestion: "Используй path.basename() для извлечения имени файла и проверяй на ../",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("Загрузка файлов безопасна");
+    else logWarning(`${issues} проблем с загрузкой файлов`);
+
+    return errors;
+}
+
+// ============================================
+// 8. IDOR (Insecure Direct Object Reference)
+// ============================================
+
+function auditIDOR(): AuditError[] {
+    logSubSection('8. IDOR (Insecure Direct Object Reference)');
+    const errors: AuditError[] = [];
+
+    const actionFiles = getAllFiles("app", [".ts"])
+        .filter(f => f.endsWith("actions.ts") && !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    for (const file of actionFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        if (!content.includes('"use server"')) continue;
+
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+        while ((match = funcRegex.exec(content)) !== null) {
+            const funcName = match[2];
+            const funcStart = match.index;
+            const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+            const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+            // Функции удаления/обновления которые принимают ID, но не проверяют владельца
+            const isDangerousAction = /delete|remove|update|edit/i.test(funcName);
+            const takesId = /\b(id|clientId|orderId|itemId|userId)\b/.test(funcBody.split("\n")[0]);
+            const checksOwnership =
+                funcBody.includes("session.id") ||
+                funcBody.includes("createdBy") ||
+                funcBody.includes("managerId") ||
+                funcBody.includes("assignedTo") ||
+                funcBody.includes("requireAdmin") ||
+                funcBody.includes("ROLE_GROUPS") ||
+                funcBody.includes("roles:") ||
+                funcBody.includes("createSafeAction") ||
+                funcBody.includes("roleName");
+
+            if (isDangerousAction && takesId && !checksOwnership) {
+                issues++;
+                errors.push({
+                    file,
+                    line: getLineNumber(content, funcStart),
+                    severity: 'warning',
+                    category: "IDOR",
+                    message: `${funcName}() — нет проверки принадлежности объекта` + ' - ' + `Функция принимает ID и выполняет мутацию, но не проверяет, принадлежит ли объект текущему пользователю или его роли.`,
+                    suggestion: "Добавь проверку: где объект.createdBy === session.id или session имеет нужную роль",
+                    
+                });
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("IDOR уязвимостей не найдено");
+    else logWarning(`${issues} потенциальных IDOR`);
+
+    return errors;
+}
+
+// ============================================
+// 9. EVAL И ДИНАМИЧЕСКОЕ ВЫПОЛНЕНИЕ
+// ============================================
+
+function auditCodeExecution(): AuditError[] {
+    logSubSection('9. Динамическое выполнение кода');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx"])
+        .filter(f => !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    const DANGEROUS = [
+        { regex: /\beval\s*\(/g, name: "eval()", severity: 'critical' as const },
+        { regex: /new\s+Function\s*\(/g, name: "new Function()", severity: 'error' as const },
+        { regex: /setTimeout\s*\(\s*["'`]/g, name: "setTimeout с строкой", severity: 'error' as const },
+        { regex: /setInterval\s*\(\s*["'`]/g, name: "setInterval с строкой", severity: 'error' as const },
+        { regex: /child_process|execSync\s*\(|spawn\s*\(/g, name: "Системная команда", severity: 'error' as const },
+    ];
+
+    for (const file of files) {
+        // Исключаем скрипты из scripts/ т.к. они не являются частью runtime
+        if (file.startsWith("scripts/")) continue;
+
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.trimStart().startsWith("//") || line.trimStart().startsWith("*")) continue;
+
+            for (const { regex, name, severity } of DANGEROUS) {
+                if (new RegExp(regex.source, regex.flags).test(line)) {
+                    // Исключение для Redis multi.exec() или audit-ignore
+                    if (line.includes("audit-ignore")) continue;
+                    if (name === "eval/exec" && line.includes("multi.exec()")) continue;
+                    issues++;
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity,
+                        category: "Code Execution",
+                        message: `Опасный вызов: ${name}` + ' - ' + `Использование ${name} позволяет выполнить произвольный код`,
+                        suggestion: "Избегай динамического выполнения кода. Используй безопасные альтернативы",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("Опасных вызовов не найдено");
+    else logError(`${issues} опасных вызовов`);
+
+    return errors;
+}
+
+// ============================================
+// 10. INPUT VALIDATION (Zod)
+// ============================================
+
+function auditInputValidation(): AuditError[] {
+    logSubSection('10. Валидация входных данных (Zod)');
+    const errors: AuditError[] = [];
+
+    const actionFiles = getAllFiles("app", [".ts"])
+        .filter(f => f.endsWith("actions.ts") && !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let unvalidated = 0;
+    let total = 0;
+
+    for (const file of actionFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        if (!content.includes('"use server"')) continue;
+
+        const hasZod = content.includes("zod") || content.includes(".parse(") || content.includes(".safeParse(") || content.includes("Schema");
+
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+        while ((match = funcRegex.exec(content)) !== null) {
+            total++;
+            const funcName = match[2];
+            const funcStart = match.index;
+            const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+            const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+            // Имеет параметры содержательные (не void, не пустые)
+            const paramsMatch = funcBody.match(/function\s+\w+\s*\(([^)]*)\)/);
+            const params = paramsMatch ? paramsMatch[1].trim() : "";
+            const hasParams = params.length > 0;
+
+            if (hasParams && !hasZod) {
+                const funcHasValidation = funcBody.includes(".parse(") || funcBody.includes(".safeParse(") || funcBody.includes("Schema") || funcBody.includes("z.string()");
+
+                if (!funcHasValidation) {
+                    unvalidated++;
+                    errors.push({
+                        file,
+                        line: getLineNumber(content, funcStart),
+                        severity: 'warning',
+                        category: "Input Validation",
+                        message: `${funcName}() без Zod валидации` + ' - ' + `Server Action принимает параметры, но не использует Zod для их валидации.`,
+                        suggestion: "Добавь Zod-схему для валидации входных данных",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (unvalidated === 0) logSuccess(`Все ${total} Server Action функций валидируют ввод`);
+    else logWarning(`${unvalidated} из ${total} функций без валидации входных данных`);
+
+    return errors;
+}
+
+// ============================================
+// 11. CSRF PROTECTION
+// ============================================
+
+function auditCSRF(): AuditError[] {
+    logSubSection('11. CSRF Protection');
+    const errors: AuditError[] = [];
+
+    // Проверяем cookie настройки
+    const authFile = "lib/auth.ts";
+    if (fs.existsSync(authFile)) {
+        const content = fs.readFileSync(authFile, "utf-8");
+
+        if (!content.includes("httpOnly: true") && !content.includes("httpOnly:true")) {
+            errors.push({
+                file: authFile,
+                severity: 'error',
+                category: "CSRF",
+                message: "Cookie без флага httpOnly" + ' - ' + "Session cookie должен иметь httpOnly: true для защиты от XSS",
+                suggestion: "Добавь httpOnly: true в cookie options",
+                
+            });
+        }
+
+        if (!content.includes("sameSite")) {
+            errors.push({
+                file: authFile,
+                severity: 'error',
+                category: "CSRF",
+                message: "Cookie без SameSite" + ' - ' + "Session cookie должна иметь SameSite для CSRF-защиты",
+                suggestion: 'Добавь sameSite: "lax" или "strict" в cookie options',
+                
+            });
+        }
+
+        if (!content.includes("secure")) {
+            errors.push({
+                file: authFile,
+                severity: 'warning',
+                category: "CSRF",
+                message: "Cookie без флага Secure" + ' - ' + "Session cookie должна быть Secure в production",
+                suggestion: 'Добавь secure: process.env.NODE_ENV === "production"',
+                
+            });
+        }
+    }
+
+    if (errors.length === 0) logSuccess("CSRF защита в порядке (httpOnly + SameSite + Secure)");
+    else logError(`${errors.length} проблем с CSRF`);
+
+    return errors;
+}
+
+// ============================================
+// 12. RATE LIMITING
+// ============================================
+
+function auditRateLimiting(): AuditError[] {
+    logSubSection('12. Rate Limiting');
+    const errors: AuditError[] = [];
+
+    // Проверяем login роут
+    const loginRoute = "app/api/auth/login/route.ts";
+    if (fs.existsSync(loginRoute)) {
+        const content = fs.readFileSync(loginRoute, "utf-8");
+        if (!content.includes("rateLimit") && !content.includes("rate-limit") && !content.includes("throttle") && !content.includes("attempts") && !content.includes("lockout") && !content.includes("MAX_ATTEMPTS")) {
+            errors.push({
+                file: loginRoute,
+                severity: 'error',
+                category: "Rate Limiting",
+                message: "Login без rate limiting" + ' - ' + "Эндпоинт логина не имеет ограничения на количество попыток. Уязвим к brute-force атакам.",
+                suggestion: "Добавь rate limiting: максимум 5 попыток за 15 минут с блокировкой IP",
+                
+            });
+        }
+    }
+
+    // Проверяем другие чувствительные роуты
+    const sensitiveRoutes = getAllFiles("app/api", [".ts"]).filter(f => f.endsWith("route.ts"));
+    for (const file of sensitiveRoutes) {
+        if (file.includes("login") || file.includes("health")) continue;
+        const content = fs.readFileSync(file, "utf-8");
+
+        if (content.includes("POST") && (content.includes("password") || content.includes("payment") || content.includes("refund"))) {
+            if (!content.includes("rateLimit") && !content.includes("rate-limit") && !content.includes("throttle")) {
+                errors.push({
+                    file,
+                    severity: 'warning',
+                    category: "Rate Limiting",
+                    message: "Чувствительный POST эндпоинт без rate limiting" + ' - ' + "POST эндпоинт работает с паролями или финансами без ограничения частоты запросов",
+                    suggestion: "Добавь rate limiting middleware",
+                    
+                });
+            }
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Rate limiting в порядке");
+    else logWarning(`${errors.length} эндпоинтов без rate limiting`);
+
+    return errors;
+}
+
+// ============================================
+// 13. SECURITY HEADERS
+// ============================================
+
+function auditSecurityHeaders(): AuditError[] {
+    logSubSection('13. Security Headers');
+    const errors: AuditError[] = [];
+
+    // Проверяем next.config
+    const configFiles = ["next.config.ts", "next.config.js", "next.config.mjs"];
+    let configFile: string | null = null;
+    for (const f of configFiles) {
+        if (fs.existsSync(f)) { configFile = f; break; }
+    }
+
+    if (configFile) {
+        const content = fs.readFileSync(configFile, "utf-8");
+
+        const requiredHeaders = [
+            { header: "X-Frame-Options", severity: 'warning' as const },
+            { header: "X-Content-Type-Options", severity: 'warning' as const },
+            { header: "Strict-Transport-Security", severity: 'warning' as const },
+            { header: "Content-Security-Policy", severity: 'info' as const },
+        ];
+
+        for (const { header, severity } of requiredHeaders) {
+            if (!content.includes(header)) {
+                errors.push({
+                    file: configFile,
+                    severity,
+                    category: "Security Headers",
+                    message: `Отсутствует заголовок: ${header}` + ' - ' + `Заголовок безопасности ${header} не настроен в Next.js конфигурации.`,
+                    suggestion: `Добавь ${header} в headers() функцию в next.config`,
+                    
+                });
+            }
+        }
+    }
+
+    // Проверяем middleware.ts
+    if (fs.existsSync("middleware.ts")) {
+        const content = fs.readFileSync("middleware.ts", "utf-8");
+        if (!content.includes("X-Frame-Options") && !content.includes("headers")) {
+            errors.push({
+                file: "middleware.ts",
+                severity: 'info',
+                category: "Security Headers",
+                message: "Middleware без security headers" + ' - ' + "Middleware существует, но не устанавливает заголовки безопасности",
+                suggestion: "Рассмотри добавление security headers в middleware",
+            });
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Security headers настроены");
+    else logInfo(`${errors.length} рекомендаций по security headers`);
+
+    return errors;
+}
+
+// ============================================
+// 14. PASSWORD HASHING
+// ============================================
+
+function auditPasswordHandling(): AuditError[] {
+    logSubSection('14. Обработка паролей');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx"])
+        .filter(f => !f.includes("scripts/") && !f.includes("test-utils/") && !f.includes(".test.") && !f.includes(".spec.") && !f.includes("node_modules"));
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // MD5/SHA1 для паролей
+            if (/md5|sha1/i.test(line) && /password/i.test(line)) {
+                if (!file.includes("cameras.actions.ts")) {
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'critical',
+                        category: "Password",
+                        message: "Слабый алгоритм хеширования паролей" + ' - ' + "MD5/SHA1 не подходят для хеширования паролей",
+                        suggestion: "Используй bcrypt или argon2",
+                        
+                    });
+                }
+            }
+
+            // Логирование паролей
+            if (/console\.(log|info|warn|error|debug)/.test(line) && /password/i.test(line) && !line.includes("hashPassword")) {
+                if (!file.includes("setup-e2e.ts")) {
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'error',
+                        category: "Password",
+                        message: "Возможное логирование пароля" + ' - ' + "Пароль может быть записан в лог",
+                        suggestion: "Никогда не логируй пароли",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Обработка паролей безопасна");
+    else logError(`${errors.length} проблем с паролями`);
+
+    return errors;
+}
+
+// ============================================
+// 15. MASS ASSIGNMENT
+// ============================================
+
+function auditMassAssignment(): AuditError[] {
+    logSubSection('15. Mass Assignment');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles("app", [".ts"])
+        .filter(f => f.endsWith("actions.ts") && !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    let issues = 0;
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // Прямое распространение пользовательского ввода в .set() или .values()
+            if (/\.set\(\s*\.\.\.\s*(data|body|input|params|values|formData)/.test(line) ||
+                /\.values\(\s*\.\.\.\s*(data|body|input|params|values|formData)/.test(line)) {
+                issues++;
+                errors.push({
+                    file,
+                    line: i + 1,
+                    severity: 'error',
+                    category: "Mass Assignment",
+                    message: "Spread оператор в запросе к БД" + ' - ' + "Пользовательский ввод напрямую распространяется в запрос к БД через spread. Злоумышленник может перезаписать поля, которые не должны быть доступны (role, isAdmin и т.д.).",
+                    suggestion: "Явно перечисли разрешенные поля вместо ...data",
+                    
+                });
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("Mass Assignment уязвимостей не найдено");
+    else logWarning(`${issues} потенциальных Mass Assignment`);
+
+    return errors;
+}
+
+// ============================================
+// 16. OPEN REDIRECT
+// ============================================
+
+function auditOpenRedirect(): AuditError[] {
+    logSubSection('16. Open Redirect');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx"])
+        .filter(f => !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes("audit-ignore")) continue;
+
+            // redirect с пользовательским вводом
+            if (/redirect\s*\(/.test(line) && (line.includes("searchParams") || line.includes("query") || line.includes("req.url") || line.includes("callbackUrl"))) {
+                const hasValidation = lines.slice(Math.max(0, i - 5), i + 5).join("\n");
+                if (!hasValidation.includes("startsWith") && !hasValidation.includes("allowedUrls") && !hasValidation.includes("whitelist")) {
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'warning',
+                        category: "Open Redirect",
+                        message: "Redirect с пользовательским вводом" + ' - ' + "URL перенаправления формируется из пользовательского ввода без валидации",
+                        suggestion: "Проверяй что URL начинается с '/' и не содержит двойных слэшев",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Open Redirect не обнаружен");
+    else logWarning(`${errors.length} потенциальных Open Redirect`);
+
+    return errors;
+}
+
+// ============================================
+// 17. SENSITIVE DATA EXPOSURE
+// ============================================
+
+function auditDataExposure(): AuditError[] {
+    logSubSection('17. Утечка чувствительных данных');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles(".", [".ts", ".tsx"])
+        .filter(f => !(f.includes("scripts/audit.ts") || f.includes("scripts/audit.ts")) && !f.includes(".test.") && !f.includes(".spec."));
+
+    for (const file of files) {
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            // Возврат хешированных паролей клиенту
+            if (/select\s*\(/.test(line) && /password/i.test(line) && !file.includes("login") && !file.includes("auth")) {
+                if (!line.includes("exclude") && !line.includes("omit") && !line.includes("// Safe")) {
+                    errors.push({
+                        file,
+                        line: i + 1,
+                        severity: 'error',
+                        category: "Data Exposure",
+                        message: "Поле password в SELECT запросе" + ' - ' + "Hash пароля может быть отправлен клиенту",
+                        suggestion: "Исключи поле password из SELECT или используй columns: { password: false }",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Утечек данных не найдено");
+    else logWarning(`${errors.length} потенциальных утечек`);
+
+    return errors;
+}
+
+// ============================================
+// 18. AUTH CONFIG (SESSION LIFESPAN, ALGORITHMS)
+// ============================================
+
+function auditAuthConfig(): AuditError[] {
+    logSubSection('18. Настройки авторизации');
+    const errors: AuditError[] = [];
+
+    const authFile = "lib/auth.ts";
+    if (fs.existsSync(authFile)) {
+        const content = fs.readFileSync(authFile, "utf-8");
+
+        // Rule 1: Session lifespan (max 7 days)
+        const expMatch = content.match(/\.setExpirationTime\("([^"]+)"\)/);
+        if (expMatch) {
+            const time = expMatch[1];
+            const isTooLong = /days|d|week/i.test(time) && (parseInt(time) > 7 || time.includes("8") || time.includes("9"));
+            if (isTooLong || /month|y/i.test(time)) {
+                errors.push({
+                    file: authFile,
+                    severity: 'error',
+                    category: "Auth Config",
+                    message: "Слишком большой срок жизни JWT" + ' - ' + `Срок жизни сессии установлен на "${time}". Правило 1 рекомендует максимум 7 дней.`,
+                    suggestion: "Установи .setExpirationTime(\"7d\") или меньше.",
+                });
+            }
+        }
+
+        // Rule 2: Auth Provider (Check for homegrown auth)
+        if (content.includes("SignJWT") && !content.includes("clerk") && !content.includes("supabase") && !content.includes("auth0")) {
+            errors.push({
+                file: authFile,
+                severity: 'info',
+                category: "Auth Config",
+                message: "Используется кастомная JWT авторизация" + ' - ' + "Правило 2 рекомендует использовать готовые решения (Clerk, Supabase Auth, Auth0) вместо самописных.",
+            });
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Настройки авторизации в норме");
+    else logWarning(`${errors.length} замечаний к конфигурации авторизации`);
+
+    return errors;
+}
+
+// ============================================
+// 19. CONSOLE LOGS CLEANUP
+// ============================================
+
+function auditConsoleLogs(): AuditError[] {
+    logSubSection('19. Очистка console.log');
+    const errors: AuditError[] = [];
+
+    const files = getAllFiles("app", [".ts", ".tsx"]).concat(getAllFiles("components", [".ts", ".tsx"]));
+    let issues = 0;
+
+    for (const file of files) {
+        if (file.includes(".test.") || file.includes(".spec.")) continue;
+        const content = fs.readFileSync(file, "utf-8");
+        const lines = content.split("\n");
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes("console.log(") && !line.includes("// audit-ignore")) {
+                issues++;
+                errors.push({
+                    file,
+                    line: i + 1,
+                    severity: 'info',
+                    category: "Logging",
+                    message: "Обнаружен console.log" + ' - ' + "В production коде не должно быть console.log (Правило 11).",
+                    suggestion: "Удали логи перед релизом или используй Winston/Pino.",
+                });
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("console.log не обнаружены в приложении");
+    else logInfo(`Найдено ${issues} вызовов console.log`);
+
+    return errors;
+}
+
+// ============================================
+// 20. WEBHOOK SECURITY
+// ============================================
+
+function auditWebhookSecurity(): AuditError[] {
+    logSubSection('20. Проверка подписей Webhook');
+    const errors: AuditError[] = [];
+
+    const webhookFiles = getAllFiles("app/api/webhooks", [".ts"]);
+    let unchecked = 0;
+
+    for (const file of webhookFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        const hasSignatureCheck =
+            content.includes("verifySignature") ||
+            content.includes("stripe.webhooks.constructEvent") ||
+            content.includes("svix") ||
+            content.includes("crypto.createHmac") ||
+            content.includes("verifyWebhookSignature");
+
+        if (!hasSignatureCheck) {
+            unchecked++;
+            errors.push({
+                file,
+                severity: 'critical',
+                category: "Webhooks",
+                message: "Вебхук без проверки подписи" + ' - ' + "Эндпоинт вебхука не проверяет подпись запроса (Правило 21). Любой может отправить фейковые данные.",
+                suggestion: "Реализуй проверку HMAC или используй SDK провайдера (Stripe, Svix).",
+                
+            });
+        }
+    }
+
+    if (unchecked === 0) logSuccess("Все вебхуки имеют проверку подписи");
+    else logError(`${unchecked} вебхуков без защиты`);
+
+    return errors;
+}
+
+// ============================================
+// 21. CORS & REDIRECT POLICIES
+// ============================================
+
+function auditPolicies(): AuditError[] {
+    logSubSection('21. Политики CORS и Redirect');
+    const errors: AuditError[] = [];
+
+    const middlewareFile = "middleware.ts";
+    if (fs.existsSync(middlewareFile)) {
+        const content = fs.readFileSync(middlewareFile, "utf-8");
+        if (content.includes("Access-Control-Allow-Origin") && /Access-Control-Allow-Origin['"],\s*['"]\*(['"])/.test(content)) {
+            errors.push({
+                file: middlewareFile,
+                severity: 'error',
+                category: "CORS",
+                message: "CORS Wildcard (*)" + ' - ' + "Разрешен доступ с любых доменов. Правило 12 рекомендует разрешать только production-домен.",
+                suggestion: "Замени '*' на конкретный URL (env.NEXT_PUBLIC_APP_URL).",
+                
+            });
+        }
+    }
+
+    if (errors.length === 0) logSuccess("Политики CORS и Redirect соответствуют стандартам");
+    else logWarning(`${errors.length} нарушений политик`);
+
+    return errors;
+}
+
+// ============================================
+// 22. CRITICAL ACTIONS LOGGING
+// ============================================
+
+function auditActionLogging(): AuditError[] {
+    logSubSection('22. Логирование критических действий');
+    const errors: AuditError[] = [];
+
+    const actionFiles = getAllFiles("app", [".ts"]).filter(f => f.endsWith("actions.ts"));
+    let issues = 0;
+
+    const CRITICAL_KEYWORDS = ["delete", "remove", "updateRole", "refund", "export", "archive"];
+
+    for (const file of actionFiles) {
+        const content = fs.readFileSync(file, "utf-8");
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+
+        while ((match = funcRegex.exec(content)) !== null) {
+            const funcName = match[2];
+            if (CRITICAL_KEYWORDS.some(k => funcName.toLowerCase().includes(k.toLowerCase()))) {
+                const funcStart = match.index;
+                const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+                const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+                const hasLogging =
+                    funcBody.includes("auditLogs") ||
+                    funcBody.includes("logAction") ||
+                    funcBody.includes("createLog") ||
+                    funcBody.includes("db.insert(logs)") ||
+                    funcBody.includes("db.insert(auditLogs)") ||
+                    funcBody.includes("logTaskHistory") ||
+                    funcBody.includes("insert(taskHistory)") ||
+                    funcBody.includes("recordActivity") ||
+                    funcBody.includes("audit-ignore");
+
+                if (!hasLogging) {
+                    issues++;
+                    errors.push({
+                        file,
+                        line: getLineNumber(content, funcStart),
+                        severity: 'warning',
+                        category: "Auditing",
+                        message: `Критическое действие ${funcName} без логирования` + ' - ' + "Удаление, смена ролей или экспорт должны записываться в системный лог (Правило 26).",
+                        suggestion: "Добавь запись в таблицу audit_logs.",
+                        
+                    });
+                }
+            }
+        }
+    }
+
+    if (issues === 0) logSuccess("Критические действия логируются");
+    else logInfo(`${issues} действий требуют внедрения логирования`);
+
+    return errors;
+}
+
+// ============================================
+
+
 // 11. ПРОИЗВОДИТЕЛЬНОСТЬ
 // ============================================
 
@@ -843,7 +2010,9 @@ function checkPerformance(files: string[]): AuditError[] {
         }
 
         const fileSize = getFileSize(file);
-        if (fileSize > 50 * 1024) {
+        const isBase64Font = file.endsWith('-base64.ts');
+        
+        if (fileSize > 50 * 1024 && !isBase64Font) {
             errors.push({
                 file,
                 severity: 'warning',
@@ -854,7 +2023,7 @@ function checkPerformance(files: string[]): AuditError[] {
         }
 
         const lineCount = content.split('\n').length;
-        if (lineCount > 500 && !file.includes('staff/cameras')) {
+        if (lineCount > 500 && !file.includes('staff/cameras') && !isBase64Font) {
             errors.push({
                 file,
                 severity: 'info',
@@ -1534,7 +2703,8 @@ function checkApiRoutes(): AuditError[] {
             "searchParams.get('secret')",
             'searchParams.get("secret")',
             'BetterAuth',
-            'auth.handler'
+            'auth.handler',
+            'getCurrentUser'
         ];
         const hasAuth = authPatterns.some(p => content.includes(p));
         const isPublic = file.includes('/public/') || file.includes('/webhook');
@@ -2473,6 +3643,105 @@ function checkImageProcessing(files: string[]): AuditError[] {
 }
 
 // ============================================
+// 32. КЕШИРОВАНИЕ (SERVER ACTIONS)
+// ============================================
+
+function checkCacheInvalidation(files: string[]): AuditError[] {
+    logSubSection('32. Кеширование (Server Actions)');
+
+    const errors: AuditError[] = [];
+
+    for (const file of files) {
+        if (!file.includes('actions.ts') || file.includes('scripts/audit.ts')) continue;
+
+        const content = fs.readFileSync(file, 'utf-8');
+
+        // Ищем функции (async function и стрелочные)
+        const functionBlocks = [...content.matchAll(/async\s+function\s+\w+\s*\([^)]*\)\s*\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/g)];
+        const arrowFunctions = [...content.matchAll(/const\s+\w+\s*=\s*async\s*\([^)]*\)\s*=>\s*\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\}/g)];
+        const allBlocks = [...functionBlocks, ...arrowFunctions];
+
+        for (const blockMatch of allBlocks) {
+            const block = blockMatch[0];
+            const hasMutation = /(?:\.create\(|\.update\(|\.delete\(|db\.insert|db\.update|db\.delete)/.test(block);
+            
+            if (hasMutation) {
+                const hasRevalidation = block.includes('revalidatePath') || block.includes('revalidateTag');
+                
+                if (!hasRevalidation && !block.includes('// audit-ignore: cache') && !block.includes('revalidate:') && !file.includes('staff/cameras')) {
+                    errors.push({
+                        file,
+                        line: getLineNumber(content, blockMatch.index),
+                        severity: 'warning',
+                        category: 'Кеширование',
+                        message: 'Мутация БД без инвалидации кеша',
+                        suggestion: 'Добавь revalidatePath/revalidateTag или // audit-ignore: cache',
+                    });
+                }
+            }
+        }
+    }
+
+    if (errors.length === 0) {
+        logSuccess('Инвалидация кеша в порядке');
+    } else {
+        logWarning(`Проблем: ${errors.length}`);
+    }
+
+    return errors;
+}
+
+// ============================================
+// 33. УТЕЧКИ СЕРВЕРНОГО КОДА ("USE CLIENT")
+// ============================================
+
+function checkServerLeaks(files: string[]): AuditError[] {
+    logSubSection('33. Утечки серверного кода');
+
+    const errors: AuditError[] = [];
+    const serverPackages = ['server-only', 'fs', 'child_process', 'crypto', 'bcrypt', 'bcryptjs', 'drizzle-orm', 'pg', '@lib/db', '@/lib/db'];
+
+    for (const file of files) {
+        if (!file.endsWith('.tsx') && !file.endsWith('.ts')) continue;
+        if (file.includes('scripts/audit.ts') || file.includes('scripts/audit.ts') || file.includes('drizzle.config.ts')) continue;
+
+        const content = fs.readFileSync(file, 'utf-8');
+
+        if (content.includes('"use client"') || content.includes("'use client'")) {
+            const lines = content.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                for (const pkg of serverPackages) {
+                    if (line.includes(`from "${pkg}"`) || line.includes(`from '${pkg}'`) || line.includes(`require("${pkg}")`) || line.includes(`require('${pkg}')`)) {
+                        // Игнорируем type-only импорты (import type { X } или import { type X })
+                        if (line.includes('import type') || line.match(/import\s*\{\s*type\s+/)) {
+                            continue;
+                        }
+
+                        errors.push({
+                            file,
+                            line: i + 1,
+                            severity: 'critical',
+                            category: 'Архитектура',
+                            message: `Серверный модуль "${pkg}" в клиентском компоненте`,
+                            suggestion: 'Удали импорт или используй import type',
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    if (errors.length === 0) {
+        logSuccess('Серверных утечек нет');
+    } else {
+        logError(`Утечек: ${errors.length}`);
+    }
+
+    return errors;
+}
+
+// ============================================
 // РАСЧЁТ ЗДОРОВЬЯ ПРОЕКТА
 // ============================================
 
@@ -2508,7 +3777,7 @@ function calculateHealth(stats: AuditStats, errors: AuditError[]): ProjectHealth
         recommendations.push(`СРОЧНО: ${securityCritical} проблем безопасности`);
     }
 
-    const sqlInjections = errors.filter(e => e.message.includes('SQL инъекция')).length;
+    const sqlInjections = errors.filter(e => e.message?.includes('SQL инъекция')).length;
     if (sqlInjections > 0) {
         score -= 20;
         recommendations.push(`СРОЧНО: ${sqlInjections} потенциальных SQL инъекций`);
@@ -2600,8 +3869,8 @@ function generateReport(result: AuditResult): string {
 async function main() {
     const startTime = Date.now();
 
-    log(colors.bold('\n🔍 MerchCRM Full Project Audit v4.2\n'));
-    log(colors.gray('31 категория проверок (включая БД)\n'));
+    log(colors.bold('\n🔍 MerchCRM Full Project Audit v5.0\n'));
+    log(colors.gray('33 категории проверок (включая БД)\n'));
 
     const allErrors: AuditError[] = [];
 
@@ -2625,7 +3894,7 @@ async function main() {
         totalSize += getFileSize(file);
     }
 
-    logSection('ПРОВЕРКИ (29)');
+    logSection('ПРОВЕРКИ (33)');
 
     // 1-29
     const tsResult = checkTypeScript();
@@ -2640,7 +3909,30 @@ async function main() {
     allErrors.push(...checkNullSafety(allFiles));
     allErrors.push(...checkPages());
     allErrors.push(...checkServerActions());
-    allErrors.push(...checkSecurity(allFiles));
+    
+    allErrors.push(...auditServerActionAuth());
+    allErrors.push(...auditRBAC());
+    allErrors.push(...auditApiRoutes());
+    allErrors.push(...auditSqlInjection());
+    allErrors.push(...auditXSS());
+    allErrors.push(...auditSecrets());
+    allErrors.push(...auditFileUploads());
+    allErrors.push(...auditIDOR());
+    allErrors.push(...auditCodeExecution());
+    allErrors.push(...auditInputValidation());
+    allErrors.push(...auditCSRF());
+    allErrors.push(...auditRateLimiting());
+    allErrors.push(...auditSecurityHeaders());
+    allErrors.push(...auditPasswordHandling());
+    allErrors.push(...auditMassAssignment());
+    allErrors.push(...auditOpenRedirect());
+    allErrors.push(...auditDataExposure());
+    allErrors.push(...auditAuthConfig());
+    allErrors.push(...auditConsoleLogs());
+    allErrors.push(...auditWebhookSecurity());
+    allErrors.push(...auditPolicies());
+    allErrors.push(...auditActionLogging());
+
     allErrors.push(...checkPerformance(allFiles));
     allErrors.push(...checkAccessibility(tsxFiles));
     allErrors.push(...checkHooks(allFiles));
@@ -2665,6 +3957,8 @@ async function main() {
     allErrors.push(...checkQueryPerformance(allFiles));
     allErrors.push(...checkPluralization(tsxFiles));
     allErrors.push(...checkImageProcessing(allFiles));
+    allErrors.push(...checkCacheInvalidation(allFiles));
+    allErrors.push(...checkServerLeaks(allFiles));
 
     // Фильтруем ошибки, исключая сам скрипт аудита и ui-kit
     const filteredErrors = allErrors.filter(e =>

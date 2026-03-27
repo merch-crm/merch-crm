@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useId } from "react";
+import React, { useState, useMemo, useId, useEffect } from "react";
 import { ChevronDown, Check, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "./popover";
@@ -93,6 +93,12 @@ export function Select({
     const triggerId = useId();
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    // Prevent hydration mismatch: only render dynamic popover after mount
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Автоматическое определение layout
     const computedLayout = useMemo(() => {
@@ -139,7 +145,7 @@ export function Select({
 
             {name && <input type="hidden" name={name} value={value} />}
 
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={mounted ? open : false} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>
                     <button
                         id={triggerId}
@@ -174,11 +180,12 @@ export function Select({
                             {selectedOption ? (
                                 <div className="flex min-w-0 w-full flex-col truncate">
                                     <div className="flex items-center gap-2 min-w-0">
-                                        <span className={cn("transition-colors truncate",
-                                            compact ? "text-xs font-bold" : "text-[14px] font-semibold text-slate-900"
-                                        )}>
-                                            {selectedOption.title}
-                                        </span>
+                                        <span
+                                            suppressHydrationWarning
+                                            className={cn("transition-colors truncate",
+                                                compact ? "text-xs font-bold" : "text-[14px] font-semibold text-slate-900"
+                                            )}
+                                        >{selectedOption.title}</span>
                                         {selectedOption?.badge && !compact && variant !== "minimal" && (
                                             <span className="text-[11px] font-black bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full shrink-0 border border-indigo-100/50">
                                                 {selectedOption.badge}
@@ -192,11 +199,12 @@ export function Select({
                                     )}
                                 </div>
                             ) : (
-                                <span className={cn("transition-colors truncate",
-                                    compact ? "text-xs" : "text-[14px] text-slate-400 font-semibold"
-                                )}>
-                                    {placeholder}
-                                </span>
+                                <span 
+                                    suppressHydrationWarning 
+                                    className={cn("transition-colors truncate",
+                                        compact ? "text-xs" : "text-[14px] text-slate-400 font-semibold"
+                                    )}
+                                >{placeholder}</span>
                             )}
                         </div>
                         <div className="flex items-center gap-1 shrink-0 ml-2">
@@ -217,7 +225,7 @@ export function Select({
                     </button>
                 </PopoverTrigger>
                 <AnimatePresence>
-                    {open && (
+                    {open && mounted && (
                         <PopoverContent
                             className="!p-0 !bg-white !border !border-slate-200 !shadow-lg !w-auto !rounded-[12px] !ring-0 !overflow-hidden !duration-0 data-[state=open]:!animate-none data-[state=closed]:!animate-none"
                             align={align}
@@ -359,7 +367,7 @@ export function Select({
                     )}
                 </AnimatePresence>
             </Popover>
-        </div >
+        </div>
     );
 }
 

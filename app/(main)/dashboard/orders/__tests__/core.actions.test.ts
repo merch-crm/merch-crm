@@ -107,8 +107,8 @@ describe('Order Actions (Integration)', () => {
       expect(result.success).toBe(true)
 
       // Проверяем что заказ создан в БД
-      const orders = await db.select().from(schema.orders)
-      expect(orders.length).toBe(1)
+      const orders = await db.select().from(schema.orders).limit(1)
+      expect(orders!.length).toBe(1)
       expect(orders[0].totalAmount).toBe('5000.00')
     })
   })
@@ -142,6 +142,7 @@ describe('Order Actions (Integration)', () => {
       const [updated] = await db.select()
         .from(schema.orders)
         .where(eq(schema.orders.id, testOrder.id))
+        .limit(1)
       expect(updated.priority).toBe('high')
     })
   })

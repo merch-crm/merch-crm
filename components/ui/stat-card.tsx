@@ -73,7 +73,9 @@ export function ModernStatCard({
                     <Icon className="w-6 h-6" />
                 </div>
                 {badge && (
-                    <div className={cn("px-2.5 py-1 rounded-2xl text-xs font-bold border",
+                    <div 
+                        suppressHydrationWarning
+                        className={cn("px-2.5 py-1 rounded-2xl text-xs font-bold border",
                         badge.variant ? badgeVariantMap[badge.variant] : cn(scheme.badgeBg, scheme.badgeText, scheme.border)
                     )}>
                         {badge.text}
@@ -84,11 +86,11 @@ export function ModernStatCard({
             <div className="space-y-1">
                 <p className="text-slate-400 text-[11px] font-black  mb-1">{label}</p>
                 <div className="flex items-baseline gap-1">
-                    <h3 className="text-3xl font-black text-slate-900  leading-none">
+                    <h3 suppressHydrationWarning className="text-3xl font-black text-slate-900  leading-none">
                         {value}
                     </h3>
                     {suffix && (
-                        <span className="text-lg font-bold text-slate-400">
+                        <span suppressHydrationWarning className="text-lg font-bold text-slate-400">
                             {suffix}
                         </span>
                     )}
@@ -161,10 +163,10 @@ export function StatCard({
                         {loading ? (
                             <div className="h-7 w-20 bg-slate-100 animate-pulse rounded-lg mt-1" />
                         ) : (
-                            <h3 className="text-xl font-bold text-slate-900">{value}</h3>
+                            <h3 suppressHydrationWarning className="text-xl font-bold text-slate-900">{value}</h3>
                         )}
                         {subtitle && (
-                            <p className="text-xs text-slate-500 font-bold mt-0.5">{subtitle}</p>
+                            <p suppressHydrationWarning className="text-xs text-slate-500 font-bold mt-0.5">{subtitle}</p>
                         )}
                     </div>
                 </div>

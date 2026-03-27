@@ -399,7 +399,7 @@ export function ProductionDashboardClient({
                                                 <AvatarFallback className="bg-primary/5 text-primary text-xs font-bold">
                                                     {person.name
                                                         .split(" ")
-                                                        .map((n) => n[0])
+                                                        .map((n: string) => n[0])
                                                         .join("")
                                                         .toUpperCase()}
                                                 </AvatarFallback>

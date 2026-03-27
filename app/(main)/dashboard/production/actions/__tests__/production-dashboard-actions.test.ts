@@ -44,7 +44,7 @@ vi.mock("@/lib/db", () => {
             then: vi.fn().mockImplementation((resolve: (val: unknown) => void) => resolve(data)),
             // Support for [Symbol.iterator] if used by spreading etc.
             [Symbol.iterator]: function* () { yield* data; },
-            map: (fn: (item: unknown) => unknown) => data.map(fn),
+            map: (fn: (item: unknown) => unknown) => (data || []).map(fn),
         };
         return chain;
     };
@@ -110,12 +110,10 @@ describe("production-dashboard-actions", () => {
     describe("getUrgentProductionTasks", () => {
         it("should return success and tasks", async () => {
             const result = await getUrgentProductionTasks();
-            if (!result.success) {
-                console.error("Urgent tasks error:", result.error);
-            }
             expect(result.success).toBe(true);
+            if (!result.data) return;
             expect(result.data).toHaveLength(1);
-            expect(result.data![0].taskNumber).toBe("TASK-1");
+            expect(result.data[0].taskNumber).toBe("TASK-1");
         });
     });
 });

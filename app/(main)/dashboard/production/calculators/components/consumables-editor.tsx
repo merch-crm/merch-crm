@@ -85,7 +85,7 @@ const ConsumableField = memo(function ConsumableField({
         </div>
       </div>
       {description && (
-        <p className="text-xs text-slate-500 ml-10">{description}</p>
+        <p suppressHydrationWarning className="text-xs text-slate-500 ml-10">{description}</p>
       )}
     </div>
   )
@@ -141,7 +141,7 @@ const PercentSlider = memo(function PercentSlider({
       />
       
       {description && (
-        <p className="text-xs text-slate-500">{description}</p>
+        <p suppressHydrationWarning className="text-xs text-slate-500">{description}</p>
       )}
     </div>
   )

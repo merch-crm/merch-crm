@@ -133,7 +133,7 @@ function StatCardSkeleton({ className }: { className?: string }) {
           <Skeleton
             key={i}
             className="flex-1 rounded-sm"
-            style={{ height: `${Math.random() * 60 + 20}%` }}
+            style={{ height: `${((i * 37) % 60) + 20}%` }}
           />
         ))}
       </div>
@@ -189,7 +189,7 @@ function ChartSkeleton({ className }: { className?: string }) {
           <div key={i} className="flex-1 flex flex-col items-center gap-2">
             <Skeleton
               className="w-full rounded-t-lg"
-              style={{ height: `${Math.random() * 60 + 30}%` }}
+              style={{ height: `${((i * 43) % 60) + 30}%` }}
             />
             <Skeleton className="h-3 w-6" />
             <Skeleton className="h-3 w-4" />

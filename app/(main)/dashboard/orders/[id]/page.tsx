@@ -16,12 +16,10 @@ import { RefundDialog } from "./refund-dialog";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 import OrderActions from "./order-actions";
 import { AddPaymentDialog } from "./add-payment-dialog";
 import { OrderItemsTable } from "./order-items-table";
-
-
-
 
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -54,6 +52,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 
     return (
         <div className="space-y-3">
+            <BreadcrumbLabelSync id={id} label={`Заказ #${order.id.slice(0, 8)}`} />
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between crm-card  sm: gap-3">
                 <div className="flex items-center gap-3 sm:gap-3 min-w-0 flex-1">

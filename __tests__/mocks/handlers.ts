@@ -1,92 +1,67 @@
+import { http, HttpResponse } from 'msw';
+
 /**
- * MSW handlers для мокирования API
+ * MSW Handlers для тестирования API MerchCRM
+ * @audit testing
  */
-
-import { http, HttpResponse } from "msw";
-import { createMockOrder, createMockClient, createMockSession } from "../test-utils";
-
 export const handlers = [
-  // Auth
-  http.get("/api/auth/get-session", () => {
-    return HttpResponse.json(createMockSession());
-  }),
-
-  // CSRF
-  http.get("/api/csrf", () => {
-    return HttpResponse.json({ token: "test-csrf-token" });
-  }),
-
-  // Orders
-  http.get("/api/orders", ({ request }) => {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const limit = parseInt(url.searchParams.get("limit") || "20");
-
-    return HttpResponse.json({
-      orders: Array.from({ length: limit }, (_, i) =>
-        createMockOrder({ id: `order-${page}-${i}`, orderNumber: `ORD-24-${String(i).padStart(4, "0")}` })
-      ),
-      pagination: {
-        page,
-        limit,
-        total: 100,
-        totalPages: 5,
-      },
-    });
-  }),
-
-  http.get("/api/orders/:id", ({ params }) => {
-    return HttpResponse.json(
-      createMockOrder({ id: params.id as string })
-    );
-  }),
-
-  // Clients
-  http.get("/api/clients", ({ request }) => {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const limit = parseInt(url.searchParams.get("limit") || "20");
-
-    return HttpResponse.json({
-      clients: Array.from({ length: limit }, (_, i) =>
-        createMockClient({ id: `client-${page}-${i}` })
-      ),
-      pagination: {
-        page,
-        limit,
-        total: 50,
-        totalPages: 3,
-      },
-    });
-  }),
-
-  // Upload
-  http.post("/api/upload/init", async ({ request }) => {
-    const body = await request.json() as { fileName: string; fileSize: number };
-    return HttpResponse.json({
-      uploadId: "test-upload-id",
-      chunkSize: 5 * 1024 * 1024,
-      totalChunks: Math.ceil(body.fileSize / (5 * 1024 * 1024)),
-    });
-  }),
-
-  http.post("/api/upload/chunk", () => {
-    return HttpResponse.json({
-      received: 1,
-      total: 1,
-      complete: true,
-    });
-  }),
-
-  http.post("/api/upload/complete", () => {
+  // Брендинг
+  http.get('/api/branding/settings', () => {
     return HttpResponse.json({
       success: true,
-      file: {
-        url: "https://example.com/uploads/test-file.pdf",
-        key: "uploads/test-file.pdf",
-        fileName: "test-file.pdf",
-        fileSize: 1024,
-        mimeType: "application/pdf",
+      data: {
+        id: 'mock-branding-id',
+        userId: 'test-user-id',
+        companyName: 'Тестовая Компания',
+        primaryColor: '#6366f1',
+        secondaryColor: '#4f46e5',
+        logoUrl: '/mock-logo.png',
+        contactEmail: 'test@example.com',
+        contactPhone: '+7 (999) 000-00-00',
+        website: 'https://example.com',
+        address: 'г. Москва, ул. Тестовая, 1',
+        inn: '7700000000',
+        kpp: '770001001',
+        ogrn: '1000000000000',
+        bankAccount: '40702810000000000000',
+        bankName: 'ТестБанк',
+        bik: '044525000',
+        corrAccount: '30101810000000000000',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+    });
+  }),
+
+  // Генерация PDF
+  http.post('/api/calculators/export/pdf', async ({ request }) => {
+    const data = await request.json();
+    
+    if (!data) {
+      return HttpResponse.json(
+        { error: 'Данные расчёта не предоставлены' },
+        { status: 400 }
+      );
+    }
+
+    // Возвращаем пустой blob для тестов
+    return new HttpResponse(new Blob(['mock-pdf-content'], { type: 'application/pdf' }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': 'attachment; filename="calculation-test.pdf"',
+      },
+    });
+  }),
+
+  // Файлы брендинга
+  http.get('/api/files/branding/:filename', ({ params }) => {
+    const { filename } = params;
+    
+    return new HttpResponse(new Blob(['mock-image-content'], { type: 'image/png' }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/png',
       },
     });
   }),

@@ -13,42 +13,13 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { z } from "zod";
 import { useToast } from "@/components/ui/toast";
+import { BrandingSettings } from "@/lib/types/branding";
 
 const BrandingSchema = z.object({
     companyName: z.string().min(2, "Название компании должно содержать минимум 2 символа"),
     primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Неверный формат HEX цвета"),
 });
 
-interface BrandingSettings {
-    companyName: string;
-    logoUrl: string | null;
-    primaryColor: string;
-    faviconUrl: string | null;
-    radiusOuter?: number;
-    radiusInner?: number;
-    loginSlogan?: string | null;
-    loginBackgroundUrl?: string | null;
-    dashboardWelcome?: string | null;
-    socialTelegram?: string | null;
-    socialWhatsapp?: string | null;
-    socialWebsite?: string | null;
-    notificationSound?: string | null;
-    isVibrationEnabled?: boolean;
-    printLogoUrl?: string | null;
-    soundConfig?: Record<string, { enabled: boolean; vibration: boolean; customUrl?: string | null }>;
-    backgroundColor?: string | null;
-    crmBackgroundUrl?: string | null;
-    crmBackgroundBlur?: number;
-    crmBackgroundBrightness?: number;
-    emailLogoUrl?: string | null;
-    emailPrimaryColor?: string;
-    emailContrastColor?: string;
-    emailFooter?: string | null;
-    emailSignature?: string | null;
-    currencySymbol?: string;
-    dateFormat?: string;
-    timezone?: string;
-}
 
 interface BrandingFormProps {
     initialSettings: BrandingSettings;

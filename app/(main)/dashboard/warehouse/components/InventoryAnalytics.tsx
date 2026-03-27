@@ -24,6 +24,26 @@ interface InventoryAnalyticsProps {
     stagnantItems: StagnantItem[];
 }
 
+const DaysSinceDisplay = ({ lastDate }: { lastDate: Date | null }) => {
+    const [mounted, setMounted] = React.useState(false);
+    React.useEffect(() => setMounted(true), []);
+
+    if (!mounted || !lastDate) {
+        return <span className="text-xs font-black tabular-nums text-slate-400">{!lastDate ? 'никогда' : '...'}</span>;
+    }
+
+    const daysSince = Math.floor((Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+
+    return (
+        <span className={cn("text-xs font-black tabular-nums",
+            daysSince > 90 ? "text-rose-500" :
+            daysSince > 60 ? "text-orange-500" : "text-amber-500"
+        )}>
+            {daysSince} {pluralize(daysSince, "день", "дня", "дней")}
+        </span>
+    );
+};
+
 export const InventoryAnalytics = React.memo(({
     topSoldItems,
     stagnantItems
@@ -117,9 +137,6 @@ export const InventoryAnalytics = React.memo(({
                         <div className="flex flex-col gap-2 overflow-y-auto max-h-[260px] custom-scrollbar">
                             {stagnantItems.map((item) => {
                                 const lastDate = item.lastActivityAt ? new Date(item.lastActivityAt) : null;
-                                const daysSince = lastDate
-                                    ? Math.floor((Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24))
-                                    : null;
                                 return (
                                     <Link
                                         key={item.id}
@@ -135,14 +152,8 @@ export const InventoryAnalytics = React.memo(({
                                                 Остаток: <span className="font-bold text-slate-600">{item.quantity} {formatUnit(item.unit)}</span>
                                             </div>
                                         </div>
-                                        <div className="shrink-0 text-right">
-                                            <span className={cn("text-xs font-black tabular-nums",
-                                                daysSince === null ?"text-slate-400" :
-                                                    daysSince > 90 ?"text-rose-500" :
-                                                        daysSince > 60 ?"text-orange-500" :"text-amber-500"
-                                            )}>
-                                                {daysSince === null ? 'никогда' : `${daysSince} ${pluralize(daysSince,"день","дня","дней")}`}
-                                            </span>
+                                        <div className="shrink-0 text-right" suppressHydrationWarning>
+                                            <DaysSinceDisplay lastDate={lastDate} />
                                         </div>
                                     </Link>
                                 );

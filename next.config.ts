@@ -38,6 +38,7 @@ const nextConfig: NextConfig = {
   images: {
     localPatterns: [
       { pathname: "/api/storage/local/**" },
+      { pathname: "/api/files/calculators/designs/**" },
       { pathname: "/*.png" },
       { pathname: "/*.svg" },
       { pathname: "/*.jpg" },
@@ -55,10 +56,6 @@ const nextConfig: NextConfig = {
   webpack: (config, { dev, isServer }) => {
     if (dev && !isServer) {
       config.devtool = "eval";
-      config.cache = {
-        type: "memory",
-        maxMemoryGenerations: 1,
-      };
     }
     return config;
   },
@@ -89,6 +86,7 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains; preload' },
+          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https: wss:;" },
         ],
       },
     ];

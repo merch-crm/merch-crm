@@ -8,16 +8,7 @@ import {
 } from "@/lib/schema";
 import { eq, and, sql, count, sum } from "drizzle-orm";
 import { getSession } from "@/lib/session";
-
-export interface LineLoad {
-    id: string;
-    name: string;
-    code: string;
-    color: string | null;
-    tasksCount: number;
-    totalQuantity: number;
-    inProgress: number;
-}
+import { LineLoad } from "../types";
 
 const LineLoadSchema = z.object({
     id: z.string(),

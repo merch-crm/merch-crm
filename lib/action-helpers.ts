@@ -129,12 +129,13 @@ export function createSafeAction<TInput, TOutput>(
   return async (data: TInput): Promise<ActionResult<TOutput>> => {
     try {
       // 1. CSRF-проверка для мутаций
-      if (requireCsrf && process.env.NODE_ENV !== "test") {
+      if (requireCsrf && process.env.NODE_ENV === "production") {
         const headersList = await headers();
         const csrfToken = headersList.get("x-csrf-token");
         
         const isValidCsrf = await verifyCsrfToken(csrfToken);
         if (!isValidCsrf) {
+          console.error("[SafeAction CSRF Error]: Missing or invalid CSRF token in header");
           return {
             success: false,
             error: "Недействительный CSRF-токен. Обновите страницу и попробуйте снова.",
@@ -145,6 +146,7 @@ export function createSafeAction<TInput, TOutput>(
       // 2. Валидация входных данных
       const validationResult = schema.safeParse(data);
       if (!validationResult.success) {
+        console.error("[SafeAction Validation Error]:", validationResult.error.format());
         const errorMessage = validationResult.error.errors
           .map((e) => e.message)
           .join(", ");

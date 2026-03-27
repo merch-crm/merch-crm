@@ -1,11 +1,31 @@
 {
   "cookies": [
     {
-      "name": "session",
-      "value": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjVjZTRjNjlkLTdiZGMtNGI2MS1iYjAzLWU5NGE1ZTQ1OWE0ZSIsInNlc3Npb25JZCI6IjIxOGVkOWM2LTg5YTktNGYxYi1hNGIwLTUxMGY4M2FhYTdlMiIsImVtYWlsIjoiYWRtaW5AdGVzdC5jb20iLCJyb2xlSWQiOiIxZjJhZmEwZi00MzcwLTQwMzQtOWM0Zi04N2MxNmI4N2M0MDgiLCJyb2xlTmFtZSI6ItCQ0LTQvNC40L3QuNGB0YLRgNCw0YLQvtGAIiwiZGVwYXJ0bWVudE5hbWUiOiLQkNC00LzQuNC90LjRgdGC0YDQsNGG0LjRjyIsIm5hbWUiOiJUZXN0IEFkbWluIiwiZXhwaXJlcyI6IjIwMjYtMDMtMTJUMDU6MTk6NTYuOTI0WiIsImlhdCI6MTc3MzIwNjM5NiwiZXhwIjoxNzczODExMTk2fQ.iOYVOrzw_otKLYSWlgWsKYSLlov5ogG5bxoI1q0kxQw",
+      "name": "csrf_token",
+      "value": "ac2825bcf6e67c9aa2c838d6b0ba536b2591eae533b20c0d6efcac58c58302a5%3A1774555797364%3A649e846cfd782921cde514441de8056a6dd07059e70983a5051920db69e10695",
       "domain": "localhost",
       "path": "/",
-      "expires": 1773292796.069843,
+      "expires": 1774642197.365342,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "better-auth.session_token",
+      "value": "w7PsPoX75VWKcOwg1j8Q2pYunCdXfjlB.DcPLIUblaED8l5NrSYmV%2Fwa6q4b5%2BTZG9y8YcufsIZc%3D",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1775160598.662933,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "better-auth.session_data",
+      "value": "eyJzZXNzaW9uIjp7InNlc3Npb24iOnsiZXhwaXJlc0F0IjoiMjAyNi0wNC0wMlQyMDowOTo1OC41NjFaIiwidG9rZW4iOiJ3N1BzUG9YNzVWV0tjT3dnMWo4UTJwWXVuQ2RYZmpsQiIsImNyZWF0ZWRBdCI6IjIwMjYtMDMtMjZUMjA6MDk6NTguNTYyWiIsInVwZGF0ZWRBdCI6IjIwMjYtMDMtMjZUMjA6MDk6NTguNTYyWiIsImlwQWRkcmVzcyI6IjAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMDowMDAwOjAwMDA6MDAwMCIsInVzZXJBZ2VudCI6Ik1vemlsbGEvNS4wIChNYWNpbnRvc2g7IEludGVsIE1hYyBPUyBYIDEwXzE1XzcpIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIEhlYWRsZXNzQ2hyb21lLzE0NS4wLjc2MzIuNiBTYWZhcmkvNTM3LjM2IiwidXNlcklkIjoiNWNlNGM2OWQtN2JkYy00YjYxLWJiMDMtZTk0YTVlNDU5YTRlIiwiaWQiOiJvcTJEaUI2NFo4cVloaVhhblkyRWJsYmx4cDdsU1JQdSJ9LCJ1c2VyIjp7Im5hbWUiOiJUZXN0IEFkbWluIiwiZW1haWwiOiJhZG1pbkB0ZXN0LmNvbSIsImVtYWlsVmVyaWZpZWQiOmZhbHNlLCJpbWFnZSI6bnVsbCwiY3JlYXRlZEF0IjoiMjAyNi0wMi0xOFQxODoxNzozMC40OTdaIiwidXBkYXRlZEF0IjoiMjAyNi0wMi0xOFQxODoxNzozMC40OTdaIiwidHdvRmFjdG9yRW5hYmxlZCI6ZmFsc2UsImlkIjoiNWNlNGM2OWQtN2JkYy00YjYxLWJiMDMtZTk0YTVlNDU5YTRlIn0sInVwZGF0ZWRBdCI6MTc3NDU1NTc5ODY2MSwidmVyc2lvbiI6IjEifSwiZXhwaXJlc0F0IjoxNzc0NTU2MDk4NjYxLCJzaWduYXR1cmUiOiI4WlZVanpSQkpiZ3gzaUZkb0otbFFGOGJGSU9VUGxGMUtObldHaDdzTHNFIn0",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1774556098.662967,
       "httpOnly": true,
       "secure": false,
       "sameSite": "Lax"

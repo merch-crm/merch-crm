@@ -182,7 +182,7 @@ const DesignCard = memo(function DesignCard({
             />
             <div className="flex flex-col gap-0.5">
               <span className="text-sm font-bold text-slate-700">Требуется дигитайзинг</span>
-              <p className="text-xs text-slate-500 tracking-wider font-semibold">Оцифровка нового макета (разовая оплата)</p>
+              <p className="text-xs text-slate-500 font-semibold">Оцифровка нового макета (разовая оплата)</p>
             </div>
           </div>
 

@@ -29,6 +29,7 @@ import type {
   StatsPeriod,
   ProductionBentoDashboardData,
   MaterialAlert,
+  DashboardActionResult,
 } from "../types";
 import {
   getDefectStats,
@@ -62,9 +63,9 @@ export async function getAllDashboardData(
   try {
     const session = await getSession();
     if (!session) {
-      return { success: false, error: "Unauthorized" }
-    periodSchema.parse(period);;
+      return { success: false, error: "Unauthorized" };
     }
+    periodSchema.parse(period);
 
     const [
       hero,
@@ -272,11 +273,7 @@ export async function getConversionStats(period: StatsPeriod = "week") {
   }
 }
 
-export interface DashboardActionResult<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-}
+
 
 /** 3. Алерт по материалам */
 export async function getMaterialAlerts(): Promise<DashboardActionResult<MaterialAlert[]>> {

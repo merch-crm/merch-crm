@@ -10,6 +10,7 @@ import { getSession } from "@/lib/session";
 import { serializeForClient, type Serialized } from "@/lib/serialize";
 import { cache } from "react";
 import { getLinesByCategory } from "../../lines/actions";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 type PageParams = {
     params: Promise<{ id: string }>;
@@ -210,7 +211,9 @@ export default async function CategoryPage({
     const serializedParentCategory = parentCategory ? serializeForClient(parentCategory) as Serialized<Category> : undefined;
 
     return (
-        <CategoryDetailClient
+        <div className="flex flex-col gap-3">
+            <BreadcrumbLabelSync id={paramId} label={finalCategory.name} />
+            <CategoryDetailClient
             category={finalCategory as Category}
             parentCategory={serializedParentCategory as Category}
             subCategories={subCategories as Category[]}
@@ -224,5 +227,6 @@ export default async function CategoryPage({
             lines={lines as unknown as ProductLineWithStats[]}
             user={session}
         />
+    </div>
     );
 }

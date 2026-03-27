@@ -54,28 +54,32 @@ class RedisCache {
 
   private async getClient(): Promise<Redis> {
     if (this.client && this.isConnected) return this.client;
-    if (this.connectionPromise) {
-      await this.connectionPromise;
-      return this.client!;
+    if (!this.connectionPromise) {
+      this.connectionPromise = this.connect();
     }
-    this.connectionPromise = this.connect();
     await this.connectionPromise;
     return this.client!;
   }
 
   private async connect(): Promise<void> {
     const redisHost = env.REDIS_HOST || "127.0.0.1";
+    const redisPort = env.REDIS_PORT || 6379;
     const redisPassword = env.REDIS_PASSWORD;
 
     this.client = new Redis({
       host: redisHost,
-      port: 6379,
+      port: redisPort,
       password: redisPassword || undefined,
-      db: 1,
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 1,
       lazyConnect: true,
       connectTimeout: 5000,
       commandTimeout: 3000,
+      enableOfflineQueue: false,
+      retryStrategy: (times) => {
+        if (times > 3) return null;
+        return Math.min(times * 300, 1000);
+      },
+      reconnectOnError: () => false,
     });
 
     this.client.on("connect", () => {
@@ -87,17 +91,24 @@ class RedisCache {
 
     this.client.on("error", (error) => {
       this.isConnected = false;
-      console.error("[RedisCache] Ошибка Redis:", error.message);
+      this.connectionPromise = null;
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[RedisCache] Ошибка Redis:", error.message);
+      }
     });
 
     this.client.on("close", () => {
       this.isConnected = false;
+      this.connectionPromise = null;
     });
 
     try {
       await this.client.connect();
     } catch (error) {
-      console.error("[RedisCache] Не удалось подключиться к Redis:", error);
+      this.connectionPromise = null;
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[RedisCache] Не удалось подключиться к Redis:", error);
+      }
     }
   }
 

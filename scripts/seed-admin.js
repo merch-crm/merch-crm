@@ -1,5 +1,24 @@
+const fs = require('fs');
+const path = require('path');
 const { Client } = require('pg');
 const bcrypt = require('bcryptjs');
+
+function loadEnv() {
+    const envPath = path.join(process.cwd(), '.env.local');
+    if (fs.existsSync(envPath)) {
+        const envContent = fs.readFileSync(envPath, 'utf8');
+        envContent.split('\n').forEach(line => {
+            const index = line.indexOf('=');
+            if (index !== -1) {
+                const key = line.substring(0, index).trim();
+                const value = line.substring(index + 1).trim().replace(/^"(.*)"$/, '$1');
+                process.env[key] = value;
+            }
+        });
+    }
+}
+
+loadEnv();
 
 const config = {
     user: process.env.POSTGRES_USER || 'postgres',

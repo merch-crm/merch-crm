@@ -3,9 +3,9 @@ version: '3.8'
 services:
   # ─── Init: Run Drizzle migrations before starting the app ────────────────────
   migrate:
-    image: ghcr.io/merch-crm/merch-crm:latest
-    # Uses the 'migrator' target from the multi-stage Dockerfile
-    target: migrator
+    build:
+      context: .
+      target: migrator
     container_name: merch-crm-migrate
     restart: on-failure
     env_file:
@@ -18,6 +18,9 @@ services:
 
   # ─── App: Next.js production server ──────────────────────────────────────────
   app:
+    build:
+      context: .
+      target: runner
     image: ghcr.io/merch-crm/merch-crm:latest
     container_name: merch-crm
     restart: always

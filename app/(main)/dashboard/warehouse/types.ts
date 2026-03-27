@@ -1,4 +1,5 @@
 export * from "@/lib/types";
+export type { InventoryItem } from "@/lib/types/inventory";
 
 export interface AttributeMeta {
     fullName?: string;

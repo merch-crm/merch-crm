@@ -53,18 +53,18 @@ describe('useDashboardData', () => {
             initialProps: { period: 'month' }
         });
 
-        // on mount
+        // При инициализации (on mount)
         await act(async () => {
-            await vi.advanceTimersByTimeAsync(0);
+            await vi.advanceTimersByTimeAsync(350); // Ждем >300ms (задержка в хуке)
         });
 
         expect(getDashboardStatsByPeriod).toHaveBeenCalledWith('month');
         expect(getDashboardNotifications).toHaveBeenCalled();
 
-        // on period change
+        // При смене периода
         rerender({ period: 'year' });
         await act(async () => {
-            await vi.advanceTimersByTimeAsync(0);
+            await vi.advanceTimersByTimeAsync(350);
         });
 
         expect(getDashboardStatsByPeriod).toHaveBeenCalledWith('year');
@@ -74,7 +74,7 @@ describe('useDashboardData', () => {
         renderHook(() => useDashboardData(mockStats, 'month'));
 
         await act(async () => {
-            await vi.advanceTimersByTimeAsync(0); // initial fetch
+            await vi.advanceTimersByTimeAsync(350); // Первичный запрос
         });
 
         expect(getDashboardStatsByPeriod).toHaveBeenCalledTimes(1);
@@ -93,7 +93,7 @@ describe('useDashboardData', () => {
         const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
 
         await act(async () => {
-            await vi.advanceTimersByTimeAsync(0);
+            await vi.advanceTimersByTimeAsync(350);
         });
 
         expect(result.current.formattedTime).toBe('10:00');

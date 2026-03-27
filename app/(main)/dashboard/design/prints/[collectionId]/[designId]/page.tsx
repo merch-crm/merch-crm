@@ -3,7 +3,8 @@ import { notFound } from"next/navigation";
 import { Metadata } from"next";
 import { getDesignById } from"../../actions";
 import { DesignPageClient } from"./design-page-client";
-import { DesignPageSkeleton } from"./loading";
+import { DesignPageSkeleton } from "./loading";
+import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface PageProps {
     params: Promise<{
@@ -39,8 +40,11 @@ export default async function DesignPage({ params }: PageProps) {
     }
 
     return (
-        <Suspense fallback={<DesignPageSkeleton />}>
-            <DesignPageClient design={result.data} />
-        </Suspense>
+        <div className="flex flex-col gap-3">
+            <BreadcrumbLabelSync id={designId} label={result.data.name} />
+            <Suspense fallback={<DesignPageSkeleton />}>
+                <DesignPageClient design={result.data} />
+            </Suspense>
+        </div>
     );
 }
