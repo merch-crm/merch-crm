@@ -115,13 +115,13 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - face-models:/app/models
-    depends_on:
-      - go2rtc
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
+#    depends_on:
+#      - go2rtc
+#    deploy:
+#      resources:
+#        reservations:
+#          devices:
+#            - driver: nvidia
               count: 1
               capabilities: [gpu]
     networks:
