@@ -51,7 +51,7 @@ export function SegmentedControl<T extends string>({
                         type="button"
                         onClick={() => onChange(opt.value)}
                         className={cn(
-                            "relative flex-1 h-9 px-4 lg:px-6 rounded-[14px] font-bold text-[13px] transition-all flex items-center justify-center gap-2 outline-none z-10 active:scale-95",
+                            "relative flex-1 h-11 px-4 lg:px-6 rounded-[14px] font-bold text-[14px] transition-all flex items-center justify-center gap-2 outline-none z-10 active:scale-95",
                             isActive
                                 ? "text-white"
                                 : "text-slate-500 hover:text-slate-900"

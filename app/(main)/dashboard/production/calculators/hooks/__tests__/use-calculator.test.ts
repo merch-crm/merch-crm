@@ -167,6 +167,9 @@ describe('useCalculator', () => {
 
     const { result } = renderHook(() => useCalculator('dtf'));
     
+    // Explicitly check that calculation is possible before saving
+    expect(result.current.canCalculate).toBe(true);
+
     let success;
     await act(async () => {
       success = await result.current.save('Test Calc');
@@ -176,7 +179,7 @@ describe('useCalculator', () => {
     expect(historyActions.saveCalculation).toHaveBeenCalled();
   });
 
-  it('should prepare PDF data correctly', () => {
+  it('should prepare PDF data correctly', async () => {
     vi.mocked(useDesignFiles).mockReturnValue({
       ...mockDesignFilesReturn,
       files: [{ 
@@ -195,6 +198,9 @@ describe('useCalculator', () => {
     } as any);
 
     const { result } = renderHook(() => useCalculator('dtf'));
+    
+    // Ensure canCalculate becomes true and result is computed
+    expect(result.current.canCalculate).toBe(true);
     
     const pdfData = result.current.getPDFData();
     expect(pdfData).not.toBeNull();

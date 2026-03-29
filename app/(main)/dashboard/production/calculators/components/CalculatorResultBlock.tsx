@@ -8,7 +8,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
@@ -47,6 +46,8 @@ interface CalculatorResultBlockProps {
   onUrgencyChange: (level: UrgencyLevel) => void;
   /** Показывать детали себестоимости */
   showCostDetails?: boolean;
+  /** Количество принтов (для рулонной печати) */
+  printCount?: number;
 }
 
 /**
@@ -63,6 +64,7 @@ export function CalculatorResultBlock({
   urgencyLevel,
   onUrgencyChange,
   showCostDetails = true,
+  printCount,
 }: CalculatorResultBlockProps) {
   // Расчёт итогов
   const totalCost = costBreakdown.total;
@@ -109,7 +111,7 @@ export function CalculatorResultBlock({
       const newMargin = (marginAmount / totalCost) * 100;
 
       if (newMargin >= 0 && newMargin <= 500) {
-        onMarginChange(Math.round(newMargin));
+        onMarginChange(Math.round(newMargin * 100) / 100);
       }
 
       if (onSellingPriceChange) {
@@ -119,8 +121,8 @@ export function CalculatorResultBlock({
   };
 
   return (
-    <Card className="">
-      <div className="px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50">
+    <div className="crm-card">
+      <div className="card-breakout px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50 -mt-[var(--current-padding)]">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm">
             <TrendingUp className="h-5 w-5 text-indigo-600" />
@@ -128,60 +130,58 @@ export function CalculatorResultBlock({
           <h3 className="text-lg font-bold text-slate-900 tracking-tight">Результат расчёта</h3>
         </div>
       </div>
-      <CardContent className="p-6 space-y-3">
+      <div className="pt-6 space-y-3">
         {/* Себестоимость */}
         {showCostDetails && (
-          <>
-            <div className="space-y-3">
-              <Label className="text-muted-foreground text-sm">
-                Себестоимость
-              </Label>
-              <div className="space-y-1 text-sm">
-                {costBreakdown.print > 0 && (
-                  <div className="flex justify-between">
-                    <span>Печать:</span>
-                    <span>{String(formatCurrency(costBreakdown.print))}</span>
-                  </div>
-                )}
-                {costBreakdown.materials > 0 && (
-                  <div className="flex justify-between">
-                    <span>Материалы:</span>
-                    <span>{String(formatCurrency(costBreakdown.materials))}</span>
-                  </div>
-                )}
-                {costBreakdown.placements > 0 && (
-                  <div className="flex justify-between">
-                    <span>Нанесения:</span>
-                    <span>{String(formatCurrency(costBreakdown.placements))}</span>
-                  </div>
-                )}
-                {costBreakdown.programCost && costBreakdown.programCost > 0 && (
-                  <div className="flex justify-between">
-                    <span>Программа:</span>
-                    <span>{String(formatCurrency(costBreakdown.programCost))}</span>
-                  </div>
-                )}
-                {costBreakdown.framesCost && costBreakdown.framesCost > 0 && (
-                  <div className="flex justify-between">
-                    <span>Рамки:</span>
-                    <span>{String(formatCurrency(costBreakdown.framesCost))}</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-between font-medium pt-1 border-t">
-                <span>Итого себестоимость:</span>
-                <span>{String(formatCurrency(totalCost))}</span>
-              </div>
+          <div className="space-y-3">
+            <Label className="text-slate-500 text-sm font-normal">
+              Себестоимость
+            </Label>
+            <div className="space-y-1.5 text-sm">
+              {costBreakdown.print > 0 && (
+                <div className="flex flex-wrap justify-between items-center gap-x-2">
+                  <span className="text-slate-500">Печать:</span>
+                  <span className="font-bold text-slate-700">{String(formatCurrency(costBreakdown.print))}</span>
+                </div>
+              )}
+              {costBreakdown.materials > 0 && (
+                <div className="flex flex-wrap justify-between items-center gap-x-2">
+                  <span className="text-slate-500">Материалы:</span>
+                  <span className="font-bold text-slate-700">{String(formatCurrency(costBreakdown.materials))}</span>
+                </div>
+              )}
+              {costBreakdown.placements > 0 && (
+                <div className="flex flex-wrap justify-between items-center gap-x-2">
+                  <span className="text-slate-500">Нанесения:</span>
+                  <span className="font-bold text-slate-700">{String(formatCurrency(costBreakdown.placements))}</span>
+                </div>
+              )}
+              {costBreakdown.programCost && costBreakdown.programCost > 0 && (
+                <div className="flex flex-wrap justify-between items-center gap-x-2">
+                  <span className="text-slate-500">Программа:</span>
+                  <span className="font-bold text-slate-700">{String(formatCurrency(costBreakdown.programCost))}</span>
+                </div>
+              )}
+              {costBreakdown.framesCost && costBreakdown.framesCost > 0 && (
+                <div className="flex flex-wrap justify-between items-center gap-x-2">
+                  <span className="text-slate-500">Рамки:</span>
+                  <span className="font-bold text-slate-700">{String(formatCurrency(costBreakdown.framesCost))}</span>
+                </div>
+              )}
             </div>
-            <Separator />
-          </>
+            <div className="flex flex-wrap justify-between items-center gap-x-2 pt-2 border-t border-slate-100">
+              <span className="font-bold text-slate-900">Итого себестоимость:</span>
+              <span className="font-black text-indigo-600">{String(formatCurrency(totalCost))}</span>
+            </div>
+            <Separator className="bg-slate-100" />
+          </div>
         )}
 
         {/* Маржа */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label>Маржа</Label>
-            <Badge variant="secondary">{String(marginPercent)}%</Badge>
+            <Label className="font-bold text-slate-700">Маржа</Label>
+            <Badge variant="secondary" className="bg-indigo-50 text-indigo-700 font-bold border-indigo-100">{String(marginPercent)}%</Badge>
           </div>
           <Slider
             value={[marginPercent]}
@@ -191,77 +191,92 @@ export function CalculatorResultBlock({
             step={5}
             className="w-full"
           />
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <div className="flex justify-between text-xs sm:text-xs font-black tracking-tighter text-slate-400">
             <span>0%</span>
             <span>150%</span>
             <span>300%</span>
           </div>
           {marginAmount > 0 && (
-            <p className="text-sm text-muted-foreground">
-              Прибыль: {String(formatCurrency(marginAmount))}
+            <p className="text-xs sm:text-sm font-medium text-emerald-600 flex items-center gap-1.5">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Прибыль: <span className="font-bold">{String(formatCurrency(marginAmount))}</span>
             </p>
           )}
+          <Separator className="bg-slate-100" />
         </div>
-
-        <Separator />
 
         {/* Срочность */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Zap className="h-4 w-4 text-orange-500" />
-              <Label>Срочный заказ</Label>
+              <div className="p-1.5 bg-orange-50 rounded-lg">
+                <Zap className="h-4 w-4 text-orange-500" />
+              </div>
+              <Label className="font-bold text-slate-700">Срочный заказ</Label>
             </div>
             <Switch
               checked={urgencyLevel === 'urgent'}
               onCheckedChange={(checked) =>
                 onUrgencyChange(checked ? 'urgent' : 'normal')
               }
+              className="scale-90"
             />
           </div>
           {urgencyLevel === 'urgent' && (
-            <div className="flex items-center gap-2 text-sm text-orange-600 bg-orange-50 p-2 rounded-md">
-              <AlertCircle className="h-4 w-4" />
+            <div className="flex items-center gap-2 text-xs sm:text-xs font-bold text-orange-700 bg-orange-50/80 p-2.5 rounded-xl border border-orange-100/50">
+              <AlertCircle className="h-3.5 w-3.5" />
               <span>+{String(formatCurrency(urgencySurcharge))} за срочность</span>
             </div>
           )}
+          <Separator className="bg-slate-100" />
         </div>
 
-        <Separator />
-
         {/* Итоговая цена */}
-        <div className="space-y-3">
-          <Label>Цена продажи</Label>
-          <Input
-            type="number"
-            value={manualPriceInput}
-            onChange={(e) => handleManualPriceChange(e.target.value)}
-            onFocus={() => setIsEditingPrice(true)}
-            onBlur={() => setIsEditingPrice(false)}
-            className="text-xl font-bold text-right rounded-md"
-            min={0}
-            step={0.01}
-          />
-          <p className="text-xs text-muted-foreground">
-            Введите цену вручную для автоматического расчёта маржи
+        <div className="space-y-3 pt-1">
+          <Label className="text-sm font-normal text-slate-500">Цена продажи</Label>
+          <div className="relative group">
+            <Input
+              type="number"
+              value={manualPriceInput}
+              onChange={(e) => handleManualPriceChange(e.target.value)}
+              onFocus={() => setIsEditingPrice(true)}
+              onBlur={() => setIsEditingPrice(false)}
+              className="h-12 sm:h-14 text-lg sm:text-xl font-black text-right rounded-2xl bg-slate-50 border-slate-200 focus:border-indigo-500 focus:ring-indigo-500/10 transition-all pr-10"
+              min={0}
+              step={0.01}
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 font-bold pointer-events-none group-focus-within:text-indigo-400">
+              ₽
+            </div>
+          </div>
+          <p className="text-xs sm:text-xs text-slate-400 font-medium leading-relaxed">
+            Измените цену для автоматического расчёта маржи
           </p>
         </div>
 
-        {/* Цена за единицу */}
-        {quantity > 1 && (
-          <div className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
-            <span className="text-sm">Цена за 1 шт:</span>
-            <span className="font-semibold">{String(formatCurrency(pricePerItem))}</span>
-          </div>
-        )}
+          {/* Цена за единицу */}
+          {quantity > 1 && (
+            <div className="flex flex-wrap justify-between items-center p-4 bg-indigo-50/30 rounded-2xl border border-indigo-100/50 gap-2 mb-4">
+              <span className="text-sm font-bold text-slate-600">Цена за 1 шт:</span>
+              <span className="text-lg font-black text-indigo-600">{String(formatCurrency(pricePerItem))}</span>
+            </div>
+          )}
 
-        {/* Количество */}
-        <div className="flex justify-between items-center text-sm text-muted-foreground">
-          <span>Количество:</span>
-          <span>{String(quantity)} шт</span>
-        </div>
-      </CardContent>
-    </Card>
+          {/* Количество */}
+          <div className="space-y-2 pt-4 border-t border-slate-100 bg-white">
+            <div className="flex flex-wrap justify-between items-center text-sm gap-x-2">
+              <span className="text-slate-500 font-normal text-sm">Количество изделий:</span>
+              <span className="font-bold text-slate-900">{String(quantity)} шт</span>
+            </div>
+            {printCount !== undefined && printCount > 0 && (
+              <div className="flex flex-wrap justify-between items-center text-sm gap-x-2">
+                <span className="text-slate-500 font-normal text-sm">Количество принтов:</span>
+                <span className="font-bold text-slate-900">{String(printCount)} шт</span>
+              </div>
+            )}
+          </div>
+      </div>
+    </div>
   );
 }
 

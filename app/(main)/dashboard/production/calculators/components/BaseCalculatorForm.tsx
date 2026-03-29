@@ -12,7 +12,6 @@ import { PlacementsSection } from './PlacementsSection';
 import { GlobalSettingsModal } from './GlobalSettingsModal';
 import { ConsumablesCostSummary } from './ConsumablesCostSummary';
 import { SaveCalculationModal } from './SaveCalculationModal';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { type CalculatorType, CALCULATOR_TYPES_CONFIG } from '@/lib/types/calculators';
 import { CalculationEngine } from '@/lib/services/calculators/calculation-engine';
@@ -20,7 +19,7 @@ import { usePDFGenerator } from '../hooks/use-pdf-generator';
 import { formatCount } from '@/lib/pluralize';
  
 import type { useCalculator } from '../hooks/use-calculator';
-
+import { AlertCircle } from 'lucide-react';
 interface BaseCalculatorFormProps<T extends CalculatorType> {
   calculatorType: T;
   calculator: ReturnType<typeof useCalculator<T>>;
@@ -40,7 +39,6 @@ export function BaseCalculatorForm<T extends CalculatorType>({
   showRollVisualizer = false,
   beforeFilesContent,
   afterFilesContent,
-  calculateButtonText = 'Рассчитать стоимость',
 }: BaseCalculatorFormProps<T>) {
   const { params, updateParams, designFiles, layout, globalSettings, placements, result, state } = calculator;
   const { terminology: term } = CALCULATOR_TYPES_CONFIG[calculatorType];
@@ -82,6 +80,17 @@ export function BaseCalculatorForm<T extends CalculatorType>({
       onSettingsClick={() => setIsSettingsOpen(true)}
       resultBlock={
         <div className="space-y-3">
+          {calculator.validationErrors.length > 0 && (
+            <div className="bg-destructive/10 border-destructive/20 border text-destructive p-4 rounded-xl text-sm shadow-sm flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+              <div className="space-y-1 font-medium">
+                {calculator.validationErrors.map((err, i) => (
+                  <p key={i}>{err}</p>
+                ))}
+              </div>
+            </div>
+          )}
+
           <CalculatorResultBlock
             costBreakdown={result?.costBreakdown || { total: 0, print: 0, materials: 0, placements: 0 }}
             quantity={Number(unsafeParams.quantity) || 1}
@@ -95,7 +104,7 @@ export function BaseCalculatorForm<T extends CalculatorType>({
                 Boolean(unsafeParams.isUrgent),
                 Number(unsafeParams.urgencySurchargePercent) || 0
               );
-              updateParams({ marginPercent: Math.round(newMargin) } as Partial<typeof params>);
+              updateParams({ marginPercent: Math.round(newMargin * 100) / 100 } as Partial<typeof params>);
             }}
             urgencySettings={{
               level: unsafeParams.isUrgent ? 'urgent' : 'normal',
@@ -104,6 +113,7 @@ export function BaseCalculatorForm<T extends CalculatorType>({
             }}
             urgencyLevel={unsafeParams.isUrgent ? 'urgent' : 'normal'}
             onUrgencyChange={(level) => updateParams({ isUrgent: level === 'urgent' } as Partial<typeof params>)}
+            printCount={layout.layoutResult?.stats?.printCount}
           />
 
           <ConsumablesCostSummary
@@ -139,7 +149,7 @@ export function BaseCalculatorForm<T extends CalculatorType>({
       )}
 
       <CalculatorSection title={resolvedFilesTitle}>
-        <div className="p-4 bg-muted/30 border-2 border-dashed border-muted-foreground/10 rounded-xl space-y-3">
+        <div className="space-y-3">
           <DesignFileUploader
             calculatorType={calculatorType}
             onUploadSuccess={(file) => designFiles.addFile(file)}
@@ -184,24 +194,6 @@ export function BaseCalculatorForm<T extends CalculatorType>({
         isLoading={placements.isLoading}
       />
 
-      <Separator />
-
-      <div className="flex flex-col items-center gap-3 pt-6 pb-12">
-        <Button
-          size="lg"
-          onClick={calculator.calculate}
-          disabled={!calculator.canCalculate || state.isCalculating}
-          className="w-full max-w-sm h-14 text-lg font-black shadow-xl transition-all hover:scale-105 active:scale-95 rounded-xl"
-        >
-          {state.isCalculating ? 'Расчёт...' : calculateButtonText}
-        </Button>
-        
-        {calculator.validationErrors.length > 0 && (
-          <p className="text-sm text-destructive font-medium bg-destructive/10 px-4 py-2 rounded-lg border border-destructive/20 mt-2 text-center">
-            {calculator.validationErrors[0]}
-          </p>
-        )}
-      </div>
 
       <SaveCalculationModal
         isOpen={showSaveModal}

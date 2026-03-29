@@ -54,8 +54,8 @@ export function SilkscreenOrderCard({
                             <Input
                                 type="number"
                                 min={1}
-                                value={order.quantity}
-                                onChange={(e) => onUpdate({ quantity: parseInt(e.target.value) || 1 })}
+                                value={order.quantity === 0 ? '' : order.quantity}
+                                onChange={(e) => onUpdate({ quantity: e.target.value === '' ? 0 : parseInt(e.target.value) || 0 })}
                             />
                         </div>
                         <div className="flex items-center space-x-2 pt-8">

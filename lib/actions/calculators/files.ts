@@ -8,11 +8,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { writeFile, mkdir, unlink, appendFile } from 'fs/promises';
+import { writeFile, unlink, appendFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
-import sharp from 'sharp';
 import { db } from '@/lib/db';
 import { designFiles } from '@/lib/schema';
 import { eq, and, isNull } from 'drizzle-orm';
@@ -30,81 +28,14 @@ import { parseDSTFile } from '@/lib/utils/dst-parser';
 import { z } from 'zod';
 import { calculateMmFromPx } from '@/lib/utils/file-dimensions';
 
-/**
- * Базовый путь для хранения файлов
- */
-const STORAGE_BASE = process.env.STORAGE_PATH || './storage';
-const DESIGNS_PATH = 'calculators/designs';
-
-/**
- * Результат загрузки файла
- */
-interface UploadResult {
-  success: boolean;
-  data?: UploadedDesignFile;
-  error?: string;
-}
-
-/**
- * Создаёт директорию, если не существует
- */
-async function ensureDir(dirPath: string): Promise<void> {
-  if (!existsSync(dirPath)) {
-    await mkdir(dirPath, { recursive: true });
-  }
-}
-
-/**
- * Генерирует путь для хранения файла
- */
-function generateStoragePath(
-  userId: string,
-  calculatorType: CalculatorType,
-  filename: string
-): { filePath: string; storedName: string } {
-  const ext = getFileExtension(filename);
-  const uuid = uuidv4();
-  const storedName = `${uuid}.${ext}`;
-  const filePath = path.join(DESIGNS_PATH, userId, calculatorType, storedName);
-  return { filePath, storedName };
-}
-
-/**
- * Создаёт превью изображения в WebP
- */
-async function createThumbnail(
-  sourcePath: string,
-  thumbnailPath: string
-): Promise<boolean> {
-  try {
-    await sharp(sourcePath)
-      .resize(300, 300, { fit: 'inside', withoutEnlargement: true })
-      .webp({ quality: 80 })
-      .toFile(thumbnailPath);
-    return true;
-  } catch (error) {
-    console.error('Ошибка создания превью:', error);
-    return false;
-  }
-}
-
-/**
- * Получает размеры изображения
- */
-async function getImageDimensions(
-  filePath: string
-): Promise<{ width: number; height: number } | null> {
-  try {
-    const metadata = await sharp(filePath).metadata();
-    if (metadata.width && metadata.height) {
-      return { width: metadata.width, height: metadata.height };
-    }
-    return null;
-  } catch (error) {
-    console.error('Ошибка получения размеров:', error);
-    return null;
-  }
-}
+import { 
+  STORAGE_BASE, 
+  DESIGNS_PATH, 
+  ensureDir, 
+  generateStoragePath, 
+  createThumbnail, 
+  getImageDimensions 
+} from '@/lib/utils/calculators/file-storage';
 
 /**
  * Загружает файл дизайна
@@ -112,6 +43,12 @@ async function getImageDimensions(
  * @param calculatorType - Тип калькулятора
  * @returns Результат загрузки
  */
+interface UploadResult {
+  success: boolean;
+  data?: UploadedDesignFile;
+  error?: string;
+}
+
 async function debugLog(message: string) {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] ${message}\n`;

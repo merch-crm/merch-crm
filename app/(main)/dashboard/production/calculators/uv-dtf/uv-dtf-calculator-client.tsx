@@ -10,7 +10,6 @@ import { useCalculator } from '../hooks/use-calculator';
 import { 
   UV_DTF_FILM_TYPES, 
   UV_DTF_FINISH_TYPES,
-  ROLL_WIDTH_OPTIONS
 } from '@/lib/types/calculators';
 import type { UVDTFCalculatorParams } from '@/lib/types/calculator-configs';
 
@@ -39,9 +38,8 @@ export function UVDTFCalculatorClient() {
               id="uv-quantity"
               type="number"
               min={1}
-              value={params.quantity || 1}
-              onChange={(e) => updateParams({ quantity: parseInt(e.target.value) || 1 })}
-              className="h-9"
+              value={params.quantity === 0 ? '' : params.quantity}
+              onChange={(e) => updateParams({ quantity: e.target.value === '' ? 0 : parseInt(e.target.value) || 0 })}
             />
           </div>
 
@@ -63,14 +61,6 @@ export function UVDTFCalculatorClient() {
             />
           </div>
 
-          <div className="space-y-3">
-            <Label>Ширина рулона</Label>
-            <Select
-              options={ROLL_WIDTH_OPTIONS.map(o => ({ id: String(o.value), title: o.label }))}
-              value={String(params.rollWidth || '')}
-              onChange={(value) => updateParams({ rollWidth: parseInt(value) as UVDTFCalculatorParams['rollWidth'] })}
-            />
-          </div>
 
           <div className="flex items-center justify-between p-3 border rounded-lg bg-slate-50/50">
             <div className="space-y-0.5">
@@ -86,19 +76,6 @@ export function UVDTFCalculatorClient() {
             />
           </div>
 
-          <div className="flex items-center justify-between p-3 border rounded-lg bg-slate-50/50">
-            <div className="space-y-0.5">
-              <Label htmlFor="uv-rotation">Поворот</Label>
-              <p className="text-xs text-slate-500 font-bold">
-                Разрешить поворот
-              </p>
-            </div>
-            <Switch
-              id="uv-rotation"
-              checked={params.allowRotation}
-              onCheckedChange={(checked) => updateParams({ allowRotation: checked })}
-            />
-          </div>
 
         </div>
       </CalculatorSection>

@@ -34,6 +34,11 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# 4. Очистка порта 3000 (основной порт Next.js)
+echo -e "${YELLOW}📌 Шаг 4: Очистка порта 3000...${NC}"
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+echo -e "${GREEN}✅ Порт 3000 свободен${NC}"
+
 # 5. Запуск dev-сервера
 echo ""
 echo -e "${GREEN}✅ Все проверки пройдены!${NC}"

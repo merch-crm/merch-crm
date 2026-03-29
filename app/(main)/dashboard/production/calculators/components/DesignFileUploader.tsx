@@ -8,11 +8,9 @@
 
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, PenLine, Loader2, Info } from 'lucide-react';
+import { Upload, PenLine, Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-import { Tooltip } from '@/components/ui/tooltip';
 import { CalculatorType, CALCULATOR_FILE_FORMATS, UploadedDesignFile, CALCULATOR_TYPES_CONFIG, type FileFormatConfig } from '@/lib/types/calculators';
-import { uploadDesignFile } from '@/lib/actions/calculators/files';
 import { useToast } from '@/components/ui/toast';
 import { ManualPrintEntry } from './ManualPrintEntry';
 import { SegmentedControl } from '@/components/ui/segmented-control';
@@ -34,34 +32,81 @@ export function DesignFileUploader({
   const [mode, setMode] = useState<Mode>('upload');
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
       if (acceptedFiles.length === 0) return;
+      
       setIsUploading(true);
-      setUploadProgress(10);
+      setUploadError(null);
+      setUploadProgress(0);
 
+      let hasError = false;
       for (const file of acceptedFiles) {
-        const formData = new FormData();
-        formData.append('file', file);
-
         try {
-          const result = await uploadDesignFile(formData, calculatorType);
-          if (result.success && result.data) {
-            const uploadedFile = result.data;
-            onUploadSuccess(uploadedFile);
-            toast(`Файл ${file.name} успешно добавлен.`, 'success');
-          } else {
-            toast(result.error || `Не удалось загрузить ${file.name}`, 'destructive');
-          }
-        } catch {
-          toast(`Ошибка при отправке файла ${file.name}`, 'destructive');
+          const uploadedFile = await new Promise<UploadedDesignFile>((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('calculatorType', calculatorType);
+
+            xhr.upload.onprogress = (event) => {
+              if (event.lengthComputable) {
+                const percentComplete = Math.round((event.loaded / event.total) * 100);
+                setUploadProgress(percentComplete);
+              }
+            };
+
+            xhr.onload = () => {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                  const response = JSON.parse(xhr.responseText);
+                  if (response.success && response.data) {
+                    resolve(response.data);
+                  } else {
+                    reject(new Error(response.error || 'Ошибка загрузки'));
+                  }
+                } catch {
+                  reject(new Error('Ошибка обработки ответа'));
+                }
+              } else {
+                try {
+                  const resp = JSON.parse(xhr.responseText);
+                  reject(new Error(resp.error || `Ошибка сервера (${xhr.status})`));
+                } catch {
+                  reject(new Error(`Ошибка сервера (${xhr.status})`));
+                }
+              }
+            };
+
+            xhr.onerror = () => reject(new Error('Сетевая ошибка'));
+            xhr.open('POST', '/api/calculators/upload');
+            xhr.send(formData);
+          });
+
+          onUploadSuccess(uploadedFile);
+          toast(`Файл ${file.name} успешно добавлен.`, 'success');
+        } catch (err) {
+          hasError = true;
+          const message = err instanceof Error ? err.message : 'Ошибка загрузки';
+          setUploadError(message);
+          toast(message, 'destructive');
+          break;
         }
       }
 
-      setIsUploading(false);
-      setUploadProgress(0);
+      if (!hasError) {
+        setIsUploading(false);
+        setUploadProgress(0);
+      } else {
+        setTimeout(() => {
+          setIsUploading(false);
+          setUploadProgress(0);
+          setUploadError(null);
+        }, 3000);
+      }
     },
     [calculatorType, onUploadSuccess, toast]
   );
@@ -109,7 +154,7 @@ export function DesignFileUploader({
             'relative border-2 border-dashed rounded-xl p-8 transition-all cursor-pointer flex flex-col items-center justify-center text-center outline-none',
             isDragActive
               ? 'border-primary bg-primary/5 scale-[0.99]'
-              : 'border-muted-foreground/20 hover:border-primary/50 hover:bg-muted/30',
+              : 'border-muted-foreground/20 bg-slate-50 hover:border-primary/50 hover:bg-slate-100',
             isUploading && 'opacity-60 cursor-not-allowed'
           )}
         >
@@ -126,15 +171,37 @@ export function DesignFileUploader({
           <div className="space-y-1">
             <p className="font-semibold text-lg text-foreground">{isDragActive ? 'Отпустите файлы здесь' : 'Перетащите файлы или нажмите для выбора'}</p>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-              Поддерживаются: {formats.map((f: FileFormatConfig) => f.extensions.join(', ')).join('; ')}
+              Поддерживаются: png, jpg, jpeg, webp, svg, tiff, tif, ai, eps, pdf, cdr, svg.
+            </p>
+            <p className="text-xs font-bold text-primary/50 pt-1">
+              Максимальный размер: {Math.max(...formats.map((f: FileFormatConfig) => f.maxSizeMB))} МБ
             </p>
           </div>
 
           {isUploading && (
-            <div className="absolute inset-x-0 bottom-0 p-4 bg-background/80 backdrop-blur-sm rounded-b-xl border-t">
-              <div className="flex items-center gap-3">
-                <Progress value={uploadProgress} className="h-2 flex-1" />
-                <span className="text-xs font-medium text-muted-foreground">Загрузка...</span>
+            <div className={cn(
+              "absolute inset-x-0 bottom-0 p-4 bg-background/80 backdrop-blur-sm rounded-b-xl border-t",
+              uploadError && "bg-destructive/10 border-destructive/20"
+            )}>
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3">
+                  <Progress 
+                    value={uploadProgress} 
+                    variant={uploadError ? "error" : "primary"}
+                    className="h-2 flex-1"
+                  />
+                  <span className={cn(
+                    "text-xs font-medium", 
+                    uploadError ? "text-destructive" : "text-muted-foreground"
+                  )}>
+                    {uploadError ? 'Ошибка' : 'Загрузка...'}
+                  </span>
+                </div>
+                {uploadError && (
+                  <p className="text-xs text-destructive font-bold truncate text-left">
+                    {uploadError}
+                  </p>
+                )}
               </div>
             </div>
           )}
@@ -143,53 +210,16 @@ export function DesignFileUploader({
 
       {/* Manual mode */}
       {mode === 'manual' && (
-        <div className="border rounded-xl p-5 bg-muted/20">
-          <ManualPrintEntry
-            calculatorType={calculatorType}
-            onAdd={(file) => {
-              onUploadSuccess(file);
-              setMode('upload');
-              const term = CALCULATOR_TYPES_CONFIG[calculatorType].terminology;
-              toast(`${term.item.charAt(0).toUpperCase() + term.item.slice(1)} «${file.originalName}» добавлен.`, 'success');
-            }}
-          />
-        </div>
+        <ManualPrintEntry
+          calculatorType={calculatorType}
+          onAdd={(file) => {
+            onUploadSuccess(file);
+            setMode('upload');
+            const term = CALCULATOR_TYPES_CONFIG[calculatorType].terminology;
+            toast(`${term.item.charAt(0).toUpperCase() + term.item.slice(1)} «${file.originalName}» добавлен.`, 'success');
+          }}
+        />
       )}
-
-      {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
-        <div className="flex items-center gap-1.5">
-          <Info className="h-3.5 w-3.5" />
-          {mode === 'upload'
-            ? <span>Максимальный размер: {Math.max(...formats.map((f: FileFormatConfig) => f.maxSizeMB))} МБ</span>
-            : <span>Укажите размеры {CALCULATOR_TYPES_CONFIG[calculatorType].terminology.itemGenitive} в мм и количество</span>
-          }
-        </div>
-
-        {mode === 'upload' && (
-          <Tooltip
-            content={
-              <div className="space-y-2">
-                {formats.map((f: FileFormatConfig, i: number) => (
-                  <div key={i} className="border-b last:border-0 pb-2 last:pb-0">
-                    <p className="font-bold text-xs">{f.description}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      .{f.extensions.join(', .')}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            }
-          >
-            <button 
-              type="button"
-              className="hover:text-foreground underline decoration-dotted transition-colors"
-            >
-              Подробнее о форматах
-            </button>
-          </Tooltip>
-        )}
-      </div>
     </div>
   );
 }

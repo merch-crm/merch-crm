@@ -12,7 +12,7 @@ export function Footer({ branding }: FooterProps) {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="py-6 px-8 mt-12">
+        <footer className="py-6 px-8 mt-4">
             <div className="max-w-[1480px] mx-auto flex flex-wrap items-center justify-center gap-3">
                 <p className="text-sm font-medium text-slate-500">
                     © {currentYear} {branding?.companyName || "MerchCRM"}. Все права защищены.

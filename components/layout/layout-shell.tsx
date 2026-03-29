@@ -11,7 +11,7 @@ export function LayoutShell({ children, crmBackgroundUrl }: { children: ReactNod
     return (
         <div className={cn(
             "min-h-screen relative main-layout-container",
-            isFocusedPage ? "pb-0" : "pb-24 md:pb-0"
+            isFocusedPage ? "pb-0" : "pb-8 md:pb-0"
         )}>
             {crmBackgroundUrl && <div className="crm-background" />}
             {children}

@@ -7,7 +7,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   UploadedDesignFile,
   LayoutSettings,
@@ -26,6 +26,8 @@ interface UseLayoutOptimizerOptions {
   initialSettings?: Partial<LayoutSettings>;
   /** Файлы дизайнов */
   files: UploadedDesignFile[];
+  /** Колбэк при изменении настроек */
+  onSettingsChange?: (settings: LayoutSettings) => void;
 }
 
 /**
@@ -34,6 +36,7 @@ interface UseLayoutOptimizerOptions {
 export function useLayoutOptimizer({
   files,
   initialSettings,
+  onSettingsChange,
 }: UseLayoutOptimizerOptions) {
   // Состояние настроек
   const [settings, setSettings] = useState<LayoutSettings>({
@@ -44,6 +47,13 @@ export function useLayoutOptimizer({
     ...initialSettings,
   });
 
+  // Синхронизация с внешними настройками при их изменении
+  useEffect(() => {
+    if (initialSettings) {
+      setSettings(prev => ({ ...prev, ...initialSettings }));
+    }
+  }, [initialSettings]);
+
   // Преобразуем файлы в айтемы для алгоритма
   const designItems = useMemo<DesignItem[]>(() => {
     return files.map((file, index) => ({
@@ -53,6 +63,7 @@ export function useLayoutOptimizer({
       heightMm: file.userDimensions?.heightMm || (file.dimensions?.height ? Math.round((file.dimensions.height / 300) * 25.4) : 100),
       quantity: file.quantity || 1,
       colorIndex: index,
+      thumbnailUrl: file.thumbnailUrl || file.fileUrl,
     }));
   }, [files]);
 
@@ -65,8 +76,12 @@ export function useLayoutOptimizer({
    * Обновление настроек
    */
   const updateSettings = useCallback((updates: Partial<LayoutSettings>) => {
-    setSettings(prev => ({ ...prev, ...updates }));
-  }, []);
+    setSettings(prev => {
+      const next = { ...prev, ...updates };
+      if (onSettingsChange) onSettingsChange(next);
+      return next;
+    });
+  }, [onSettingsChange]);
 
   /**
    * Сброс настроек

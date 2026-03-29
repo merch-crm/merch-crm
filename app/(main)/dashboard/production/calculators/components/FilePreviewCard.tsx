@@ -13,10 +13,9 @@ import {
   GripVertical, 
   Scissors, 
   File as FileIcon,
-  PenLine,
+  Layers,
   AlertTriangle
 } from 'lucide-react';
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +30,7 @@ import {
 import { formatFileSize } from '@/lib/utils/format';
 import { calculateDpi } from '@/lib/utils/file-dimensions';
 import { cn } from '@/lib/utils';
+import { ModernImageGallery } from '@/components/ui/modern-image-gallery';
 
 interface FilePreviewCardProps {
   /** Файл дизайна */
@@ -55,6 +55,7 @@ export function FilePreviewCard({
   isDragging,
   dragHandleProps,
 }: FilePreviewCardProps) {
+  const [galleryOpen, setGalleryOpen] = React.useState(false);
   const config = CALCULATOR_TYPES_CONFIG[file.calculatorType];
   const isManual = !!file.isManual;
 
@@ -67,14 +68,14 @@ export function FilePreviewCard({
 
   return (
     <TooltipProvider>
-    <Card
+    <div
       className={cn(
-        'group relative overflow-hidden transition-all duration-200 border-l-4',
+        'crm-card group relative overflow-hidden transition-all duration-200 border-l-4 p-0',
         isDragging ? 'z-50 shadow-xl opacity-80 scale-[1.02]' : 'hover:shadow-md',
         `border-l-${config.color}-500`
       )}
     >
-      <div className="flex flex-col sm:flex-row gap-3 p-4">
+      <div className="flex flex-col sm:flex-row gap-3 p-[var(--radius-padding)]">
         {/* Ручка для перетаскивания и Предпросмотр */}
         <div className="flex gap-3 items-center">
           <div
@@ -85,11 +86,19 @@ export function FilePreviewCard({
           </div>
 
           {/* Preview area */}
-          <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted flex-shrink-0 border">
+          <button 
+            type="button"
+            className={cn(
+              "relative h-28 w-28 rounded-xl overflow-hidden bg-muted flex-shrink-0 border transition-all cursor-zoom-in hover:ring-2 hover:ring-primary/20 focus-visible:ring-2 focus-visible:ring-primary outline-none text-left",
+              isManual ? "cursor-default" : "hover:border-primary/30"
+            )}
+            onClick={() => !isManual && setGalleryOpen(true)}
+            aria-label={isManual ? undefined : `Просмотреть ${file.originalName}`}
+            disabled={isManual}
+          >
             {isManual ? (
               <div className="h-full w-full flex flex-col items-center justify-center bg-muted/60 text-muted-foreground gap-1">
-                <PenLine className="h-7 w-7 opacity-50" />
-                <span className="text-xs font-bold opacity-60">вручную</span>
+                <Layers className="h-8 w-8 opacity-40" />
               </div>
             ) : (file.thumbnailUrl || file.embroideryData?.svgPreview) ? (
               <Image
@@ -110,8 +119,21 @@ export function FilePreviewCard({
                 </span>
               </div>
             )}
-          </div>
+          </button>
         </div>
+
+        {/* Gallery Overlay */}
+        {!isManual && (file.thumbnailUrl || file.embroideryData?.svgPreview) && (
+          <ModernImageGallery
+            isOpen={galleryOpen}
+            onClose={() => setGalleryOpen(false)}
+            images={[{ 
+              src: file.fileUrl || file.thumbnailUrl || file.embroideryData?.svgPreview || '',
+              label: file.originalName 
+            }]}
+            itemName={file.originalName}
+          />
+        )}
 
         {/* Инфо о файле */}
         <div className="flex-1 min-w-0 space-y-2">
@@ -175,14 +197,6 @@ export function FilePreviewCard({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 -mt-1 ml-1 mb-2">
-            {!isManual && file.storedName && (
-              <Badge variant="secondary" className="text-xs h-3.5 px-1 font-bold bg-muted/50 text-muted-foreground border-none">
-                {file.storedName.split('.').pop()}
-              </Badge>
-            )}
-
-          </div>
 
           {/* Параметры редактирования */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
@@ -194,14 +208,15 @@ export function FilePreviewCard({
                 type="number"
                 className="h-8 text-xs font-semibold bg-background/50 focus:bg-background transition-colors"
                 value={file.userDimensions?.widthMm || ''}
-                onChange={(e) => 
+                onChange={(e) => {
+                  const val = e.target.value === '' ? 0 : Number(e.target.value);
                   onUpdate(file.id, { 
                     userDimensions: { 
                       ...file.userDimensions!, 
-                      widthMm: Number(e.target.value) 
+                      widthMm: val
                     } 
-                  })
-                }
+                  });
+                }}
               />
             </div>
  
@@ -213,14 +228,15 @@ export function FilePreviewCard({
                 type="number"
                 className="h-8 text-xs font-semibold bg-background/50 focus:bg-background transition-colors"
                 value={file.userDimensions?.heightMm || ''}
-                onChange={(e) => 
+                onChange={(e) => {
+                  const val = e.target.value === '' ? 0 : Number(e.target.value);
                   onUpdate(file.id, { 
                     userDimensions: { 
                       ...file.userDimensions!, 
-                      heightMm: Number(e.target.value) 
+                      heightMm: val
                     } 
-                  })
-                }
+                  });
+                }}
               />
             </div>
 
@@ -231,10 +247,11 @@ export function FilePreviewCard({
               <Input
                 type="number"
                 className="h-8 text-xs font-semibold bg-background/50 focus:bg-background transition-colors"
-                value={file.quantity}
-                onChange={(e) => 
-                  onUpdate(file.id, { quantity: Math.max(1, Number(e.target.value)) })
-                }
+                value={file.quantity || ''}
+                onChange={(e) => {
+                  const val = e.target.value === '' ? 0 : parseInt(e.target.value, 10);
+                  onUpdate(file.id, { quantity: isNaN(val) ? 0 : val });
+                }}
               />
             </div>
 
@@ -261,7 +278,7 @@ export function FilePreviewCard({
           </div>
         </div>
       </div>
-    </Card>
+    </div>
     </TooltipProvider>
   );
 }

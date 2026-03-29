@@ -137,9 +137,11 @@ export const UV_DTF_FINISH_TYPES = [
  * Опции ширины рулона
  */
 export const ROLL_WIDTH_OPTIONS = [
-  { value: 300, label: '300 мм' },
-  { value: 600, label: '600 мм' },
-  { value: 1200, label: '1200 мм' },
+  { value: 300, label: '30 см' },
+  { value: 330, label: '33 см' },
+  { value: 450, label: '45 см' },
+  { value: 600, label: '60 см' },
+  { value: 1200, label: '120 см' },
 ] as const;
 
 /**

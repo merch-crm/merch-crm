@@ -185,8 +185,8 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
               <span className="text-xs font-bold text-slate-400 tracking-tighter">Тираж</span>
               <Input
                 type="number"
-                value={order.quantity}
-                onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                value={order.quantity === 0 ? '' : order.quantity}
+                onChange={(e) => handleQuantityChange(e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
                 className="w-12 h-5 p-0 text-center border-none bg-transparent font-bold text-slate-900 focus-visible:ring-0"
                 min={1}
               />

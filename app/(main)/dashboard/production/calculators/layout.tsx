@@ -32,7 +32,7 @@ export default function CalculatorsLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-2">
       {/* В этом layout БОЛЬШЕ НЕТ ТАБОВ для страницы выбора, они будут внутри конкретных калькуляторов если нужно */}
       
       <Suspense fallback={<CalculatorsLayoutSkeleton />}>

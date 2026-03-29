@@ -14,6 +14,8 @@ export interface DesignItem {
   quantity: number;
   /** Индекс цвета для визуализации */
   colorIndex: number;
+  /** URL миниатюры */
+  thumbnailUrl?: string;
 }
 
 /**
@@ -76,6 +78,8 @@ export interface LayoutResult {
   stats: LayoutStats & { totalLengthMm: number };
   /** Настройки */
   settings: LayoutSettings;
+  /** Дизайны, которые не влезли (превышают ширину рулона) */
+  skippedDesigns?: Array<{ id: string; name: string; width: number; height: number }>;
 }
 
 /**

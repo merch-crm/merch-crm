@@ -167,9 +167,8 @@ export function EmbroideryCalculatorClient() {
               id="emb-quantity"
               type="number"
               min={1}
-              value={params.quantity || 1}
-              onChange={(e) => updateParams({ quantity: parseInt(e.target.value) || 1 })}
-              className="h-9"
+              value={params.quantity === 0 ? '' : params.quantity}
+              onChange={(e) => updateParams({ quantity: e.target.value === '' ? 0 : parseInt(e.target.value) || 0 })}
             />
           </div>
 
@@ -208,9 +207,8 @@ export function EmbroideryCalculatorClient() {
               min={1}
               max={10}
               step={0.1}
-              value={params.stitchDensity || 4.5}
-              onChange={(e) => updateParams({ stitchDensity: parseFloat(e.target.value) || 4.5 })}
-              className="h-9"
+              value={params.stitchDensity === 0 ? '' : params.stitchDensity}
+              onChange={(e) => updateParams({ stitchDensity: e.target.value === '' ? 0 : parseFloat(e.target.value) || 0 })}
             />
           </div>
         </div>

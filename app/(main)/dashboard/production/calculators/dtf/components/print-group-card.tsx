@@ -97,7 +97,7 @@ export const PrintGroupCard = memo(function PrintGroupCard({
                         {/* Row 1: Name & Image */}
                         <div className="flex gap-3">
                             <div className="flex-1 space-y-1.5">
-                                <Label className="ml-1">Название принта</Label>
+                                <Label className="ml-1">Название принта <span className="text-red-500">*</span></Label>
                                 <Input
                                     placeholder="Например: Логотип на грудь"
                                     value={group.name}

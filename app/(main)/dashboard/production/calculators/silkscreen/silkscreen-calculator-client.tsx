@@ -95,7 +95,6 @@ export function SilkscreenCalculatorClient() {
               min={1}
               value={params.quantity || 1}
               onChange={(e) => updateParams({ quantity: parseInt(e.target.value) || 1 })}
-              className="h-9"
             />
           </div>
 

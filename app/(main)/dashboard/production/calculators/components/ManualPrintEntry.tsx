@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react';
-import { PlusCircle, Ruler, Hash, Type, Scissors } from 'lucide-react';
+import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { UploadedDesignFile, CalculatorType, CALCULATOR_TYPES_CONFIG } from '@/lib/types/calculators';
@@ -69,6 +69,7 @@ export function ManualPrintEntry({
 
   const validate = () => {
     const errs: Record<string, string> = {};
+    if (!name.trim()) errs.name = 'Укажите название';
     if (!widthMm || Number(widthMm) <= 0) errs.widthMm = 'Укажите ширину';
     if (!heightMm || Number(heightMm) <= 0) errs.heightMm = 'Укажите высоту';
     if (!quantity || Number(quantity) < 1) errs.quantity = 'Мин. 1';
@@ -104,74 +105,34 @@ export function ManualPrintEntry({
   };
 
   return (
-    <div className={cn('w-full space-y-3', className)}>
-      <p className="text-xs font-semibold text-muted-foreground tracking-normal">
-        Параметры {term.itemGenitive}
-      </p>
+    <div className={cn('w-full', className)}>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Название */}
-        <div className="sm:col-span-2 space-y-1">
-          <label className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-            <Type className="h-3 w-3" />
-            Название <span className="font-normal">(опционально)</span>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* Ряд 1: Название и Тираж */}
+        <div className="sm:col-span-2 space-y-1.5">
+          <label className={cn(
+            "text-sm font-semibold transition-colors font-sans",
+            errors.name ? "text-destructive" : "text-slate-900/80"
+          )}>
+            Название <span className="text-destructive">*</span>
           </label>
           <Input
             placeholder={term.placeholder}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => { setName(e.target.value); setErrors(p => ({ ...p, name: '' })); }}
             onKeyDown={handleKeyDown}
-            className="h-9 text-sm bg-background/50"
+            className={cn(
+              "bg-slate-50/80 border-slate-200 rounded-2xl shadow-none hover:border-slate-300 hover:bg-slate-100/50 transition-all h-12 text-sm placeholder:text-slate-400", 
+              errors.name && "border-destructive bg-destructive/5"
+            )}
           />
         </div>
 
-        {/* Ширина */}
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <label className={cn(
-            "text-xs font-bold flex items-center gap-1",
-            errors.widthMm ? "text-destructive" : "text-muted-foreground"
+            "text-sm font-semibold transition-colors font-sans",
+            errors.quantity ? "text-destructive" : "text-slate-900/80"
           )}>
-            <Ruler className="h-3 w-3" />
-            Ширина (мм) <span className="text-destructive">*</span>
-          </label>
-          <Input
-            type="number"
-            min={1}
-            placeholder="напр. 200"
-            value={widthMm}
-            onChange={(e) => { setWidthMm(e.target.value); setErrors(p => ({ ...p, widthMm: '' })); }}
-            onKeyDown={handleKeyDown}
-            className={cn("h-9 text-sm font-semibold bg-background/50", errors.widthMm && "border-destructive")}
-          />
-        </div>
-
-        {/* Высота */}
-        <div className="space-y-1">
-          <label className={cn(
-            "text-xs font-bold flex items-center gap-1",
-            errors.heightMm ? "text-destructive" : "text-muted-foreground"
-          )}>
-            <Ruler className="h-3 w-3 rotate-90" />
-            Высота (мм) <span className="text-destructive">*</span>
-          </label>
-          <Input
-            type="number"
-            min={1}
-            placeholder="напр. 300"
-            value={heightMm}
-            onChange={(e) => { setHeightMm(e.target.value); setErrors(p => ({ ...p, heightMm: '' })); }}
-            onKeyDown={handleKeyDown}
-            className={cn("h-9 text-sm font-semibold bg-background/50", errors.heightMm && "border-destructive")}
-          />
-        </div>
-
-        {/* Тираж */}
-        <div className="space-y-1">
-          <label className={cn(
-            "text-xs font-bold flex items-center gap-1",
-            errors.quantity ? "text-destructive" : "text-muted-foreground"
-          )}>
-            <Hash className="h-3 w-3" />
             Тираж (шт) <span className="text-destructive">*</span>
           </label>
           <Input
@@ -181,16 +142,69 @@ export function ManualPrintEntry({
             value={quantity}
             onChange={(e) => { setQuantity(e.target.value); setErrors(p => ({ ...p, quantity: '' })); }}
             onKeyDown={handleKeyDown}
-            className={cn("h-9 text-sm font-semibold bg-background/50", errors.quantity && "border-destructive")}
+            className={cn(
+              "bg-slate-50/80 border-slate-200 rounded-2xl shadow-none hover:border-slate-300 hover:bg-slate-100/50 transition-all h-12 text-sm placeholder:text-slate-400", 
+              errors.quantity && "border-destructive bg-destructive/5"
+            )}
           />
         </div>
 
-        {/* Стежки (только для вышивки) */}
+        {/* Ряд 2: Параметры размера */}
+        <div className="space-y-1.5">
+          <label className={cn(
+            "text-sm font-semibold transition-colors font-sans",
+            errors.widthMm ? "text-destructive" : "text-slate-900/80"
+          )}>
+            Ширина (мм) <span className="text-destructive">*</span>
+          </label>
+          <Input
+            type="number"
+            min={1}
+            placeholder="напр. 200"
+            value={widthMm}
+            onChange={(e) => { setWidthMm(e.target.value); setErrors(p => ({ ...p, widthMm: '' })); }}
+            onKeyDown={handleKeyDown}
+            className={cn(
+              "bg-slate-50/80 border-slate-200 rounded-2xl shadow-none hover:border-slate-300 hover:bg-slate-100/50 transition-all h-12 text-sm placeholder:text-slate-400", 
+              errors.widthMm && "border-destructive bg-destructive/5"
+            )}
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className={cn(
+            "text-sm font-semibold transition-colors font-sans",
+            errors.heightMm ? "text-destructive" : "text-slate-900/80"
+          )}>
+            Высота (мм) <span className="text-destructive">*</span>
+          </label>
+          <Input
+            type="number"
+            min={1}
+            placeholder="напр. 300"
+            value={heightMm}
+            onChange={(e) => { setHeightMm(e.target.value); setErrors(p => ({ ...p, heightMm: '' })); }}
+            onKeyDown={handleKeyDown}
+            className={cn(
+              "bg-slate-50/80 border-slate-200 rounded-2xl shadow-none hover:border-slate-300 hover:bg-slate-100/50 transition-all h-12 text-sm placeholder:text-slate-400", 
+              errors.heightMm && "border-destructive bg-destructive/5"
+            )}
+          />
+        </div>
+
+        <div className="space-y-1.5 flex flex-col justify-end">
+          <div className="h-12 flex items-center px-4 rounded-2xl bg-slate-50/80 border border-slate-200 text-sm text-slate-500 font-medium font-sans">
+            {widthMm && heightMm
+              ? `≈ ${((Number(widthMm) * Number(heightMm)) / 100).toFixed(0)} см²`
+              : '— площадь'}
+          </div>
+        </div>
+
+        {/* Стежки (только для вышивки) - в новом ряду если есть */}
         {calculatorType === 'embroidery' && (
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-muted-foreground flex items-center gap-1">
-              <Scissors className="h-3 w-3" />
-              Стежки <span className="font-normal">(авторасчет если пусто)</span>
+          <div className="sm:col-span-3 space-y-1.5">
+            <label className="text-sm font-semibold text-slate-900/80 font-sans">
+              Стежки <span className="font-normal text-slate-400 text-xs">(авторасчет если пусто)</span>
             </label>
             <Input
               type="number"
@@ -199,30 +213,22 @@ export function ManualPrintEntry({
               value={stitchCount}
               onChange={(e) => setStitchCount(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="h-9 text-sm font-semibold bg-background border-primary/20"
+              className="bg-white border-slate-200 shadow-sm hover:border-slate-300 transition-all"
             />
           </div>
         )}
-
-        {/* Размер в см² — preview */}
-        <div className="space-y-1 flex flex-col justify-end">
-          <div className="h-9 flex items-center px-3 rounded-md bg-muted/40 border border-dashed text-xs text-muted-foreground font-medium">
-            {widthMm && heightMm
-              ? `≈ ${((Number(widthMm) * Number(heightMm)) / 100).toFixed(0)} см²`
-              : '— площадь'}
-          </div>
-        </div>
       </div>
 
-      <Button
-        type="button"
-        onClick={handleAdd}
-        className="w-full h-9 gap-2 text-sm font-semibold"
-        variant="outline"
-      >
-        <PlusCircle className="h-4 w-4" />
-        {term.action}
-      </Button>
+      <div className="flex justify-center mt-6 pt-4 border-t border-slate-100">
+        <Button
+          type="button"
+          onClick={handleAdd}
+          className="rounded-xl h-10 px-8 font-bold bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-sm flex items-center gap-2"
+        >
+          <PlusCircle className="h-4 w-4" />
+          {term.action}
+        </Button>
+      </div>
     </div>
   );
 }

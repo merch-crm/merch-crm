@@ -8,7 +8,6 @@
 import { useState, useMemo } from 'react';
 import { PlacementProduct, SelectedPlacement } from '@/lib/types/placements';
 import { PlacementsService } from '@/lib/services/calculators/placements-service';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -68,8 +67,8 @@ export function PlacementsSection({
   };
 
   return (
-    <Card className="">
-      <div className="px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50">
+    <div className="crm-card">
+      <div className="card-breakout px-6 pt-5 pb-4 -mt-[var(--current-padding)]">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm text-xl">
@@ -96,7 +95,7 @@ export function PlacementsSection({
         </div>
       </div>
 
-      <CardContent className="p-6 space-y-3">
+      <div className="pt-6 space-y-3">
         {/* Поиск и фильтр */}
         <div className="flex flex-col gap-3">
           <div className="relative">
@@ -222,11 +221,11 @@ export function PlacementsSection({
             </div>
           )}
         </div>
-      </CardContent>
+      </div>
 
       {/* Summary Footer */}
       {selectedPlacements.length > 0 && (
-        <div className="bg-slate-50 border-t p-3">
+        <div className="card-breakout bg-slate-50 border-t p-4 -mb-[var(--current-padding)] mt-4">
           <div className="flex flex-wrap gap-1.5">
             {selectedPlacements.map((p) => (
               <Badge 
@@ -247,7 +246,7 @@ export function PlacementsSection({
           </div>
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 

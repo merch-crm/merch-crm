@@ -3,6 +3,7 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import { useToast } from '@/components/ui/toast';
 import { CalculationEngine, type CalculationInput } from '@/lib/services/calculators/calculation-engine';
 import { useDesignFiles } from './use-design-files';
@@ -26,8 +27,6 @@ interface CalculatorState<T extends CalculatorType> {
   params: CalculatorParamsMap[T];
   /** Результат расчёта */
   result: CalculationResult | null;
-  /** Расчёт в процессе */
-  isCalculating: boolean;
   /** Сохранение в процессе */
   isSaving: boolean;
   /** Ошибка */
@@ -84,13 +83,12 @@ export function useCalculator<T extends CalculatorType>(
   const { toast } = useToast();
   
   // Параметры калькулятора
-  const [params, setParams] = useState<CalculatorParamsMap[T]>(
+  const [params, setParams] = useLocalStorage<CalculatorParamsMap[T]>(
+    `merch-crm-calc-params-${calculatorType}`,
     DEFAULT_CALCULATOR_PARAMS[calculatorType] as CalculatorParamsMap[T]
   );
   
   // Результат расчёта
-  const [result, setResult] = useState<CalculationResult | null>(null);
-  const [isCalculating, setIsCalculating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -99,17 +97,22 @@ export function useCalculator<T extends CalculatorType>(
   
   // Безопасное извлечение параметров для оптимизатора раскладки
   const layoutSettings = useMemo(() => {
-    if (calculatorType === 'dtf') {
-      const dtfParams = params as CalculatorParamsMap['dtf'];
+    if (calculatorType === 'dtf' || calculatorType === 'uv-dtf' || calculatorType === 'thermotransfer' || calculatorType === 'sublimation') {
+      const rollParams = params as unknown as { 
+        rollWidth?: number; 
+        edgeMargin?: number; 
+        gap?: number; 
+        allowRotation?: boolean 
+      };
       return {
-        rollWidthMm: dtfParams.rollWidth ?? 600,
-        edgeMarginMm: dtfParams.edgeMargin ?? 5,
-        gapMm: dtfParams.gap ?? 3,
-        allowRotation: dtfParams.allowRotation ?? true,
+        rollWidthMm: rollParams.rollWidth ?? 0,
+        edgeMarginMm: rollParams.edgeMargin ?? 5,
+        gapMm: rollParams.gap ?? 3,
+        allowRotation: rollParams.allowRotation ?? true,
       };
     }
     return {
-      rollWidthMm: 600,
+      rollWidthMm: 0,
       edgeMarginMm: 5,
       gapMm: 3,
       allowRotation: true,
@@ -118,7 +121,15 @@ export function useCalculator<T extends CalculatorType>(
 
   const layout = useLayoutOptimizer({
     files: designFiles.files,
-    initialSettings: layoutSettings
+    initialSettings: layoutSettings,
+    onSettingsChange: (newSettings) => {
+      updateParams({
+        rollWidth: newSettings.rollWidthMm,
+        edgeMargin: newSettings.edgeMarginMm,
+        gap: newSettings.gapMm,
+        allowRotation: newSettings.allowRotation,
+      } as unknown as Partial<CalculatorParamsMap[T]>);
+    }
   });
   const globalSettings = useCalculatorSettings(calculatorType);
   const placements = usePlacements((params as unknown as BaseCalculatorParams).quantity || 1);
@@ -128,56 +139,16 @@ export function useCalculator<T extends CalculatorType>(
    */
   const updateParams = useCallback((updates: Partial<CalculatorParamsMap[T]>) => {
     setParams((prev) => {
-      const newParams = { ...prev, ...updates };
-      
-      // Сбрасываем результат только для параметров, требующих полного перерасчёта
-      const softParams = ['marginPercent', 'isUrgent', 'urgencySurchargePercent'];
-      const isSoftOnly = Object.keys(updates).every(key => softParams.includes(key));
-      
-      if (!isSoftOnly) {
-        setResult(null);
-      } else {
-        // Тихо пересчитываем зависимые поля в result, если он есть
-        setResult((prevResult) => {
-          if (!prevResult) return null;
-          
-          const baseParams = newParams as unknown as BaseCalculatorParams;
-          const newMarginPercent = baseParams.marginPercent || 0;
-          const newMarginAmount = prevResult.totalCost * (newMarginPercent / 100);
-          
-          const isUrgent = baseParams.isUrgent || false;
-          const urgencyPercent = baseParams.urgencySurchargePercent || 0;
-          const urgencySurcharge = isUrgent ? (prevResult.totalCost + newMarginAmount) * (urgencyPercent / 100) : 0;
-          
-          const newSellingPrice = prevResult.totalCost + newMarginAmount + urgencySurcharge;
-          
-          return {
-            ...prevResult,
-            sellingPrice: newSellingPrice,
-            pricePerItem: newSellingPrice / Math.max(1, baseParams.quantity || 1),
-            marginPercent: newMarginPercent,
-            marginAmount: newMarginAmount,
-            urgency: {
-              ...prevResult.urgency,
-              isUrgent,
-              surcharge: urgencySurcharge,
-              urgentSurcharge: urgencyPercent
-            }
-          };
-        });
-      }
-      
-      return newParams;
+      return { ...prev, ...updates };
     });
-  }, []);
+  }, [setParams]);
 
   /**
    * Сброс параметров к дефолтным
    */
   const resetParams = useCallback(() => {
     setParams(DEFAULT_CALCULATOR_PARAMS[calculatorType] as CalculatorParamsMap[T]);
-    setResult(null);
-  }, [calculatorType]);
+  }, [calculatorType, setParams]);
 
   /**
    * Валидация перед расчётом
@@ -191,7 +162,7 @@ export function useCalculator<T extends CalculatorType>(
     }
 
     if (designFiles.files.length === 0) {
-      errors.push('Добавьте хотя бы один файл дизайна');
+      errors.push('Добавьте макет для расчёта');
     }
 
     // Проверка для вышивки
@@ -210,20 +181,14 @@ export function useCalculator<T extends CalculatorType>(
   const canCalculate = validationErrors.length === 0;
 
   /**
-   * Выполнение расчёта
+   * Реактивное вычисление результата расчёта
    */
-  const calculate = useCallback(() => {
-    const _base = params as unknown as BaseCalculatorParams;
+  const result = useMemo<CalculationResult | null>(() => {
     if (!canCalculate) {
-      toast(String(validationErrors[0]), 'destructive');
-      return;
+      return null;
     }
 
-    setIsCalculating(true);
-    setError(null);
-
     try {
-      // Подготавливаем данные для расчёта
       const totalStitchCount = designFiles.files.reduce(
         (sum, f) => sum + (f.embroideryData?.stitchCount || 0) * f.quantity,
         0
@@ -237,9 +202,6 @@ export function useCalculator<T extends CalculatorType>(
       const filmAreaM2 = areaMm2 / 1000000;
       const filmLengthM = layout.layoutResult.stats.totalLengthMm / 1000;
 
-      // Debug log убран (Правило 11)
-
-      // Фильтруем расходники для DTG (белый цвет и праймер не нужны для белых футболок)
       const filteredConfig = { ...globalSettings.settings.consumablesConfig };
       if (calculatorType === 'dtg') {
         const dtgParams = params as unknown as CalculatorParamsMap['dtg'];
@@ -260,8 +222,8 @@ export function useCalculator<T extends CalculatorType>(
       const baseParams = params as unknown as BaseCalculatorParams;
       const input: CalculationInput = {
         calculatorType,
-        quantity: baseParams.quantity,
-        printAreaPerItem: filmAreaM2 / baseParams.quantity,
+        quantity: Math.max(1, baseParams.quantity || 1),
+        printAreaPerItem: filmAreaM2 / Math.max(1, baseParams.quantity || 1),
         totalFilmArea: filmAreaM2,
         filmLength: filmLengthM,
         stitchCount: totalStitchCount,
@@ -269,33 +231,33 @@ export function useCalculator<T extends CalculatorType>(
         printRuns: baseParams.quantity,
         consumablesConfig: filteredConfig,
         placements: placements.selectedPlacements,
-        marginPercent: baseParams.marginPercent,
-        isUrgent: baseParams.isUrgent,
-        urgencySurchargePercent: baseParams.urgencySurchargePercent,
+        marginPercent: baseParams.marginPercent || 0,
+        isUrgent: baseParams.isUrgent || false,
+        urgencySurchargePercent: baseParams.urgencySurchargePercent || 0,
       };
 
-      const calculationResult = CalculationEngine.calculate(input);
-      setResult(calculationResult);
-
-      toast(String(`Цена: ${calculationResult.sellingPrice.toLocaleString('ru-RU')} ₽`), 'success');
+      setError(null);
+      return CalculationEngine.calculate(input);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Ошибка расчёта';
-      setError(message);
-      toast(message, 'destructive');
-    } finally {
-      setIsCalculating(false);
+      setError(err instanceof Error ? err.message : 'Ошибка расчёта');
+      return null;
     }
   }, [
     canCalculate,
-    validationErrors,
     calculatorType,
     params,
     layout.layoutResult,
     designFiles.files,
     globalSettings.settings.consumablesConfig,
     placements.selectedPlacements,
-    toast,
   ]);
+
+  /**
+   * Пустышка для обратной совместимости с компонентами (если нужно)
+   */
+  const calculate = useCallback(() => {
+    // В реактивном подходе этот метод ничего не делает, так как result вычисляется через useMemo
+  }, []);
 
   /**
    * Сохранение расчёта
@@ -459,7 +421,6 @@ export function useCalculator<T extends CalculatorType>(
   const state: CalculatorState<T> = {
     params,
     result,
-    isCalculating,
     isSaving,
     error,
   };

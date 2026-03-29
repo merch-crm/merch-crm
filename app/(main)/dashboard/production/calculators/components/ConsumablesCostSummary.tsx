@@ -7,7 +7,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip } from '@/components/ui/tooltip';
 import {
@@ -91,9 +90,9 @@ export function ConsumablesCostSummary({
   }, [itemCosts]);
 
   return (
-    <Card className="">
+    <div className="crm-card">
       <Collapsible defaultOpen={showDetails}>
-        <div className="px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50">
+        <div className="card-breakout px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50 -mt-[var(--current-padding)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm text-xl">
@@ -115,7 +114,7 @@ export function ConsumablesCostSummary({
         </div>
 
         <CollapsibleContent>
-          <CardContent className="p-6">
+          <div className="pt-6">
             <div className="space-y-2">
               {(itemCosts || []).map((item) => (
                 <div
@@ -138,10 +137,10 @@ export function ConsumablesCostSummary({
                 </div>
               ))}
             </div>
-          </CardContent>
+          </div>
         </CollapsibleContent>
       </Collapsible>
-    </Card>
+    </div>
   );
 }
 

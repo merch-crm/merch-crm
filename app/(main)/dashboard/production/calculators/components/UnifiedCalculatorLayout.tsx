@@ -8,7 +8,7 @@
 'use client';
 
 import React, { ReactNode, ElementType } from 'react';
-import { Settings, ArrowLeft, Save, FileDown, Printer } from 'lucide-react';
+import { Settings, ArrowLeft, Save, FileDown, Printer as PrinterIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import {
@@ -68,18 +68,18 @@ export function CalculatorHeader(props: CalculatorHeaderProps) {
   }
 
   return (
-    <div className="crm-card flex flex-col lg:flex-row lg:items-center justify-between gap-3 shadow-none hover:shadow-none">
+    <div className="crm-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-none hover:shadow-none p-4 sm:p-6">
       <div className="flex items-center gap-3">
         <Link href="/dashboard/production/calculators">
-          <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 transition-colors">
+          <Button variant="ghost" size="icon" className="rounded-full hover:bg-slate-100 transition-colors shrink-0">
             <ArrowLeft className="h-5 w-5 text-slate-600" />
           </Button>
         </Link>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{title}</h1>
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 truncate">{title}</h1>
           {description && (
             <p 
-              className="text-sm text-slate-500 font-medium"
+              className="text-xs sm:text-sm text-slate-500 font-medium line-clamp-1"
               suppressHydrationWarning
             >
               {description}
@@ -88,20 +88,20 @@ export function CalculatorHeader(props: CalculatorHeaderProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 lg:ml-auto">
+      <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
         {actions && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-initial">
             {actions}
           </div>
         )}
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 shrink-0">
           {showSettings && (
             <Button
               variant="outline"
               size="icon"
               onClick={onSettingsClick}
-              className="rounded-xl h-12 w-12 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all shadow-sm"
+              className="rounded-xl h-10 w-10 sm:h-12 sm:w-12 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all shadow-sm shrink-0"
               title="Настройки расходников"
             >
               <Settings className="h-5 w-5 text-slate-600" />
@@ -145,14 +145,14 @@ export function CalculatorActions({
   canSave = true,
 }: CalculatorActionsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
       <Button
         onClick={onSave}
         disabled={!canSave || isLoading}
-        className="rounded-xl h-11 px-6 font-bold bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-sm flex items-center gap-2"
+        className="rounded-xl h-10 sm:h-11 px-4 sm:px-6 font-bold bg-slate-900 hover:bg-slate-800 text-white transition-all shadow-sm flex items-center gap-2 flex-1 sm:flex-initial text-sm sm:text-base"
       >
-        <Save className="h-4 w-4" />
-        Сохранить
+        <Save className="h-4 w-4 shrink-0" />
+        <span className="truncate">Сохранить</span>
       </Button>
 
       {onDownloadClient && (
@@ -160,10 +160,10 @@ export function CalculatorActions({
           variant="outline"
           onClick={onDownloadClient}
           disabled={!canSave || isLoading}
-          className="rounded-xl h-11 px-6 font-bold border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 transition-all shadow-sm flex items-center gap-2"
+          className="rounded-xl h-10 sm:h-11 px-4 sm:px-6 font-bold border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 transition-all shadow-sm flex items-center gap-2 flex-1 sm:flex-initial text-sm sm:text-base"
         >
-          <FileDown className="h-4 w-4" />
-          Скачать расчет
+          <FileDown className="h-4 w-4 shrink-0" />
+          <span className="truncate">Скачать</span>
         </Button>
       )}
 
@@ -172,10 +172,10 @@ export function CalculatorActions({
           variant="outline"
           onClick={onPrint}
           disabled={!canSave || isLoading}
-          className="rounded-xl h-11 px-4 font-bold border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 transition-all shadow-sm flex items-center gap-2"
+          className="rounded-xl h-10 w-10 sm:h-11 sm:w-11 font-bold border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 transition-all shadow-sm flex items-center justify-center shrink-0"
           title="Печать"
         >
-          <Printer className="h-4 w-4" />
+          <PrinterIcon size={16} strokeWidth={2.5} />
         </Button>
       )}
     </div>
@@ -193,13 +193,13 @@ export function CalculatorSection({
 }: CalculatorSectionProps) {
   return (
     <div className={`crm-card hover:shadow-md transition-shadow duration-300 ${className || ''}`}>
-      <div className="px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50">
-        <h3 className="text-lg font-bold text-slate-900 tracking-tight">{title}</h3>
+      <div className="mb-6">
+        <h3 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h3>
         {description && (
           <p className="text-sm text-slate-500 font-medium mt-1">{description}</p>
         )}
       </div>
-      <div className="p-6">
+      <div>
         {children}
       </div>
     </div>
@@ -247,7 +247,7 @@ export function UnifiedCalculatorLayout({
 
   return (
     <div 
-      className="flex flex-col gap-3 pb-20 max-w-[1600px] mx-auto"
+      className="flex flex-col gap-3 pb-0 max-w-[1600px] mx-auto"
       suppressHydrationWarning
     >
       <CalculatorHeader
@@ -257,11 +257,11 @@ export function UnifiedCalculatorLayout({
       />
 
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-3 items-start">
-        <div className="xl:col-span-8 space-y-3 order-2 xl:order-1">
+        <div className="xl:col-span-8 space-y-3 order-1">
           {children}
         </div>
 
-        <aside className="xl:col-span-4 space-y-3 order-1 xl:order-2 sticky top-8">
+        <aside className="xl:col-span-4 space-y-3 order-2 sticky top-[80px]">
           {resultBlock}
         </aside>
       </div>

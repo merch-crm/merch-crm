@@ -27,7 +27,7 @@ export interface DTFCalculatorParams extends BaseCalculatorParams {
   /** Тип плёнки */
   filmType: 'matte' | 'glossy' | 'glitter';
   /** Ширина рулона (мм) */
-  rollWidth: 300 | 600 | 1200;
+  rollWidth: number;
   /** Отступ от края (мм) */
   edgeMargin: number;
   /** Зазор между дизайнами (мм) */
@@ -45,7 +45,7 @@ export interface UVDTFCalculatorParams extends BaseCalculatorParams {
   /** Тип финиша */
   finishType: 'matte' | 'glossy' | 'soft_touch' | 'holographic';
   /** Ширина рулона (мм) */
-  rollWidth: 300 | 600;
+  rollWidth: number;
   /** Отступ от края (мм) */
   edgeMargin: number;
   /** Зазор между дизайнами (мм) */

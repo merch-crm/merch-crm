@@ -64,8 +64,9 @@
 }
 
 .crm-card--ghost {
-    background-color: var(--muted);
+    background-color: transparent;
     border: none;
+    box-shadow: none;
 }
 
 .crm-card--compact {

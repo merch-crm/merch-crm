@@ -6,9 +6,9 @@
  * @audit Создан 2026-03-25
  */
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { UploadedDesignFile, CalculatorType } from '@/lib/types/calculators';
-import { deleteDesignFile, getUserDesignFiles } from '@/lib/actions/calculators/files';
+import { deleteDesignFile } from '@/lib/actions/calculators/files';
 import { useToast } from '@/components/ui/toast';
 
 export interface UseDesignFilesOptions {
@@ -21,32 +21,10 @@ export interface UseDesignFilesOptions {
 /**
  * Хук для управления списком файлов дизайна
  */
-export function useDesignFiles({ calculatorType, initialFiles = [] }: UseDesignFilesOptions) {
+export function useDesignFiles({ calculatorType: _calculatorType, initialFiles = [] }: UseDesignFilesOptions) {
   const [files, setFiles] = useState<UploadedDesignFile[]>(initialFiles);
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  /**
-   * Загружает файлы пользователя при инициализации
-   */
-  useEffect(() => {
-    if (initialFiles.length === 0) {
-      const loadFiles = async () => {
-        setIsLoading(true);
-        try {
-          const result = await getUserDesignFiles({ calculatorType });
-          if (result.success && result.data) {
-            setFiles(result.data);
-          }
-        } catch (_error) {
-          console.error('Ошибка загрузки файлов:', _error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      loadFiles();
-    }
-  }, [calculatorType, initialFiles.length]);
 
   /**
    * Добавляет файл в список
@@ -133,7 +111,6 @@ export function useDesignFiles({ calculatorType, initialFiles = [] }: UseDesignF
 
   return {
     files,
-    isLoading,
     addFile,
     removeFile,
     updateFile,
