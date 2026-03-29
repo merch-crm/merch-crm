@@ -23,6 +23,7 @@ export const PRODUCT_TYPES = {
   phonecase: { label: 'Чехол для телефона', icon: '📱' },
   notebook: { label: 'Блокнот', icon: '📓' },
   flag: { label: 'Флаг/Баннер', icon: '🚩' },
+  dtf: { label: 'ДТФ Термотрансфер', icon: '🩹' },
   other: { label: 'Другое', icon: '📦' },
 } as const;
 
@@ -220,6 +221,11 @@ export const DEFAULT_AREAS_BY_PRODUCT: Record<
   ],
   flag: [
     { name: 'Полная площадь', code: 'full', maxWidthMm: 1500, maxHeightMm: 1000 },
+  ],
+  dtf: [
+    { name: 'Лист A4', code: 'a4', maxWidthMm: 210, maxHeightMm: 297 },
+    { name: 'Лист A3', code: 'a3', maxWidthMm: 297, maxHeightMm: 420 },
+    { name: 'Погонный метр (60см)', code: 'roll_60', maxWidthMm: 580, maxHeightMm: 1000 },
   ],
   other: [
     { name: 'Основная область', code: 'main', maxWidthMm: 300, maxHeightMm: 300 },

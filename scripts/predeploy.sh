@@ -1,18 +1,22 @@
 #!/bin/bash
 set -e
 
-echo "Starting stability check..."
+echo "🚀 Запуск стабильности перед деплоем (Pre-push check)..."
 
-# 1. Check format
-echo "Checking types..."
+# 1. Проверка типов
+echo "📌 Шаг 1: Проверка типов TypeScript..."
 npx tsc --noEmit
 
-# 2. Check lint
-echo "Checking lint..."
+# 2. Проверка линтера
+echo "📌 Шаг 2: Проверка ESLint..."
 npm run lint
 
-# 3. Check build
-echo "Checking build..."
+# 3. Запуск тестов
+echo "📌 Шаг 3: Запуск Unit и Integration тестов (Vitest)..."
+npm run test -- --run
+
+# 4. Проверка билда
+echo "📌 Шаг 4: Тестовая сборка Next.js..."
 npm run build
 
-echo "✅ Stability check passed! Ready for git push."
+echo "✅ Стабильность подтверждена! Код готов к пушу на GitHub."

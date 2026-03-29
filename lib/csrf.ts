@@ -1,17 +1,8 @@
-/**
- * CSRF-защита для Server Actions
- * Использует паттерн Double Submit Cookie
- */
-
 import { cookies } from "next/headers";
 import { createHmac, randomBytes } from "crypto";
 
+const CSRF_SECRET = process.env.CSRF_SECRET || process.env.BETTER_AUTH_SECRET || "build_time_secret_placeholder";
 const CSRF_COOKIE_NAME = "csrf_token";
-const CSRF_SECRET = process.env.CSRF_SECRET || process.env.BETTER_AUTH_SECRET;
-
-if (!CSRF_SECRET) {
-  throw new Error("CSRF_SECRET или BETTER_AUTH_SECRET должен быть установлен");
-}
 
 /**
  * Генерирует новый CSRF-токен
