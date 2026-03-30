@@ -1,5 +1,5 @@
 import { getAuditLogs } from "../actions/security.actions";
-import { AuditClient, AuditLog } from "./audit-client";
+import { AuditClient, type AuditLog } from "./audit-client";
 import { Activity } from "lucide-react";
 import { getRoles } from "../actions/roles.actions";
 import { getUsers } from "../actions/users.actions";

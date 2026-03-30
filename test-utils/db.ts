@@ -32,7 +32,8 @@ export async function cleanupTestDb() {
   ]
   
   for (const table of tables) {
-    await db.execute(sql.raw(`TRUNCATE TABLE "${table}" CASCADE`))
+    // ship-safe-ignore: Table name is from fixed static list above
+    await db.execute(sql`TRUNCATE TABLE ${sql.identifier(table)} CASCADE`)
   }
   
   // Включаем обратно

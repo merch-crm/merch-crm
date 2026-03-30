@@ -13,8 +13,15 @@ export function deleteAvatarFile(avatarPath: string | null): boolean {
     }
 
     try {
-        const filename = avatarPath.replace('/api/storage/avatars/', '');
-        const filePath = path.join(LOCAL_STORAGE_ROOT, 'avatars', filename);
+        const filename = path.basename(avatarPath.replace('/api/storage/avatars/', ''));
+        const avatarsDir = path.join(LOCAL_STORAGE_ROOT, 'avatars');
+        const filePath = path.join(avatarsDir, filename);
+
+        // Security check: ensure the path is still within the avatars directory
+        if (!filePath.startsWith(avatarsDir)) {
+            console.error(`[deleteAvatarFile] Path traversal detected: ${filePath}`);
+            return false;
+        }
 
         if (fs.existsSync(filePath)) {
             fs.unlinkSync(filePath);

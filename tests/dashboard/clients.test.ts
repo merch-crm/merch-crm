@@ -240,7 +240,7 @@ describe('updateClient', () => {
         const fd = new FormData();
         fd.append('lastName', 'Updated');
         // updateClient takes (clientId: string, formData: FormData)
-        const result = await updateClient('33333333-3333-4333-8333-333333333333', fd);
+        const result = await updateClient('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', fd);
         expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
@@ -256,7 +256,7 @@ describe('updateClient', () => {
         fd.append('phone', '+79001234567');
         fd.append('clientType', 'b2c');
 
-        const result = await updateClient('33333333-3333-4333-8333-333333333333', fd);
+        const result = await updateClient('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', fd);
         if (!result.success) console.error('updateClient failed:', result.error);
         expect(result).toEqual({ success: true });
     });
@@ -267,7 +267,7 @@ describe('deleteClient', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await deleteClient('33333333-3333-4333-8333-333333333333');
+        const result = await deleteClient('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result).toEqual({ success: false, error: 'Не авторизован', code: 'UNAUTHORIZED' });
     });
 
@@ -275,7 +275,7 @@ describe('deleteClient', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }));
         // deleteClient uses db.query.users.findFirst (NOT tx)
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Менеджер' } }));
-        const result = await deleteClient('33333333-3333-4333-8333-333333333333');
+        const result = await deleteClient('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result.success).toBe(false);
         if (!result.success) {
             expect(result.error).toContain('Недостаточно прав');
@@ -289,7 +289,7 @@ describe('deleteClient', () => {
         // Inside tx: tx.query.clients.findFirst returns client with no orders
         mockTx.query.clients.findFirst = vi.fn().mockResolvedValue(createMockClient());
 
-        const result = await deleteClient('33333333-3333-4333-8333-333333333333');
+        const result = await deleteClient('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result).toEqual({ success: true });
     });
 });
@@ -299,13 +299,13 @@ describe('toggleClientArchived', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await toggleClientArchived('33333333-3333-4333-8333-333333333333', true);
+        const result = await toggleClientArchived('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', true);
         expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('архивирует клиента', async () => {
         vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
-        const result = await toggleClientArchived('33333333-3333-4333-8333-333333333333', true);
+        const result = await toggleClientArchived('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', true);
         expect(result).toEqual({ success: true });
     });
 });
@@ -315,7 +315,7 @@ describe('bulkDeleteClients', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await bulkDeleteClients(['33333333-3333-4333-8333-333333333333']);
+        const result = await bulkDeleteClients(['4242XXXX-XXXX-4242-4242-XXXXXXXX4242']);
         expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
@@ -329,7 +329,7 @@ describe('bulkDeleteClients', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Менеджер' }));
         // bulkDeleteClients uses db.query.users.findFirst (NOT tx)
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Менеджер' } }));
-        const result = await bulkDeleteClients(['33333333-3333-4333-8333-333333333333']);
+        const result = await bulkDeleteClients(['4242XXXX-XXXX-4242-4242-XXXXXXXX4242']);
         expect(result.success).toBe(false);
     });
 
@@ -340,7 +340,7 @@ describe('bulkDeleteClients', () => {
         // Inside tx: tx.query.orders.findMany returns no orders for these clients
         mockTx.query.orders.findMany = vi.fn().mockResolvedValue([]);
 
-        const result = await bulkDeleteClients(['33333333-3333-4333-8333-333333333333', '33333333-3333-4333-8333-333333333334']);
+        const result = await bulkDeleteClients(['4242XXXX-XXXX-4242-4242-XXXXXXXX4242', '4242XXXX-XXXX-4242-4242-XXXXXXXX4242']);
         expect(result).toEqual({ success: true });
     });
 });

@@ -4,7 +4,7 @@ import { db } from"@/lib/db";
 import { orders, clients, inventoryItems, users, tasks, promocodes, wikiPages, storageLocations, expenses, inventoryCategories } from"@/lib/schema";
 import { getSession } from "@/lib/session";
 import { ilike, or, desc } from"drizzle-orm";
-import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import { logError } from"@/lib/error-logger";
 import { z } from"zod";
 

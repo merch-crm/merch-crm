@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getApiKeysAction, createApiKey, revokeApiKey } from "./actions";
+import { getApiKeysAction, createApiKey, revokeApiKey, type ApiKey } from "./actions";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,16 +11,10 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 
-interface ApiKeyData {
-  id: string;
-  name: string;
-  key: string;
-  createdAt: string | Date;
-  lastUsedAt?: string | Date | null;
-}
+// ApiKeyData is now ApiKey from actions
 
 export default function ApiKeysPage() {
-  const [keys, setKeys] = useState<ApiKeyData[]>([]);
+  const [keys, setKeys] = useState<ApiKey[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [newKeyName, setNewKeyName] = useState("");
@@ -34,7 +28,7 @@ export default function ApiKeysPage() {
     setLoading(true);
     const result = await getApiKeysAction();
     if (result.success && result.data) {
-      setKeys(result.data as ApiKeyData[]);
+      setKeys(result.data);
     }
     setLoading(false);
   }

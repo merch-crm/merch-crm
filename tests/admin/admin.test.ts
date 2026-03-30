@@ -20,7 +20,7 @@ const hoisted = vi.hoisted(() => {
         const chain: Record<string, unknown> = {};
         chain.set = vi.fn().mockReturnValue(chain);
         chain.where = vi.fn().mockReturnValue(chain);
-        chain.returning = vi.fn().mockResolvedValue([{ id: '11111111-1111-4111-8111-111111111111', name: 'Updated' }]);
+        chain.returning = vi.fn().mockResolvedValue([{ id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', name: 'Updated' }]);
         return chain;
     };
 
@@ -151,7 +151,7 @@ function setupMocks() {
     const mockAdmin = { id: 'admin-id', role: { name: 'Администратор' } };
     vi.mocked(requireAdmin).mockResolvedValue(mockAdmin as unknown as { id: string; role: { name: string } } as never);
     mockQuery.users.findFirst.mockResolvedValue(createMockUser({ 
-        role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
+        role: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', name: 'Администратор' } 
     }));
     mockQuery.roles.findMany.mockResolvedValue([]);
     mockQuery.departments.findMany.mockResolvedValue([]);
@@ -216,13 +216,13 @@ describe('Admin Panel Actions', () => {
 
         it('создает пользователя при валидных данных', async () => {
             mockQuery.users.findFirst.mockResolvedValueOnce(createMockUser({ 
-                role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
+                role: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', name: 'Администратор' } 
             }));
             const formData = new FormData();
             formData.append('name', 'New User');
             formData.append('email', 'new@test.com');
             formData.append('password', 'TestPassword123');
-            formData.append('roleId', '55555555-5555-4555-8555-555555555555');
+            formData.append('roleId', '4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
 
             const result = await createUser(formData);
             if (!result.success) {
@@ -241,9 +241,9 @@ describe('Admin Panel Actions', () => {
             const formData = createFormData({
                 name: 'Updated Name',
                 email: 'updated@test.com',
-                roleId: '55555555-5555-4555-8555-555555555555'
+                roleId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242'
             });
-            const result = await updateUser('11111111-1111-4111-8111-111111111111', formData);
+            const result = await updateUser('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', formData);
             expect(result.success).toBe(true);
         });
     });
@@ -254,7 +254,7 @@ describe('Admin Panel Actions', () => {
         });
 
         it('удаляет пользователя', async () => {
-            const result = await deleteUser('22222222-2222-4222-8222-222222222222');
+            const result = await deleteUser('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
             expect(result.success).toBe(true);
         });
     });

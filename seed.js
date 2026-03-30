@@ -5,7 +5,7 @@ dotenv.config({ path: '.env.local' });
 dotenv.config(); // Загружаем обычный .env если есть
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || "postgresql://postgres:5738870192e24949b02a700547743048@localhost:5432/postgres"
+    connectionString: process.env.DATABASE_URL || "postgresql://postgres:<DB_PASSWORD>@localhost:5432/postgres"
 });
 
 const subcategories = [

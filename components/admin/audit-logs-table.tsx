@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { getAuditLogs, clearAuditLogs, getUsers } from "@/app/(main)/admin-panel/actions";
+import { getAuditLogs, clearAuditLogs } from "@/app/(main)/admin-panel/actions/security.actions";
+import { getUsers } from "@/app/(main)/admin-panel/actions/users.actions";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { Pagination } from "@/components/ui/pagination";
 import { useToast } from "@/components/ui/toast";

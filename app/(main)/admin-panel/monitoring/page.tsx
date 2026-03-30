@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { SystemStats } from"@/components/admin/system-stats";
 import { Activity } from"lucide-react";
 

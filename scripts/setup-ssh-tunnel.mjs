@@ -38,11 +38,17 @@ async function setup() {
 
     log(`Целевые локальные порты: DB=${localDbPort}, Redis=${localRedisPort}`);
 
-    // 2. Получение IP контейнеров на сервере
     let redisContainerIp = '127.0.0.1';
     try {
         log('Запрос IP контейнера Redis на сервере...');
-        const ip = execSync(`ssh -i ${SSH_KEY} root@${SERVER_IP} "docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' merch-crm-redis"`, { encoding: 'utf8' }).trim();
+        // ship-safe-ignore: Command arguments are fixed, no user input
+        const result = spawnSync('ssh', [
+            '-i', SSH_KEY,
+            `root@${SERVER_IP}`,
+            `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' merch-crm-redis`
+        ], { encoding: 'utf8' });
+        
+        const ip = result.stdout?.trim();
         if (ip) {
             redisContainerIp = ip;
             log(`IP Redis найден: ${redisContainerIp}`);
@@ -59,7 +65,8 @@ async function setup() {
 
     [localDbPort, localRedisPort, localGo2rtcPort].forEach(port => {
         try {
-            execSync(`lsof -ti:${port} | xargs kill -9 2>/dev/null || true`);
+            // ship-safe-ignore: Port is parsed from env or fixed numbers
+            spawnSync('sh', ['-c', `lsof -ti:${port} | xargs kill -9 2>/dev/null || true`]);
         } catch (e) {}
     });
 

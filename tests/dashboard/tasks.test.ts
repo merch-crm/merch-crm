@@ -10,11 +10,11 @@ const hoisted = vi.hoisted(() => {
     const mockFindFirst = vi.fn();
     const mockSelect = vi.fn();
     const createGenericMock = () => ({
-        id: '11111111-1111-4111-8111-111111111111',
-        taskId: '11111111-1111-4111-8111-111111111111', // for checklists
+        id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
+        taskId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', // for checklists
         title: 'Mock Object',
-        createdBy: '11111111-1111-4111-8111-111111111111',
-        userId: '11111111-1111-4111-8111-111111111111',
+        createdBy: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
+        userId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         status: 'new',
         priority: 'normal',
         type: 'other',
@@ -159,7 +159,7 @@ describe('createTask', () => {
             priority: 'normal',
             type: 'other',
             deadline: new Date(),
-            assigneeIds: ['11111111-1111-4111-8111-111111111111'],
+            assigneeIds: ['4242XXXX-XXXX-4242-4242-XXXXXXXX4242'],
             watcherIds: []
         };
         const result = await createTask(taskInput as CreateTaskInput);
@@ -172,16 +172,16 @@ describe('addTaskComment', () => {
 
     it('возвращает ошибку при пустом комментарии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await addTaskComment('22222222-2222-4222-8222-222222222222', '');
+        const result = await addTaskComment('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', '');
         expect(result.success).toBe(false);
     });
 
     it('добавляет комментарий', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockTx.insert.mockReturnValue({
-            values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '99999999-9999-4999-8999-999999999999', content: 'Comment' }]) }),
+            values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', content: 'Comment' }]) }),
         });
-        const result = await addTaskComment('22222222-2222-4222-8222-222222222222', 'Test Comment');
+        const result = await addTaskComment('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'Test Comment');
         expect(result).toMatchObject({ success: true });
     });
 });
@@ -191,16 +191,16 @@ describe('addChecklistItem', () => {
 
     it('возвращает ошибку при пустом пункте', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await addChecklistItem('22222222-2222-4222-8222-222222222222', '');
+        const result = await addChecklistItem('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', '');
         expect(result.success).toBe(false);
     });
 
     it('добавляет пункт чеклиста', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockTx.insert.mockReturnValue({
-            values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '88888888-8888-4888-8888-888888888888', title: 'Item' }]) }),
+            values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([{ id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', title: 'Item' }]) }),
         });
-        const result = await addChecklistItem('22222222-2222-4222-8222-222222222222', 'Test Item');
+        const result = await addChecklistItem('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'Test Item');
         expect(result).toMatchObject({ success: true });
     });
 });
@@ -210,7 +210,7 @@ describe('toggleChecklistItem', () => {
 
     it('переключает статус пункта чеклиста', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await toggleChecklistItem('88888888-8888-4888-8888-888888888888', true);
+        const result = await toggleChecklistItem('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', true);
         expect(result).toMatchObject({ success: true });
     });
 });
@@ -226,7 +226,7 @@ describe('deleteChecklistItem', () => {
         // 2. find task to get creator
         mockFindFirst.mockResolvedValueOnce({ createdBy: 'u1' });
 
-        const result = await deleteChecklistItem('88888888-8888-4888-8888-888888888888');
+        const result = await deleteChecklistItem('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result).toMatchObject({ success: true });
     });
 });

@@ -103,7 +103,7 @@ const setupMocks = () => {
     mockTx.insert.mockReturnValue({ values: vi.fn().mockResolvedValue(undefined) });
     mockFindFirst.mockResolvedValue(createMockUser({ 
         id: 'user-id', 
-        role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } 
+        role: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', name: 'Администратор' } 
     }));
 };
 
@@ -189,7 +189,7 @@ describe('updatePassword', () => {
 
     it('обновляет пароль при верных данных', async () => {
         mockGetSession.mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }) as Session);
-        mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' } }));
+        mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', name: 'Администратор' } }));
         mockChangePassword.mockResolvedValueOnce({ 
             token: 'test-token', 
             user: createMockUser() as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>['user']

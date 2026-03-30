@@ -2,21 +2,21 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   getSystemStats,
-  getMonitoringStats,
-  getSecurityStats,
-  toggleMaintenanceMode,
   checkSystemHealth,
   createDatabaseBackup,
   getBackupsList,
   deleteBackupAction,
-
-
   clearRamAction,
   restartServerAction,
-  getCurrentUserAction,
+} from "@/app/(main)/admin-panel/actions/system.actions";
+import {
+  getMonitoringStats,
+  getSecurityStats,
+  toggleMaintenanceMode,
   clearSecurityErrors,
   clearFailedLogins,
-} from "@/app/(main)/admin-panel/actions";
+} from "@/app/(main)/admin-panel/actions/security.actions";
+import { getCurrentUserAction } from "@/app/(main)/admin-panel/actions/users.actions";
 import { AuditLogsTable } from "./audit-logs-table";
 import {
   Activity as ActivityIcon,

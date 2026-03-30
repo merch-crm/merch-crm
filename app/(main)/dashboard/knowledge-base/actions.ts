@@ -9,15 +9,15 @@ import { getSession } from "@/lib/session";
 import { revalidatePath } from"next/cache";
 import { ActionResult } from"@/lib/types";
 import { logAction } from"@/lib/audit";
-import { WikiFolderSchema, WikiPageSchema, WikiPageUpdateSchema } from"./validation";
+import { KBFolderSchema, KBPageSchema, KBPageUpdateSchema } from"./validation";
 import { logError } from"@/lib/error-logger";
 
 // --- Folders ---
 
-type WikiFolder = typeof wikiFolders.$inferSelect;
-export type WikiPage = typeof wikiPages.$inferSelect & { author: { name: string } | null };
+type KBFolder = typeof wikiFolders.$inferSelect;
+export type KBPage = typeof wikiPages.$inferSelect & { author: { name: string } | null };
 
-export async function getWikiFolders(): Promise<ActionResult<WikiFolder[]>> {
+export async function getKBFolders(): Promise<ActionResult<KBFolder[]>> {
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
 
@@ -31,19 +31,19 @@ export async function getWikiFolders(): Promise<ActionResult<WikiFolder[]>> {
         await logError({
             error,
             path:"/dashboard/knowledge-base",
-            method:"getWikiFolders"
+            method:"getKBFolders"
         });
         return { success: false, error:"Не удалось загрузить папки" };
     }
 }
 
-export async function createWikiFolder(name: string, parentId: string | null = null): Promise<ActionResult<WikiFolder>> {
+export async function createKBFolder(name: string, parentId: string | null = null): Promise<ActionResult<KBFolder>> {
     const session = await getSession();
     if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
         return { success: false, error:"Недостаточно прав" };
     }
 
-    const validation = WikiFolderSchema.safeParse({ name, parentId });
+    const validation = KBFolderSchema.safeParse({ name, parentId });
     if (!validation.success) {
         return { success: false, error: validation.error.issues[0].message };
     }
@@ -55,7 +55,7 @@ export async function createWikiFolder(name: string, parentId: string | null = n
                 parentId: validation.data.parentId || null,
             }).returning();
 
-            await logAction("Создана папка базы знаний","wiki_folder", folder.id, { name, parentId }, tx);
+            await logAction("Создана папка базы знаний (KB)","wiki_folder", folder.id, { name, parentId }, tx);
             return [folder];
         });
 
@@ -65,7 +65,7 @@ export async function createWikiFolder(name: string, parentId: string | null = n
         await logError({
             error,
             path:"/dashboard/knowledge-base",
-            method:"createWikiFolder",
+            method:"createKBFolder",
             details: { name, parentId }
         });
         return { success: false, error:"Не удалось создать папку" };
@@ -74,7 +74,7 @@ export async function createWikiFolder(name: string, parentId: string | null = n
 
 // --- Pages ---
 
-export async function getWikiPages(folderId?: string): Promise<ActionResult<WikiPage[]>> {
+export async function getKBPages(folderId?: string): Promise<ActionResult<KBPage[]>> {
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
 
@@ -95,14 +95,14 @@ export async function getWikiPages(folderId?: string): Promise<ActionResult<Wiki
         await logError({
             error,
             path:"/dashboard/knowledge-base",
-            method:"getWikiPages",
+            method:"getKBPages",
             details: { folderId }
         });
         return { success: false, error:"Не удалось загрузить статьи" };
     }
 }
 
-export async function getWikiPageDetail(id: string): Promise<ActionResult<WikiPage & { folder: WikiFolder | null }>> {
+export async function getKBPageDetail(id: string): Promise<ActionResult<KBPage & { folder: KBFolder | null }>> {
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
 
@@ -122,20 +122,20 @@ export async function getWikiPageDetail(id: string): Promise<ActionResult<WikiPa
         await logError({
             error,
             path:"/dashboard/knowledge-base",
-            method:"getWikiPageDetail",
+            method:"getKBPageDetail",
             details: { id }
         });
         return { success: false, error:"Не удалось загрузить статью" };
     }
 }
 
-export async function createWikiPage(data: { title: string, content: string, folderId: string | null }): Promise<ActionResult<typeof wikiPages.$inferSelect>> {
+export async function createKBPage(data: { title: string, content: string, folderId: string | null }): Promise<ActionResult<typeof wikiPages.$inferSelect>> {
     const session = await getSession();
     if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
         return { success: false, error:"Недостаточно прав" };
     }
 
-    const validation = WikiPageSchema.safeParse(data);
+    const validation = KBPageSchema.safeParse(data);
     if (!validation.success) {
         return { success: false, error: validation.error.issues[0].message };
     }
@@ -149,7 +149,7 @@ export async function createWikiPage(data: { title: string, content: string, fol
                 folderId: validation.data.folderId || null
             }).returning();
 
-            await logAction("Создана страница базы знаний","wiki_page", page.id, { title: data.title, folderId: data.folderId }, tx);
+            await logAction("Создана страница базы знаний (KB)","wiki_page", page.id, { title: data.title, folderId: data.folderId }, tx);
             return [page];
         });
 
@@ -159,20 +159,20 @@ export async function createWikiPage(data: { title: string, content: string, fol
         await logError({
             error,
             path:"/dashboard/knowledge-base",
-            method:"createWikiPage",
+            method:"createKBPage",
             details: data
         });
         return { success: false, error:"Не удалось создать статью" };
     }
 }
 
-export async function updateWikiPage(id: string, data: { title?: string, content?: string, folderId?: string | null }): Promise<ActionResult> {
+export async function updateKBPage(id: string, data: { title?: string, content?: string, folderId?: string | null }): Promise<ActionResult> {
     const session = await getSession();
     if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
         return { success: false, error:"Недостаточно прав" };
     }
 
-    const validation = WikiPageUpdateSchema.safeParse(data);
+    const validation = KBPageUpdateSchema.safeParse(data);
     if (!validation.success) {
         return { success: false, error: validation.error.issues[0].message };
     }
@@ -186,7 +186,7 @@ export async function updateWikiPage(id: string, data: { title?: string, content
                 })
                 .where(eq(wikiPages.id, id));
 
-            await logAction("Обновлена страница базы знаний","wiki_page", id, { changes: data }, tx);
+            await logAction("Обновлена страница базы знаний (KB)","wiki_page", id, { changes: data }, tx);
         });
 
         revalidatePath("/dashboard/knowledge-base");
@@ -197,14 +197,14 @@ export async function updateWikiPage(id: string, data: { title?: string, content
         await logError({
             error,
             path: `/dashboard/knowledge-base/${id}`,
-            method:"updateWikiPage",
+            method:"updateKBPage",
             details: { id, ...data }
         });
         return { success: false, error:"Не удалось обновить статью" };
     }
 }
 
-export async function deleteWikiPage(id: string): Promise<ActionResult> {
+export async function deleteKBPage(id: string): Promise<ActionResult> {
     const session = await getSession();
     if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
         return { success: false, error:"Недостаточно прав" };
@@ -215,7 +215,7 @@ export async function deleteWikiPage(id: string): Promise<ActionResult> {
     try {
         await db.transaction(async (tx) => {
             await tx.delete(wikiPages).where(eq(wikiPages.id, id));
-            await logAction("Удалена страница базы знаний","wiki_page", id, undefined, tx);
+            await logAction("Удалена страница базы знаний (KB)","wiki_page", id, undefined, tx);
         });
         revalidatePath("/dashboard/knowledge-base");
         return okVoid();
@@ -223,7 +223,7 @@ export async function deleteWikiPage(id: string): Promise<ActionResult> {
         await logError({
             error,
             path:"/dashboard/knowledge-base",
-            method:"deleteWikiPage",
+            method:"deleteKBPage",
             details: { id }
         });
         return { success: false, error:"Не удалось удалить статью" };

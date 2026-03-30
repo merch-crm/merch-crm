@@ -23,7 +23,7 @@ import { cn } from"@/lib/utils";
 import { Button } from"@/components/ui/button";
 import { Input } from"@/components/ui/input";
 import { updateNotificationSettingsAction } from"../actions/notifications.actions";
-import { NotificationSettings } from"../actions";;
+import type { NotificationSettings } from "../actions/notifications.actions";
 import { useToast } from"@/components/ui/toast";
 import { AdminPageHeader } from"@/components/admin/admin-page-header";
 import { playSound } from"@/lib/sounds";

@@ -8,6 +8,9 @@ import {
     ClipboardList,
     FolderHeart,
     Plus,
+    PenTool,
+    Sparkles,
+    Box,
 } from "lucide-react";
 
 const designNavItems = [
@@ -25,10 +28,28 @@ const designNavItems = [
         description: "Задачи на дизайн",
     },
     {
-        title: "Коллекции принтов",
+        title: "Принты",
         href: "/dashboard/design/prints",
         icon: FolderHeart,
         description: "Библиотека принтов для продукции",
+    },
+    {
+        title: "Редактор",
+        href: "/dashboard/design/editor",
+        icon: PenTool,
+        description: "Графический редактор макетов",
+    },
+    {
+        title: "AI Лаборатория",
+        href: "/dashboard/design/ai-lab",
+        icon: Sparkles,
+        description: "ИИ-инструменты для обработки",
+    },
+    {
+        title: "3D Мокапы",
+        href: "/dashboard/design/mockups",
+        icon: Box,
+        description: "3D визуализация продукции",
     },
 ];
 

@@ -23,10 +23,10 @@ export const handlers = [
         inn: '7700000000',
         kpp: '770001001',
         ogrn: '1000000000000',
-        bankAccount: '40702810000000000000',
+        bankAccount: '4242XXXXXXXX42420000',
         bankName: 'ТестБанк',
         bik: '044525000',
-        corrAccount: '30101810000000000000',
+        corrAccount: '4242XXXXXXXX42420000',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       }

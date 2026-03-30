@@ -46,7 +46,7 @@ export class GamificationService {
             // Здесь можно добавить триггер уведомления (Toast / Push)
             
             return newUserAchievement;
-        } catch (error) {
+        } catch (error: unknown) {
             console.error("Error awarding achievement:", error);
             return null;
         }

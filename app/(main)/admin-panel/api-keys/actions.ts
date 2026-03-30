@@ -9,6 +9,9 @@ import { getSession } from "@/lib/session";
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
+import { type InferSelectModel } from "drizzle-orm";
+
+export type ApiKey = InferSelectModel<typeof apiKeys>;
 
 const CreateApiKeySchema = z.object({
   name: z.string().min(1, "Название обязательно"),
@@ -18,10 +21,12 @@ const RevokeApiKeySchema = z.object({
   id: z.string().uuid(),
 });
 
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
+
 /**
  * Action to list all API keys for the current user.
  */
-export async function getApiKeysAction() {
+export async function getApiKeysAction(): Promise<ActionResult<ApiKey[]>> {
   const session = await getSession();
   if (!session) return { success: false, error: "Unauthorized" };
 
@@ -30,16 +35,16 @@ export async function getApiKeysAction() {
       where: eq(apiKeys.userId, session.id),
       orderBy: [desc(apiKeys.createdAt)],
     });
-    return { success: true, data: keys };
+    return ok(keys);
   } catch (_error) {
-    return { success: false, error: "Database error" };
+    return ERRORS.INTERNAL("Failed to fetch API keys");
   }
 }
 
 /**
  * Action to generate a new API key.
  */
-export const createApiKey = createSafeAction(CreateApiKeySchema, async ({ name }) => {
+export const createApiKey = createSafeAction(CreateApiKeySchema, async ({ name }): Promise<ActionResult<ApiKey>> => {
   const session = await getSession();
   if (!session) return { success: false, error: "Unauthorized" };
 

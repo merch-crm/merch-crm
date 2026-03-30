@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 const ThreeViewer = dynamic(() => import("@/components/mockups/3d-viewer"), { 
     ssr: false,
@@ -73,6 +73,31 @@ export default function MockupsPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const logoInputRef = useRef<HTMLInputElement>(null);
 
+    // Cleanup Blob URLs to prevent memory leaks
+    useEffect(() => {
+        const currentModelUrl = modelConfig.customModelUrl;
+        const currentLogoUrl = modelConfig.logo;
+        return () => {
+            if (currentModelUrl) URL.revokeObjectURL(currentModelUrl);
+            if (currentLogoUrl && currentLogoUrl.startsWith("blob:")) URL.revokeObjectURL(currentLogoUrl);
+        };
+    }, [modelConfig.customModelUrl, modelConfig.logo]);
+
+    // Cleanup previous Blob URL when a new one is created
+    const updateModelUrl = (url: string) => {
+        if (modelConfig.customModelUrl) URL.revokeObjectURL(modelConfig.customModelUrl);
+        setModelConfig(prev => ({
+            ...prev,
+            customModelUrl: url,
+            modelUrl: url
+        }));
+    };
+
+    const updateLogoUrl = (url: string) => {
+        if (modelConfig.logo && modelConfig.logo.startsWith("blob:")) URL.revokeObjectURL(modelConfig.logo);
+        setModelConfig(prev => ({ ...prev, logo: url }));
+    };
+
     const _resetTransform = () => {
         setModelConfig(prev => ({
             ...prev,
@@ -84,13 +109,9 @@ export default function MockupsPage() {
 
     const handleModelUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        if (file && file.name.endsWith(".glb")) {
+        if (file && (file.name.endsWith(".glb") || file.name.endsWith(".gltf"))) {
             const url = URL.createObjectURL(file);
-            setModelConfig(prev => ({
-                ...prev,
-                customModelUrl: url,
-                modelUrl: url
-            }));
+            updateModelUrl(url);
         }
     };
 
@@ -98,7 +119,7 @@ export default function MockupsPage() {
         const file = e.target.files?.[0];
         if (file) {
             const url = URL.createObjectURL(file);
-            setModelConfig(prev => ({ ...prev, logo: url }));
+            updateLogoUrl(url);
         }
     };
 
@@ -183,16 +204,18 @@ export default function MockupsPage() {
                                 <TabsContent key={cat} value={cat} className="mt-0">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-[160px] overflow-y-auto pr-1 minimal-scrollbar">
                                         {PRESET_MODELS.filter(m => m.category === cat).map((m) => (
-                                            <button 
-                                                type="button"
+                                            <div 
                                                 key={m.id}
+                                                role="button"
+                                                tabIndex={0}
                                                 className={cn(
-                                                    "group flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border text-left w-full",
+                                                    "group flex items-center justify-between p-2 rounded-xl transition-all cursor-pointer border text-left w-full outline-none focus-visible:ring-2 focus-visible:ring-indigo-500",
                                                     modelConfig.modelUrl === m.url && modelConfig.customModelUrl === null
                                                         ? "bg-indigo-50/80 border-indigo-200 shadow-sm" 
                                                         : "bg-transparent border-transparent hover:bg-slate-50 hover:border-slate-200"
                                                 )}
                                                 onClick={() => { setModelConfig(prev => ({ ...prev, customModelUrl: null, modelUrl: m.url })); }}
+                                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { setModelConfig(prev => ({ ...prev, customModelUrl: null, modelUrl: m.url })); } }}
                                             >
                                                 <div className="flex items-center gap-2.5 min-w-0">
                                                     <div className={cn(
@@ -214,7 +237,7 @@ export default function MockupsPage() {
                                                 >
                                                     <Download className="w-3 h-3" />
                                                 </Button>
-                                            </button>
+                                            </div>
                                         ))}
                                     </div>
                                 </TabsContent>
@@ -307,32 +330,36 @@ export default function MockupsPage() {
 
                         {/* Логотип Upload */}
                         {!modelConfig.logo ? (
-                            <button 
-                                type="button"
+                            <div 
+                                role="button"
+                                tabIndex={0}
                                 onClick={() => logoInputRef.current?.click()}
-                                className="group relative border-2 border-dashed border-slate-200/80 rounded-xl p-5 text-center bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer flex flex-col items-center justify-center min-h-[140px] w-full"
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { logoInputRef.current?.click(); } }}
+                                className="group relative border-2 border-dashed border-slate-200/80 rounded-xl p-5 text-center bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer flex flex-col items-center justify-center min-h-[140px] w-full outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                             >
                                 <div className="w-10 h-10 rounded-full bg-white shadow-sm border border-slate-100 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-indigo-50/50 group-hover:text-indigo-600 group-hover:border-indigo-100 transition-all">
                                     <Upload className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors" />
                                 </div>
                                 <p className="text-[12px] font-bold text-slate-700 mb-1" suppressHydrationWarning>Загрузить изображение</p>
-                                <p className="text-xs text-slate-400 max-w-[200px] leading-relaxed" suppressHydrationWarning>
+                                <div className="text-xs text-slate-400 max-w-[200px] leading-relaxed" suppressHydrationWarning>
                                     Перетащите файл (До 5МБ)
                                     <br/>
-                                    <button
-                                        type="button"
-                                        className="text-indigo-500 hover:underline cursor-pointer"
-                                        onClick={(e) => { e.stopPropagation(); setModelConfig(prev => ({ ...prev, logo: "/logo.png" })); }}
-                                    >Или нажми здесь для теста</button>
-                                </p>
-                            </button>
+                                    <span
+                                        role="button"
+                                        tabIndex={0}
+                                        className="text-indigo-500 hover:underline cursor-pointer inline-block mt-1"
+                                        onClick={(e) => { e.stopPropagation(); updateLogoUrl("/logo.png"); }}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); updateLogoUrl("/logo.png"); } }}
+                                    >Или нажми здесь для теста</span>
+                                </div>
+                            </div>
                         ) : (
                             <div className="relative group bg-slate-50/50 rounded-xl border border-slate-200/80 p-2 flex flex-col items-center justify-center min-h-[140px] overflow-hidden">
                                 <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:8px_8px] opacity-50" />
                                 <Image src={modelConfig.logo} alt="Принт" width={240} height={120} className="relative z-10 max-w-full max-h-[120px] object-contain drop-shadow-md transition-transform group-hover:scale-105" unoptimized onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/logo.png"; }} />
                                 
                                 <div className="absolute right-2 top-2 z-20 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                    <Button type="button" size="icon" variant="destructive" className="h-7 w-7 rounded-lg shadow-md" onClick={(e) => { e.stopPropagation(); setModelConfig(prev => ({ ...prev, logo: null })); }}>
+                                    <Button type="button" size="icon" variant="destructive" className="h-7 w-7 rounded-lg shadow-md" onClick={(e) => { e.stopPropagation(); updateLogoUrl(null as unknown as string); }}>
                                         <Trash2 className="w-3.5 h-3.5" />
                                     </Button>
                                     <Button type="button" size="icon" className="h-7 w-7 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-lg shadow-md" onClick={(e) => { e.stopPropagation(); logoInputRef.current?.click(); }}>

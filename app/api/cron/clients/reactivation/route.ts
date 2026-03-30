@@ -1,6 +1,8 @@
 import { ReactivationService } from "@/lib/services/clients/reactivation.service";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Ежедневная задача для реактивации клиентов.
  * Находит клиентов без заказов > 90 дней и создает задачи для менеджеров.

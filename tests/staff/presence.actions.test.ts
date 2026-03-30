@@ -60,9 +60,9 @@ describe('Presence Actions', () => {
 
     describe('recordPresenceEvent', () => {
         const validEvent = {
-            cameraId: '55555555-5555-4555-8555-000000000001',
+            cameraId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
             eventType: 'recognized',
-            userId: '55555555-5555-4555-8555-000000000002',
+            userId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
             confidence: 0.9,
             timestamp: new Date().toISOString()
         };

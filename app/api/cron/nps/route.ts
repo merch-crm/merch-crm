@@ -1,6 +1,8 @@
 import { NPSService } from "@/lib/services/nps.service";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 /**
  * Ежедневная задача для обработки NPS запросов.
  * Находит доставленные заказы (> 3 дней назад) и создает/отправляет запросы NPS.

@@ -103,7 +103,7 @@ describe('Employees Actions', () => {
 
     describe('addEmployeeFace', () => {
         const validParams = {
-            userId: '55555555-5555-4555-8555-000000000001',
+            userId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
             photoUrl: 'http://example.com/photo.jpg',
             faceEncoding: Array(128).fill(0.5)
         };
@@ -134,7 +134,7 @@ describe('Employees Actions', () => {
             vi.mocked(getSession).mockResolvedValue(validSession as Session);
             vi.mocked(checkIsAdmin).mockResolvedValue(true);
 
-            const result = await deleteEmployeeFace('55555555-5555-4555-8555-000000000001');
+            const result = await deleteEmployeeFace('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
 
             expect(result.success).toBe(true);
             expect(mockDb.update).toHaveBeenCalled();
@@ -144,8 +144,8 @@ describe('Employees Actions', () => {
 
     describe('setPrimaryFace', () => {
         it('should un-primary other faces and set selected to primary', async () => {
-            const faceId = '55555555-5555-4555-8555-000000000001';
-            const userId = '55555555-5555-4555-8555-000000000002';
+            const faceId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
+            const userId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
 
             const result = await setPrimaryFace(faceId, userId);
 

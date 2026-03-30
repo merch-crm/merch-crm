@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Package, Clock, CheckCircle2, AlertCircle, LucideIcon, Maximize } from "lucide-react";
+import { ProductionTimer } from "./components/production-timer";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { updateProductionStageAction } from "./actions";
@@ -165,6 +166,11 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                                     </span>
                                                 </div>
                                                 
+                                                <ProductionTimer 
+                                                    orderItemId={item.id} 
+                                                    stage={stage.id} 
+                                                />
+
                                                 <div className={cn(
                                                     "text-xs font-bold px-2 py-1 rounded-lg border",
                                                     currentStatus === 'in_progress' ? "bg-amber-50 text-amber-600 border-amber-100" : "bg-slate-50 text-slate-400 border-slate-100"

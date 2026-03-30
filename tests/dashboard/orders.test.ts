@@ -225,7 +225,7 @@ describe('createOrder', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await createOrder(createFormData({ clientId: '33333333-3333-4333-8333-333333333333' }));
+        const result = await createOrder(createFormData({ clientId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242' }));
         expect(result).toEqual({ success: false, error: 'Не авторизован', code: 'UNAUTHORIZED' });
     });
 
@@ -271,7 +271,7 @@ describe('createOrder', () => {
         }]);
 
         const result = await createOrder(createFormData({
-            clientId: '33333333-3333-4333-8333-333333333333',
+            clientId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
             priority: 'normal',
             isUrgent: 'false',
             advanceAmount: '0',
@@ -291,13 +291,13 @@ describe('updateOrderStatus', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'new');
+        const result = await updateOrderStatus('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'new');
         expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('возвращает ошибку при невалидном статусе', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'invalid-status' as unknown as never);
+        const result = await updateOrderStatus('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'invalid-status' as unknown as never);
         expect(result.success).toBe(false);
     });
 
@@ -306,7 +306,7 @@ describe('updateOrderStatus', () => {
         const mockOrder = { ...createMockOrder({ status: 'new' }), items: [] };
         mockTx.query.orders.findFirst = vi.fn().mockResolvedValue(mockOrder);
 
-        const result = await updateOrderStatus('44444444-4444-4444-8444-444444444444', 'design');
+        const result = await updateOrderStatus('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'design');
         expect(result).toEqual({ success: true, data: undefined });
     });
 });
@@ -316,19 +316,19 @@ describe('updateOrderPriority', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'high');
+        const result = await updateOrderPriority('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'high');
         expect(result).toEqual({ success: false, error: "Не авторизован", code: "UNAUTHORIZED" });
     });
 
     it('возвращает ошибку при невалидном приоритете', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'invalid-priority' as unknown as never);
+        const result = await updateOrderPriority('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'invalid-priority' as unknown as never);
         expect(result.success).toBe(false);
     });
 
     it('обновляет приоритет заказа', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
-        const result = await updateOrderPriority('44444444-4444-4444-8444-444444444444', 'high');
+        const result = await updateOrderPriority('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'high');
         expect(result).toEqual({ success: true, data: undefined });
     });
 });
@@ -338,7 +338,7 @@ describe('archiveOrder', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await archiveOrder('44444444-4444-4444-8444-444444444444');
+        const result = await archiveOrder('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result).toEqual({ success: false, error: 'Не авторизован', code: 'UNAUTHORIZED' });
     });
 
@@ -352,7 +352,7 @@ describe('archiveOrder', () => {
             department: { id: 'd-dept', name: 'Дизайн' }
         });
 
-        const result = await archiveOrder('44444444-4444-4444-8444-444444444444');
+        const result = await archiveOrder('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result).toEqual({ success: false, error: 'Недостаточно прав', code: 'FORBIDDEN' });
     });
 
@@ -360,7 +360,7 @@ describe('archiveOrder', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' }, department: null }));
 
-        const result = await archiveOrder('44444444-4444-4444-8444-444444444444');
+        const result = await archiveOrder('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
         expect(result).toEqual({ success: true, data: undefined });
     });
 });
@@ -370,7 +370,7 @@ describe('bulkDeleteOrders', () => {
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await bulkDeleteOrders(['44444444-4444-4444-8444-444444444444']);
+        const result = await bulkDeleteOrders(['4242XXXX-XXXX-4242-4242-XXXXXXXX4242']);
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
@@ -380,17 +380,17 @@ describe('bulkDeleteOrders', () => {
             id: 'id', role: { name: 'Дизайнер' }, department: { name: 'Дизайн' } 
         });
 
-        const result = await bulkDeleteOrders(['44444444-4444-4444-8444-444444444444']);
+        const result = await bulkDeleteOrders(['4242XXXX-XXXX-4242-4242-XXXXXXXX4242']);
         expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('удаляет заказы массово для администратора', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
         mockFindFirst.mockResolvedValueOnce(createMockUser({ role: { name: 'Администратор' }, department: null }));
-        mockTx.query.orders.findMany = vi.fn().mockResolvedValue([{ id: '44444444-4444-4444-8444-444444444444', status: 'new' }]);
+        mockTx.query.orders.findMany = vi.fn().mockResolvedValue([{ id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', status: 'new' }]);
         mockTx.query.orderItems = { findMany: vi.fn().mockResolvedValue([]), findFirst: vi.fn() };
 
-        const result = await bulkDeleteOrders(['44444444-4444-4444-8444-444444444444', '44444444-4444-4444-8444-444444444445']);
+        const result = await bulkDeleteOrders(['4242XXXX-XXXX-4242-4242-XXXXXXXX4242', '4242XXXX-XXXX-4242-4242-XXXXXXXX4242']);
         expect(result).toEqual({ success: true, data: undefined });
     });
 });

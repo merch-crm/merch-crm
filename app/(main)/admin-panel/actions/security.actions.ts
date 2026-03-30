@@ -15,6 +15,10 @@ import { z } from "zod";
 type AuditLog = InferSelectModel<typeof auditLogs>;
 type SecurityEvent = InferSelectModel<typeof securityEvents>;
 type SystemError = InferSelectModel<typeof systemErrors>;
+type UserSub = { id: string; name: string; email: string; avatar?: string | null };
+
+export type AuditLogWithUser = AuditLog & { user?: UserSub | null };
+export type SecurityEventWithUser = SecurityEvent & { user?: UserSub | null };
 
 
 // Audit Logs
@@ -27,7 +31,7 @@ export async function getAuditLogs(
     startDate?: string | null,
     endDate?: string | null
 ): Promise<ActionResult<{
-    logs: AuditLog[];
+    logs: AuditLogWithUser[];
     pagination: { total: number; page: number; limit: number; totalPages: number };
 }>> {
     return withAuth(async () => {
@@ -57,7 +61,7 @@ export async function getAuditLogs(
         });
 
         return ok({
-            logs: logs as unknown as AuditLog[],
+            logs: logs as unknown as AuditLogWithUser[],
             pagination: { total, page, limit, totalPages: Math.ceil(total / limit) }
         });
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getAuditLogs" });
@@ -241,7 +245,7 @@ export async function getSecurityEvents(
     startDate?: Date | null,
     endDate?: Date | null
 ): Promise<ActionResult<{
-    events: SecurityEvent[];
+    events: SecurityEventWithUser[];
     pagination: { page: number; limit: number; total: number; totalPages: number };
 }>> {
     return withAuth(async () => {
@@ -272,7 +276,7 @@ export async function getSecurityEvents(
         });
 
         return ok({
-            events: events as unknown as SecurityEvent[],
+            events: events as unknown as SecurityEventWithUser[],
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) }
         });
     }, { roles: ROLE_GROUPS.ADMINS, errorPath: "getSecurityEvents" });

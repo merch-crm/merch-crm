@@ -3,6 +3,8 @@ import { db } from "@/lib/db";
 import { systemSettings } from "@/lib/schema";
 import { performDatabaseBackup } from "@/lib/backup";
 
+export const dynamic = "force-dynamic";
+
 
 export async function GET(request: NextRequest) {
     try {

@@ -1,15 +1,12 @@
 import { jsPDF } from 'jspdf';
 import { BrandingSettings } from '@/lib/types/branding';
-import { robotoBase64 } from './fonts/roboto-base64';
-
 /**
  * Регистрирует шрифты в документе
  */
 export function registerFonts(doc: jsPDF): void {
-  // Используем доступный шрифт для обоих начертаний для надежности
-  doc.addFileToVFS('Roboto-Regular.ttf', robotoBase64);
-  doc.addFont('Roboto-Regular.ttf', 'Roboto-Regular', 'normal');
-  doc.setFont('Roboto-Regular');
+  // Use standard fonts to avoid async loading issues in synchronous methods
+  // If Cyrillic is needed, an async font loading step should be added before generating.
+  doc.setFont('helvetica');
 }
 
 /**
@@ -29,7 +26,7 @@ export function drawHeader(
 
   // Текст
   doc.setTextColor(255, 255, 255);
-  doc.setFont('Roboto-Regular', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(24);
   doc.text(settings.companyName || 'MerchCRM', 20, 25);
 
@@ -51,7 +48,7 @@ export function drawFooter(doc: jsPDF, settings: BrandingSettings): void {
   doc.setDrawColor(230, 230, 230);
   doc.line(20, pageHeight - 20, 190, pageHeight - 20);
   
-  doc.setFont('Roboto-Regular', 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
   

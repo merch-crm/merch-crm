@@ -10,17 +10,17 @@ import { Task } from '@/app/(main)/dashboard/tasks/types';
 
 export function mockSession(overrides: Partial<Session> = {}): Session {
     return {
-        id: '11111111-1111-4111-8111-111111111111',
+        id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         sessionId: 'session-uuid-1234',
         email: 'admin@test.com',
         name: 'Test Admin',
-        roleId: '55555555-5555-4555-8555-555555555555',
+        roleId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         roleName: 'Администратор',
         departmentName: 'Руководство',
         expires: new Date(Date.now() + 86400000),
         ua: 'Mozilla/5.0',
-        betterAuthUser: { id: '11111111-1111-4111-8111-111111111111', email: 'admin@test.com', name: 'Test Admin' },
-        betterAuthSession: { id: 'session-uuid-1234', userId: '11111111-1111-4111-8111-111111111111', expiresAt: new Date(Date.now() + 86400000) },
+        betterAuthUser: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', email: 'admin@test.com', name: 'Test Admin' },
+        betterAuthSession: { id: 'session-uuid-1234', userId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', expiresAt: new Date(Date.now() + 86400000) },
         ...overrides,
     } as unknown as Session;
 }
@@ -90,13 +90,13 @@ export function createDbMock(queryResults: Record<string, unknown> = {}) {
 
 export function createMockTask(overrides: Partial<Task> = {}): Task {
     return {
-        id: '22222222-2222-4222-8222-222222222222',
+        id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         title: 'Test Task',
         description: 'Test description',
         status: 'new',
         priority: 'normal',
         type: 'other',
-        createdBy: '11111111-1111-4111-8111-111111111111',
+        createdBy: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         assignedToUserId: null,
         assignedToRoleId: null,
         assignedToDepartmentId: null,
@@ -146,7 +146,7 @@ export function createMockOrder(overrides: Record<string, unknown> = {}) {
         discountAmount: '0',
         cancelReason: null,
         isArchived: false,
-        createdBy: '11111111-1111-4111-8111-111111111111',
+        createdBy: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         deadline: null,
         promocodeId: null,
         category: null,
@@ -158,11 +158,11 @@ export function createMockOrder(overrides: Record<string, unknown> = {}) {
 
 export function createMockUser(overrides: Record<string, unknown> = {}) {
     return {
-        id: '11111111-1111-4111-8111-111111111111',
+        id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         name: 'Test Admin',
         email: 'admin@test.com',
         emailVerified: true,
-        roleId: '55555555-5555-4555-8555-555555555555',
+        roleId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         departmentId: null,
         isSystem: false,
         avatar: null,
@@ -173,7 +173,7 @@ export function createMockUser(overrides: Record<string, unknown> = {}) {
         birthday: null,
         createdAt: new Date('2026-01-01'),
         updatedAt: new Date('2026-01-01'),
-        role: { id: '55555555-5555-4555-8555-555555555555', name: 'Администратор' },
+        role: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', name: 'Администратор' },
         department: null,
         ...overrides,
     };
@@ -186,7 +186,7 @@ export function createMockExpense(overrides: Record<string, unknown> = {}) {
         amount: '1000',
         description: 'Test expense',
         date: '2026-01-01',
-        createdBy: '11111111-1111-4111-8111-111111111111',
+        createdBy: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
         createdAt: new Date('2026-01-01'),
         ...overrides,
     };

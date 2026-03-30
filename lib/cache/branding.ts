@@ -1,5 +1,5 @@
 import { redisCache, CACHE_TTL, CACHE_KEYS } from "./redis-cache";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 
 /**
  * Настройки брендинга с Redis-кешем

@@ -1,0 +1,106 @@
+
+════════════════════════════════════════════════════════════
+  Ship Safe — Full Security Audit
+════════════════════════════════════════════════════════════
+
+
+  ════════════════════════════════════════════════════════
+  Security Score: 12.8/100 F — Not safe to ship
+  ════════════════════════════════════════════════════════
+
+  Category Breakdown
+  ────────────────────────────────────────────────────────
+  ✘  Secrets                33 issue(s)               -15 pts
+  ✘  Code Vulnerabilities   39 issue(s)               -15 pts
+  ✘  Dependencies           1 issue(s)                -5 pts
+  ✘  Auth & Access Control  51 issue(s)               -15 pts
+  ✘  Configuration          98 issue(s)               -8 pts
+  ✘  Supply Chain           2 issue(s)                -7.2 pts
+  ✘  API Security           36 issue(s)               -10 pts
+  ✘  AI/LLM Security        39 issue(s)               -12 pts
+
+  Files scanned: 2325 | Findings: 298 | CVEs: 1
+
+  ════════════════════════════════════════════════════════
+  Remediation Plan
+  ════════════════════════════════════════════════════════
+
+  🔴 CRITICAL — fix immediately
+  ────────────────────────────────────────────────────────
+   1. [CODE VULNERABILITIES] Command Injection via exec() Template
+      scripts/setup-ssh-tunnel.mjs:45 → Use execFile(cmd, [arg1, arg2]) instead of exec(`cmd ${arg}`)
+   2. [CODE VULNERABILITIES] Command Injection via exec() Template
+      scripts/setup-ssh-tunnel.mjs:62 → Use execFile(cmd, [arg1, arg2]) instead of exec(`cmd ${arg}`)
+   3. [CODE VULNERABILITIES] SQL Injection via Template Literal
+      test-utils/db.ts:35 → Use parameterized queries: db.query("SELECT * FROM users WHERE id = $1
+   4. [CODE VULNERABILITIES] Raw SQL Query (Prisma/Sequelize/Knex)
+      test-utils/db.ts:35 → Prisma: use $queryRaw`...${Prisma.sql}...`; Sequelize: use bind parame
+   5. [CODE VULNERABILITIES] SQL Injection via Template Literal
+      tmp/fix-ux.js:28 → Use parameterized queries: db.query("SELECT * FROM users WHERE id = $1
+   6. [CODE VULNERABILITIES] SQL Injection via Template Literal
+      app/(main)/admin-panel/actions/system.actions.ts:67 → Use parameterized queries: db.query("SELECT * FROM users WHERE id = $1
+   7. [CODE VULNERABILITIES] SQL Injection via Template Literal
+      app/(main)/dashboard/orders/components/order-card.tsx:51 → Use parameterized queries: db.query("SELECT * FROM users WHERE id = $1
+   8. [CODE VULNERABILITIES] SQL Injection via Template Literal
+      app/(main)/dashboard/orders/components/order-table-row.tsx:56 → Use parameterized queries: db.query("SELECT * FROM users WHERE id = $1
+   9. [AUTH & ACCESS CONTROL] Weak Password Hashing (MD5/SHA)
+      app/(staff)/staff/cameras/cameras.actions.ts:160 → Use bcrypt.hash(password, 12) or argon2.hash(password)
+  10. [SSRF] SSRF: User Input in fetch()
+      lib/editor/core/managers/ExportManager.ts:61 → Validate URL against allowlist: new URL(input).hostname must match all
+  11. [AI/LLM SECURITY] LLM Has Database Write Access
+      lib/action-helpers.ts:175 → Give LLM read-only database access. Require human approval for writes.
+  12. [AI/LLM SECURITY] LLM Has Database Write Access
+      lib/production.ts:43 → Give LLM read-only database access. Require human approval for writes.
+  13. [AI/LLM SECURITY] LLM Output in Shell Command
+      scripts/audit.ts:183 → Never pass LLM output to shell. Use a strict allowlist of allowed comm
+  14. [AI/LLM SECURITY] LLM Has Database Write Access
+      app/(main)/admin-panel/actions/system.actions.ts:137 → Give LLM read-only database access. Require human approval for writes.
+  15. [HISTORY] Historical Secret: Upstash Redis REST Token
+      public/fonts/Manrope-Medium.ttf:0 → Rotate this credential immediately, then clean history: npx bfg --repl
+  16. [API SECURITY] API: Path Traversal in File Upload
+      lib/avatar-storage.ts:17 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  17. [API SECURITY] API: Path Traversal in File Upload
+      lib/avatar-storage.ts:63 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  18. [API SECURITY] API: Path Traversal in File Upload
+      lib/actions/branding.ts:185 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  19. [API SECURITY] API: Path Traversal in File Upload
+      app/(main)/dashboard/warehouse/actions-utils.ts:237 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  20. [API SECURITY] API: Path Traversal in File Upload
+      app/api/uploads/design-files/route.ts:53 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  21. [API SECURITY] API: Path Traversal in File Upload
+      app/uploads/avatars/[filename]/route.ts:23 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  22. [API SECURITY] API: Path Traversal in File Upload
+      app/api/storage/avatars/[filename]/route.ts:26 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  23. [API SECURITY] API: Path Traversal in File Upload
+      app/(main)/dashboard/design/prints/actions/file-actions.ts:114 → Generate random filename: crypto.randomUUID() + path.extname(file.orig
+  24. [CODE VULNERABILITIES] Vibe Code: String Concatenation in SQL
+      test-utils/db.ts:35 → Use parameterized queries: db.query("SELECT * FROM users WHERE id = $1
+
+  🟠 HIGH — fix before deploy
+  ────────────────────────────────────────────────────────
+  25. [SECRETS] Upstash Redis REST Token
+      public/design-variant-1.html:101 → Move to environment variable or secrets manager
+  26. [SECRETS] Upstash Redis REST Token
+      public/design-variant-1.html:110 → Move to environment variable or secrets manager
+  27. [SECRETS] Upstash Redis REST Token
+      public/design-variant-1.html:113 → Move to environment variable or secrets manager
+  28. [SECRETS] Upstash Redis REST Token
+      public/design-variant-1.html:116 → Move to environment variable or secrets manager
+  29. [SECRETS] Upstash Redis REST Token
+      public/design-variant-4.html:120 → Move to environment variable or secrets manager
+  30. [SECRETS] Upstash Redis REST Token
+      public/design-variant-4.html:260 → Move to environment variable or secrets manager
+
+  ... and 78 more items in the full report
+
+  Attack Surface:
+    Frameworks:  nextjs
+    Databases:   drizzle, mongodb, postgres
+    Auth:        middleware.ts, lib/auth.ts, components/auth/permission-shield.tsx, e2e/auth/auth.spec.ts, e2e/auth/debug-login.spec.ts, lib/api/auth.ts, lib/auth/csrf.ts, lib/auth/session.ts, app/api/auth/[...all]/route.ts, app/(main)/dashboard/docs/sections/auth.ts, app/api/presence/xiaomi/auth/route.ts, jwt
+    API Routes:  88 discovered
+
+  Full report: ship-safe-report.html
+  Dashboard:   https://shipsafecli.com/app
+
+════════════════════════════════════════════════════════════
+

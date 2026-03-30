@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useToast } from "@/components/ui/toast";
-import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction, getS3FileUrlAction } from "@/app/(main)/admin-panel/actions";
+import { getStorageDetails, deleteS3FileAction, createS3FolderAction, renameS3FileAction, deleteMultipleS3FilesAction, getS3FileUrlAction } from "@/app/(main)/admin-panel/actions/storage.actions";
 
 import { StorageFile, StorageData } from "../types";
 

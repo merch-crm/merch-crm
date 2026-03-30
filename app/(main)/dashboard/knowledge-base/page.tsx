@@ -1,15 +1,15 @@
 import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
-import { getWikiFolders, getWikiPages } from"./actions";
-import { WikiClient } from"./wiki-client";
+import { getKBFolders, getKBPages } from"./actions";
+import { KBClient } from"./kb-client";
 import { PageHeader } from"@/components/layout/page-header";
 
 export default async function KnowledgeBasePage() {
     const session = await getSession();
     if (!session) redirect("/login");
 
-    const foldersRes = await getWikiFolders();
-    const pagesRes = await getWikiPages();
+    const foldersRes = await getKBFolders();
+    const pagesRes = await getKBPages();
 
     const folders = foldersRes.success ? foldersRes.data || [] : [];
     const pages = pagesRes.success ? pagesRes.data || [] : [];
@@ -22,7 +22,7 @@ export default async function KnowledgeBasePage() {
                 className="px-1"
             />
 
-            <WikiClient
+            <KBClient
                 initialFolders={folders}
                 initialPages={pages}
                 userRole={session.roleName ||"Пользователь"}

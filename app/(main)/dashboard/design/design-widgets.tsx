@@ -1,7 +1,6 @@
 "use client";
 
-import { Palette, Clock, CheckCircle2, Sparkles } from"lucide-react";
-import { ModernStatCard } from"@/components/ui/stat-card";
+import { Palette, Clock, TrendingUp } from "lucide-react";
 
 interface DesignStatsProps {
     stats: {
@@ -14,69 +13,49 @@ interface DesignStatsProps {
 
 export function DesignWidgets({ stats }: DesignStatsProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 mb-8">
-            {/* Main Stats: New Design Tasks - Span 6 */}
-            <div className="crm-card col-span-12 md:col-span-6 lg:col-span-6 !bg-[#a855f7] text-white flex flex-col justify-between relative group !shadow-2xl !shadow-[#a855f7]/30 !border-[#a855f7]">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-20 -mt-20 blur-3xl opacity-50 group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
-
-                <div className="flex items-start justify-between relative z-10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-14 h-14 rounded-[var(--radius)] bg-white/10 flex items-center justify-center text-white backdrop-blur-sm border border-white/10 shadow-inner">
-                            <Palette className="w-7 h-7" />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-white leading-tight">Дизайн-студия</h3>
-                            <p className="text-sm font-medium text-white/70 mt-1">
-                                Новые задачи на макетирование
-                            </p>
-                        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            {/* Hero Metric — 2 cols */}
+            <div className="md:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+                <div className="flex items-center gap-2.5 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shrink-0">
+                        <Palette className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Задачи в работе</p>
                 </div>
-
-                <div className="relative z-10 mt-8">
-                    <div className="flex items-baseline gap-3">
-                        <span className="text-7xl font-bold">
-                            {stats.newTasks}
-                        </span>
-                        <span className="text-xl font-bold text-white/60">задач</span>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-4">
-                        <div className="px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold flex items-center gap-1.5 backdrop-blur-md">
-                            <Sparkles className="w-3.5 h-3.5" />
-                            <span>Креативный процесс</span>
-                        </div>
-                    </div>
+                <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-[52px] font-black text-slate-900 tracking-tight leading-none tabular-nums">{stats.newTasks}</span>
+                    <span className="text-[13px] font-semibold text-slate-400 mb-1">активных</span>
                 </div>
+                <p className="text-[12px] text-slate-400 mt-2">Дизайн-студия · Текущая очередь</p>
             </div>
 
-            {/* Right Column Grid - Span 6 */}
-            <div className="col-span-12 md:col-span-6 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Pending Approval */}
-                <ModernStatCard
-                    icon={Clock}
-                    value={stats.pendingApproval}
-                    label="На утверждении"
-                    colorScheme="amber"
-                    className="col-span-1 sm:col-span-2"
-                />
+            {/* Na utverzhdenii */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+                <div className="flex items-center gap-2.5 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
+                        <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
+                    </div>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">На утверждении</p>
+                </div>
+                <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-[52px] font-black text-amber-500 tracking-tight leading-none tabular-nums">{stats.pendingApproval}</span>
+                </div>
+                <p className="text-[12px] text-slate-400 mt-2">Ожидают ответа клиента</p>
+            </div>
 
-                <ModernStatCard
-                    icon={CheckCircle2}
-                    value={stats.completed}
-                    label="Готово"
-                    subLabel="Согласовано макетов"
-                    colorScheme="emerald"
-                />
-
-                <ModernStatCard
-                    icon={Sparkles}
-                    value={stats.efficiency}
-                    suffix="%"
-                    label="Качество"
-                    subLabel="Принято с первого раза"
-                    colorScheme="purple"
-                />
+            {/* Effektivnost */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col">
+                <div className="flex items-center gap-2.5 mb-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                        <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
+                    </div>
+                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Эффективность</p>
+                </div>
+                <div className="flex items-baseline gap-1 mt-1">
+                    <span className="text-[52px] font-black text-emerald-500 tracking-tight leading-none tabular-nums">{stats.efficiency}</span>
+                    <span className="text-[22px] font-bold text-emerald-400 mb-1">%</span>
+                </div>
+                <p className="text-[12px] text-slate-400 mt-2">Принято с первого раза</p>
             </div>
         </div>
     );

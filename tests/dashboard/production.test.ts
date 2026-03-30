@@ -82,8 +82,8 @@ describe('updateProductionStageAction', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockTx.query.orderItems.findFirst = vi.fn().mockResolvedValue({
             id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-            orderId: '44444444-4444-4444-8444-444444444444',
-            order: { id: '44444444-4444-4444-8444-444444444444', orderNumber: 'ORD-26-1000' },
+            orderId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
+            order: { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', orderNumber: 'ORD-26-1000' },
         });
         const result = await updateProductionStageAction('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'print', 'done');
         expect(result).toEqual({ success: true });

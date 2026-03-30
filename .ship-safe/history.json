@@ -1,0 +1,90 @@
+[
+  {
+    "timestamp": "2026-03-30T17:41:40.394Z",
+    "score": 12.8,
+    "grade": "F",
+    "totalFindings": 283,
+    "totalDepVulns": 1,
+    "categoryScores": {
+      "secrets": {
+        "deduction": 15,
+        "counts": {
+          "critical": 1,
+          "high": 5,
+          "medium": 15,
+          "low": 1
+        }
+      },
+      "injection": {
+        "deduction": 15,
+        "counts": {
+          "critical": 5,
+          "high": 9,
+          "medium": 20,
+          "low": 0
+        }
+      },
+      "deps": {
+        "deduction": 5,
+        "counts": {
+          "critical": 0,
+          "high": 0,
+          "medium": 0,
+          "low": 0,
+          "moderate": 1
+        }
+      },
+      "auth": {
+        "deduction": 15,
+        "counts": {
+          "critical": 1,
+          "high": 3,
+          "medium": 47,
+          "low": 0
+        }
+      },
+      "config": {
+        "deduction": 8,
+        "counts": {
+          "critical": 46,
+          "high": 28,
+          "medium": 25,
+          "low": 0
+        }
+      },
+      "supply-chain": {
+        "deduction": 7.199999999999999,
+        "counts": {
+          "critical": 0,
+          "high": 2,
+          "medium": 0,
+          "low": 0
+        }
+      },
+      "api": {
+        "deduction": 10,
+        "counts": {
+          "critical": 8,
+          "high": 28,
+          "medium": 0,
+          "low": 0
+        }
+      },
+      "llm": {
+        "deduction": 12,
+        "counts": {
+          "critical": 5,
+          "high": 20,
+          "medium": 14,
+          "low": 0
+        }
+      }
+    },
+    "suppressions": {
+      "total": 8,
+      "rules": {
+        "_unspecified": 8
+      }
+    }
+  }
+]

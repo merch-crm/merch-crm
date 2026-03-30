@@ -15,7 +15,7 @@ export default async function RFMPage() {
         revalidatePath("/dashboard/analytics/rfm");
     }
 
-    const totalClients = stats.reduce((sum, s) => sum + s.count, 0);
+    const totalClients = stats.reduce((sum: number, s: { count: number }) => sum + s.count, 0);
 
     return (
         <div className="space-y-3">
@@ -46,7 +46,7 @@ export default async function RFMPage() {
                             </thead>
                             <tbody className="divide-y divide-slate-50">
                                 {stats.length > 0 ? (
-                                    stats.map((row) => (
+                                    stats.map((row: { segment: string; count: number; averageCheck: number; totalAmount: number }) => (
                                         <tr key={row.segment} className="hover:bg-slate-50 transition-colors">
                                             <td className="px-6 py-4">
                                                 <RFMSegmentBadge segment={row.segment} size="md" />

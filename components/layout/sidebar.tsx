@@ -12,8 +12,11 @@ import {
     BookOpen,
     Package,
     Layers,
-    Image as ImageIcon,
+    ImageIcon,
     FileText,
+    PenTool,
+    Sparkles,
+    Box,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +42,11 @@ const navigation = [
         departments: ["Руководство", "Дизайн"],
         children: [
             { name: "Студия", href: "/dashboard/design" },
+            { name: "Очередь", href: "/dashboard/design/queue", icon: CheckSquare },
             { name: "Принты", href: "/dashboard/design/prints", icon: ImageIcon },
+            { name: "Редактор", href: "/dashboard/design/editor", icon: PenTool },
+            { name: "AI Лаборатория", href: "/dashboard/design/ai-lab", icon: Sparkles },
+            { name: "3D Мокапы", href: "/dashboard/design/mockups", icon: Box },
         ],
     },
     {

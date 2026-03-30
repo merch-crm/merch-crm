@@ -66,7 +66,7 @@ export async function GET(request: Request) {
             count: result.length,
             data: result
         });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error("API Error [GET /orders]:", error);
         return NextResponse.json(
             { success: false, error: "Internal Server Error" },

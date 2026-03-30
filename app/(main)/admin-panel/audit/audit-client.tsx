@@ -124,7 +124,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
         if (!details) return <p className="text-slate-400 italic">Нет деталей</p>;
         
         // Check if it's a diff object
-        const isDiff = typeof details === "object" && details !== null && Object.values(details).some((v: unknown) => v && typeof v === 'object' && ('old' in v || 'new' in v));
+        const isDiff = typeof details === "object" && details !== null && Object.values(details as Record<string, unknown>).some((v: unknown) => v && typeof v === 'object' && ('old' in v || 'new' in v));
 
         if (!isDiff) {
             return (

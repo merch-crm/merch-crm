@@ -50,7 +50,7 @@ export function useItemDetailController(
             try {
                 const parsed = JSON.parse(draft);
                 setPendingDraft(parsed);
-                setDialogs(prev => ({ ...prev, draftConfirm: true }));
+                setDialogs((prev: DialogState) => ({ ...prev, draftConfirm: true }));
             } catch (e) {
                 console.error("Failed to parse draft", e);
             }
@@ -123,7 +123,7 @@ export function useItemDetailController(
 
     const handleScan = useCallback(async (decodedText: string) => {
         if (isEditing) {
-            setEditData(prev => ({ ...prev, sku: decodedText }));
+            setEditData((prev: InventoryItem) => ({ ...prev, sku: decodedText }));
             toast(`SKU обновлен: ${decodedText}`, "success");
             playSound("scan_success");
             setDialogs(prev => ({ ...prev, scanner: false }));
@@ -132,7 +132,7 @@ export function useItemDetailController(
                 toast("Товар подтвержден (SKU совпадает)", "success");
                 playSound("scan_success");
                 if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-                setDialogs(prev => ({ ...prev, scanner: false }));
+                setDialogs((prev: DialogState) => ({ ...prev, scanner: false }));
             } else {
                 toast(`Поиск SKU: ${decodedText}...`, "info");
                 const foundId = await findItemBySKU(decodedText);
@@ -144,14 +144,14 @@ export function useItemDetailController(
                     toast(`Товар с SKU ${decodedText} не найден`, "error");
                     playSound("scan_error");
                 }
-                setDialogs(prev => ({ ...prev, scanner: false }));
+                setDialogs((prev: DialogState) => ({ ...prev, scanner: false }));
             }
         }
     }, [isEditing, item.id, item.sku, router, setDialogs, setEditData, toast]);
 
     const handleCancelEdit = useCallback(() => {
         if (hasChanges) {
-            setDialogs(prev => ({ ...prev, unsavedChanges: true }));
+            setDialogs((prev: DialogState) => ({ ...prev, unsavedChanges: true }));
             setPendingExitAction(() => () => {
                 localStorage.removeItem(`item_draft_${item.id}`);
             });

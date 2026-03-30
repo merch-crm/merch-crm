@@ -34,7 +34,7 @@ export function useNewItemState() {
     const { setFormData, setValidationError } = form;
     const updateFormData = useCallback(
         (updates: Partial<ItemFormData> | ((prev: ItemFormData) => Partial<ItemFormData>)) => {
-            setFormData((prev) => {
+            setFormData((prev: ItemFormData) => {
                 const resolved = typeof updates === 'function' ? updates(prev) : updates;
                 return { ...prev, ...resolved };
             });

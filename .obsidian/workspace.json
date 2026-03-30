@@ -1,0 +1,229 @@
+{
+  "main": {
+    "id": "3e1411e578aa546e",
+    "type": "split",
+    "children": [
+      {
+        "id": "d030fa04dc9e89e0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "26a2a6b8ef17403d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "PRE_FLIGHT_CHECKLIST.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "PRE_FLIGHT_CHECKLIST"
+            }
+          },
+          {
+            "id": "c38bc88e16a70b49",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Граф"
+            }
+          }
+        ],
+        "currentTab": 1
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8b881728e0ebee0c",
+    "type": "split",
+    "children": [
+      {
+        "id": "88b975e5a35efb17",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9cde9d316ade0ef5",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "1715f6a2dc72c25e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "b53ffcba1b8daed7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "bb2d9967717b21a2",
+    "type": "split",
+    "children": [
+      {
+        "id": "804ce3652f4fc223",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "4a00c85574ab58c3",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки"
+            }
+          },
+          {
+            "id": "4ff4c92f9b4d6164",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки"
+            }
+          },
+          {
+            "id": "2b34eaa2a7622d7c",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "7cb5565072b2f6d4",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          },
+          {
+            "id": "e9dda51ee702f6ef",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false
+    }
+  },
+  "active": "c38bc88e16a70b49",
+  "lastOpenFiles": [
+    "vault/000-Навигация/ОГЛАВЛЕНИЕ.md",
+    "node_modules/eslint-plugin-react/README.md",
+    "PRE_FLIGHT_CHECKLIST.md",
+    "vault/Без названия.canvas",
+    "CLAUDE.md",
+    "audit-report.md",
+    "ship-safe-deep-report.json",
+    "ship-safe-deep-2.json",
+    "lib/services/production/time-tracking.service.ts",
+    "drizzle/meta/0035_snapshot.json",
+    "drizzle/0035_rapid_forgotten_one.sql",
+    "drizzle/0035_add_inventory_sync_trigger.sql",
+    "app/(main)/dashboard/production/components/production-timer.tsx",
+    "app/(main)/dashboard/production/actions/time-actions.ts",
+    "app/(main)/dashboard/portal/components/PortalChart.tsx",
+    "app/(main)/dashboard/portal/components",
+    "vault/000-Навигация/ИЗВЕСТНЫЕ-ПРОБЛЕМЫ.md",
+    "vault/020-Архитектура/Стек-технологий.md",
+    "vault/050-Сессии/2026-03-30.md",
+    "vault/010-Стандарты/Компоненты-UI.md",
+    "vault/010-Стандарты/Звуковая-обратная-связь.md",
+    "vault/010-Стандарты/Безопасность.md",
+    "vault/010-Стандарты/UX-дизайн.md",
+    "vault/010-Стандарты/TypeScript-строгость.md",
+    "vault/000-Навигация/СОСТОЯНИЕ-ПРОЕКТА.md",
+    "node_modules/@typescript-eslint/eslint-plugin/docs/rules/indent.md",
+    "ROADMAP.md",
+    "node_modules/jose/README.md",
+    "node_modules/svix/README.md",
+    "node_modules/meshoptimizer/README.md",
+    "node_modules/@aws-sdk/middleware-expect-continue/README.md",
+    "node_modules/@radix-ui/react-popover/README.md"
+  ]
+}

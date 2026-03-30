@@ -72,8 +72,10 @@ export class OrderService {
             }, tx);
 
             let totalAmount = 0;
+            const itemsToInsert = [];
+            
             for (const item of items) {
-                await tx.insert(orderItems).values({
+                itemsToInsert.push({
                     orderId: newOrder.id,
                     description: item.description,
                     quantity: item.quantity,
@@ -93,6 +95,10 @@ export class OrderService {
                     if (result.length === 0) throw ValidationError(`Недостаточно товара на складе для ID ${item.inventoryId}`);
                 }
                 totalAmount += (item.quantity * item.price);
+            }
+
+            if (itemsToInsert.length > 0) {
+                await tx.insert(orderItems).values(itemsToInsert);
             }
 
             let discountAmount = 0;
@@ -129,9 +135,15 @@ export class OrderService {
     }
 
     static async updateField(orderId: string, field: string, value: unknown) {
+        let clientId: string | undefined | null;
+
         await db.transaction(async (tx) => {
-            const order = await tx.query.orders.findFirst({ where: eq(orders.id, orderId) });
+            const order = await tx.query.orders.findFirst({ 
+                where: eq(orders.id, orderId),
+                columns: { id: true, clientId: true }
+            });
             if (!order) throw new Error("Заказ не найден");
+            clientId = order.clientId;
 
             const updateData: Record<string, unknown> = { updatedAt: new Date() };
             if (field === "isUrgent") updateData.isUrgent = Boolean(value);
@@ -150,9 +162,8 @@ export class OrderService {
             );
         });
 
-        const order = await db.query.orders.findFirst({ where: eq(orders.id, orderId) });
-        if (order?.clientId) {
-            queueClientStatsUpdate(order.clientId);
+        if (clientId) {
+            queueClientStatsUpdate(clientId);
         }
     }
 

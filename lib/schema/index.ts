@@ -73,8 +73,8 @@ export type { DetectionZone } from "./presence/workstations";
 export { productLineTypeEnum, productLines, productLinesRelations } from "./product-lines";
 export type { ProductLine, NewProductLine, ProductLineType, ProductLineWithRelations } from "./product-lines";
 // ./production
-export { applicationCategoryEnum, equipmentStatusEnum, productionTaskStatusEnum, productionTaskPriorityEnum, applicationTypes, equipment, productionLines, productionStaff, productionTasks, productionLogs, applicationTypesRelations, equipmentRelations, productionLinesRelations, productionStaffRelations, productionTasksRelations, productionLogsRelations, userApplicationTypes, userApplicationTypesRelations } from "./production";
-export type { ApplicationType, NewApplicationType, Equipment, NewEquipment, ProductionLine, NewProductionLine, ProductionStaff, NewProductionStaff, ProductionTask, NewProductionTask, ProductionLog, NewProductionLog, UserApplicationType, NewUserApplicationType } from "./production";
+export { applicationCategoryEnum, equipmentStatusEnum, productionTaskStatusEnum, productionTaskPriorityEnum, applicationTypes, equipment, productionLines, productionStaff, productionTasks, productionLogs, productionTimeLogs, applicationTypesRelations, equipmentRelations, productionLinesRelations, productionStaffRelations, productionTasksRelations, productionLogsRelations, productionTimeLogsRelations, userApplicationTypes, userApplicationTypesRelations } from "./production";
+export type { ApplicationType, NewApplicationType, Equipment, NewEquipment, ProductionLine, NewProductionLine, ProductionStaff, NewProductionStaff, ProductionTask, NewProductionTask, ProductionLog, NewProductionLog, ProductionTimeLog, NewProductionTimeLog, UserApplicationType, NewUserApplicationType } from "./production";
 // ./promocodes
 export { promocodes, promocodesRelations } from "./promocodes";
 // ./storage

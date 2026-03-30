@@ -9,7 +9,7 @@ import {
     History, Wallet, ExternalLink, MessageCircle
 } from"lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from"@/components/ui/avatar";
-import { getBrandingSettings } from"@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import { OrderHistoryTable } from"./order-history-table";
 import { ClientTimeline } from"./client-timeline";
 import { ClientProfileActions } from"./client-profile-actions";

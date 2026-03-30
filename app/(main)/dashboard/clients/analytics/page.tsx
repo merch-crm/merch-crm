@@ -17,7 +17,7 @@ import {
     getLoyaltyDistribution,
     getRFMDistribution,
 } from "../actions/analytics.actions";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import { Loader2 } from "lucide-react";
 
 export const metadata = {

@@ -66,7 +66,7 @@ describe('RFM Actions', () => {
 
     describe('calculateClientRFM', () => {
         it('should calculate and save RFM for a client', async () => {
-            const clientId = '55555555-5555-4555-8555-000000000001';
+            const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const mockClient = {
                 id: clientId,
                 daysSinceLastOrder: 10,
@@ -87,7 +87,7 @@ describe('RFM Actions', () => {
 
         it('should return error if client not found', async () => {
             queryMock.clients.findFirst.mockResolvedValueOnce(null);
-            const result = await calculateClientRFM('55555555-5555-4555-8555-000000000001');
+            const result = await calculateClientRFM('4242XXXX-XXXX-4242-4242-XXXXXXXX4242');
             expect(result.success).toBe(false);
             if (!result.success) {
                 expect(result.error).toBe("Клиент не найден");

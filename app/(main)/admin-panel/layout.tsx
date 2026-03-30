@@ -1,7 +1,7 @@
 import React from"react";
 import { getCurrentUserAction } from "./actions/users.actions";
 import { getNotifications } from"@/components/notifications/actions";
-import { getBrandingAction } from"@/app/(main)/admin-panel/actions";
+import { getBrandingAction } from "./actions/branding.actions";
 import { BrandingSettings } from"@/lib/types";
 import { AdminLayoutClient } from"./admin-layout-client";
 

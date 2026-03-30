@@ -70,7 +70,7 @@ describe('Contacts Actions', () => {
 
     describe('addClientContact', () => {
         const validData = {
-            clientId: '55555555-5555-4555-8555-000000000001',
+            clientId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
             name: 'John Doe',
             role: 'lpr' as const,
             isPrimary: true

@@ -64,6 +64,7 @@ export async function getSystemStats(): Promise<ActionResult<{
         await Promise.all(tables.map(async (table) => {
             // Белый список таблиц уже задан выше, но добавляем проверку
             if (!/^[a-z_]+$/.test(table)) return;
+            // ship-safe-ignore: table is validated against allowlist above
             const countResult = await db.execute(sql`SELECT count(*)::int as count FROM ${sql.identifier(table)}`);
             tableCounts[table] = Number(countResult.rows[0]?.count || 0);
         }));
@@ -172,11 +173,12 @@ export async function deleteBackupAction(fileName: string): Promise<ActionResult
 
     return withAuth(async (session) => {
         const backupDir = path.join(process.cwd(), "public", "uploads", "backups");
-        const filePath = path.join(backupDir, fileName);
+        const safeFileName = path.basename(fileName);
+        const filePath = path.join(backupDir, safeFileName);
 
-        if (fs.existsSync(filePath)) {
+        if (fs.existsSync(filePath) && filePath.startsWith(backupDir)) {
             fs.unlinkSync(filePath);
-            await logAction(`Удалена резервная копия: ${fileName}`, "system", session.id);
+            await logAction(`Удалена резервная копия: ${safeFileName}`, "system", session.id);
             return okVoid();
         }
         return ERRORS.NOT_FOUND("Файл бэкапа");

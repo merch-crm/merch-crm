@@ -105,7 +105,7 @@ describe('Funnel Actions', () => {
 
     describe('updateClientFunnelStage', () => {
         it('should update stage and log action', async () => {
-            const clientId = '55555555-5555-4555-8555-000000000001';
+            const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const stage = 'negotiation';
 
             await updateClientFunnelStage(clientId, stage);
@@ -116,7 +116,7 @@ describe('Funnel Actions', () => {
 
         it('should return unauthorized error on missing session', async () => {
             vi.mocked(getSession).mockResolvedValueOnce(null);
-            const result = await updateClientFunnelStage('55555555-5555-4555-8555-000000000001', 'stage');
+            const result = await updateClientFunnelStage('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'stage');
             expect(result.success).toBe(false);
             if (!result.success) {
                 expect(result.error).toBe("Не авторизован");
@@ -126,7 +126,7 @@ describe('Funnel Actions', () => {
 
     describe('markClientAsLost', () => {
         it('should archive client and set lost reason', async () => {
-            const clientId = '55555555-5555-4555-8555-000000000001';
+            const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const reason = 'High price';
 
             await markClientAsLost(clientId, reason, 'Too expensive for them');

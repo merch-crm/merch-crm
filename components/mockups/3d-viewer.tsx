@@ -228,24 +228,28 @@ function Model({
             {mainMesh && (
                 <>
                     {textureUrl ? (
-                        createPortal(
-                            <LogoDecal 
-                                url={textureUrl} 
-                                position={decalParams.position as [number, number, number]}
-                                rotation={decalParams.rotation as [number, number, number]}
-                                scale={decalParams.scale as [number, number, number]}
-                            />,
-                            mainMesh
-                        )
+                        <Suspense fallback={null}>
+                            {createPortal(
+                                <LogoDecal 
+                                    url={textureUrl} 
+                                    position={decalParams.position as [number, number, number]}
+                                    rotation={decalParams.rotation as [number, number, number]}
+                                    scale={decalParams.scale as [number, number, number]}
+                                />,
+                                mainMesh
+                            )}
+                        </Suspense>
                     ) : (
-                        createPortal(
-                            <PlacementGuide 
-                                position={decalParams.position as [number, number, number]} 
-                                rotation={decalParams.rotation as [number, number, number]} 
-                                zoneLabel={zone}
-                            />,
-                            mainMesh
-                        )
+                        <Suspense fallback={null}>
+                            {createPortal(
+                                <PlacementGuide 
+                                    position={decalParams.position as [number, number, number]} 
+                                    rotation={decalParams.rotation as [number, number, number]} 
+                                    zoneLabel={zone}
+                                />,
+                                mainMesh
+                            )}
+                        </Suspense>
                     )}
                 </>
             )}
@@ -260,15 +264,33 @@ function LogoDecal({ url, position, rotation, scale }: {
     rotation: [number, number, number];
     scale: [number, number, number];
 }) {
-    const texture = useTexture(url);
+    // Hooks must be at the top level
+    const texture = useTexture(url || "/logo.png"); // Fallback to avoid hook issues, though url should be present
+    
+    useEffect(() => {
+        if (texture) {
+            texture.anisotropy = 16;
+            texture.needsUpdate = true;
+        }
+    }, [texture]);
+
+    if (!url) return null;
+
     return (
-        <Decal position={position} rotation={rotation} scale={scale}>
+        <Decal 
+            position={position} 
+            rotation={rotation} 
+            scale={scale} 
+        >
             <meshStandardMaterial
                 map={texture}
                 transparent
                 polygonOffset
                 polygonOffsetFactor={-10}
                 roughness={1}
+                metalness={0}
+                depthTest={true}
+                depthWrite={false}
             />
         </Decal>
     );

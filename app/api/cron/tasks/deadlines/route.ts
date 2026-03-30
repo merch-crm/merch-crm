@@ -1,6 +1,8 @@
 import { checkTaskDeadlines } from "@/app/(main)/dashboard/tasks/notifications/deadline-checker";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request) {
   try {
     const authHeader = request.headers.get('authorization');

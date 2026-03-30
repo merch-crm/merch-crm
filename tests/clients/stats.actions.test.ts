@@ -57,7 +57,7 @@ describe('Stats Actions', () => {
 
     describe('recalculateClientStats', () => {
         it('should calculate stats from orders and update client', async () => {
-            const clientId = '55555555-5555-4555-8555-000000000001';
+            const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const mockStats = [{
                 totalCount: 5,
                 totalAmount: '5000',

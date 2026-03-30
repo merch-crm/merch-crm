@@ -11,6 +11,9 @@ export async function compressImage(
         type?: string
     } = {}
 ): Promise<{ file: File; preview: string }> {
+    if (typeof window === "undefined") {
+        return Promise.reject(new Error("compressImage can only be used in the browser"));
+    }
     const {
         maxWidth = 1920,
         maxHeight = 1920,

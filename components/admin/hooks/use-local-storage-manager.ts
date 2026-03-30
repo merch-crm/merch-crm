@@ -7,7 +7,7 @@ import {
     deleteLocalFileAction,
     renameLocalFileAction,
     deleteMultipleLocalFilesAction
-} from "@/app/(main)/admin-panel/actions";
+} from "@/app/(main)/admin-panel/actions/storage.actions";
 
 export interface LocalFile {
     name: string;

@@ -37,13 +37,13 @@ vi.mock('@/lib/db', () => ({
 }));
 
 import {
-    getWikiFolders,
-    createWikiFolder,
-    getWikiPages,
-    getWikiPageDetail,
-    createWikiPage,
-    updateWikiPage,
-    deleteWikiPage,
+    getKBFolders,
+    createKBFolder,
+    getKBPages,
+    getKBPageDetail,
+    createKBPage,
+    updateKBPage,
+    deleteKBPage,
 } from '@/app/(main)/dashboard/knowledge-base/actions';
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -62,14 +62,14 @@ const setupMocks = () => {
     mockTx.delete.mockReturnValue({ where: vi.fn().mockResolvedValue(undefined) });
 };
 
-// ─── getWikiFolders ───────────────────────────────────────────────────────────
+// ─── getKBFolders ───────────────────────────────────────────────────────────
 
-describe('getWikiFolders', () => {
+describe('getKBFolders', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await getWikiFolders();
+        const result = await getKBFolders();
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
@@ -77,38 +77,38 @@ describe('getWikiFolders', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const folders = [{ id: 'f1', name: 'Общие', parentId: null }];
         mockFindMany.mockResolvedValueOnce(folders);
-        const result = await getWikiFolders();
+        const result = await getKBFolders();
         expect(result).toEqual({ success: true, data: folders });
     });
 
     it('возвращает ошибку при сбое БД', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         mockFindMany.mockRejectedValueOnce(new Error('DB error'));
-        const result = await getWikiFolders();
+        const result = await getKBFolders();
         expect(result.success).toBe(false);
     });
 });
 
-// ─── createWikiFolder ─────────────────────────────────────────────────────────
+// ─── createKBFolder ─────────────────────────────────────────────────────────
 
-describe('createWikiFolder', () => {
+describe('createKBFolder', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await createWikiFolder('New Folder');
+        const result = await createKBFolder('New Folder');
         expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('возвращает ошибку если нет прав (роль Менеджер)', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(MANAGER_SESSION));
-        const result = await createWikiFolder('New Folder');
+        const result = await createKBFolder('New Folder');
         expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('возвращает ошибку при пустом имени', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(ADMIN_SESSION));
-        const result = await createWikiFolder('');
+        const result = await createKBFolder('');
         expect(result.success).toBe(false);
     });
 
@@ -118,7 +118,7 @@ describe('createWikiFolder', () => {
         mockTx.insert.mockReturnValue({
             values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([newFolder]) }),
         });
-        const result = await createWikiFolder('Новая папка');
+        const result = await createKBFolder('Новая папка');
         expect(result.success).toBe(true);
         if (result.success && result.data) {
             expect(result.data.name).toBe('Новая папка');
@@ -126,14 +126,14 @@ describe('createWikiFolder', () => {
     });
 });
 
-// ─── getWikiPages ─────────────────────────────────────────────────────────────
+// ─── getKBPages ─────────────────────────────────────────────────────────────
 
-describe('getWikiPages', () => {
+describe('getKBPages', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await getWikiPages();
+        const result = await getKBPages();
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
@@ -141,7 +141,7 @@ describe('getWikiPages', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const pages = [{ id: 'p1', title: 'Инструкция', content: '...', author: { name: 'Admin' } }];
         mockFindMany.mockResolvedValueOnce(pages);
-        const result = await getWikiPages();
+        const result = await getKBPages();
         expect(result).toEqual({ success: true, data: pages });
     });
 
@@ -149,7 +149,7 @@ describe('getWikiPages', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const pages = [{ id: 'p1', title: 'Статья 1', folderId: 'f1', author: { name: 'Admin' } }];
         mockFindMany.mockResolvedValueOnce(pages);
-        const result = await getWikiPages('f1');
+        const result = await getKBPages('f1');
         expect(result.success).toBe(true);
         if (result.success && result.data) {
             expect(result.data).toHaveLength(1);
@@ -157,14 +157,14 @@ describe('getWikiPages', () => {
     });
 });
 
-// ─── getWikiPageDetail ────────────────────────────────────────────────────────
+// ─── getKBPageDetail ────────────────────────────────────────────────────────
 
-describe('getWikiPageDetail', () => {
+describe('getKBPageDetail', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет сессии', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await getWikiPageDetail('p1');
+        const result = await getKBPageDetail('p1');
         expect(result).toEqual({ success: false, error: 'Не авторизован' });
     });
 
@@ -172,7 +172,7 @@ describe('getWikiPageDetail', () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession());
         const page = { id: 'p1', title: 'Инструкция', content: 'Контент', author: { name: 'Admin' }, folder: null };
         mockFindFirst.mockResolvedValueOnce(page);
-        const result = await getWikiPageDetail('p1');
+        const result = await getKBPageDetail('p1');
         expect(result.success).toBe(true);
         if (result.success) {
             expect(result.data).toEqual(page);
@@ -180,20 +180,20 @@ describe('getWikiPageDetail', () => {
     });
 });
 
-// ─── createWikiPage ───────────────────────────────────────────────────────────
+// ─── createKBPage ───────────────────────────────────────────────────────────
 
-describe('createWikiPage', () => {
+describe('createKBPage', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет прав', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(MANAGER_SESSION));
-        const result = await createWikiPage({ title: 'Test', content: 'Content', folderId: null });
+        const result = await createKBPage({ title: 'Test', content: 'Content', folderId: null });
         expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('возвращает ошибку при пустом заголовке', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(ADMIN_SESSION));
-        const result = await createWikiPage({ title: '', content: 'Content', folderId: null });
+        const result = await createKBPage({ title: '', content: 'Content', folderId: null });
         expect(result.success).toBe(false);
     });
 
@@ -203,49 +203,49 @@ describe('createWikiPage', () => {
         mockTx.insert.mockReturnValue({
             values: vi.fn().mockReturnValue({ returning: vi.fn().mockResolvedValue([newPage]) }),
         });
-        const result = await createWikiPage({ title: 'Новая статья', content: 'Контент', folderId: null });
+        const result = await createKBPage({ title: 'Новая статья', content: 'Контент', folderId: null });
         expect(result.success).toBe(true);
     });
 });
 
-// ─── updateWikiPage ───────────────────────────────────────────────────────────
+// ─── updateKBPage ───────────────────────────────────────────────────────────
 
-describe('updateWikiPage', () => {
+describe('updateKBPage', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет прав', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(MANAGER_SESSION));
-        const result = await updateWikiPage('p1', { title: 'Updated' });
+        const result = await updateKBPage('p1', { title: 'Updated' });
         expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('обновляет статью', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(ADMIN_SESSION));
-        const result = await updateWikiPage('p1', { title: 'Обновлённый заголовок' });
+        const result = await updateKBPage('p1', { title: 'Обновлённый заголовок' });
         expect(result).toEqual({ success: true });
     });
 });
 
-// ─── deleteWikiPage ───────────────────────────────────────────────────────────
+// ─── deleteKBPage ───────────────────────────────────────────────────────────
 
-describe('deleteWikiPage', () => {
+describe('deleteKBPage', () => {
     beforeEach(() => setupMocks());
 
     it('возвращает ошибку если нет прав', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(MANAGER_SESSION));
-        const result = await deleteWikiPage('p1');
+        const result = await deleteKBPage('p1');
         expect(result).toEqual({ success: false, error: 'Недостаточно прав' });
     });
 
     it('возвращает ошибку при пустом ID', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(ADMIN_SESSION));
-        const result = await deleteWikiPage('');
+        const result = await deleteKBPage('');
         expect(result).toEqual({ success: false, error: 'Невалидный ID' });
     });
 
     it('удаляет статью', async () => {
         vi.mocked(getSession).mockResolvedValueOnce(mockSession(ADMIN_SESSION));
-        const result = await deleteWikiPage('p1');
+        const result = await deleteKBPage('p1');
         expect(result).toEqual({ success: true });
     });
 });

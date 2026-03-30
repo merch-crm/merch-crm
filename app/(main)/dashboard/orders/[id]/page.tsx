@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import NextImage from "next/image";
 import { getOrderById } from "../actions/core.actions";;
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import { formatDate, formatDateTime } from "@/lib/formatters";
 import StatusSelect from "./status-select";
 import PrioritySelect from "./priority-select";

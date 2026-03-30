@@ -1,43 +1,46 @@
-import pg from 'pg';
-const { Client } = pg;
-import fs from 'fs';
-import path from 'path';
+const { Client } = require('pg');
+const fs = require('fs');
+const path = require('path');
 
-// Basic env parser for .env.local
+// Manually parse .env.local if dotenv is not working in this context or to be safe
 function loadEnv() {
-    const envPath = path.join(process.cwd(), '.env.local');
-    if (fs.existsSync(envPath)) {
-        const envContent = fs.readFileSync(envPath, 'utf8');
-        envContent.split('\n').forEach(line => {
-            const index = line.indexOf('=');
-            if (index !== -1) {
-                const key = line.substring(0, index).trim();
-                const value = line.substring(index + 1).trim().replace(/^"(.*)"$/, '$1');
-                process.env[key] = value;
-            }
-        });
-    }
+  const envPath = path.join(process.cwd(), '.env.local');
+  if (fs.existsSync(envPath)) {
+    const envFile = fs.readFileSync(envPath, 'utf8');
+    envFile.split('\n').forEach(line => {
+      const match = line.match(/^([^#=]+)=(.*)$/);
+      if (match) {
+        const key = match[1].trim();
+        let value = match[2].trim();
+        if (value.startsWith('"') && value.endsWith('"')) {
+          value = value.substring(1, value.length - 1);
+        }
+        process.env[key] = value;
+      }
+    });
+  }
 }
 
-loadEnv();
-
 async function checkConnection() {
-    const client = new Client({
-        connectionString: process.env.DATABASE_URL || 'postgresql://postgres:5738870192e24949b02a700547743048@localhost:5432/postgres',
-    });
+  loadEnv();
+  
+  if (!process.env.DATABASE_URL) {
+    console.error('❌ DATABASE_URL не найден в .env.local');
+    process.exit(1);
+  }
 
-    try {
-        console.log('⏳ Проверка подключения к базе данных...');
-        await client.connect();
-        console.log('✅ Подключение к базе данных успешно установлено!');
-        const res = await client.query('SELECT NOW()');
-        console.log('🕒 Время на сервере:', res.rows[0].now);
-        await client.end();
-        process.exit(0);
-    } catch (err) {
-        console.error('❌ Ошибка подключения к БД:', err.message);
-        process.exit(1);
-    }
+  const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    connectionTimeoutMillis: 5000,
+  });
+
+  try {
+    await client.connect();
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Ошибка подключения к базе данных:', err.message);
+    process.exit(1);
+  }
 }
 
 checkConnection();

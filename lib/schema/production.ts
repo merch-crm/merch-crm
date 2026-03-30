@@ -322,6 +322,38 @@ export const productionLogs = pgTable("production_logs", {
     createdAtIdx: index("production_logs_created_at_idx").on(table.createdAt),
 }));
 
+// === ТАЙМЕРЫ ПРОИЗВОДСТВА ===
+
+export const productionTimeLogs = pgTable("production_time_logs", {
+    id: uuid("id").defaultRandom().primaryKey(),
+
+    taskId: uuid("task_id")
+        .notNull()
+        .references(() => productionTasks.id, { onDelete: "cascade" }),
+
+    staffId: uuid("staff_id")
+        .references(() => productionStaff.id, { onDelete: "set null" }),
+
+    // Промежуток времени
+    startTime: timestamp("start_time").defaultNow().notNull(),
+    endTime: timestamp("end_time"),
+
+    // Тип активности
+    activityType: varchar("activity_type", { length: 50 }).default("work").notNull(), // work, adjustment, machine_maintenance
+
+    // Длительность в секундах (вычисляется при закрытии лога)
+    duration: integer("duration"),
+
+    // Примечания
+    notes: text("notes"),
+
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+    taskIdIdx: index("production_time_logs_task_id_idx").on(table.taskId),
+    staffIdIdx: index("production_time_logs_staff_id_idx").on(table.staffId),
+    startTimeIdx: index("production_time_logs_start_time_idx").on(table.startTime),
+}));
+
 // === СВЯЗИ ===
 
 export const applicationTypesRelations = relations(applicationTypes, ({ many }) => ({
@@ -374,6 +406,7 @@ export const productionTasksRelations = relations(productionTasks, ({ one, many 
         references: [users.id],
     }),
     logs: many(productionLogs),
+    timeLogs: many(productionTimeLogs),
 }));
 
 export const productionLogsRelations = relations(productionLogs, ({ one }) => ({
@@ -387,11 +420,21 @@ export const productionLogsRelations = relations(productionLogs, ({ one }) => ({
     }),
 }));
 
+export const productionTimeLogsRelations = relations(productionTimeLogs, ({ one }) => ({
+    task: one(productionTasks, {
+        fields: [productionTimeLogs.taskId],
+        references: [productionTasks.id],
+    }),
+    staff: one(productionStaff, {
+        fields: [productionTimeLogs.staffId],
+        references: [productionStaff.id],
+    }),
+}));
+
 // === ТИПЫ ===
 
 export type ApplicationType = typeof applicationTypes.$inferSelect;
 export type NewApplicationType = typeof applicationTypes.$inferInsert;
-
 export type Equipment = typeof equipment.$inferSelect;
 export type NewEquipment = typeof equipment.$inferInsert;
 export type ProductionLine = typeof productionLines.$inferSelect;
@@ -402,6 +445,8 @@ export type ProductionTask = typeof productionTasks.$inferSelect;
 export type NewProductionTask = typeof productionTasks.$inferInsert;
 export type ProductionLog = typeof productionLogs.$inferSelect;
 export type NewProductionLog = typeof productionLogs.$inferInsert;
+export type ProductionTimeLog = typeof productionTimeLogs.$inferSelect;
+export type NewProductionTimeLog = typeof productionTimeLogs.$inferInsert;
 
 // Legacy / Support existing relations
 export const userApplicationTypes = pgTable("user_application_types", {

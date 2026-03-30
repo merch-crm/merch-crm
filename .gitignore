@@ -74,3 +74,42 @@ lint_output.txt
 tmp_tsc_errors.txt
 lint_output.txt
 *.js.map
+
+# =============================================================================
+# SHIP SAFE ADDITIONS
+# Added by: npx ship-safe init
+# =============================================================================
+
+# Environment files
+.env
+.env.local
+.env*.local
+*.env
+
+# Private keys & certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Credentials
+*credentials*
+*.secrets.json
+secrets.yml
+secrets.yaml
+
+# Service accounts
+**/service-account*.json
+*-firebase-adminsdk-*.json
+
+# AWS
+.aws/credentials
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs (may contain sensitive data)
+*.log
+logs/

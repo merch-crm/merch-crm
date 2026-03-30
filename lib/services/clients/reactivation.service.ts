@@ -29,7 +29,7 @@ export class ReactivationService {
         console.log(`[ReactivationService] Found ${inactiveClients.length} inactive clients potentially needing reactivation.`);
         const results: { clientId: string; taskId: string }[] = [];
 
-        for (const client of inactiveClients) {
+        for (const client of inactiveClients as (typeof clients.$inferSelect)[]) {
             if (!client.managerId) continue;
 
             // Check if there's already an active reactivation task for this client to avoid duplicates
@@ -61,7 +61,7 @@ export class ReactivationService {
 
                     results.push({ clientId: client.id, taskId: newTask.id });
                 });
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error(`[ReactivationService] Failed to create reactivation task for client ${client.id}:`, error);
             }
         }

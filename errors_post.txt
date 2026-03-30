@@ -1,5 +1,0 @@
-app/(main)/dashboard/orders/[id]/page.tsx(119,58): error TS2322: Type '{ id: string; fileName: string; fileUrl: string; fileSize: number | null; contentType?: string | null | undefined; createdAt: Date; }[]' is not assignable to type 'Attachment[]'.
-  Type '{ id: string; fileName: string; fileUrl: string; fileSize: number | null; contentType?: string | null | undefined; createdAt: Date; }' is not assignable to type 'Attachment'.
-    Types of property 'contentType' are incompatible.
-      Type 'string | null | undefined' is not assignable to type 'string | null'.
-        Type 'undefined' is not assignable to type 'string | null'.

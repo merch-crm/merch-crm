@@ -114,7 +114,7 @@ describe('Workstations Actions', () => {
 
     describe('updateWorkstation', () => {
         it('should update workstation by ID', async () => {
-            const validId = '55555555-5555-4555-8555-000000000001';
+            const validId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             chainable.returning.mockResolvedValueOnce([{ id: validId, name: 'Updated' }]);
 
             const result = await updateWorkstation(validId, { name: 'Updated' });
@@ -126,7 +126,7 @@ describe('Workstations Actions', () => {
 
     describe('deleteWorkstation', () => {
         it('should delete workstation by ID', async () => {
-            const validId = '55555555-5555-4555-8555-000000000001';
+            const validId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const result = await deleteWorkstation(validId);
 
             expect(result.success).toBe(true);

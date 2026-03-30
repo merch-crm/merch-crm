@@ -1,6 +1,8 @@
-import { getNotificationSettingsAction } from"../actions/notifications.actions";
-import { NotificationSettings } from"../actions";;
-import { NotificationsClient } from"@/app/(main)/admin-panel/notifications/notifications-client";
+import { getNotificationSettingsAction } from "../actions/notifications.actions";
+import type { NotificationSettings } from "../actions/notifications.actions";
+import { NotificationsClient } from "@/app/(main)/admin-panel/notifications/notifications-client";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminNotificationsPage() {
     const res = await getNotificationSettingsAction();

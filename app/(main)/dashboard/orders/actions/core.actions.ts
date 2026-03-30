@@ -18,7 +18,7 @@ import {
 } from "@/lib/types";
 import { CreateOrderSchema, OrderIdSchema } from "../validation";
 import { OrderService } from "@/lib/services/order.service";
-import { getBrandingSettings } from "@/app/(main)/admin-panel/actions";
+import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import { sendStaffNotifications } from "@/lib/notifications";
 import { redisCache, CACHE_KEYS, CACHE_TTL, INVALIDATION_PATTERNS } from "@/lib/cache";
 import type { OrderWithRelations, GetOrdersResult, GetOrdersParams } from "@/lib/types/orders";

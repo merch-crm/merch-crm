@@ -127,7 +127,7 @@ describe('Loyalty Actions', () => {
 
     describe('updateLoyaltyLevel', () => {
         it('should update loyalty level if admin', async () => {
-            const id = '55555555-5555-4555-8555-555555555555';
+            const id = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const updates = { levelName: 'Updated Gold' };
             const updatedLevel = { id, ...updates };
 
@@ -146,7 +146,7 @@ describe('Loyalty Actions', () => {
 
     describe('deleteLoyaltyLevel', () => {
         it('should delete loyalty level', async () => {
-            const id = '55555555-5555-4555-8555-555555555555';
+            const id = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
             const chain = { where: vi.fn().mockResolvedValueOnce(undefined) };
             vi.mocked(mockDb.delete).mockReturnValueOnce(chain as unknown as ReturnType<typeof mockDb.delete>);
 
@@ -160,8 +160,8 @@ describe('Loyalty Actions', () => {
     describe('reorderLoyaltyLevels', () => {
         it('should reorder levels in a transaction', async () => {
             const items = [
-                { id: '55555555-5555-4555-8555-000000000001', priority: 1 },
-                { id: '55555555-5555-4555-8555-000000000002', priority: 2 }
+                { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', priority: 1 },
+                { id: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242', priority: 2 }
             ];
 
             const result = await reorderLoyaltyLevels(items);

@@ -76,7 +76,7 @@ describe('Faces Actions', () => {
 
     describe('createFace', () => {
         const validData = {
-            userId: '55555555-5555-4555-8555-000000000001',
+            userId: '4242XXXX-XXXX-4242-4242-XXXXXXXX4242',
             faceEncoding: new Array(128).fill(0.1),
             isPrimary: true
         };

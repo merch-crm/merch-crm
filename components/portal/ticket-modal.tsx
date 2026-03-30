@@ -37,16 +37,16 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setStatus(prev => ({ ...prev, submitting: true, error: null }));
+        setStatus((prev: typeof status) => ({ ...prev, submitting: true, error: null }));
 
         try {
             const res = await createTicket(formData);
 
             if (res.success) {
-                setStatus(prev => ({ ...prev, success: true }));
+                setStatus((prev: typeof status) => ({ ...prev, success: true }));
                 setTimeout(() => {
                     onClose();
-                    setStatus(prev => ({ ...prev, success: false }));
+                    setStatus((prev: typeof status) => ({ ...prev, success: false }));
                     setFormData({
                         title: "",
                         description: "",
@@ -55,12 +55,12 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                     });
                 }, 2000);
             } else {
-                setStatus(prev => ({ ...prev, error: res.error || "Ошибка при создании тикета" }));
+                setStatus((prev: typeof status) => ({ ...prev, error: res.error || "Ошибка при создании тикета" }));
             }
-        } catch (_err) {
-            setStatus(prev => ({ ...prev, error: "Произошла непредвиденная ошибка" }));
+        } catch (_error: unknown) {
+            setStatus((prev: typeof status) => ({ ...prev, error: "Произошла непредвиденная ошибка" }));
         } finally {
-            setStatus(prev => ({ ...prev, submitting: false }));
+            setStatus((prev: typeof status) => ({ ...prev, submitting: false }));
         }
     };
 
@@ -102,7 +102,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                                         <label className="text-xs font-black text-slate-400 ml-1">Категория</label>
                                         <Select 
                                             value={formData.category} 
-                                            onChange={(val) => setFormData(prev => ({ ...prev, category: val as typeof formData.category }))}
+                                            onChange={(val: string) => setFormData((prev: typeof formData) => ({ ...prev, category: val as typeof formData.category }))}
                                             options={[
                                                 { id: "equipment", title: "Тех. поломка" },
                                                 { id: "materials", title: "Расходники" },
@@ -116,7 +116,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                                         <label className="text-xs font-black text-slate-400 ml-1">Приоритет</label>
                                         <Select 
                                             value={formData.priority} 
-                                            onChange={(val) => setFormData(prev => ({ ...prev, priority: val as typeof formData.priority }))}
+                                            onChange={(val: string) => setFormData((prev: typeof formData) => ({ ...prev, priority: val as typeof formData.priority }))}
                                             options={[
                                                 { id: "low", title: "Низкий" },
                                                 { id: "normal", title: "Средний" },
