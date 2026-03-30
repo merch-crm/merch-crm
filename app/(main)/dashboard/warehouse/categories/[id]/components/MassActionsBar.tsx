@@ -82,7 +82,7 @@ export const MassActionsBar = React.memo(({
                         className="fixed bottom-10 left-1/2 z-[110] flex items-center bg-white p-1.5 md:p-2 gap-1.5 md:gap-3 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 w-[calc(100%-2rem)] md:w-auto overflow-x-auto no-scrollbar"
                     >
                         <div className="flex items-center gap-2 md:gap-3 pl-1 shrink-0">
-                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary flex items-center justify-center text-[11px] md:text-sm font-bold text-white shrink-0">
+                            <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-primary flex items-center justify-center text-xs md:text-sm font-bold text-white shrink-0">
                                 {selectedIds.length}
                             </div>
                             <span className="hidden lg:inline text-xs font-bold text-slate-500 whitespace-nowrap pr-1">Позиций</span>

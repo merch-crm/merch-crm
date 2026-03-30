@@ -137,7 +137,7 @@ export function HistoryDisplay({
                                                                         t.type === "stock_out" ? "Списание" :
                                                                             t.changeAmount > 0 ? "Приход" : "Расход"}
                                             </div>
-                                            <div className="text-[11px] font-bold text-slate-400 mt-0.5 whitespace-nowrap">
+                                            <div className="text-xs font-bold text-slate-400 mt-0.5 whitespace-nowrap">
                                                 {format(new Date(t.createdAt), "d мар., HH:mm", { locale: ru })}
                                             </div>
                                         </div>
@@ -158,7 +158,7 @@ export function HistoryDisplay({
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <div className="text-[13px] font-bold text-slate-900 truncate group-hover/item:text-primary transition-colors">{t.item.name}</div>
-                                                {t.item.sku && <div className="text-[11px] font-bold text-slate-400 mt-0.5 font-mono truncate">Арт.: {t.item.sku}</div>}
+                                                {t.item.sku && <div className="text-xs font-bold text-slate-400 mt-0.5 font-mono truncate">Арт.: {t.item.sku}</div>}
                                             </div>
                                         </button>
                                     ) : <div className="text-[13px] font-bold text-slate-900">Система</div>}
@@ -167,7 +167,7 @@ export function HistoryDisplay({
                                     {t.storageLocation ? (
                                         <div className="flex items-center gap-1.5 bg-slate-50 px-2.5 py-1.5 rounded-xl border border-slate-200 w-fit max-w-[140px]">
                                             <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                            <span className="text-[11px] font-bold text-slate-700 truncate">{t.storageLocation.name}</span>
+                                            <span className="text-xs font-bold text-slate-700 truncate">{t.storageLocation.name}</span>
                                         </div>
                                     ) : (
                                         <div className="text-slate-400 text-sm font-bold pl-4">–</div>
@@ -175,7 +175,7 @@ export function HistoryDisplay({
                                 </div>
                                 <div className="w-[100px] flex justify-center">
                                     {t.changeAmount !== 0 ? (
-                                        <Badge className={cn("px-2 py-0.5 font-bold text-[11px] border-none shadow-none rounded-lg", isPositive ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600")}>
+                                        <Badge className={cn("px-2 py-0.5 font-bold text-xs border-none shadow-none rounded-lg", isPositive ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600")}>
                                             {isPositive ? "+" : "-"}{amount} {formatUnit(t.item?.unit || "")}
                                         </Badge>
                                     ) : (
@@ -187,7 +187,7 @@ export function HistoryDisplay({
                                 </div>
                                 <div className="w-[180px] hidden lg:block text-right">
                                     <div className="text-[13px] font-bold text-slate-900 truncate">{t.creator?.name || "Система"}</div>
-                                    <div className="text-[11px] font-bold text-slate-400 truncate">{t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}</div>
+                                    <div className="text-xs font-bold text-slate-400 truncate">{t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}</div>
                                 </div>
                             </button>
                         );

@@ -12,26 +12,28 @@ import {
     ArrowRight
 } from "lucide-react";
 
+import { IconType } from "@/components/ui/stat-card";
+
 interface FunnelChartProps {
     data: FunnelAnalyticsData[];
     className?: string;
 }
 
-const stageIcons: Record<string, React.ElementType> = {
-    lead: UserPlus,
-    first_contact: Phone,
-    negotiation: MessageSquare,
-    first_order: ShoppingCart,
-    regular: Star,
+const stageIcons: Record<string, IconType> = {
+    lead: UserPlus as IconType,
+    first_contact: Phone as IconType,
+    negotiation: MessageSquare as IconType,
+    first_order: ShoppingCart as IconType,
+    regular: Star as IconType,
 };
 
 export function FunnelChart({ data, className }: FunnelChartProps) {
-    const maxCount = Math.max(...(data || []).map((d) => d.count), 1);
+    const maxCount = Math.max(...(data || []).map((d: FunnelAnalyticsData) => d.count), 1);
 
     return (
         <div className={cn("space-y-3", className)}>
-            {(data || []).map((stage, index) => {
-                const Icon = stageIcons[stage.stage] || UserPlus;
+            {(data || []).map((stage: FunnelAnalyticsData, index: number) => {
+                const Icon = (stageIcons[stage.stage] || UserPlus) as IconType;
                 const widthPercentage = Math.max((stage.count / maxCount) * 100, 15);
 
                 return (

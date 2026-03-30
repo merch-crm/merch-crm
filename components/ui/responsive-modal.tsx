@@ -45,7 +45,7 @@ export function ResponsiveModal({
                 <DialogContent className={cn("p-0 overflow-hidden flex flex-col sm:max-w-[800px]", className)} hideClose={shouldHideClose}>
                     <DialogHeader className={showVisualTitle ? "px-6 py-4 border-b border-border shrink-0" : "sr-only"}>
                         <DialogTitle className="text-xl font-bold">{title || "Modal"}</DialogTitle>
-                        <DialogDescription className={cn("text-[11px] font-medium text-muted-foreground mt-0.5", (!description && showVisualTitle) && "sr-only")}>
+                        <DialogDescription className={cn("text-xs font-medium text-muted-foreground mt-0.5", (!description && showVisualTitle) && "sr-only")}>
                             {description || `Dialog for ${title || "action"}`}
                         </DialogDescription>
                     </DialogHeader>

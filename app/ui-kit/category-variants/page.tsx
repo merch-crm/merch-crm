@@ -25,7 +25,7 @@ export default function CategoryVariantsPage() {
                     <p className="text-lg text-slate-500">10 different design directions for the warehouse category cards.</p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
 
                     {/* Variant 1: Current Refined (Glass Soft) */}
                     <div className="flex flex-col gap-3">
@@ -43,17 +43,17 @@ export default function CategoryVariantsPage() {
                                 <div className="w-[120px] h-px bg-slate-100 mb-4" />
                                 <div className="flex flex-wrap justify-center gap-1.5 max-w-[240px] mb-2">
                                     {category.children.map(child => (
-                                        <span key={child.id} className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-md text-[10px] font-bold text-slate-400 uppercase">{child.name}</span>
+                                        <span key={child.id} className="px-2 py-0.5 bg-slate-50 border border-slate-100 rounded-md text-xs font-bold text-slate-400 ">{child.name}</span>
                                     ))}
                                 </div>
                                 <div className="mt-8 flex flex-col items-center">
                                     <span className="text-6xl font-black text-slate-900 tabular-nums ">{category.totalQuantity.toLocaleString()}</span>
-                                    <span className="text-[11px] font-black uppercase mt-2 text-pink-500">единиц в наличии</span>
+                                    <span className="text-xs font-black  mt-2 text-pink-500">единиц в наличии</span>
                                 </div>
                             </div>
                             <div className="mt-8 flex items-center justify-center">
                                 <div className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-50 border border-slate-100/50 text-slate-900 transition-all group-hover:bg-slate-900 group-hover:text-white group-hover:shadow-lg group-hover:shadow-slate-900/10">
-                                    <span className="text-[11px] font-black uppercase ">Перейти</span>
+                                    <span className="text-xs font-black  ">Перейти</span>
                                     <ChevronRight className="w-3.5 h-3.5" />
                                 </div>
                             </div>
@@ -79,7 +79,7 @@ export default function CategoryVariantsPage() {
                                 </div>
                                 <div className="mt-auto pt-8 flex flex-col items-center w-full border-t border-slate-100">
                                     <span className="text-5xl font-bold text-slate-900">{category.totalQuantity.toLocaleString()}</span>
-                                    <span className="text-xs font-semibold uppercase  mt-1 text-slate-400">В наличии</span>
+                                    <span className="text-xs font-semibold   mt-1 text-slate-400">В наличии</span>
                                 </div>
                             </div>
                         </div>
@@ -99,12 +99,12 @@ export default function CategoryVariantsPage() {
                                 <p className="text-sm font-medium text-pink-700/60 mb-6">{category.itemCount} позиций SKU</p>
                                 <div className="flex flex-wrap justify-center gap-1.5 mb-2">
                                     {category.children.map(child => (
-                                        <span key={child.id} className="px-3 py-1 bg-white/60 border border-white rounded-full text-[11px] font-bold text-pink-800">{child.name}</span>
+                                        <span key={child.id} className="px-3 py-1 bg-white/60 border border-white rounded-full text-xs font-bold text-pink-800">{child.name}</span>
                                     ))}
                                 </div>
                                 <div className="mt-8 flex flex-col items-center">
                                     <span className="text-6xl font-black text-pink-600 ">{category.totalQuantity.toLocaleString()}</span>
-                                    <span className="text-[10px] font-black uppercase tracking-[0.1em] mt-2 text-pink-400">Штук на складе</span>
+                                    <span className="text-xs font-black  tracking-[0.1em] mt-2 text-pink-400">Штук на складе</span>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +133,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="mt-auto flex items-end justify-between">
                                 <div>
-                                    <p className="text-xs font-semibold text-slate-400 uppercase  mb-1">Остаток</p>
+                                    <p className="text-xs font-semibold text-slate-400   mb-1">Остаток</p>
                                     <span className="text-4xl font-black text-slate-900 tabular-nums">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                                 <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-slate-900 group-hover:text-white transition-colors">
@@ -192,7 +192,7 @@ export default function CategoryVariantsPage() {
                             </div>
 
                             <div className="mt-auto flex flex-col items-center gap-1">
-                                <span className="text-sm text-slate-400 uppercase  font-semibold">Запасы</span>
+                                <span className="text-sm text-slate-400   font-semibold">Запасы</span>
                                 <span className="text-5xl font-light text-slate-700">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -248,7 +248,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="mt-auto border-t-2 border-slate-100 pt-6 flex justify-between items-end group-hover:border-pink-100">
                                 <div>
-                                    <span className="block text-xs font-bold text-slate-400 uppercase  mb-1">Total Stock</span>
+                                    <span className="block text-xs font-bold text-slate-400   mb-1">Total Stock</span>
                                     <span className="block text-4xl font-black text-slate-900">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                                 <div className="w-12 h-12 border-2 border-slate-200 rounded-full flex items-center justify-center text-slate-400 group-hover:border-pink-500 group-hover:text-pink-500 transition-all">
@@ -263,7 +263,7 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">9. Compact Horizontal</span>
                         </div>
-                        <div className="group bg-white rounded-3xl border border-slate-200 p-6 flex items-center gap-6 h-[180px] xl:h-[400px] xl:flex-col xl:items-start transition-all hover:shadow-xl cursor-pointer">
+                        <div className="group bg-white rounded-3xl border border-slate-200 p-6 flex items-center gap-3 h-[180px] xl:h-[400px] xl:flex-col xl:items-start transition-all hover:shadow-xl cursor-pointer">
                             <div className="w-20 h-20 xl:w-16 xl:h-16 shrink-0 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center">
                                 <IconComponent className="w-10 h-10 xl:w-8 xl:h-8 stroke-2" />
                             </div>
@@ -277,7 +277,7 @@ export default function CategoryVariantsPage() {
                                 </div>
                             </div>
                             <div className="text-right xl:text-left xl:mt-auto xl:w-full xl:border-t xl:border-slate-100 xl:pt-4">
-                                <span className="block text-sm text-slate-400 uppercase font-bold  mb-1">Остаток</span>
+                                <span className="block text-sm text-slate-400  font-bold  mb-1">Остаток</span>
                                 <span className="block text-4xl xl:text-5xl font-black text-slate-900">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -292,7 +292,7 @@ export default function CategoryVariantsPage() {
                             {/* Accent Glow */}
                             <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-pink-500/20 to-transparent pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity" />
 
-                            <div className="flex items-center gap-8 relative z-10 w-full sm:w-auto">
+                            <div className="flex items-center gap-3 relative z-10 w-full sm:w-auto">
                                 <div className="w-24 h-24 rounded-[32px] bg-slate-800 text-pink-500 flex items-center justify-center border border-slate-700/50 shadow-inner group-hover:scale-105 transition-transform duration-500">
                                     <IconComponent className="w-12 h-12 stroke-[1.5]" />
                                 </div>
@@ -307,9 +307,9 @@ export default function CategoryVariantsPage() {
                                 </div>
                             </div>
 
-                            <div className="relative z-10 flex items-end gap-8 mt-8 sm:mt-0 w-full sm:w-auto justify-between sm:justify-end">
+                            <div className="relative z-10 flex items-end gap-3 mt-8 sm:mt-0 w-full sm:w-auto justify-between sm:justify-end">
                                 <div className="text-left sm:text-right">
-                                    <span className="block text-xs font-bold text-slate-400 uppercase  mb-2 shadow-sm">Количество на складе</span>
+                                    <span className="block text-xs font-bold text-slate-400   mb-2 shadow-sm">Количество на складе</span>
                                     <span className="block text-6xl font-black text-white tabular-nums">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                                 <div className="w-16 h-16 rounded-full bg-pink-500 text-white flex items-center justify-center group-hover:bg-pink-400 transition-colors">
@@ -343,7 +343,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="relative z-10 mt-auto flex flex-col items-center">
                                 <span className="text-6xl font-light text-slate-900 ">{category.totalQuantity.toLocaleString()}</span>
-                                <span className="text-xs font-semibold uppercase  text-slate-400 mt-2">Inventory</span>
+                                <span className="text-xs font-semibold   text-slate-400 mt-2">Inventory</span>
                             </div>
                         </div>
                     </div>
@@ -360,7 +360,7 @@ export default function CategoryVariantsPage() {
                                 <div className="text-pink-500 mb-6 drop-shadow-[0_0_8px_rgba(236,72,153,0.8)] opacity-70 group-hover:opacity-100 transition-opacity">
                                     <IconComponent className="w-12 h-12 stroke-[1.5]" />
                                 </div>
-                                <h3 className="text-3xl font-black text-white uppercase  mb-2 font-mono drop-shadow-md">{category.name}</h3>
+                                <h3 className="text-3xl font-black text-white   mb-2 font-mono drop-shadow-md">{category.name}</h3>
                                 <p className="text-xs text-pink-400/70 font-mono mb-8">&gt; SYS.SKU_COUNT: {category.itemCount}</p>
 
                                 <div className="flex flex-col gap-3 mb-8">
@@ -372,7 +372,7 @@ export default function CategoryVariantsPage() {
                                     ))}
                                 </div>
                                 <div className="mt-auto border-t border-slate-800/50 pt-6 group-hover:border-pink-500/30 transition-colors">
-                                    <span className="block text/[10px] font-mono text-slate-500 uppercase tracking-[0.3em] mb-2">QTY.DATA_STREAM</span>
+                                    <span className="block text/[10px] font-mono text-slate-500  tracking-[0.3em] mb-2">QTY.DATA_STREAM</span>
                                     <span className="block text-5xl font-black text-white font-mono drop-shadow-[0_0_12px_rgba(255,255,255,0.3)]">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                             </div>
@@ -399,7 +399,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="mt-auto flex flex-col items-center relative">
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 border border-[#D5D0C3] rounded-full pointer-events-none group-hover:scale-110 transition-transform duration-700 ease-out" />
-                                <span className="text-sm font-medium text-[#8A857A] uppercase  mb-2 relative z-10">Stock</span>
+                                <span className="text-sm font-medium text-[#8A857A]   mb-2 relative z-10">Stock</span>
                                 <span className="text-5xl font-light text-[#3E4A3F] relative z-10">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -412,26 +412,26 @@ export default function CategoryVariantsPage() {
                         </div>
                         <div className="group bg-white border-4 border-black shadow-[8px_8px_0_0_#000000] p-6 flex flex-col min-h-[400px] transition-all hover:shadow-[12px_12px_0_0_#ec4899] hover:-translate-y-1 hover:-translate-x-1 cursor-pointer">
                             <div className="flex justify-between items-start mb-6 border-b-4 border-black pb-6">
-                                <h3 className="text-4xl font-black text-black uppercase">{category.name}</h3>
+                                <h3 className="text-4xl font-black text-black ">{category.name}</h3>
                                 <div className="w-14 h-14 bg-pink-400 border-4 border-black flex items-center justify-center text-black shadow-[4px_4px_0_0_#000000]">
                                     <IconComponent className="w-7 h-7 stroke-[2]" />
                                 </div>
                             </div>
 
-                            <div className="bg-yellow-300 border-4 border-black p-3 font-bold text-black uppercase text-sm mb-6 inline-block self-start shadow-[4px_4px_0_0_#000000]">
+                            <div className="bg-yellow-300 border-4 border-black p-3 font-bold text-black  text-sm mb-6 inline-block self-start shadow-[4px_4px_0_0_#000000]">
                                 {category.itemCount} SKU Active
                             </div>
 
                             <div className="flex flex-col gap-2 mb-8">
                                 {category.children.map(child => (
-                                    <div key={child.id} className="border-2 border-black p-2 font-bold text-xs uppercase hover:bg-black hover:text-white transition-colors cursor-pointer">
+                                    <div key={child.id} className="border-2 border-black p-2 font-bold text-xs  hover:bg-black hover:text-white transition-colors cursor-pointer">
                                         + {child.name}
                                     </div>
                                 ))}
                             </div>
 
                             <div className="mt-auto bg-black p-4 text-white">
-                                <span className="block text-xs font-bold uppercase  mb-1 text-pink-400">Total Count</span>
+                                <span className="block text-xs font-bold   mb-1 text-pink-400">Total Count</span>
                                 <span className="block text-5xl font-black tabular-nums">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -476,9 +476,9 @@ export default function CategoryVariantsPage() {
                                 </div>
                             </div>
 
-                            <h3 className="text-2xl font-bold uppercase  mb-6 border-b border-[#8BA7F0] pb-2 inline-block self-start">{category.name}</h3>
+                            <h3 className="text-2xl font-bold   mb-6 border-b border-[#8BA7F0] pb-2 inline-block self-start">{category.name}</h3>
 
-                            <div className="grid grid-cols-2 gap-4 border-l pl-4 border-[#8BA7F0]">
+                            <div className="grid grid-cols-2 gap-3 border-l pl-4 border-[#8BA7F0]">
                                 {category.children.map(child => (
                                     <div key={child.id} className="text-xs flex items-center gap-2">
                                         <div className="w-1 h-1 bg-[#5A85ED]" />
@@ -489,7 +489,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="mt-auto pt-8 flex justify-between items-end">
                                 <div className="border border-[#8BA7F0] p-4 bg-white/50 w-full flex justify-between items-center group-hover:bg-white transition-colors">
-                                    <span className="text-xs uppercase font-bold ">Data: QTY</span>
+                                    <span className="text-xs  font-bold ">Data: QTY</span>
                                     <span className="text-3xl font-light tabular-nums">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                             </div>
@@ -520,7 +520,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="border-t border-white/20 w-full pt-6 relative z-10 flex flex-col items-center">
                                 <span className="text-5xl font-black tabular-nums">{category.totalQuantity.toLocaleString()}</span>
-                                <span className="text-xs font-semibold uppercase  text-white/70 mt-2">Units in Stock</span>
+                                <span className="text-xs font-semibold   text-white/70 mt-2">Units in Stock</span>
                             </div>
                         </div>
                     </div>
@@ -532,7 +532,7 @@ export default function CategoryVariantsPage() {
                         </div>
                         <div className="group bg-white rounded-[32px] overflow-hidden shadow-sm border border-slate-200 flex flex-col min-h-[400px] transition-all hover:shadow-lg cursor-pointer">
                             <div className="h-48 bg-pink-100 flex flex-col items-center justify-center p-8 relative pt-12 group-hover:bg-pink-200 transition-colors">
-                                <div className="absolute top-4 left-4 text-xs font-bold text-pink-400 uppercase  bg-pink-50 px-2 py-1 rounded-md">Category</div>
+                                <div className="absolute top-4 left-4 text-xs font-bold text-pink-400   bg-pink-50 px-2 py-1 rounded-md">Category</div>
                                 <IconComponent className="w-12 h-12 text-pink-500 mb-2 stroke-2" />
                                 <h3 className="text-3xl font-black text-pink-900">{category.name}</h3>
                             </div>
@@ -590,7 +590,7 @@ export default function CategoryVariantsPage() {
 
                                 <div className="mt-auto bg-slate-50 rounded-2xl p-4 flex items-center justify-between border border-slate-100 group-hover:bg-pink-50 group-hover:border-pink-100 transition-colors">
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase  mb-1 group-hover:text-pink-400">В наличии</span>
+                                        <span className="text-xs font-bold text-slate-400   mb-1 group-hover:text-pink-400">В наличии</span>
                                         <span className="text-3xl font-black text-slate-800 group-hover:text-pink-600">{category.totalQuantity.toLocaleString()}</span>
                                     </div>
                                     <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-400 shadow-sm group-hover:text-pink-500">
@@ -643,19 +643,19 @@ export default function CategoryVariantsPage() {
                             <div className="w-24 h-24 rounded-full bg-pink-400 border-4 border-black flex items-center justify-center text-black mb-6 shadow-[4px_4px_0_0_#000] group-hover:bg-yellow-400 transition-colors">
                                 <IconComponent className="w-12 h-12 stroke-[2.5]" />
                             </div>
-                            <h3 className="text-4xl font-black text-black uppercase  mb-2">{category.name}</h3>
-                            <div className="bg-white border-2 border-black px-4 py-1 text-sm font-bold uppercase shadow-[2px_2px_0_0_#000] mb-8">
+                            <h3 className="text-4xl font-black text-black   mb-2">{category.name}</h3>
+                            <div className="bg-white border-2 border-black px-4 py-1 text-sm font-bold  shadow-[2px_2px_0_0_#000] mb-8">
                                 {category.itemCount} SKU Active
                             </div>
 
                             <div className="flex flex-wrap justify-center gap-2 mb-8">
                                 {category.children.map(child => (
-                                    <span key={child.id} className="px-3 py-1 bg-cyan-300 border-2 border-black text-xs font-black uppercase text-black shadow-[2px_2px_0_0_#000]">{child.name}</span>
+                                    <span key={child.id} className="px-3 py-1 bg-cyan-300 border-2 border-black text-xs font-black  text-black shadow-[2px_2px_0_0_#000]">{child.name}</span>
                                 ))}
                             </div>
 
                             <div className="mt-auto w-full bg-white border-4 border-black p-4 flex flex-col items-center shadow-[4px_4px_0_0_#000]">
-                                <span className="text-xl font-black uppercase text-pink-500 mb-1">Stock</span>
+                                <span className="text-xl font-black  text-pink-500 mb-1">Stock</span>
                                 <span className="text-6xl font-black text-black">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -683,7 +683,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="mt-auto flex flex-col items-center relative z-10 w-full pt-6 border-t border-slate-700/50">
                                 <span className="text-5xl font-light text-white drop-shadow-md">{category.totalQuantity.toLocaleString()}</span>
-                                <span className="text-[10px] font-bold uppercase  text-slate-500 mt-2">Inventory Count</span>
+                                <span className="text-xs font-bold   text-slate-500 mt-2">Inventory Count</span>
                             </div>
                         </div>
                     </div>
@@ -701,7 +701,7 @@ export default function CategoryVariantsPage() {
                             </div>
 
                             <div className="p-4 flex flex-col flex-1 border-t-[#808080] border-l-[#808080] border-b-white border-r-white border-2 mt-2 bg-white">
-                                <div className="flex items-start gap-4 mb-6">
+                                <div className="flex items-start gap-3 mb-6">
                                     <IconComponent className="w-12 h-12 text-[#ff0080]" />
                                     <div>
                                         <h3 className="text-2xl font-bold text-black font-sans">{category.name}</h3>
@@ -735,20 +735,20 @@ export default function CategoryVariantsPage() {
                         </div>
                         <div className="group bg-white p-8 flex flex-col min-h-[400px] transition-all hover:bg-black hover:text-white cursor-pointer border border-black">
                             <div className="flex justify-between items-baseline mb-8 border-b-4 border-black group-hover:border-white pb-4 transition-colors">
-                                <h3 className="text-4xl font-black uppercase ">{category.name}</h3>
+                                <h3 className="text-4xl font-black  ">{category.name}</h3>
                                 <span className="text-2xl font-black">.{category.itemCount}</span>
                             </div>
 
                             <div className="flex flex-col gap-1 mb-12">
                                 {category.children.map(child => (
-                                    <div key={child.id} className="text-lg font-bold uppercase overflow-hidden">
+                                    <div key={child.id} className="text-lg font-bold  overflow-hidden">
                                         <div className="translate-y-0 group-hover:translate-y-0 transition-transform">{child.name}</div>
                                     </div>
                                 ))}
                             </div>
 
                             <div className="mt-auto">
-                                <span className="block text-sm font-bold uppercase  mb-2 opacity-50">Stock Volume</span>
+                                <span className="block text-sm font-bold   mb-2 opacity-50">Stock Volume</span>
                                 <span className="block text-8xl font-black  tabular-nums leading-none">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -776,7 +776,7 @@ export default function CategoryVariantsPage() {
                             </div>
 
                             <div className="mt-8 bg-gradient-to-b from-white to-slate-50 w-full rounded-2xl p-4 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_8px_16px_rgba(0,0,0,0.05)]">
-                                <span className="block text-xs font-black uppercase text-pink-400  mb-1">Total Stock</span>
+                                <span className="block text-xs font-black  text-pink-400  mb-1">Total Stock</span>
                                 <span className="block text-5xl font-black text-slate-800">{category.totalQuantity.toLocaleString()}</span>
                             </div>
                         </div>
@@ -812,7 +812,7 @@ export default function CategoryVariantsPage() {
 
                             <div className="mt-auto relative z-10 bg-white w-[calc(100%+64px)] -mx-8 -mb-8 p-6 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] flex justify-between items-end border-t border-slate-100">
                                 <div className="text-left">
-                                    <span className="block text-xs font-bold text-slate-400 uppercase  mb-1">Inventory</span>
+                                    <span className="block text-xs font-bold text-slate-400   mb-1">Inventory</span>
                                     <span className="block text-4xl font-black text-slate-800">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                                 <div className="w-12 h-12 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center">
@@ -841,13 +841,13 @@ export default function CategoryVariantsPage() {
 
                                 <div className="flex flex-wrap justify-center gap-1.5 mb-6">
                                     {category.children.map(child => (
-                                        <span key={child.id} className="text-[10px] font-bold text-slate-600 bg-white/40 px-2 py-1 rounded-md">{child.name}</span>
+                                        <span key={child.id} className="text-xs font-bold text-slate-600 bg-white/40 px-2 py-1 rounded-md">{child.name}</span>
                                     ))}
                                 </div>
 
                                 <div className="pt-4 border-t border-slate-200/50">
                                     <span className="block text-4xl font-black text-slate-800">{category.totalQuantity.toLocaleString()}</span>
-                                    <span className="block text-[10px] font-bold uppercase  text-slate-400 mt-1">Total Stock</span>
+                                    <span className="block text-xs font-bold   text-slate-400 mt-1">Total Stock</span>
                                 </div>
                             </div>
                         </div>
@@ -945,7 +945,7 @@ export default function CategoryVariantsPage() {
 
                                 <div className="mt-8 relative z-10 flex items-end justify-between">
                                     <div>
-                                        <span className="block text-[11px] font-black uppercase text-slate-400  mb-1">Stock</span>
+                                        <span className="block text-xs font-black  text-slate-400  mb-1">Stock</span>
                                         <span className="block text-5xl font-black text-slate-800 tabular-nums">{category.totalQuantity.toLocaleString()}</span>
                                     </div>
                                     <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-gradient-to-br group-hover:from-pink-400 group-hover:to-purple-500 group-hover:text-white transition-all shadow-sm">
@@ -961,7 +961,7 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">31. Bento Minimal</span>
                         </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 group cursor-pointer h-[400px]">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 group cursor-pointer h-[400px]">
                             {/* Main Info */}
                             <div className="col-span-2 bg-white rounded-[32px] p-6 border border-slate-200 flex flex-col justify-between transition-all hover:border-pink-300 hover:shadow-md h-full">
                                 <div className="flex justify-between items-start">
@@ -977,9 +977,9 @@ export default function CategoryVariantsPage() {
                             </div>
 
                             {/* Stats */}
-                            <div className="col-span-1 flex flex-col gap-4 h-full">
+                            <div className="col-span-1 flex flex-col gap-3 h-full">
                                 <div className="bg-pink-500 rounded-[32px] p-6 text-white flex-1 flex flex-col justify-end transition-all hover:bg-pink-400 hover:shadow-lg hover:-translate-y-1">
-                                    <span className="text-xs font-bold uppercase  opacity-80 mb-1">Stock</span>
+                                    <span className="text-xs font-bold   opacity-80 mb-1">Stock</span>
                                     <span className="text-4xl lg:text-5xl font-black leading-none">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                                 <div className="bg-slate-50 border border-slate-200 rounded-[32px] p-6 flex items-center justify-center transition-all hover:bg-slate-100 group-hover:border-slate-300">
@@ -1011,7 +1011,7 @@ export default function CategoryVariantsPage() {
                             </div>
                             <div className="col-span-3 bg-white border border-slate-200 rounded-3xl p-6 flex justify-between items-center transition-all hover:border-slate-300">
                                 <div>
-                                    <span className="text-xs text-slate-400 uppercase font-bold ">Total Inventory</span>
+                                    <span className="text-xs text-slate-400  font-bold ">Total Inventory</span>
                                     <div className="text-4xl font-black text-slate-900">{category.totalQuantity.toLocaleString()}</div>
                                 </div>
                                 <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
@@ -1026,9 +1026,9 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">33. Bento Asymmetric</span>
                         </div>
-                        <div className="flex flex-col lg:flex-row gap-4 group cursor-pointer h-auto lg:h-[400px]">
+                        <div className="flex flex-col lg:flex-row gap-3 group cursor-pointer h-auto lg:h-[400px]">
                             {/* Left Pillar */}
-                            <div className="w-full lg:w-1/3 flex flex-col gap-4">
+                            <div className="w-full lg:w-1/3 flex flex-col gap-3">
                                 <div className="bg-pink-50 text-pink-600 rounded-[32px] p-8 flex-1 flex flex-col items-center justify-center border border-pink-100 transition-all hover:bg-pink-100 hover:scale-[1.02]">
                                     <IconComponent className="w-16 h-16 stroke-[1.5]" />
                                 </div>
@@ -1049,7 +1049,7 @@ export default function CategoryVariantsPage() {
                                 </div>
                                 <div className="flex justify-between items-end mt-12 bg-slate-50 p-6 rounded-2xl border border-slate-100">
                                     <div>
-                                        <p className="text-xs text-slate-400 uppercase font-black  mb-1">In Stock</p>
+                                        <p className="text-xs text-slate-400  font-black  mb-1">In Stock</p>
                                         <p className="text-5xl font-black text-pink-500 leading-none">{category.totalQuantity.toLocaleString()}</p>
                                     </div>
                                     <ChevronRight className="w-8 h-8 text-slate-300 group-hover:text-pink-500 transition-colors group-hover:translate-x-1" />
@@ -1063,7 +1063,7 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">34. Bento Glassmorphism</span>
                         </div>
-                        <div className="group relative rounded-[40px] p-4 flex flex-col sm:flex-row gap-4 h-auto min-h-[300px] cursor-pointer bg-slate-100/50 border border-slate-200/50 backdrop-blur-3xl overflow-hidden">
+                        <div className="group relative rounded-[40px] p-4 flex flex-col sm:flex-row gap-3 h-auto min-h-[300px] cursor-pointer bg-slate-100/50 border border-slate-200/50 backdrop-blur-3xl overflow-hidden">
                             <div className="absolute top-[-50%] left-[-20%] w-[150%] h-[150%] bg-gradient-to-br from-pink-300/30 via-transparent to-purple-300/30 blur-3xl opacity-50 pointer-events-none group-hover:opacity-100 transition-opacity duration-700" />
 
                             <div className="w-full sm:w-1/3 bg-white/70 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm flex flex-col justify-center items-center text-center relative z-10 transition-transform group-hover:scale-[1.02]">
@@ -1073,14 +1073,14 @@ export default function CategoryVariantsPage() {
                                 <h3 className="text-3xl font-extrabold text-slate-800">{category.name}</h3>
                             </div>
 
-                            <div className="w-full sm:w-2/3 flex flex-col gap-4 relative z-10">
-                                <div className="flex gap-4 h-1/2">
+                            <div className="w-full sm:w-2/3 flex flex-col gap-3 relative z-10">
+                                <div className="flex gap-3 h-1/2">
                                     <div className="w-1/2 bg-white/60 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm flex flex-col justify-end transition-all hover:bg-white/80">
-                                        <span className="text-xs text-slate-500 uppercase font-black mb-1">SKU Types</span>
+                                        <span className="text-xs text-slate-500  font-black mb-1">SKU Types</span>
                                         <span className="text-4xl font-black text-slate-800">{category.itemCount}</span>
                                     </div>
                                     <div className="w-1/2 bg-white/60 backdrop-blur-xl border border-white rounded-[32px] p-6 shadow-sm flex flex-col justify-end transition-all hover:bg-white/80">
-                                        <span className="text-xs text-slate-500 uppercase font-black mb-1">Total Stock</span>
+                                        <span className="text-xs text-slate-500  font-black mb-1">Total Stock</span>
                                         <span className="text-4xl font-black text-pink-500">{category.totalQuantity.toLocaleString()}</span>
                                     </div>
                                 </div>
@@ -1109,12 +1109,12 @@ export default function CategoryVariantsPage() {
                                     <IconComponent className="w-7 h-7 stroke-[2]" />
                                 </div>
                                 <div>
-                                    <span className="text-sm text-pink-400 font-bold uppercase ">Category</span>
+                                    <span className="text-sm text-pink-400 font-bold  ">Category</span>
                                     <h3 className="text-3xl font-black text-pink-900 leading-tight">{category.name}</h3>
                                 </div>
                             </div>
                             <div className="bg-slate-50 rounded-[28px] p-6 flex flex-col justify-end border border-slate-100 transition-colors group-hover:bg-slate-100/50">
-                                <span className="text-xs text-slate-400 font-bold uppercase mb-1">SKU Count</span>
+                                <span className="text-xs text-slate-400 font-bold  mb-1">SKU Count</span>
                                 <span className="text-5xl font-extrabold text-slate-700">{category.itemCount}</span>
                             </div>
                             <div className="col-span-2 bg-gradient-to-r from-slate-900 to-slate-800 rounded-[28px] p-8 flex justify-between items-center text-white relative overflow-hidden group-hover:-translate-y-1 transition-transform">
@@ -1122,7 +1122,7 @@ export default function CategoryVariantsPage() {
                                 <div className="absolute right-0 top-0 w-32 h-32 bg-pink-500/20 blur-2xl rounded-full translate-x-1/2 -translate-y-1/2" />
 
                                 <div>
-                                    <span className="text-xs text-slate-400 font-bold uppercase  mb-2 block">Available Inventory</span>
+                                    <span className="text-xs text-slate-400 font-bold   mb-2 block">Available Inventory</span>
                                     <span className="text-5xl font-black tabular-nums">{category.totalQuantity.toLocaleString()}</span>
                                 </div>
                                 <div className="bg-white/10 p-4 rounded-full backdrop-blur-sm border border-white/10 group-hover:bg-white/20 transition-colors">
@@ -1137,26 +1137,26 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">36. Bento Outline</span>
                         </div>
-                        <div className="flex flex-col gap-4 h-[400px] group cursor-pointer w-full">
-                            <div className="flex gap-4 h-1/2">
+                        <div className="flex flex-col gap-3 h-[400px] group cursor-pointer w-full">
+                            <div className="flex gap-3 h-1/2">
                                 <div className="w-1/2 bg-white border-2 border-slate-900 rounded-3xl p-6 flex flex-col items-center justify-center transition-all hover:bg-slate-900 hover:text-white hover:shadow-[4px_4px_0_0_#ec4899]">
                                     <IconComponent className="w-12 h-12 stroke-[1.5] mb-2" />
-                                    <h3 className="text-2xl font-black uppercase ">{category.name}</h3>
+                                    <h3 className="text-2xl font-black  ">{category.name}</h3>
                                 </div>
                                 <div className="w-1/2 bg-pink-400 border-2 border-slate-900 rounded-3xl p-6 flex flex-col justify-center text-slate-900 transition-all shadow-[4px_4px_0_0_#0f172a] hover:translate-y-1 hover:shadow-none">
-                                    <span className="text-xs font-black uppercase border-b-2 border-slate-900/20 pb-1 mb-2">Active SKU</span>
+                                    <span className="text-xs font-black  border-b-2 border-slate-900/20 pb-1 mb-2">Active SKU</span>
                                     <span className="text-4xl font-black text-slate-900">{category.itemCount}</span>
                                 </div>
                             </div>
                             <div className="h-1/2 bg-white border-2 border-slate-900 rounded-3xl p-6 flex flex-col justify-between transition-all hover:border-pink-500">
                                 <div className="flex flex-wrap gap-2">
                                     {category.children.map(child => (
-                                        <span key={child.id} className="border border-dashed border-slate-400 text-slate-600 px-3 py-1 rounded-full text-xs font-bold uppercase">{child.name}</span>
+                                        <span key={child.id} className="border border-dashed border-slate-400 text-slate-600 px-3 py-1 rounded-full text-xs font-bold ">{child.name}</span>
                                     ))}
                                 </div>
                                 <div className="flex justify-between items-end border-t-2 border-slate-900 pt-4">
                                     <div>
-                                        <span className="text-xs font-black text-slate-500 uppercase">Stock</span>
+                                        <span className="text-xs font-black text-slate-500 ">Stock</span>
                                         <div className="text-4xl font-black">{category.totalQuantity.toLocaleString()}</div>
                                     </div>
                                     <ChevronRight className="w-8 h-8 text-black group-hover:text-pink-500 transition-colors" />
@@ -1202,7 +1202,7 @@ export default function CategoryVariantsPage() {
                                     </div>
                                 </div>
                                 <div className="h-1/2 bg-white rounded-[28px] p-6 shadow-sm border border-slate-100 flex flex-col justify-between group-hover:shadow-md transition-shadow">
-                                    <span className="text-xs font-semibold uppercase  text-slate-400">Sub-categories</span>
+                                    <span className="text-xs font-semibold   text-slate-400">Sub-categories</span>
                                     <div className="flex flex-wrap gap-2">
                                         {category.children.map(child => (
                                             <span key={child.id} className="text-sm text-slate-700 bg-slate-50 border border-slate-100 px-3 py-1 rounded-lg">{child.name}</span>
@@ -1221,14 +1221,14 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">38. Bento Pure White</span>
                         </div>
-                        <div className="group h-[400px] flex flex-col gap-4 cursor-pointer">
+                        <div className="group h-[400px] flex flex-col gap-3 cursor-pointer">
                             <div className="h-[45%] bg-white rounded-[32px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col items-center justify-center text-center transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1">
                                 <div className="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-800 mb-3 group-hover:bg-pink-50 group-hover:text-pink-500 transition-colors">
                                     <IconComponent className="w-6 h-6 stroke-2" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-slate-900">{category.name}</h3>
                             </div>
-                            <div className="h-[55%] flex gap-4">
+                            <div className="h-[55%] flex gap-3">
                                 <div className="w-1/2 bg-white rounded-[32px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] flex flex-col justify-between transition-all hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] hover:-translate-y-1 delay-75">
                                     <span className="text-xs font-semibold text-slate-400">SKU</span>
                                     <span className="text-4xl font-light text-slate-800">{category.itemCount}</span>
@@ -1270,7 +1270,7 @@ export default function CategoryVariantsPage() {
 
                             {/* Subcategories (spanning 3 cols) */}
                             <div className="col-span-3 bg-slate-800/50 rounded-[24px] p-6 border border-slate-700 flex flex-col justify-center">
-                                <span className="text-[10px] text-slate-500 mb-3 uppercase">Available partitions</span>
+                                <span className="text-xs text-slate-500 mb-3 ">Available partitions</span>
                                 <div className="flex gap-2 flex-wrap">
                                     {category.children.map(child => (
                                         <span key={child.id} className="text-xs text-slate-300 bg-slate-700/50 px-3 py-1.5 rounded-md border border-slate-600">{child.name}</span>
@@ -1291,7 +1291,7 @@ export default function CategoryVariantsPage() {
                         <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 inline-flex self-start">
                             <span className="font-bold text-slate-700">40. Bento Interactive Tiles</span>
                         </div>
-                        <div className="bg-white p-4 rounded-[40px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] min-h-[400px] flex flex-col md:flex-row gap-4 w-full group cursor-pointer">
+                        <div className="bg-white p-4 rounded-[40px] border border-slate-100 shadow-[0_8px_30px_rgba(0,0,0,0.04)] min-h-[400px] flex flex-col md:flex-row gap-3 w-full group cursor-pointer">
                             {/* Focus Tile */}
                             <div className="flex-1 md:w-1/2 bg-slate-900 rounded-[32px] p-8 flex flex-col justify-between text-white transition-all duration-500 hover:w-[55%] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:bg-slate-950 relative overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/10 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
@@ -1309,15 +1309,15 @@ export default function CategoryVariantsPage() {
                             </div>
 
                             {/* Grid Tiles */}
-                            <div className="flex-1 md:w-1/2 grid grid-cols-2 grid-rows-2 gap-4 transition-all duration-500">
+                            <div className="flex-1 md:w-1/2 grid grid-cols-2 grid-rows-2 gap-3 transition-all duration-500">
                                 {/* Top Left */}
                                 <div className="bg-pink-50 rounded-[32px] p-6 flex flex-col justify-center items-center text-center transition-all hover:bg-pink-100 hover:scale-[1.03] border border-pink-100/50">
-                                    <span className="text-xs font-bold text-pink-400 uppercase  mb-2">Total</span>
+                                    <span className="text-xs font-bold text-pink-400   mb-2">Total</span>
                                     <span className="text-4xl lg:text-5xl font-black text-pink-600 tabular-nums leading-none">{category.totalQuantity}</span>
                                 </div>
                                 {/* Top Right */}
                                 <div className="bg-slate-50 border border-slate-100 rounded-[32px] p-6 flex flex-col justify-center transition-all hover:bg-slate-100 hover:scale-[1.03]">
-                                    <span className="text-xs font-bold text-slate-400 uppercase  mb-3">Types</span>
+                                    <span className="text-xs font-bold text-slate-400   mb-3">Types</span>
                                     <div className="flex flex-col gap-2">
                                         {category.children.slice(0, 2).map((child, i) => (
                                             <div key={child.id} className="text-sm font-semibold text-slate-700 w-full truncate">

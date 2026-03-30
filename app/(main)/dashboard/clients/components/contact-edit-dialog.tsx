@@ -239,7 +239,7 @@ export const ContactEditDialog = memo(function ContactEditDialog({
                     />
                     <div>
                         <p className="text-sm font-bold text-slate-900">Основной контакт</p>
-                        <p className="text-[11px] text-slate-500">Будет отображаться первым в списке</p>
+                        <p className="text-xs text-slate-500">Будет отображаться первым в списке</p>
                     </div>
                 </label>
 

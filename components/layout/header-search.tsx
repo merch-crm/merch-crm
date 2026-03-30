@@ -5,8 +5,9 @@ import { Search, Package, User, Database, Users, CheckCircle2, FileText, Tag, Ma
 import { globalSearch, SearchResult } from "@/app/(main)/dashboard/search-actions";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { IconType } from "@/components/ui/stat-card";
 
-const typeConfig: Record<string, { icon: React.ElementType; label: string; color: string; bg: string }> = {
+const typeConfig: Record<string, { icon: IconType; label: string; color: string; bg: string }> = {
     order: { icon: Package, label: "Заказ", color: "text-white", bg: "bg-indigo-500" },
     client: { icon: User, label: "Клиент", color: "text-white", bg: "bg-emerald-500" },
     item: { icon: Database, label: "Товар", color: "text-white", bg: "bg-amber-500" },
@@ -145,7 +146,7 @@ export function HeaderSearch() {
                                 return (
                                     <div key={type}>
                                         <div className="px-4 pt-3 pb-1">
-                                            <span className="text-[11px] font-bold text-slate-400 tracking-wider">
+                                            <span className="text-xs font-bold text-slate-400 tracking-wider">
                                                 {config.label}
                                             </span>
                                         </div>
@@ -183,7 +184,7 @@ export function HeaderSearch() {
                                                         )}
                                                     </div>
                                                     {result.status && (
-                                                        <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md shrink-0">
+                                                        <span className="text-xs font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-md shrink-0">
                                                             {result.status}
                                                         </span>
                                                     )}
@@ -206,16 +207,16 @@ export function HeaderSearch() {
 
                     {/* Footer hint */}
                     <div className="px-4 py-2.5 border-t border-slate-100 flex items-center gap-3 bg-slate-50/50">
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
-                            <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-mono shadow-sm">↑↓</kbd>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                            <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs font-mono shadow-sm">↑↓</kbd>
                             навигация
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
-                            <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-mono shadow-sm">↵</kbd>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                            <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs font-mono shadow-sm">↵</kbd>
                             открыть
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
-                            <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-mono shadow-sm">Esc</kbd>
+                        <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
+                            <kbd className="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-xs font-mono shadow-sm">Esc</kbd>
                             закрыть
                         </div>
                     </div>

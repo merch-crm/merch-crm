@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/utils'
 import { formatCurrency } from '@/lib/formatters'
 import { SUBLIMATION_PRODUCTS, type SublimationProduct } from '../../sublimation-types'
+import { IconType } from "@/components/ui/stat-card";
 
 interface ProductSelectorProps {
   selectedProducts: Array<{
@@ -35,19 +36,19 @@ interface ProductSelectorProps {
   }>) => void
 }
 
-const productIcons: Record<string, React.ElementType> = {
-  'cylindrical': Coffee,
-  'flat': Square,
-  'fabric': Flag,
+const productIcons: Record<string, IconType> = {
+  'cylindrical': Coffee as IconType,
+  'flat': Square as IconType,
+  'fabric': Flag as IconType,
 }
 
-const productSpecificIcons: Record<string, React.ElementType> = {
-    'mousepad': MousePointer,
-    'puzzle-a4': Puzzle,
-    'puzzle-a3': Puzzle,
-    'tshirt-full': Shirt,
-    'fabric-meter': ImageIcon,
-    'plate-20cm': Circle,
+const productSpecificIcons: Record<string, IconType> = {
+    'mousepad': MousePointer as IconType,
+    'puzzle-a4': Puzzle as IconType,
+    'puzzle-a3': Puzzle as IconType,
+    'tshirt-full': Shirt as IconType,
+    'fabric-meter': ImageIcon as IconType,
+    'plate-20cm': Circle as IconType,
 }
 
 const productCategories = [

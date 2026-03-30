@@ -36,14 +36,14 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
                     </div>
                     <div>
                         <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight">Склад</h3>
-                        <p className="text-[11px] sm:text-[11px] font-bold text-slate-700 opacity-60">Остатки и хранение</p>
+                        <p className="text-xs sm:text-xs font-bold text-slate-700 opacity-60">Остатки и хранение</p>
                     </div>
                 </div>
                 <div className="flex flex-col items-end gap-0.5">
-                    <div className="text-[11px] font-black text-slate-400">остаток</div>
+                    <div className="text-xs font-black text-slate-400">остаток</div>
                     <div className="flex items-baseline gap-1">
                         <div className="text-2xl sm:text-[28px] font-black text-slate-900 leading-none tracking-tight">{formData.quantity}</div>
-                        <span className="text-[11px] font-bold text-slate-400">шт</span>
+                        <span className="text-xs font-bold text-slate-400">шт</span>
                     </div>
                 </div>
             </div>
@@ -57,7 +57,7 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
                         </div>
                         <span className="text-xs sm:text-[13px] font-bold text-slate-600 truncate max-w-[120px] sm:max-w-none">{locationName}</span>
                     </div>
-                    <span className={`text-[11px] font-black px-2 py-0.5 rounded-full border shrink-0 ${badgeStyle}`}>
+                    <span className={`text-xs font-black px-2 py-0.5 rounded-full border shrink-0 ${badgeStyle}`}>
                         {typeLabel.toLowerCase()}
                     </span>
                 </div>

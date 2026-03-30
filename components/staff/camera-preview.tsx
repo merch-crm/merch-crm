@@ -215,7 +215,7 @@ export function CameraPreview({
 
             <div className="absolute bottom-4 left-4 flex gap-2">
                 <div className="bg-red-600 w-2 h-2 rounded-full animate-pulse shadow-lg shadow-red-500/50" />
-                <span className="text-[11px] leading-tight text-neutral-500 font-bold text-white  tracking-tighter shadow-sm">Live Feed</span>
+                <span className="text-xs leading-tight text-neutral-500 font-bold text-white  tracking-tighter shadow-sm">Live Feed</span>
             </div>
         </div>
     )

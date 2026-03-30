@@ -3,10 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
-    // Проверка авторизации (например, по секретному ключу в заголовке)
-    const { searchParams } = new URL(request.url);
-    const key = searchParams.get("key");
-    if (key !== process.env.CRON_SECRET) {
+    const authHeader = request.headers.get('authorization');
+    
+    if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const result = await checkTaskDeadlines();

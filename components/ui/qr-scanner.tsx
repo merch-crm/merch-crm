@@ -145,7 +145,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                                 <Camera className="w-8 h-8 text-white" />
                             </div>
                             <h4 className="font-black text-sm mb-2">Ошибка доступа</h4>
-                            <p className="text-[11px] font-bold text-white/70 leading-relaxed mb-8 px-4">{error}</p>
+                            <p className="text-xs font-bold text-white/70 leading-relaxed mb-8 px-4">{error}</p>
                             <Button
                                 variant="outline"
                                 onClick={startScanner}

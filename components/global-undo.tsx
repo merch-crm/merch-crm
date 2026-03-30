@@ -64,7 +64,7 @@ export function GlobalUndo() {
 
             <Button
                 onClick={handleUndo}
-                className="bg-white text-slate-900 hover:bg-slate-100 h-10 px-6 rounded-[18px] text-[11px] font-bold"
+                className="bg-white text-slate-900 hover:bg-slate-100 h-10 px-6 rounded-[18px] text-xs font-bold"
             >
                 {isUndoing ? "Отмена..." : "Отменить"}
             </Button>

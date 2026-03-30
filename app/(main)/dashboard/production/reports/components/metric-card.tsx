@@ -3,12 +3,13 @@
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { type IconType } from "@/components/ui/stat-card";
 
 interface MetricCardProps {
     title: string;
     value: number;
     suffix?: string;
-    icon: React.ElementType;
+    icon: IconType;
     trend?: number;
     color: "emerald" | "blue" | "rose" | "violet" | "amber";
     invertTrend?: boolean;

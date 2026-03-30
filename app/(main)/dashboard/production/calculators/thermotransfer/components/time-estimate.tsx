@@ -36,7 +36,7 @@ export function TimeEstimate({ estimatedTimeMin }: TimeEstimateProps) {
           Приблизительно {shifts} раб. смен
         </div>
         
-        <p className="text-[11px] text-muted-foreground leading-tight">
+        <p className="text-xs text-muted-foreground leading-tight">
           * Время включает настройку (приладку) оборудования и непосредственный процесс нанесения.
         </p>
       </CardContent>

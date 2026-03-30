@@ -64,7 +64,7 @@ export function LoyaltyLevelCard({
                         <h3 className="text-lg font-bold text-slate-900">
                             {level.levelName}
                         </h3>
-                        <p className="text-[11px] text-slate-400 font-mono">
+                        <p className="text-xs text-slate-400 font-mono">
                             {level.levelKey}
                         </p>
                     </div>

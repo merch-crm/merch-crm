@@ -107,7 +107,7 @@ export const ClientContactsList = memo(function ClientContactsList({
             <div className="flex items-center justify-between">
                 <div>
                     <h3 className="text-sm font-bold text-slate-900">Контактные лица</h3>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-xs text-slate-500">
                         {contacts.length === 0
                             ? "Добавьте контакты организации"
                             : `${contacts.length} из 5 контактов`
@@ -120,7 +120,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                         variant="ghost"
                         size="sm"
                         onClick={() => setIsAddDialogOpen(true)}
-                        className="h-8 px-3 rounded-lg text-[11px] font-bold text-primary hover:bg-primary/10"
+                        className="h-8 px-3 rounded-lg text-xs font-bold text-primary hover:bg-primary/10"
                     >
                         <UserPlus className="w-3.5 h-3.5 mr-1.5" />
                         Добавить
@@ -146,7 +146,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                         <UserPlus className="w-6 h-6 text-slate-400" />
                     </div>
                     <p className="text-sm font-bold text-slate-600 mb-1">Нет контактных лиц</p>
-                    <p className="text-[11px] text-slate-400 mb-4">Добавьте контакты для связи с организацией</p>
+                    <p className="text-xs text-slate-400 mb-4">Добавьте контакты для связи с организацией</p>
                     <Button
                         type="button"
                         onClick={() => setIsAddDialogOpen(true)}
@@ -211,7 +211,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                             </div>
 
                                             {contact.position && (
-                                                <p className="text-[11px] text-slate-500 mb-2 flex items-center gap-1">
+                                                <p className="text-xs text-slate-500 mb-2 flex items-center gap-1">
                                                     <Briefcase className="w-3 h-3" />
                                                     {contact.position}
                                                 </p>
@@ -222,7 +222,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                                 {contact.phone && (
                                                     <a
                                                         href={`tel:${contact.phone}`}
-                                                        className="flex items-center gap-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[11px] font-bold text-slate-600 transition-colors"
+                                                        className="flex items-center gap-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-600 transition-colors"
                                                     >
                                                         <Phone className="w-3 h-3" />
                                                         {contact.phone}
@@ -231,7 +231,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                                 {contact.email && (
                                                     <a
                                                         href={`mailto:${contact.email}`}
-                                                        className="flex items-center gap-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-[11px] font-bold text-slate-600 transition-colors"
+                                                        className="flex items-center gap-1 px-2 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-bold text-slate-600 transition-colors"
                                                     >
                                                         <Mail className="w-3 h-3" />
                                                         {contact.email}
@@ -242,7 +242,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                                         href={`https://t.me/${contact.telegram.replace("@", "")}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="flex items-center gap-1 px-2 py-1 bg-sky-100 hover:bg-sky-200 rounded-lg text-[11px] font-bold text-sky-600 transition-colors"
+                                                        className="flex items-center gap-1 px-2 py-1 bg-sky-100 hover:bg-sky-200 rounded-lg text-xs font-bold text-sky-600 transition-colors"
                                                     >
                                                         <Send className="w-3 h-3" />
                                                         {contact.telegram}
@@ -252,7 +252,7 @@ export const ClientContactsList = memo(function ClientContactsList({
 
                                             {/* Notes */}
                                             {contact.notes && (
-                                                <p className="mt-2 text-[11px] text-slate-400 italic line-clamp-2">
+                                                <p className="mt-2 text-xs text-slate-400 italic line-clamp-2">
                                                     {contact.notes}
                                                 </p>
                                             )}
@@ -290,7 +290,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => handleSetPrimary(contact.id)}
-                                                                    className="w-full flex items-center gap-2 px-3 py-2.5 text-[11px] font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                                                                    className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
                                                                 >
                                                                     <Star className="w-3.5 h-3.5" />
                                                                     Сделать основным
@@ -302,7 +302,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                                                     setEditingContact(contact);
                                                                     setActiveMenu(null);
                                                                 }}
-                                                                className="w-full flex items-center gap-2 px-3 py-2.5 text-[11px] font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                                                                className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
                                                             >
                                                                 <Pencil className="w-3.5 h-3.5" />
                                                                 Редактировать
@@ -313,7 +313,7 @@ export const ClientContactsList = memo(function ClientContactsList({
                                                                     setDeletingContact(contact);
                                                                     setActiveMenu(null);
                                                                 }}
-                                                                className="w-full flex items-center gap-2 px-3 py-2.5 text-[11px] font-bold text-rose-500 hover:bg-rose-50 transition-colors"
+                                                                className="w-full flex items-center gap-2 px-3 py-2.5 text-xs font-bold text-rose-500 hover:bg-rose-50 transition-colors"
                                                             >
                                                                 <Trash2 className="w-3.5 h-3.5" />
                                                                 Удалить

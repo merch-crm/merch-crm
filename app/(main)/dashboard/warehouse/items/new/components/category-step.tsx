@@ -99,7 +99,7 @@ export function CategoryStep({
                             ) : (
                                 <div className="h-[100px] xl:h-[114px] w-full flex flex-col items-center justify-center py-4 px-6 border-2 border-dashed border-slate-200 rounded-[20px] bg-slate-50/50">
                                     <h3 className="text-xs sm:text-sm font-bold text-slate-400 mb-1 text-center">Нет подкатегорий</h3>
-                                    <p className="text-[11px] sm:text-xs text-slate-400 font-medium text-center">Вы можете продолжить выбор</p>
+                                    <p className="text-xs sm:text-xs text-slate-400 font-medium text-center">Вы можете продолжить выбор</p>
                                 </div>
                             )}
                         </div>

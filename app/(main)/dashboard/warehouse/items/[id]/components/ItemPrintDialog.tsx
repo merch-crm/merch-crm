@@ -54,7 +54,7 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
                         <label className="text-sm font-bold text-foreground mb-3">Предпросмотр</label>
                         <div id="label-to-print" className="bg-card p-5 rounded-2xl shadow-2xl shadow-border/50 border border-border flex flex-col items-center gap-3 w-[240px] aspect-[1/1.4] justify-between transition-transform hover:scale-[1.02]">
                             <div className="w-full text-center">
-                                <h4 className="font-extrabold text-foreground leading-tight text-[11px] mb-1">{(item.category as { name?: string })?.name ||"Без категории"}</h4>
+                                <h4 className="font-extrabold text-foreground leading-tight text-xs mb-1">{(item.category as { name?: string })?.name ||"Без категории"}</h4>
                                 <p className="text-xs font-bold text-muted-foreground truncate w-full px-2">{item.name}</p>
                             </div>
 

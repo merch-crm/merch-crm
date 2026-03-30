@@ -3,13 +3,14 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
 import { ChevronRight, Home } from "lucide-react";
+import { IconType } from "./stat-card";
 import Link from "next/link";
 import React from "react";
 
 export interface BreadcrumbItem {
     label: string;
     href?: string;
-    icon?: React.ElementType;
+    icon?: IconType;
     onClick?: () => void;
     isEllipsis?: boolean;
     isLast?: boolean;

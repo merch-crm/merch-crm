@@ -1,0 +1,68 @@
+app/(main)/dashboard/analytics/loyalty/page.tsx:25 - Parameter 'l' implicitly has an 'any' type.
+app/(main)/dashboard/analytics/loyalty/page.tsx:26 - Parameter 's' implicitly has an 'any' type.
+app/(main)/dashboard/analytics/rfm/page.tsx:18 - Parameter 'sum' implicitly has an 'any' type.
+app/(main)/dashboard/analytics/rfm/page.tsx:18 - Parameter 's' implicitly has an 'any' type.
+app/(main)/dashboard/analytics/rfm/page.tsx:49 - Parameter 'row' implicitly has an 'any' type.
+app/(main)/dashboard/clients/hooks/use-duplicate-check.ts:105 - Parameter 'd' implicitly has an 'any' type.
+app/(main)/dashboard/clients/hooks/use-duplicate-check.ts:108 - Parameter 'd' implicitly has an 'any' type.
+app/(main)/dashboard/orders/[id]/page.tsx:219 - Parameter 'p' implicitly has an 'any' type.
+app/(main)/dashboard/orders/[id]/page.tsx:225 - Parameter 'p' implicitly has an 'any' type.
+app/(main)/dashboard/orders/[id]/page.tsx:232 - Parameter 'p' implicitly has an 'any' type.
+app/(main)/dashboard/orders/[id]/page.tsx:243 - Parameter 'p' implicitly has an 'any' type.
+app/(main)/dashboard/orders/[id]/page.tsx:260 - Parameter 'p' implicitly has an 'any' type.
+app/(main)/dashboard/orders/new/page.tsx:19 - Parameter 'i' implicitly has an 'any' type.
+app/(main)/dashboard/production/calculators/components/ClientSelect.tsx:59 - Parameter 'c' implicitly has an 'any' type.
+app/(main)/dashboard/production/calculators/components/ClientSelect.tsx:69 - Parameter 'c' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/items/[id]/hooks/useItemDetailController.ts:53 - Parameter 'prev' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/items/[id]/hooks/useItemDetailController.ts:129 - Parameter 'prev' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/items/[id]/hooks/useItemDetailController.ts:135 - Parameter 'prev' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/items/[id]/hooks/useItemDetailController.ts:147 - Parameter 'prev' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/items/[id]/hooks/useItemDetailController.ts:154 - Parameter 'prev' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/items/new/hooks/use-new-item-state.ts:37 - Parameter 'prev' implicitly has an 'any' type.
+app/(main)/dashboard/warehouse/storage-preview/page.tsx:77 - Parameter 'loc' implicitly has an 'any' type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/api-keys/page.tsx:37 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/audit/audit-client.tsx:26 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/audit/audit-client.tsx:125 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/audit/audit-client.tsx:129 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/audit/audit-client.tsx:143 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/audit/page.tsx:47 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/audit/page.tsx:49 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/portal/portal-client.tsx:35 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/portal/portal-client.tsx:43 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/portal/portal-client.tsx:180 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/portal/portal-client.tsx:290 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/api/cron/clients/reactivation/route.ts:24 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/api/cron/nps/route.ts:32 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/app/api/v1/orders/route.ts:27 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/components/auth/permission-shield.tsx:41 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/components/auth/permission-shield.tsx:81 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/components/mockups/3d-viewer.tsx:68 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/components/mockups/3d-viewer.tsx:393 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/components/portal/ticket-modal.tsx:103 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/components/portal/ticket-modal.tsx:117 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/lib/services/clients/reactivation.service.ts:23 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/lib/services/gamification.service.ts:10 - Unexpected any. Specify a different type.
+/Users/leonidmolchanov/Desktop/merch-crm/lib/types/global.d.ts:2 - Unexpected any. Specify a different type.
+app/(main)/admin-panel/api-keys/page.tsx:37 - Приведение к any запрещено
+app/(main)/admin-panel/audit/audit-client.tsx:26 - Тип any запрещён
+app/(main)/admin-panel/audit/audit-client.tsx:125 - Тип any запрещён
+app/(main)/admin-panel/audit/audit-client.tsx:129 - Тип any запрещён
+app/(main)/admin-panel/audit/page.tsx:47 - Приведение к any запрещено
+app/(main)/admin-panel/audit/page.tsx:49 - Приведение к any запрещено
+app/(main)/dashboard/portal/portal-client.tsx:35 - Тип any запрещён
+app/(main)/dashboard/portal/portal-client.tsx:43 - Тип any запрещён
+app/(main)/dashboard/portal/portal-client.tsx:180 - Тип any запрещён
+app/(main)/dashboard/portal/portal-client.tsx:290 - Тип any запрещён
+app/api/cron/clients/reactivation/route.ts:24 - Тип any запрещён
+app/api/cron/nps/route.ts:32 - Тип any запрещён
+app/api/v1/orders/route.ts:27 - Приведение к any запрещено
+components/auth/permission-shield.tsx:41 - Приведение к any запрещено
+components/auth/permission-shield.tsx:81 - Приведение к any запрещено
+components/mockups/3d-viewer.tsx:68 - Generic any запрещён
+components/mockups/3d-viewer.tsx:393 - Generic any запрещён
+components/portal/ticket-modal.tsx:103 - Приведение к any запрещено
+components/portal/ticket-modal.tsx:117 - Приведение к any запрещено
+lib/services/clients/reactivation.service.ts:23 - Приведение к any запрещено
+lib/services/gamification.service.ts:10 - Тип any запрещён
+lib/services/finance/finance.service.ts:23 - Запрос без limit (findMany)
+lib/services/production/heatmap.service.ts:26 - Запрос без limit (findMany)

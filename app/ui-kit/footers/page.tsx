@@ -26,14 +26,14 @@ export default function FootersUIKit() {
                 </div>
             </header>
 
-            <div className="max-w-[1480px] mx-auto flex flex-col gap-12">
+            <div className="max-w-[1480px] mx-auto flex flex-col gap-3">
 
                 {/* Variant 1 */}
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">1. Minimalist Line</h2>
                     <div className="bg-white border-t border-slate-200 py-6 px-8 flex items-center justify-between shadow-sm">
                         <p className="text-sm font-medium text-slate-500">© 2026 MerchCRM. Все права защищены.</p>
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-3">
                             <Link href="#" className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Политика конфиденциальности</Link>
                             <Link href="#" className="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Условия использования</Link>
                             <div className="w-px h-4 bg-slate-200"></div>
@@ -49,13 +49,13 @@ export default function FootersUIKit() {
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">2. Centered Brand & Social</h2>
                     <div className="bg-white border-t border-slate-200 py-12 px-8 flex flex-col items-center justify-center shadow-sm">
                         <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black text-lg mb-6 shadow-md">M.</div>
-                        <nav className="flex items-center gap-8 mb-8">
+                        <nav className="flex items-center gap-3 mb-8">
                             <Link href="#" className="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">О платформе</Link>
                             <Link href="#" className="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">Тарифы</Link>
                             <Link href="#" className="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">Документация</Link>
                             <Link href="#" className="text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">Поддержка</Link>
                         </nav>
-                        <div className="flex items-center gap-4 mb-8">
+                        <div className="flex items-center gap-3 mb-8">
                             <a href="#" className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 transition-all"><Twitter className="w-5 h-5" /></a>
                             <a href="#" className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 transition-all"><Github className="w-5 h-5" /></a>
                             <a href="#" className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50 transition-all"><Linkedin className="w-5 h-5" /></a>
@@ -68,7 +68,7 @@ export default function FootersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">3. System Status Integrated</h2>
                     <div className="bg-white border-y border-slate-200 py-4 px-8 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-100">
                                 <span className="relative flex h-2.5 w-2.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -79,10 +79,10 @@ export default function FootersUIKit() {
                             <span className="text-xs font-bold text-slate-400 border border-slate-200 px-2 py-1 rounded-md">v 2.4.1</span>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                            <Link href="#" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-wider">Документация API</Link>
-                            <Link href="#" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-wider">Поддержка</Link>
-                            <Link href="#" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-wider">Changelog</Link>
+                        <div className="flex items-center gap-3">
+                            <Link href="#" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors  tracking-wider">Документация API</Link>
+                            <Link href="#" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors  tracking-wider">Поддержка</Link>
+                            <Link href="#" className="text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors  tracking-wider">Changelog</Link>
                         </div>
                     </div>
                 </section>
@@ -91,11 +91,11 @@ export default function FootersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">4. Corporate Multi-Column</h2>
                     <div className="bg-white border-t border-slate-200 pt-16 pb-8 px-12 shadow-sm">
-                        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 lg:gap-12 mb-16">
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-3 lg:gap-3 mb-16">
                             <div className="md:col-span-2">
-                                <div className="flex items-center gap-2 mb-6 text-slate-900 font-black tracking-tighter text-2xl uppercase">Merch<span className="text-indigo-600">.</span></div>
+                                <div className="flex items-center gap-2 mb-6 text-slate-900 font-black tracking-tighter text-2xl ">Merch<span className="text-indigo-600">.</span></div>
                                 <p className="text-slate-500 font-medium leading-relaxed mb-6 max-w-sm text-sm">Мы помогаем современным компаниям автоматизировать производство, склад и продажи через единую экосистему.</p>
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3">
                                     <Button variant="outline" size="icon" className="rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-50"><Twitter className="w-4 h-4" /></Button>
                                     <Button variant="outline" size="icon" className="rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-50"><Linkedin className="w-4 h-4" /></Button>
                                     <Button variant="outline" size="icon" className="rounded-full text-slate-400 hover:text-slate-900 hover:bg-slate-50"><Instagram className="w-4 h-4" /></Button>
@@ -130,9 +130,9 @@ export default function FootersUIKit() {
                             </div>
                         </div>
 
-                        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3">
                             <p className="text-sm text-slate-400 font-medium">&copy; 2026 ООО &quot;Мерч Системс&quot;. Все права защищены.</p>
-                            <div className="flex gap-6">
+                            <div className="flex gap-3">
                                 <Link href="#" className="text-sm text-slate-400 font-medium hover:text-slate-900">Политика конфиденциальности</Link>
                                 <Link href="#" className="text-sm text-slate-400 font-medium hover:text-slate-900">Оферта</Link>
                             </div>
@@ -155,9 +155,9 @@ export default function FootersUIKit() {
                         </div>
 
                         {/* Regular Footer */}
-                        <div className="py-8 px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div className="py-8 px-12 flex flex-col md:flex-row items-center justify-between gap-3">
                             <div className="flex items-center gap-2 text-slate-900 font-extrabold text-xl tracking-tight">MerchCRM</div>
-                            <nav className="flex flex-wrap justify-center gap-x-8 gap-y-2">
+                            <nav className="flex flex-wrap justify-center gap-x-3 gap-y-2">
                                 <Link href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">О нас</Link>
                                 <Link href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Блог</Link>
                                 <Link href="#" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Контакт</Link>
@@ -172,8 +172,8 @@ export default function FootersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">6. Compact High-Density (Apple Style)</h2>
                     <div className="bg-[#FBFBFD] border-t border-slate-200 py-6 px-10">
-                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-                            <div className="flex items-center gap-4 text-xs font-semibold text-[#86868B]">
+                        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 text-xs font-semibold text-[#86868B]">
                                 <span>Защищенное соединение (SSL)</span>
                                 <div className="w-px h-3 bg-[#D2D2D7]"></div>
                                 <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5" /> ISO 27001 Сертифицировано</span>
@@ -193,9 +193,9 @@ export default function FootersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">7. Grid Layout Details</h2>
                     <div className="bg-white border-t border-b-4 border-b-indigo-500 border-x-0 border-t-slate-200 py-10 px-12">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                             <div>
-                                <h5 className="font-bold text-slate-900 uppercase tracking-widest text-xs mb-4">Навигация</h5>
+                                <h5 className="font-bold text-slate-900  tracking-widest text-xs mb-4">Навигация</h5>
                                 <ul className="space-y-2">
                                     <li><Link href="#" className="text-[13px] text-slate-500 hover:bg-slate-50 hover:text-slate-900 px-2 py-1 -ml-2 rounded transition-colors inline-block font-medium">Главная панель</Link></li>
                                     <li><Link href="#" className="text-[13px] text-slate-500 hover:bg-slate-50 hover:text-slate-900 px-2 py-1 -ml-2 rounded transition-colors inline-block font-medium">База заказов</Link></li>
@@ -203,7 +203,7 @@ export default function FootersUIKit() {
                                 </ul>
                             </div>
                             <div>
-                                <h5 className="font-bold text-slate-900 uppercase tracking-widest text-xs mb-4">Система</h5>
+                                <h5 className="font-bold text-slate-900  tracking-widest text-xs mb-4">Система</h5>
                                 <ul className="space-y-2">
                                     <li><Link href="#" className="text-[13px] text-slate-500 hover:bg-slate-50 hover:text-slate-900 px-2 py-1 -ml-2 rounded transition-colors inline-block font-medium">Настройки компании</Link></li>
                                     <li><Link href="#" className="text-[13px] text-slate-500 hover:bg-slate-50 hover:text-slate-900 px-2 py-1 -ml-2 rounded transition-colors inline-block font-medium">Сотрудники и права</Link></li>
@@ -225,7 +225,7 @@ export default function FootersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">8. Dark Contrast Mode</h2>
                     <div className="bg-[#0A0A0A] text-white pt-16 pb-8 px-12 rounded-tr-3xl shrink-0 mt-8">
-                        <div className="flex flex-col md:flex-row justify-between gap-12 border-b border-white/10 pb-12 mb-8">
+                        <div className="flex flex-col md:flex-row justify-between gap-3 border-b border-white/10 pb-12 mb-8">
                             <div className="max-w-md">
                                 <div className="flex items-center gap-3 mb-6">
                                     <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl"></div>
@@ -236,7 +236,7 @@ export default function FootersUIKit() {
                                 </p>
                             </div>
 
-                            <div className="flex gap-16 pr-8">
+                            <div className="flex gap-3 pr-8">
                                 <div>
                                     <h5 className="font-bold text-white mb-4">Решения</h5>
                                     <ul className="space-y-3">
@@ -258,7 +258,7 @@ export default function FootersUIKit() {
 
                         <div className="flex items-center justify-between text-[#666666] text-xs font-medium">
                             <p>© 2026 Nexus Systems Inc.</p>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3">
                                 <a href="#" className="hover:text-white transition-colors">Privacy</a>
                                 <a href="#" className="hover:text-white transition-colors">Terms</a>
                                 <a href="#" className="hover:text-white transition-colors">Cookies</a>
@@ -280,7 +280,7 @@ export default function FootersUIKit() {
                                 <div className="w-10 h-10 bg-white/80 rounded-xl shadow-sm flex items-center justify-center text-slate-800 font-black">A.</div>
                                 <div className="hidden sm:block">
                                     <p className="text-sm font-bold text-slate-800">AquaSystem</p>
-                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Internal Tool</p>
+                                    <p className="text-xs font-bold text-slate-500  tracking-widest">Internal Tool</p>
                                 </div>
                             </div>
 
@@ -297,13 +297,13 @@ export default function FootersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">10. Very Minimal Utility Bar</h2>
                     <div className="bg-slate-100 border-t border-slate-200 h-10 flex items-center justify-between px-6 mx-6 rounded-t-[10px] mt-6">
-                        <div className="flex items-center gap-3 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">
+                        <div className="flex items-center gap-3 text-xs font-extrabold text-slate-400  tracking-widest">
                             <span>M-CRM VER. 4.0.0</span>
                             <div className="w-px h-3 bg-slate-300"></div>
                             <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> SYSTEM ONLINE</span>
                         </div>
 
-                        <div className="flex items-center gap-4 text-[11px] font-extrabold text-slate-400 uppercase tracking-widest">
+                        <div className="flex items-center gap-3 text-xs font-extrabold text-slate-400  tracking-widest">
                             <Link href="#" className="hover:text-slate-700 transition-colors">Privacy</Link>
                             <Link href="#" className="hover:text-slate-700 transition-colors">Terms</Link>
                             <Link href="#" className="hover:text-slate-700 transition-colors">Support</Link>

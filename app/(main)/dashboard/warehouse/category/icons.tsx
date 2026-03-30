@@ -1,12 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import {
-    Box, Package, Scissors, Zap, Hourglass,
-    Truck, Archive, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, FileText,
-    Pencil, Brush, Ruler, Hammer, Wrench, PenTool, Pipette,
-    Palette, Printer, FlaskConical, Factory,
-    Shield, Info, Settings, Search, Bell, Calendar, Home, Mail, Lock,
-    Eye, Layers, CircleDollarSign, TrendingUp, Wallet, Users, UserCheck, Phone,
-    CheckCircle2, Sparkles, Ship, Database, DollarSign, User, Trash
+    Box, Package, Scissors,
+    Truck, Barcode, ShoppingCart, Gift, Scale, Plane, Warehouse, FileText, Brush, Ruler, Hammer, Wrench, PenTool, Pipette,
+    Palette, Printer, FlaskConical, Factory, Home, Mail, Layers, TrendingUp, Wallet, Users, Phone, Ship, Database, DollarSign, User
 } from "lucide-react";
 
 export { Box, Package };
@@ -39,8 +35,7 @@ import {
     UmbrellaIcon as CustomUmbrella,
     PackageIcon as CustomPackage,
     SuppliesIcon as CustomSupplies,
-    MugIcon as CustomMug,
-    NotebookIcon as CustomNotebook
+    MugIcon as CustomMug
 } from "../custom-clothing-icons";
 
 export const ICON_GROUPS = [

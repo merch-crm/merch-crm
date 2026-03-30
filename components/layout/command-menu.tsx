@@ -176,7 +176,7 @@ export function CommandMenu() {
                                                 </div>
                                                 <div className="text-left">
                                                     <div className="text-sm font-bold text-slate-900 leading-tight whitespace-normal">{res.title}</div>
-                                                    <div className="text-[11px] text-slate-400 font-bold mt-0.5">{res.subtitle}</div>
+                                                    <div className="text-xs text-slate-400 font-bold mt-0.5">{res.subtitle}</div>
                                                 </div>
                                             </div>
                                             <div className="px-3 py-1 rounded-full bg-slate-100 text-xs font-black text-slate-500  group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">

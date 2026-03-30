@@ -46,12 +46,12 @@ export function MonthlyReportView({ data }: { data: MonthlyReport }) {
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b border-slate-100 bg-slate-50/20">
-                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Сотрудник</th>
-                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Дней</th>
-                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Всего часов</th>
-                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Ср. в день</th>
-                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Опозд.</th>
-                                    <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400 text-right">Ранний уход</th>
+                                    <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Сотрудник</th>
+                                    <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Дней</th>
+                                    <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Всего часов</th>
+                                    <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Ср. в день</th>
+                                    <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Опозд.</th>
+                                    <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400 text-right">Ранний уход</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,7 +59,7 @@ export function MonthlyReportView({ data }: { data: MonthlyReport }) {
                                     <tr key={emp.userId} className="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
                                         <td className="py-4 px-6">
                                             <p className="font-bold text-slate-900 text-sm">{emp.userName}</p>
-                                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">{emp.email}</p>
+                                            <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium">{emp.email}</p>
                                         </td>
                                         <td className="py-4 px-6">
                                             <span className="text-sm font-bold text-slate-600">

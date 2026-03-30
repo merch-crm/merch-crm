@@ -132,7 +132,7 @@ export const CategoryFilters = React.memo(({
                             type="button"
                             variant="ghost"
                             onClick={() => setFilterStatus(f.id as InventoryFilters["status"])}
-                            className={cn("crm-filter-tab flex-1 lg:flex-none text-[11px] sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0 rounded-[18px]",
+                            className={cn("crm-filter-tab flex-1 lg:flex-none text-xs sm:text-xs py-2 sm:py-0 px-2 sm:px-6 h-9 min-h-0 rounded-[18px]",
                                 isActive &&"active"
                             )}
                         >

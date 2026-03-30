@@ -14,6 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 import { pluralize } from "@/lib/pluralize";
 import type { UrgentTask } from "../../types";
 
@@ -22,7 +23,7 @@ interface UrgentTasksCardProps {
   className?: string;
 }
 
-const statusConfig: Record<string, { label: string; icon: React.ElementType; color: string }> = {
+const statusConfig: Record<string, { label: string; icon: IconType; color: string }> = {
   pending: { label: "Ожидает", icon: Clock, color: "text-slate-500" },
   in_progress: { label: "В работе", icon: PlayCircle, color: "text-blue-500" },
   paused: { label: "Пауза", icon: Pause, color: "text-amber-500" },

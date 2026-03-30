@@ -35,7 +35,7 @@ export const ClientTypeSwitch = memo(function ClientTypeSwitch({
 }: ClientTypeSwitchProps) {
     return (
         <div className="space-y-2">
-            <label className="text-[11px] font-black text-slate-400 ml-1">
+            <label className="text-xs font-black text-slate-400 ml-1">
                 Тип клиента
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -89,7 +89,7 @@ export const ClientTypeSwitch = memo(function ClientTypeSwitch({
                                 )}>
                                     {option.label}
                                 </p>
-                                <p className="text-[11px] text-slate-500 mt-0.5">
+                                <p className="text-xs text-slate-500 mt-0.5">
                                     {option.description}
                                 </p>
                             </div>

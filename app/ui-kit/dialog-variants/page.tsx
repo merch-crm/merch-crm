@@ -27,17 +27,17 @@ const Variant1 = () => {
                 {/* Main Info */}
                 <div className="grid grid-cols-3 gap-3">
                     <div className="col-span-2 space-y-2">
-                        <Label className="text-xs font-bold text-slate-700 uppercase">Название категории</Label>
+                        <Label className="text-xs font-bold text-slate-700 ">Название категории</Label>
                         <Input placeholder="Напр. Футболки" className="h-12 bg-slate-50/50 border-slate-200" />
                     </div>
                     <div className="col-span-1 space-y-2">
-                        <Label className="text-xs font-bold text-slate-700 uppercase">Артикул</Label>
-                        <Input placeholder="TS" className="h-12 bg-slate-50/50 border-slate-200 font-mono uppercase" />
+                        <Label className="text-xs font-bold text-slate-700 ">Артикул</Label>
+                        <Input placeholder="TS" className="h-12 bg-slate-50/50 border-slate-200 font-mono " />
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <Label className="text-xs font-bold text-slate-700 uppercase">Описание категории</Label>
+                    <Label className="text-xs font-bold text-slate-700 ">Описание категории</Label>
                     <Textarea
                         placeholder="Опциональное описание назначения этой категории..."
                         className="resize-none h-24 bg-slate-50/50 border-slate-200"
@@ -139,7 +139,7 @@ const Variant2 = () => {
                     <div className="p-4 border-b border-slate-100 flex items-center gap-3">
                         <div className="w-8 flex justify-center text-slate-400"><Hash className="w-5 h-5" /></div>
                         <div className="flex-1">
-                            <Input placeholder="Артикул (напр. TS)" className="border-0 bg-transparent p-0 h-auto rounded-none focus-visible:ring-0 text-base placeholder:text-slate-400 uppercase font-mono" />
+                            <Input placeholder="Артикул (напр. TS)" className="border-0 bg-transparent p-0 h-auto rounded-none focus-visible:ring-0 text-base placeholder:text-slate-400  font-mono" />
                         </div>
                     </div>
                     <div className="p-4 flex gap-3">
@@ -222,7 +222,7 @@ const Variant3 = () => {
                 </div>
             </div>
 
-            <div className="p-6 flex gap-8">
+            <div className="p-6 flex gap-3">
                 <div className="flex-1 space-y-5">
                     <div className="flex gap-3">
                         <div className="flex-[2] space-y-1.5">
@@ -231,7 +231,7 @@ const Variant3 = () => {
                         </div>
                         <div className="flex-1 space-y-1.5">
                             <Label className="text-sm font-semibold text-slate-700">Артикул (Код) *</Label>
-                            <Input placeholder="TS" className="h-10 font-mono uppercase" />
+                            <Input placeholder="TS" className="h-10 font-mono " />
                         </div>
                     </div>
 
@@ -270,7 +270,7 @@ const Variant3 = () => {
                             </div>
 
                             <div className="p-4 bg-white border-t border-slate-200 space-y-3">
-                                <Label className="text-xs font-bold text-slate-500 uppercase">Цветовая метка</Label>
+                                <Label className="text-xs font-bold text-slate-500 ">Цветовая метка</Label>
                                 <div className="grid grid-cols-5 gap-2">
                                     {['bg-primary', 'bg-rose-500', 'bg-emerald-500', 'bg-amber-500', 'bg-indigo-500', 'bg-cyan-500', 'bg-orange-500', 'bg-slate-700', 'bg-pink-500', 'bg-lime-500'].map((bg, i) => (
                                         <button key={i} className={cn("aspect-square rounded-full transition-transform hover:scale-110 flex items-center justify-center", bg)}>

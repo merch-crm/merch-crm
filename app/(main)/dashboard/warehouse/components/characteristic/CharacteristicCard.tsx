@@ -142,7 +142,7 @@ export function CharacteristicCard({
                                     {type.dataType === "density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") && " г/м²"}
                                 </span>
                                 {(attr.meta as AttributeMeta)?.isOversize && (
-                                    <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[11px] font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none">
+                                    <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-xs font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none">
                                         oversize
                                     </span>
                                 )}

@@ -14,12 +14,13 @@ import {
   Calculator
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 
 interface CalculatorTab {
   id: string;
   label: string;
   href: string;
-  icon: React.ElementType;
+  icon: IconType;
 }
 
 const calculatorTabs: CalculatorTab[] = [
@@ -27,43 +28,43 @@ const calculatorTabs: CalculatorTab[] = [
     id: "overview",
     label: "Обзор",
     href: "/dashboard/production/calculators",
-    icon: Calculator,
+    icon: Calculator as IconType,
   },
   {
     id: "dtf",
     label: "DTF",
     href: "/dashboard/production/calculators/dtf",
-    icon: Layers,
+    icon: Layers as IconType,
   },
   {
     id: "sublimation",
     label: "Сублимация",
     href: "/dashboard/production/calculators/sublimation",
-    icon: Droplets,
+    icon: Droplets as IconType,
   },
   {
     id: "dtg",
     label: "DTG",
     href: "/dashboard/production/calculators/dtg",
-    icon: Shirt,
+    icon: Shirt as IconType,
   },
   {
     id: "silkscreen",
     label: "Шелкография",
     href: "/dashboard/production/calculators/silkscreen",
-    icon: Grid3X3,
+    icon: Grid3X3 as IconType,
   },
   {
     id: "embroidery",
     label: "Вышивка",
     href: "/dashboard/production/calculators/embroidery",
-    icon: Scissors,
+    icon: Scissors as IconType,
   },
   {
     id: "print-application",
     label: "Нанесение",
     href: "/dashboard/production/calculators/print-application",
-    icon: Stamp,
+    icon: Stamp as IconType,
   },
 ];
 
@@ -102,7 +103,7 @@ export function CalculatorsTabs({ className }: CalculatorsTabsProps) {
                 key={tab.id}
                 href={tab.href}
                 className={cn(
-                  "relative flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-[13px] font-bold whitespace-nowrap transition-colors",
+                  "relative flex items-center gap-2 px-4 py-2.5 rounded-[14px] text-xs font-bold whitespace-nowrap transition-colors",
                   isActive
                     ? "text-white"
                     : "text-slate-500 hover:text-slate-900"

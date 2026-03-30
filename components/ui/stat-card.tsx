@@ -3,8 +3,16 @@
 import { cn } from"@/lib/utils";
 import { CardContent } from"@/components/ui/card";
 
+export type IconType = React.ComponentType<{ 
+    size?: number | string; 
+    className?: string; 
+    strokeWidth?: number | string;
+    color?: string;
+    style?: React.CSSProperties;
+}>;
+
 interface ModernStatCardProps {
-    icon: React.ElementType;
+    icon: IconType;
     value: string | number;
     label: string;
     subLabel?: string;
@@ -84,7 +92,7 @@ export function ModernStatCard({
             </div>
 
             <div className="space-y-1">
-                <p className="text-slate-400 text-[11px] font-black  mb-1">{label}</p>
+                <p className="text-slate-400 text-xs font-black  mb-1">{label}</p>
                 <div className="flex items-baseline gap-1">
                     <h3 suppressHydrationWarning className="text-3xl font-black text-slate-900  leading-none">
                         {value}
@@ -114,7 +122,7 @@ interface StatCardProps {
     title: string;
     value: string | number;
     subtitle?: string;
-    icon: React.ElementType;
+    icon: IconType;
     colorScheme?:"emerald" |"amber" |"rose" |"blue" |"purple" |"indigo" |"slate" |"primary";
     className?: string;
     loading?: boolean;

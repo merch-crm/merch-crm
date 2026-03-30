@@ -44,7 +44,7 @@ export default function CategoryBentoUiKit() {
                         <h2 className="text-2xl font-bold text-slate-900">1. Apple Glass Bento (Vibrant & Soft)</h2>
                         <p className="text-slate-500">Глубокие тени, полупрозрачность, крупные скругления и яркие акценты.</p>
                     </div>
-                    <div className="flex gap-4 p-8 rounded-[48px] bg-slate-100/50 border border-white max-w-6xl shadow-[inset_0_4px_24px_rgba(255,255,255,0.8)] mx-auto h-[800px] overflow-hidden">
+                    <div className="flex gap-3 p-8 rounded-[48px] bg-slate-100/50 border border-white max-w-6xl shadow-[inset_0_4px_24px_rgba(255,255,255,0.8)] mx-auto h-[800px] overflow-hidden">
 
                         {/* Sidebar */}
                         <aside className="w-[320px] shrink-0 bg-white/80 backdrop-blur-3xl rounded-[36px] border border-white/60 shadow-xl shadow-slate-200/50 p-6 flex flex-col relative overflow-hidden">
@@ -57,7 +57,7 @@ export default function CategoryBentoUiKit() {
                             <div className="space-y-4 flex-1">
                                 {steps.map(step => (
                                     <div key={step.id} className={cn(
-                                        "flex items-center gap-4 p-4 rounded-3xl transition-all",
+                                        "flex items-center gap-3 p-4 rounded-3xl transition-all",
                                         step.id === 1 ? "bg-primary text-white shadow-lg shadow-primary/30" : "text-slate-400 opacity-60"
                                     )}>
                                         <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center font-bold", step.id === 1 ? "bg-white/20" : "bg-slate-100 text-slate-500")}>
@@ -77,7 +77,7 @@ export default function CategoryBentoUiKit() {
                                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                     </div>
                                     <div>
-                                        <div className="text-[10px] uppercase font-bold text-slate-400">Черновик</div>
+                                        <div className="text-xs  font-bold text-slate-400">Черновик</div>
                                         <div className="text-xs font-bold text-slate-900">Сохранено</div>
                                     </div>
                                 </div>
@@ -85,10 +85,10 @@ export default function CategoryBentoUiKit() {
                         </aside>
 
                         {/* Main Content Area (Bento Layout) */}
-                        <main className="flex-1 flex flex-col gap-4 overflow-hidden">
+                        <main className="flex-1 flex flex-col gap-3 overflow-hidden">
                             {/* Top Level Category Selection */}
                             <div className="bg-white/80 backdrop-blur-3xl rounded-[36px] border border-white/60 shadow-xl shadow-slate-200/50 p-8 flex-1 min-h-[300px] flex flex-col">
-                                <div className="flex items-center gap-4 mb-8">
+                                <div className="flex items-center gap-3 mb-8">
                                     <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white shadow-lg shadow-slate-900/20">
                                         <LayoutGrid className="w-5 h-5" />
                                     </div>
@@ -98,10 +98,10 @@ export default function CategoryBentoUiKit() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-4 gap-4 flex-1">
+                                <div className="grid grid-cols-4 gap-3 flex-1">
                                     {topCategories.map(cat => (
                                         <div key={cat.id} className={cn(
-                                            "rounded-3xl border-2 p-6 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group",
+                                            "rounded-3xl border-2 p-6 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer group",
                                             cat.active ? "border-primary bg-primary/5 shadow-lg shadow-primary/10" : "border-slate-100 bg-white hover:border-slate-200 hover:shadow-md"
                                         )}>
                                             <div className={cn(
@@ -117,9 +117,9 @@ export default function CategoryBentoUiKit() {
                             </div>
 
                             {/* Subcategory Selection & Footer Bento Block */}
-                            <div className="flex gap-4 shrink-0 h-[280px]">
+                            <div className="flex gap-3 shrink-0 h-[280px]">
                                 <div className="bg-white/80 backdrop-blur-3xl rounded-[36px] border border-white/60 shadow-xl shadow-slate-200/50 p-8 flex-1 flex flex-col relative overflow-hidden">
-                                    <div className="flex items-center gap-4 mb-6 relative z-10">
+                                    <div className="flex items-center gap-3 mb-6 relative z-10">
                                         <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600">
                                             <LayoutGrid className="w-4 h-4" />
                                         </div>
@@ -162,56 +162,56 @@ export default function CategoryBentoUiKit() {
                         <h2 className="text-2xl font-bold text-slate-900">2. Neo-Brutalist Bento</h2>
                         <p className="text-slate-500">Жесткие черные рамки, плотные смещенные тени, контрастные цвета и никакой размытости.</p>
                     </div>
-                    <div className="flex gap-6 p-8 rounded-none bg-[#f4f4f0] border-4 border-black max-w-6xl mx-auto h-[800px] shadow-[16px_16px_0_0_rgba(0,0,0,1)]">
+                    <div className="flex gap-3 p-8 rounded-none bg-[#f4f4f0] border-4 border-black max-w-6xl mx-auto h-[800px] shadow-[16px_16px_0_0_rgba(0,0,0,1)]">
 
                         {/* Sidebar */}
                         <aside className="w-[300px] shrink-0 bg-white border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-6 flex flex-col">
-                            <button className="flex items-center gap-2 text-black font-black uppercase text-sm mb-10 w-fit border-b-2 border-black pb-1 hover:bg-black hover:text-white transition-colors">
+                            <button className="flex items-center gap-2 text-black font-black  text-sm mb-10 w-fit border-b-2 border-black pb-1 hover:bg-black hover:text-white transition-colors">
                                 &lt; Назад
                             </button>
-                            <h2 className="text-3xl font-black mb-10 uppercase tracking-tight">Новая<br />Позиция</h2>
+                            <h2 className="text-3xl font-black mb-10  tracking-tight">Новая<br />Позиция</h2>
 
                             <div className="space-y-4 flex-1">
                                 {steps.map(step => (
                                     <div key={step.id} className={cn(
-                                        "flex items-center gap-4 p-3 border-2 border-black transition-all",
+                                        "flex items-center gap-3 p-3 border-2 border-black transition-all",
                                         step.id === 1 ? "bg-yellow-300 shadow-[4px_4px_0_0_rgba(0,0,0,1)] -translate-y-1 -translate-x-1" : "bg-white opacity-50 grayscale"
                                     )}>
                                         <div className="w-10 h-10 border-2 border-black flex items-center justify-center font-black bg-white">
                                             {step.id}
                                         </div>
                                         <div>
-                                            <div className="font-black uppercase text-sm leading-tight">{step.name}</div>
-                                            <div className="text-[10px] font-bold uppercase">{step.desc}</div>
+                                            <div className="font-black  text-sm leading-tight">{step.name}</div>
+                                            <div className="text-xs font-bold ">{step.desc}</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
                             <div className="mt-auto h-[70px] bg-white border-4 border-black flex items-center justify-between px-4 shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
-                                <span className="font-black uppercase text-sm">Draft // Saved</span>
+                                <span className="font-black  text-sm">Draft // Saved</span>
                                 <div className="w-4 h-4 rounded-full bg-emerald-400 border-2 border-black" />
                             </div>
                         </aside>
 
                         {/* Main Content Area */}
-                        <main className="flex-1 flex flex-col gap-6 overflow-hidden">
+                        <main className="flex-1 flex flex-col gap-3 overflow-hidden">
                             {/* Top Level Category */}
                             <div className="bg-white border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex-1 min-h-[300px] flex flex-col">
                                 <div className="flex items-start justify-between border-b-4 border-black pb-6 mb-8">
                                     <div>
-                                        <h3 className="text-4xl font-black uppercase">Выбор категории</h3>
-                                        <p className="text-sm font-bold uppercase mt-2 bg-yellow-300 inline-block px-2 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]">Шаг 1</p>
+                                        <h3 className="text-4xl font-black ">Выбор категории</h3>
+                                        <p className="text-sm font-bold  mt-2 bg-yellow-300 inline-block px-2 border-2 border-black shadow-[2px_2px_0_0_rgba(0,0,0,1)]">Шаг 1</p>
                                     </div>
                                     <div className="w-16 h-16 bg-blue-400 border-4 border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] flex items-center justify-center">
                                         <LayoutGrid className="w-8 h-8 text-black" />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-4 gap-6 flex-1">
+                                <div className="grid grid-cols-4 gap-3 flex-1">
                                     {topCategories.map(cat => (
                                         <div key={cat.id} className={cn(
-                                            "border-4 border-black p-6 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer font-black uppercase text-center",
+                                            "border-4 border-black p-6 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer font-black  text-center",
                                             cat.active ? "bg-pink-400 shadow-[8px_8px_0_0_rgba(0,0,0,1)] -translate-y-2 -translate-x-2" : "bg-white hover:bg-slate-100 shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)]"
                                         )}>
                                             <div className="w-16 h-16 border-4 border-black bg-white flex items-center justify-center shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
@@ -224,13 +224,13 @@ export default function CategoryBentoUiKit() {
                             </div>
 
                             {/* Subcategory & Footer */}
-                            <div className="flex gap-6 shrink-0 h-[260px]">
+                            <div className="flex gap-3 shrink-0 h-[260px]">
                                 <div className="bg-white border-4 border-black shadow-[8px_8px_0_0_rgba(0,0,0,1)] p-8 flex-1 flex flex-col">
-                                    <h4 className="text-2xl font-black uppercase mb-6 pb-2 border-b-4 border-black inline-block">Подкатегория</h4>
-                                    <div className="flex flex-wrap gap-4">
+                                    <h4 className="text-2xl font-black  mb-6 pb-2 border-b-4 border-black inline-block">Подкатегория</h4>
+                                    <div className="flex flex-wrap gap-3">
                                         {subCategories.map(sub => (
                                             <div key={sub.id} className={cn(
-                                                "px-4 py-3 border-4 border-black flex items-center gap-3 cursor-pointer transition-all font-black uppercase",
+                                                "px-4 py-3 border-4 border-black flex items-center gap-3 cursor-pointer transition-all font-black ",
                                                 sub.active ? "bg-yellow-300 shadow-[4px_4px_0_0_rgba(0,0,0,1)] -translate-y-1 -translate-x-1" : "bg-white hover:bg-slate-100 shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
                                             )}>
                                                 {sub.name}
@@ -240,7 +240,7 @@ export default function CategoryBentoUiKit() {
                                 </div>
 
                                 <button className="w-[300px] bg-black border-4 border-black shadow-[8px_8px_0_0_rgba(236,72,153,1)] p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-pink-500 hover:text-black text-white hover:shadow-[12px_12px_0_0_rgba(0,0,0,1)] hover:-translate-y-1 hover:-translate-x-1 transition-all group">
-                                    <h4 className="font-black text-3xl mb-2 uppercase group-hover:block">Далее</h4>
+                                    <h4 className="font-black text-3xl mb-2  group-hover:block">Далее</h4>
                                     <ChevronRight className="w-12 h-12 stroke-[4]" />
                                 </button>
                             </div>
@@ -254,7 +254,7 @@ export default function CategoryBentoUiKit() {
                         <h2 className="text-2xl font-bold text-slate-900">3. Dark Mode Cyber Bento</h2>
                         <p className="text-slate-500">Глубокий темный фон (slate-950), неоновые акценты (border, свечение), моноширинные шрифты (детали).</p>
                     </div>
-                    <div className="flex gap-4 p-6 rounded-[32px] bg-slate-950 border border-slate-800 max-w-6xl mx-auto h-[800px] relative overflow-hidden">
+                    <div className="flex gap-3 p-6 rounded-[32px] bg-slate-950 border border-slate-800 max-w-6xl mx-auto h-[800px] relative overflow-hidden">
                         {/* Background glow lines */}
                         <div className="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
                         <div className="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-pink-500/30 to-transparent" />
@@ -264,14 +264,14 @@ export default function CategoryBentoUiKit() {
                             <button className="flex items-center gap-2 text-slate-500 font-mono text-xs hover:text-primary transition-colors mb-10 w-fit">
                                 &lt; RET_TO_PREV
                             </button>
-                            <h2 className="text-2xl font-bold text-white mb-2 uppercase tracking-widest">N_ITEM</h2>
-                            <div className="text-[10px] font-mono text-slate-500 mb-10 w-full border-b border-slate-800 pb-2">SYS.INIT_PROCEDURE</div>
+                            <h2 className="text-2xl font-bold text-white mb-2  tracking-widest">N_ITEM</h2>
+                            <div className="text-xs font-mono text-slate-500 mb-10 w-full border-b border-slate-800 pb-2">SYS.INIT_PROCEDURE</div>
 
                             <div className="space-y-2 flex-1 relative">
                                 <div className="absolute left-4 top-0 bottom-0 w-px bg-slate-800/80 -z-10" />
                                 {steps.map(step => (
                                     <div key={step.id} className={cn(
-                                        "flex items-center gap-4 p-3 rounded-2xl transition-all",
+                                        "flex items-center gap-3 p-3 rounded-2xl transition-all",
                                         step.id === 1 ? "bg-slate-800/80 border border-slate-700 shadow-[0_0_15px_rgba(93,0,255,0.2)]" : "opacity-50"
                                     )}>
                                         <div className={cn(
@@ -281,21 +281,21 @@ export default function CategoryBentoUiKit() {
                                             0{step.id}
                                         </div>
                                         <div>
-                                            <div className="font-bold text-sm text-white uppercase">{step.name}</div>
-                                            <div className="text-[9px] font-mono text-slate-400 uppercase">{step.desc}</div>
+                                            <div className="font-bold text-sm text-white ">{step.name}</div>
+                                            <div className="text-xs font-mono text-slate-400 ">{step.desc}</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
                             <div className="mt-auto h-[60px] bg-slate-900 rounded-2xl border border-slate-800 flex items-center justify-between px-4">
-                                <span className="font-mono text-[10px] text-slate-500">STATUS: SAVED</span>
+                                <span className="font-mono text-xs text-slate-500">STATUS: SAVED</span>
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)]" />
                             </div>
                         </aside>
 
                         {/* Main Content Area */}
-                        <main className="flex-1 flex flex-col gap-4">
+                        <main className="flex-1 flex flex-col gap-3">
                             {/* Top Level Category */}
                             <div className="bg-slate-900/50 backdrop-blur-md rounded-[24px] border border-slate-800 p-8 flex-1 min-h-[300px] flex flex-col relative overflow-hidden group/main">
                                 {/* Ambient glow */}
@@ -303,16 +303,16 @@ export default function CategoryBentoUiKit() {
 
                                 <div className="flex justify-between items-start mb-10 relative z-10 border-b border-slate-800 pb-4">
                                     <div>
-                                        <h3 className="text-3xl font-black text-white uppercase tracking-wider mb-1">Select_Category</h3>
+                                        <h3 className="text-3xl font-black text-white  tracking-wider mb-1">Select_Category</h3>
                                         <div className="text-xs font-mono text-slate-500">REQ_INPUT: TRUE // VAR: TYPE</div>
                                     </div>
                                     <div className="text-xs font-mono text-primary border border-primary/30 px-3 py-1 rounded bg-primary/10">STEP 01</div>
                                 </div>
 
-                                <div className="grid grid-cols-4 gap-4 flex-1 relative z-10">
+                                <div className="grid grid-cols-4 gap-3 flex-1 relative z-10">
                                     {topCategories.map(cat => (
                                         <div key={cat.id} className={cn(
-                                            "rounded-[20px] border p-6 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer relative overflow-hidden group",
+                                            "rounded-[20px] border p-6 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer relative overflow-hidden group",
                                             cat.active ? "border-pink-500 bg-pink-500/10 shadow-[0_0_20px_rgba(236,72,153,0.15)]" : "border-slate-800 bg-slate-900 hover:border-slate-700 hover:bg-slate-800"
                                         )}>
                                             {cat.active && <div className="absolute top-0 left-0 w-full h-1 bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.8)]" />}
@@ -322,20 +322,20 @@ export default function CategoryBentoUiKit() {
                                             )}>
                                                 <cat.icon className="w-8 h-8 stroke-[1.5]" />
                                             </div>
-                                            <span className={cn("font-bold uppercase tracking-wide text-sm", cat.active ? "text-white" : "text-slate-400")}>{cat.name}</span>
+                                            <span className={cn("font-bold  tracking-wide text-sm", cat.active ? "text-white" : "text-slate-400")}>{cat.name}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
                             {/* Subcategory & Footer */}
-                            <div className="flex gap-4 shrink-0 h-[220px]">
+                            <div className="flex gap-3 shrink-0 h-[220px]">
                                 <div className="bg-slate-900/50 backdrop-blur-md rounded-[24px] border border-slate-800 p-6 flex-1 flex flex-col relative">
-                                    <div className="text-[10px] font-mono text-slate-500 mb-4 uppercase">Refine_Properties();</div>
+                                    <div className="text-xs font-mono text-slate-500 mb-4 ">Refine_Properties();</div>
                                     <div className="flex flex-wrap gap-3">
                                         {subCategories.map(sub => (
                                             <div key={sub.id} className={cn(
-                                                "px-4 py-2 rounded-xl border flex items-center gap-3 cursor-pointer transition-all font-mono text-xs uppercase",
+                                                "px-4 py-2 rounded-xl border flex items-center gap-3 cursor-pointer transition-all font-mono text-xs ",
                                                 sub.active ? "border-pink-500 bg-pink-500/10 text-pink-400 shadow-[inset_0_0_10px_rgba(236,72,153,0.2)]" : "border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-700 hover:text-white"
                                             )}>
                                                 {sub.active && <span className="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_5px_rgba(236,72,153,0.8)]" />}
@@ -347,7 +347,7 @@ export default function CategoryBentoUiKit() {
 
                                 <button className="w-[180px] bg-primary rounded-[24px] border border-primary shadow-[0_0_30px_rgba(93,0,255,0.3)] p-6 flex flex-col items-center justify-center cursor-pointer hover:bg-primary-hover hover:scale-95 transition-all group">
                                     <ChevronRight className="w-10 h-10 stroke-[2] text-white group-hover:translate-x-1 transition-transform mb-2" />
-                                    <span className="font-mono text-xs uppercase text-white font-bold opacity-80">Execute_Next</span>
+                                    <span className="font-mono text-xs  text-white font-bold opacity-80">Execute_Next</span>
                                 </button>
                             </div>
                         </main>
@@ -360,7 +360,7 @@ export default function CategoryBentoUiKit() {
                         <h2 className="text-2xl font-bold text-slate-900">4. Pastel Soft Bento</h2>
                         <p className="text-slate-500">Пастельные заливки блоков, отсутствие границ (только фон), очень круглые формы, мягкость.</p>
                     </div>
-                    <div className="flex gap-4 p-8 rounded-[48px] bg-white border border-slate-100 max-w-6xl mx-auto h-[800px] shadow-sm">
+                    <div className="flex gap-3 p-8 rounded-[48px] bg-white border border-slate-100 max-w-6xl mx-auto h-[800px] shadow-sm">
 
                         {/* Sidebar */}
                         <aside className="w-[300px] shrink-0 bg-rose-50 rounded-[32px] p-8 flex flex-col">
@@ -372,7 +372,7 @@ export default function CategoryBentoUiKit() {
                             <div className="space-y-2 flex-1 relative">
                                 {steps.map(step => (
                                     <div key={step.id} className={cn(
-                                        "flex items-center gap-4 p-4 rounded-[24px] transition-all",
+                                        "flex items-center gap-3 p-4 rounded-[24px] transition-all",
                                         step.id === 1 ? "bg-white shadow-sm text-rose-950" : "text-rose-400/60"
                                     )}>
                                         <div className={cn(
@@ -395,15 +395,15 @@ export default function CategoryBentoUiKit() {
                         </aside>
 
                         {/* Main Content Area */}
-                        <main className="flex-1 flex flex-col gap-4">
+                        <main className="flex-1 flex flex-col gap-3">
                             {/* Top Level Category */}
                             <div className="bg-slate-50 rounded-[32px] p-8 flex-1 min-h-[300px] flex flex-col">
                                 <h3 className="text-3xl font-black text-slate-800 mb-8 text-center pt-4">Какую позицию добавляем?</h3>
 
-                                <div className="grid grid-cols-4 gap-4 flex-1">
+                                <div className="grid grid-cols-4 gap-3 flex-1">
                                     {topCategories.map(cat => (
                                         <div key={cat.id} className={cn(
-                                            "rounded-[32px] p-6 flex flex-col items-center justify-center gap-4 transition-all cursor-pointer group",
+                                            "rounded-[32px] p-6 flex flex-col items-center justify-center gap-3 transition-all cursor-pointer group",
                                             cat.active ? "bg-white shadow-md shadow-slate-200/50 scale-105 z-10" : "bg-slate-200/50 hover:bg-slate-200"
                                         )}>
                                             <div className={cn(
@@ -419,7 +419,7 @@ export default function CategoryBentoUiKit() {
                             </div>
 
                             {/* Subcategory & Footer */}
-                            <div className="flex gap-4 shrink-0 h-[240px]">
+                            <div className="flex gap-3 shrink-0 h-[240px]">
                                 <div className="bg-indigo-50/70 rounded-[32px] p-8 flex-1 flex flex-col justify-center items-center text-center relative overflow-hidden">
                                     {/* Subtle background element */}
                                     <LayoutGrid className="absolute -left-10 -bottom-10 w-64 h-64 text-indigo-900/[0.03] pointer-events-none" />
@@ -465,7 +465,7 @@ export default function CategoryBentoUiKit() {
                             <div className="space-y-8 flex-1">
                                 {steps.map((step, idx) => (
                                     <div key={step.id} className={cn(
-                                        "flex items-baseline gap-4",
+                                        "flex items-baseline gap-3",
                                         step.id === 1 ? "text-black" : "text-slate-300"
                                     )}>
                                         <div className="font-mono text-xs w-4">0{idx + 1}</div>
@@ -488,13 +488,13 @@ export default function CategoryBentoUiKit() {
                             <div className="bg-white p-12 flex-1 min-h-[400px] flex flex-col">
                                 <h3 className="text-6xl font-black text-black tracking-tighter mb-12">Category.</h3>
 
-                                <div className="grid grid-cols-2 gap-x-8 gap-y-8 flex-1">
+                                <div className="grid grid-cols-2 gap-x-3 gap-y-3 flex-1">
                                     {topCategories.map(cat => (
                                         <div key={cat.id} className={cn(
                                             "border-b-2 pb-6 flex items-end justify-between transition-all cursor-pointer group",
                                             cat.active ? "border-black" : "border-slate-100 hover:border-slate-300"
                                         )}>
-                                            <div className="flex flex-col gap-4">
+                                            <div className="flex flex-col gap-3">
                                                 <div className={cn("w-12 h-12 flex items-center justify-center rounded-full transition-colors", cat.active ? "bg-black text-white" : "bg-slate-50 text-slate-400 group-hover:bg-slate-100")}>
                                                     <cat.icon className="w-5 h-5 stroke-[1.5]" />
                                                 </div>
@@ -509,11 +509,11 @@ export default function CategoryBentoUiKit() {
                             {/* Subcategory & Footer */}
                             <div className="flex border-t border-slate-200 shrink-0 h-[280px]">
                                 <div className="bg-white p-12 flex-1 border-r border-slate-200">
-                                    <h4 className="text-sm font-bold uppercase tracking-widest text-slate-400 mb-8">Refine Search</h4>
+                                    <h4 className="text-sm font-bold  tracking-widest text-slate-400 mb-8">Refine Search</h4>
                                     <div className="flex flex-col gap-3">
                                         {subCategories.map(sub => (
                                             <div key={sub.id} className={cn(
-                                                "flex items-center gap-4 cursor-pointer group w-fit",
+                                                "flex items-center gap-3 cursor-pointer group w-fit",
                                                 sub.active ? "text-black" : "text-slate-400"
                                             )}>
                                                 <div className={cn("w-6 h-px transition-all", sub.active ? "bg-black w-8" : "bg-transparent group-hover:bg-slate-300")} />
@@ -524,7 +524,7 @@ export default function CategoryBentoUiKit() {
                                 </div>
 
                                 <button className="w-[320px] bg-white hover:bg-black hover:text-white p-12 flex flex-col items-start justify-between cursor-pointer transition-colors group">
-                                    <span className="text-sm font-bold uppercase tracking-widest opacity-50 group-hover:opacity-100 transition-opacity">Next Step</span>
+                                    <span className="text-sm font-bold  tracking-widest opacity-50 group-hover:opacity-100 transition-opacity">Next Step</span>
                                     <div className="flex items-center justify-between w-full">
                                         <span className="text-5xl font-light">Proceed</span>
                                         <ChevronRight className="w-12 h-12 stroke-[1]" />

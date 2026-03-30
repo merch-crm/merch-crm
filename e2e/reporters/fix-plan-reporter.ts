@@ -41,8 +41,8 @@ class FixPlanReporter implements Reporter {
         return 'Требуется ручной анализ ошибки.'
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async onEnd(result: FullResult) {
+     
+    async onEnd(_result: FullResult) {
         if (this.failures.length === 0) {
             console.log('\n✅ Все тесты прошли успешно!\n')
             return

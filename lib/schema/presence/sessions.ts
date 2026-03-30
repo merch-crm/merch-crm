@@ -62,3 +62,6 @@ export const dailyWorkStatsRelations = relations(dailyWorkStats, ({ one }) => ({
         references: [users.id],
     }),
 }));
+
+export type WorkSession = typeof workSessions.$inferSelect;
+export type DailyWorkStat = typeof dailyWorkStats.$inferSelect;

@@ -66,7 +66,7 @@ export function ActiveUsersList({ monitoringData }: ActiveUsersListProps) {
                                             <p className="text-xs font-bold text-slate-900">
                                                 {user.name}
                                             </p>
-                                            <p className="text-[11px] text-slate-400 font-medium">
+                                            <p className="text-xs text-slate-400 font-medium">
                                                 {user.email}
                                             </p>
                                         </div>

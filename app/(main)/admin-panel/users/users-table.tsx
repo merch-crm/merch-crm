@@ -34,8 +34,8 @@ interface UsersTableProps {
     totalItems: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function UsersTable({ initialUsers, error, currentPage, totalItems }: UsersTableProps) {
+ 
+export function UsersTable({ initialUsers, error, currentPage: _currentPage, totalItems: _totalItems }: UsersTableProps) {
     const { state, actions, router, pathname } = useUsersTable();
     const { toast } = useToast();
 

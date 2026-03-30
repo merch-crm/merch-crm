@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 import type { NotificationsData, SystemNotification, NotificationType, NotificationPriority } from "../../types";
 
 interface NotificationsCardProps {
@@ -24,13 +25,13 @@ interface NotificationsCardProps {
   className?: string;
 }
 
-const typeConfig: Record<NotificationType, { icon: React.ElementType; label: string }> = {
-  overdue_task: { icon: AlertTriangle, label: "Просрочка" },
-  equipment_maintenance: { icon: Wrench, label: "ТО" },
-  low_material: { icon: Package, label: "Склад" },
-  unassigned_order: { icon: UserX, label: "Назначение" },
-  system_alert: { icon: AlertCircle, label: "Алерт" },
-  approval_needed: { icon: Clock, label: "Ожидание" },
+const typeConfig: Record<NotificationType, { icon: IconType; label: string }> = {
+  overdue_task: { icon: AlertTriangle as IconType, label: "Просрочка" },
+  equipment_maintenance: { icon: Wrench as IconType, label: "ТО" },
+  low_material: { icon: Package as IconType, label: "Склад" },
+  unassigned_order: { icon: UserX as IconType, label: "Назначение" },
+  system_alert: { icon: AlertCircle as IconType, label: "Алерт" },
+  approval_needed: { icon: Clock as IconType, label: "Ожидание" },
 };
 
 const priorityConfig: Record<NotificationPriority, { color: string; bgColor: string; borderColor: string; iconBg: string }> = {

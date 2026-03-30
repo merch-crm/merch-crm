@@ -66,7 +66,7 @@ export function AttributesSection({
                                     <div className="w-7 h-7 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500 group-hover:text-slate-900 transition-colors">
                                         <Icon className="w-3.5 h-3.5" />
                                     </div>
-                                    <span className="text-[11px] font-black text-slate-400">{item.label}</span>
+                                    <span className="text-xs font-black text-slate-400">{item.label}</span>
                                 </div>
                                 <span className="text-base font-black text-slate-900 leading-tight">{item.value}</span>
                             </div>
@@ -111,7 +111,7 @@ export function AttributesSection({
                         {formData.features && formData.features.length > 0 && (
                             <div className="space-y-3">
                                 <h4 className="text-xs font-black text-slate-400 leading-none">Особенности</h4>
-                                <div className="flex flex-wrap gap-2 text-[11px] font-bold">
+                                <div className="flex flex-wrap gap-2 text-xs font-bold">
                                     {formData.features.includes("glued_valve") && (
                                         <span className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100">Клеевой клапан</span>
                                     )}
@@ -170,7 +170,7 @@ export function AttributesSection({
                                 {filteredItems.map((chip) => (
                                     <div key={chip.slug} className="px-4 py-2 bg-slate-50 rounded-xl border border-slate-200/50 flex items-center gap-3 shadow-sm group hover:border-slate-300 transition-all">
                                         <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-slate-900 transition-colors" />
-                                        <span className="text-[11px] font-bold text-slate-700">{chip.label}:</span>
+                                        <span className="text-xs font-bold text-slate-700">{chip.label}:</span>
                                         <span className="text-sm font-bold text-slate-900">{chip.displayValue}</span>
                                     </div>
                                 ))}

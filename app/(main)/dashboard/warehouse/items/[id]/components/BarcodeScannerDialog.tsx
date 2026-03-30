@@ -106,7 +106,7 @@ export function BarcodeScannerDialog({
                         </div>
                         {error && (
                             <div className="absolute inset-0 flex items-center justify-center p-6 text-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
-                                <p className="text-rose-400 text-[11px] font-bold leading-relaxed">{error}</p>
+                                <p className="text-rose-400 text-xs font-bold leading-relaxed">{error}</p>
                             </div>
                         )}
                     </div>

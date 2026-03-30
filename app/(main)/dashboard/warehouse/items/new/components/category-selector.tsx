@@ -221,7 +221,7 @@ export function CategorySelector({
                                         {createElement(IconComponent, { className: "w-4 h-4" })}
                                     </span>
                                 </div>
-                                <h3 className="text-[11px] font-bold text-slate-900 leading-tight text-center w-full break-words">
+                                <h3 className="text-xs font-bold text-slate-900 leading-tight text-center w-full break-words">
                                     {category.name}
                                 </h3>
                             </button>
@@ -281,7 +281,7 @@ export function CategorySelector({
                             {/* Text content */}
                             <div className="flex flex-col items-center w-full min-h-0">
                                 <h3 className={cn("font-bold text-slate-900 break-words leading-tight tracking-tight mt-0.5 sm:mt-0",
-                                    isCompact ? "text-xs sm:text-sm mb-0" : "text-[11px] sm:text-lg mb-0 sm:mb-0.5"
+                                    isCompact ? "text-xs sm:text-sm mb-0" : "text-xs sm:text-lg mb-0 sm:mb-0.5"
                                 )}>
                                     {category.name}
                                 </h3>
@@ -289,14 +289,14 @@ export function CategorySelector({
                                 {/* Stats — desktop/PC: Visible only when not compact */}
                                 {!isCompact && (
                                     <div className="hidden xl:flex flex-col items-center w-full">
-                                        <p className="text-[11px] text-slate-400 font-bold mt-1 mb-3">
+                                        <p className="text-xs text-slate-400 font-bold mt-1 mb-3">
                                             0 {pluralize(0, "активный SKU", "активных SKU", "активных SKU")}
                                         </p>
                                         <div className="w-full h-px bg-slate-100 mb-2" />
                                         <div className="text-[32px] sm:text-[40px] font-black text-slate-900 leading-none tracking-tighter mb-0.5 sm:mb-1 mt-3">
                                             0
                                         </div>
-                                        <div className="text-[11px] font-bold mb-1 text-slate-500">
+                                        <div className="text-xs font-bold mb-1 text-slate-500">
                                             {pluralize(0, "единица", "единицы", "единиц")}
                                         </div>
                                     </div>

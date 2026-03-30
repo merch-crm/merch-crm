@@ -26,7 +26,7 @@ export default function HeadersUIKit() {
                 </div>
             </header>
 
-            <div className="max-w-[1480px] mx-auto flex flex-col gap-12">
+            <div className="max-w-[1480px] mx-auto flex flex-col gap-3">
 
                 {/* Variant 1 */}
                 <section>
@@ -62,7 +62,7 @@ export default function HeadersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">2. Action-Oriented</h2>
                     <div className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6">
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-black text-xs">M</div>
                             </div>
@@ -80,7 +80,7 @@ export default function HeadersUIKit() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <Button className="rounded-full shadow-md shadow-primary/20 bg-primary hover:bg-primary/90"><Plus className="w-4 h-4 mr-2" /> Создать заказ</Button>
                             <div className="w-px h-6 bg-slate-200"></div>
                             <Button variant="ghost" size="icon" className="text-slate-500"><Bell className="w-5 h-5" /></Button>
@@ -109,14 +109,14 @@ export default function HeadersUIKit() {
 
                         <div className="flex-1"></div>
 
-                        <div className="flex items-center gap-5">
+                        <div className="flex items-center gap-3">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <Input placeholder="Поиск..." className="w-52 pl-9 h-9 text-sm rounded-lg border-slate-200 bg-slate-50 focus:bg-white" />
                             </div>
 
                             <div className="flex flex-col items-end">
-                                <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400">Баланс</span>
+                                <span className="text-xs  tracking-wider font-bold text-slate-400">Баланс</span>
                                 <span className="text-sm font-black text-slate-900">450 200 ₽</span>
                             </div>
 
@@ -132,11 +132,11 @@ export default function HeadersUIKit() {
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">4. Breadcrumb Integrated</h2>
                     <div className="bg-white border-b border-slate-200 flex flex-col">
                         <div className="h-14 flex items-center justify-between px-6">
-                            <div className="flex items-center gap-6">
-                                <div className="font-black text-xl text-slate-900 tracking-tighter uppercase flex items-center gap-1">
+                            <div className="flex items-center gap-3">
+                                <div className="font-black text-xl text-slate-900 tracking-tighter  flex items-center gap-1">
                                     <Box className="text-primary w-5 h-5" /> MRCH.
                                 </div>
-                                <nav className="flex items-center gap-4 border-l border-slate-200 pl-6 h-6">
+                                <nav className="flex items-center gap-3 border-l border-slate-200 pl-6 h-6">
                                     <span className="text-sm font-bold text-slate-900 cursor-pointer">Дашборд</span>
                                     <span className="text-sm font-bold text-slate-500 hover:text-slate-900 cursor-pointer">Склад</span>
                                     <span className="text-sm font-bold text-slate-500 hover:text-slate-900 cursor-pointer">Заказы</span>
@@ -164,7 +164,7 @@ export default function HeadersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">5. Utility Focused</h2>
                     <div className="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6">
-                        <div className="flex items-center gap-8">
+                        <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
                                 <div className="w-8 h-8 bg-slate-900 rounded-full flex items-center justify-center text-white shadow-md">
                                     <Box className="w-4 h-4" />
@@ -192,7 +192,7 @@ export default function HeadersUIKit() {
 
                             <div className="relative cursor-pointer w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700">
                                 <Bell className="w-5 h-5" />
-                                <div className="absolute top-2 right-2 flex items-center justify-center min-w-4 h-4 px-1 bg-red-500 text-white text-[10px] font-bold rounded-full border-2 border-white shadow-sm">3</div>
+                                <div className="absolute top-2 right-2 flex items-center justify-center min-w-4 h-4 px-1 bg-red-500 text-white text-xs font-bold rounded-full border-2 border-white shadow-sm">3</div>
                             </div>
 
                             <Avatar className="w-9 h-9 border border-slate-200 ml-2 shadow-sm">
@@ -211,8 +211,8 @@ export default function HeadersUIKit() {
                             <span className="font-extrabold text-lg text-slate-900 ml-2 tracking-tighter">CloudCRM</span>
                         </div>
 
-                        <div className="flex items-center gap-8">
-                            <nav className="flex gap-6">
+                        <div className="flex items-center gap-3">
+                            <nav className="flex gap-3">
                                 <span className="text-sm font-bold text-indigo-600 cursor-pointer">Рабочее место</span>
                                 <span className="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Задачи</span>
                                 <span className="text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors cursor-pointer">Команда</span>
@@ -284,14 +284,14 @@ export default function HeadersUIKit() {
                                     className="w-full pl-11 pr-16 bg-slate-100 hover:bg-slate-50 focus:bg-white border-transparent focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 h-11 transition-all font-semibold rounded-2xl shadow-inner text-sm"
                                 />
                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1 pointer-events-none">
-                                    <kbd className="px-1.5 py-0.5 border border-slate-200 rounded-md text-[10px] font-bold font-mono text-slate-500 bg-white shadow-sm">⌘</kbd>
-                                    <kbd className="px-1.5 py-0.5 border border-slate-200 rounded-md text-[10px] font-bold font-mono text-slate-500 bg-white shadow-sm">K</kbd>
+                                    <kbd className="px-1.5 py-0.5 border border-slate-200 rounded-md text-xs font-bold font-mono text-slate-500 bg-white shadow-sm">⌘</kbd>
+                                    <kbd className="px-1.5 py-0.5 border border-slate-200 rounded-md text-xs font-bold font-mono text-slate-500 bg-white shadow-sm">K</kbd>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="flex flex-shrink-0 items-center justify-end gap-5 w-1/4">
-                            <nav className="flex items-center gap-4 text-sm font-bold mr-4">
+                        <div className="flex flex-shrink-0 items-center justify-end gap-3 w-1/4">
+                            <nav className="flex items-center gap-3 text-sm font-bold mr-4">
                                 <span className="text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">Помощь</span>
                             </nav>
                             <div className="w-px h-6 bg-slate-200"></div>
@@ -308,8 +308,8 @@ export default function HeadersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">9. Split Navigation</h2>
                     <div className="bg-white border-b border-slate-200 h-16 flex items-center px-4">
-                        <div className="flex items-center gap-6 flex-1">
-                            <div className="flex items-center gap-2 text-slate-900 font-black tracking-tight text-xl ml-2 uppercase">Core.</div>
+                        <div className="flex items-center gap-3 flex-1">
+                            <div className="flex items-center gap-2 text-slate-900 font-black tracking-tight text-xl ml-2 ">Core.</div>
                             <nav className="flex bg-slate-100 p-1 rounded-xl shadow-inner">
                                 <button className="px-3 py-1.5 bg-white text-slate-900 rounded-lg shadow-sm font-bold text-sm border border-slate-200/50">Дашборд</button>
                                 <button className="px-3 py-1.5 text-slate-500 hover:text-slate-900 rounded-lg font-bold text-sm transition-colors">Заказы</button>
@@ -322,8 +322,8 @@ export default function HeadersUIKit() {
                             <input type="text" placeholder="Поиск..." className="w-full pl-9 pr-3 h-full outline-none text-sm font-medium bg-transparent" />
                         </div>
 
-                        <div className="flex items-center justify-end flex-1 gap-6">
-                            <nav className="flex gap-4">
+                        <div className="flex items-center justify-end flex-1 gap-3">
+                            <nav className="flex gap-3">
                                 <span className="text-sm font-bold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">Финансы</span>
                                 <span className="text-sm font-bold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors">Склад</span>
                                 <span className="text-sm font-bold text-slate-500 hover:text-slate-900 cursor-pointer transition-colors flex items-center gap-1"><Settings className="w-4 h-4" /> Настройки</span>
@@ -340,11 +340,11 @@ export default function HeadersUIKit() {
                 <section>
                     <h2 className="text-sm font-bold text-slate-500 mb-3 px-6">10. Compact High-Density</h2>
                     <div className="bg-white border-b border-slate-200 h-12 flex items-center justify-between px-6 shadow-sm">
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-3">
                             {/* Favicon style logo */}
-                            <div className="w-6 h-6 bg-gradient-to-tr from-slate-900 to-slate-700 rounded-md border-b-2 border-slate-950 flex items-center justify-center text-white text-[10px] font-black shadow-inner tracking-tighter shadow-slate-900/50">M.</div>
+                            <div className="w-6 h-6 bg-gradient-to-tr from-slate-900 to-slate-700 rounded-md border-b-2 border-slate-950 flex items-center justify-center text-white text-xs font-black shadow-inner tracking-tighter shadow-slate-900/50">M.</div>
 
-                            <nav className="flex items-center gap-5 text-[12px] font-extrabold tracking-widest uppercase">
+                            <nav className="flex items-center gap-3 text-[12px] font-extrabold tracking-widest ">
                                 <span className="text-indigo-600 cursor-pointer">Dashboard</span>
                                 <span className="text-slate-400 hover:text-slate-900 cursor-pointer transition-colors">Orders</span>
                                 <span className="text-slate-400 hover:text-slate-900 cursor-pointer transition-colors">Inventory</span>
@@ -352,7 +352,7 @@ export default function HeadersUIKit() {
                             </nav>
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3">
                             <div className="relative">
                                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
                                 <input
@@ -366,7 +366,7 @@ export default function HeadersUIKit() {
                             <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 py-1 px-2 rounded-md transition-colors">
                                 <Avatar className="w-6 h-6 rounded-md shadow-sm border border-slate-200">
                                     <AvatarImage src="https://i.pravatar.cc/150?img=12" />
-                                    <AvatarFallback className="text-[10px] rounded-md font-bold bg-indigo-50 text-indigo-700">AL</AvatarFallback>
+                                    <AvatarFallback className="text-xs rounded-md font-bold bg-indigo-50 text-indigo-700">AL</AvatarFallback>
                                 </Avatar>
                                 <span className="text-xs font-bold text-slate-700">Alex Newman</span>
                                 <ChevronDown className="w-3 h-3 text-slate-400" />

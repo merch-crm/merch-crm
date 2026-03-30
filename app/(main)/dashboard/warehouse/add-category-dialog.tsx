@@ -175,7 +175,7 @@ export function AddCategoryDialog({
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">
                                     {parentId ?"Подкатегория" :"Новая категория"}
                                 </h2>
-                                <p className="text-[11px] font-bold text-slate-700 mt-0.5">Настройка параметров раздела</p>
+                                <p className="text-xs font-bold text-slate-700 mt-0.5">Настройка параметров раздела</p>
                             </div>
                         </div>
                     </div>

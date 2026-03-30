@@ -13,6 +13,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 import type { ConsumptionItem } from "../../types";
 
 interface ConsumptionCardsProps {
@@ -21,13 +22,13 @@ interface ConsumptionCardsProps {
 }
 
 // Иконки для разных типов материалов
-const CONSUMPTION_ICONS: Record<string, React.ElementType> = {
-    ink_white: Droplets,
-    ink_cmyk: Droplets,
-    powder: Wind,
-    film: Layers,
-    paper: FileText,
-    primer: Package,
+const CONSUMPTION_ICONS: Record<string, IconType> = {
+    ink_white: Droplets as IconType,
+    ink_cmyk: Droplets as IconType,
+    powder: Wind as IconType,
+    film: Layers as IconType,
+    paper: FileText as IconType,
+    primer: Package as IconType,
 };
 
 // Цвета для разных типов материалов
@@ -146,20 +147,20 @@ interface StockStatusBadgeProps {
 }
 
 function StockStatusBadge({ status, available }: StockStatusBadgeProps) {
-    const config = {
+    const config: Record<string, { variant: "default" | "secondary" | "destructive", icon: IconType, text: string }> = {
         ok: {
-            variant: "default" as const,
-            icon: Check,
+            variant: "default",
+            icon: Check as IconType,
             text: "В наличии",
         },
         low: {
-            variant: "secondary" as const, // Shadcn doesn't have warning variant typically
-            icon: AlertTriangle,
+            variant: "secondary",
+            icon: AlertTriangle as IconType,
             text: "Мало",
         },
         none: {
-            variant: "destructive" as const,
-            icon: AlertTriangle,
+            variant: "destructive",
+            icon: AlertTriangle as IconType,
             text: "Нет",
         },
     };

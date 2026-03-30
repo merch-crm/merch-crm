@@ -9,7 +9,7 @@ export default function PaginationVariantsPage() {
         <div className="min-h-screen bg-slate-50 pb-20">
             {/* Header */}
             <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-                <div className="max-w-5xl mx-auto px-6 h-16 flex items-center gap-4">
+                <div className="max-w-5xl mx-auto px-6 h-16 flex items-center gap-3">
                     <Button
                         variant="ghost"
                         size="icon"
@@ -115,7 +115,7 @@ export default function PaginationVariantsPage() {
 
                 {/* Variant 5 */}
                 <VariantSection title="5. Креативный с прогрессом (Progressive Segmented)">
-                    <div className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-200 w-full max-w-xl mx-auto flex flex-col gap-4">
+                    <div className="bg-white p-5 rounded-[24px] shadow-sm border border-slate-200 w-full max-w-xl mx-auto flex flex-col gap-3">
                         <div className="flex items-center justify-between px-2">
                             <span className="text-sm font-semibold text-slate-900">Страница 2 из 8</span>
                             <span className="text-xs font-medium text-slate-500">20 из 78 записей</span>
@@ -167,7 +167,7 @@ export default function PaginationVariantsPage() {
                 {/* Variant 7 */}
                 <VariantSection title="7. Плиточная навигация (Tiles Layout)">
                     <div className="bg-white p-6 rounded-2xl border border-slate-200 w-full">
-                        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-8">
+                        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
                             <button className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200 text-slate-400 flex items-center justify-center cursor-not-allowed">
                                 <ChevronLeft className="w-6 h-6" />
                             </button>
@@ -192,16 +192,16 @@ export default function PaginationVariantsPage() {
                 <VariantSection title="8. Простая строка (Simple Inline)">
                     <div className="w-full flex items-center justify-between px-2 py-4 border-t border-slate-200 text-sm">
                         <span className="text-slate-500">Показываются результаты с 1 по 10 (всего 45)</span>
-                        <div className="flex items-center gap-6">
-                            <button className="font-semibold text-slate-400 cursor-not-allowed uppercase tracking-wider text-xs">Пред</button>
-                            <div className="flex items-center gap-4 text-slate-600 font-medium">
+                        <div className="flex items-center gap-3">
+                            <button className="font-semibold text-slate-400 cursor-not-allowed  tracking-wider text-xs">Пред</button>
+                            <div className="flex items-center gap-3 text-slate-600 font-medium">
                                 <button className="text-primary font-bold border-b-2 border-primary pb-0.5">1</button>
                                 <button className="hover:text-slate-900 pb-0.5 border-b-2 border-transparent hover:border-slate-300 transition-all">2</button>
                                 <button className="hover:text-slate-900 pb-0.5 border-b-2 border-transparent hover:border-slate-300 transition-all">3</button>
                                 <span className="text-slate-400">...</span>
                                 <button className="hover:text-slate-900 pb-0.5 border-b-2 border-transparent hover:border-slate-300 transition-all">5</button>
                             </div>
-                            <button className="font-semibold text-slate-900 hover:text-primary transition-colors uppercase tracking-wider text-xs">След</button>
+                            <button className="font-semibold text-slate-900 hover:text-primary transition-colors  tracking-wider text-xs">След</button>
                         </div>
                     </div>
                 </VariantSection>
@@ -215,7 +215,7 @@ export default function PaginationVariantsPage() {
                             </button>
                             <div className="flex flex-col items-center">
                                 <span className="text-slate-900 font-bold text-lg">Страница 1</span>
-                                <span className="text-slate-400 font-medium text-xs uppercase tracking-wide">из 12</span>
+                                <span className="text-slate-400 font-medium text-xs  tracking-wide">из 12</span>
                             </div>
                             <button className="w-14 h-14 flex items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 active:scale-95 transition-all">
                                 <ArrowRight className="w-6 h-6" />
@@ -229,7 +229,7 @@ export default function PaginationVariantsPage() {
                     <div className="w-full h-32 bg-slate-200/50 rounded-2xl border border-slate-200 border-dashed relative flex items-end justify-center pb-6">
                         <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">Зона контента</span>
 
-                        <div className="bg-slate-900 text-white p-2 rounded-2xl shadow-2xl flex items-center gap-4 relative z-10 w-max max-w-[90%]">
+                        <div className="bg-slate-900 text-white p-2 rounded-2xl shadow-2xl flex items-center gap-3 relative z-10 w-max max-w-[90%]">
                             <div className="pl-4 pr-2 flex items-center gap-2 border-r border-slate-700 h-8">
                                 <span className="text-xs font-medium text-slate-400">Показывать по:</span>
                                 <select className="bg-transparent text-sm font-bold text-white focus:outline-none cursor-pointer appearance-none pr-4 relative">
@@ -257,7 +257,7 @@ export default function PaginationVariantsPage() {
                 {/* Variant 11 */}
                 <VariantSection title="11. Техно / Неоморфизм (Dark Neumorphism)">
                     <div className="bg-slate-900 p-8 rounded-[32px] w-full flex justify-center border border-slate-800 shadow-[inset_0_0_80px_rgba(0,0,0,0.5)]">
-                        <div className="flex items-center gap-4 bg-slate-800/50 p-2 rounded-2xl backdrop-blur-md border border-slate-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+                        <div className="flex items-center gap-3 bg-slate-800/50 p-2 rounded-2xl backdrop-blur-md border border-slate-700/50 shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
                             <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-all shadow-[inset_1px_1px_2px_rgba(255,255,255,0.1),_0_4px_12px_rgba(0,0,0,0.5)]">
                                 <ChevronLeft className="w-5 h-5" />
                             </button>
@@ -277,8 +277,8 @@ export default function PaginationVariantsPage() {
 
                 {/* Variant 12 */}
                 <VariantSection title="12. Линейный индикатор (Line Indicator)">
-                    <div className="bg-white p-8 rounded-2xl border border-slate-200 w-full flex flex-col items-center gap-6">
-                        <div className="flex items-center gap-12 w-full max-w-lg justify-between">
+                    <div className="bg-white p-8 rounded-2xl border border-slate-200 w-full flex flex-col items-center gap-3">
+                        <div className="flex items-center gap-3 w-full max-w-lg justify-between">
                             <button className="text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-2 font-medium">
                                 <ArrowLeft className="w-4 h-4" /> Пред
                             </button>
@@ -303,7 +303,7 @@ export default function PaginationVariantsPage() {
                 {/* Variant 13 */}
                 <VariantSection title="13. Крупные цифры с подчеркиванием (Big Numbers Underlined)">
                     <div className="w-full flex justify-center py-4">
-                        <div className="flex items-end gap-2 sm:gap-6">
+                        <div className="flex items-end gap-2 sm:gap-3">
                             <button className="p-2 text-slate-300 cursor-not-allowed mb-2">
                                 <ChevronLeft className="w-8 h-8" />
                             </button>
@@ -364,7 +364,7 @@ export default function PaginationVariantsPage() {
 
                 {/* Variant 16 */}
                 <VariantSection title="16. Вертикальный стек (Vertical Sidebar Pagination)">
-                    <div className="bg-white border border-slate-200 rounded-2xl w-24 mx-auto p-4 flex flex-col items-center gap-4 shadow-sm">
+                    <div className="bg-white border border-slate-200 rounded-2xl w-24 mx-auto p-4 flex flex-col items-center gap-3 shadow-sm">
                         <button className="w-12 h-12 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 hover:text-slate-600 transition-colors">
                             <ChevronLeft className="w-5 h-5 rotate-90" />
                         </button>
@@ -414,14 +414,14 @@ export default function PaginationVariantsPage() {
 
                 {/* Variant 19 */}
                 <VariantSection title="19. Индикатор с кнопками загрузки (Load More Style)">
-                    <div className="w-full flex flex-col items-center gap-6 py-4">
+                    <div className="w-full flex flex-col items-center gap-3 py-4">
                         <div className="text-sm font-medium text-slate-500">
                             Вы посмотрели 12 из 145 элементов
                         </div>
                         <div className="w-full max-w-sm h-1.5 bg-slate-100 rounded-full overflow-hidden">
                             <div className="h-full bg-slate-900 rounded-full" style={{ width: '8.2%' }} />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                             <button className="px-6 py-3 bg-white border border-slate-200 text-slate-900 font-bold rounded-xl shadow-sm hover:shadow-md hover:border-slate-300 transition-all flex items-center gap-2">
                                 <RefreshCcw className="w-4 h-4" /> Загрузить еще
                             </button>
@@ -511,7 +511,7 @@ export default function PaginationVariantsPage() {
                 {/* Variant 23 */}
                 <VariantSection title="23. Слайдер навигации (Slider Range)">
                     <div className="bg-white p-10 rounded-3xl w-full border border-slate-200">
-                        <div className="max-w-md mx-auto relative flex flex-col gap-6">
+                        <div className="max-w-md mx-auto relative flex flex-col gap-3">
                             <div className="flex items-center justify-between text-slate-500 font-medium font-mono text-sm">
                                 <span>Str. 1</span>
                                 <span className="text-slate-900 font-bold bg-slate-100 px-3 py-1 rounded-full text-base">4</span>
@@ -560,16 +560,16 @@ export default function PaginationVariantsPage() {
                 <VariantSection title="25. Журнальный индекс (Magazine Serif Options)">
                     <div className="bg-[#fcfbf9] w-full p-10 border-t-4 border-b-4 border-[#222]">
                         <div className="flex justify-between items-center max-w-2xl mx-auto">
-                            <button className="text-[#222] font-serif tracking-widest uppercase text-xs sm:text-sm font-bold opacity-30 cursor-not-allowed">
+                            <button className="text-[#222] font-serif tracking-widest  text-xs sm:text-sm font-bold opacity-30 cursor-not-allowed">
                                 Предыдущая
                             </button>
-                            <div className="flex gap-4 sm:gap-8 font-serif italic text-lg sm:text-2xl text-[#666]">
+                            <div className="flex gap-3 sm:gap-3 font-serif italic text-lg sm:text-2xl text-[#666]">
                                 <button className="text-[#222] font-semibold border-b border-[#222]">I.</button>
                                 <button className="hover:text-[#222] transition-colors">II.</button>
                                 <button className="hover:text-[#222] transition-colors">III.</button>
                                 <button className="hover:text-[#222] transition-colors">IV.</button>
                             </div>
-                            <button className="text-[#222] font-serif tracking-widest uppercase text-xs sm:text-sm font-bold hover:text-primary transition-colors">
+                            <button className="text-[#222] font-serif tracking-widest  text-xs sm:text-sm font-bold hover:text-primary transition-colors">
                                 Следующая
                             </button>
                         </div>
@@ -617,18 +617,18 @@ export default function PaginationVariantsPage() {
                     <div className="w-full flex flex-col items-center p-8 bg-white border border-slate-100 rounded-lg">
                         <div className="flex w-full max-w-md border-t border-slate-200">
                             <button className="flex-1 py-4 flex flex-col items-start gap-1 group hover:border-[#111] border-t border-transparent -mt-px transition-colors">
-                                <span className="text-xs font-bold uppercase tracking-widest text-[#999] group-hover:text-[#111] transition-colors">Previous</span>
+                                <span className="text-xs font-bold  tracking-widest text-[#999] group-hover:text-[#111] transition-colors">Previous</span>
                                 <span className="text-sm font-serif text-[#111]">Introduction</span>
                             </button>
 
-                            <div className="px-4 py-4 flex items-center gap-4 text-sm font-serif">
+                            <div className="px-4 py-4 flex items-center gap-3 text-sm font-serif">
                                 <button className="text-[#999] hover:text-[#111] transition-colors">1</button>
                                 <button className="text-[#111] font-bold border-b border-[#111]">2</button>
                                 <button className="text-[#999] hover:text-[#111] transition-colors">3</button>
                             </div>
 
                             <button className="flex-1 py-4 flex flex-col items-end gap-1 group hover:border-[#111] border-t border-transparent -mt-px transition-colors text-right">
-                                <span className="text-xs font-bold uppercase tracking-widest text-[#999] group-hover:text-[#111] transition-colors">Next</span>
+                                <span className="text-xs font-bold  tracking-widest text-[#999] group-hover:text-[#111] transition-colors">Next</span>
                                 <span className="text-sm font-serif text-[#111]">Key Features</span>
                             </button>
                         </div>
@@ -638,7 +638,7 @@ export default function PaginationVariantsPage() {
                 {/* Variant 29 */}
                 <VariantSection title="29. Экстремальный контраст (Brutalism)">
                     <div className="w-full bg-[#eef556] p-8 border-4 border-black shadow-[8px_8px_0_0_#000]">
-                        <div className="flex gap-4 justify-between w-full font-mono font-bold text-xl uppercase">
+                        <div className="flex gap-3 justify-between w-full font-mono font-bold text-xl ">
                             <button className="border-4 border-black bg-white px-6 py-3 hover:bg-black hover:text-white transition-colors">
                                 PRV
                             </button>
@@ -661,7 +661,7 @@ export default function PaginationVariantsPage() {
                 {/* Variant 30 */}
                 <VariantSection title="30. Гимн клавиатуре (Keyboard Shortcuts UI)">
                     <div className="w-full flex justify-center py-8">
-                        <div className="flex gap-4 items-center font-mono">
+                        <div className="flex gap-3 items-center font-mono">
                             <div className="flex items-center gap-2">
                                 <kbd className="px-2 py-1 bg-slate-100 border border-slate-300 border-b-2 rounded text-xs font-bold text-slate-500 shadow-sm">⌘</kbd>
                                 <kbd className="px-2 py-1 bg-slate-100 border border-slate-300 border-b-2 rounded text-xs font-bold text-slate-500 shadow-sm">←</kbd>

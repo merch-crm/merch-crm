@@ -82,7 +82,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
         <div role="button" tabIndex={0} className="relative inline-block" ref={containerRef} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}>
             <div role="button" tabIndex={0}
                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={() => !loading && setIsOpen(!isOpen)}
-                className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold  cursor-pointer transition-all hover:scale-105 active:scale-95 select-none",
+                className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold  cursor-pointer transition-all hover:scale-105 active:scale-95 select-none",
                     activeItem.lightBg,
                     activeItem.color,
                     loading &&"opacity-50 cursor-wait"
@@ -116,7 +116,7 @@ export default function StatusBadgeInteractive({ orderId, status }: { orderId: s
                                 )}
                             >
                                 <div className={cn("w-2 h-2 rounded-full ring-2 ring-white shadow-sm", s.dot)} />
-                                <span className="text-[11px] font-bold flex-1">
+                                <span className="text-xs font-bold flex-1">
                                     {s.label}
                                 </span>
                                 {s.id === currentStatus && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}

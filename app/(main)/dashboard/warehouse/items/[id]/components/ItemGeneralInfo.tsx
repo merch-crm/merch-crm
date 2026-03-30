@@ -183,7 +183,8 @@ export const ItemGeneralInfo = React.memo(({
                             )}
                         >
                             {(() => {
-                                const { icon: ParamIcon } = getParamConfig(param.slug, hexColor, param.label, param.dataType);
+                                const { icon } = getParamConfig(param.slug, hexColor, param.label, param.dataType);
+                                const ParamIcon = icon as React.ComponentType<{ className?: string }>;
                                 return (
                                     <span className="flex items-center gap-1.5 text-xs font-bold text-[#8a99a8]">
                                         <ParamIcon className="w-3 h-3 shrink-0" />

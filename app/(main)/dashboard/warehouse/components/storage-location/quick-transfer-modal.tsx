@@ -67,7 +67,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
                 <div className="flex items-center justify-between">
                     <div>
                         <h3 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h3>
-                        <p className="text-[11px] font-bold text-slate-400 mt-0.5">Экспресс-операция</p>
+                        <p className="text-xs font-bold text-slate-400 mt-0.5">Экспресс-операция</p>
                     </div>
                 </div>
 

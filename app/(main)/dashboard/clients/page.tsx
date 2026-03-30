@@ -158,7 +158,7 @@ export default async function ClientsPage(props: {
                                 </div>
                             </div>
                             <div>
-                                <p className="text-slate-500 text-[11px] font-semibold mb-2">{item.name}</p>
+                                <p className="text-slate-500 text-xs font-semibold mb-2">{item.name}</p>
                                 <p className="text-3xl font-bold text-slate-900 leading-none">{item.value}</p>
                             </div>
                         </div>

@@ -64,7 +64,7 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
                     </div>
                     <div className="flex-1 flex flex-col items-start justify-center min-w-0 py-1">
                         <div className="text-sm font-black text-slate-900 leading-tight">{currentIconEntry?.label ?? "Иконка"}</div>
-                        <span className="text-[11px] font-medium text-slate-500 line-clamp-1">Нажмите, чтобы изменить</span>
+                        <span className="text-xs font-medium text-slate-500 line-clamp-1">Нажмите, чтобы изменить</span>
                     </div>
                     <ChevronDown className={cn("w-4 h-4 text-slate-300 shrink-0 transition-transform duration-200",
                         isOpen && "rotate-180"
@@ -101,7 +101,7 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
                                 key={g.name}
                                 type="button"
                                 onClick={() => setTab(g.name)}
-                                className={cn("shrink-0 h-6 px-2.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap",
+                                className={cn("shrink-0 h-6 px-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap",
                                     tab === g.name
                                         ? "bg-slate-900 text-white"
                                         : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"

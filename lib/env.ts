@@ -23,6 +23,9 @@ const envSchema = z.object({
   REDIS_PASSWORD: z.string().optional(),
 
   CSRF_SECRET: z.string().min(32).optional(),
+  REPLICATE_API_TOKEN: z.string().optional(),
+  CRON_SECRET: z.string().optional(),
+  NEXT_PUBLIC_APP_URL: z.string().url().default("https://merch-crm.ru"),
 });
 
 function migrateEnvVars() {

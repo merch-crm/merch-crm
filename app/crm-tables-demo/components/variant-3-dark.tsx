@@ -19,7 +19,7 @@ export const Variant3Dark = () => {
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-emerald-500 to-rose-500 opacity-50"></div>
 
                 <table className="w-full text-left text-[13px] font-mono mt-2">
-                    <thead className="text-[11px] text-slate-500 bg-slate-900/40 border-b border-slate-800">
+                    <thead className="text-xs text-slate-500 bg-slate-900/40 border-b border-slate-800">
                         <tr>
                             <th className="px-6 py-4">ID</th>
                             <th className="px-6 py-4">Тип</th>

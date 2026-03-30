@@ -17,6 +17,7 @@ import {
     Globe,
     Smartphone
 } from "lucide-react";
+import { IconType } from "@/components/ui/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { InfoRow } from "@/components/ui/info-row";
@@ -189,15 +190,15 @@ export function OverviewTab({
                     </h4>
                     <div className="space-y-2">
                         {clientChats.slice(0, 3).map(chat => {
-                            const channelIcons: Record<string, React.ElementType> = {
-                                telegram: Send,
-                                instagram: Instagram,
-                                vk: Globe,
-                                whatsapp: MessageCircle,
-                                email: Mail,
-                                sms: Smartphone,
+                            const channelIcons: Record<string, IconType> = {
+                                telegram: Send as IconType,
+                                instagram: Instagram as IconType,
+                                vk: Globe as IconType,
+                                whatsapp: MessageCircle as IconType,
+                                email: Mail as IconType,
+                                sms: Smartphone as IconType,
                             };
-                            const Icon = channelIcons[chat.channelType] || MessageCircle;
+                            const Icon = channelIcons[chat.channelType] || MessageCircle as IconType;
 
                             return (
                                 <Link
@@ -249,7 +250,7 @@ export function OverviewTab({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="w-full h-10 border-2 border-dashed border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-primary/5 rounded-2xl text-[11px] font-bold gap-2"
+                    className="w-full h-10 border-2 border-dashed border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-primary/5 rounded-2xl text-xs font-bold gap-2"
                     onClick={onRecalculate}
                 >
                     <RotateCcw className="w-3.5 h-3.5" />

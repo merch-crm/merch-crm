@@ -10,11 +10,12 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { IconType } from "@/components/ui/stat-card";
 
 interface ProductionStage {
   id: string;
   name: string;
-  icon: React.ElementType;
+  icon: IconType;
   count: number;
   color: string;
   bgColor: string;
@@ -44,7 +45,7 @@ export function ProductionStagesCard({
     {
       id: "preparation",
       name: "Подготовка",
-      icon: FileText,
+      icon: FileText as IconType,
       count: preparation,
       color: "text-blue-600",
       bgColor: "bg-blue-50",
@@ -53,7 +54,7 @@ export function ProductionStagesCard({
     {
       id: "printing",
       name: "Печать",
-      icon: Printer,
+      icon: Printer as IconType,
       count: printing,
       color: "text-violet-600",
       bgColor: "bg-violet-50",
@@ -62,7 +63,7 @@ export function ProductionStagesCard({
     {
       id: "application",
       name: "Нанесение",
-      icon: Stamp,
+      icon: Stamp as IconType,
       count: application,
       color: "text-amber-600",
       bgColor: "bg-amber-50",
@@ -71,7 +72,7 @@ export function ProductionStagesCard({
     {
       id: "packaging",
       name: "Упаковка",
-      icon: Package,
+      icon: Package as IconType,
       count: packaging,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50",

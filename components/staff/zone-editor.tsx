@@ -14,6 +14,7 @@ import {
     Check,
     X
 } from 'lucide-react'
+import { IconType } from '@/components/ui/stat-card'
 import { cn } from '@/lib/utils'
 import { ResponsiveModal } from '@/components/ui/responsive-modal'
 import { useDrawingState, useViewportState, useCanvasState } from './use-zone-editor'
@@ -350,7 +351,7 @@ export function ZoneEditor({
 
                     <div className="flex items-center gap-2 pr-2">
                         <button type="button" onClick={() => setZoom(z => Math.max(0.5, z - 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomOut className="w-4 h-4 text-slate-500" /></button>
-                        <span className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-600 w-8 text-center">{Math.round(zoom * 100)}%</span>
+                        <span className="text-xs leading-tight text-neutral-500 font-bold text-slate-600 w-8 text-center">{Math.round(zoom * 100)}%</span>
                         <button type="button" onClick={() => setZoom(z => Math.min(4, z + 0.25))} className="p-1 hover:bg-white rounded-lg transition-all"><ZoomIn className="w-4 h-4 text-slate-500" /></button>
                     </div>
                 </div>
@@ -409,7 +410,7 @@ export function ZoneEditor({
     )
 }
 
-function ToolButton({ icon: Icon, active, onClick, label }: { icon: React.ElementType, active: boolean, onClick: () => void, label: string }) {
+function ToolButton({ icon: Icon, active, onClick, label }: { icon: IconType, active: boolean, onClick: () => void, label: string }) {
     return (
         <button
             type="button"
@@ -419,7 +420,7 @@ function ToolButton({ icon: Icon, active, onClick, label }: { icon: React.Elemen
             )}
         >
             <Icon className="w-4 h-4" />
-            <span className="text-[8px] font-bold mt-1  tracking-tighter">{label}</span>
+            <span className="text-xs font-bold mt-1  tracking-tighter">{label}</span>
         </button>
     )
 }

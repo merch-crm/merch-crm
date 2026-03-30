@@ -55,11 +55,11 @@ export function DailyReportView({ data }: { data: DailyReport }) {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-slate-100 bg-slate-50/20">
-                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Сотрудник</th>
-                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Приход</th>
-                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Уход</th>
-                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400">Время работы</th>
-                                        <th className="text-left py-4 px-6 text-[11px] leading-tight text-neutral-500 font-bold text-slate-400 text-right">Статус</th>
+                                        <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Сотрудник</th>
+                                        <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Приход</th>
+                                        <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Уход</th>
+                                        <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400">Время работы</th>
+                                        <th className="text-left py-4 px-6 text-xs leading-tight text-neutral-500 font-bold text-slate-400 text-right">Статус</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,7 +72,7 @@ export function DailyReportView({ data }: { data: DailyReport }) {
                                                     </div>
                                                     <div className="min-w-0">
                                                         <p className="font-bold text-slate-900 truncate text-sm">{emp.userName}</p>
-                                                        <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium truncate">{emp.email}</p>
+                                                        <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium truncate">{emp.email}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -96,11 +96,11 @@ export function DailyReportView({ data }: { data: DailyReport }) {
                                             </td>
                                             <td className="py-4 px-6 text-right">
                                                 {emp.isLate ? (
-                                                    <span className="px-3 py-1 text-[11px] leading-tight text-neutral-500 font-bold bg-rose-50 text-rose-600 rounded-full border border-rose-100">
+                                                    <span className="px-3 py-1 text-xs leading-tight text-neutral-500 font-bold bg-rose-50 text-rose-600 rounded-full border border-rose-100">
                                                         Опоздание
                                                     </span>
                                                 ) : (
-                                                    <span className="px-3 py-1 text-[11px] leading-tight text-neutral-500 font-bold bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+                                                    <span className="px-3 py-1 text-xs leading-tight text-neutral-500 font-bold bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
                                                         Вовремя
                                                     </span>
                                                 )}

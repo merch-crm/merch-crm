@@ -101,7 +101,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
                             `}
                         >
                             <div className={`w-1.5 h-1.5 rounded-full ${p.dot}`} />
-                            <span className={`text-[11px] font-bold  ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
+                            <span className={`text-xs font-bold  ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
                                 {p.label}
                             </span>
                         </Button>

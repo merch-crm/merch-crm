@@ -117,7 +117,7 @@ export function GeneralSettings({ formData, setFormData }: GeneralSettingsProps)
                                     type="button"
                                     variant="outline"
                                     onClick={() => setFormData(prev => ({ ...prev, dateFormat: fmt }))}
-                                    className={cn("px-3 h-10 rounded-xl font-bold text-[11px] transition-all",
+                                    className={cn("px-3 h-10 rounded-xl font-bold text-xs transition-all",
                                         formData.dateFormat === fmt
                                             ?"bg-primary text-white border-primary shadow-md shadow-primary/20 hover:bg-primary hover:text-white"
                                             :"bg-white text-slate-500 border-slate-200 hover:border-primary/50"

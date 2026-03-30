@@ -34,6 +34,7 @@ import {
     Calendar,
     DollarSign,
 } from "lucide-react";
+import { IconType } from "@/components/ui/stat-card";
 import {
     funnelStages,
     funnelStageLabels,
@@ -62,12 +63,12 @@ interface FunnelBoardClientProps {
     initialStats: Record<string, { count: number; amount: number }>;
 }
 
-const stageIcons: Record<string, React.ElementType> = {
-    lead: UserPlus,
-    first_contact: Phone,
-    negotiation: MessageSquare,
-    first_order: ShoppingCart,
-    regular: Star,
+const stageIcons: Record<string, IconType> = {
+    lead: UserPlus as IconType,
+    first_contact: Phone as IconType,
+    negotiation: MessageSquare as IconType,
+    first_order: ShoppingCart as IconType,
+    regular: Star as IconType,
 };
 
 // --- КОМПОНЕНТ КАРТОЧКИ КЛИЕНТА ---
@@ -113,7 +114,7 @@ function ClientCard({ client, isOverlay = false }: { client: Client; isOverlay?:
                             {client.lastName} {client.firstName}
                         </p>
                         {client.company && (
-                            <p className="text-[11px] font-medium text-slate-400 mt-0.5 line-clamp-1">
+                            <p className="text-xs font-medium text-slate-400 mt-0.5 line-clamp-1">
                                 {client.company}
                             </p>
                         )}
@@ -141,14 +142,14 @@ function ClientCard({ client, isOverlay = false }: { client: Client; isOverlay?:
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-slate-50 mt-1">
                     <div className="flex items-center gap-1.5">
                         <DollarSign className="w-3 h-3 text-slate-400" />
-                        <span className="text-[11px] font-bold text-slate-600">
+                        <span className="text-xs font-bold text-slate-600">
                             {amount > 0 ? `${Math.round(amount).toLocaleString()} ₽` : "—"}
                         </span>
                     </div>
                     {client.lastOrderDate && (
                         <div className="flex items-center gap-1.5 justify-end">
                             <Calendar className="w-3 h-3 text-slate-400" />
-                            <span className="text-[11px] font-medium text-slate-500">
+                            <span className="text-xs font-medium text-slate-500">
                                 {format(new Date(client.lastOrderDate), "dd.MM", { locale: ru })}
                             </span>
                         </div>
@@ -177,7 +178,7 @@ function BoardColumn({
         },
     });
 
-    const Icon = stageIcons[stage] || UserPlus;
+    const Icon = (stageIcons[stage] || UserPlus) as IconType;
     const color = funnelStageColors[stage as FunnelStage] || "#64748B";
     const label = funnelStageLabels[stage as FunnelStage] || stage;
 
@@ -195,7 +196,7 @@ function BoardColumn({
                     <div>
                         <h3 className="text-sm font-bold text-slate-900 tracking-tight leading-none group flex items-center gap-1.5">
                             {label}
-                            <span className="text-[11px] font-black text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                            <span className="text-xs font-black text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full">
                                 {(clients || []).length}
                             </span>
                         </h3>
@@ -303,8 +304,7 @@ export function FunnelBoardClient({ initialClients, managers, initialStats }: Fu
                     toast(res.error || "Не удалось обновить стадию", "error");
                     setClients(initialClients);
                 }
-            } catch (error) {
-                console.error("Failed to update funnel stage:", error);
+            } catch (_error) {
                 toast("Не удалось обновить стадию", "error");
                 setClients(initialClients);
             }
@@ -324,8 +324,7 @@ export function FunnelBoardClient({ initialClients, managers, initialStats }: Fu
             } else {
                 toast(res.error || "Не удалось обновить статус клиента", "error");
             }
-        } catch (error) {
-            console.error("Failed to mark client as lost:", error);
+        } catch (_error) {
             toast("Не удалось обновить статус клиента", "error");
         }
     };
@@ -354,7 +353,7 @@ export function FunnelBoardClient({ initialClients, managers, initialStats }: Fu
                 </div>
 
                 <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="h-9 rounded-xl border-slate-200">
+                    <Button type="button" variant="outline" size="sm" className="h-9 rounded-xl border-slate-200">
                         Настройки воронки
                     </Button>
                 </div>

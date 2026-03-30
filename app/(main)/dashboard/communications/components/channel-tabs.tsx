@@ -20,14 +20,16 @@ interface ChannelTabsProps {
     stats?: Record<string, { count: number; unread: number }>;
 }
 
-const channelIcons: Record<string, React.ElementType> = {
-    all: MessageSquare,
-    telegram: Send,
-    instagram: Instagram,
-    vk: Globe,
-    whatsapp: MessageCircle,
-    email: Mail,
-    sms: Smartphone,
+import { IconType } from "@/components/ui/stat-card";
+
+const channelIcons: Record<string, IconType> = {
+    all: MessageSquare as IconType,
+    telegram: Send as IconType,
+    instagram: Instagram as IconType,
+    vk: Globe as IconType,
+    whatsapp: MessageCircle as IconType,
+    email: Mail as IconType,
+    sms: Smartphone as IconType,
 };
 
 const channels = [

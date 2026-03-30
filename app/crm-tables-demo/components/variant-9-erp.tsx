@@ -17,8 +17,8 @@ export const Variant9ERP = () => {
             <div className="border border-slate-300 rounded-lg bg-white overflow-hidden text-xs">
                 <div className="bg-[#f0f4f8] border-b border-slate-300 px-2 py-1 flex items-center justify-between text-slate-700 font-medium font-mono">
                     <div className="flex items-center gap-2">
-                        <button type="button" className="px-2 py-0.5 border border-slate-300 bg-white hover:bg-slate-50 rounded text-[11px]">Refresh</button>
-                        <button type="button" className="px-2 py-0.5 border border-slate-300 bg-white hover:bg-slate-50 rounded text-[11px]">Filter: None</button>
+                        <button type="button" className="px-2 py-0.5 border border-slate-300 bg-white hover:bg-slate-50 rounded text-xs">Refresh</button>
+                        <button type="button" className="px-2 py-0.5 border border-slate-300 bg-white hover:bg-slate-50 rounded text-xs">Filter: None</button>
                     </div>
                     <div>Count: 7 rows</div>
                 </div>

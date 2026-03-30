@@ -131,7 +131,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                                                 )}
                                             >
                                                 <op.icon className={cn("w-4 h-4 sm:w-5 sm:h-5", isActive && "stroke-[3]")} />
-                                                <span className="text-[11px] sm:text-xs font-black mt-1">{op.label}</span>
+                                                <span className="text-xs sm:text-xs font-black mt-1">{op.label}</span>
                                             </Button>
                                         );
                                     })}

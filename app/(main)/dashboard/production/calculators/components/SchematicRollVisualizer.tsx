@@ -8,27 +8,9 @@
 'use client';
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Select } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Slider } from '@/components/ui/slider';
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  ZoomIn,
-  ZoomOut,
-  Maximize,
-  Ruler,
-  Layers,
-  TrendingUp,
   Grid3X3,
-  Download,
-  Settings2,
   AlertCircle,
 } from 'lucide-react';
 import {
@@ -39,9 +21,13 @@ import {
 } from '@/lib/types/calculators';
 import {
   optimizeLayout,
-  ROLL_WIDTH_OPTIONS,
 } from '@/lib/utils/layout-optimizer';
 import { generateLayoutSVG } from '@/lib/utils/export-layout-svg';
+
+// Sub-components
+import { VisualizerHeader } from './visualizer/visualizer-header';
+import { VisualizerControls } from './visualizer/visualizer-controls';
+import { VisualizerStats } from './visualizer/visualizer-stats';
 
 /**
  * Пропсы визуализатора
@@ -317,29 +303,11 @@ export function SchematicRollVisualizer({
 
   return (
     <div className="crm-card border border-border/50 overflow-hidden transition-all hover:shadow-lg">
-      <div className="card-breakout px-6 pt-5 pb-4 border-b border-slate-100 bg-slate-50/50 -mt-[var(--current-padding)]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm">
-              <Layers className="h-5 w-5 text-indigo-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-slate-900 tracking-tight">Раскладка на плёнке</h3>
-            </div>
-          </div>
-
-          {designs.length > 0 && (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleExportPNG} className="h-9 gap-2 rounded-xl font-bold bg-white text-slate-700 border-slate-200 hover:border-slate-300 shadow-sm transition-all px-4">
-                <Download className="h-4 w-4 text-slate-500" /> PNG
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleExportSVG} className="h-9 gap-2 rounded-xl font-bold bg-white text-slate-700 border-slate-200 hover:border-slate-300 shadow-sm transition-all px-4">
-                <Download className="h-4 w-4 text-slate-500" /> SVG
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
+      <VisualizerHeader 
+        hasDesigns={designs.length > 0}
+        onExportPNG={handleExportPNG}
+        onExportSVG={handleExportSVG}
+      />
       
       <div className="space-y-3 pt-4">
       {/* Skipped Designs Warning */}
@@ -360,107 +328,21 @@ export function SchematicRollVisualizer({
         </Alert>
       )}
       
-      {/* Controls & Export Panel */}
       {!hideControls && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
-            {/* Width Selector */}
-            <div className="flex items-center gap-3 shrink-0">
-              <Label className="text-xs font-black tracking-wider text-slate-400">Ширина:</Label>
-              <Select
-                value={settings.rollWidthMm.toString()}
-                onChange={(v) => updateSettings({ rollWidthMm: parseInt(v, 10) })}
-                disabled={readonly}
-                options={ROLL_WIDTH_OPTIONS.map((opt) => ({ id: opt.value.toString(), title: opt.label }))}
-              />
-            </div>
-            
-            {/* Margins Trigger */}
-            <div className="flex items-center gap-2 shrink-0">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9 gap-2 rounded-xl font-bold bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all shadow-sm">
-                    <Settings2 className="h-4 w-4 text-slate-500" />
-                    <span className="hidden xs:inline">Отступы</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-64 p-5 rounded-[24px] border border-slate-200 bg-white/95 backdrop-blur-xl shadow-crm-xl animate-in fade-in zoom-in-95 duration-200 space-y-3">
-                  <div className="space-y-3">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-black tracking-wider text-slate-400">Поля пленки</Label>
-                        <span className="text-xs font-mono font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">{settings.edgeMarginMm} мм</span>
-                      </div>
-                      <Slider
-                        value={[settings.edgeMarginMm]}
-                        onValueChange={([v]) => updateSettings({ edgeMarginMm: v })}
-                        min={0}
-                        max={50}
-                        step={1}
-                        className="py-2"
-                      />
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs font-black tracking-wider text-slate-400">Зазор принтов</Label>
-                        <span className="text-xs font-mono font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">{settings.gapMm} мм</span>
-                      </div>
-                      <Slider
-                        value={[settings.gapMm]}
-                        onValueChange={([v]) => updateSettings({ gapMm: v })}
-                        min={0}
-                        max={50}
-                        step={1}
-                        className="py-2"
-                      />
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="h-6 w-px bg-slate-200/60 hidden sm:block" />
-
-            {/* Toggles Group */}
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="flex items-center gap-3">
-                <Label className="text-xs font-black tracking-wider text-slate-400 hidden lg:block">Авто-поворот:</Label>
-                <Switch 
-                  checked={settings.allowRotation} 
-                  onCheckedChange={(v) => updateSettings({ allowRotation: v })} 
-                  disabled={readonly} 
-                  className="scale-90"
-                />
-              </div>
-              <div className="flex items-center gap-3">
-                <Label className="text-xs font-black tracking-wider text-slate-400 hidden lg:block">Сетка:</Label>
-                <Switch 
-                  checked={showGrid} 
-                  onCheckedChange={setShowGrid} 
-                  className="scale-90"
-                />
-              </div>
-            </div>
-
-            <div className="h-6 w-px bg-slate-200/60 hidden md:block" />
-
-            {/* Zoom & Fit Group */}
-            <div className="flex items-center gap-1 shrink-0 ml-auto sm:ml-0">
-              <Button variant="ghost" size="icon" onClick={handleZoomOut} disabled={scale <= MIN_SCALE} className="h-9 w-9 rounded-xl hover:bg-slate-100/50">
-                <ZoomOut className="h-4 w-4" />
-              </Button>
-              <div className="text-xs w-12 text-center font-bold font-mono text-slate-500 bg-slate-100/50 py-1 rounded-lg">
-                {Math.round((scale / baseScaleRef.current) * 100)}%
-              </div>
-              <Button variant="ghost" size="icon" onClick={handleZoomIn} disabled={scale >= MAX_SCALE} className="h-9 w-9 rounded-xl hover:bg-slate-100/50">
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={handleFitAll} title="Вместить всё" className="h-9 w-9 rounded-xl hover:bg-slate-100/50 text-indigo-600">
-                <Maximize className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
+        <VisualizerControls 
+          settings={settings}
+          updateSettings={updateSettings}
+          readonly={readonly}
+          showGrid={showGrid}
+          setShowGrid={setShowGrid}
+          scale={scale}
+          baseScale={baseScaleRef.current}
+          handleZoomIn={handleZoomIn}
+          handleZoomOut={handleZoomOut}
+          handleFitAll={handleFitAll}
+          MIN_SCALE={MIN_SCALE}
+          MAX_SCALE={MAX_SCALE}
+        />
       )}
 
       {/* Visualization Area */}
@@ -587,54 +469,7 @@ export function SchematicRollVisualizer({
         )}
       </div>
 
-      {/* Stats Grid Dashboard */}
-      {designs.length > 0 && (
-        <div className="card-breakout card-breakout-bottom grid grid-cols-2 lg:grid-cols-4 gap-0 border-t border-slate-100 bg-slate-50/30">
-          {/* Length */}
-          <div className="flex items-center gap-3 p-5 border-r border-slate-100 transition-all hover:bg-white group/stat">
-            <div className="bg-indigo-600/10 p-2.5 rounded-xl group-hover/stat:bg-indigo-600 group-hover/stat:text-white transition-all">
-              <Ruler className="h-4 w-4 text-indigo-600 group-hover/stat:text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-black tracking-wider text-slate-400">Длина печати</span>
-              <span className="text-sm font-bold text-slate-900">{(layoutResult.stats.totalLengthMm / 10).toFixed(1)} см</span>
-            </div>
-          </div>
-          
-          {/* Efficiency */}
-          <div className="flex items-center gap-3 p-5 border-r border-slate-100 transition-all hover:bg-white group/stat">
-            <div className="bg-blue-600/10 p-2.5 rounded-xl group-hover/stat:bg-blue-600 transition-all">
-              <TrendingUp className="h-4 w-4 text-blue-600 group-hover/stat:text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-black tracking-wider text-blue-400/80">Эффективность</span>
-              <span className="text-sm font-bold text-blue-600">{layoutResult.stats.efficiency}%</span>
-            </div>
-          </div>
-
-          {/* Total Area */}
-          <div className="flex items-center gap-3 p-5 border-r border-slate-100 transition-all hover:bg-white group/stat">
-            <div className="bg-emerald-600/10 p-2.5 rounded-xl group-hover/stat:bg-emerald-600 transition-all">
-              <Maximize className="h-4 w-4 text-emerald-600 group-hover/stat:text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-black tracking-wider text-slate-400">Общая площадь</span>
-              <span className="text-sm font-bold text-slate-900 font-mono">{(layoutResult.stats.totalAreaMm2 / 1000000).toFixed(3)} м²</span>
-            </div>
-          </div>
-
-          {/* Count */}
-          <div className="flex items-center gap-3 p-5 transition-all hover:bg-white group/stat">
-            <div className="bg-amber-600/10 p-2.5 rounded-xl group-hover/stat:bg-amber-600 transition-all">
-              <Layers className="h-4 w-4 text-amber-600 group-hover/stat:text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-black tracking-wider text-slate-400">Принтов</span>
-              <span className="text-sm font-bold text-slate-900">{layoutResult.stats.printCount} шт</span>
-            </div>
-          </div>
-        </div>
-      )}
+      <VisualizerStats layoutResult={layoutResult} />
       </div>
     </div>
   );

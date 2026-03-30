@@ -155,3 +155,5 @@ export const orderAttachmentsRelations = relations(orderAttachments, ({ one }) =
         references: [users.id],
     }),
 }));
+
+export type Order = typeof orders.$inferSelect;

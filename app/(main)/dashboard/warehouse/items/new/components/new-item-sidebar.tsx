@@ -144,7 +144,7 @@ export function NewItemSidebar({
                                     )}>
                                         {s.title}
                                     </div>
-                                    <div className={cn("text-[11px] font-bold truncate transition-colors",
+                                    <div className={cn("text-xs font-bold truncate transition-colors",
                                         isActive ? "text-white/70" : isCompleted ? "text-slate-500" : "text-slate-400/60"
                                     )}>
                                         {s.desc}

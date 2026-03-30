@@ -10,6 +10,7 @@ import {
     Sun, Sunset, Moon, Circle,
     Link2, Settings, Trash2, Hash, MoreHorizontal, User, Users, Shield, Search,
 } from "lucide-react";
+import { IconType } from "@/components/ui/stat-card";
 
 import {
     Popover, PopoverContent, PopoverTrigger,
@@ -112,7 +113,7 @@ function BentoCard({
     title: string;
     desc: string;
     accent: string;         // e.g. "violet"
-    icon: React.ElementType;
+    icon: IconType;
     children: React.ReactNode;
 }) {
     return (
@@ -141,9 +142,9 @@ function BentoCard({
 
 function SectionLabel({ label }: { label: string }) {
     return (
-        <div className="col-span-full flex items-center gap-4 pt-4">
+        <div className="col-span-full flex items-center gap-3 pt-4">
             <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-xs font-black uppercase tracking-widest text-slate-400 px-2">{label}</span>
+            <span className="text-xs font-black  tracking-widest text-slate-400 px-2">{label}</span>
             <div className="flex-1 h-px bg-slate-200" />
         </div>
     );
@@ -193,7 +194,7 @@ export default function DropdownsPage() {
 
             {/* ── Header ── */}
             <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm">
-                <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center gap-4">
+                <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-center gap-3">
                     <a href="/ui-kit" className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 hover:bg-slate-200 transition-all">
                         <ArrowLeft className="w-5 h-5" />
                     </a>
@@ -205,7 +206,7 @@ export default function DropdownsPage() {
             </header>
 
             <main className="max-w-[1480px] mx-auto px-6 pt-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 auto-rows-[440px]">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 auto-rows-[440px]">
 
                     {/* ══ SECTION 1: List / Menu dropdowns ══════════════════════════════════ */}
                     <SectionLabel label="List &amp; menu-style" />
@@ -213,7 +214,7 @@ export default function DropdownsPage() {
                     {/* 1. Classic Status Select */}
                     <BentoCard num={1} title="Classic Status Select" desc="Standard inline select with status indicator" accent="blue" icon={LayoutGrid}>
                         <div className="w-full max-w-[260px] space-y-2">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Статус</label>
+                            <label className="text-xs font-bold text-slate-500  tracking-wider">Статус</label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <button className="flex items-center justify-between w-full px-4 py-3 bg-white border-2 border-slate-200/60 rounded-xl text-sm font-semibold text-slate-700 hover:border-blue-400 hover:ring-4 hover:ring-blue-400/10 transition-all focus:outline-none">
@@ -245,11 +246,11 @@ export default function DropdownsPage() {
                     {/* 2. Rich Description Select */}
                     <BentoCard num={2} title="Rich Description Select" desc="Complex choices: roles, access levels, etc." accent="violet" icon={Users}>
                         <div className="w-full max-w-[280px] space-y-2">
-                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Роль</label>
+                            <label className="text-xs font-bold text-slate-500  tracking-wider">Роль</label>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <button className="flex items-center justify-between w-full p-4 bg-white border border-slate-200 rounded-[20px] shadow-sm hover:border-violet-400 hover:ring-4 hover:ring-violet-400/10 transition-all focus:outline-none text-left group/btn">
-                                        <span className="flex items-center gap-4">
+                                        <span className="flex items-center gap-3">
                                             <span className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0">
                                                 <selectedRole.icon className="w-5 h-5" />
                                             </span>
@@ -262,10 +263,10 @@ export default function DropdownsPage() {
                                     </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="center" className="w-[300px] p-3 rounded-3xl shadow-2xl border-slate-100">
-                                    <div className="px-3 pb-2 pt-1 text-xs font-bold text-slate-400 uppercase tracking-wider">Выберите роль</div>
+                                    <div className="px-3 pb-2 pt-1 text-xs font-bold text-slate-400  tracking-wider">Выберите роль</div>
                                     {roles.map(r => (
                                         <DropdownMenuItem key={r.value} onClick={() => setSelectedRole(r)}
-                                            className={cn("flex items-start gap-4 p-3 rounded-2xl cursor-pointer transition-all",
+                                            className={cn("flex items-start gap-3 p-3 rounded-2xl cursor-pointer transition-all",
                                                 selectedRole.value === r.value ? "bg-violet-50" : "hover:bg-slate-50 focus:bg-slate-50"
                                             )}>
                                             <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", selectedRole.value === r.value ? "bg-white text-violet-600 shadow-sm" : "bg-slate-100 text-slate-500")}>
@@ -377,7 +378,7 @@ export default function DropdownsPage() {
                                 <div className="p-2 max-h-[160px] overflow-y-auto">
                                     {["Иван Иванов", "Пётр Сидоров", "Алексей Смирнов", "Анна Кюри"].map(name => (
                                         <DropdownMenuItem key={name} className="flex items-center gap-3 p-2.5 rounded-xl cursor-pointer text-sm font-medium text-slate-700 hover:bg-slate-100 focus:bg-slate-100">
-                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs uppercase">
+                                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs ">
                                                 {name.substring(0, 2)}
                                             </div>
                                             {name}
@@ -396,7 +397,7 @@ export default function DropdownsPage() {
                         <div className="w-full max-w-[300px] space-y-2">
                             <div className="flex justify-between items-end px-1">
                                 <label className="text-sm font-bold text-slate-900">Размер</label>
-                                <button className="text-[13px] font-semibold text-slate-400 hover:text-violet-600 transition-colors">Создать размер</button>
+                                <button className="text-xs font-semibold text-slate-400 hover:text-violet-600 transition-colors">Создать размер</button>
                             </div>
                             <Popover open={sizeOpen} onOpenChange={setSizeOpen}>
                                 <PopoverTrigger asChild>
@@ -439,7 +440,7 @@ export default function DropdownsPage() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent align="start" sideOffset={8} className="w-[280px] p-4 rounded-3xl shadow-2xl border-slate-100">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Палитра</div>
+                                    <div className="text-xs font-bold text-slate-400  tracking-wider mb-3">Палитра</div>
                                     <div className="grid grid-cols-5 gap-3">
                                         {swatchColors.map(c => {
                                             const sel = c.hex === selectedColor.hex;
@@ -490,7 +491,7 @@ export default function DropdownsPage() {
                                                         <span className="text-sm font-bold text-slate-900">{m.name}</span>
                                                         {sel && <Check className="w-4 h-4 text-amber-500 stroke-[3]" />}
                                                     </div>
-                                                    <p className="text-[11px] font-medium text-slate-500 mb-3 leading-snug">{m.desc}</p>
+                                                    <p className="text-xs font-medium text-slate-500 mb-3 leading-snug">{m.desc}</p>
                                                     <div className="text-xs font-bold text-slate-900 bg-white inline-flex px-2 py-1 rounded-md border border-slate-100">{m.price}</div>
                                                 </button>
                                             );
@@ -510,7 +511,7 @@ export default function DropdownsPage() {
                                     <button className="flex items-center justify-between w-full p-3 bg-white border border-slate-200 rounded-2xl shadow-sm hover:border-emerald-300 transition-all focus:outline-none data-[state=open]:border-emerald-500 data-[state=open]:ring-4 data-[state=open]:ring-emerald-500/10 text-left min-h-[52px]">
                                         <span className="flex flex-wrap gap-1.5 flex-1 pr-2">
                                             {selectedTags.length > 0 ? selectedTags.map(tag => (
-                                                <span key={tag} className="text-[11px] font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200/60 leading-none">{tag}</span>
+                                                <span key={tag} className="text-xs font-bold bg-slate-100 text-slate-600 px-2 py-1 rounded border border-slate-200/60 leading-none">{tag}</span>
                                             )) : (
                                                 <span className="text-sm font-medium text-slate-400 pl-1">Выберите теги...</span>
                                             )}
@@ -519,13 +520,13 @@ export default function DropdownsPage() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent align="start" sideOffset={8} className="w-[320px] p-5 rounded-3xl shadow-2xl border-slate-100">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Доступные теги</div>
+                                    <div className="text-xs font-bold text-slate-400  tracking-wider mb-4">Доступные теги</div>
                                     <div className="flex flex-wrap gap-2">
                                         {tags.map(tag => {
                                             const sel = selectedTags.includes(tag);
                                             return (
                                                 <button key={tag} onClick={() => toggleTag(tag)}
-                                                    className={cn("text-[13px] font-bold px-3 py-1.5 rounded-lg border transition-all focus:outline-none",
+                                                    className={cn("text-xs font-bold px-3 py-1.5 rounded-lg border transition-all focus:outline-none",
                                                         sel ? "bg-emerald-50 border-emerald-200 text-emerald-700 shadow-sm" : "bg-white border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 hover:bg-slate-50")}>
                                                     {tag}
                                                 </button>
@@ -554,7 +555,7 @@ export default function DropdownsPage() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent align="start" sideOffset={8} className="w-[260px] p-4 rounded-3xl shadow-2xl border-slate-100">
-                                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Выберите иконку</div>
+                                    <div className="text-xs font-bold text-slate-400  tracking-wider mb-3">Выберите иконку</div>
                                     <div className="grid grid-cols-5 gap-2">
                                         {iconOptions.map(opt => {
                                             const sel = opt.id === selectedIcon.id;
@@ -587,7 +588,7 @@ export default function DropdownsPage() {
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent align="start" sideOffset={8} className="w-[360px] p-5 rounded-3xl shadow-2xl border-slate-100">
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-3 gap-3">
                                         {([
                                             { key: "morning" as const, label: "Утро", icon: Sun, slots: timeSlots.morning },
                                             { key: "afternoon" as const, label: "День", icon: Sunset, slots: timeSlots.afternoon },
@@ -596,7 +597,7 @@ export default function DropdownsPage() {
                                             <div key={key}>
                                                 <div className="flex items-center gap-1.5 mb-2 px-1">
                                                     <Icon className="w-3 h-3 text-slate-400" />
-                                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{label}</span>
+                                                    <span className="text-xs font-bold text-slate-400  tracking-wider">{label}</span>
                                                 </div>
                                                 <div className="flex flex-col gap-1.5">
                                                     {slots.map(time => {
@@ -644,7 +645,7 @@ export default function DropdownsPage() {
                                                     className={cn("relative text-left p-4 rounded-[20px] border-2 transition-all flex flex-col focus:outline-none",
                                                         tier.highlight && !sel ? "border-fuchsia-200 bg-fuchsia-50/50 hover:bg-fuchsia-50" :
                                                             sel ? "border-fuchsia-500 bg-fuchsia-50" : "border-slate-100 bg-slate-50 hover:bg-white hover:border-slate-200")}>
-                                                    <div className="text-xs font-black uppercase tracking-wider mb-1 text-slate-500">{tier.name}</div>
+                                                    <div className="text-xs font-black  tracking-wider mb-1 text-slate-500">{tier.name}</div>
                                                     <div className={cn("text-lg font-black mb-3 leading-none", sel ? "text-fuchsia-700" : "text-slate-900")}>
                                                         {tier.price}<span className="text-xs font-medium text-slate-400 ml-0.5">{tier.period}</span>
                                                     </div>
@@ -652,7 +653,7 @@ export default function DropdownsPage() {
                                                         {tier.features.map(f => (
                                                             <div key={f} className="flex items-center gap-1">
                                                                 <Check className={cn("w-3 h-3 shrink-0 stroke-[3]", sel ? "text-fuchsia-500" : "text-slate-400")} />
-                                                                <span className="text-[10px] font-semibold text-slate-500">{f}</span>
+                                                                <span className="text-xs font-semibold text-slate-500">{f}</span>
                                                             </div>
                                                         ))}
                                                     </div>

@@ -15,7 +15,7 @@ export default function ErrorModalsPage() {
                 </div>
 
                 {/* Variant 1: Current Refined (Soft Light + Glow) */}
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-3">
                     <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 self-start">
                         <span className="font-bold text-slate-700">1. Current Refined (Soft Glow)</span>
                     </div>
@@ -57,14 +57,14 @@ export default function ErrorModalsPage() {
 
                         <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                        <div className="text-[11px] font-bold text-slate-300 tracking-widest uppercase relative z-10">
+                        <div className="text-xs font-bold text-slate-300 tracking-widest  relative z-10">
                             Merch CRM Recovery Mode
                         </div>
                     </div>
                 </div>
 
                 {/* Variant 2: 404 Not Found (Amber/Orange) */}
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-3">
                     <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 self-start">
                         <span className="font-bold text-slate-700">2. 404 Not Found (Amber)</span>
                     </div>
@@ -106,14 +106,14 @@ export default function ErrorModalsPage() {
 
                         <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                        <div className="text-[11px] font-bold text-slate-300 tracking-widest uppercase relative z-10">
+                        <div className="text-xs font-bold text-slate-300 tracking-widest  relative z-10">
                             Merch CRM Navigation Safe
                         </div>
                     </div>
                 </div>
 
                 {/* Variant 3: 403 Forbidden / Access Denied (Purple/Violet) */}
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-3">
                     <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 self-start">
                         <span className="font-bold text-slate-700">3. Access Denied (Violet)</span>
                     </div>
@@ -154,14 +154,14 @@ export default function ErrorModalsPage() {
 
                         <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                        <div className="text-[11px] font-bold text-slate-300 tracking-widest uppercase relative z-10">
+                        <div className="text-xs font-bold text-slate-300 tracking-widest  relative z-10">
                             Merch CRM Security Policy
                         </div>
                     </div>
                 </div>
 
                 {/* Variant 4: Network Offline / No Connection (Blue/Sky) */}
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-3">
                     <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 self-start">
                         <span className="font-bold text-slate-700">4. Network Offline (Blue)</span>
                     </div>
@@ -203,14 +203,14 @@ export default function ErrorModalsPage() {
 
                         <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                        <div className="text-[11px] font-bold text-slate-300 tracking-widest uppercase relative z-10">
+                        <div className="text-xs font-bold text-slate-300 tracking-widest  relative z-10">
                             Merch CRM Offline Mode
                         </div>
                     </div>
                 </div>
 
                 {/* Variant 5: 503 Maintenance / Down (Teal/Emerald) */}
-                <div className="flex flex-col items-center gap-6">
+                <div className="flex flex-col items-center gap-3">
                     <div className="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 self-start">
                         <span className="font-bold text-slate-700">5. Maintenance (Teal)</span>
                     </div>
@@ -247,7 +247,7 @@ export default function ErrorModalsPage() {
 
                         <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                        <div className="text-[11px] font-bold text-slate-300 tracking-widest uppercase relative z-10">
+                        <div className="text-xs font-bold text-slate-300 tracking-widest  relative z-10">
                             Merch CRM Maintenance
                         </div>
                     </div>

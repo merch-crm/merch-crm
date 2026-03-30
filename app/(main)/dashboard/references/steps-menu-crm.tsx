@@ -114,10 +114,10 @@ export default function StepsMenuCRM() {
                                     <div className="w-2.5 h-2.5 rounded-full bg-[#00d685] shadow-[0_0_8px_#00d685]" />
                                     <div className="flex flex-col">
                                         <span className="text-xs font-bold  text-[#a1a1aa]">Черновик</span>
-                                        <span className="text-[11px] font-extrabold text-[#18181b]">Сохранено</span>
+                                        <span className="text-xs font-extrabold text-[#18181b]">Сохранено</span>
                                     </div>
                                 </div>
-                                <button type="button" className="text-[11px] font-bold  text-[var(--primary)] hover:text-[#4a00cc] transition-colors relative z-10">Начать заново</button>
+                                <button type="button" className="text-xs font-bold  text-[var(--primary)] hover:text-[#4a00cc] transition-colors relative z-10">Начать заново</button>
                             </div>
                         </div>
                     </div>

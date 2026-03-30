@@ -97,7 +97,7 @@ export function StepItemSelection({
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold">
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-bold text-muted-foreground ml-1">Кол-во</label>
+                                            <label className="text-xs font-bold text-muted-foreground ml-1">Кол-во</label>
                                             <Input
                                                 type="number"
                                                 value={item.orderQuantity || 0}
@@ -106,7 +106,7 @@ export function StepItemSelection({
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[11px] font-bold text-muted-foreground ml-1">Цена ({currencySymbol})</label>
+                                            <label className="text-xs font-bold text-muted-foreground ml-1">Цена ({currencySymbol})</label>
                                             <Input
                                                 type="number"
                                                 value={item.price || 0}

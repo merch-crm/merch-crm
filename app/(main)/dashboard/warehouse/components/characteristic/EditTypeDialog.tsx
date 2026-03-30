@@ -112,7 +112,7 @@ export function EditTypeDialog({
                                         <IconComp className="w-4 h-4 text-primary/60" />
                                     </div>
                                     <div className="flex flex-col justify-center">
-                                        <span className="text-[11px] font-bold text-slate-400 leading-none mb-1">Категория</span>
+                                        <span className="text-xs font-bold text-slate-400 leading-none mb-1">Категория</span>
                                         <span className="text-sm font-bold text-slate-900 leading-none">
                                             {categoryName}
                                         </span>
@@ -192,14 +192,14 @@ export function EditTypeDialog({
                                                         {editingTypeLatest?.dataType === "density" && !((attr.meta as AttributeMeta)?.fullName || attr.name).includes("г/м") && " г/м²"}
                                                     </span>
                                                     {(attr.meta as AttributeMeta)?.isOversize && (
-                                                        <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-[11px] font-black border border-indigo-100/50">
+                                                        <span className="flex-shrink-0 px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-xs font-black border border-indigo-100/50">
                                                             oversize
                                                         </span>
                                                     )}
                                                 </div>
                                             </div>
 
-                                            <div className="text-[11px] font-bold text-slate-400 tabular-nums shrink-0 truncate max-w-[80px]">
+                                            <div className="text-xs font-bold text-slate-400 tabular-nums shrink-0 truncate max-w-[80px]">
                                                 {attr.value}
                                             </div>
                                         </div>

@@ -154,7 +154,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">Редактировать</h2>
-                            <p className="text-[11px] font-bold text-slate-700 mt-0.5">
+                            <p className="text-xs font-bold text-slate-700 mt-0.5">
                                 Категория: <span className="text-slate-900 font-bold">{category.name}</span>
                             </p>
                         </div>

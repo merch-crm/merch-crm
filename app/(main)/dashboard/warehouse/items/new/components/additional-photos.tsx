@@ -41,7 +41,7 @@ export function AdditionalPhotos({
                                             <path className="text-slate-100/50" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="2.5" />
                                             <path className="text-primary transition-all duration-300 ease-out" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray={`${progress}, 100`} strokeLinecap="round" />
                                         </svg>
-                                        <span className="absolute text-[11px] font-black text-primary">{progress}%</span>
+                                        <span className="absolute text-xs font-black text-primary">{progress}%</span>
                                     </div>
                                 </div>
                             ) : (
@@ -90,7 +90,7 @@ export function AdditionalPhotos({
                                         <path className="text-slate-100/50" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="2.5" />
                                         <path className="text-primary transition-all duration-300 ease-out" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="2.5" strokeDasharray={`${progress}, 100`} strokeLinecap="round" />
                                     </svg>
-                                    <span className="absolute text-[11px] font-black text-primary">{progress}%</span>
+                                    <span className="absolute text-xs font-black text-primary">{progress}%</span>
                                 </div>
                             </div>
                         ) : (

@@ -18,7 +18,7 @@ export default function AdminDepartmentsPage() {
                     </div>
                     <div className="min-w-0">
                         <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 truncate">Отделы</h1>
-                        <p className="hidden sm:block text-slate-500 text-[11px] font-medium mt-0.5 truncate">Управление структурой компании и подразделениями</p>
+                        <p className="hidden sm:block text-slate-500 text-xs font-medium mt-0.5 truncate">Управление структурой компании и подразделениями</p>
                     </div>
                 </div>
                 <div className="shrink-0">

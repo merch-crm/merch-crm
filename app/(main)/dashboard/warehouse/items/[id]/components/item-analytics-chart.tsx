@@ -79,7 +79,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
         <div className="lg:col-span-9 bg-card rounded-3xl p-5 border border-border flex flex-col h-fit">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-2">
                 <div className="space-y-1">
-                    <h4 className="text-[11px] font-black text-muted-foreground leading-none">Аналитика движений</h4>
+                    <h4 className="text-xs font-black text-muted-foreground leading-none">Аналитика движений</h4>
                     <p className="text-[13px] font-black text-foreground leading-none">Динамика за последние 30 дней</p>
                 </div>
 

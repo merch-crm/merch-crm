@@ -17,10 +17,12 @@ import {
     type ApplicationType,
 } from "../types";
 
+import { IconType } from "@/components/ui/stat-card";
+
 interface NavItem {
     type: ApplicationType;
     href: string;
-    icon: React.ElementType;
+    icon: IconType;
     enabled: boolean;
 }
 
@@ -28,43 +30,43 @@ const NAV_ITEMS: NavItem[] = [
     {
         type: "dtf",
         href: "/dashboard/production/calculators/dtf",
-        icon: Layers,
+        icon: Layers as IconType,
         enabled: true,
     },
     {
         type: "print-application",
         href: "/dashboard/production/calculators/print-application",
-        icon: PenTool, // Changed from Layers to PenTool for better semantic fit
+        icon: PenTool as IconType, // Changed from Layers to PenTool for better semantic fit
         enabled: true,
     },
     {
         type: "sublimation",
         href: "/dashboard/production/calculators/sublimation",
-        icon: Droplets,
+        icon: Droplets as IconType,
         enabled: true,
     },
     {
         type: "dtg",
         href: "/dashboard/production/calculators/dtg",
-        icon: Shirt,
+        icon: Shirt as IconType,
         enabled: true,
     },
     {
         type: "silkscreen",
         href: "/dashboard/production/calculators/silkscreen",
-        icon: Grid3X3,
+        icon: Grid3X3 as IconType,
         enabled: true,
     },
     {
         type: "thermotransfer",
         href: "/dashboard/production/calculators/thermotransfer",
-        icon: Scissors,
+        icon: Scissors as IconType,
         enabled: false,
     },
     {
         type: "embroidery",
         href: "/dashboard/production/calculators/embroidery",
-        icon: Scissors,
+        icon: Scissors as IconType,
         enabled: true,
     },
 ];

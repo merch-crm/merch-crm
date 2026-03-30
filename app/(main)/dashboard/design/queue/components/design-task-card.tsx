@@ -161,7 +161,7 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
                 </div>
 
                 {task.order && (
-                    <div className="text-[11px] text-muted-foreground">
+                    <div className="text-xs text-muted-foreground">
                         <Link
                             href={`/dashboard/orders/${task.order.id}`}
                             className="hover:underline"

@@ -106,7 +106,7 @@ export function Navbar({
                                 />
                             </div>
                         ) : (
-                            <div className="w-6 h-6 bg-gradient-to-tr from-slate-900 to-slate-700 rounded-md border-b-2 border-slate-950 flex items-center justify-center text-white text-[11px] font-black shadow-inner shadow-slate-900/50">
+                            <div className="w-6 h-6 bg-gradient-to-tr from-slate-900 to-slate-700 rounded-md border-b-2 border-slate-950 flex items-center justify-center text-white text-xs font-black shadow-inner shadow-slate-900/50">
                                 {branding.companyName
                                     ? branding.companyName.charAt(0).toUpperCase() + "."
                                     : "M."}

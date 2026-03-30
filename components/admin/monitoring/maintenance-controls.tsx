@@ -26,7 +26,7 @@ export function MaintenanceControls({
                         <p className="text-sm font-bold text-slate-800">
                             Очистка RAM
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium ">
+                        <p className="text-xs text-slate-400 font-medium ">
                             Принудительный запуск Garbage Collector
                         </p>
                     </div>
@@ -35,7 +35,7 @@ export function MaintenanceControls({
                     variant="ghost"
                     onClick={onClearRam}
                     disabled={isClearingRam}
-                    className="bg-slate-50 text-slate-600 rounded-[18px] hover:bg-indigo-50 hover:text-[var(--primary)] border border-slate-200 h-9 text-[11px] font-bold px-5"
+                    className="bg-slate-50 text-slate-600 rounded-[18px] hover:bg-indigo-50 hover:text-[var(--primary)] border border-slate-200 h-9 text-xs font-bold px-5"
                 >
                     {isClearingRam ? "Очистка..." : "Очистить"}
                 </Button>
@@ -50,7 +50,7 @@ export function MaintenanceControls({
                         <p className="text-sm font-bold text-slate-800">
                             Перезагрузка
                         </p>
-                        <p className="text-[11px] text-slate-400 font-medium ">
+                        <p className="text-xs text-slate-400 font-medium ">
                             Мягкий перезапуск инстанса Next.js
                         </p>
                     </div>
@@ -58,7 +58,7 @@ export function MaintenanceControls({
                 <Button
                     onClick={onRestartRequest}
                     disabled={isRestartingAction}
-                    className="bg-rose-500 text-white rounded-[18px] hover:bg-rose-600 shadow-md shadow-rose-100 h-9 text-[11px] font-bold px-5"
+                    className="bg-rose-500 text-white rounded-[18px] hover:bg-rose-600 shadow-md shadow-rose-100 h-9 text-xs font-bold px-5"
                 >
                     {isRestartingAction ? "Запуск..." : "Рестарт"}
                 </Button>

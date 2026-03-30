@@ -121,7 +121,7 @@ export function StockStep({
                                                     type="button"
                                                     onClick={() => updateFormData({ unit: u })}
                                                     className={cn(
-                                                        "px-2 py-0.5 rounded-md text-[11px] font-black transition-all",
+                                                        "px-2 py-0.5 rounded-md text-xs font-black transition-all",
                                                         formData.unit === u
                                                             ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200"
                                                             : "text-slate-400 hover:text-slate-600"
@@ -154,7 +154,7 @@ export function StockStep({
                                                 className="w-auto text-center text-2xl font-black text-slate-900 bg-transparent border-none focus-visible:ring-0 outline-none p-0 h-auto shadow-none px-2"
                                                 style={{ width: `${Math.max(2, (formData.quantity || "0").toString().length) * 18}px`, minWidth: '40px' }}
                                             />
-                                            <span className="text-[11px] font-black text-slate-400 mt-1 select-none">
+                                            <span className="text-xs font-black text-slate-400 mt-1 select-none">
                                                 {selectedUnit}
                                             </span>
                                         </div>

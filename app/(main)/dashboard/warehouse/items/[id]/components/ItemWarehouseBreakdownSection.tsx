@@ -29,7 +29,7 @@ export function ItemWarehouseBreakdownSection({
                             <h4 className="text-sm font-bold text-foreground"> {/* Replaced text-xs font-bold text-slate-900 */}
                                 {stock.storageLocation?.name ||"Основной"}
                             </h4>
-                            <p className="text-[11px] font-medium text-muted-foreground mt-0.5">Складское помещение</p> {/* Replaced text-xs font-bold text-slate-400 and text */}
+                            <p className="text-xs font-medium text-muted-foreground mt-0.5">Складское помещение</p> {/* Replaced text-xs font-bold text-slate-400 and text */}
                         </div>
                     </div>
                     <div className="flex items-center gap-2"> {/* Added gap-2 */}

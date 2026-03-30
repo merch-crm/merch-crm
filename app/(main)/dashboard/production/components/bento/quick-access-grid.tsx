@@ -13,6 +13,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 import type { ProductionBaseStats } from "../../types";
 
 interface QuickAccessItem {
@@ -20,7 +21,7 @@ interface QuickAccessItem {
   title: string;
   description: string;
   href: string;
-  icon: React.ElementType;
+  icon: IconType;
   iconColor: string;
   iconBgColor: string;
   borderColor: string;
@@ -38,7 +39,7 @@ export function QuickAccessGrid({ stats, className }: QuickAccessGridProps) {
       title: "Все задачи",
       description: `${(stats?.inQueue ?? 0) + (stats?.inProgress ?? 0)} активных`,
       href: "/dashboard/production/tasks",
-      icon: ListTodo,
+      icon: ListTodo as IconType,
       iconColor: "text-blue-600",
       iconBgColor: "bg-blue-50",
       borderColor: "border-blue-100",
@@ -48,7 +49,7 @@ export function QuickAccessGrid({ stats, className }: QuickAccessGridProps) {
       title: "Калькуляторы",
       description: "6 типов нанесения",
       href: "/dashboard/production/calculators",
-      icon: Calculator,
+      icon: Calculator as IconType,
       iconColor: "text-primary",
       iconBgColor: "bg-primary/5",
       borderColor: "border-primary/10",
@@ -58,7 +59,7 @@ export function QuickAccessGrid({ stats, className }: QuickAccessGridProps) {
       title: "Линии",
       description: `${stats?.activeLines ?? 0} активных`,
       href: "/dashboard/production/lines",
-      icon: Layers,
+      icon: Layers as IconType,
       iconColor: "text-emerald-600",
       iconBgColor: "bg-emerald-50",
       borderColor: "border-emerald-100",
@@ -68,7 +69,7 @@ export function QuickAccessGrid({ stats, className }: QuickAccessGridProps) {
       title: "Сотрудники",
       description: `${stats?.activeStaff ?? 0} на смене`,
       href: "/dashboard/production/staff",
-      icon: Users,
+      icon: Users as IconType,
       iconColor: "text-violet-600",
       iconBgColor: "bg-violet-50",
       borderColor: "border-violet-100",
@@ -78,7 +79,7 @@ export function QuickAccessGrid({ stats, className }: QuickAccessGridProps) {
       title: "Оборудование",
       description: "Станки и инструменты",
       href: "/dashboard/production/equipment",
-      icon: Settings,
+      icon: Settings as IconType,
       iconColor: "text-amber-600",
       iconBgColor: "bg-amber-50",
       borderColor: "border-amber-100",
@@ -88,7 +89,7 @@ export function QuickAccessGrid({ stats, className }: QuickAccessGridProps) {
       title: "Типы нанесения",
       description: "Виды печати",
       href: "/dashboard/production/application-types",
-      icon: Factory,
+      icon: Factory as IconType,
       iconColor: "text-teal-600",
       iconBgColor: "bg-teal-50",
       borderColor: "border-teal-100",

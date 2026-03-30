@@ -63,13 +63,13 @@ export function LivePreviewCard({
                     {category && (
                         <div className="flex items-center flex-wrap gap-1.5 md:gap-2 mb-0.5 md:mb-1">
                             <div className="flex items-center gap-1.5 md:gap-2 bg-indigo-50/80 px-2 md:px-2.5 py-0.5 md:py-1 rounded-md border border-indigo-100/50">
-                                <span className="text-[11px] font-black tracking-normal text-indigo-500">
+                                <span className="text-xs font-black tracking-normal text-indigo-500">
                                     {category.name}
                                 </span>
                                 {activeSubcategory && (
                                     <>
                                         <span className="text-indigo-300 font-bold">/</span>
-                                        <span className="text-[11px] font-black tracking-normal text-indigo-500/80">
+                                        <span className="text-xs font-black tracking-normal text-indigo-500/80">
                                             {activeSubcategory.name}
                                         </span>
                                     </>
@@ -96,8 +96,8 @@ export function LivePreviewCard({
                     {/* Tags */}
                     <div className="flex flex-wrap items-center gap-2 md:gap-3">
                         <div className="bg-white/50 backdrop-blur-sm border border-slate-200/60 rounded-full px-2.5 md:px-3.5 py-1 md:py-1.5 flex items-center gap-1.5 md:gap-2 shadow-sm">
-                            <span className="text-[11px] font-bold tracking-normal text-slate-400 mt-[1px] leading-none">SKU:</span>
-                            <span className="text-[11px] md:text-[13px] font-bold text-slate-600 tracking-normal break-all leading-none">{formData.sku || "---"}</span>
+                            <span className="text-xs font-bold tracking-normal text-slate-400 mt-[1px] leading-none">SKU:</span>
+                            <span className="text-xs md:text-[13px] font-bold text-slate-600 tracking-normal break-all leading-none">{formData.sku || "---"}</span>
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@ export function LivePreviewCard({
                     <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-100/50 rounded-full -mr-16 -mt-16 blur-2xl pointer-events-none" />
 
                     <div className="relative flex-1 flex flex-col">
-                        <h3 className="text-[11px] font-bold tracking-normal text-slate-400 mb-5">Характеристики</h3>
+                        <h3 className="text-xs font-bold tracking-normal text-slate-400 mb-5">Характеристики</h3>
 
                         <div className="space-y-2.5 flex-1 flex flex-col justify-center">
                             {(() => {

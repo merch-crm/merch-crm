@@ -66,13 +66,13 @@ export const ItemWarehouseBreakdown = React.memo(({ stocks }: ItemWarehouseBreak
                                                 {locationName}
                                             </span>
                                             {typeInfo && (
-                                                <span className={cn("text-[11px] font-bold px-2 py-0.5 rounded-full shrink-0", typeInfo.color)}>
+                                                <span className={cn("text-xs font-bold px-2 py-0.5 rounded-full shrink-0", typeInfo.color)}>
                                                     {typeInfo.label}
                                                 </span>
                                             )}
                                         </div>
                                         {locationAddress && (
-                                            <p className="text-[11px] text-muted-foreground font-medium mt-0.5 truncate">
+                                            <p className="text-xs text-muted-foreground font-medium mt-0.5 truncate">
                                                 {locationAddress}
                                             </p>
                                         )}
@@ -82,7 +82,7 @@ export const ItemWarehouseBreakdown = React.memo(({ stocks }: ItemWarehouseBreak
                                     <span className="text-[13px] font-bold text-foreground tabular-nums">
                                         {s.quantity.toLocaleString('ru-RU')}
                                     </span>
-                                    <span className="text-[11px] text-muted-foreground tracking-tight">шт.</span>
+                                    <span className="text-xs text-muted-foreground tracking-tight">шт.</span>
                                 </div>
                             </div>
 

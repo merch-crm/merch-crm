@@ -91,7 +91,7 @@ export function SortableAreaItem({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-[11px] font-bold text-slate-500 ml-1">Название зоны</Label>
+          <Label className="text-xs font-bold text-slate-500 ml-1">Название зоны</Label>
           <Input
             placeholder="Например: Грудь слева"
             className="h-10 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
@@ -100,7 +100,7 @@ export function SortableAreaItem({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-[11px] font-bold text-slate-500 ml-1">Код зоны (ID)</Label>
+          <Label className="text-xs font-bold text-slate-500 ml-1">Код зоны (ID)</Label>
           <Input
             placeholder="chest_left"
             className="h-10 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-mono text-sm"
@@ -112,7 +112,7 @@ export function SortableAreaItem({
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="space-y-1.5">
-          <Label className="text-[11px] font-bold text-slate-500 ml-1">Макс. Ширина (мм)</Label>
+          <Label className="text-xs font-bold text-slate-500 ml-1">Макс. Ширина (мм)</Label>
           <Input
             type="number"
             className="h-10 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-bold"
@@ -121,7 +121,7 @@ export function SortableAreaItem({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-[11px] font-bold text-slate-500 ml-1">Макс. Высота (мм)</Label>
+          <Label className="text-xs font-bold text-slate-500 ml-1">Макс. Высота (мм)</Label>
           <Input
             type="number"
             className="h-10 rounded-xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-bold"
@@ -130,7 +130,7 @@ export function SortableAreaItem({
           />
         </div>
         <div className="space-y-1.5">
-          <Label className="text-[11px] font-bold text-slate-500 ml-1">Цена работы (₽)</Label>
+          <Label className="text-xs font-bold text-slate-500 ml-1">Цена работы (₽)</Label>
           <div className="relative">
             <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₽</span>
             <Input

@@ -44,7 +44,7 @@ export function LocationItemsList({
                                 {item.sku && <span className="text-xs text-slate-400 font-bold mt-0.5">Артикул: {item.sku}</span>}
                             </div>
                             <div className="flex items-center gap-3">
-                                <div className="text-[11px] font-bold text-primary tabular-nums">
+                                <div className="text-xs font-bold text-primary tabular-nums">
                                     {item.quantity} {formatUnit(item.unit)}
                                 </div>
                                 <Button

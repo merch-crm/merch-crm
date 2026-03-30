@@ -271,7 +271,7 @@ export const CategoryCardContent = React.memo(({
                         <h3 className="text-[20px] font-black text-slate-900 leading-tight mb-1 text-center transition-colors duration-300 group-hover:text-[var(--category-color)]">
                             {category.name}
                         </h3>
-                        <p className="text-[11px] font-semibold text-slate-400 text-center">
+                        <p className="text-xs font-semibold text-slate-400 text-center">
                             {category.itemCount || 0} {pluralize(category.itemCount || 0, "активный SKU", "активных SKU", "активных SKU")} на складе
                         </p>
                     </div>
@@ -354,7 +354,7 @@ export const CategoryCardContent = React.memo(({
                                 </span>
                             </div>
                             <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 w-max mb-4">
-                                <span className="text-[11px] font-bold text-slate-400 tracking-wide">На сумму:</span>
+                                <span className="text-xs font-bold text-slate-400 tracking-wide">На сумму:</span>
                                 <span className="text-slate-800 font-extrabold tabular-nums text-[12px]">
                                     {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(Number(category.totalCost || 0))}
                                 </span>

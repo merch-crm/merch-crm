@@ -88,7 +88,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">Новый склад</h2>
-                                <p className="text-[11px] font-bold text-slate-700 mt-0.5">Создание нового места хранения товаров</p>
+                                <p className="text-xs font-bold text-slate-700 mt-0.5">Создание нового места хранения товаров</p>
                             </div>
                         </div>
                     </div>

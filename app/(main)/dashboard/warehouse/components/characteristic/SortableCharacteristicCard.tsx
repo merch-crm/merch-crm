@@ -4,9 +4,8 @@ import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import {
     GripVertical, Settings,
-    Tag, Hash, Shapes, Ruler as _Ruler, Palette, Box, Layers, Maximize,
-    Globe, Weight as _Weight, Droplets, Package, LucideIcon, Component, Waves, Wrench, Paperclip, Scale,
-    Edit2 as _Edit2, Trash2 as _Trash2
+    Tag, Hash, Shapes, Palette, Box, Layers, Maximize,
+    Globe, Droplets, Package, LucideIcon, Component, Waves, Wrench, Paperclip, Scale
 } from "lucide-react";
 import { type InventoryAttribute as Attribute, type AttributeType, type AttributeMeta } from "../../types";
 import { sortAttributeValues, getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";

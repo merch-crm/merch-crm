@@ -172,7 +172,7 @@ export function PlacementProductCard({
 
         {/* Зоны */}
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-400">
             <MapPin className="h-3.5 w-3.5" />
             <span>{activeAreas.length} зон нанесения</span>
           </div>
@@ -192,7 +192,7 @@ export function PlacementProductCard({
               </Badge>
             )}
             {activeAreas.length === 0 && (
-              <p className="text-[11px] text-slate-400 italic">Зоны не настроены</p>
+              <p className="text-xs text-slate-400 italic">Зоны не настроены</p>
             )}
           </div>
         </div>

@@ -39,7 +39,7 @@ export function MaintenanceModeCard({
                     </div>
                     <div
                         className={cn(
-                            "px-4 py-1.5 rounded-full text-[11px] font-bold",
+                            "px-4 py-1.5 rounded-full text-xs font-bold",
                             maintenanceMode
                                 ? "bg-rose-50 text-rose-600"
                                 : "bg-emerald-50 text-emerald-600"

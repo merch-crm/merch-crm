@@ -30,11 +30,11 @@ export function WeeklyReportView({ data }: { data: WeeklyReport }) {
                                             >
                                                 <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
                                             </div>
-                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] leading-tight text-neutral-500 font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs leading-tight text-neutral-500 font-bold px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
                                                 {day.avgHours.toFixed(1)}ч
                                             </div>
                                         </div>
-                                        <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400 mt-4">{day.date}</p>
+                                        <p className="text-xs leading-tight text-neutral-500 font-bold text-slate-400 mt-4">{day.date}</p>
                                     </div>
                                 )
                             })}
@@ -68,7 +68,7 @@ export function WeeklyReportView({ data }: { data: WeeklyReport }) {
                                 </span>
                                 <div className="flex-1 min-w-0">
                                     <p className="font-bold text-slate-900 truncate text-sm">{emp.userName}</p>
-                                    <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold mt-0.5">
+                                    <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-bold mt-0.5">
                                         {emp.daysPresent} дн. • {emp.lateCount} опозд.
                                     </p>
                                 </div>

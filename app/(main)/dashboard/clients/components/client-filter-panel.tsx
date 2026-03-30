@@ -99,7 +99,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                     className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 rounded-2xl shadow-2xl z-20 overflow-hidden"
                                 >
                                     <div className="px-4 py-3 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-                                        <span className="text-[11px] font-black text-slate-400">Недавние запросы</span>
+                                        <span className="text-xs font-black text-slate-400">Недавние запросы</span>
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -108,7 +108,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                                 localStorage.removeItem("client_search_history");
                                                 setUiState(prev => ({ ...prev, searchHistory: [] }));
                                             }}
-                                            className="h-6 text-[11px] font-bold text-slate-400 hover:text-rose-500"
+                                            className="h-6 text-xs font-bold text-slate-400 hover:text-rose-500"
                                         >
                                             Очистить
                                         </Button>
@@ -146,7 +146,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                         <SlidersHorizontal className="h-4 w-4" />
                         <span className="hidden sm:inline">Фильтры</span>
                         {activeFiltersCount > 0 && (
-                            <span className="ml-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-[11px] ring-2 ring-white">
+                            <span className="ml-1 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs ring-2 ring-white">
                                 {activeFiltersCount}
                             </span>
                         )}
@@ -165,7 +165,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                         <div className="bg-white border-2 border-slate-100 rounded-3xl p-6 shadow-sm space-y-3">
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1">
+                                    <label className="text-xs font-black text-slate-400 ml-1">
                                         Период
                                     </label>
                                     <Select
@@ -181,7 +181,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1">
+                                    <label className="text-xs font-black text-slate-400 ml-1">
                                         Кол-во заказов
                                     </label>
                                     <Select
@@ -197,7 +197,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1">
+                                    <label className="text-xs font-black text-slate-400 ml-1">
                                         Регион
                                     </label>
                                     <Select
@@ -211,7 +211,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1 flex items-center gap-1.5">
+                                    <label className="text-xs font-black text-slate-400 ml-1 flex items-center gap-1.5">
                                         <UsersIcon className="w-3 h-3" />
                                         Менеджер
                                     </label>
@@ -228,7 +228,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
 
                                 {/* === НОВОЕ: Фильтр по источнику привлечения === */}
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1 flex items-center gap-1.5">
+                                    <label className="text-xs font-black text-slate-400 ml-1 flex items-center gap-1.5">
                                         <Megaphone className="w-3 h-3" />
                                         Источник
                                     </label>
@@ -250,7 +250,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                             {/* === Вторая строка: Статус === */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1">
+                                    <label className="text-xs font-black text-slate-400 ml-1">
                                         Статус
                                     </label>
                                     <Select
@@ -265,7 +265,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
 
                                 {/* === НОВОЕ: Фильтр по активности === */}
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1 flex items-center gap-1.5">
+                                    <label className="text-xs font-black text-slate-400 ml-1 flex items-center gap-1.5">
                                         <Clock className="w-3 h-3" />
                                         Активность
                                     </label>
@@ -303,7 +303,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
 
                                 {/* === НОВОЕ: Фильтр по RFM сегменту === */}
                                 <div className="space-y-2">
-                                    <label className="text-[11px] font-black text-slate-400 ml-1 flex items-center gap-1.5">
+                                    <label className="text-xs font-black text-slate-400 ml-1 flex items-center gap-1.5">
                                         <Target className="w-3 h-3" />
                                         RFM сегмент
                                     </label>
@@ -339,7 +339,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                                                 filters.showArchived ? "left-5" : "left-1"
                                             )} />
                                         </div>
-                                        <span className="text-[11px] font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Показать архив</span>
+                                        <span className="text-xs font-bold text-slate-500 group-hover:text-slate-900 transition-colors">Показать архив</span>
                                     </button>
                                 </div>
 
@@ -377,38 +377,38 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
             {activeFiltersCount > 0 && (
                 <div className="flex flex-wrap gap-2 px-1">
                     {filters.period !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-xs font-black">
                             Период: {filters.period}
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, period: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
                     {filters.orderCount !== "any" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-xs font-black">
                             Заказов: {filters.orderCount}
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, orderCount: "any" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
                     {filters.region !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-xs font-black">
                             Город: {filters.region}
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, region: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
                     {filters.status !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-xs font-black">
                             Статус: потерянный
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, status: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
                         </div>
                     )}
                     {filters.showArchived && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 text-white rounded-full text-xs font-black">
                             Архив
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, showArchived: false }))}><X className="w-3 h-3 hover:text-rose-100" /></button>
                         </div>
                     )}
                     {/* === НОВОЕ: Чип менеджера === */}
                     {filters.managerId && filters.managerId !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-full text-xs font-black">
                             <UsersIcon className="w-3 h-3" />
                             {filters.managerId === "none"
                                 ? "Без менеджера"
@@ -419,7 +419,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                     )}
                     {/* === НОВОЕ: Чип источника === */}
                     {filters.acquisitionSource !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 text-white rounded-full text-xs font-black">
                             <Megaphone className="w-3 h-3" />
                             {filters.acquisitionSource === "none"
                                 ? "Источник не указан"
@@ -430,7 +430,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                     )}
                     {/* === Чип активности === */}
                     {filters.activityStatus && filters.activityStatus !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white rounded-full text-xs font-black">
                             <Clock className="w-3 h-3" />
                             {activityStatusLabels[filters.activityStatus]}
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, activityStatus: "all" }))}><X className="w-3 h-3 hover:text-rose-400" /></button>
@@ -438,7 +438,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
                     )}
                     {/* === НОВОЕ: Чип RFM === */}
                     {filters.rfmSegment && filters.rfmSegment !== "all" && (
-                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-full text-[11px] font-black">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 text-white rounded-full text-xs font-black">
                             <Target className="w-3 h-3" />
                             Сегмент: {filters.rfmSegment}
                             <button type="button" onClick={() => setFilters(prev => ({ ...prev, rfmSegment: "all" }))}><X className="w-3 h-3 hover:text-purple-200" /></button>

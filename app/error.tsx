@@ -65,7 +65,7 @@ export default function Error({
 
                 <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                <div className="text-[11px] font-bold text-slate-300 relative z-10">
+                <div className="text-xs font-bold text-slate-300 relative z-10">
                     Merch CRM Recovery Mode
                 </div>
             </div>

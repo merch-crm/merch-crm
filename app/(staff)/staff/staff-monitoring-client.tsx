@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { type IconType } from '@/components/ui/stat-card'
 
 export interface PresenceStatus {
     userId: string
@@ -208,7 +209,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         {emp.lateMinutes > 0 && (
-                                            <span className="px-2.5 py-1 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider bg-orange-50 text-orange-600 rounded-lg border border-orange-100">
+                                            <span className="px-2.5 py-1 text-xs leading-tight text-neutral-500 font-bold  tracking-wider bg-orange-50 text-orange-600 rounded-lg border border-orange-100">
                                                 Опоздал {emp.lateMinutes}м
                                             </span>
                                         )}
@@ -216,7 +217,7 @@ export function StaffMonitoringClient({ initialStatus, initialReport }: Props) {
                                             <span className="text-sm font-bold text-slate-900">
                                                 {emp.workHours.toFixed(1)} ч
                                             </span>
-                                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">отработано</p>
+                                            <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium">отработано</p>
                                         </div>
                                     </div>
                                 </div>
@@ -236,8 +237,8 @@ function StatCard({
     color
 }: {
     title: string
-    value: number
-    icon: React.ElementType
+    value: number | string
+    icon: IconType
     color: 'green' | 'yellow' | 'red' | 'orange'
 }) {
     const colors = {
@@ -298,7 +299,7 @@ function EmployeeStatusCard({ employee }: { employee: PresenceStatus }) {
                 </div>
                 <div className="flex-1 min-w-0">
                     <p className="font-bold text-slate-900 truncate text-lg">{employee.userName}</p>
-                    <div className={cn('inline-flex items-center px-2 py-0.5 rounded-full text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider', config.bgColor, config.textColor)}>
+                    <div className={cn('inline-flex items-center px-2 py-0.5 rounded-full text-xs leading-tight text-neutral-500 font-bold  tracking-wider', config.bgColor, config.textColor)}>
                         {config.label}
                     </div>
                 </div>
@@ -322,11 +323,11 @@ function EmployeeStatusCard({ employee }: { employee: PresenceStatus }) {
             <div className="mt-4 grid grid-cols-2 gap-2">
                 <div className="bg-slate-50 rounded-xl p-2 text-center">
                     <p className="text-xs font-bold text-slate-900">{(employee.todayWorkSeconds / 3600).toFixed(1)}ч</p>
-                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400  tracking-tighter">Работа</p>
+                    <p className="text-xs leading-tight text-neutral-500 font-bold text-slate-400  tracking-tighter">Работа</p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-2 text-center">
                     <p className="text-xs font-bold text-slate-900">{(employee.todayIdleSeconds / 3600).toFixed(1)}ч</p>
-                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400  tracking-tighter">Простой</p>
+                    <p className="text-xs leading-tight text-neutral-500 font-bold text-slate-400  tracking-tighter">Простой</p>
                 </div>
             </div>
         </div>

@@ -93,7 +93,7 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-slate-900 leading-tight">Характеристика</h2>
-                                <p className="text-[11px] font-bold text-slate-500 mt-0.5">
+                                <p className="text-xs font-bold text-slate-500 mt-0.5">
                                     Категория: <span className="text-primary font-bold">{activeCategoryName}</span>
                                 </p>
                             </div>
@@ -173,7 +173,7 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
 
 
                         {error && (
-                            <p className="text-[11px] font-bold text-rose-500 mt-1 ml-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                            <p className="text-xs font-bold text-rose-500 mt-1 ml-1 animate-in fade-in slide-in-from-top-1 duration-200">
                                 {error}
                             </p>
                         )}

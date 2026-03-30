@@ -92,7 +92,7 @@ export const DuplicateWarningModal = memo(function DuplicateWarningModal({
                                                 {dup.lastName} {dup.firstName} {dup.patronymic || ""}
                                             </p>
                                             {dup.company && (
-                                                <p className="text-[11px] text-slate-500 truncate">
+                                                <p className="text-xs text-slate-500 truncate">
                                                     {dup.company}
                                                 </p>
                                             )}
@@ -100,7 +100,7 @@ export const DuplicateWarningModal = memo(function DuplicateWarningModal({
                                     </div>
 
                                     {/* Contact Info */}
-                                    <div className="flex flex-wrap gap-3 text-[11px]">
+                                    <div className="flex flex-wrap gap-3 text-xs">
                                         {dup.phone && (
                                             <span className="flex items-center gap-1 text-slate-600 bg-slate-100 px-2 py-1 rounded-lg">
                                                 <Phone className="w-3 h-3" />
@@ -121,7 +121,7 @@ export const DuplicateWarningModal = memo(function DuplicateWarningModal({
                                     type="button"
                                     variant="ghost"
                                     size="sm"
-                                    className="shrink-0 h-8 px-3 rounded-lg text-[11px] font-bold text-slate-400 group-hover:text-primary group-hover:bg-white transition-all"
+                                    className="shrink-0 h-8 px-3 rounded-lg text-xs font-bold text-slate-400 group-hover:text-primary group-hover:bg-white transition-all"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onOpenClient(dup.id);

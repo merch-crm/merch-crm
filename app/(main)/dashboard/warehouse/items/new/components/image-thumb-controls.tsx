@@ -34,7 +34,7 @@ export function ImageThumbControls({
             <div className="space-y-3">
                 {/* ZOOM SLIDER */}
                 <div className="space-y-1.5">
-                    <div className="flex justify-between items-center text-[11px] font-bold text-slate-500 px-0.5">
+                    <div className="flex justify-between items-center text-xs font-bold text-slate-500 px-0.5">
                         <span>Масштаб</span>
                         <span className={cn("transition-colors", !disabled ? "text-indigo-500" : "text-slate-400")}>
                             {Math.round(zoom * 100)}%
@@ -64,7 +64,7 @@ export function ImageThumbControls({
                 {/* X/Y Sliders */}
                 <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                        <div className="text-[11px] font-bold text-slate-500 px-0.5">По горизонтали</div>
+                        <div className="text-xs font-bold text-slate-500 px-0.5">По горизонтали</div>
                         <Slider
                             disabled={maxBounds.x <= 0}
                             value={[x || 0]}
@@ -77,7 +77,7 @@ export function ImageThumbControls({
                     </div>
 
                     <div className="space-y-1.5">
-                        <div className="text-[11px] font-bold text-slate-500 px-0.5">По вертикали</div>
+                        <div className="text-xs font-bold text-slate-500 px-0.5">По вертикали</div>
                         <Slider
                             disabled={maxBounds.y <= 0}
                             value={[y || 0]}

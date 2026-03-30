@@ -59,8 +59,7 @@ export function WatermarkPanel() {
         updateConfig({ imagePath: url, type: "image" });
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const handleApplyWatermark = () => {
+    const _handleApplyWatermark = () => {
         if (!editor) return;
         editor.setWatermarkConfig(config);
     };

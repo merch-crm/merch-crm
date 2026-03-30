@@ -35,7 +35,7 @@ export default function StatVariantsPage() {
                     </div>
 
                     <div className="bg-white rounded-[24px] border border-slate-100 p-6 shadow-sm">
-                        <div className="flex items-center gap-4 mb-6">
+                        <div className="flex items-center gap-3 mb-6">
                             <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
                                 <Layers className="w-6 h-6 text-blue-500" />
                             </div>
@@ -76,7 +76,7 @@ export default function StatVariantsPage() {
 
                     {/* Note: The enclosing container here uses a very light subtle gradient to show off the white cards */}
                     <div className="bg-gradient-to-br from-slate-50 to-slate-100/50 rounded-[28px] border border-slate-200/60 p-6 shadow-[inset_0_0_0_1px_rgba(255,255,255,1)]">
-                        <div className="flex items-center gap-4 mb-6">
+                        <div className="flex items-center gap-3 mb-6">
                             <div className="w-12 h-12 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center shrink-0">
                                 <Layers className="w-6 h-6 text-slate-700" />
                             </div>
@@ -93,7 +93,7 @@ export default function StatVariantsPage() {
                                         <stat.icon className={cn("w-5 h-5", stat.color)} />
                                     </div>
                                     <div className="flex flex-col min-w-0 py-0.5">
-                                        <div className="text-[11px] font-bold text-slate-400 leading-none uppercase  truncate mb-1.5">
+                                        <div className="text-xs font-bold text-slate-400 leading-none   truncate mb-1.5">
                                             {stat.label}
                                         </div>
                                         <div className="text-xl font-black text-slate-800 tabular-nums leading-none ">
@@ -118,10 +118,10 @@ export default function StatVariantsPage() {
                     <div className="bg-white rounded-[20px] border border-slate-200 p-8 shadow-sm">
                         <div className="flex items-center gap-3 mb-8">
                             <Layers className="w-6 h-6 text-slate-900" strokeWidth={2.5} />
-                            <h2 className="text-2xl font-black text-slate-900  uppercase">Статистика</h2>
+                            <h2 className="text-2xl font-black text-slate-900  ">Статистика</h2>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
                             {mockStats.map((stat, i) => (
                                 <div key={i} className={cn(
                                     "flex flex-col p-4 rounded-2xl border border-slate-200/80 bg-transparent hover:bg-slate-50/50 transition-colors duration-200",
@@ -129,7 +129,7 @@ export default function StatVariantsPage() {
                                     "border-l-4", stat.borderColor
                                 )}>
                                     <div className="flex items-center justify-between mb-3">
-                                        <div className="text-xs font-bold text-slate-500 uppercase  truncate pr-2">
+                                        <div className="text-xs font-bold text-slate-500   truncate pr-2">
                                             {stat.label}
                                         </div>
                                         <stat.icon className={cn("w-4 h-4 opacity-70", stat.color)} />

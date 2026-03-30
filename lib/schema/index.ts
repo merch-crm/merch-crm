@@ -1,6 +1,13 @@
 // Enums
 export * from "./enums";
 
+// ./achievements
+export { achievements, userAchievements, achievementsRelations, userAchievementsRelations } from "./achievements";
+export type { Achievement, NewAchievement, UserAchievement, NewUserAchievement } from "./achievements";
+
+// ./api
+export * from "./api";
+
 // ./calculators
 export * from "./calculation-history";
 export * from "./calculator-defaults";
@@ -9,6 +16,9 @@ export * from "./design-files";
 // Legacy calculators (to be migrated)
 export { meterPriceTiers, printPlacements, calculatorConsumablesSettings, printCalculations, printCalculationGroups, printCalculationsRelations, printCalculationGroupsRelations } from "./calculators";
 export type { ConsumptionDataItem, ConsumptionData, MeterPriceTier, NewMeterPriceTier, PrintPlacement, NewPrintPlacement, CalculatorConsumablesSettings, NewCalculatorConsumablesSettings, PrintCalculation, NewPrintCalculation, PrintCalculationGroup, NewPrintCalculationGroup } from "./calculators";
+// ./clients/feedback
+export { customerFeedback, customerFeedbackRelations } from "./clients/feedback";
+export type { CustomerFeedback, NewCustomerFeedback } from "./clients/feedback";
 // ./clients/branding
 export { clientBranding, clientBrandingRelations } from "./clients/branding";
 export type { ClientBranding, NewClientBranding } from "./clients/branding";
@@ -46,12 +56,14 @@ export { orderMockupVersions, orderMockupVersionsRelations } from "./order-mocku
 export type { OrderMockupVersion, NewOrderMockupVersion } from "./order-mockup-versions";
 // ./orders
 export { orders, ordersRelations, orderItems, orderItemsRelations, orderAttachments, orderAttachmentsRelations } from "./orders";
+export type { Order } from "./orders";
 // ./presence/hardware
 export { xiaomiAccounts, cameras, xiaomiAccountsRelations, camerasRelations } from "./presence/hardware";
 // ./presence/recognition
 export { employeeFaces, presenceLogs, employeeFacesRelations, presenceLogsRelations } from "./presence/recognition";
 // ./presence/sessions
 export { workSessions, dailyWorkStats, workSessionsRelations, dailyWorkStatsRelations } from "./presence/sessions";
+export type { WorkSession, DailyWorkStat } from "./presence/sessions";
 // ./presence/settings
 export { presenceSettings, presenceSettingsRelations } from "./presence/settings";
 // ./presence/workstations
@@ -107,6 +119,8 @@ export { inventoryCategories, inventoryCategoriesRelations, inventoryAttributeTy
 export { inventoryItems, inventoryItemsRelations } from "./warehouse/items";
 // ./warehouse/stock
 export { inventoryStocks, inventoryStocksRelations, inventoryTransfers, inventoryTransfersRelations, inventoryTransactions, inventoryTransactionsRelations } from "./warehouse/stock";
+// ./tickets
+export * from "./tickets";
 // ./wiki
 export { wikiFolders, wikiFoldersRelations, wikiPages, wikiPagesRelations } from "./wiki";
 

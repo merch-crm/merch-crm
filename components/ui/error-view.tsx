@@ -36,7 +36,7 @@ export function ErrorView({
                     </p>
 
                     <div className="w-full bg-slate-50 rounded-2xl border border-slate-100/80 p-5 mb-8 text-left shadow-inner overflow-hidden">
-                        <div className="text-[13px] font-mono text-rose-500/90 break-words whitespace-pre-wrap leading-relaxed font-semibold max-h-[120px] overflow-y-auto w-full">
+                        <div className="text-xs font-mono text-rose-500/90 break-words whitespace-pre-wrap leading-relaxed font-semibold max-h-[120px] overflow-y-auto w-full">
                             Error: {message}
                         </div>
                     </div>
@@ -63,7 +63,7 @@ export function ErrorView({
 
                 <div className="w-[120px] h-px bg-slate-100 my-7 relative z-10" />
 
-                <div className="text-[11px] font-bold text-slate-300 relative z-10">
+                <div className="text-xs font-bold text-slate-300 relative z-10">
                     Merch CRM Recovery Mode
                 </div>
             </div>

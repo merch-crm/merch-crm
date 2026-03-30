@@ -17,6 +17,7 @@ import {
     ArrowRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { type IconType } from '@/components/ui/stat-card'
 import { toast } from 'sonner'
 import {
     updatePresenceSettings,
@@ -98,7 +99,7 @@ export function SettingsClient({ initialSettings }: Props) {
                 <SubmitButton
                     onClick={handleSave}
                     isLoading={isPending}
-                    className="rounded-2xl h-14 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold   text-[11px] leading-tight text-neutral-500 shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                    className="rounded-2xl h-14 px-8 bg-indigo-600 hover:bg-indigo-700 text-white font-bold   text-xs leading-tight text-neutral-500 shadow-xl shadow-indigo-100 transition-all active:scale-95"
                 >
                     <Save className="w-4 h-4 mr-2" />
                     Сохранить изменения
@@ -117,14 +118,14 @@ export function SettingsClient({ initialSettings }: Props) {
                                 </div>
                                 <div>
                                     <h2 className="font-bold text-slate-900 text-sm   leading-none">График работы</h2>
-                                    <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tighter mt-1.5">Определение опозданий и смен</p>
+                                    <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tighter mt-1.5">Определение опозданий и смен</p>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardBody className="p-8 space-y-3">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div className="space-y-3">
-                                    <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-500 flex items-center gap-2">
+                                    <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-500 flex items-center gap-2">
                                         <ArrowRight className="w-3 h-3 text-emerald-500" />
                                         Начало рабочего дня
                                     </label>
@@ -136,7 +137,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                     />
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-500 flex items-center gap-2">
+                                    <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-500 flex items-center gap-2">
                                         <ArrowRight className="w-3 h-3 text-rose-500 rotate-180" />
                                         Конец рабочего дня
                                     </label>
@@ -151,7 +152,7 @@ export function SettingsClient({ initialSettings }: Props) {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-50">
                                 <div className="space-y-3">
-                                    <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-500">
+                                    <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-500">
                                         Порог опоздания (мин)
                                     </label>
                                     <Input
@@ -162,10 +163,10 @@ export function SettingsClient({ initialSettings }: Props) {
                                         value={(settings.late_threshold_minutes as number) || 15}
                                         onChange={(e) => updateSetting('late_threshold_minutes', parseInt(e.target.value))}
                                     />
-                                    <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">Допустимое время задержки без фиксации опоздания</p>
+                                    <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium">Допустимое время задержки без фиксации опоздания</p>
                                 </div>
                                 <div className="space-y-3">
-                                    <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-500">
+                                    <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-500">
                                         Авто-закрытие (часы)
                                     </label>
                                     <Input
@@ -176,7 +177,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                         value={(settings.auto_clock_out_hours as number) || 12}
                                         onChange={(e) => updateSetting('auto_clock_out_hours', parseInt(e.target.value))}
                                     />
-                                    <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">Закрытие смены при отсутствии события ухода</p>
+                                    <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium">Закрытие смены при отсутствии события ухода</p>
                                 </div>
                             </div>
                         </CardBody>
@@ -191,14 +192,14 @@ export function SettingsClient({ initialSettings }: Props) {
                                 </div>
                                 <div>
                                     <h2 className="font-bold text-slate-900 text-sm   leading-none">Алгоритмы распознавания</h2>
-                                    <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tighter mt-1.5">Точность и чувствительность ИИ</p>
+                                    <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tighter mt-1.5">Точность и чувствительность ИИ</p>
                                 </div>
                             </div>
                         </CardHeader>
                         <CardBody className="p-8 space-y-3">
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-500">
+                                    <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-500">
                                         Уверенность (Confidence Index)
                                     </label>
                                     <span className="text-sm font-black text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
@@ -214,14 +215,14 @@ export function SettingsClient({ initialSettings }: Props) {
                                     onChange={(e) => updateSetting('recognition_confidence', parseFloat(e.target.value))}
                                     className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-indigo-500"
                                 />
-                                <div className="flex justify-between text-[11px] leading-tight text-neutral-500 font-black   text-slate-400">
+                                <div className="flex justify-between text-xs leading-tight text-neutral-500 font-black   text-slate-400">
                                     <span className="text-amber-500">Баланс (Больше ложных совпадений)</span>
                                     <span className="text-emerald-500">Строгость (Только точные совпадения)</span>
                                 </div>
                             </div>
 
                             <div className="space-y-3 pt-6 border-t border-slate-50">
-                                <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-500">
+                                <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-500">
                                     Порог бездействия (секунды)
                                 </label>
                                 <div className="relative max-w-xs">
@@ -235,7 +236,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                     />
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">сек</div>
                                 </div>
-                                <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">Интервал отсутствия в кадре для перевода в статус &quot;Бездействие&quot;</p>
+                                <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium">Интервал отсутствия в кадре для перевода в статус &quot;Бездействие&quot;</p>
                             </div>
                         </CardBody>
                     </Card>
@@ -243,7 +244,7 @@ export function SettingsClient({ initialSettings }: Props) {
 
                 {/* Правая колонка: Инфраструктура */}
                 <div className="space-y-3">
-                    <h3 className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-400 pl-2">Инфраструктура</h3>
+                    <h3 className="text-xs leading-tight text-neutral-500 font-black   text-slate-400 pl-2">Инфраструктура</h3>
 
                     {/* go2rtc */}
                     <InfrastructureCard
@@ -256,7 +257,7 @@ export function SettingsClient({ initialSettings }: Props) {
                         color="blue"
                     >
                         <div className="mt-4 pt-4 border-t border-slate-100/50">
-                            <label className="text-[11px] leading-tight text-neutral-500 font-black   text-slate-400 mb-2 block">Cервис URL</label>
+                            <label className="text-xs leading-tight text-neutral-500 font-black   text-slate-400 mb-2 block">Cервис URL</label>
                             <Input
                                 className="h-10 rounded-xl bg-white/50 border-slate-200 text-xs font-bold"
                                 value={(settings.go2rtc_url as string) || 'http://localhost:1984'}
@@ -277,7 +278,7 @@ export function SettingsClient({ initialSettings }: Props) {
                         color="green"
                     >
                         <div className="mt-4 p-3 bg-white/40 rounded-xl border border-white/60">
-                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-500 font-medium leading-relaxed">
+                            <p className="text-xs leading-tight text-neutral-500 text-slate-500 font-medium leading-relaxed">
                                 Статус AI ядра системы. Обрабатывает векторные эмбеддинги для сопоставления лиц.
                             </p>
                         </div>
@@ -292,7 +293,7 @@ export function SettingsClient({ initialSettings }: Props) {
                                 </div>
                                 <div>
                                     <p className="text-white font-bold text-sm">Важное примечание</p>
-                                    <p className="text-indigo-200 text-[11px] leading-tight text-neutral-500 font-medium leading-relaxed mt-2 opacity-80">
+                                    <p className="text-indigo-200 text-xs leading-tight text-neutral-500 font-medium leading-relaxed mt-2 opacity-80">
                                         Изменения параметров распознавания вступают в силу мгновенно для всех активных камер.
                                     </p>
                                 </div>
@@ -321,7 +322,7 @@ function InfrastructureCard({
     status: 'unknown' | 'connected' | 'error',
     loading: boolean,
     onTest: () => void,
-    icon: React.ElementType,
+    icon: IconType,
     color: 'blue' | 'green',
     children?: React.ReactNode
 }) {
@@ -342,7 +343,7 @@ function InfrastructureCard({
                         </div>
                         <div>
                             <h3 className="font-black text-slate-900 text-sm leading-none">{title}</h3>
-                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tighter mt-1.5">{description}</p>
+                            <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tighter mt-1.5">{description}</p>
                         </div>
                     </div>
                 </div>
@@ -350,7 +351,7 @@ function InfrastructureCard({
                 <div className="mt-6 flex items-center justify-between bg-white/60 p-3 rounded-2xl border border-white/80">
                     <div className="flex items-center gap-2">
                         {isConn ? <ShieldCheck className="w-4 h-4 text-emerald-500" /> : isErr ? <ShieldAlert className="w-4 h-4 text-rose-500" /> : <div className="w-2 h-2 rounded-full bg-slate-300 animate-pulse ml-1" />}
-                        <span className={cn("text-[11px] leading-tight text-neutral-500 font-black",
+                        <span className={cn("text-xs leading-tight text-neutral-500 font-black",
                             isConn ?"text-emerald-600" : isErr ?"text-rose-600" :"text-slate-400"
                         )}>
                             {isConn ? 'Online' : isErr ? 'Error' : 'Offline'}

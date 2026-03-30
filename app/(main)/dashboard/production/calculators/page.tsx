@@ -17,13 +17,14 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/layout/page-header";
+import { IconType } from "@/components/ui/stat-card";
 
 interface CalculatorItem {
   id: string;
   title: string;
   description: string;
   href: string;
-  icon: React.ElementType;
+  icon: IconType;
   iconColor: string;
   iconBgColor: string;
   featured?: boolean;
@@ -36,7 +37,7 @@ const calculators: CalculatorItem[] = [
     title: "DTF-печать",
     description: "Прямая печать на плёнку с переносом на ткань. Отлично подходит для полноцветных изображений и мелких деталей.",
     href: "/dashboard/production/calculators/dtf",
-    icon: Layers,
+    icon: Layers as IconType,
     iconColor: "text-white",
     iconBgColor: "bg-white/20",
     featured: true,
@@ -47,7 +48,7 @@ const calculators: CalculatorItem[] = [
     title: "Сублимация",
     description: "Надежный перенос красителя в структуру...",
     href: "/dashboard/production/calculators/sublimation",
-    icon: Droplets,
+    icon: Droplets as IconType,
     iconColor: "text-blue-600",
     iconBgColor: "bg-blue-50",
     className: "md:col-span-1 lg:col-span-1",
@@ -57,7 +58,7 @@ const calculators: CalculatorItem[] = [
     title: "DTG-печать",
     description: "Прямая цифровая печать на текстиль",
     href: "/dashboard/production/calculators/dtg",
-    icon: Shirt,
+    icon: Shirt as IconType,
     iconColor: "text-violet-600",
     iconBgColor: "bg-violet-50",
     className: "md:col-span-1 lg:col-span-1",
@@ -67,7 +68,7 @@ const calculators: CalculatorItem[] = [
     title: "Шелкография",
     description: "Трафаретная печать через сетку",
     href: "/dashboard/production/calculators/silkscreen",
-    icon: Grid3X3,
+    icon: Grid3X3 as IconType,
     iconColor: "text-slate-600",
     iconBgColor: "bg-slate-50",
     className: "md:col-span-1 lg:col-span-1",
@@ -77,7 +78,7 @@ const calculators: CalculatorItem[] = [
     title: "Вышивка",
     description: "Логотипы нитками на текстиле",
     href: "/dashboard/production/calculators/embroidery",
-    icon: Scissors,
+    icon: Scissors as IconType,
     iconColor: "text-rose-600",
     iconBgColor: "bg-rose-50",
     className: "md:col-span-1 lg:col-span-1",
@@ -87,7 +88,7 @@ const calculators: CalculatorItem[] = [
     title: "UV DTF-печать",
     description: "УФ-печать для брендирования сувениров",
     href: "/dashboard/production/calculators/uv-dtf",
-    icon: Sun,
+    icon: Sun as IconType,
     iconColor: "text-cyan-600",
     iconBgColor: "bg-cyan-50",
     className: "md:col-span-2 lg:col-span-2", // Wide bento block
@@ -97,7 +98,7 @@ const calculators: CalculatorItem[] = [
     title: "Нанесение принта",
     description: "Термотрансферы, нашивки, шевроны",
     href: "/dashboard/production/calculators/thermotransfer",
-    icon: Stamp,
+    icon: Stamp as IconType,
     iconColor: "text-orange-600",
     iconBgColor: "bg-orange-50",
     className: "md:col-span-2 lg:col-span-2", // Wide bento block
@@ -110,7 +111,7 @@ const utilities: CalculatorItem[] = [
     title: "История",
     description: "Архив сохраненных расчётов",
     href: "/dashboard/production/calculators/history",
-    icon: History,
+    icon: History as IconType,
     iconColor: "text-slate-600",
     iconBgColor: "bg-slate-50",
     className: "lg:col-span-2 md:col-span-1",
@@ -120,7 +121,7 @@ const utilities: CalculatorItem[] = [
     title: "База нанесений",
     description: "Управление стандартными зонами",
     href: "/dashboard/production/calculators/placements",
-    icon: Info,
+    icon: Info as IconType,
     iconColor: "text-emerald-600",
     iconBgColor: "bg-emerald-50",
     className: "lg:col-span-2 md:col-span-1",

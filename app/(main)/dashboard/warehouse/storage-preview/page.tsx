@@ -19,7 +19,7 @@ export default async function StoragePreviewPage() {
             <div className="mb-12 flex flex-col items-start justify-between gap-3 lg:flex-row lg:items-end">
                 <div className="space-y-3">
                     <div className="inline-flex items-center gap-2 rounded-full bg-[#9EFF00]/10 px-3 py-1 border border-[#9EFF00]/20">
-                        <span className="text-[11px] font-black text-[#9EFF00]">
+                        <span className="text-xs font-black text-[#9EFF00]">
                             дизайн-концепт v1.0
                         </span>
                     </div>
@@ -63,7 +63,7 @@ export default async function StoragePreviewPage() {
                         </div>
                         <div className="mt-4">
                             <span className="text-2xl font-black text-white">{stat.value}</span>
-                            <p className="text-[11px] font-bold text-white/20">
+                            <p className="text-xs font-bold text-white/20">
                                 {stat.label.toLowerCase()}
                             </p>
                         </div>

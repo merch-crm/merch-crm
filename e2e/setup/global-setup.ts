@@ -3,8 +3,8 @@ import { type FullConfig } from '@playwright/test';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function globalSetup(config: FullConfig) {
+ 
+async function globalSetup(_config: FullConfig) {
     console.log('--- Global Setup Starting ---');
 
     // Загружаем переменные строго ДО импорта модулей, использующих БД

@@ -24,6 +24,7 @@ import { ConsumableItemEditor } from './ConsumableItemEditor';
 import { useWarehouseItems } from '../hooks/use-warehouse-items';
 import { cn } from '@/lib/utils';
 import * as LucideIcons from 'lucide-react';
+import { IconType } from "@/components/ui/stat-card";
 
 const { 
   Settings2: IconSettings, 
@@ -68,8 +69,8 @@ function SimpleInput({
   return (
     <div className="space-y-2">
       <div className="flex flex-col ml-1">
-        {label && <Label className="text-[14px] font-black text-slate-900 tracking-tight">{label}</Label>}
-        {description && <p className="text-[11px] font-bold text-slate-400 mt-0.5">{description}</p>}
+        {label && <Label className="text-sm font-black text-slate-900 tracking-tight">{label}</Label>}
+        {description && <p className="text-xs font-bold text-slate-400 mt-0.5">{description}</p>}
       </div>
       <div className="relative group">
         <Input
@@ -80,7 +81,7 @@ function SimpleInput({
           className="h-14 rounded-[20px] border-slate-100 bg-slate-50/30 px-6 text-xl font-black text-slate-900 focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-200 transition-all shadow-none disabled:bg-slate-50 disabled:text-slate-300"
         />
         {unit && (
-          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[11px] font-black text-slate-300 bg-white/50 px-2 py-1 rounded-lg border border-slate-100/50">
+          <div className="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300 bg-white/50 px-2 py-1 rounded-lg border border-slate-100/50">
             {unit}
           </div>
         )}
@@ -102,7 +103,7 @@ function ActionCard({
 }: { 
   active: boolean; 
   onClick: () => void; 
-  icon: React.ElementType; 
+  icon: IconType; 
   label: string;
   sublabel: string;
   colorClass?: string;
@@ -126,11 +127,11 @@ function ActionCard({
       </div>
       <div className="space-y-1">
         <span className={cn(
-            "text-[15px] font-black tracking-tight block",
+            "text-base font-black tracking-tight block",
             active ? "text-white" : "text-slate-900"
         )}>{label}</span>
         <span className={cn(
-            "text-[12px] font-bold tracking-tight block",
+            "text-sm font-bold tracking-tight block",
             active ? "text-white/60" : "text-slate-400"
         )}>{sublabel}</span>
       </div>
@@ -170,9 +171,8 @@ export function GlobalSettingsModal({
       await onSave(localSettings);
       toast.success('Настройки успешно применены');
       onClose();
-    } catch (err) {
+    } catch (_err) {
       toast.error('Ошибка при сохранении');
-      console.error(err);
     } finally {
       setIsSaving(false);
     }
@@ -182,9 +182,8 @@ export function GlobalSettingsModal({
     try {
       await onReset();
       toast.info('Настройки сброшены к заводским');
-    } catch (err) {
+    } catch (_err) {
       toast.error('Ошибка при сбросе');
-      console.error(err);
     }
   };
 
@@ -266,7 +265,7 @@ export function GlobalSettingsModal({
                 <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-400">
                   {/* Базовая цена */}
                   <div className="space-y-3">
-                      <Label className="text-[15px] font-black text-slate-900 flex items-center gap-2">
+                      <Label className="text-base font-black text-slate-900 flex items-center gap-2">
                          <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                          Основные параметры
                       </Label>
@@ -290,7 +289,7 @@ export function GlobalSettingsModal({
                   
                   {/* Срочность */}
                   <div className="space-y-3">
-                      <Label className="text-[15px] font-black text-slate-900 flex items-center gap-2">
+                      <Label className="text-base font-black text-slate-900 flex items-center gap-2">
                          <div className="h-1.5 w-1.5 rounded-full bg-orange-500" />
                          Наценки за скорость
                       </Label>
@@ -348,7 +347,7 @@ export function GlobalSettingsModal({
                       <Button 
                         variant="ghost" 
                         onClick={() => setShowAdvanced(!showAdvanced)}
-                        className="text-[11px] font-black text-slate-400 hover:text-indigo-600 transition-colors tracking-tight gap-2"
+                        className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors tracking-tight gap-2"
                       >
                          {showAdvanced ? <IconEyeOff className="w-3.5 h-3.5" /> : <IconEye className="w-3.5 h-3.5" />}
                          {showAdvanced ? "Скрыть тех. детали" : "Для профи"}

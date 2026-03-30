@@ -376,7 +376,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
 
                             <div>
                                 <p className="text-xs text-muted-foreground mb-1">Создано</p>
-                                <p className="text-[11px] font-medium">
+                                <p className="text-xs font-medium">
                                     {format(new Date(task.createdAt), "d MMMM yyyy, HH:mm", { locale: ru })}
                                 </p>
                                 {task.createdByUser && (

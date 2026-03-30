@@ -46,7 +46,7 @@ export const ItemStockLocations = React.memo(({ stocks }: ItemStockLocationsProp
                                 <span className="text-xl md:text-2xl font-black text-foreground tabular-nums leading-none">
                                     {s.quantity}
                                 </span>
-                                <span className="text-xs md:text-[11px] font-bold text-muted-foreground">
+                                <span className="text-xs md:text-xs font-bold text-muted-foreground">
                                     шт.
                                 </span>
                             </div>
@@ -56,7 +56,7 @@ export const ItemStockLocations = React.memo(({ stocks }: ItemStockLocationsProp
                                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
                             )}
 
-                            <span className="text-xs md:text-[11px] font-bold text-muted-foreground whitespace-nowrap">
+                            <span className="text-xs md:text-xs font-bold text-muted-foreground whitespace-nowrap">
                                 {isMain ?"Основной объём" :"Доп. склад"}
                             </span>
                         </div>

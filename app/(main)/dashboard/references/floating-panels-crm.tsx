@@ -20,6 +20,8 @@ import {
     Mic
 } from"lucide-react";
 
+import { type IconType } from "@/components/ui/stat-card";
+
 const PanelContainer = ({ children, className ="" }: { children: React.ReactNode, className?: string }) => (
     <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -32,7 +34,7 @@ const PanelContainer = ({ children, className ="" }: { children: React.ReactNode
     </motion.div>
 );
 
-const IconButton = ({ icon: Icon, active = false, className ="", blue = false }: { icon: React.ElementType, active?: boolean, className?: string, blue?: boolean }) => (
+const IconButton = ({ icon: Icon, active = false, className ="", blue = false }: { icon: IconType, active?: boolean, className?: string, blue?: boolean }) => (
     <button type="button" className={`p-2.5 rounded-full transition-colors flex items-center justify-center ${active ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'} ${blue ? '!bg-[#3b5bdb] !text-white hover:!bg-[#3b5bdb]/90' : ''} ${className}`}>
         <Icon size={20} strokeWidth={2} />
     </button>

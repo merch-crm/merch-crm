@@ -84,7 +84,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
 
                         <div className="space-y-3">
                             <div className="space-y-2">
-                                <Label htmlFor="quantity" className="text-[11px] font-bold text-slate-400">Количество брака (шт)</Label>
+                                <Label htmlFor="quantity" className="text-xs font-bold text-slate-400">Количество брака (шт)</Label>
                                 <Input
                                     id="quantity"
                                     type="number"
@@ -96,7 +96,7 @@ export function DefectDialog({ orderItemId, maxQuantity, itemName }: DefectDialo
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="reason" className="text-[11px] font-bold text-slate-400">Причина брака</Label>
+                                <Label htmlFor="reason" className="text-xs font-bold text-slate-400">Причина брака</Label>
                                 <Input
                                     id="reason"
                                     value={reason}

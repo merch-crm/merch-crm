@@ -192,14 +192,14 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                                             {ws.assignedUser?.name || 'Любой сотрудник'}
                                         </span>
                                         {ws.requiresAssignedUser && (
-                                            <span className="ml-auto text-[11px] leading-tight text-neutral-500  tracking-wider font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
+                                            <span className="ml-auto text-xs leading-tight text-neutral-500  tracking-wider font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded">
                                                 Strict
                                             </span>
                                         )}
                                     </div>
 
                                     {ws.zone && (
-                                        <div className="flex items-center gap-2 text-[11px] font-bold  tracking-wider text-green-600 mt-1">
+                                        <div className="flex items-center gap-2 text-xs font-bold  tracking-wider text-green-600 mt-1">
                                             <Move className="w-3 h-3" />
                                             Зона детекции настроена
                                         </div>
@@ -355,7 +355,7 @@ export function WorkstationsClient({ initialWorkstations, cameras, users }: Prop
                             </div>
 
                             {!form.zone && (
-                                <div className="flex items-center gap-2 text-[11px] text-blue-500 font-medium">
+                                <div className="flex items-center gap-2 text-xs text-blue-500 font-medium">
                                     <div className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
                                     Если зона не задана, рабочим местом считается весь кадр
                                 </div>

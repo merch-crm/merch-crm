@@ -232,7 +232,7 @@ export function EquipmentCard({
                             {linkedTypes.map((type) => (
                                 <div 
                                     key={type.id} 
-                                    className="px-2 py-0.5 rounded-lg border bg-white text-[11px] font-bold"
+                                    className="px-2 py-0.5 rounded-lg border bg-white text-xs font-bold"
                                     style={{
                                         borderColor: type.color ? `${type.color}30` : "#e2e8f0",
                                         color: type.color || "#64748b",

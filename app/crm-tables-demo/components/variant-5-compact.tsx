@@ -30,7 +30,7 @@ export const Variant5Compact = () => {
                         <tbody>
                             {operations.map((op, idx) => (
                                 <tr key={op.id} className={`${idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'} hover:bg-blue-50/50 border-b border-slate-200/60`}>
-                                    <td className="px-3 py-1.5 border-r border-slate-200/60 font-mono text-[11px] text-slate-500">{op.date} {op.time}</td>
+                                    <td className="px-3 py-1.5 border-r border-slate-200/60 font-mono text-xs text-slate-500">{op.date} {op.time}</td>
                                     <td className="px-3 py-1.5 border-r border-slate-200/60 font-medium text-slate-800">{op.type}</td>
                                     <td className={`px-3 py-1.5 border-r border-slate-200/60 text-right font-mono font-bold ${op.changeType === 'positive' ? 'text-emerald-600' : 'text-rose-600'}`}>{op.change}</td>
                                     <td className="px-3 py-1.5 border-r border-slate-200/60 text-slate-600">{op.warehouse}</td>
@@ -41,7 +41,7 @@ export const Variant5Compact = () => {
                             {/* Duplicates to show density */}
                             {operations.map((op, idx) => (
                                 <tr key={op.id + 'dup'} className={`${(idx + 1) % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'} hover:bg-blue-50/50 border-b border-slate-200/60`}>
-                                    <td className="px-3 py-1.5 border-r border-slate-200/60 font-mono text-[11px] text-slate-500">{op.date} 09:00</td>
+                                    <td className="px-3 py-1.5 border-r border-slate-200/60 font-mono text-xs text-slate-500">{op.date} 09:00</td>
                                     <td className="px-3 py-1.5 border-r border-slate-200/60 font-medium text-slate-800">{op.type}</td>
                                     <td className={`px-3 py-1.5 border-r border-slate-200/60 text-right font-mono font-bold ${op.changeType === 'positive' ? 'text-emerald-600' : 'text-rose-600'}`}>{op.change}</td>
                                     <td className="px-3 py-1.5 border-r border-slate-200/60 text-slate-600">{op.warehouse}</td>

@@ -63,7 +63,7 @@ export const AntigravityLocationCard = memo(({
                 <div className="flex items-start justify-between">
                     <div className="flex flex-col gap-3">
                         <div className={cn(
-                            "inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-[11px] font-bold border",
+                            "inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-bold border",
                             loc.type === "warehouse" ? "bg-purple-500/10 text-purple-400 border-purple-500/20" :
                                 loc.type === "production" ? "bg-orange-500/10 text-orange-400 border-orange-500/20" :
                                     "bg-[#9EFF00]/10 text-[#9EFF00] border-[#9EFF00]/20"
@@ -92,7 +92,7 @@ export const AntigravityLocationCard = memo(({
                         <Package className="h-6 w-6 text-[#9EFF00]/50" />
                     </div>
                     <div className="mt-1 flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-white/30">
+                        <span className="text-xs font-bold text-white/30">
                             единиц в наличии
                         </span>
                         <div className="h-[1px] flex-grow bg-white/5" />
@@ -117,7 +117,7 @@ export const AntigravityLocationCard = memo(({
                                 <User className="h-4 w-4 text-white/60" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-[11px] text-white/30 font-bold">ответственный</span>
+                                <span className="text-xs text-white/30 font-bold">ответственный</span>
                                 <span className="text-sm font-semibold text-white/80">
                                     {loc.responsibleUser?.name || "Не назначен"}
                                 </span>

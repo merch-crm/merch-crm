@@ -1,6 +1,5 @@
 "use client";
 
-import { type ElementType } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,6 +21,7 @@ import {
   Calendar,
   Sparkles,
 } from "lucide-react";
+import { type IconType } from "@/components/ui/stat-card";
 import { TASK_STATUS_CONFIG, TASK_PRIORITY_CONFIG } from "../../constants";
 import type { Task } from "@/lib/types/tasks";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ interface TaskHistorySectionProps {
 
 const ACTION_CONFIG: Record<
   string,
-  { icon: ElementType; label: string; color: string; bgClass: string }
+  { icon: IconType; label: string; color: string; bgClass: string }
 > = {
   created: {
     icon: Plus,

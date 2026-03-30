@@ -5,6 +5,8 @@ import { PageHeader } from "@/components/layout/page-header";
 import { LoyaltySettingsClient } from "./loyalty-settings-client";
 import { getLoyaltyLevels } from "@/app/(main)/dashboard/clients/actions/loyalty.actions";
 import { getLoyaltyDistribution } from "@/app/(main)/dashboard/clients/actions/analytics.actions";
+import { type LoyaltyLevel } from "@/lib/schema";
+import { type LoyaltyDistributionData } from "@/app/(main)/dashboard/clients/actions/analytics/types";
 
 export const metadata = {
     title: "Настройки лояльности | CRM",
@@ -21,9 +23,9 @@ export default async function LoyaltySettingsPage() {
 
     const levels = levelsRes.success && levelsRes.data ? levelsRes.data : [];
     // Приводим данные аналитики к формату, который ожидает LoyaltySettingsClient
-    const statsData = statsRes.success && statsRes.data ? statsRes.data : [];
-    const stats: { levelId: string; levelName: string; color: string; clientsCount: number; totalRevenue: number }[] = levels.map(l => {
-        const matchingStat = statsData.find(s => s.levelName === l.levelName);
+    const statsData: LoyaltyDistributionData[] = statsRes.success && statsRes.data ? statsRes.data : [];
+    const stats: { levelId: string; levelName: string; color: string; clientsCount: number; totalRevenue: number }[] = levels.map((l: LoyaltyLevel) => {
+        const matchingStat = statsData.find((s: LoyaltyDistributionData) => s.levelName === l.levelName);
         return {
             levelId: l.id,
             levelName: l.levelName,

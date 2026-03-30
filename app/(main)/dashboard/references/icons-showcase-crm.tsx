@@ -280,7 +280,7 @@ interface IconSectionProps {
     title: string;
     color: string;
     hoverColor: string;
-    icons: { name: string; icon: React.ElementType; label: string }[];
+    icons: { name: string; icon: React.ComponentType<{ className?: string }>; label: string }[];
     packageName: string;
 }
 

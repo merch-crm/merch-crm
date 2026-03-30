@@ -607,7 +607,7 @@ export const componentRegistry: ComponentDefinition[] = [
                     { property: 'checked:box-shadow', value: '0 0 0 4px rgba(93,0,255,0.25)' },
                 ],
                 render: () => (
-                    <div className="flex gap-6">
+                    <div className="flex gap-3">
                         <div className="flex items-center gap-2">
                             <Switch variant="primary" />
                             <span className="text-sm text-slate-600">Off</span>

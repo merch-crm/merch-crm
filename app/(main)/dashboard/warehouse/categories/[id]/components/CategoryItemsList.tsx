@@ -151,7 +151,7 @@ export function CategoryItemsList({
                                                 </div>
                                             </td>
                                             <td className="crm-td">
-                                                <div className="flex flex-col gap-1 text-[11px] text-slate-500 font-medium">
+                                                <div className="flex flex-col gap-1 text-xs text-slate-500 font-medium">
                                                     {item.stocks?.filter(s => s.quantity > 0).map((s) => {
                                                         const locName = storageLocations.find(l => l.id === s.storageLocationId)?.name || "N/A";
                                                         return (
@@ -171,7 +171,7 @@ export function CategoryItemsList({
                                             </td>
                                             {canSeeCost && (
                                                 <td className="crm-td crm-td-number">
-                                                    <span className="text-[11px] font-medium text-slate-400">
+                                                    <span className="text-xs font-medium text-slate-400">
                                                         {item.costPrice ? `${Number(item.costPrice).toLocaleString()} ${currencySymbol}` : "—"}
                                                     </span>
                                                 </td>
@@ -192,7 +192,7 @@ export function CategoryItemsList({
                                             </td>
                                             <td className="crm-td crm-td-number text-center">
                                                 <div className="flex flex-col items-center gap-1.5 translate-x-2">
-                                                    <div className={cn("inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
+                                                    <div className={cn("inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold transition-all border shadow-sm shrink-0 whitespace-nowrap",
                                                         isCritical ? "bg-rose-50 border-rose-100 text-rose-600 ring-2 ring-rose-500/5" :
                                                             isLowStock ? "bg-amber-50 border-amber-100 text-amber-600 ring-2 ring-amber-500/5" : "bg-emerald-50 border-emerald-100 text-emerald-600"
                                                     )}>

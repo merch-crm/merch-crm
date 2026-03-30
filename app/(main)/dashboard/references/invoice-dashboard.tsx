@@ -96,7 +96,7 @@ const InvoiceDashboard = () => {
 
                     <div className="flex items-center gap-3 pr-10">
                         <div className="space-y-1.5">
-                            <div className="text-[11px] font-semibold text-black/30 tracking-[0.15em]">Account</div>
+                            <div className="text-xs font-semibold text-black/30 tracking-[0.15em]">Account</div>
                             <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center">
                                     <Globe className="w-3.5 h-3.5 text-black/40" />
@@ -105,16 +105,16 @@ const InvoiceDashboard = () => {
                             </div>
                         </div>
                         <div className="space-y-1.5">
-                            <div className="text-[11px] font-semibold text-black/30 tracking-[0.15em]">Invoice Number</div>
+                            <div className="text-xs font-semibold text-black/30 tracking-[0.15em]">Invoice Number</div>
                             <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center">
-                                    <span className="text-[11px] font-bold text-black/40">#</span>
+                                    <span className="text-xs font-bold text-black/40">#</span>
                                 </div>
                                 <span className="text-[19px] font-bold text-black">INV-4905</span>
                             </div>
                         </div>
                         <div className="space-y-1.5">
-                            <div className="text-[11px] font-semibold text-black/30 tracking-[0.15em]">Status</div>
+                            <div className="text-xs font-semibold text-black/30 tracking-[0.15em]">Status</div>
                             <div className="flex items-center gap-2">
                                 <div className="w-6 h-6 rounded-lg bg-black/5 flex items-center justify-center">
                                     <div className="w-2.5 h-2.5 rounded-full border-2 border-black/20" />

@@ -121,6 +121,7 @@ export async function getAcquisitionSourceStats(): Promise<ActionResult<Acquisit
         const totalAcrossSources = sourcesData.reduce((sum, s) => sum + Number(s.count), 0);
 
         const result: AcquisitionSourceData[] = sourcesData.map((row) => ({
+            id: row.source || "unknown",
             source: row.source,
             label: acquisitionSourceLabels[row.source.toLowerCase()] || row.source || "Не указан",
             count: Number(row.count),

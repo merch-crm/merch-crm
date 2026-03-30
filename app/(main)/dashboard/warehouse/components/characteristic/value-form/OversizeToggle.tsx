@@ -50,7 +50,7 @@ export function OversizeToggle({
                         <div className={cn("text-sm font-bold", valueForm.isOversize ?"text-indigo-700" :"text-slate-700")}>
                             Oversize
                         </div>
-                        <div className="text-[11px] font-medium text-slate-400">Свободный крой изделия</div>
+                        <div className="text-xs font-medium text-slate-400">Свободный крой изделия</div>
                     </div>
                 </div>
                 <div className={cn("w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",

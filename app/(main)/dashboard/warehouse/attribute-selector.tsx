@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { createInventoryAttribute, getInventoryAttributes, getInventoryAttributeTypes } from "./attribute-actions";
 import { useToast } from "@/components/ui/toast";
 import { AttributeType } from "./types";
+import { type IconType } from "@/components/ui/stat-card";
 
 // Simple promise cache to deduplicate concurrent requests when rendering multiple selectors
 let _sharedAttributesPromise: Promise<{ success: boolean; data?: unknown }> | null = null;
@@ -38,7 +39,7 @@ import { AttributeCustomModal } from "./attribute-custom-modal";
 import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 
-const DATA_TYPE_ICONS: Record<string, React.ElementType> = {
+const DATA_TYPE_ICONS: Record<string, IconType> = {
     text: Shapes, unit: Paperclip, color: Palette, dimensions: Box, quantity: Hash,
     composition: Component, material: Layers, size: Maximize, brand: Tag,
     country: Globe, density: Waves, weight: Scale, volume: Droplets,
@@ -238,7 +239,7 @@ export function AttributeSelector({
                     <Settings2 className="w-5 h-5" />
                 </div>
                 <div className="text-left">
-                    <div className="text-[13px] font-bold text-slate-900 leading-tight">Справочник</div>
+                    <div className="text-xs font-bold text-slate-900 leading-tight">Справочник</div>
                     <div className="text-xs font-bold text-slate-400">Полный список характеристик</div>
                 </div>
             </div>
@@ -356,7 +357,7 @@ export function AttributeSelector({
                         <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                             <Palette className="w-4 h-4 text-slate-500" />
                         </div>
-                        <h4 className="text-[13px] font-bold text-slate-800">
+                        <h4 className="text-xs font-bold text-slate-800">
                             {label || "Цвет изделия"} {required && <span className="text-rose-500 ml-1">*</span>}
                         </h4>
                     </div>
@@ -369,8 +370,8 @@ export function AttributeSelector({
                                 onClick={() => setShowCustom(true)}
                                 className="h-auto p-0 px-2 text-slate-400 hover:text-slate-900 transition-colors"
                             >
-                                <span className="text-[11px] font-bold mr-1">+</span>
-                                <span className="text-[11px] font-bold">Добавить</span>
+                                <span className="text-xs font-bold mr-1">+</span>
+                                <span className="text-xs font-bold">Добавить</span>
                             </Button>
                         )}
                         {headerAction}
@@ -440,7 +441,7 @@ export function AttributeSelector({
                             </div>
                         );
                     })()}
-                    <h4 className="text-[13px] font-bold text-slate-800 truncate">
+                    <h4 className="text-xs font-bold text-slate-800 truncate">
                         {displayLabel} {required && <span className="text-rose-500 ml-1">*</span>}
                     </h4>
                 </div>
@@ -453,8 +454,8 @@ export function AttributeSelector({
                             onClick={() => setShowCustom(true)}
                             className="h-auto p-0 px-2 text-slate-400 hover:text-slate-900 transition-colors"
                         >
-                            <span className="text-[11px] font-bold mr-1">+</span>
-                            <span className="text-[11px] font-bold">Добавить</span>
+                            <span className="text-xs font-bold mr-1">+</span>
+                            <span className="text-xs font-bold">Добавить</span>
                         </Button>
                     )}
                     {headerAction}

@@ -106,7 +106,7 @@ export function AttributeCustomModal({
                         </div>
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 leading-tight">{title}</h2>
-                            <p className="text-[11px] font-medium text-slate-500 mt-0.5">
+                            <p className="text-xs font-medium text-slate-500 mt-0.5">
                                 {subtitle}
                             </p>
                         </div>

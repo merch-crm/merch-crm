@@ -28,12 +28,14 @@ interface ActivityStatusTabsProps {
     className?: string;
 }
 
+import { IconType } from "@/components/ui/stat-card";
+
 interface TabConfig {
     value: ActivityStatus;
     label: string;
     shortLabel: string;
     description: string;
-    icon: React.ElementType;
+    icon: IconType;
     color: string;
     bgColor: string;
     countKey?: keyof Omit<NonNullable<ActivityStatusTabsProps["counts"]>, "total">;
@@ -45,7 +47,7 @@ const tabs: TabConfig[] = [
         label: "Все",
         shortLabel: "Все",
         description: "Все клиенты без фильтрации",
-        icon: Users,
+        icon: Users as IconType,
         color: "text-slate-600",
         bgColor: "bg-slate-100",
     },
@@ -54,7 +56,7 @@ const tabs: TabConfig[] = [
         label: "Активные",
         shortLabel: "Актив.",
         description: "Заказ менее 60 дней назад",
-        icon: UserCheck,
+        icon: UserCheck as IconType,
         color: "text-emerald-600",
         bgColor: "bg-emerald-100",
         countKey: "active",
@@ -64,7 +66,7 @@ const tabs: TabConfig[] = [
         label: "Внимание",
         shortLabel: "Вним.",
         description: "Заказ 60-89 дней назад",
-        icon: AlertCircle,
+        icon: AlertCircle as IconType,
         color: "text-amber-600",
         bgColor: "bg-amber-100",
         countKey: "attention",
@@ -74,7 +76,7 @@ const tabs: TabConfig[] = [
         label: "В зоне риска",
         shortLabel: "Риск",
         description: "Заказ 90-179 дней назад",
-        icon: AlertTriangle,
+        icon: AlertTriangle as IconType,
         color: "text-orange-600",
         bgColor: "bg-orange-100",
         countKey: "atRisk",
@@ -84,7 +86,7 @@ const tabs: TabConfig[] = [
         label: "Неактивные",
         shortLabel: "Неакт.",
         description: "Заказ более 180 дней назад",
-        icon: UserX,
+        icon: UserX as IconType,
         color: "text-red-600",
         bgColor: "bg-red-100",
         countKey: "inactive",
@@ -114,7 +116,7 @@ export const ActivityStatusTabs = memo(function ActivityStatusTabs({
                             type="button"
                             onClick={() => onChange(tab.value)}
                             className={cn(
-                                "relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13px] font-bold transition-all overflow-hidden",
+                                "relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all overflow-hidden",
                                 isActive
                                     ? "text-slate-900 shadow-sm ring-1 ring-slate-100"
                                     : "text-slate-500 hover:text-slate-700 hover:bg-slate-50/50"

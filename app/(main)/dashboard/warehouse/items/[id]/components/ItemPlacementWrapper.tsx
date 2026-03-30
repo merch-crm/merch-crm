@@ -117,7 +117,7 @@ export function ItemPlacementWrapper({
 
                     <div className={cn("px-3 py-1.5 rounded-full border border-current flex items-center gap-2", status.bg, status.text)}>
                         <div className={cn("w-2 h-2 rounded-full", status.color)} />
-                        <span className="text-[11px] font-bold tracking-wider">{status.label}</span>
+                        <span className="text-xs font-bold tracking-wider">{status.label}</span>
                     </div>
                 </div>
 
@@ -169,7 +169,7 @@ export function ItemPlacementWrapper({
                         className="p-4 rounded-xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                         onDoubleClick={handleStartEdit}
                     >
-                        <span className="text-[11px] font-bold tracking-wider text-slate-400 block mb-2">Мин. остаток</span>
+                        <span className="text-xs font-bold tracking-wider text-slate-400 block mb-2">Мин. остаток</span>
                         <div className="flex items-baseline gap-1.5">
                             {isEditing ? (
                                 <Input
@@ -190,7 +190,7 @@ export function ItemPlacementWrapper({
                         className="p-4 rounded-xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                         onDoubleClick={handleStartEdit}
                     >
-                        <span className="text-[11px] font-bold tracking-wider text-slate-400 block mb-2">Крит. остаток</span>
+                        <span className="text-xs font-bold tracking-wider text-slate-400 block mb-2">Крит. остаток</span>
                         <div className="flex items-baseline gap-1.5">
                             {isEditing ? (
                                 <Input
@@ -240,7 +240,7 @@ export function ItemPlacementWrapper({
                     <span className="text-[14px] sm:text-[15px] font-bold leading-tight text-white drop-shadow-md transition-transform duration-500 ease-out group-hover:translate-x-1 text-left">
                         Корректировка<br />остатка
                     </span>
-                    <span className="text-[11px] text-white/80 font-medium opacity-0 -translate-x-4 max-h-0 group-hover:max-h-5 group-hover:opacity-100 group-hover:translate-x-1 group-hover:mt-1 transition-all duration-500 ease-out">
+                    <span className="text-xs text-white/80 font-medium opacity-0 -translate-x-4 max-h-0 group-hover:max-h-5 group-hover:opacity-100 group-hover:translate-x-1 group-hover:mt-1 transition-all duration-500 ease-out">
                         Настроить наличие
                     </span>
                 </div>

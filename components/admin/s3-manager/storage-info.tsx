@@ -27,17 +27,17 @@ export const StorageInfo = ({ data, formatSize }: StorageInfoProps) => {
                 <CardContent className="space-y-3 pt-4">
                     <div className="bg-slate-50 p-4 rounded-[18px] border border-slate-200 space-y-3">
                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-slate-500  ">Путь системы</span>
+                            <span className="text-xs font-bold text-slate-500  ">Путь системы</span>
                             <code className="text-xs font-mono bg-white px-2 py-0.5 rounded border border-slate-200 text-slate-600 max-w-[150px] truncate" title={data?.local.path}>
                                 {data?.local.path}
                             </code>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-slate-500  ">Доступно</span>
+                            <span className="text-xs font-bold text-slate-500  ">Доступно</span>
                             <span className="text-sm font-bold text-emerald-600">{formatSize(data?.local.free || 0)}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-slate-500  ">Использовано</span>
+                            <span className="text-xs font-bold text-slate-500  ">Использовано</span>
                             <span className="text-sm font-bold text-slate-900">{formatSize(data?.local.used || 0)}</span>
                         </div>
                     </div>
@@ -70,7 +70,7 @@ export const StorageInfo = ({ data, formatSize }: StorageInfoProps) => {
                             "Массовое удаление объектов",
                             "Навигация по структуре"
                         ].map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-2 text-[11px] font-bold text-slate-500">
+                            <li key={idx} className="flex items-center gap-2 text-xs font-bold text-slate-500">
                                 <div className="w-1 h-1 bg-indigo-400 rounded-full" />
                                 {item}
                             </li>

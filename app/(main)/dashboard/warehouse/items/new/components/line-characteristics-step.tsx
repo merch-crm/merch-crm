@@ -158,7 +158,7 @@ export function LineCharacteristicsStep({
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[12px] font-bold text-indigo-900 leading-tight">Что такое «Общая характеристика»?</p>
-                                <p className="text-[11px] font-medium text-indigo-700/80 leading-relaxed">
+                                <p className="text-xs font-medium text-indigo-700/80 leading-relaxed">
                                     Это параметр, который будет одинаковым для всех товаров в линейке.
                                     Они автоматически формируют основу названия вашей линейки.
                                 </p>
@@ -205,7 +205,7 @@ export function LineCharacteristicsStep({
                                                             {isCommon && <div className="w-1 h-1 bg-white rounded-[1px]" />}
                                                         </div>
                                                         <span className={cn(
-                                                            "text-[11px] font-bold select-none transition-colors leading-none tracking-normal",
+                                                            "text-xs font-bold select-none transition-colors leading-none tracking-normal",
                                                             isCommon ? "text-indigo-600" : "text-slate-400 group-hover/label:text-slate-600"
                                                         )}>
                                                             Общая характеристика
@@ -221,7 +221,7 @@ export function LineCharacteristicsStep({
                                             />
 
                                             {isCommon && (
-                                                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-indigo-600 text-[11px] font-bold text-white shadow-lg shadow-indigo-200 select-none pointer-events-none z-10 animate-in fade-in zoom-in duration-300">
+                                                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-indigo-600 text-xs font-bold text-white shadow-lg shadow-indigo-200 select-none pointer-events-none z-10 animate-in fade-in zoom-in duration-300">
                                                     В названии линейки
                                                 </div>
                                             )}
@@ -274,7 +274,7 @@ export function LineCharacteristicsStep({
                                         placeholder={generatedName || "Введите название линейки"}
                                         className="w-full h-12 px-5 rounded-xl border border-slate-100 bg-white text-sm font-bold focus-visible:border-indigo-300 transition-all shadow-none"
                                     />
-                                    <p className="text-[11px] font-bold text-slate-400 ml-1">
+                                    <p className="text-xs font-bold text-slate-400 ml-1">
                                         Оставьте пустым для автоматического формирования
                                     </p>
                                 </div>
@@ -341,7 +341,7 @@ export function LineCharacteristicsStep({
                                 </div>
                             </div>
 
-                            <p className="relative z-10 text-[11px] font-bold text-white/40 mt-6 leading-none tracking-wide">
+                            <p className="relative z-10 text-xs font-bold text-white/40 mt-6 leading-none tracking-wide">
                                 <span className="text-white/60">ПРИМЕР:</span> Футболка <span className="text-white">{displayName || "Muse 220"}</span> Овен Белый S
                             </p>
                         </div>

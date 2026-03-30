@@ -12,6 +12,7 @@ import {
     HelpCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 import type { AcquisitionSourceData } from "../../actions/analytics.actions";
 
 interface AcquisitionSourcesChartProps {
@@ -20,7 +21,7 @@ interface AcquisitionSourcesChartProps {
     className?: string;
 }
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, IconType> = {
     Instagram,
     Send,
     MessageCircle,
@@ -60,7 +61,7 @@ export function AcquisitionSourcesChart({
 
                 return (
                     <motion.div
-                        key={source.source || "empty"}
+                        key={source.id || source.source || index}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}

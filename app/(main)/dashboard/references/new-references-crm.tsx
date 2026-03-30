@@ -78,7 +78,7 @@ const FlightBubbles = () => {
             >
                 <div className="flex items-center gap-3 px-7 py-4 rounded-full bg-white shadow-[0_8px_30px_rgba(0,0,0,0.04)] text-black">
                     <span className="text-[16px] font-semibold">Смена аэропорта</span>
-                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-[11px] font-bold">
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F2F2F2] text-xs font-bold">
                         <span>IST</span>
                         <ChevronRight className="w-2.5 h-2.5 opacity-30 mx-0.5" />
                         <span>SAW</span>
@@ -271,7 +271,7 @@ const SoftFolder = () => {
                         </svg>
                         <div className="absolute top-[-30px] left-8">
                             <h3 className="text-black text-[15px] font-black">Дизайны</h3>
-                            <p className="text-black/30 text-[11px] font-bold">Веб и приложения</p>
+                            <p className="text-black/30 text-xs font-bold">Веб и приложения</p>
                         </div>
                     </div>
                     <div className="flex-1 bg-[#F7F7F2] relative px-10 pb-12 flex flex-col justify-end">
@@ -416,7 +416,7 @@ const DarkSchedule = () => {
                     ].map((item, i) => (
                         <motion.div key={i} initial={{ x: -20, opacity: 0 }} whileInView={{ x: 0, opacity: 1 }} transition={{ delay: i * 0.1 }} whileHover={{ scale: 1.03, x: 5 }} className="flex gap-3 cursor-pointer group">
                             <div className="w-10 pt-1.5 flex flex-col items-center">
-                                <span className="text-[11px] font-bold text-[#444] group-hover:text-[#666] transition-colors">{item.d}</span>
+                                <span className="text-xs font-bold text-[#444] group-hover:text-[#666] transition-colors">{item.d}</span>
                                 <span className="text-[20px] font-semibold text-white">{item.n}</span>
                             </div>
                             <div className={cn("flex-1 px-6 py-5 rounded-[22px] transition-all", item.active ?"bg-[#7C3AED] text-white shadow-xl shadow-[#7C3AED]/20" :"bg-[#181818] text-[#666] group-hover:bg-[#202020]")}>

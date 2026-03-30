@@ -58,7 +58,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                     {/* Mobile spinner only */}
                                     {ui.isSaving && <RefreshCw className="md:hidden w-3 h-3 text-primary animate-spin" />}
                                 </div>
-                                <p className="text-xs md:text-[11px] font-bold text-slate-500 mt-0.5">
+                                <p className="text-xs md:text-xs font-bold text-slate-500 mt-0.5">
                                     Локация: <span className="text-slate-900 font-bold">{form.name}</span>
                                 </p>
                             </div>

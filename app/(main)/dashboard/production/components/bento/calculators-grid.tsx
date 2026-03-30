@@ -13,13 +13,14 @@ import {
   ArrowUpRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { IconType } from "@/components/ui/stat-card";
 
 interface CalculatorMiniItem {
   id: string;
   name: string;
   shortName: string;
   href: string;
-  icon: React.ElementType;
+  icon: IconType;
   color: string;
   bgColor: string;
   borderColor: string;
@@ -31,7 +32,7 @@ const calculators: CalculatorMiniItem[] = [
     name: "DTF-печать",
     shortName: "DTF",
     href: "/dashboard/production/calculators/dtf",
-    icon: Layers,
+    icon: Layers as IconType,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     borderColor: "border-blue-100",
@@ -41,7 +42,7 @@ const calculators: CalculatorMiniItem[] = [
     name: "Сублимация",
     shortName: "Субл.",
     href: "/dashboard/production/calculators/sublimation",
-    icon: Droplets,
+    icon: Droplets as IconType,
     color: "text-teal-600",
     bgColor: "bg-teal-50",
     borderColor: "border-teal-100",
@@ -51,7 +52,7 @@ const calculators: CalculatorMiniItem[] = [
     name: "DTG-печать",
     shortName: "DTG",
     href: "/dashboard/production/calculators/dtg",
-    icon: Shirt,
+    icon: Shirt as IconType,
     color: "text-violet-600",
     bgColor: "bg-violet-50",
     borderColor: "border-violet-100",
@@ -61,7 +62,7 @@ const calculators: CalculatorMiniItem[] = [
     name: "Шелкография",
     shortName: "Шелк.",
     href: "/dashboard/production/calculators/silkscreen",
-    icon: Grid3X3,
+    icon: Grid3X3 as IconType,
     color: "text-amber-600",
     bgColor: "bg-amber-50",
     borderColor: "border-amber-100",
@@ -71,7 +72,7 @@ const calculators: CalculatorMiniItem[] = [
     name: "Вышивка",
     shortName: "Выш.",
     href: "/dashboard/production/calculators/embroidery",
-    icon: Scissors,
+    icon: Scissors as IconType,
     color: "text-rose-600",
     bgColor: "bg-rose-50",
     borderColor: "border-rose-100",
@@ -81,7 +82,7 @@ const calculators: CalculatorMiniItem[] = [
     name: "Нанесение",
     shortName: "Нан.",
     href: "/dashboard/production/calculators/print-application",
-    icon: Stamp,
+    icon: Stamp as IconType,
     color: "text-slate-600",
     bgColor: "bg-slate-100",
     borderColor: "border-slate-200",

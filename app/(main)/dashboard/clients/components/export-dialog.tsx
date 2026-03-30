@@ -219,7 +219,7 @@ export function ExportDialog({
                                             </div>
                                         )}
                                     </div>
-                                    <p className="text-[11px] font-medium text-slate-500 line-clamp-2">{preset.description}</p>
+                                    <p className="text-xs font-medium text-slate-500 line-clamp-2">{preset.description}</p>
                                 </div>
                             </Button>
                         ))}

@@ -72,7 +72,7 @@ export function ComponentShowcase({
 
             {/* Превью в 3 размерах */}
             <div className="p-6 bg-slate-50/50">
-                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
                     <DevicePreview device="desktop">
                         {desktopContent || children}
                     </DevicePreview>

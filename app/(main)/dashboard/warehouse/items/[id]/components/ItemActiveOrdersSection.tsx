@@ -71,7 +71,7 @@ export function ItemActiveOrdersSection({ orders = [] }: ItemActiveOrdersSection
                             <span className="text-[14px] font-black text-slate-900 tabular-nums">
                                 {item.quantity} шт.
                             </span>
-                            <span className="text-[11px] font-bold text-slate-400 mt-1">
+                            <span className="text-xs font-bold text-slate-400 mt-1">
                                 {statusText}
                             </span>
                         </div>

@@ -156,7 +156,7 @@ export function Select({
                         className={cn("w-full px-4 h-12 bg-slate-50/80 hover:bg-white border border-slate-200 hover:border-slate-300 rounded-[12px] text-left transition-colors focus:outline-none group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
                             (center || variant === "minimal") ? "justify-center" : "justify-between",
                             variant === "default" ? [
-                                compact ? "h-9 px-3 text-[13px]" : "h-12 text-[14px] font-semibold text-slate-900",
+                                compact ? "h-9 px-3 text-xs" : "h-12 text-[14px] font-semibold text-slate-900",
                                 open ? "border-slate-300 bg-white" : "",
                                 error && "border-rose-500 bg-rose-50/30 ring-4 ring-rose-500/10"
                             ] : ["bg-slate-50/50 rounded-[12px] h-12 border border-transparent hover:border-slate-200",
@@ -187,13 +187,13 @@ export function Select({
                                             )}
                                         >{selectedOption.title}</span>
                                         {selectedOption?.badge && !compact && variant !== "minimal" && (
-                                            <span className="text-[11px] font-black bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full shrink-0 border border-indigo-100/50">
+                                            <span className="text-xs font-black bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full shrink-0 border border-indigo-100/50">
                                                 {selectedOption.badge}
                                             </span>
                                         )}
                                     </div>
                                     {selectedOption.description && !effectiveGridColumns && (
-                                        <span className="text-[11px] font-medium text-slate-400 truncate w-full block mt-0.5">
+                                        <span className="text-xs font-medium text-slate-400 truncate w-full block mt-0.5">
                                             {selectedOption.description}
                                         </span>
                                     )}
@@ -259,7 +259,7 @@ export function Select({
                                                     onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
                                                     aria-label={searchPlaceholder}
-                                                    className="w-full h-11 pl-10 pr-3 rounded-[14px] bg-slate-50/50 border border-slate-200/60 shadow-none text-[13px] font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-slate-100 focus-visible:border-slate-300 transition-all placeholder:text-slate-400"
+                                                    className="w-full h-11 pl-10 pr-3 rounded-[14px] bg-slate-50/50 border border-slate-200/60 shadow-none text-xs font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-slate-100 focus-visible:border-slate-300 transition-all placeholder:text-slate-400"
                                                 />
                                             </div>
                                         </div>
@@ -300,7 +300,7 @@ export function Select({
                                                                     {option.icon && <div className="shrink-0 opacity-70 group-hover/item:opacity-100 transition-opacity">{option.icon}</div>}
                                                                     <span className="truncate flex-1">{option.title}</span>
                                                                     {option.badge && (
-                                                                        <span className={cn("text-[11px] font-black px-1.5 py-0.5 rounded-full shrink-0",
+                                                                        <span className={cn("text-xs font-black px-1.5 py-0.5 rounded-full shrink-0",
                                                                             isSelected ? "bg-white text-indigo-600 shadow-sm" : "bg-slate-100 text-slate-500 group-hover/item:bg-slate-200"
                                                                         )}>
                                                                             {option.badge}
@@ -334,7 +334,7 @@ export function Select({
                                                                                     {option.title}
                                                                                 </span>
                                                                                 {option.badge && (
-                                                                                    <span className={cn("text-[11px] font-black px-1.5 py-0.5 rounded-full shrink-0",
+                                                                                    <span className={cn("text-xs font-black px-1.5 py-0.5 rounded-full shrink-0",
                                                                                         isSelected ? "bg-white text-indigo-600 shadow-sm" : "bg-slate-200 text-slate-500 group-hover/item:bg-slate-300 group-hover/item:text-slate-600"
                                                                                     )}>
                                                                                         {option.badge}
@@ -342,7 +342,7 @@ export function Select({
                                                                                 )}
                                                                             </div>
                                                                             {option.description && (
-                                                                                <div className={cn("text-[11px] font-medium leading-tight truncate mt-0.5", isSelected ? "text-slate-500" : "text-slate-400")}>
+                                                                                <div className={cn("text-xs font-medium leading-tight truncate mt-0.5", isSelected ? "text-slate-500" : "text-slate-400")}>
                                                                                     {option.description}
                                                                                 </div>
                                                                             )}

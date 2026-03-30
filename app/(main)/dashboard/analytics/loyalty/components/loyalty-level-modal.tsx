@@ -179,7 +179,7 @@ export function LoyaltyLevelModal({
                     />
                     <div>
                         <p className="text-sm font-bold text-slate-900">Активен</p>
-                        <p className="text-[11px] text-slate-500">Уровень доступен для назначения</p>
+                        <p className="text-xs text-slate-500">Уровень доступен для назначения</p>
                     </div>
                 </label>
 

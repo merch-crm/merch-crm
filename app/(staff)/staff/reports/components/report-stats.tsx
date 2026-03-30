@@ -2,6 +2,7 @@
 
 import { Card, CardBody } from '@/components/ui/card-bento'
 import { cn } from '@/lib/utils'
+import { type IconType } from '@/components/ui/stat-card'
 
 export function StatCard({
     title,
@@ -11,7 +12,7 @@ export function StatCard({
 }: {
     title: string
     value: string | number
-    icon: React.ElementType
+    icon: IconType
     color: 'blue' | 'emerald' | 'orange' | 'indigo'
 }) {
     const colors = {
@@ -29,14 +30,14 @@ export function StatCard({
                 </div>
                 <div>
                     <p className="text-2xl font-black text-slate-900 leading-none">{value}</p>
-                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400 mt-2 leading-none">{title}</p>
+                    <p className="text-xs leading-tight text-neutral-500 font-bold text-slate-400 mt-2 leading-none">{title}</p>
                 </div>
             </CardBody>
         </Card>
     )
 }
 
-export function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: React.ElementType, color: 'emerald' | 'rose' | 'indigo' }) {
+export function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: IconType, color: 'emerald' | 'rose' | 'indigo' }) {
     const configs = {
         emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', ring: 'ring-emerald-100' },
         rose: { bg: 'bg-rose-50', text: 'text-rose-600', ring: 'ring-rose-100' },
@@ -52,7 +53,7 @@ export function StatSummaryCard({ title, count, icon: Icon, color }: { title: st
                 </div>
                 <div>
                     <p className="text-3xl font-black text-slate-900 leading-none">{count}</p>
-                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400 mt-2">{title}</p>
+                    <p className="text-xs leading-tight text-neutral-500 font-bold text-slate-400 mt-2">{title}</p>
                 </div>
             </CardBody>
         </Card>

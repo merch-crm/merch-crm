@@ -64,7 +64,7 @@ export const ClientsSegmentTabs = memo(function ClientsSegmentTabs({
                             {count !== undefined && count > 0 && (
                                 <span
                                     className={cn(
-                                        "min-w-[20px] h-5 px-1.5 rounded-full text-[11px] font-black flex items-center justify-center",
+                                        "min-w-[20px] h-5 px-1.5 rounded-full text-xs font-black flex items-center justify-center",
                                         isActive
                                             ? "bg-white/20 text-white"
                                             : "bg-slate-200 text-slate-600"

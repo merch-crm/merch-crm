@@ -49,7 +49,7 @@ export const DuplicateWarningBanner = memo(function DuplicateWarningBanner({
                             <p className="text-sm font-bold text-amber-800">
                                 Возможные дубликаты ({duplicates.length})
                             </p>
-                            <p className="text-[11px] text-amber-600">
+                            <p className="text-xs text-amber-600">
                                 Найдены клиенты с похожими данными
                             </p>
                         </div>
@@ -98,7 +98,7 @@ export const DuplicateWarningBanner = memo(function DuplicateWarningBanner({
                                         <p className="text-xs font-bold text-slate-900 truncate">
                                             {dup.lastName} {dup.firstName}
                                         </p>
-                                        <p className="text-[11px] text-slate-500">
+                                        <p className="text-xs text-slate-500">
                                             {dup.phone}
                                             {dup.company && ` • ${dup.company}`}
                                         </p>
@@ -108,7 +108,7 @@ export const DuplicateWarningBanner = memo(function DuplicateWarningBanner({
                                         variant="ghost"
                                         size="sm"
                                         onClick={() => onOpenClient(dup.id)}
-                                        className="h-7 px-2 text-[11px] font-bold text-amber-700 hover:text-amber-900 hover:bg-amber-100"
+                                        className="h-7 px-2 text-xs font-bold text-amber-700 hover:text-amber-900 hover:bg-amber-100"
                                     >
                                         <ExternalLink className="w-3 h-3 mr-1" />
                                         Открыть
@@ -116,7 +116,7 @@ export const DuplicateWarningBanner = memo(function DuplicateWarningBanner({
                                 </div>
                             ))}
                             {duplicates.length > 5 && (
-                                <p className="text-[11px] text-amber-600 text-center">
+                                <p className="text-xs text-amber-600 text-center">
                                     И ещё {duplicates.length - 5}...
                                 </p>
                             )}
@@ -132,13 +132,13 @@ export const DuplicateWarningBanner = memo(function DuplicateWarningBanner({
                             variant="ghost"
                             size="sm"
                             onClick={() => onOpenClient(duplicates[0].id)}
-                            className="h-8 px-3 text-[11px] font-bold bg-white/70 text-amber-800 hover:bg-white border border-amber-200/50"
+                            className="h-8 px-3 text-xs font-bold bg-white/70 text-amber-800 hover:bg-white border border-amber-200/50"
                         >
                             <ExternalLink className="w-3 h-3 mr-1.5" />
                             Открыть {duplicates[0].lastName} {duplicates[0].firstName}
                         </Button>
                         {duplicates.length > 1 && (
-                            <span className="text-[11px] text-amber-600">
+                            <span className="text-xs text-amber-600">
                                 +{duplicates.length - 1} ещё
                             </span>
                         )}

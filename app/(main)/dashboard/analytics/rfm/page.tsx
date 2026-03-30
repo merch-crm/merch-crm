@@ -86,15 +86,15 @@ export default async function RFMPage() {
                         </div>
                         <div className="space-y-3">
                             <div>
-                                <p className="text-[11px] font-black text-slate-400 mb-1">RECENCY (Давность)</p>
+                                <p className="text-xs font-black text-slate-400 mb-1">RECENCY (Давность)</p>
                                 <p className="text-xs text-slate-600 leading-relaxed font-medium">Как давно клиент совершал покупку. Чем меньше времени прошло, тем выше вероятность повторного заказа.</p>
                             </div>
                             <div>
-                                <p className="text-[11px] font-black text-slate-400 mb-1">FREQUENCY (Частота)</p>
+                                <p className="text-xs font-black text-slate-400 mb-1">FREQUENCY (Частота)</p>
                                 <p className="text-xs text-slate-600 leading-relaxed font-medium">Как часто клиент покупает. Постоянные клиенты — основа бизнеса.</p>
                             </div>
                             <div>
-                                <p className="text-[11px] font-black text-slate-400 mb-1">MONETARY (Деньги)</p>
+                                <p className="text-xs font-black text-slate-400 mb-1">MONETARY (Деньги)</p>
                                 <p className="text-xs text-slate-600 leading-relaxed font-medium">Общая сумма покупок. Показывает ценность клиента для компании.</p>
                             </div>
                         </div>

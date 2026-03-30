@@ -105,7 +105,7 @@ export function TaskHistory({ history }: TaskHistoryProps) {
                                                 {item.performedByUser.name.charAt(0)}
                                             </AvatarFallback>
                                         </Avatar>
-                                        <span className="text-[11px] font-medium text-muted-foreground">
+                                        <span className="text-xs font-medium text-muted-foreground">
                                             {item.performedByUser.name}
                                         </span>
                                     </div>

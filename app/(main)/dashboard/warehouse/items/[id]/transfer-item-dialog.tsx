@@ -138,7 +138,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         </div>
                         <div>
                             <h2 className="text-xl font-bold text-slate-900 leading-tight">Перемещение</h2>
-                            <p className="text-[11px] font-bold text-slate-700 mt-0.5">
+                            <p className="text-xs font-bold text-slate-700 mt-0.5">
                                 Объект: <span className="text-slate-900 font-bold">{item.name}</span>
                             </p>
                         </div>

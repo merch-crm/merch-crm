@@ -139,7 +139,7 @@ export function ClientStatsWidget({
 
             {/* Дополнительная информация */}
             {stats.firstOrderAt && (
-                <div className="flex items-center gap-2 px-1 text-[11px] font-medium text-slate-400">
+                <div className="flex items-center gap-2 px-1 text-xs font-medium text-slate-400">
                     <Clock className="w-3.5 h-3.5" />
                     <span>
                         Клиент с{" "}

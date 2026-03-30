@@ -239,6 +239,13 @@
       "when": 1774643387861,
       "tag": "0033_flaky_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1774885234216,
+      "tag": "0034_same_barracuda",
+      "breakpoints": true
     }
   ]
 }

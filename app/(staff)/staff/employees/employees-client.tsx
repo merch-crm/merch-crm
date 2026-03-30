@@ -20,6 +20,7 @@ import {
     Plus
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { type IconType } from '@/components/ui/stat-card'
 import { useEmployeeModals, useFaceCapture, useEmployeeActions } from './use-employees'
 
 interface EmployeeFace {
@@ -119,14 +120,14 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                         </div>
                                         <div className="truncate">
                                             <p className="font-bold text-slate-900 truncate text-sm">{employee.name}</p>
-                                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium truncate">{employee.email}</p>
+                                            <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium truncate">{employee.email}</p>
                                         </div>
                                     </div>
                                     {isAdmin && (
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-[11px] leading-tight text-neutral-500 font-bold   px-3"
+                                            className="rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 text-xs leading-tight text-neutral-500 font-bold   px-3"
                                             onClick={() => {
                                                 setSelectedEmployee(employee)
                                                 setAddFaceModalOpen(true)
@@ -185,9 +186,9 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                             {/* Галерея лиц */}
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-[11px] leading-tight text-neutral-500 font-bold   text-slate-400">Биометрия</h3>
+                                    <h3 className="text-xs leading-tight text-neutral-500 font-bold   text-slate-400">Биометрия</h3>
                                     {employee.hasFace && (
-                                        <span className="text-[11px] leading-tight text-neutral-500 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Активна</span>
+                                        <span className="text-xs leading-tight text-neutral-500 font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Активна</span>
                                     )}
                                 </div>
 
@@ -318,7 +319,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                     <X className="w-5 h-5" />
                                 </Button>
                                 <Button
-                                    className="rounded-2xl h-12 px-8 bg-white text-indigo-900 hover:bg-indigo-50 font-bold   text-[11px] leading-tight text-neutral-500"
+                                    className="rounded-2xl h-12 px-8 bg-white text-indigo-900 hover:bg-indigo-50 font-bold   text-xs leading-tight text-neutral-500"
                                     onClick={capturePhoto}
                                 >
                                     <Camera className="w-4 h-4 mr-2" />
@@ -348,7 +349,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                             <div className="flex gap-3">
                                 <Button
                                     variant="outline"
-                                    className="flex-1 rounded-2xl h-14 border-slate-200 text-slate-500 font-bold   text-[11px] leading-tight text-neutral-500"
+                                    className="flex-1 rounded-2xl h-14 border-slate-200 text-slate-500 font-bold   text-xs leading-tight text-neutral-500"
                                     onClick={() => {
                                         setCapturedImage(null)
                                         startCamera()
@@ -357,7 +358,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
                                     Переснять
                                 </Button>
                                 <SubmitButton
-                                    className="flex-1 rounded-2xl h-14 bg-indigo-600 hover:bg-indigo-700 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
+                                    className="flex-1 rounded-2xl h-14 bg-indigo-600 hover:bg-indigo-700 font-bold   text-xs leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
                                     onClick={handleAddFace}
                                     isLoading={isPending}
                                 >
@@ -386,7 +387,7 @@ export function EmployeesClient({ initialEmployees, isAdmin }: Props) {
     )
 }
 
-function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: React.ElementType, color: 'emerald' | 'rose' | 'indigo' }) {
+function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, count: number, icon: IconType, color: 'emerald' | 'rose' | 'indigo' }) {
     const configs = {
         emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', ring: 'ring-emerald-100' },
         rose: { bg: 'bg-rose-50', text: 'text-rose-600', ring: 'ring-rose-100' },
@@ -402,7 +403,7 @@ function StatSummaryCard({ title, count, icon: Icon, color }: { title: string, c
                 </div>
                 <div>
                     <p className="text-3xl font-bold text-slate-900 leading-none">{count}</p>
-                    <p className="text-[11px] leading-tight text-neutral-500 font-bold text-slate-400   mt-2">{title}</p>
+                    <p className="text-xs leading-tight text-neutral-500 font-bold text-slate-400   mt-2">{title}</p>
                 </div>
             </CardBody>
         </Card>

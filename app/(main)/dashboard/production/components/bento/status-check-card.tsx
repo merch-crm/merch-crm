@@ -38,7 +38,7 @@ export function StatusCheckCard({ className, isOk = true }: StatusCheckCardProps
       </p>
       
       {isOk && (
-        <p className="text-[11px] font-medium text-emerald-500 mt-6">
+        <p className="text-xs font-medium text-emerald-500 mt-6">
           Все задачи выполняются в срок
         </p>
       )}

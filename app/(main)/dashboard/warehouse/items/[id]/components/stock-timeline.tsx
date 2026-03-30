@@ -43,7 +43,7 @@ export function StockTimeline({
                 <div className="w-10 h-10 rounded-2xl bg-muted flex items-center justify-center text-muted-foreground transition-all shadow-sm">
                     <Activity className="w-5 h-5" />
                 </div>
-                <h5 className="text-[11px] font-black text-primary leading-tight">Таймлайн<br />остатков</h5>
+                <h5 className="text-xs font-black text-primary leading-tight">Таймлайн<br />остатков</h5>
             </div>
 
             <div className="flex-1 relative mt-2">

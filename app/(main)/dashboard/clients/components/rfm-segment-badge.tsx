@@ -34,17 +34,19 @@ interface RFMSegmentBadgeProps {
     className?: string;
 }
 
-const segmentIcons: Record<string, React.ElementType> = {
-    champions: Trophy,
-    loyal: Heart,
-    potential: Sparkles,
-    new: Star,
-    promising: TrendingUp,
-    need_attention: AlertCircle,
-    about_to_sleep: Moon,
-    at_risk: AlertTriangle,
-    hibernating: CloudSnow,
-    lost: Skull,
+import { IconType } from "@/components/ui/stat-card";
+
+const segmentIcons: Record<string, IconType> = {
+    champions: Trophy as IconType,
+    loyal: Heart as IconType,
+    potential: Sparkles as IconType,
+    new: Star as IconType,
+    promising: TrendingUp as IconType,
+    need_attention: AlertCircle as IconType,
+    about_to_sleep: Moon as IconType,
+    at_risk: AlertTriangle as IconType,
+    hibernating: CloudSnow as IconType,
+    lost: Skull as IconType,
 };
 
 export function RFMSegmentBadge({
@@ -56,7 +58,7 @@ export function RFMSegmentBadge({
 }: RFMSegmentBadgeProps) {
     if (!segment) return null;
 
-    const Icon = segmentIcons[segment] || Star;
+    const Icon = (segmentIcons[segment] || Star) as IconType;
     const color = rfmSegmentColors[segment] || "#6B7280";
     const label = rfmSegmentLabels[segment] || segment;
     const description = rfmSegmentDescriptions[segment] || "";

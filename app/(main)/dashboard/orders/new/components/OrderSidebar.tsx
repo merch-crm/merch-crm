@@ -35,7 +35,7 @@ export function OrderSidebar({
                     Назад
                 </Button>
                 <h1 className="text-2xl font-bold text-foreground leading-tight">Новый заказ</h1>
-                <p className="text-[11px] text-muted-foreground font-bold opacity-60 mt-1">Оформление в CRM</p>
+                <p className="text-xs text-muted-foreground font-bold opacity-60 mt-1">Оформление в CRM</p>
             </div>
 
             <div className="flex-1 px-4 space-y-1 overflow-y-auto pb-10">

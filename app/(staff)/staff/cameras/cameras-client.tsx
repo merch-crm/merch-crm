@@ -212,12 +212,12 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-slate-900 leading-tight">{camera.name}</p>
-                                                    <p className="text-[11px] leading-tight text-neutral-500  tracking-wider font-bold text-slate-400 mt-1">
+                                                    <p className="text-xs leading-tight text-neutral-500  tracking-wider font-bold text-slate-400 mt-1">
                                                         {camera.model || 'Xiaomi Camera'}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider",
+                                            <div className={cn("flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs leading-tight text-neutral-500 font-bold  tracking-wider",
                                                 status.color
                                             )}>
                                                 <div className={cn("w-1.5 h-1.5 rounded-full", status.color.split(' ')[0].replace('text-', 'bg-'))} />
@@ -235,7 +235,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                     <span className="text-xs">Локация не указана</span>
                                                 </div>
                                             )}
-                                            <div className="flex items-center gap-2 text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium">
+                                            <div className="flex items-center gap-2 text-xs leading-tight text-neutral-500 text-slate-400 font-medium">
                                                 <span>DID: {camera.deviceId}</span>
                                                 {camera.localIp && (
                                                     <>
@@ -249,7 +249,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                         {camera.errorMessage && (
                                             <div className="mb-4 p-2 bg-rose-50 border border-rose-100 rounded-xl flex items-start gap-2">
                                                 <AlertCircle className="w-3.5 h-3.5 text-rose-500 mt-0.5 flex-shrink-0" />
-                                                <p className="text-[11px] leading-tight text-neutral-500 text-rose-600 font-medium leading-normal">
+                                                <p className="text-xs leading-tight text-neutral-500 text-rose-600 font-medium leading-normal">
                                                     {camera.errorMessage}
                                                 </p>
                                             </div>
@@ -260,7 +260,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider"
+                                                    className="rounded-xl h-9 hover:bg-slate-50 text-xs leading-tight text-neutral-500 font-bold  tracking-wider"
                                                     onClick={() => handleOpenLiveView(camera)}
                                                 >
                                                     <Play className="w-3.5 h-3.5 mr-1.5" />
@@ -269,7 +269,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider"
+                                                    className="rounded-xl h-9 hover:bg-slate-50 text-xs leading-tight text-neutral-500 font-bold  tracking-wider"
                                                     onClick={() => handleTestConnection(camera.id)}
                                                     disabled={isPending}
                                                 >
@@ -279,7 +279,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="rounded-xl h-9 hover:bg-slate-50 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider"
+                                                    className="rounded-xl h-9 hover:bg-slate-50 text-xs leading-tight text-neutral-500 font-bold  tracking-wider"
                                                     onClick={() => {
                                                         setSelectedCamera(camera)
                                                         setSettingsModalOpen(true)
@@ -291,7 +291,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className={cn("rounded-xl h-9 text-[11px] leading-tight text-neutral-500 font-bold  tracking-wider group",
+                                                    className={cn("rounded-xl h-9 text-xs leading-tight text-neutral-500 font-bold  tracking-wider group",
                                                         camera.isEnabled ? "hover:bg-rose-50 text-slate-500 hover:text-rose-600" : "hover:bg-emerald-50 text-slate-400 hover:text-emerald-600"
                                                     )}
                                                     onClick={() => handleToggleCamera(camera.id, !camera.isEnabled)}
@@ -395,7 +395,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         />
                         {/* Hidden input so FormData picks up the region value */}
                         <input type="hidden" name="region" value={loginForm.region} />
-                        <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tight mt-2 px-1">
+                        <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-bold  tracking-tight mt-2 px-1">
                             Выберите регион, который указан в вашем приложении Mi Home
                         </p>
                     </div>
@@ -413,13 +413,13 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                         <Button
                             type="button"
                             variant="outline"
-                            className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-[11px] leading-tight text-neutral-500"
+                            className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-xs leading-tight text-neutral-500"
                             onClick={() => setLoginModalOpen(false)}
                         >
                             Отмена
                         </Button>
                         <SubmitButton
-                            className="flex-1 rounded-2xl h-12 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-slate-200"
+                            className="flex-1 rounded-2xl h-12 font-bold   text-xs leading-tight text-neutral-500 shadow-lg shadow-slate-200"
                             isLoading={isPending}
                         >
                             <LogIn className="w-4 h-4 mr-2" />
@@ -488,7 +488,7 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                                 )}
                                 className="w-full h-2 bg-indigo-100 rounded-full appearance-none cursor-pointer accent-indigo-600"
                             />
-                            <p className="text-[11px] leading-tight text-neutral-500 text-slate-400 font-medium leading-relaxed mt-2 p-1">
+                            <p className="text-xs leading-tight text-neutral-500 text-slate-400 font-medium leading-relaxed mt-2 p-1">
                                 Минимальная уверенность для распознавания лица.
                                 Рекомендуется 60-70%. Выше = точнее, но чаще пропуски.
                             </p>
@@ -498,13 +498,13 @@ export function CamerasClient({ initialAccounts, initialCameras, isAdmin }: Prop
                             <Button
                                 type="button"
                                 variant="outline"
-                                className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-[11px] leading-tight text-neutral-500"
+                                className="flex-1 rounded-2xl h-12 border-slate-200 text-slate-600 font-bold   text-xs leading-tight text-neutral-500"
                                 onClick={() => setSettingsModalOpen(false)}
                             >
                                 Отмена
                             </Button>
                             <SubmitButton
-                                className="flex-1 rounded-2xl h-12 font-bold   text-[11px] leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
+                                className="flex-1 rounded-2xl h-12 font-bold   text-xs leading-tight text-neutral-500 shadow-lg shadow-indigo-100"
                                 isLoading={isPending}
                             >
                                 Сохранить изменения

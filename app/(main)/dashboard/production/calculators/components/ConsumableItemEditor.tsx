@@ -207,18 +207,18 @@ export function ConsumableItemEditor({
                 <div className="flex items-center gap-3">
                   <span className="font-black text-lg text-slate-900 tracking-tight">{item.name}</span>
                   {isModified && (
-                    <Badge variant="outline" className="text-[11px] font-black px-2 py-0.5 rounded-full text-indigo-600 bg-indigo-50 border-indigo-200">
+                    <Badge variant="outline" className="text-xs font-black px-2 py-0.5 rounded-full text-indigo-600 bg-indigo-50 border-indigo-200">
                       изменено
                     </Badge>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
                     {item.source === 'warehouse' && selectedWarehouseItem && (
-                        <Badge variant="secondary" className="text-[11px] font-black px-1.5 py-0 rounded-lg bg-teal-50 text-teal-700 border-teal-100 border">
+                        <Badge variant="secondary" className="text-xs font-black px-1.5 py-0 rounded-lg bg-teal-50 text-teal-700 border-teal-100 border">
                         Склад: {selectedWarehouseItem.name}
                         </Badge>
                     )}
-                    <p className="text-[11px] text-slate-400 font-bold tracking-tight leading-none">
+                    <p className="text-xs text-slate-400 font-bold tracking-tight leading-none">
                         Себестоимость: {formatCurrency(item.pricePerUnit)}/{item.unit}
                     </p>
                 </div>
@@ -231,7 +231,7 @@ export function ConsumableItemEditor({
                 <p className="text-xl font-black text-indigo-600 leading-none">
                   {formatCurrency(costPerUnit)}
                 </p>
-                <p className="text-[11px] text-slate-300 font-black tracking-tight mt-1">
+                <p className="text-xs text-slate-300 font-black tracking-tight mt-1">
                   за {item.consumptionUnit}
                 </p>
               </div>
@@ -340,7 +340,7 @@ export function ConsumableItemEditor({
                         onClick={() =>
                           onCreateWarehouseItem(item.category as ConsumableCategory)
                         }
-                        className="rounded-xl font-black bg-white text-[11px] tracking-tight px-4"
+                        className="rounded-xl font-black bg-white text-xs tracking-tight px-4"
                       >
                         <Plus className="h-3 w-3 mr-2" />
                         Добавить
@@ -361,7 +361,7 @@ export function ConsumableItemEditor({
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label className="text-[11px] font-black text-slate-400 tracking-tight ml-1">Расход на {item.consumptionUnit}</Label>
+                                <Label className="text-xs font-black text-slate-400 tracking-tight ml-1">Расход на {item.consumptionUnit}</Label>
                                 <div className="relative">
                                     <Input
                                         type="number"
@@ -382,12 +382,12 @@ export function ConsumableItemEditor({
                                 <div className="flex items-start gap-3 bg-white p-4 rounded-[18px] border border-slate-100 shadow-sm">
                                     <Info className="h-4 w-4 mt-0.5 shrink-0 text-indigo-400" />
                                     <div className="space-y-1">
-                                    <p className="text-[11px] font-bold text-slate-600 leading-tight">{hint.description}</p>
+                                    <p className="text-xs font-bold text-slate-600 leading-tight">{hint.description}</p>
                                     <div className="flex items-center gap-2">
-                                       <span className="text-[11px] font-black text-indigo-500 tracking-tight">
+                                       <span className="text-xs font-black text-indigo-500 tracking-tight">
                                            Рекомендация:
                                        </span>
-                                       <span className="text-[11px] font-black text-slate-900">
+                                       <span className="text-xs font-black text-slate-900">
                                            {hint.typicalRange}
                                        </span>
                                     </div>
@@ -400,7 +400,7 @@ export function ConsumableItemEditor({
             )}
 
             {!showAdvanced && (
-                <div className="flex items-center justify-between px-2 text-[11px] text-slate-300 font-bold italic">
+                <div className="flex items-center justify-between px-2 text-xs text-slate-300 font-bold italic">
                    <span>* Технические параметры расхода скрыты. Используются значения по умолчанию.</span>
                 </div>
             )}

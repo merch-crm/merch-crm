@@ -234,7 +234,7 @@ export function PlacementProductModal({
           <div className="grid gap-3 py-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="md:col-span-2 space-y-2">
-                <Label className="text-[11px] font-bold text-slate-500 ml-1">Название продукции</Label>
+                <Label className="text-xs font-bold text-slate-500 ml-1">Название продукции</Label>
                 <Input
                   className="h-12 rounded-2xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-bold text-lg"
                   placeholder="Например: Футболка Premium (Cotton 100%)"
@@ -244,7 +244,7 @@ export function PlacementProductModal({
               </div>
 
               <div className="space-y-2">
-                <Label className="text-[11px] font-bold text-slate-500 ml-1">Тип изделия</Label>
+                <Label className="text-xs font-bold text-slate-500 ml-1">Тип изделия</Label>
                 <Select
                   value={formData.type}
                   onChange={(val) => setFormData({ ...formData, type: val as PlacementProductType })}
@@ -254,7 +254,7 @@ export function PlacementProductModal({
               </div>
 
               <div className="md:col-span-2 space-y-2">
-                <Label className="text-[11px] font-bold text-slate-500 ml-1">Описание (опц.)</Label>
+                <Label className="text-xs font-bold text-slate-500 ml-1">Описание (опц.)</Label>
                 <Textarea
                   placeholder="Дополнительные примечания к изделию для сотрудников..."
                   className="resize-none h-24 rounded-2xl bg-slate-50 border-slate-200 focus:bg-white transition-all font-medium"
@@ -264,7 +264,7 @@ export function PlacementProductModal({
               </div>
 
               <div className="space-y-3">
-                <Label className="text-[11px] font-bold text-slate-500 ml-1">Настройки статуса</Label>
+                <Label className="text-xs font-bold text-slate-500 ml-1">Настройки статуса</Label>
                 <div className="flex flex-col gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-600">Активно</span>
@@ -330,7 +330,7 @@ export function PlacementProductModal({
                           <MapPin className="h-8 w-8 text-slate-200" />
                         </div>
                         <p className="text-sm font-bold text-slate-400">Нет добавленных зон</p>
-                        <p className="text-[11px] text-slate-300 mt-1 max-w-[200px] mx-auto">
+                        <p className="text-xs text-slate-300 mt-1 max-w-[200px] mx-auto">
                           Используйте пресеты или добавьте зоны вручную
                         </p>
                       </div>

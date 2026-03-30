@@ -12,6 +12,7 @@ import { formatDate } from "@/lib/formatters";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { formatCount } from "@/lib/pluralize";
+import { IconType } from "@/components/ui/stat-card";
 
 import type { Notification, BrandingSettings } from "@/lib/types";
 
@@ -25,7 +26,7 @@ interface NotificationCenterProps {
     branding?: BrandingSettings;
 }
 
-const typeConfig: Record<string, { icon: React.ElementType, color: string, bg: string }> = {
+const typeConfig: Record<string, { icon: IconType, color: string, bg: string }> = {
     info: { icon: Info, color: "text-blue-500", bg: "bg-blue-50" },
     warning: { icon: AlertTriangle, color: "text-amber-500", bg: "bg-amber-50" },
     success: { icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-50" },
@@ -212,13 +213,13 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                         <div className="flex-1 min-w-0">
                                                             <div className="flex items-start justify-between gap-3 mb-1.5 md:mb-1">
                                                                 <h4 className={cn(
-                                                                    "text-[15px] md:text-[14px] leading-snug transition-colors",
+                                                                    "text-sm leading-snug transition-colors",
                                                                     !notification.isRead ? "font-black md:font-extrabold text-slate-900" : "font-bold text-slate-700"
                                                                 )}>
                                                                     {notification.title}
                                                                 </h4>
                                                                 <span
-                                                                    className="text-[11px] font-bold md:font-medium text-slate-400 whitespace-nowrap pt-0.5 cursor-help"
+                                                                    className="text-xs font-bold md:font-medium text-slate-400 whitespace-nowrap pt-0.5 cursor-help"
                                                                     title={formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')}
                                                                 >
                                                                     {now && (now.getTime() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
@@ -228,7 +229,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                                 </span>
                                                             </div>
 
-                                                            <p className="text-[14px] md:text-[13px] text-slate-600 md:text-slate-500 leading-relaxed mb-3 pr-2 break-words">
+                                                            <p className="text-sm text-slate-600 md:text-slate-500 leading-relaxed mb-3 pr-2 break-words">
                                                                 {notification.message}
                                                             </p>
 
@@ -241,7 +242,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                                         handleMarkAsRead(notification.id);
                                                                     }}
                                                                     disabled={loading === notification.id}
-                                                                    className="flex items-center gap-1.5 h-auto py-1.5 md:py-1 px-3 md:px-2 text-[11px] font-black md:font-bold text-primary border-primary/10 hover:bg-primary/5 hover:border-primary/20 shadow-sm rounded-xl md:rounded-lg"
+                                                                    className="flex items-center gap-1.5 h-auto py-1.5 md:py-1 px-3 md:px-2 text-xs font-black md:font-bold text-primary border-primary/10 hover:bg-primary/5 hover:border-primary/20 shadow-sm rounded-xl md:rounded-lg"
                                                                 >
                                                                     <CheckCircle2 className="w-3.5 h-3.5" />
                                                                     Отметить прочитанным

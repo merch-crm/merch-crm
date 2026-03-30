@@ -1,92 +1,26 @@
 {
-  "timestamp": "29.03.2026, 23:58:52",
-  "duration": 18715,
+  "timestamp": "30.03.2026, 18:38:13",
+  "duration": 22624,
   "projectName": "MerchCRM",
-  "errors": [
-    {
-      "file": "app/(main)/dashboard/production/calculators/components/SchematicRollVisualizer.tsx",
-      "severity": "info",
-      "category": "Производительность",
-      "message": "Файл длинный: 644 строк"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 99,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 100,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 101,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 102,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 132,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 149,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    },
-    {
-      "file": "app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts",
-      "line": 167,
-      "severity": "warning",
-      "category": "Тесты",
-      "message": "Использование \"any\" в тестах запрещено",
-      "suggestion": "Используй конкретные типы или unknown"
-    }
-  ],
+  "errors": [],
   "stats": {
-    "totalFiles": 1564,
-    "totalLines": 214286,
-    "totalSize": 8975144,
-    "pagesCount": 90,
-    "componentsCount": 233,
-    "hooksCount": 12,
-    "actionsCount": 136,
-    "typesCount": 30,
-    "apiRoutesCount": 38,
-    "formsCount": 53,
+    "totalFiles": 1623,
+    "totalLines": 220441,
+    "totalSize": 9257402,
+    "pagesCount": 98,
+    "componentsCount": 237,
+    "hooksCount": 13,
+    "actionsCount": 141,
+    "typesCount": 31,
+    "apiRoutesCount": 43,
+    "formsCount": 55,
     "testsCount": 258,
-    "tablesCount": 90,
+    "tablesCount": 95,
     "migrationsCount": 39,
     "typescriptErrors": 0,
     "lintErrors": 0,
     "lintWarnings": 0,
-    "byCategory": {
-      "Производительность": 1,
-      "Тесты": 7
-    }
+    "byCategory": {}
   },
   "health": {
     "score": 100,

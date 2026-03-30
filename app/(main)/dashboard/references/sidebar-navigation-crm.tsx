@@ -16,11 +16,12 @@ import {
     Plus,
     MoreVertical
 } from"lucide-react";
+import { IconType } from"@/components/ui/stat-card";
 
 interface MenuItem {
     id: string;
     label: string;
-    icon: React.ElementType;
+    icon: IconType;
     badge?: number | string;
     badgeColor?: string;
     subItems?: { id: string; label: string; active?: boolean }[];

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { IconType } from "@/components/ui/stat-card";
 import type { EquipmentStatusItem } from "../../types";
 
 interface EquipmentStatusCardProps {
@@ -24,49 +25,49 @@ interface EquipmentStatusCardProps {
 
 const statusConfig: Record<string, {
   label: string;
-  icon: React.ElementType;
+  icon: IconType;
   color: string;
   bgColor: string;
   borderColor: string;
 }> = {
   active: {
     label: "Работает",
-    icon: CheckCircle,
+    icon: CheckCircle as IconType,
     color: "text-emerald-600",
     bgColor: "bg-emerald-50",
     borderColor: "border-emerald-100",
   },
   maintenance: {
     label: "На ТО",
-    icon: Wrench,
+    icon: Wrench as IconType,
     color: "text-amber-600",
     bgColor: "bg-amber-50",
     borderColor: "border-amber-100",
   },
   repair: {
     label: "В ремонте",
-    icon: AlertTriangle,
+    icon: AlertTriangle as IconType,
     color: "text-rose-600",
     bgColor: "bg-rose-50",
     borderColor: "border-rose-100",
   },
   inactive: {
     label: "Выключено",
-    icon: Power,
+    icon: Power as IconType,
     color: "text-slate-500",
     bgColor: "bg-slate-100",
     borderColor: "border-slate-200",
   },
   offline: {
     label: "Оффлайн",
-    icon: Power,
+    icon: Power as IconType,
     color: "text-slate-500",
     bgColor: "bg-slate-100",
     borderColor: "border-slate-200",
   },
   idle: {
     label: "Ожидание",
-    icon: Clock,
+    icon: Clock as IconType,
     color: "text-slate-400",
     bgColor: "bg-slate-50",
     borderColor: "border-slate-100",

@@ -48,7 +48,7 @@ export function DevicePreview({ children, device, className }: DevicePreviewProp
             {/* Заголовок устройства */}
             <div className="flex items-center gap-2 mb-3 text-slate-500">
                 {config.icon}
-                <span className="text-xs font-bold uppercase ">{config.label}</span>
+                <span className="text-xs font-bold  ">{config.label}</span>
                 <span className="text-xs text-slate-400">({config.width}px)</span>
             </div>
 
@@ -80,7 +80,7 @@ export function ResponsiveShowcase({ children, title }: ResponsiveShowcaseProps)
             {title && (
                 <h4 className="text-sm font-bold text-slate-900">{title}</h4>
             )}
-            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-3">
                 <DevicePreview device="desktop">{children}</DevicePreview>
                 <DevicePreview device="tablet">{children}</DevicePreview>
                 <DevicePreview device="mobile">{children}</DevicePreview>

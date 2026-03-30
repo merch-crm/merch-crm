@@ -113,7 +113,7 @@ export const SubCategoryCardContent = React.memo(({
                     <h4 className="text-[14px] font-bold text-slate-900 group-hover:text-primary transition-colors">
                         {subcat.name}
                     </h4>
-                    <span className="text-[11px] font-medium text-slate-500 block mt-0.5">
+                    <span className="text-xs font-medium text-slate-500 block mt-0.5">
                         {subcat.totalQuantity || 0} шт.
                     </span>
                 </div>
