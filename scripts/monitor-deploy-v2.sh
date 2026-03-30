@@ -78,19 +78,53 @@ while true; do
       echo "❌ Workflow $RUN_ID failed (Conclusion: $RUN_CONCLUSION)."
       echo "Please inspect logs manually on GitHub Actions for Run $RUN_ID."
       
-      # Try fetching job logs
+      # Try fetching job logs and annotations
       echo "Fetching failed jobs..."
-      curl -s -H "Authorization: token $GH_TOKEN" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/$REPO/actions/runs/$RUN_ID/jobs" | node -e "
-        let d='';
-        process.stdin.on('data', c => d+=c).on('end', () => {
+      export GH_TOKEN
+      export REPO
+      export RUN_ID
+      node -e "
+        async function run() {
+          const token = process.env.GH_TOKEN;
+          const repo = process.env.REPO;
+          const runId = process.env.RUN_ID;
           try {
-            const data = JSON.parse(d);
-            const failed = data.jobs.filter(j => j.conclusion === 'failure');
-            failed.forEach(j => {
-              console.log('Failed job:', j.name, 'URL:', j.html_url);
+            const res = await fetch(\`https://api.github.com/repos/\${repo}/actions/runs/\${runId}/jobs\`, {
+              headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
             });
-          } catch(e) {}
-        });
+            const data = await res.json();
+            const failed = data.jobs.filter(j => j.conclusion === 'failure');
+            
+            for (const j of failed) {
+              console.log('\n❌ Failed job:', j.name);
+              console.log('🔗 URL:', j.html_url);
+              
+              const annRes = await fetch(\`https://api.github.com/repos/\${repo}/check_runs/\${j.id}/annotations\`, {
+                headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
+              });
+              const annotations = await annRes.json();
+              if (Array.isArray(annotations) && annotations.length > 0) {
+                console.log('\n--- 📋 Annotations ---');
+                annotations.forEach(a => {
+                  if (a.annotation_level === 'failure' || a.annotation_level === 'warning') {
+                     console.log(\`[\${a.annotation_level.toUpperCase()}] \${a.path}:\${a.start_line} - \${a.message}\`);
+                  }
+                });
+              } else {
+                 const logRes = await fetch(\`https://api.github.com/repos/\${repo}/actions/jobs/\${j.id}/logs\`, {
+                   headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
+                 });
+                 if (logRes.ok) {
+                   const logText = await logRes.text();
+                   const lines = logText.split('\n');
+                   console.log('\n--- 📝 Last 50 lines of logs ---');
+                   console.log(lines.slice(-50).join('\n'));
+                 }
+              }
+            }
+          } catch(e) { console.error('Error fetching logs:', e.message); }
+        }
+        run();
       "
       exit 1
     fi
