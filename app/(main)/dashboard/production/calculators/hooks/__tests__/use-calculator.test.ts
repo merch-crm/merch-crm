@@ -12,7 +12,6 @@ import { useCalculatorSettings } from '../use-calculator-settings';
 import { usePlacements } from '../use-placements';
 
 import type { CalculationResult, UploadedDesignFile } from '@/lib/types/calculators';
-import type { ActionResult } from '@/lib/types/common';
 
 // Mocks
 vi.mock('@/hooks/use-local-storage', () => ({
@@ -96,10 +95,10 @@ describe('useCalculator', () => {
     vi.clearAllMocks();
     
     // Default mocks for sub-hooks
-    vi.mocked(useDesignFiles).mockReturnValue(mockDesignFilesReturn as any);
-    vi.mocked(useLayoutOptimizer).mockReturnValue(mockLayoutReturn as any);
-    vi.mocked(useCalculatorSettings).mockReturnValue(mockSettingsReturn as any);
-    vi.mocked(usePlacements).mockReturnValue(mockPlacementsReturn as any);
+    vi.mocked(useDesignFiles).mockReturnValue(mockDesignFilesReturn as unknown as ReturnType<typeof useDesignFiles>);
+    vi.mocked(useLayoutOptimizer).mockReturnValue(mockLayoutReturn as unknown as ReturnType<typeof useLayoutOptimizer>);
+    vi.mocked(useCalculatorSettings).mockReturnValue(mockSettingsReturn as unknown as ReturnType<typeof useCalculatorSettings>);
+    vi.mocked(usePlacements).mockReturnValue(mockPlacementsReturn as unknown as ReturnType<typeof usePlacements>);
   });
 
   it('should initialize with default parameters for DTF', () => {
@@ -135,7 +134,7 @@ describe('useCalculator', () => {
       ...mockDesignFilesReturn,
       files: [mockFileData],
       stats: { totalAreaM2: 0.1, totalStitches: 5000, totalQuantity: 1, fileCount: 1 }
-    } as any);
+    } as unknown as ReturnType<typeof useDesignFiles>);
 
     renderHook(() => useCalculator('dtf'));
     
@@ -145,8 +144,20 @@ describe('useCalculator', () => {
   it('should handle saving process', async () => {
     vi.mocked(historyActions.saveCalculation).mockResolvedValue({
       success: true,
-      data: { calculationNumber: 'CALC-001' }
-    } as any);
+      data: { 
+        calculationNumber: 'CALC-001',
+        id: 'some-uuid',
+        name: 'Test Calc',
+        calculatorType: 'dtf',
+        totalCost: '100',
+        sellingPrice: '150',
+        quantity: '1',
+        pricePerItem: '150',
+        marginPercent: '50',
+        createdAt: new Date(),
+        createdBy: 'user-1',
+      }
+    } as unknown as Awaited<ReturnType<typeof historyActions.saveCalculation>>);
 
     vi.mocked(useDesignFiles).mockReturnValue({
       ...mockDesignFilesReturn,
@@ -163,7 +174,7 @@ describe('useCalculator', () => {
         uploadedAt: new Date()
       }] as UploadedDesignFile[],
       stats: { totalAreaM2: 0.1, totalStitches: 0, totalQuantity: 1, fileCount: 1 }
-    } as any);
+    } as unknown as ReturnType<typeof useDesignFiles>);
 
     const { result } = renderHook(() => useCalculator('dtf'));
     
@@ -195,7 +206,7 @@ describe('useCalculator', () => {
         uploadedAt: new Date()
       }] as UploadedDesignFile[],
       stats: { totalAreaM2: 0.1, totalStitches: 0, totalQuantity: 1, fileCount: 1 }
-    } as any);
+    } as unknown as ReturnType<typeof useDesignFiles>);
 
     const { result } = renderHook(() => useCalculator('dtf'));
     
