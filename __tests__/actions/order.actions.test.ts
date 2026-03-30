@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { db } from '@/lib/db';
-import { mockSession, createFormData, createMockClient } from '../../tests/helpers/mocks';
+import { mockSession, createFormData, createMockClient, createMockUser, createMockOrder } from '../../tests/helpers/mocks';
 import { createOrder, updateOrderField } from '@/app/(main)/dashboard/orders/actions/core.actions';
 import { getSession } from '@/lib/session';
 import { revalidatePath } from 'next/cache';
@@ -59,7 +59,7 @@ const createMockTx = () => {
     return tx;
 };
 
-let mockTx: any; // audit-ignore
+let mockTx: ReturnType<typeof createMockTx>;
 
 vi.mock('@/lib/db', () => ({
     db: {
@@ -93,12 +93,12 @@ describe('Order Actions', () => {
         });
         
         vi.mocked(getSession).mockResolvedValue(adminSession);
-        vi.mocked(db.transaction).mockImplementation((cb) => cb(mockTx));
-        vi.mocked(db.query.users.findFirst).mockResolvedValue({ 
+        vi.mocked(db.transaction).mockImplementation((cb) => cb(mockTx as never));
+        vi.mocked(db.query.users.findFirst).mockResolvedValue(createMockUser({ 
             id: 'user-id', 
             roleId: 'role-id',
             role: { name: 'Администратор' }
-        } as any); // audit-ignore
+        }) as never);
     });
 
     describe('createOrder', () => {
@@ -215,7 +215,7 @@ describe('Order Actions', () => {
             
             mockTx.query.orders.findFirst.mockResolvedValueOnce({ id: VALID_ORDER_ID, clientId: VALID_CLIENT_ID });
             // For the second findFirst after transaction
-            vi.mocked(db.query.orders.findFirst).mockResolvedValueOnce({ id: VALID_ORDER_ID, clientId: VALID_CLIENT_ID } as unknown as any); // eslint-disable-line @typescript-eslint/no-explicit-any
+            vi.mocked(db.query.orders.findFirst).mockResolvedValueOnce(createMockOrder({ id: VALID_ORDER_ID, clientId: VALID_CLIENT_ID }) as never);
 
             const result = await updateOrderField(VALID_ORDER_ID, 'priority', 'high');
 

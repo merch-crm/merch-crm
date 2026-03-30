@@ -11,14 +11,30 @@
             "id": "c38bc88e16a70b49",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "vault/060-Roadmap/Генеральный-план.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "Граф"
+            }
+          },
+          {
+            "id": "91f42d9ddf2478ef",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Генеральный-план"
+              "title": "Новая вкладка"
+            }
+          },
+          {
+            "id": "30aef00577fbe329",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "Новая вкладка"
             }
           }
         ]
@@ -180,44 +196,45 @@
       "bases:Создать новую базу": false
     }
   },
-  "active": "9cde9d316ade0ef5",
+  "active": "c38bc88e16a70b49",
   "lastOpenFiles": [
-    "drizzle/0036_stale_ricochet.sql",
-    "drizzle/meta/0036_snapshot.json",
-    "vault/000-Навигация/СОСТОЯНИЕ-ПРОЕКТА.md",
+    "vault/000-Навигация/Известные-Проблемы.md",
+    "vault/010-Стандарты/Безопасность.md",
+    "audit-report.md",
     "CLAUDE.md",
+    "CRM_Documentation.md",
+    "vault/030-Модули/01-Продажи-и-Клиенты/Заказы.md",
+    "mv",
+    "vault/030-Модули/04-Система-и-Финансы",
+    "vault/030-Модули/03-Персонал-и-HR",
+    "vault/030-Модули/02-Производство-и-Склад",
+    "-p",
+    "mkdir",
+    "vault/030-Модули/01-Продажи-и-Клиенты",
+    "vault/000-Навигация/СОСТОЯНИЕ-ПРОЕКТА.md",
+    "vault/060-Roadmap/Генеральный-план.md",
+    "backup_v0036.sql",
+    "CHANGELOG.md",
+    "vault/000-Навигация/Roadmap.base",
+    "vault/Система.canvas",
+    "vault/020-Архитектура/Схема-Связей.md",
+    "vault/000-Навигация/Локальная-разработка.md",
+    "vault/020-Архитектура/Deploy.md",
+    "vault/010-Стандарты/Ошибка-Обработка.md",
+    "vault/010-Стандарты/Actions.md",
+    "drizzle/0036_stale_ricochet.sql",
     "vault/030-Модули/Редактор.md",
-    "__tests__/actions/time-actions.test.ts",
     "vault/030-Модули/Линейки_Продуктов.md",
     "README.md",
-    "CRM_Documentation.md",
     "vault/030-Модули/Геймификация.md",
     "vault/030-Модули/Промокоды.md",
     "vault/030-Модули/Присутствие.md",
-    "audit-report.md",
-    "vault/010-Стандарты/Безопасность.md",
-    "vault/000-Навигация/Дашборд-Модули.base",
     "vault/030-Модули/Персонал.md",
     "vault/030-Модули/Заказы.md",
     "vault/030-Модули/Ядро_Системы.md",
     "vault/010-Стандарты/Звуковая-обратная-связь.md",
     "vault/000-Навигация/ОГЛАВЛЕНИЕ.md",
     "vault/050-Сессии/2026-03-30.md",
-    "vault/030-Модули/Рабочие_Места.md",
-    "vault/030-Модули/Коммуникации.md",
-    "vault/030-Модули/Поддержка.md",
-    "vault/030-Модули/Финансы.md",
-    "vault/030-Модули/Продукция.md",
-    "vault/030-Модули/Дизайн.md",
-    "vault/030-Модули/Производство.md",
-    "vault/030-Модули/Калькулятор.md",
-    "ship-safe-report.html",
-    "vault/050-Сессии/Журнал-Сессий.base",
-    "vault/Templates",
-    "vault/Без названия.canvas",
-    "ship-safe-deep-report.json",
-    "ship-safe-deep-2.json",
-    "lib/services/production/time-tracking.service.ts",
-    "drizzle/meta/0035_snapshot.json"
+    "vault/Без названия.canvas"
   ]
 }

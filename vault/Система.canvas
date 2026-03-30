@@ -1,0 +1,142 @@
+{
+  "nodes": [
+    {
+      "id": "2b8a7c1e5f0d4e3a",
+      "type": "group",
+      "x": -500,
+      "y": -300,
+      "width": 450,
+      "height": 400,
+      "label": "🧭 Навигация и Старт",
+      "color": "4"
+    },
+    {
+      "id": "nav_file_1",
+      "type": "file",
+      "x": -475,
+      "y": -250,
+      "width": 400,
+      "height": 150,
+      "file": "000-Навигация/ОГЛАВЛЕНИЕ.md"
+    },
+    {
+      "id": "nav_file_2",
+      "type": "file",
+      "x": -475,
+      "y": -80,
+      "width": 400,
+      "height": 150,
+      "file": "000-Навигация/Локальная-разработка.md"
+    },
+    {
+      "id": "f1a2b3c4d5e6f7a8",
+      "type": "group",
+      "x": 0,
+      "y": -300,
+      "width": 450,
+      "height": 580,
+      "label": "📏 Стандарты Unified v3.0",
+      "color": "6"
+    },
+    {
+      "id": "std_file_1",
+      "type": "file",
+      "x": 25,
+      "y": -250,
+      "width": 400,
+      "height": 150,
+      "file": "010-Стандарты/Actions.md"
+    },
+    {
+      "id": "std_file_2",
+      "type": "file",
+      "x": 25,
+      "y": -80,
+      "width": 400,
+      "height": 150,
+      "file": "010-Стандарты/UX-дизайн.md"
+    },
+    {
+      "id": "std_file_3",
+      "type": "file",
+      "x": 25,
+      "y": 90,
+      "width": 400,
+      "height": 150,
+      "file": "010-Стандарты/Ошибка-Обработка.md"
+    },
+    {
+      "id": "c9d8e7f6a5b4c3d2",
+      "type": "group",
+      "x": 500,
+      "y": -300,
+      "width": 450,
+      "height": 400,
+      "label": "📦 Основные Модули",
+      "color": "2"
+    },
+    {
+      "id": "mod_file_1",
+      "type": "file",
+      "x": 525,
+      "y": -250,
+      "width": 400,
+      "height": 150,
+      "file": "030-Модули/Заказы.md"
+    },
+    {
+      "id": "mod_file_2",
+      "type": "file",
+      "x": 525,
+      "y": -80,
+      "width": 400,
+      "height": 150,
+      "file": "030-Модули/Клиенты.md"
+    },
+    {
+      "id": "d1e2f3a4b5c6d7e8",
+      "type": "group",
+      "x": 0,
+      "y": 320,
+      "width": 450,
+      "height": 250,
+      "label": "🚀 Будущее и Роадмап",
+      "color": "5"
+    },
+    {
+      "id": "rd_file_1",
+      "type": "file",
+      "x": 25,
+      "y": 370,
+      "width": 400,
+      "height": 150,
+      "file": "060-Roadmap/Генеральный-план.md"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_1",
+      "fromNode": "nav_file_1",
+      "fromSide": "right",
+      "toNode": "std_file_1",
+      "toSide": "left",
+      "label": "Требуют соблюдения"
+    },
+    {
+      "id": "edge_2",
+      "fromNode": "std_file_1",
+      "fromSide": "right",
+      "toNode": "mod_file_1",
+      "toSide": "left",
+      "label": "Применяются в"
+    },
+    {
+      "id": "edge_3",
+      "fromNode": "mod_file_1",
+      "fromSide": "bottom",
+      "toNode": "rd_file_1",
+      "toSide": "top",
+      "label": "Развитие"
+    }
+  ]
+}
