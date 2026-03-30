@@ -10,7 +10,7 @@ RUN sed -i 's/deb.debian.org/mirror.yandex.ru/g' /etc/apt/sources.list.d/debian.
 
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci --legacy-peer-deps
+RUN npm ci --legacy-peer-deps --ignore-scripts
 
 # ─── Stage 2: Build Next.js application ────────────────────────────────────────
 FROM base AS builder
@@ -33,7 +33,7 @@ WORKDIR /app
 
 # Only production deps + drizzle-kit for migrations
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev --legacy-peer-deps && npm install drizzle-kit --legacy-peer-deps
+RUN npm ci --omit=dev --legacy-peer-deps --ignore-scripts && npm install drizzle-kit --legacy-peer-deps --ignore-scripts
 
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./

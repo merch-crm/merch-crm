@@ -12,6 +12,7 @@ import { useCalculatorSettings } from '../use-calculator-settings';
 import { usePlacements } from '../use-placements';
 
 import type { CalculationResult, UploadedDesignFile } from '@/lib/types/calculators';
+import { getDefaultGlobalSettings } from '@/lib/types/calculators';
 
 // Mocks
 vi.mock('@/hooks/use-local-storage', () => ({
@@ -45,46 +46,48 @@ vi.mock('../use-placements');
 vi.mock('@/lib/actions/calculators/history');
 
 describe('useCalculator', () => {
-  const mockDesignFilesReturn = {
+  const mockDesignFilesReturn: ReturnType<typeof useDesignFiles> = {
     files: [] as UploadedDesignFile[],
     addFile: vi.fn(),
     removeFile: vi.fn(),
     updateFile: vi.fn(),
+    reorderFiles: vi.fn(),
     clearAll: vi.fn(),
     stats: { totalAreaM2: 0, totalStitches: 0, totalQuantity: 0, fileCount: 0 },
   };
 
-  const mockLayoutReturn = {
-    layoutResult: {
-      stats: { usedAreaMm2: 0, totalAreaMm2: 0, totalLengthMm: 0, efficiency: 0 },
-      settings: {},
-      placements: [],
-      skippedDesigns: [],
+  const mockLayoutReturn: ReturnType<typeof useLayoutOptimizer> = {
+    settings: { rollWidthMm: 300, edgeMarginMm: 10, gapMm: 5, allowRotation: true },
+    layoutResult: { 
+      placedDesigns: [], 
+      stats: { usedAreaMm2: 0, totalAreaMm2: 0, totalLengthMm: 0, efficiency: 0, printCount: 0 }, 
+      settings: { rollWidthMm: 300, edgeMarginMm: 10, gapMm: 5, allowRotation: true } 
     },
+    designItems: [],
     updateSettings: vi.fn(),
     resetSettings: vi.fn(),
-    designItems: [],
-    stats: { usedAreaMm2: 0, totalAreaMm2: 0, totalLengthMm: 0, efficiency: 0 },
+    stats: { usedAreaMm2: 0, totalAreaMm2: 0, totalLengthMm: 0, efficiency: 0, printCount: 0 },
     efficiency: 0,
     totalLengthMm: 0,
   };
 
-  const mockSettingsReturn = {
-    settings: { consumablesConfig: { items: [] } },
+  const mockSettingsReturn: ReturnType<typeof useCalculatorSettings> = {
+    settings: getDefaultGlobalSettings('dtf'),
+    isLoading: false,
+    isSaving: false,
+    error: null,
     updateSettings: vi.fn(),
-    loadSettings: vi.fn(),
     saveSettings: vi.fn(),
     resetSettings: vi.fn(),
     isSettingsModalOpen: false,
     openSettingsModal: vi.fn(),
     closeSettingsModal: vi.fn(),
-    isLoading: false,
   };
 
-  const mockPlacementsReturn = {
-    selectedPlacements: [],
+  const mockPlacementsReturn: ReturnType<typeof usePlacements> = {
     availableProducts: [],
-    costResults: { totalWorkPrice: 0, totalItems: 0 },
+    selectedPlacements: [],
+    costResults: { items: [], costPerUnit: 0, totalCost: 0 },
     isLoading: false,
     togglePlacement: vi.fn(),
     clearPlacements: vi.fn(),
@@ -95,10 +98,10 @@ describe('useCalculator', () => {
     vi.clearAllMocks();
     
     // Default mocks for sub-hooks
-    vi.mocked(useDesignFiles).mockReturnValue(mockDesignFilesReturn as unknown as ReturnType<typeof useDesignFiles>);
-    vi.mocked(useLayoutOptimizer).mockReturnValue(mockLayoutReturn as unknown as ReturnType<typeof useLayoutOptimizer>);
-    vi.mocked(useCalculatorSettings).mockReturnValue(mockSettingsReturn as unknown as ReturnType<typeof useCalculatorSettings>);
-    vi.mocked(usePlacements).mockReturnValue(mockPlacementsReturn as unknown as ReturnType<typeof usePlacements>);
+    vi.mocked(useDesignFiles).mockReturnValue(mockDesignFilesReturn);
+    vi.mocked(useLayoutOptimizer).mockReturnValue(mockLayoutReturn);
+    vi.mocked(useCalculatorSettings).mockReturnValue(mockSettingsReturn);
+    vi.mocked(usePlacements).mockReturnValue(mockPlacementsReturn);
   });
 
   it('should initialize with default parameters for DTF', () => {
@@ -134,7 +137,7 @@ describe('useCalculator', () => {
       ...mockDesignFilesReturn,
       files: [mockFileData],
       stats: { totalAreaM2: 0.1, totalStitches: 5000, totalQuantity: 1, fileCount: 1 }
-    } as unknown as ReturnType<typeof useDesignFiles>);
+    });
 
     renderHook(() => useCalculator('dtf'));
     
@@ -174,7 +177,7 @@ describe('useCalculator', () => {
         uploadedAt: new Date()
       }] as UploadedDesignFile[],
       stats: { totalAreaM2: 0.1, totalStitches: 0, totalQuantity: 1, fileCount: 1 }
-    } as unknown as ReturnType<typeof useDesignFiles>);
+    });
 
     const { result } = renderHook(() => useCalculator('dtf'));
     
@@ -206,7 +209,7 @@ describe('useCalculator', () => {
         uploadedAt: new Date()
       }] as UploadedDesignFile[],
       stats: { totalAreaM2: 0.1, totalStitches: 0, totalQuantity: 1, fileCount: 1 }
-    } as unknown as ReturnType<typeof useDesignFiles>);
+    });
 
     const { result } = renderHook(() => useCalculator('dtf'));
     
