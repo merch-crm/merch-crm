@@ -1,7 +1,7 @@
 # 🔍 MerchCRM Audit Report
 
-**Дата:** 30.03.2026, 20:36:45
-**Время:** 21343ms
+**Дата:** 31.03.2026, 00:17:52
+**Время:** 22630ms
 
 ## 🟢 Здоровье: A (100/100)
 
@@ -11,27 +11,18 @@
 
 | Метрика | Значение |
 |---------|----------|
-| Файлов | 1586 |
-| Строк | 218 539 |
-| Размер | 8.8 MB |
+| Файлов | 1587 |
+| Строк | 218 860 |
+| Размер | 8.6 MB |
 | Страниц | 98 |
 | Компонентов | 237 |
 | API роутов | 43 |
-| Тестов | 258 |
-| Таблиц БД | 95 |
-| Миграций | 41 |
+| Тестов | 259 |
+| Таблиц БД | 96 |
+| Миграций | 42 |
 
 ### По категориям
 
 | Категория | Количество |
 |-----------|------------|
-| Null Safety | 1 |
-| Импорты | 1 |
-
-## 🟡 Предупреждения (2)
-
-| Файл | Строка | Категория | Сообщение |
-|------|--------|-----------|----------|
-| [app/(main)/dashboard/portal/components/PortalChart.tsx](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/dashboard/portal/components/PortalChart.tsx#L24) | 24 | Null Safety | Потенциальный null: data |
-| [app/(main)/admin-panel/api-keys/actions.ts](file:///Users/leonidmolchanov/Desktop/merch-crm/app/(main)/admin-panel/api-keys/actions.ts) | - | Импорты | Дубликаты: drizzle-orm |
 

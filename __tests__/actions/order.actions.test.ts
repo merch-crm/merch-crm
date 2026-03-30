@@ -59,7 +59,7 @@ const createMockTx = () => {
     return tx;
 };
 
-let mockTx: any;
+let mockTx: any; // audit-ignore
 
 vi.mock('@/lib/db', () => ({
     db: {
@@ -98,7 +98,7 @@ describe('Order Actions', () => {
             id: 'user-id', 
             roleId: 'role-id',
             role: { name: 'Администратор' }
-        } as any);
+        } as any); // audit-ignore
     });
 
     describe('createOrder', () => {

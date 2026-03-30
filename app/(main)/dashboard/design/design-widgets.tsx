@@ -20,7 +20,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shrink-0">
                         <Palette className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Задачи в работе</p>
+                    <p className="text-xs font-semibold text-slate-500">Задачи в работе</p>
                 </div>
                 <div className="flex items-baseline gap-2 mt-1">
                     <span className="text-[52px] font-black text-slate-900 tracking-tight leading-none tabular-nums">{stats.newTasks}</span>
@@ -35,7 +35,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                     <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 shrink-0">
                         <Clock className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">На утверждении</p>
+                    <p className="text-xs font-semibold text-slate-500">На утверждении</p>
                 </div>
                 <div className="flex items-baseline gap-1.5 mt-1">
                     <span className="text-[52px] font-black text-amber-500 tracking-tight leading-none tabular-nums">{stats.pendingApproval}</span>
@@ -49,7 +49,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                     <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
                         <TrendingUp className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Эффективность</p>
+                    <p className="text-xs font-semibold text-slate-500">Эффективность</p>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1">
                     <span className="text-[52px] font-black text-emerald-500 tracking-tight leading-none tabular-nums">{stats.efficiency}</span>

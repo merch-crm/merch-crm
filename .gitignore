@@ -113,3 +113,6 @@ secrets.yaml
 # Logs (may contain sensitive data)
 *.log
 logs/
+
+# Report directories with secrets
+.ship-safe/

@@ -17,11 +17,11 @@ interface ChartDataItem {
 }
 
 interface PortalChartProps {
-    data: ChartDataItem[];
+    data?: ChartDataItem[] | null;
 }
 
 export default function PortalChart({ data }: PortalChartProps) {
-    if (!data || data.length === 0) return (
+    if (!Array.isArray(data) || data.length === 0) return (
         <div className="h-full w-full flex items-center justify-center text-slate-400 font-bold">
             Нет данных для отображения
         </div>

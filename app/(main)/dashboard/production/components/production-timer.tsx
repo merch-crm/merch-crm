@@ -33,10 +33,12 @@ export function ProductionTimer({
     // Синхронизация с сервером при монтировании
     useEffect(() => {
         async function sync() {
-            const data = await getOrCreateTaskAndTimerStatusAction(orderItemId, stage);
-            setTaskId(data.taskId);
-            setIsRunning(data.isRunning);
-            setStartTime(data.startTime ? new Date(data.startTime) : null);
+            const data = await getOrCreateTaskAndTimerStatusAction({ orderItemId, stage });
+            if (data?.success) {
+                setTaskId(data.data.taskId);
+                setIsRunning(data.data.isRunning);
+                setStartTime(data.data.startTime ? new Date(data.data.startTime) : null);
+            }
         }
         sync();
     }, [orderItemId, stage]);
@@ -61,7 +63,7 @@ export function ProductionTimer({
         setLoading(true);
         try {
             if (isRunning) {
-                const res = await stopTaskTimerAction(taskId);
+                const res = await stopTaskTimerAction({ taskId });
                 if (res.success) {
                     setIsRunning(false);
                     setStartTime(null);
@@ -70,7 +72,7 @@ export function ProductionTimer({
                     toast.error(res.error || "Ошибка остановки");
                 }
             } else {
-                const res = await startTaskTimerAction(taskId);
+                const res = await startTaskTimerAction({ taskId });
                 if (res.success) {
                     setIsRunning(true);
                     setStartTime(new Date());

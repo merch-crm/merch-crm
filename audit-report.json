@@ -1,27 +1,12 @@
 {
-  "timestamp": "30.03.2026, 20:36:45",
-  "duration": 21343,
+  "timestamp": "31.03.2026, 00:17:52",
+  "duration": 22630,
   "projectName": "MerchCRM",
-  "errors": [
-    {
-      "file": "app/(main)/dashboard/portal/components/PortalChart.tsx",
-      "line": 24,
-      "severity": "warning",
-      "category": "Null Safety",
-      "message": "Потенциальный null: data",
-      "suggestion": "Используй data?.method() или (data || [])"
-    },
-    {
-      "file": "app/(main)/admin-panel/api-keys/actions.ts",
-      "severity": "warning",
-      "category": "Импорты",
-      "message": "Дубликаты: drizzle-orm"
-    }
-  ],
+  "errors": [],
   "stats": {
-    "totalFiles": 1586,
-    "totalLines": 218539,
-    "totalSize": 9197662,
+    "totalFiles": 1587,
+    "totalLines": 218860,
+    "totalSize": 9019150,
     "pagesCount": 98,
     "componentsCount": 237,
     "hooksCount": 13,
@@ -29,16 +14,13 @@
     "typesCount": 31,
     "apiRoutesCount": 43,
     "formsCount": 55,
-    "testsCount": 258,
-    "tablesCount": 95,
-    "migrationsCount": 41,
+    "testsCount": 259,
+    "tablesCount": 96,
+    "migrationsCount": 42,
     "typescriptErrors": 0,
     "lintErrors": 0,
     "lintWarnings": 0,
-    "byCategory": {
-      "Null Safety": 1,
-      "Импорты": 1
-    }
+    "byCategory": {}
   },
   "health": {
     "score": 100,

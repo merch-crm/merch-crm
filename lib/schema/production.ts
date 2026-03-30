@@ -352,6 +352,7 @@ export const productionTimeLogs = pgTable("production_time_logs", {
     taskIdIdx: index("production_time_logs_task_id_idx").on(table.taskId),
     staffIdIdx: index("production_time_logs_staff_id_idx").on(table.staffId),
     startTimeIdx: index("production_time_logs_start_time_idx").on(table.startTime),
+    createdAtIdx: index("production_time_logs_created_at_idx").on(table.createdAt),
 }));
 
 // === СВЯЗИ ===

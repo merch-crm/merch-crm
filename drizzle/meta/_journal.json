@@ -253,6 +253,13 @@
       "when": 1774898160745,
       "tag": "0035_rapid_forgotten_one",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1774905926383,
+      "tag": "0036_stale_ricochet",
+      "breakpoints": true
     }
   ]
 }

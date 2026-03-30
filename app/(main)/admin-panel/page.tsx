@@ -1,7 +1,7 @@
-import { getSystemStats, getBackupsList } from"./actions/system.actions";
-import { getMonitoringStats, getSecurityStats } from"./actions/security.actions";;
-import { AdminOverviewClient } from"./admin-overview-client";
-import { Suspense } from"react";
+import { getSystemStats, getBackupsList } from "./actions/system.actions";
+import { getMonitoringStats, getSecurityStats } from "./actions/security.actions";
+import { AdminOverviewClient } from "./admin-overview-client";
+import { Suspense } from "react";
 
 export default async function AdminPage() {
     return (

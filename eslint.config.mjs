@@ -22,6 +22,7 @@ const eslintConfig = [
       "scripts/**",
       "app/(staff)/staff/cameras/**",
       "tmp/**",
+      ".agents/**"
     ]
   },
   {

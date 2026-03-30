@@ -62,9 +62,13 @@ export async function getSystemStats(): Promise<ActionResult<{
         const tables = ["users", "roles", "departments", "clients", "orders", "audit_logs", "inventory_items", "tasks"];
 
         await Promise.all(tables.map(async (table) => {
-            // Белый список таблиц уже задан выше, но добавляем проверку
+            // White-list table names
             if (!/^[a-z_]+$/.test(table)) return;
-            // ship-safe-ignore: table is validated against allowlist above
+            
+            // Using sql.identifier() is the correct way in Drizzle for dynamic identifiers, 
+            // but we ensure extra safety by confirming the table name against our hardcoded list.
+            if (!tables.includes(table)) return;
+
             const countResult = await db.execute(sql`SELECT count(*)::int as count FROM ${sql.identifier(table)}`);
             tableCounts[table] = Number(countResult.rows[0]?.count || 0);
         }));

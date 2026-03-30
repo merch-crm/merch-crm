@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { productionTasks, productionTimeLogs, productionLogs } from "@/lib/schema/production";
+import { orderItems } from "@/lib/schema/orders";
 import { eq, and, isNull, sql } from "drizzle-orm";
 import { logError } from "@/lib/error-logger";
 
@@ -112,7 +113,7 @@ export class TimeTrackingService {
     /**
      * Получение или создание задачи для позиции заказа и этапа
      */
-    static async getOrCreateTaskForOrderItem(orderItemId: string, stage: string, userId: string, tx?: any): Promise<string> {
+    static async getOrCreateTaskForOrderItem(orderItemId: string, stage: string, userId: string, tx?: Parameters<Parameters<typeof db.transaction>[0]>[0]): Promise<string> {
         const d = tx || db;
         
         // 1. Ищем существующую задачу
@@ -126,6 +127,14 @@ export class TimeTrackingService {
         if (existing) return existing.id;
 
         // 2. Если нет, создаем (нужно больше данных, но для таймера пока так)
+        const orderItem = await d.query.orderItems.findFirst({
+            where: eq(orderItems.id, orderItemId),
+            columns: { orderId: true }
+        });
+
+        if (!orderItem) throw new Error("Order item not found");
+        if (!orderItem.orderId) throw new Error("Order item has no order ID");
+
         const taskId = crypto.randomUUID();
         const taskNumber = `AUTO-${Date.now().toString().slice(-6)}`;
         
@@ -133,6 +142,7 @@ export class TimeTrackingService {
             id: taskId,
             number: taskNumber,
             title: `Stage: ${stage}`,
+            orderId: orderItem.orderId,
             orderItemId,
             status: "pending",
             priority: "normal",
@@ -160,7 +170,7 @@ export class TimeTrackingService {
                 startTime: activeTimer?.startTime || null,
                 staffId: activeTimer?.staffId || null
             };
-        } catch (error) {
+        } catch (_error) {
             return { isRunning: false, startTime: null, staffId: null };
         }
     }

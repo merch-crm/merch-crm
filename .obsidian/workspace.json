@@ -8,31 +8,20 @@
         "type": "tabs",
         "children": [
           {
-            "id": "26a2a6b8ef17403d",
+            "id": "c38bc88e16a70b49",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "PRE_FLIGHT_CHECKLIST.md",
+                "file": "vault/060-Roadmap/Генеральный-план.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PRE_FLIGHT_CHECKLIST"
-            }
-          },
-          {
-            "id": "c38bc88e16a70b49",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
+              "title": "Генеральный-план"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -191,39 +180,44 @@
       "bases:Создать новую базу": false
     }
   },
-  "active": "c38bc88e16a70b49",
+  "active": "9cde9d316ade0ef5",
   "lastOpenFiles": [
-    "vault/000-Навигация/ОГЛАВЛЕНИЕ.md",
-    "node_modules/eslint-plugin-react/README.md",
-    "PRE_FLIGHT_CHECKLIST.md",
-    "vault/Без названия.canvas",
+    "drizzle/0036_stale_ricochet.sql",
+    "drizzle/meta/0036_snapshot.json",
+    "vault/000-Навигация/СОСТОЯНИЕ-ПРОЕКТА.md",
     "CLAUDE.md",
+    "vault/030-Модули/Редактор.md",
+    "__tests__/actions/time-actions.test.ts",
+    "vault/030-Модули/Линейки_Продуктов.md",
+    "README.md",
+    "CRM_Documentation.md",
+    "vault/030-Модули/Геймификация.md",
+    "vault/030-Модули/Промокоды.md",
+    "vault/030-Модули/Присутствие.md",
     "audit-report.md",
+    "vault/010-Стандарты/Безопасность.md",
+    "vault/000-Навигация/Дашборд-Модули.base",
+    "vault/030-Модули/Персонал.md",
+    "vault/030-Модули/Заказы.md",
+    "vault/030-Модули/Ядро_Системы.md",
+    "vault/010-Стандарты/Звуковая-обратная-связь.md",
+    "vault/000-Навигация/ОГЛАВЛЕНИЕ.md",
+    "vault/050-Сессии/2026-03-30.md",
+    "vault/030-Модули/Рабочие_Места.md",
+    "vault/030-Модули/Коммуникации.md",
+    "vault/030-Модули/Поддержка.md",
+    "vault/030-Модули/Финансы.md",
+    "vault/030-Модули/Продукция.md",
+    "vault/030-Модули/Дизайн.md",
+    "vault/030-Модули/Производство.md",
+    "vault/030-Модули/Калькулятор.md",
+    "ship-safe-report.html",
+    "vault/050-Сессии/Журнал-Сессий.base",
+    "vault/Templates",
+    "vault/Без названия.canvas",
     "ship-safe-deep-report.json",
     "ship-safe-deep-2.json",
     "lib/services/production/time-tracking.service.ts",
-    "drizzle/meta/0035_snapshot.json",
-    "drizzle/0035_rapid_forgotten_one.sql",
-    "drizzle/0035_add_inventory_sync_trigger.sql",
-    "app/(main)/dashboard/production/components/production-timer.tsx",
-    "app/(main)/dashboard/production/actions/time-actions.ts",
-    "app/(main)/dashboard/portal/components/PortalChart.tsx",
-    "app/(main)/dashboard/portal/components",
-    "vault/000-Навигация/ИЗВЕСТНЫЕ-ПРОБЛЕМЫ.md",
-    "vault/020-Архитектура/Стек-технологий.md",
-    "vault/050-Сессии/2026-03-30.md",
-    "vault/010-Стандарты/Компоненты-UI.md",
-    "vault/010-Стандарты/Звуковая-обратная-связь.md",
-    "vault/010-Стандарты/Безопасность.md",
-    "vault/010-Стандарты/UX-дизайн.md",
-    "vault/010-Стандарты/TypeScript-строгость.md",
-    "vault/000-Навигация/СОСТОЯНИЕ-ПРОЕКТА.md",
-    "node_modules/@typescript-eslint/eslint-plugin/docs/rules/indent.md",
-    "ROADMAP.md",
-    "node_modules/jose/README.md",
-    "node_modules/svix/README.md",
-    "node_modules/meshoptimizer/README.md",
-    "node_modules/@aws-sdk/middleware-expect-continue/README.md",
-    "node_modules/@radix-ui/react-popover/README.md"
+    "drizzle/meta/0035_snapshot.json"
   ]
 }

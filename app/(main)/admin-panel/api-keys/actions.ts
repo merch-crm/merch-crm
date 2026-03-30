@@ -4,12 +4,12 @@ import { db } from "@/lib/db";
 import { apiKeys } from "@/lib/schema/api";
 import { createSafeAction } from "@/lib/action-helpers";
 import { z } from "zod";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, type InferSelectModel } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { randomBytes } from "crypto";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
-import { type InferSelectModel } from "drizzle-orm";
+import { type ActionResult, ok, ERRORS } from "@/lib/types";
 
 export type ApiKey = InferSelectModel<typeof apiKeys>;
 
@@ -20,8 +20,6 @@ const CreateApiKeySchema = z.object({
 const RevokeApiKeySchema = z.object({
   id: z.string().uuid(),
 });
-
-import { type ActionResult, ok, ERRORS } from "@/lib/types";
 
 /**
  * Action to list all API keys for the current user.
