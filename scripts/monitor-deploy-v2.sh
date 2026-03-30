@@ -95,7 +95,7 @@ while true; do
       exit 1
     fi
   else
-    echo "Workflow is $RUN_STATUS... waiting 30s"
-    sleep 30
+    echo "Workflow is $RUN_STATUS... waiting 60s"
+    sleep 60
   fi
 done
