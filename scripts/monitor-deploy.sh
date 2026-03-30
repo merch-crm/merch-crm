@@ -73,44 +73,50 @@ while true; do
   if [ "$RUN_STATUS" == "completed" ]; then
     if [ "$RUN_CONCLUSION" == "success" ]; then
       echo "✅ Workflow $RUN_ID completed successfully!"
-      exit 0
     else
       echo "❌ Workflow $RUN_ID failed (Conclusion: $RUN_CONCLUSION)."
       echo "Please inspect logs manually on GitHub Actions for Run $RUN_ID."
-      
-      # Try fetching job logs and annotations
-      echo "Fetching failed jobs..."
-      export GH_TOKEN
-      export REPO
-      export RUN_ID
-      node -e "
-        async function run() {
-          const token = process.env.GH_TOKEN;
-          const repo = process.env.REPO;
-          const runId = process.env.RUN_ID;
-          try {
-            const res = await fetch(\`https://api.github.com/repos/\${repo}/actions/runs/\${runId}/jobs\`, {
+    fi
+
+    echo "Fetching jobs data for warnings/errors..."
+    export GH_TOKEN
+    export REPO
+    export RUN_ID
+    export RUN_CONCLUSION
+    node -e "
+      async function run() {
+        const token = process.env.GH_TOKEN;
+        const repo = process.env.REPO;
+        const runId = process.env.RUN_ID;
+        const runConclusion = process.env.RUN_CONCLUSION;
+        try {
+          const res = await fetch(\`https://api.github.com/repos/\${repo}/actions/runs/\${runId}/jobs\`, {
+            headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
+          });
+          const data = await res.json();
+          if (!data.jobs) return;
+          
+          for (const j of data.jobs) {
+            const annRes = await fetch(\`https://api.github.com/repos/\${repo}/check_runs/\${j.id}/annotations\`, {
               headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
             });
-            const data = await res.json();
-            const failed = data.jobs.filter(j => j.conclusion === 'failure');
+            const annotations = await annRes.json();
             
-            for (const j of failed) {
-              console.log('\n❌ Failed job:', j.name);
-              console.log('🔗 URL:', j.html_url);
-              
-              const annRes = await fetch(\`https://api.github.com/repos/\${repo}/check_runs/\${j.id}/annotations\`, {
-                headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
-              });
-              const annotations = await annRes.json();
-              if (Array.isArray(annotations) && annotations.length > 0) {
-                console.log('\n--- 📋 Annotations ---');
-                annotations.forEach(a => {
-                  if (a.annotation_level === 'failure' || a.annotation_level === 'warning') {
-                     console.log(\`[\${a.annotation_level.toUpperCase()}] \${a.path}:\${a.start_line} - \${a.message}\`);
-                  }
-                });
-              } else {
+            if (Array.isArray(annotations) && annotations.length > 0) {
+              const importantAnns = annotations.filter(a => a.annotation_level === 'failure' || a.annotation_level === 'warning' || a.annotation_level === 'notice');
+              if (importantAnns.length > 0) {
+                 console.log(\`\n--- 📋 Annotations for \${j.name} ---\`);
+                 importantAnns.forEach(a => {
+                   console.log(\`[\${a.annotation_level.toUpperCase()}] \${a.path}:\${a.start_line} - \${a.message}\`);
+                 });
+              }
+            }
+            
+            if (j.conclusion === 'failure') {
+               console.log('\n❌ Failed job:', j.name);
+               console.log('🔗 URL:', j.html_url);
+               
+               if (!Array.isArray(annotations) || annotations.filter(a => a.annotation_level === 'failure').length === 0) {
                  const logRes = await fetch(\`https://api.github.com/repos/\${repo}/actions/jobs/\${j.id}/logs\`, {
                    headers: { Authorization: \`token \${token}\`, Accept: 'application/vnd.github.v3+json' }
                  });
@@ -120,12 +126,16 @@ while true; do
                    console.log('\n--- 📝 Last 50 lines of logs ---');
                    console.log(lines.slice(-50).join('\n'));
                  }
-              }
+               }
             }
-          } catch(e) { console.error('Error fetching logs:', e.message); }
-        }
-        run();
-      "
+          }
+        } catch(e) { console.error('Error fetching logs/annotations:', e.message); }
+      }
+      run();
+    "
+    if [ "$RUN_CONCLUSION" == "success" ]; then
+      exit 0
+    else
       exit 1
     fi
   else

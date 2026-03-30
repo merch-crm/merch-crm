@@ -24,7 +24,7 @@ description: Автоматизированный цикл Push -> Monitor -> Fi
 ### 3. Мониторинг GitHub Actions
 Запустить скрипт мониторинга (исходя из пункта 2, подставив SHA-хэш коммита):
 ```bash
-./scripts/monitor-deploy-v2.sh <SHA>
+./scripts/monitor-deploy.sh <SHA>
 ```
 Скрипт использует API GitHub для мониторинга процесса. Он завершится с `exit 0` в случае успеха или `exit 1` с выводом логов в случае ошибки.
 
