@@ -22,6 +22,7 @@ COPY . .
 ARG DATABASE_URL="postgresql://build:build@localhost:5432/build"
 ENV NX_PLD_VLD_01="pl01_$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24)"
 ENV SKIP_ENV_VALIDATION="true"
+ENV SKIP_REDIS="true"
 ENV NODE_OPTIONS="--max-old-space-size=2048"
 
 RUN npm run build

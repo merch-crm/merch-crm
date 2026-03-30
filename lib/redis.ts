@@ -69,6 +69,7 @@ class RedisMock {
 }
 
 const isTest = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
+const skipRedis = process.env.SKIP_REDIS === "true";
 
 /** Singleton Redis instance */
 declare global {
@@ -76,7 +77,7 @@ declare global {
   var redis: Redis | RedisMock | undefined;
 }
 
-export const redis = global.redis || (isTest ? new RedisMock() : new Redis(redisOptions));
+export const redis = global.redis || (isTest || skipRedis ? new RedisMock() : new Redis(redisOptions));
 
 if (process.env.NODE_ENV !== "production") {
   global.redis = redis;

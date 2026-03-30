@@ -3,9 +3,23 @@
 SHA=$1
 REPO="merch-crm/merch-crm"
 
+# If no SHA provided, use HEAD
 if [ -z "$SHA" ]; then
-  echo "Usage: $0 <commit-sha>"
-  exit 1
+  SHA=$(git rev-parse HEAD 2>/dev/null)
+  if [ -z "$SHA" ]; then
+    echo "Usage: $0 [commit-sha]"
+    echo "Or run from a git repository to auto-detect HEAD."
+    exit 1
+  fi
+  echo "No SHA provided, using HEAD: $SHA"
+fi
+
+# Expand short SHA to full SHA if needed (git may accept short, but GitHub API needs full)
+if [ ${#SHA} -lt 40 ]; then
+  FULL_SHA=$(git rev-parse "$SHA" 2>/dev/null)
+  if [ -n "$FULL_SHA" ]; then
+    SHA="$FULL_SHA"
+  fi
 fi
 
 echo "Monitoring GitHub Actions for SHA: $SHA..."
