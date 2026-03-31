@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, research, advice, architecture, агенты]
+  - агент
+  - gsd
+  - research
+  - advice
+  - architecture
+  - агенты
 ---
 # 🧠 GSD-Советник-Исследователь
 

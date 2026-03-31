@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, audit, planning, quality, агенты]
+  - агент
+  - gsd
+  - audit
+  - planning
+  - quality
+  - агенты
 ---
 # 📋 GSD-Чекер-Планов
 

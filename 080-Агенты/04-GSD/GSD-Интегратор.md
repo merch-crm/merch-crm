@@ -7,7 +7,11 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, integration, dependencies, агенты]
+  - агент
+  - gsd
+  - integration
+  - dependencies
+  - агенты
 ---
 # 🔗 GSD-Интегратор
 

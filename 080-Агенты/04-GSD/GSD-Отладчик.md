@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, debugging, systematic, state, агенты]
+  - агент
+  - gsd
+  - debugging
+  - systematic
+  - state
+  - агенты
 ---
 # 🐞 GSD-Отладчик
 

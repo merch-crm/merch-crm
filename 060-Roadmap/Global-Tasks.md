@@ -1,7 +1,9 @@
 ---
 название: "Глобальные-Задачи"
 tags:
-  - roadmap [dashboard, tasks]
+  - roadmap
+  - dashboard
+  - tasks
 ---
 # 🎯 Центральный Хаб Задач
 

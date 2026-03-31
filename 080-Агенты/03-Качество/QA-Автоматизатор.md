@@ -7,7 +7,13 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [testing, automation, playwright, vitest, msw, агенты]
+  - агент
+  - testing
+  - automation
+  - playwright
+  - vitest
+  - msw
+  - агенты
 ---
 # 🤖 QA-Автоматизатор
 

@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [seo, metadata, performance, content, агенты]
+  - агент
+  - seo
+  - metadata
+  - performance
+  - content
+  - агенты
 ---
 # 🔎 SEO-Специалист
 

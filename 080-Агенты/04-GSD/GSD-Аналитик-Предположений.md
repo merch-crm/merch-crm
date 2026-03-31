@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, risk, analysis, assumptions, агенты]
+  - агент
+  - gsd
+  - risk
+  - analysis
+  - assumptions
+  - агенты
 ---
 # 🗯️ GSD-Аналитик-Предположений
 

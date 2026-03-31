@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, research, mapping, analysis, агенты]
+  - агент
+  - gsd
+  - research
+  - mapping
+  - analysis
+  - агенты
 ---
 # 🔎 GSD-Исследователь-Проекта
 

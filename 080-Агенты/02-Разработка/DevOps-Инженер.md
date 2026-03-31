@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [deployment, cicd, docker, server, агенты]
+  - агент
+  - deployment
+  - cicd
+  - docker
+  - server
+  - агенты
 ---
 # 🚀 DevOps-Инженер
 

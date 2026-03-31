@@ -5,9 +5,9 @@
   "obsidian-kanban",
   "obsidian-linter",
   "mermaid-tools",
-  "colored-tags-wrangler",
   "data-cards",
   "dataview",
   "templater-obsidian",
-  "obsidian-git"
+  "obsidian-git",
+  "colored-tags-wrangler"
 ]

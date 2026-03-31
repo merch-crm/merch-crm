@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, research, strategy, agents, агенты]
+  - агент
+  - gsd
+  - research
+  - strategy
+  - agents
+  - агенты
 ---
 # 🔭 GSD-Исследователь-Фаз
 

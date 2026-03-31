@@ -420,6 +420,118 @@
           "b": 255
         },
         "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "feature",
+        "background_color": {
+          "r": 0,
+          "g": 188,
+          "b": 212
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "integration",
+        "background_color": {
+          "r": 33,
+          "g": 150,
+          "b": 243
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "telegram",
+        "background_color": {
+          "r": 103,
+          "g": 58,
+          "b": 183
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "in-progress",
+        "background_color": {
+          "r": 76,
+          "g": 175,
+          "b": 80
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "high",
+        "background_color": {
+          "r": 244,
+          "g": 67,
+          "b": 54
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "low",
+        "background_color": {
+          "r": 139,
+          "g": 195,
+          "b": 74
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "development",
+        "background_color": {
+          "r": 63,
+          "g": 81,
+          "b": 181
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "design",
+        "background_color": {
+          "r": 233,
+          "g": 30,
+          "b": 99
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
       }
     ],
     "EnableMultipleTags": true,

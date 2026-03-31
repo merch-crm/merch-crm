@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, profiling, personalization, agents, агенты]
+  - агент
+  - gsd
+  - profiling
+  - personalization
+  - agents
+  - агенты
 ---
 # 👤 GSD-Профайлер
 

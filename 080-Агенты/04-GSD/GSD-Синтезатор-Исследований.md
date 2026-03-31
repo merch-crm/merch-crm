@@ -7,7 +7,12 @@
 обновлено: 2026-03-31
 статус: активный
 tags:
-  - агент [gsd, research, synthesis, knowledge, агенты]
+  - агент
+  - gsd
+  - research
+  - synthesis
+  - knowledge
+  - агенты
 ---
 # ⚗️ GSD-Синтезатор-Исследований
 
