@@ -1,88 +1,15 @@
 {
-  "nodes": [
-    {
-      "id": "a1b2c3d4e1f2a3b4",
-      "type": "text",
-      "x": 0,
-      "y": 0,
-      "width": 300,
-      "height": 200,
-      "color": "5",
-      "text": "## Фаза 0: Фундамент\n\n- Дизайн-система\n- БД\n- Авторизация\n- Wiki"
-    },
-    {
-      "id": "b1c2d3e4f5a6b7c8",
-      "type": "text",
-      "x": 400,
-      "y": 0,
-      "width": 300,
-      "height": 200,
-      "color": "1",
-      "text": "## Фаза 1: Критические\n\n- Учет времени\n- СДЭК\n- Живая очередь\n- Email"
-    },
-    {
-      "id": "c1d2e3f4a5b6c7d8",
-      "type": "text",
-      "x": 800,
-      "y": 0,
-      "width": 300,
-      "height": 200,
-      "color": "2",
-      "text": "## Фаза 2: Склад и ERP\n\n- Склад 2.0\n- Авто-списание\n- PDF-счета\n- Версионность"
-    },
-    {
-      "id": "d1e2f3a4b5c6d7e8",
-      "type": "text",
-      "x": 1200,
-      "y": 0,
-      "width": 300,
-      "height": 200,
-      "color": "3",
-      "text": "## Фаза 3: UX и Безопасность\n\n- Better Auth\n- 2FA\n- Логи\n- Обслуживание БД"
-    },
-    {
-      "id": "e1f2a3b4c5d6e7f8",
-      "type": "text",
-      "x": 1600,
-      "y": 0,
-      "width": 300,
-      "height": 200,
-      "color": "4",
-      "text": "## Фаза 4: Аналитика\n\n- P&L Отчет\n- RFM Анализ\n- Лояльность\n- API"
-    }
-  ],
-  "edges": [
-    {
-      "id": "e01",
-      "fromNode": "a1b2c3d4e1f2a3b4",
-      "fromSide": "right",
-      "toNode": "b1c2d3e4f5a6b7c8",
-      "toSide": "left",
-      "toEnd": "arrow"
-    },
-    {
-      "id": "e12",
-      "fromNode": "b1c2d3e4f5a6b7c8",
-      "fromSide": "right",
-      "toNode": "c1d2e3f4a5b6c7d8",
-      "toSide": "left",
-      "toEnd": "arrow"
-    },
-    {
-      "id": "e23",
-      "fromNode": "c1d2e3f4a5b6c7d8",
-      "fromSide": "right",
-      "toNode": "d1e2f3a4b5c6d7e8",
-      "toSide": "left",
-      "toEnd": "arrow"
-    },
-    {
-      "id": "e34",
-      "fromNode": "d1e2f3a4b5c6d7e8",
-      "fromSide": "right",
-      "toNode": "e1f2a3b4c5d6e7f8",
-      "toSide": "left",
-      "toEnd": "arrow"
-    }
-  ]
+	"nodes":[
+		{"id":"a1b2c3d4e1f2a3b4","type":"text","x":0,"y":0,"width":300,"height":200,"color":"5","text":"## Фаза 0: Фундамент\n\n- Дизайн-система\n- БД\n- Авторизация\n- Wiki"},
+		{"id":"b1c2d3e4f5a6b7c8","type":"text","x":400,"y":0,"width":300,"height":200,"color":"1","text":"## Фаза 1: Критические\n\n- Учет времени\n- СДЭК\n- Живая очередь\n- Email"},
+		{"id":"c1d2e3f4a5b6c7d8","type":"text","x":800,"y":0,"width":300,"height":200,"color":"2","text":"## Фаза 2: Склад и ERP\n\n- Склад 2.0\n- Авто-списание\n- PDF-счета\n- Версионность"},
+		{"id":"d1e2f3a4b5c6d7e8","type":"text","x":1200,"y":0,"width":300,"height":200,"color":"3","text":"## Фаза 3: UX и Безопасность\n\n- Better Auth\n- 2FA\n- Логи\n- Обслуживание БД"},
+		{"id":"e1f2a3b4c5d6e7f8","type":"text","x":1600,"y":0,"width":300,"height":200,"color":"4","text":"## Фаза 4: Аналитика\n\n- P&L Отчет\n- RFM Анализ\n- Лояльность\n- API"}
+	],
+	"edges":[
+		{"id":"e01","fromNode":"a1b2c3d4e1f2a3b4","fromSide":"right","toNode":"b1c2d3e4f5a6b7c8","toSide":"left","toEnd":"arrow"},
+		{"id":"e12","fromNode":"b1c2d3e4f5a6b7c8","fromSide":"right","toNode":"c1d2e3f4a5b6c7d8","toSide":"left","toEnd":"arrow"},
+		{"id":"e23","fromNode":"c1d2e3f4a5b6c7d8","fromSide":"right","toNode":"d1e2f3a4b5c6d7e8","toSide":"left","toEnd":"arrow"},
+		{"id":"e34","fromNode":"d1e2f3a4b5c6d7e8","fromSide":"right","toNode":"e1f2a3b4c5d6e7f8","toSide":"left","toEnd":"arrow"}
+	]
 }
