@@ -116,14 +116,7 @@ jobs:
           tags: ghcr.io/${{ steps.repo_name.outputs.name }}-migrator:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Build and push Face Recognition image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./services/face-recognition
-          push: true
-          tags: ghcr.io/${{ steps.repo_name.outputs.name }}-face-recognition:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+
 
   deploy:
     needs: build-and-push

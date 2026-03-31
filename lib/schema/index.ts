@@ -57,18 +57,10 @@ export type { OrderMockupVersion, NewOrderMockupVersion } from "./order-mockup-v
 // ./orders
 export { orders, ordersRelations, orderItems, orderItemsRelations, orderAttachments, orderAttachmentsRelations } from "./orders";
 export type { Order } from "./orders";
-// ./presence/hardware
-export { xiaomiAccounts, cameras, xiaomiAccountsRelations, camerasRelations } from "./presence/hardware";
-// ./presence/recognition
-export { employeeFaces, presenceLogs, employeeFacesRelations, presenceLogsRelations } from "./presence/recognition";
 // ./presence/sessions
 export { workSessions, dailyWorkStats, workSessionsRelations, dailyWorkStatsRelations } from "./presence/sessions";
 export type { WorkSession, DailyWorkStat } from "./presence/sessions";
-// ./presence/settings
-export { presenceSettings, presenceSettingsRelations } from "./presence/settings";
-// ./presence/workstations
-export { workstations, workstationsRelations } from "./presence/workstations";
-export type { DetectionZone } from "./presence/workstations";
+
 // ./product-lines
 export { productLineTypeEnum, productLines, productLinesRelations } from "./product-lines";
 export type { ProductLine, NewProductLine, ProductLineType, ProductLineWithRelations } from "./product-lines";

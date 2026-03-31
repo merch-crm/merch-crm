@@ -4,20 +4,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import {
     Users,
-    Video,
     BarChart3,
-    Settings,
     Activity,
     Home
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navigation = [
-    { name: 'Мониторинг', href: '/staff', icon: Activity },
-    { name: 'Сотрудники', href: '/staff/employees', icon: Users },
-    { name: 'Камеры', href: '/staff/cameras', icon: Video },
+    { name: 'Журнал времени', href: '/staff', icon: Activity },
     { name: 'Отчёты', href: '/staff/reports', icon: BarChart3 },
-    { name: 'Настройки', href: '/staff/settings', icon: Settings },
+    { name: 'Сотрудники', href: '/staff/employees', icon: Users },
 ]
 
 export function StaffSidebar() {

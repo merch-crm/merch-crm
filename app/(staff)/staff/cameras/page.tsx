@@ -1,44 +1,10 @@
-import { getSession } from '@/lib/session'
-import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
-import { CamerasClient } from './cameras-client'
-import { getXiaomiAccounts, getCameras } from './cameras.actions'
-import { checkIsAdmin } from '@/lib/admin'
-
-export default async function CamerasPage() {
-    const session = await getSession()
-
-    if (!session) {
-        redirect('/login')
-    }
-
-    const isAdmin = await checkIsAdmin(session)
-
-    const [accountsResult, camerasResult] = await Promise.all([
-        getXiaomiAccounts(),
-        getCameras()
-    ])
-
+export default function CamerasDecommissionedPage() {
     return (
-        <Suspense fallback={<CamerasSkeleton />}>
-            <CamerasClient
-                initialAccounts={accountsResult.success ? (accountsResult.data ?? []) : []}
-                initialCameras={camerasResult.success ? (camerasResult.data ?? []) : []}
-                isAdmin={isAdmin}
-            />
-        </Suspense>
-    )
-}
-
-function CamerasSkeleton() {
-    return (
-        <div className="space-y-3 animate-pulse">
-            <div className="h-8 w-48 bg-slate-200 rounded-lg" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-48 bg-slate-200 rounded-2xl" />
-                ))}
-            </div>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">Раздел камер отключен</h1>
+            <p className="text-slate-600 max-w-md">
+                Функционал видеонаблюдения и контроля присутствия через камеры был полностью удален из системы.
+            </p>
         </div>
     )
 }

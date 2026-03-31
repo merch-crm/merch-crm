@@ -2,7 +2,7 @@ import { getSession } from '@/lib/session'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { EmployeesClient, type Employee } from './employees-client'
-import { getEmployeesWithFaces, getEmployeesWithoutFaces } from './employees.actions'
+import { getEmployees } from './employees.actions'
 import { checkIsAdmin } from '@/lib/admin'
 
 export default async function EmployeesPage() {
@@ -14,16 +14,12 @@ export default async function EmployeesPage() {
 
     const isAdmin = await checkIsAdmin(session)
 
-    const [employeesResult, withoutFacesResult] = await Promise.all([
-        getEmployeesWithFaces(),
-        getEmployeesWithoutFaces()
-    ])
+    const employeesResult = await getEmployees()
 
     return (
         <Suspense fallback={<EmployeesSkeleton />}>
             <EmployeesClient
                 initialEmployees={employeesResult.success ? (employeesResult.data as unknown as Employee[]) : []}
-                employeesWithoutFaces={withoutFacesResult.success ? (withoutFacesResult.data as { id: string; name: string; email: string }[]) : []}
                 isAdmin={isAdmin}
             />
         </Suspense>

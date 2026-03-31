@@ -1,27 +1,24 @@
 filters:
   and:
     - file.inFolder("vault/050-Сессии")
-    - 'file.ext == "md"'
-
+    - file.ext == "md"
 formulas:
-  days_ago: '(now() - file.ctime).days'
-  is_recent: 'if((now() - file.ctime).days < 7, "🔥 Новое", "Старое")'
-
+  days_ago: (now() - file.ctime).days
+  is_recent: if((now() - file.ctime).days < 7, "🔥 Новое", "Старое")
 properties:
   status:
-    displayName: "Статус Сессии"
+    displayName: Статус Сессии
   files_changed:
-    displayName: "Изменено файлов"
+    displayName: Изменено файлов
   tokens_used:
-    displayName: "Токены"
+    displayName: Токены
   formula.days_ago:
-    displayName: "Дней назад"
+    displayName: Дней назад
   formula.is_recent:
-    displayName: "Свежесть"
-
+    displayName: Свежесть
 views:
   - type: table
-    name: "Журнал Сессий"
+    name: Журнал Сессий
     order:
       - file.name
       - status
@@ -31,13 +28,12 @@ views:
     summaries:
       files_changed: Sum
       tokens_used: Sum
-
   - type: cards
-    name: "Карточки сессий"
+    name: Карточки сессий
+    groupBy:
+      property: status
+      direction: DESC
     order:
       - file.name
       - status
       - files_changed
-    groupBy:
-      property: status
-      direction: DESC

@@ -51,15 +51,8 @@ export async function getDailyReport(date: string) {
             where: eq(dailyWorkStats.date, targetDate)
         })
 
-        // Получаем настройки для определения опозданий
-        const settings = await db.query.presenceSettings.findMany({ limit: 1000 })
-        const settingsMap = settings.reduce((acc, s) => {
-            acc[s.key] = s.value as string | number | boolean
-            return acc
-        }, {} as Record<string, string | number | boolean>)
-
-        const workStartTime = settingsMap.work_start_time || '09:00'
-        const lateThreshold = settingsMap.late_threshold_minutes || 15
+        const workStartTime = '09:00'
+        const lateThreshold = 15
 
         // Получаем всех пользователей
         const allUsers = await db.query.users.findMany({

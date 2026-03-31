@@ -1,37 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { employeeFaces } from '@/lib/schema'
-import { eq } from 'drizzle-orm'
-import { logError } from '@/lib/error-logger'
+import { NextResponse } from 'next/server'
 
-const SERVICE_API_KEY = process.env.PRESENCE_SERVICE_API_KEY || 'presence-secret-key'
+export async function GET() {
+    return NextResponse.json(
+        { success: false, error: 'Employee face monitoring is no longer supported' },
+        { status: 410 }
+    )
+}
 
-export async function GET(request: NextRequest) {
-    try {
-        // Проверка API ключа
-        const authHeader = request.headers.get('Authorization')
-        if (!authHeader || authHeader !== `Bearer ${SERVICE_API_KEY}`) {
-            return NextResponse.json(
-                { success: false, error: 'Unauthorized' },
-                { status: 401 }
-            )
-        }
-
-        const faces = await db.query.employeeFaces.findMany({
-        limit: 500,
-            where: eq(employeeFaces.isActive, true)
-        })
-
-        return NextResponse.json({
-            success: true,
-            data: faces
-        })
-
-    } catch (error) {
-        logError({ error: error as Error, path: '/api/presence/faces', method: 'GET' })
-        return NextResponse.json(
-            { success: false, error: 'Internal server error' },
-            { status: 500 }
-        )
-    }
+export async function POST() {
+    return NextResponse.json(
+        { success: false, error: 'Employee face monitoring is no longer supported' },
+        { status: 410 }
+    )
 }

@@ -2,12 +2,11 @@ import { pgTable, uuid, timestamp, integer, decimal, index } from "drizzle-orm/p
 import { relations } from "drizzle-orm";
 import { users } from "../users";
 import { sessionTypeEnum } from "../enums";
-import { cameras } from "./hardware";
+
 
 export const workSessions = pgTable("work_sessions", {
     id: uuid("id").defaultRandom().primaryKey(),
     userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-    cameraId: uuid("camera_id").references(() => cameras.id, { onDelete: "set null" }),
     date: timestamp("date").notNull(),
     startTime: timestamp("start_time").notNull(),
     endTime: timestamp("end_time"),
@@ -16,7 +15,6 @@ export const workSessions = pgTable("work_sessions", {
     createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => [
     index("work_sessions_user_id_idx").on(table.userId),
-    index("work_sessions_camera_id_idx").on(table.cameraId),
     index("work_sessions_date_idx").on(table.date),
     index("work_sessions_session_type_idx").on(table.sessionType),
     index("work_sessions_user_date_idx").on(table.userId, table.date),
@@ -49,10 +47,6 @@ export const workSessionsRelations = relations(workSessions, ({ one }) => ({
     user: one(users, {
         fields: [workSessions.userId],
         references: [users.id],
-    }),
-    camera: one(cameras, {
-        fields: [workSessions.cameraId],
-        references: [cameras.id],
     }),
 }));
 

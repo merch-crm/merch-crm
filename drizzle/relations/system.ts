@@ -4,10 +4,10 @@ import {
 	orderAttachments, orders, clients, productLines,
 	inventoryTransfers, clientConversations, taskHistory,
 	taskComments, taskAttachments, expenses, conversationMessages,
-	messageTemplates, wikiPages, dailyWorkStats, employeeFaces,
-	presenceSettings, workSessions, xiaomiAccounts, presenceLogs,
+	messageTemplates, wikiPages, dailyWorkStats,
+	workSessions,
 	inventoryItems, sessions, storageLocations, printCollections,
-	taskChecklists, wikiFolders, cameras, workstations
+	taskChecklists, wikiFolders
 } from "../../lib/schema/index";
 
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -43,17 +43,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
 	messageTemplates: many(messageTemplates),
 	wikiPages: many(wikiPages),
 	dailyWorkStats: many(dailyWorkStats),
-	employeeFaces_userId: many(employeeFaces, {
-		relationName: "employeeFaces_userId_users_id"
-	}),
-	employeeFaces_createdById: many(employeeFaces, {
-		relationName: "employeeFaces_createdById_users_id"
-	}),
-	presenceSettings: many(presenceSettings),
 	workSessions: many(workSessions),
-	workstations: many(workstations),
-	xiaomiAccounts: many(xiaomiAccounts),
-	presenceLogs: many(presenceLogs),
 	inventoryItems_archivedBy: many(inventoryItems, {
 		relationName: "inventoryItems_archivedBy_users_id"
 	}),
@@ -172,79 +162,10 @@ export const dailyWorkStatsRelations = relations(dailyWorkStats, ({ one }) => ({
 	}),
 }));
 
-export const camerasRelations = relations(cameras, ({ one, many }) => ({
-	xiaomiAccount: one(xiaomiAccounts, {
-		fields: [cameras.xiaomiAccountId],
-		references: [xiaomiAccounts.id]
-	}),
-	workSessions: many(workSessions),
-	workstations: many(workstations),
-	presenceLogs: many(presenceLogs),
-}));
-
-export const xiaomiAccountsRelations = relations(xiaomiAccounts, ({ one, many }) => ({
-	cameras: many(cameras),
-	user: one(users, {
-		fields: [xiaomiAccounts.createdById],
-		references: [users.id]
-	}),
-}));
-
-export const employeeFacesRelations = relations(employeeFaces, ({ one }) => ({
-	user_userId: one(users, {
-		fields: [employeeFaces.userId],
-		references: [users.id],
-		relationName: "employeeFaces_userId_users_id"
-	}),
-	user_createdById: one(users, {
-		fields: [employeeFaces.createdById],
-		references: [users.id],
-		relationName: "employeeFaces_createdById_users_id"
-	}),
-}));
-
-export const presenceSettingsRelations = relations(presenceSettings, ({ one }) => ({
-	user: one(users, {
-		fields: [presenceSettings.updatedById],
-		references: [users.id]
-	}),
-}));
-
 export const workSessionsRelations = relations(workSessions, ({ one }) => ({
 	user: one(users, {
 		fields: [workSessions.userId],
 		references: [users.id]
-	}),
-	camera: one(cameras, {
-		fields: [workSessions.cameraId],
-		references: [cameras.id]
-	}),
-}));
-
-export const workstationsRelations = relations(workstations, ({ one, many }) => ({
-	camera: one(cameras, {
-		fields: [workstations.cameraId],
-		references: [cameras.id]
-	}),
-	user: one(users, {
-		fields: [workstations.assignedUserId],
-		references: [users.id]
-	}),
-	presenceLogs: many(presenceLogs),
-}));
-
-export const presenceLogsRelations = relations(presenceLogs, ({ one }) => ({
-	user: one(users, {
-		fields: [presenceLogs.userId],
-		references: [users.id]
-	}),
-	camera: one(cameras, {
-		fields: [presenceLogs.cameraId],
-		references: [cameras.id]
-	}),
-	workstation: one(workstations, {
-		fields: [presenceLogs.workstationId],
-		references: [workstations.id]
 	}),
 }));
 
@@ -254,3 +175,4 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
 		references: [users.id]
 	}),
 }));
+

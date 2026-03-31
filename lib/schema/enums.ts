@@ -25,9 +25,8 @@ export const expenseCategoryEnum = pgEnum("expense_category", ["rent", "salary",
 export const productionStageStatusEnum = pgEnum("production_stage_status", ["pending", "in_progress", "paused", "done", "failed"]);
 export const storageLocationTypeEnum = pgEnum("storage_location_type", ["warehouse", "production", "office"]);
 export const transactionTypeEnum = pgEnum("transaction_type", ["in", "out", "transfer", "attribute_change", "archive", "restore", "stock_in", "stock_out", "adjustment"]);
-export const presenceEventTypeEnum = pgEnum("presence_event_type", ["detected", "lost", "recognized", "unknown"]);
 export const sessionTypeEnum = pgEnum("session_type", ["work", "break", "idle"]);
-export const cameraStatusEnum = pgEnum("camera_status", ["online", "offline", "error", "connecting"]);
+
 export const brandingFileTypeEnum = pgEnum("branding_file_type", ["logo_main", "logo_accent", "icon", "font", "pattern", "other"]);
 export const printFileTypeEnum = pgEnum("print_file_type", ["preview", "source"]);
 export const defectReasonEnum = pgEnum("defect_reason", ["equipment_failure", "human_error", "material_defect", "other"]);
