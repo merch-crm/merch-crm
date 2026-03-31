@@ -18,7 +18,6 @@ export interface PresenceStatus {
     departmentName: string | null
     status: 'working' | 'idle' | 'away' | 'offline'
     lastSeenAt: string | Date | null
-    cameraName: string | null
     todayWorkSeconds: number
     todayIdleSeconds: number
 }
@@ -38,9 +37,7 @@ export interface DailyReportRow {
 }
 
 interface Props {
-    initialStatus: PresenceStatus[]
     initialReport: DailyReportRow[]
-    session: { id: string; name: string }
 }
 
 export function StaffMonitoringClient({ initialReport }: Props) {
@@ -166,10 +163,10 @@ function StatCard({
 }: {
     title: string
     value: number | string
-    icon: any
+    icon: React.ElementType
     color: 'green' | 'blue' | 'orange'
 }) {
-    const colors = {
+    const colors: Record<'green' | 'blue' | 'orange', string> = {
         green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
         blue: 'bg-blue-50 text-blue-600 border-blue-100',
         orange: 'bg-orange-50 text-orange-600 border-orange-100'

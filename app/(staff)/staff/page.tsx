@@ -2,7 +2,7 @@ import { getSession } from "@/lib/session";
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 import { StaffMonitoringClient, type DailyReportRow } from './staff-monitoring-client'
-import { getDailyReport } from '@/app/(main)/staff/actions'
+import { getDailyReport } from './reports/reports.actions'
 
 export default async function StaffMonitoringPage() {
     const session = await getSession()
@@ -11,9 +11,8 @@ export default async function StaffMonitoringPage() {
         redirect('/login')
     }
 
-    const today = new Date()
-
-    const reportResult = await getDailyReport(today)
+    const todayString = new Date().toISOString().split('T')[0]
+    const reportResult = await getDailyReport(todayString)
 
     // Преобразуем данные в формат, ожидаемый клиентским компонентом, если нужно
     const initialReport = reportResult.success ? reportResult.data : []
@@ -22,9 +21,7 @@ export default async function StaffMonitoringPage() {
         <div className="space-y-3">
             <Suspense fallback={<MonitoringSkeleton />}>
                 <StaffMonitoringClient
-                    initialStatus={[] as any}
                     initialReport={initialReport as unknown as DailyReportRow[]}
-                    session={session as { id: string; name: string }}
                 />
             </Suspense>
         </div>
