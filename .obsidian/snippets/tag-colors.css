@@ -1,0 +1,69 @@
+/* --- MerchCRM Premium Tag System --- */
+
+/* 1. Global Tag Styling (Note Body) */
+a.tag[href^="#модуль"], a.tag[href^="#module"] { --tag-color: #6366f1; }
+a.tag[href^="#фича"], a.tag[href^="#feature"] { --tag-color: #10b981; }
+a.tag[href^="#интеграция"], a.tag[href^="#integration"] { --tag-color: #f59e0b; }
+a.tag[href^="#архитектура"], a.tag[href^="#architecture"] { --tag-color: #8b5cf6; }
+a.tag[href^="#бизнес-логика"], a.tag[href^="#logic"] { --tag-color: #f43f5e; }
+a.tag[href^="#roadmap"] { --tag-color: #ec4899; }
+a.tag[href^="#high"] { --tag-color: #ef4444; }
+a.tag[href^="#low"] { --tag-color: #94a3b8; }
+a.tag[href^="#in-progress"] { --tag-color: #0ea5e9; }
+
+a.tag {
+    background-color: transparent !important;
+    border: 1px solid var(--tag-color, var(--text-muted)) !important;
+    color: var(--tag-color, var(--text-muted)) !important;
+    padding: 2px 8px !important;
+    border-radius: 6px !important;
+    font-size: 0.85em !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+}
+
+a.tag:hover {
+    background-color: var(--tag-color) !important;
+    color: white !important;
+    box-shadow: 0 0 10px var(--tag-color) !important;
+}
+
+/* 2. Properties View (Multi-select Pills) */
+.multi-select-pill:has(span:contains("модуль")), 
+.multi-select-pill:has(span:contains("module")) { --pill-color: #6366f1; }
+
+.multi-select-pill:has(span:contains("фича")), 
+.multi-select-pill:has(span:contains("feature")) { --pill-color: #10b981; }
+
+.multi-select-pill:has(span:contains("интеграция")), 
+.multi-select-pill:has(span:contains("integration")) { --pill-color: #f59e0b; }
+
+.multi-select-pill:has(span:contains("архитектура")), 
+.multi-select-pill:has(span:contains("architecture")) { --pill-color: #8b5cf6; }
+
+.multi-select-pill:has(span:contains("roadmap")) { --pill-color: #ec4899; }
+.multi-select-pill:has(span:contains("high")) { --pill-color: #f43f5e; }
+.multi-select-pill:has(span:contains("in-progress")) { --pill-color: #0ea5e9; }
+
+.multi-select-pill {
+    background-color: color-mix(in srgb, var(--pill-color, var(--background-modifier-border)), transparent 85%) !important;
+    border: 1px solid var(--pill-color, var(--background-modifier-border)) !important;
+    color: var(--pill-color, var(--text-normal)) !important;
+    border-radius: 6px !important;
+    padding: 0 6px !important;
+    font-weight: 600 !important;
+}
+
+.multi-select-pill-content {
+    color: inherit !important;
+}
+
+.multi-select-pill-remove-button {
+    color: inherit !important;
+    opacity: 0.7;
+}
+
+.multi-select-pill-remove-button:hover {
+    opacity: 1;
+}
