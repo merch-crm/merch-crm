@@ -6,7 +6,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["jspdf", "jspdf-autotable"],
+  transpilePackages: ["jspdf", "jspdf-autotable", "three", "@react-three/drei", "@react-three/fiber", "troika-three-text"],
   devIndicators: {
     position: "top-right",
   },

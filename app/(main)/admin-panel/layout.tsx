@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import React from"react";
 import { getCurrentUserAction } from "./actions/users.actions";
 import { getNotifications } from"@/components/notifications/actions";

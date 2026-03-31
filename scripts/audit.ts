@@ -722,7 +722,6 @@ function auditServerActionAuth(): AuditError[] {
         "updateBrandingSettings",// Делегирует в updateBrandingAction (requireAdmin)
         "getIconGroups",         // Категории иконок — нужны публично
         "getArchivedItems",      // Делегирует в getInventoryItems (с getSession)
-        "recordPresenceEvent",   // Вызывается Python ML-сервисом (не пользователем)
         "createAutoTask",        // Системная функция, вызывается из backend
     ]);
 

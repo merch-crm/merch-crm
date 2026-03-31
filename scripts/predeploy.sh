@@ -17,6 +17,7 @@ npm run test -- --run
 
 # 4. Проверка билда
 echo "📌 Шаг 4: Тестовая сборка Next.js..."
+rm -rf .next
 npm run build
 
 # 5. Проверка схемы БД

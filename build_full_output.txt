@@ -1,0 +1,216 @@
+
+> merch-crm@0.1.0 build
+> next build
+
+   ▲ Next.js 15.5.14
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · serverActions
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings in 21.4s
+
+./node_modules/libheif-js/libheif-wasm/libheif-bundle.js
+Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
+
+Import trace for requested module:
+./node_modules/libheif-js/libheif-wasm/libheif-bundle.js
+./node_modules/libheif-js/wasm-bundle.js
+./node_modules/heic-decode/index.js
+./lib/image-processing.ts
+./hooks/use-image-uploader.ts
+./app/(main)/admin-panel/branding/hooks/useBrandingForm.ts
+./app/(main)/admin-panel/branding/branding-form.tsx
+
+./node_modules/libheif-js/libheif-wasm/libheif-bundle.js
+Critical dependency: require function is used in a way in which dependencies cannot be statically extracted
+
+Import trace for requested module:
+./node_modules/libheif-js/libheif-wasm/libheif-bundle.js
+./node_modules/libheif-js/wasm-bundle.js
+./node_modules/heic-decode/index.js
+./lib/image-processing.ts
+./hooks/use-image-uploader.ts
+./app/(main)/admin-panel/branding/hooks/useBrandingForm.ts
+./app/(main)/admin-panel/branding/branding-form.tsx
+
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+objc[407]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x135d35978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x134a944c8). One of the two will be used. Which one is undefined.
+objc[402]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x126535978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x1251704c8). One of the two will be used. Which one is undefined.
+objc[409]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x130ddd978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x126dc44c8). One of the two will be used. Which one is undefined.
+objc[401]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x12d535978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x12bddc4c8). One of the two will be used. Which one is undefined.
+objc[412]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x169d35978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x124bdc4c8). One of the two will be used. Which one is undefined.
+objc[403]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x126535978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x1251704c8). One of the two will be used. Which one is undefined.
+objc[411]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x130ddd978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x1253dc4c8). One of the two will be used. Which one is undefined.
+objc[410]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x12c535978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x12b4884c8). One of the two will be used. Which one is undefined.
+objc[404]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x168ddd978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x1271484c8). One of the two will be used. Which one is undefined.
+objc[405]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x12cd35978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x12ba944c8). One of the two will be used. Which one is undefined.
+objc[408]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x126d35978) and /Users/leonidmolchanov/Desktop/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x125a944c8). One of the two will be used. Which one is undefined.
+   Generating static pages (0/28) ...
+   Generating static pages (7/28) 
+   Generating static pages (14/28) 
+   Generating static pages (21/28) 
+ ✓ Generating static pages (28/28)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                                Size  First Load JS
+┌ ƒ /                                                     270 B         103 kB
+├ ƒ /_not-found                                           270 B         103 kB
+├ ƒ /admin-panel                                        8.38 kB         175 kB
+├ ƒ /admin-panel/api-keys                                5.7 kB         131 kB
+├ ƒ /admin-panel/api-keys/docs                          5.24 kB         125 kB
+├ ƒ /admin-panel/audit                                  9.97 kB         207 kB
+├ ƒ /admin-panel/branding                               33.6 kB         289 kB
+├ ƒ /admin-panel/departments                            8.34 kB         194 kB
+├ ƒ /admin-panel/monitoring                             19.1 kB         228 kB
+├ ƒ /admin-panel/notifications                          8.53 kB         126 kB
+├ ƒ /admin-panel/roles                                  5.67 kB         201 kB
+├ ƒ /admin-panel/roles-departments                      2.83 kB         215 kB
+├ ƒ /admin-panel/storage                                16.7 kB         207 kB
+├ ƒ /admin-panel/users                                  16.9 kB         217 kB
+├ ƒ /api/admin/backup                                     270 B         103 kB
+├ ƒ /api/admin/performance                                270 B         103 kB
+├ ƒ /api/admin/security/rotation-status                   270 B         103 kB
+├ ƒ /api/auth/[...all]                                    270 B         103 kB
+├ ƒ /api/calculators/upload                               270 B         103 kB
+├ ƒ /api/cron/backup                                      270 B         103 kB
+├ ƒ /api/cron/clients/reactivation                        270 B         103 kB
+├ ƒ /api/cron/nps                                         270 B         103 kB
+├ ƒ /api/cron/tasks/deadlines                             270 B         103 kB
+├ ƒ /api/csrf                                             270 B         103 kB
+├ ƒ /api/design-variants/variant-1                        270 B         103 kB
+├ ƒ /api/design-variants/variant-2                        270 B         103 kB
+├ ƒ /api/design-variants/variant-4                        270 B         103 kB
+├ ƒ /api/design-variants/variant-5                        270 B         103 kB
+├ ƒ /api/design-variants/variant-6                        270 B         103 kB
+├ ƒ /api/design-variants/variant-7                        270 B         103 kB
+├ ƒ /api/files/[...path]                                  270 B         103 kB
+├ ƒ /api/files/branding/[filename]                        270 B         103 kB
+├ ƒ /api/health                                           270 B         103 kB
+├ ƒ /api/notifications/unread-count                       270 B         103 kB
+├ ƒ /api/orders/count                                     270 B         103 kB
+├ ƒ /api/pdf/generate                                     270 B         103 kB
+├ ƒ /api/ping                                             270 B         103 kB
+├ ƒ /api/storage/avatars/[filename]                       270 B         103 kB
+├ ƒ /api/storage/local/[...path]                          270 B         103 kB
+├ ƒ /api/upload                                           270 B         103 kB
+├ ƒ /api/upload/cancel                                    270 B         103 kB
+├ ƒ /api/upload/chunk                                     270 B         103 kB
+├ ƒ /api/upload/complete                                  270 B         103 kB
+├ ƒ /api/upload/init                                      270 B         103 kB
+├ ƒ /api/upload/prints                                    270 B         103 kB
+├ ƒ /api/uploads/design-files                             270 B         103 kB
+├ ƒ /api/v1/orders                                        270 B         103 kB
+├ ƒ /api/v1/ping                                          270 B         103 kB
+├ ƒ /api/v1/warehouse/items                               270 B         103 kB
+├ ○ /apple-icon.png                                         0 B            0 B
+├ ƒ /crm-tables-demo                                    8.33 kB         111 kB
+├ ƒ /dashboard                                          16.1 kB         163 kB
+├ ƒ /dashboard/analytics/loyalty                        6.77 kB         191 kB
+├ ƒ /dashboard/analytics/rfm                            10.6 kB         188 kB
+├ ƒ /dashboard/clients                                    32 kB         318 kB
+├ ƒ /dashboard/clients/[id]                               10 kB         249 kB
+├ ƒ /dashboard/clients/analytics                        13.5 kB         223 kB
+├ ƒ /dashboard/clients/analytics/loyalty                11.7 kB         187 kB
+├ ƒ /dashboard/clients/funnel                           6.13 kB         265 kB
+├ ƒ /dashboard/clients/new                              7.93 kB         199 kB
+├ ƒ /dashboard/communications                            9.9 kB         236 kB
+├ ƒ /dashboard/design                                   5.85 kB         120 kB
+├ ƒ /dashboard/design/ai-lab                            1.43 kB         104 kB
+├ ƒ /dashboard/design/editor                            2.14 kB         113 kB
+├ ƒ /dashboard/design/editor/[id]                        107 kB         326 kB
+├ ƒ /dashboard/design/mockups                           12.8 kB         135 kB
+├ ƒ /dashboard/design/prints                            12.5 kB         186 kB
+├ ƒ /dashboard/design/prints/[collectionId]             6.06 kB         197 kB
+├ ƒ /dashboard/design/prints/[collectionId]/[designId]  10.9 kB         233 kB
+├ ƒ /dashboard/design/queue                             10.7 kB         237 kB
+├ ƒ /dashboard/design/queue/[taskId]                    16.6 kB         213 kB
+├ ƒ /dashboard/design/queue/new                         5.12 kB         215 kB
+├ ƒ /dashboard/docs                                     25.8 kB         172 kB
+├ ƒ /dashboard/finance                                    270 B         103 kB
+├ ƒ /dashboard/finance/expenses                          3.4 kB         235 kB
+├ ƒ /dashboard/finance/funds                            8.98 kB         146 kB
+├ ƒ /dashboard/finance/pl                               6.77 kB         136 kB
+├ ƒ /dashboard/finance/promocodes                       12.5 kB         212 kB
+├ ƒ /dashboard/finance/salary                           8.76 kB         138 kB
+├ ƒ /dashboard/finance/sales                            9.48 kB         147 kB
+├ ƒ /dashboard/finance/transactions                     4.22 kB         236 kB
+├ ƒ /dashboard/knowledge-base                           14.7 kB         222 kB
+├ ƒ /dashboard/orders                                   13.7 kB         266 kB
+├ ƒ /dashboard/orders/[id]                              11.3 kB         226 kB
+├ ƒ /dashboard/orders/new                               15.1 kB         225 kB
+├ ƒ /dashboard/portal                                   13.4 kB         206 kB
+├ ƒ /dashboard/production                               19.3 kB         239 kB
+├ ƒ /dashboard/production/[typeSlug]                    3.86 kB         202 kB
+├ ƒ /dashboard/production/application-types             11.8 kB         259 kB
+├ ƒ /dashboard/production/calculators                    4.8 kB         119 kB
+├ ƒ /dashboard/production/calculators/dtf                 809 B         310 kB
+├ ƒ /dashboard/production/calculators/dtg               2.03 kB         311 kB
+├ ƒ /dashboard/production/calculators/embroidery         2.3 kB         311 kB
+├ ƒ /dashboard/production/calculators/history            151 kB         367 kB
+├ ƒ /dashboard/production/calculators/placements        19.4 kB         238 kB
+├ ƒ /dashboard/production/calculators/silkscreen        1.77 kB         311 kB
+├ ƒ /dashboard/production/calculators/sublimation        1.2 kB         310 kB
+├ ƒ /dashboard/production/calculators/thermotransfer    1.05 kB         310 kB
+├ ƒ /dashboard/production/calculators/uv-dtf            1.02 kB         310 kB
+├ ƒ /dashboard/production/equipment                     8.66 kB         268 kB
+├ ƒ /dashboard/production/lines                         8.03 kB         259 kB
+├ ƒ /dashboard/production/reports                       11.4 kB         147 kB
+├ ƒ /dashboard/production/reports/defects                3.6 kB         118 kB
+├ ƒ /dashboard/production/settings                        166 B         106 kB
+├ ƒ /dashboard/production/staff                         12.3 kB         236 kB
+├ ƒ /dashboard/production/tasks/[taskId]                12.2 kB         220 kB
+├ ƒ /dashboard/production/tasks/new                     5.87 kB         238 kB
+├ ƒ /dashboard/profile                                  27.5 kB         218 kB
+├ ƒ /dashboard/references                               77.5 kB         303 kB
+├ ƒ /dashboard/settings/branding                        13.4 kB         230 kB
+├ ƒ /dashboard/tasks                                    36.4 kB         277 kB
+├ ƒ /dashboard/users/[id]                                 780 B         104 kB
+├ ƒ /dashboard/warehouse/archive                        13.7 kB         197 kB
+├ ƒ /dashboard/warehouse/categories                     14.3 kB         261 kB
+├ ƒ /dashboard/warehouse/categories/[id]                14.9 kB         282 kB
+├ ƒ /dashboard/warehouse/characteristics                21.3 kB         274 kB
+├ ƒ /dashboard/warehouse/history                        14.4 kB         210 kB
+├ ƒ /dashboard/warehouse/items/[id]                     37.8 kB         293 kB
+├ ƒ /dashboard/warehouse/items/new                        63 kB         328 kB
+├ ƒ /dashboard/warehouse/items/test-designs               270 B         103 kB
+├ ƒ /dashboard/warehouse/lines                          8.21 kB         218 kB
+├ ƒ /dashboard/warehouse/lines/[id]                     13.4 kB         233 kB
+├ ƒ /dashboard/warehouse/overview                       4.33 kB         133 kB
+├ ƒ /dashboard/warehouse/storage                        18.1 kB         221 kB
+├ ƒ /dashboard/warehouse/storage-preview                3.45 kB         154 kB
+├ ƒ /forgot-password                                    3.86 kB         120 kB
+├ ○ /icon.png                                               0 B            0 B
+├ ƒ /login                                               7.4 kB         138 kB
+├ ƒ /login/2fa                                          4.83 kB         131 kB
+├ ƒ /nps/[token]                                        7.75 kB         158 kB
+├ ƒ /reset-password                                     3.85 kB         135 kB
+├ ○ /robots.txt                                           270 B         103 kB
+├ ƒ /staff                                              3.91 kB         120 kB
+├ ƒ /staff/reports                                       7.4 kB         124 kB
+├ ƒ /ui-kit                                             23.3 kB         165 kB
+├ ƒ /ui-kit/category-bento                              7.38 kB         118 kB
+├ ƒ /ui-kit/category-variants                             270 B         103 kB
+├ ƒ /ui-kit/dialog-variants                             9.09 kB         123 kB
+├ ƒ /ui-kit/dropdowns                                   14.4 kB         157 kB
+├ ƒ /ui-kit/error-modals                                  270 B         103 kB
+├ ƒ /ui-kit/footers                                     9.15 kB         123 kB
+├ ƒ /ui-kit/headers                                     10.7 kB         130 kB
+├ ƒ /ui-kit/pagination-variants                         10.8 kB         122 kB
+├ ƒ /ui-kit/stat-variants                               3.76 kB         115 kB
+└ ƒ /uploads/avatars/[filename]                           270 B         103 kB
++ First Load JS shared by all                            103 kB
+  ├ chunks/1255-f6f70894e1f1fb27.js                     45.4 kB
+  ├ chunks/4bd1b696-182b6b13bdad92e3.js                 54.2 kB
+  └ other shared chunks (total)                         3.13 kB
+
+
+ƒ Middleware                                            34.4 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

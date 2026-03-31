@@ -70,16 +70,22 @@ class RedisCache {
       host: redisHost,
       port: redisPort,
       password: redisPassword || undefined,
-      maxRetriesPerRequest: 1,
+      maxRetriesPerRequest: 3,
       lazyConnect: true,
-      connectTimeout: 5000,
-      commandTimeout: 3000,
-      enableOfflineQueue: false,
+      connectTimeout: 10000,
+      commandTimeout: 5000,
+      enableOfflineQueue: true,
       retryStrategy: (times) => {
-        if (times > 3) return null;
-        return Math.min(times * 300, 1000);
+        if (times > 10) return 2000; // Держим интервал в 2 секунды после 10 попыток
+        return Math.min(times * 200, 2000);
       },
-      reconnectOnError: () => false,
+      reconnectOnError: (err) => {
+        const targetErrors = ["READONLY", "ECONNRESET", "Connection is closed"];
+        if (targetErrors.some(target => err.message.includes(target))) {
+            return true;
+        }
+        return false;
+      },
     });
 
     this.client.on("connect", () => {

@@ -3,6 +3,8 @@ import { getMonitoringStats, getSecurityStats } from "./actions/security.actions
 import { AdminOverviewClient } from "./admin-overview-client";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
     return (
         <Suspense fallback={<AdminDashboardSkeleton />}>

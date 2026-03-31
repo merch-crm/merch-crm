@@ -1,0 +1,79 @@
+{
+  "collapse-filter": true,
+  "search": "",
+  "showTags": false,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:000-Навигация",
+      "color": {
+        "a": 1,
+        "rgb": 15000804
+      }
+    },
+    {
+      "query": "path:010-Стандарты",
+      "color": {
+        "a": 1,
+        "rgb": 14701138
+      }
+    },
+    {
+      "query": "path:020-Архитектура",
+      "color": {
+        "a": 1,
+        "rgb": 13395700
+      }
+    },
+    {
+      "query": "path:030-Модули",
+      "color": {
+        "a": 1,
+        "rgb": 5424958
+      }
+    },
+    {
+      "query": "path:040-Решения",
+      "color": {
+        "a": 1,
+        "rgb": 16753920
+      }
+    },
+    {
+      "query": "path:050-Сессии",
+      "color": {
+        "a": 1,
+        "rgb": 11041496
+      }
+    },
+    {
+      "query": "path:060-Roadmap",
+      "color": {
+        "a": 1,
+        "rgb": 4039893
+      }
+    },
+    {
+      "query": "path:070-Шаблоны",
+      "color": {
+        "a": 1,
+        "rgb": 11776947
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": true,
+  "textFadeMultiplier": -1.1,
+  "nodeSizeMultiplier": 1.68782118055556,
+  "lineSizeMultiplier": 1.428359375,
+  "collapse-forces": false,
+  "centerStrength": 0.357682291666667,
+  "repelStrength": 8.35590277777778,
+  "linkStrength": 1,
+  "linkDistance": 481,
+  "scale": 0.8448194311559187,
+  "close": false
+}

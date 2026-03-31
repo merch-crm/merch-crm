@@ -1,0 +1,247 @@
+{
+  "main": {
+    "id": "4823a0da8a6eb64c",
+    "type": "split",
+    "children": [
+      {
+        "id": "19ba1959a56b7534",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5af346cd454a5acb",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "canvas",
+              "state": {
+                "file": "Система.canvas",
+                "viewState": {
+                  "x": 22.616703535449915,
+                  "y": 313.74656928021034,
+                  "zoom": -1.6455380596234241
+                }
+              },
+              "pinned": true,
+              "icon": "lucide-layout-dashboard",
+              "title": "Система"
+            }
+          },
+          {
+            "id": "e754cf1dd94ca611",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "graph",
+              "state": {},
+              "pinned": true,
+              "icon": "lucide-git-fork",
+              "title": "Граф"
+            }
+          },
+          {
+            "id": "c5e44596fa29f7db",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "020-Архитектура/Deploy.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Deploy"
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "9ba29db3273f9e4c",
+    "type": "split",
+    "children": [
+      {
+        "id": "69d900407bd101bc",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3509e302dd878579",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Файловый менеджер"
+            }
+          },
+          {
+            "id": "097bd73716fc2a37",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Поиск"
+            }
+          },
+          {
+            "id": "8d88ba41eae49e5b",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Закладки"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "c5c8eefe3fa93daa",
+    "type": "split",
+    "children": [
+      {
+        "id": "07c82facdb97cc05",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "38672945d339d577",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Обратные ссылки"
+            }
+          },
+          {
+            "id": "8d1fed7cc77024fe",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Исходящие ссылки"
+            }
+          },
+          {
+            "id": "d18f504fa6138835",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Теги"
+            }
+          },
+          {
+            "id": "c91ab9df1024944d",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Все свойства"
+            }
+          },
+          {
+            "id": "1e2bf1782c2ebc4a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Структура"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Меню быстрого перехода": false,
+      "graph:Граф": false,
+      "canvas:Создать новый холст": false,
+      "daily-notes:Сегодняшняя заметка": false,
+      "templates:Вставить шаблон": false,
+      "command-palette:Открыть палитру команд": false,
+      "bases:Создать новую базу": false
+    }
+  },
+  "active": "c5e44596fa29f7db",
+  "lastOpenFiles": [
+    "020-Архитектура/Технический-паспорт.md",
+    "020-Архитектура/Стек-технологий.md",
+    "020-Архитектура/Схема-Связей.md",
+    "020-Архитектура/Бизнес-логика.md",
+    "030-Модули/05-Админ-Панель/Админ-Панель.md",
+    "030-Модули/04-Система-и-Финансы/Финансы.md",
+    "010-Стандарты/Звуковая-обратная-связь.md",
+    "010-Стандарты/Компоненты-UI.md",
+    "010-Стандарты/Работа-с-Обсидианом.md",
+    "010-Стандарты/Ошибка-Обработка.md",
+    "010-Стандарты/Actions.md",
+    "010-Стандарты/Obsidian-Парадигма.md",
+    "010-Стандарты/TypeScript-строгость.md",
+    "010-Стандарты/UX-дизайн.md",
+    "Система.canvas",
+    "000-Навигация/Известные-Проблемы.md",
+    "080-Агенты/AI-Агенты.md",
+    "080-Агенты",
+    "000-Навигация/MERCH CRM.md",
+    "030-Модули/05-Админ-Панель/Хранилище.md",
+    "030-Модули/05-Админ-Панель/Уведомления.md",
+    "030-Модули/05-Админ-Панель/Роли-и-Права.md",
+    "030-Модули/05-Админ-Панель/Пользователи-Админ.md",
+    "030-Модули/05-Админ-Панель/Отделы.md",
+    "030-Модули/05-Админ-Панель/Мониторинг-Системы.md",
+    "030-Модули/05-Админ-Панель/Брендинг.md",
+    "030-Модули/05-Админ-Панель/Аудит-Действий.md",
+    "030-Модули/05-Админ-Панель/API-Ключи.md",
+    "030-Модули/05-Админ-Панель"
+  ]
+}
