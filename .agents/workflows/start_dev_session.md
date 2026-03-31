@@ -55,6 +55,13 @@ ls -F .agents/ && cat .agents/UX_STANDARDS.md .agents/development_standards.md
 ls -R vault/
 ```
 
+3. **Обновление состояния проекта**:
+```bash
+DATE=$(date +"%Y-%m-%d")
+sed -i '' "s/обновлено: .*/обновлено: $DATE/" vault/000-Навигация/Состояние-Проекта.md
+```
+
+
 ---
 
 ### 📂 Локальное хранилище файлов

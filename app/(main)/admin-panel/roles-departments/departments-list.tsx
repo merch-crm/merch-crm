@@ -41,7 +41,7 @@ export function DepartmentsList({ departments, loading, onRefresh }: Departments
     }
 
     return (
-        <div className="space-$1-3">
+        <div className="space-y-3">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {departments.map((dept) => {
                     const activeColor = dept.color || "primary";

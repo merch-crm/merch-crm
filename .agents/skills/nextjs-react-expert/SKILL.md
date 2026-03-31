@@ -31,7 +31,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 | `6-rendering-rendering-performance.md`  | 🟡 **MEDIUM**      | 9 rules  | Rendering bottlenecks, virtualization, image optimization       |
 | `7-js-javascript-performance.md`        | ⚪ **LOW-MEDIUM**  | 12 rules | Micro-optimizations, caching, loop performance                  |
 | `8-advanced-advanced-patterns.md`       | 🔵 **VARIABLE**    | 3 rules  | Advanced React patterns, useLatest, init-once                   |
-| `9-cache-components.md`                | 🔴 **CRITICAL**    | 4 sections | **Next.js 16+ Only**: `use cache`, `cacheLife`, PPR, `cacheTag` |
+| `9-cache-components.md`                | 🔴 **CRITICAL**    | 4 sections | **Next.js 15.5.14+ Only**: `use cache`, `cacheLife`, PPR, `cacheTag` |
 
 **Total: 57 rules across 8 categories**
 
@@ -69,7 +69,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ✨ Need advanced patterns
   → Read Section 8: Advanced Patterns
 
-🚀 **Next.js 16+ Performance (Caching & PPR)**
+🚀 **Next.js 15.5.14+ Performance (Caching & PPR)**
   → Read Section 9: Cache Components
 ```
 
@@ -99,7 +99,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
    ├─ Section 7: JavaScript Performance
    └─ Section 8: Advanced Patterns
 
-🔥 **MODERN (Next.js 16+):**
+🔥 **MODERN (Next.js 15.5.14+):**
    └─ Section 9: Cache Components (Replaces most traditional revalidation)
 ```
 

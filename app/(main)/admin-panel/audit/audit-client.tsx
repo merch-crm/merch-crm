@@ -165,7 +165,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
     };
 
     return (
-        <div className="space-$1-3">
+        <div className="space-y-3">
             {/* Filters Bento Block */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
                 <div className="lg:col-span-2 crm-card p-4">
@@ -356,7 +356,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
                         </div>
                     </div>
                     
-                    <div className="space-$1-3">
+                    <div className="space-y-3">
                         <h4 className="text-sm font-black text-slate-900 px-1 flex items-center gap-2">
                              <RefreshCw className="w-4 h-4 text-primary" />
                              Изменения в полях

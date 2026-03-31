@@ -4,7 +4,7 @@
 
 ---
 
-## Next.js Full-Stack Structure (2026+ Next.js 16 Optimized)
+## Next.js Full-Stack Structure (2026+ Next.js 15.5.14 Optimized)
 
 ```
 project-name/
@@ -76,7 +76,7 @@ project-name/
 
 | File | Purpose |
 |------|---------|
-| `proxy.ts` | Next.js 16 Network boundary logic (auth, redirects) |
+| `proxy.ts` | Next.js 15.5.14 Network boundary logic (auth, redirects) |
 | `package.json` | Dependencies |
 | `tsconfig.json` | TypeScript + path aliases (`@/features/*`) |
 | `tailwind.config.ts` | Tailwind config |
@@ -84,7 +84,7 @@ project-name/
 | `README.md` | Project documentation |
 | `.gitignore` | Git ignore rules |
 | `prisma/schema.prisma` | Database schema |
-| `src/server/cache-handler.ts` | Next.js 16 Cache Components Manager |
+| `src/server/cache-handler.ts` | Next.js 15.5.14 Cache Components Manager |
 
 ---
 

@@ -67,7 +67,7 @@ export default function ApiKeysPage() {
 
   if (loading && keys.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-24 space-$1-3">
+      <div className="flex flex-col items-center justify-center p-24 space-y-3">
         <Loader2 className="w-10 h-10 animate-spin text-primary opacity-50" />
         <p className="text-sm text-slate-500 font-bold">Загружаем ключи доступа...</p>
       </div>
@@ -75,7 +75,7 @@ export default function ApiKeysPage() {
   }
 
   return (
-    <div className="space-$1-3 pb-20">
+    <div className="space-y-3 pb-20">
       <div className="flex items-center gap-3">
         <div className="w-14 h-14 bg-primary/10 rounded-[22px] flex items-center justify-center border border-primary/20 shadow-sm shadow-primary/10">
           <Key className="w-7 h-7 text-primary" />
@@ -93,7 +93,7 @@ export default function ApiKeysPage() {
               <CardTitle className="text-lg font-black tracking-tight">Выпустить новый ключ</CardTitle>
               <CardDescription className="text-xs font-medium">Создайте уникальный ключ для внешней интеграции.</CardDescription>
             </CardHeader>
-            <CardContent className="pt-6 space-$1-3">
+            <CardContent className="pt-6 space-y-3">
               <div className="space-y-2">
                 <label className="text-xs font-black text-slate-500 px-1">Название ключа</label>
                 <Input 
@@ -171,7 +171,7 @@ export default function ApiKeysPage() {
                 ))}
 
                 {keys.length === 0 && (
-                  <div className="p-12 text-center space-$1-3">
+                  <div className="p-12 text-center space-y-3">
                     <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto opacity-50">
                       <Key className="w-8 h-8 text-slate-400" />
                     </div>

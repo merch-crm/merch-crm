@@ -7,7 +7,7 @@
 
 ## Overview
 
-This section contains **6 rules** focused on eliminating waterfalls, now including Next.js 16 `after()` and `connection()` patterns.
+This section contains **6 rules** focused on eliminating waterfalls, now including Next.js 15.5.14 `after()` and `connection()` patterns.
 
 ---
 
@@ -313,12 +313,12 @@ Both components share the same promise, so only one fetch occurs. Layout renders
 
 ---
 
-## Rule 1.6: Use `after()` and `connection()` (Next.js 16+)
+## Rule 1.6: Use `after()` and `connection()` (Next.js 15.5.14+)
 
 **Impact:** HIGH  
 **Tags:** nextjs16, async, runtime, performance
 
-Next.js 16 introduced APIs to prevent "Blocking the Main Thread" and ensure "Dynamic Runtime" awareness.
+Next.js 15.5.14 introduced APIs to prevent "Blocking the Main Thread" and ensure "Dynamic Runtime" awareness.
 
 ### 1. `after()` for Non-Blocking Logic
 Avoid `await` on logic that doesn't affect the initial UI (logging, analytics, emails).

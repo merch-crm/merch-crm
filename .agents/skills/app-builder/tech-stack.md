@@ -6,11 +6,11 @@
 
 ```yaml
 Frontend:
-  framework: Next.js 16 (Stable)
+  framework: Next.js 15.5.14 (Stable)
   language: TypeScript 5.7+
   styling: Tailwind CSS v4
   state: React 19 Actions / Server Components
-  caching: Next.js 16 Cache Components (Stable)
+  caching: Next.js 15.5.14 Cache Components (Stable)
   bundler: Turbopack (Stable for Dev & Build)
 
 Backend:

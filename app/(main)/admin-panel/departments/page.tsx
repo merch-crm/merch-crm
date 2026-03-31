@@ -1,6 +1,6 @@
 "use client";
 
-export const dynamic = "force-dynamic";
+
 
 import { DepartmentsTable } from "./departments-table";
 import { AddDepartmentDialog } from "./add-department-dialog";

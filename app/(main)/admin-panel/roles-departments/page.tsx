@@ -36,7 +36,7 @@ export default function RolesDepartmentsPage() {
     }, [fetchData]);
 
     return (
-        <div className="space-$1-3 pb-20">
+        <div className="space-y-3 pb-20">
             <AdminPageHeader
                 title="Структура и роли"
                 subtitle="Управление отделами компании и правами доступа сотрудников"

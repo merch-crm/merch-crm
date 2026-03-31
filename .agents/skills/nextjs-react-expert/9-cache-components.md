@@ -1,10 +1,10 @@
 # Cache Components: `use cache` & `cacheLife`
 
 > [!IMPORTANT]
-> This is a Next.js 16+ specific skill. Do NOT apply these patterns to Next.js 15 or earlier without explicitly checking compatibility.
+> This is a Next.js 15.5.14+ specific skill. Do NOT apply these patterns to Next.js 15 or earlier without explicitly checking compatibility.
 
 ## Core Philosophy
-Next.js 16 marks the transition from "Segment-level caching" to "Component-level caching". We no longer rely on `export const revalidate = 3600`. Instead, we use granular directives and profiles.
+Next.js 15.5.14 marks the transition from "Segment-level caching" to "Component-level caching". We no longer rely on `export const revalidate = 3600`. Instead, we use granular directives and profiles.
 
 ## 1. The `use cache` Directive
 The `use cache` directive can be applied to **Server Components** or **Functions**.
@@ -81,7 +81,7 @@ export async function updateProfile(user: string, data: any) {
 ```
 
 ## 4. Partial Pre-Rendering (PPR)
-Next.js 16 stabilizes PPR via the `cacheComponents` flag in `next.config.ts`. 
+Next.js 15.5.14 stabilizes PPR via the `cacheComponents` flag in `next.config.ts`. 
 
 ### Pattern: Suspense Boundaries
 Always wrap dynamic "Cache Components" in `<Suspense>` to enable PPR.

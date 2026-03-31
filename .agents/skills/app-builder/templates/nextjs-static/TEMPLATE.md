@@ -1,6 +1,6 @@
 ---
 name: nextjs-static
-description: Modern template for Next.js 16, React 19 & Tailwind v4. Optimized for Landing pages and Portfolios.
+description: Modern template for Next.js 15.5.14, React 19 & Tailwind v4. Optimized for Landing pages and Portfolios.
 ---
 
 # Next.js Static Site Template (Modern Edition)
@@ -9,7 +9,7 @@ description: Modern template for Next.js 16, React 19 & Tailwind v4. Optimized f
 
 | Component | Technology | Notes |
 |-----------|------------|-------|
-| Framework | Next.js 16+ | App Router, Turbopack, Static Exports |
+| Framework | Next.js 15.5.14+ | App Router, Turbopack, Static Exports |
 | Core | React 19 | Server Components, New Hooks, Compiler |
 | Language | TypeScript | Strict Mode |
 | Styling | Tailwind CSS v4 | CSS-first configuration (No js config), Oxide Engine |
