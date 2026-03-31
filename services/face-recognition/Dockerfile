@@ -13,11 +13,13 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     libgomp1 \
     wget \
+    execstack \
     && rm -rf /var/lib/apt/lists/*
 
 # Копируем requirements и устанавливаем зависимости
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && execstack -c /usr/local/lib/python3.11/site-packages/onnxruntime/capi/*.so
 
 # Копируем код
 COPY . .
