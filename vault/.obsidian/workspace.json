@@ -37,9 +37,23 @@
               "icon": "lucide-git-fork",
               "title": "Граф"
             }
+          },
+          {
+            "id": "c48e661b89631bfa",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "010-%D0%A1%D1%82%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D1%82%D1%8B/%D0%91%D0%B0%D0%B7%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "%D0%91%D0%B0%D0%B7%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85"
+            }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -198,7 +212,7 @@
       "bases:Создать новую базу": false
     }
   },
-  "active": "e754cf1dd94ca611",
+  "active": "c48e661b89631bfa",
   "lastOpenFiles": [
     "050-%D0%A1%D0%B5%D1%81%D1%81%D0%B8%D0%B8/2026-03-31.md",
     "050-%D0%A1%D0%B5%D1%81%D1%81%D0%B8%D0%B8",
