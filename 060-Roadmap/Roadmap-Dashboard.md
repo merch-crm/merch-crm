@@ -1,3 +1,8 @@
+---
+tags:
+  - roadmap
+---
+
 # 🗺️ MerchCRM Roadmap Dashboard
 
 > [!TIP]

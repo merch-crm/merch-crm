@@ -280,6 +280,146 @@
           "b": 255
         },
         "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "производство",
+        "background_color": {
+          "r": 76,
+          "g": 175,
+          "b": 80
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "оборудование",
+        "background_color": {
+          "r": 139,
+          "g": 195,
+          "b": 74
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "цех",
+        "background_color": {
+          "r": 56,
+          "g": 142,
+          "b": 60
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "api",
+        "background_color": {
+          "r": 0,
+          "g": 188,
+          "b": 212
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "база-данных",
+        "background_color": {
+          "r": 0,
+          "g": 150,
+          "b": 136
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "схема",
+        "background_color": {
+          "r": 0,
+          "g": 121,
+          "b": 107
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "стандарты",
+        "background_color": {
+          "r": 33,
+          "g": 150,
+          "b": 243
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "приоритет/P0",
+        "background_color": {
+          "r": 244,
+          "g": 67,
+          "b": 54
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "статус/активный",
+        "background_color": {
+          "r": 76,
+          "g": 175,
+          "b": 80
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "статус/план",
+        "background_color": {
+          "r": 158,
+          "g": 158,
+          "b": 158
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
       }
     ],
     "EnableMultipleTags": true,
