@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+  const nonce = btoa(crypto.randomUUID());
   const isDev = process.env.NODE_ENV === 'development';
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
   const isHttps = appUrl.startsWith('https');
