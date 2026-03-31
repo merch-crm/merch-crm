@@ -163,7 +163,7 @@ function StatCard({
 }: {
     title: string
     value: number | string
-    icon: React.ElementType
+    icon: React.ComponentType<{ className?: string }>
     color: 'green' | 'blue' | 'orange'
 }) {
     const colors: Record<'green' | 'blue' | 'orange', string> = {
