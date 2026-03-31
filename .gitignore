@@ -1,0 +1,131 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+/playwright-report/
+/test-results/
+/blob-report/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+/local-storage
+/public/SKU/
+.vscode/
+restore_source.json
+
+# logs and debug
+*.log
+/reports/
+audit_output.txt
+debug-warehouse.png
+*.png
+!e2e/ui/visual-regression.spec.ts-snapshots/*.png
+playwright/.auth/
+TECHNICAL_PASS.md
+errors.txt
+errors_post.txt
+errors_final.txt
+/storage/
+*.sql
+predeploy_*.txt
+ship-safe-report.*
+ship-safe-full-report.txt
+ship-safe-deep-*.json
+/build_debug.log
+/build_full_output.txt
+
+# Временные отчёты и артефакты — не версионировать
+audit-report*.md
+audit-report*.json
+lint_output.txt
+
+# Архивы и временные пакеты
+*.tgz
+tmp_tsc_errors.txt
+lint_output.txt
+*.js.map
+
+# =============================================================================
+# SHIP SAFE ADDITIONS
+# Added by: npx ship-safe init
+# =============================================================================
+
+# Environment files
+.env
+.env.local
+.env*.local
+*.env
+
+# Private keys & certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Credentials
+*credentials*
+*.secrets.json
+secrets.yml
+secrets.yaml
+
+# Service accounts
+**/service-account*.json
+*-firebase-adminsdk-*.json
+
+# AWS
+.aws/credentials
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs (may contain sensitive data)
+*.log
+logs/
+
+# Report directories with secrets
+.ship-safe/
+/tmp-any-issues.json
+/audit-report.json
+/audit-report.md
+/calculators-lint.json

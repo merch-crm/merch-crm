@@ -1,0 +1,121 @@
+:root {
+    /* --- Impeccable Design Language v2.0 --- */
+    
+    /* 1. Core Primary (Deep Purple based on OKLCH for perceptual uniformity) */
+    --primary: oklch(0.51 0.28 281.33);      /* Vibrant Purple */
+    --primary-hover: oklch(0.58 0.26 281.33);
+    --primary-light: oklch(0.51 0.28 281.33 / 0.1);
+    --primary-foreground: oklch(0.98 0.01 281.33);
+    
+    /* 2. Backgrounds (Reverted to original #f2f2f2 per user request) */
+    --background: #f2f2f2;
+    --foreground: oklch(0.15 0.02 281.33);     /* Near black tinted with purple */
+    
+    /* 3. Surface Elevation Layering (Luminance steps for depth) */
+    --card: #ffffff;                          /* Pure white for highest elevation */
+    --card-foreground: oklch(0.15 0.02 281.33);
+    
+    /* Popover */
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.15 0.02 281.33);
+    
+    /* Secondary & Muted */
+    --secondary: oklch(0.95 0.01 281.33);
+    --secondary-foreground: oklch(0.15 0.02 281.33);
+    --muted: oklch(0.95 0.01 281.33);
+    --muted-foreground: oklch(0.45 0.03 281.33);
+    
+    /* Accent */
+    --accent: oklch(0.97 0.01 281.33);
+    --accent-foreground: oklch(0.15 0.02 281.33);
+    
+    /* Destructive (Maintains semantic meaning in OKLCH) */
+    --destructive: oklch(0.6 0.18 25);         /* Vibrant Red in OKLCH */
+    --destructive-foreground: oklch(0.98 0.01 25);
+    
+    /* Borders & Inputs (High precision steps) */
+    --border: oklch(0.9 0.01 281.33);
+    --input: oklch(0.95 0.01 281.33);
+    --ring: oklch(0.51 0.28 281.33);
+    
+    /* --- Mathematical Vertical Rhythm & Spacing --- */
+    --radius: 27px;
+    --radius-outer: 27px;
+    --radius-inner: 20px;
+    --radius-padding: 24px;   /* 8pt grid multiple */
+    --padding-xl: 32px;      /* 8pt grid multiple */
+    
+    /* Shadows (OKLCH based for better transparency blending) */
+    --crm-shadow-sm: 0 2px 8px -2px oklch(0.15 0.02 281.33 / 4%), 0 1px 4px -1px oklch(0.15 0.02 281.33 / 2%);
+    --crm-shadow-md: 0 12px 32px -8px oklch(0.15 0.02 281.33 / 8%), 0 4px 12px -4px oklch(0.15 0.02 281.33 / 4%);
+    --crm-shadow-lg: 0 24px 64px -12px oklch(0.15 0.02 281.33 / 12%), 0 8px 24px -8px oklch(0.15 0.02 281.33 / 8%);
+    --crm-shadow-xl: 0 40px 96px -16px oklch(0.15 0.02 281.33 / 16%), 0 16px 48px -12px oklch(0.15 0.02 281.33 / 12%);
+    
+    /* Grid & Spacing */
+    --crm-blur: 24px;
+    --crm-grid-gap: 16px;    /* 4pt grid multiple */
+    --crm-border-alpha: oklch(0.15 0.02 281.33 / 5%);
+    
+    /* Graphite Semantic Overrides */
+    --graphite-dark: oklch(0.35 0.03 281.33);
+    --graphite-medium: oklch(0.55 0.03 281.33);
+    --graphite-light: oklch(0.75 0.02 281.33);
+    
+    /* Department Colors (Perceptually Uniformed) */
+    --dept-management: oklch(0.6 0.18 250);  /* Balanced Indigo */
+    --dept-sales: oklch(0.65 0.2 210);       /* Balanced Blue */
+    --dept-production: oklch(0.75 0.15 80);  /* Balanced Amber */
+    --dept-design: oklch(0.65 0.2 330);      /* Balanced Pink */
+}
+
+@theme {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-3xl: var(--radius-outer);
+    --radius-2xl: var(--radius-inner);
+    --radius-xl: 12px;
+    --radius-lg: 8px;
+    --radius-md: 6px;
+    --radius-sm: 4px;
+
+    --spacing-container: var(--radius-padding);
+    --spacing-xl: var(--padding-xl);
+    --spacing-6: var(--radius-padding);
+    --spacing-3: var(--crm-grid-gap);
+
+    --font-sans: var(--font-manrope);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+    --shadow-crm-sm: var(--crm-shadow-sm);
+    --shadow-crm-md: var(--crm-shadow-md);
+    --shadow-crm-lg: var(--crm-shadow-lg);
+    --shadow-crm-xl: var(--crm-shadow-xl);
+    --shadow-sm: var(--shadow-crm-sm);
+    --shadow-md: var(--shadow-crm-md);
+    --shadow-lg: var(--shadow-crm-lg);
+    --shadow-xl: var(--shadow-crm-xl);
+    --shadow-2xl: 0 32px 64px -12px rgba(0, 0, 0, 0.14);
+
+    --color-dept-management: var(--dept-management);
+    --color-dept-sales: var(--dept-sales);
+    --color-dept-production: var(--dept-production);
+    --color-dept-design: var(--dept-design);
+}

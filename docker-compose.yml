@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  # ─── Init: Run Drizzle migrations before starting the app ────────────────────
+  migrate:
+    image: ghcr.io/merch-crm/merch-crm-migrator:latest
+    container_name: merch-crm-migrate
+    restart: on-failure
+    env_file:
+      - .env
+    networks:
+      - app_network
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # ─── App: Next.js production server ──────────────────────────────────────────
+  app:
+    build:
+      context: .
+      target: runner
+    image: ghcr.io/merch-crm/merch-crm:latest
+    container_name: merch-crm
+    restart: always
+    expose:
+      - "3000"
+    volumes:
+      - ./uploads:/app/public/uploads
+      - ./local-storage:/app/local-storage
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
+    networks:
+      app_network:
+        aliases:
+          - app
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/ping || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  # ─── Nginx Proxy Manager ──────────────────────────────────────────────────────
+  nginx-proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - ./nginx_data:/data
+      - ./nginx_letsencrypt:/etc/letsencrypt
+    networks:
+      - app_network
+
+  # ─── PostgreSQL ───────────────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: merch-crm-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: merch_crm
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d merch_crm"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge

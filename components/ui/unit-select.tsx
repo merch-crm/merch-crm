@@ -1,0 +1,51 @@
+"use client";
+
+import * as React from "react";
+import { Select, SelectOption } from "./select";
+
+interface UnitOption {
+    id: string;
+    name: string;
+}
+
+interface UnitSelectProps {
+    value: string;
+    onChange: (value: string) => void;
+    options?: UnitOption[];
+    className?: string;
+    name?: string;
+    disabled?: boolean;
+}
+
+const DEFAULT_OPTIONS: UnitOption[] = [
+    { id: "шт.", name: "шт." },
+    { id: "кг", name: "кг" },
+    { id: "м", name: "м" },
+    { id: "л", name: "л" },
+];
+
+export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, className, name, disabled }: UnitSelectProps) {
+    const premiumOptions = React.useMemo(() =>
+        options.map(opt => ({
+            id: opt.id,
+            title: opt.name,
+        } as SelectOption))
+        , [options]);
+
+    return (
+        <div className={className}>
+            {name && <input type="hidden" name={name} value={value} />}
+            <Select
+                options={premiumOptions}
+                value={value}
+                onChange={onChange}
+                disabled={disabled}
+                placeholder="Выберите..."
+                autoLayout
+            />
+        </div>
+    );
+}
+
+
+

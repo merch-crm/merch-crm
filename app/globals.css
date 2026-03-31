@@ -1,0 +1,45 @@
+/* v1.0.1 */
+@import "tailwindcss";
+
+@import "../styles/variables.css";
+@import "../styles/base.css";
+@import "../styles/cards.css";
+@import "../styles/filters.css";
+@import "../styles/scrollbars.css";
+@import "../styles/animations.css";
+@import "../styles/calendar.css";
+@import "../styles/badges.css";
+@import "../styles/toasts.css";
+@import "../styles/dialogs.css";
+@import "../styles/tables.css";
+
+@utility dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    border-radius: 12px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+        background-color: #f8fafc;
+        color: var(--primary);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+@utility px-container {
+    padding-left: var(--radius-padding);
+    padding-right: var(--radius-padding);
+
+    @media (max-width: 640px) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

@@ -1,0 +1,17 @@
+.rdp-custom {
+    --rdp-accent-color: var(--primary);
+    --rdp-background-color: color-mix(in srgb, var(--primary), white 80%);
+}
+
+.rdp-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.rdp-custom .rdp-day_range_start,
+.rdp-custom .rdp-day_range_end,
+.rdp-custom .rdp-day_selected {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border-radius: 12px !important;
+}

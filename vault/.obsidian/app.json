@@ -1,0 +1,12 @@
+{
+  "enabledSnippets": [
+    "tag-colors"
+  ],
+  "newFileLocation": "current",
+  "attachmentFolderPath": "./",
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": true,
+  "propertiesInDocument": "visible",
+  "showFrontmatter": false,
+  "promptDelete": false
+}

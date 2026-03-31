@@ -1,0 +1,349 @@
+/**
+ * @fileoverview Server Actions для работы с файлами калькуляторов
+ * @module lib/actions/calculators/files
+ * @requires drizzle
+ * @audit Создан 2026-03-25
+ */
+
+'use server';
+
+import { revalidatePath } from 'next/cache';
+import { writeFile, unlink, appendFile } from 'fs/promises';
+import { existsSync } from 'fs';
+import path from 'path';
+import { db } from '@/lib/db';
+import { designFiles } from '@/lib/schema';
+import { eq, and, isNull } from 'drizzle-orm';
+import { 
+  createSafeAction
+} from '@/lib/action-helpers';
+import { getCurrentUser } from '@/lib/auth/session';
+import { CalculatorType, UploadedDesignFile } from '@/lib/types/calculators';
+import {
+  validateDesignFile,
+  getFileExtension,
+  isImageFile,
+} from '@/lib/utils/file-validation';
+import { parseDSTFile } from '@/lib/utils/dst-parser';
+import { z } from 'zod';
+import { calculateMmFromPx } from '@/lib/utils/file-dimensions';
+
+import { 
+  STORAGE_BASE, 
+  DESIGNS_PATH, 
+  ensureDir, 
+  generateStoragePath, 
+  createThumbnail, 
+  getImageDimensions 
+} from '@/lib/utils/calculators/file-storage';
+
+/**
+ * Загружает файл дизайна
+ * @param formData - FormData с файлом
+ * @param calculatorType - Тип калькулятора
+ * @returns Результат загрузки
+ */
+interface UploadResult {
+  success: boolean;
+  data?: UploadedDesignFile;
+  error?: string;
+}
+
+async function debugLog(message: string) {
+  const timestamp = new Date().toISOString();
+  const logMessage = `[${timestamp}] ${message}\n`;
+  console.log(message);
+  try {
+    await appendFile(path.join(process.cwd(), 'upload-debug.log'), logMessage);
+  } catch (_err) {
+    // игнорируем ошибки записи лога
+  }
+}
+
+export async function uploadDesignFile(
+  formData: FormData,
+  calculatorType: CalculatorType
+): Promise<UploadResult> {
+  await debugLog(`[START] uploadDesignFile for ${calculatorType}`);
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return { success: false, error: 'Авторизуйтесь для загрузки файлов' };
+    }
+
+    const file = formData.get('file') as File;
+    if (!file) {
+      await debugLog('[uploadDesignFile] Файл не найден в FormData');
+      return { success: false, error: 'Файл не найден' };
+    }
+
+    await debugLog(`[uploadDesignFile] Начало загрузки: ${file.name}, размер: ${file.size} байт, тип: ${file.type}`);
+
+    // Валидация
+    const validation = validateDesignFile(file, calculatorType);
+    if (!validation.isValid) {
+      await debugLog(`[uploadDesignFile] Ошибка валидации для ${file.name}: ${validation.error}`);
+      return { success: false, error: validation.error };
+    }
+
+    // Генерируем пути
+    const { filePath, storedName } = generateStoragePath(
+      user.id,
+      calculatorType,
+      file.name
+    );
+    const fullPath = path.join(STORAGE_BASE, filePath);
+    const dirPath = path.dirname(fullPath);
+
+    await debugLog(`[uploadDesignFile] Путь сохранения: ${fullPath}`);
+
+    // Создаём директорию
+    await ensureDir(dirPath);
+
+    // Сохраняем файл
+    await debugLog('[uploadDesignFile] Чтение ArrayBuffer...');
+    const buffer = Buffer.from(await file.arrayBuffer());
+    await debugLog('[uploadDesignFile] Запись файла на диск...');
+    await writeFile(fullPath, buffer);
+    await debugLog('[uploadDesignFile] Файл сохранен успешно');
+
+    // Инициализируем данные файла
+    let thumbnailPath: string | undefined;
+    let fileDimensions: { widthPx?: number; heightPx?: number; widthMm?: number; heightMm?: number } | null = null;
+    let embroideryData: import('@/lib/types/calculators').EmbroideryFileData | null = null;
+    const extension = getFileExtension(file.name);
+
+    // Обработка в зависимости от типа
+    if (isImageFile(file.name)) {
+      // Создаём превью
+      const thumbName = `${storedName.split('.')[0]}_thumb.webp`;
+      const thumbFullPath = path.join(dirPath, thumbName);
+      const thumbCreated = await createThumbnail(fullPath, thumbFullPath);
+      if (thumbCreated) {
+        thumbnailPath = path.join(
+          DESIGNS_PATH,
+          user.id,
+          calculatorType,
+          thumbName
+        );
+      }
+
+      // Получаем размеры
+      const dims = await getImageDimensions(fullPath);
+      if (dims) {
+        fileDimensions = {
+          widthPx: dims.width,
+          heightPx: dims.height,
+        };
+      }
+    } else if (extension === 'dst') {
+      // Парсим DST файл
+      const parseResult = await parseDSTFile(file);
+      if (parseResult.success && parseResult.data) {
+        embroideryData = parseResult.data;
+        fileDimensions = {
+          widthMm: parseResult.data.widthMm,
+          heightMm: parseResult.data.heightMm,
+        };
+
+        // Сохраняем SVG превью как файл
+        if (parseResult.data.svgPreview) {
+          const thumbName = `${storedName.split('.')[0]}_thumb.svg`;
+          const thumbFullPath = path.join(dirPath, thumbName);
+          const svgBase64 = parseResult.data.svgPreview.split(',')[1];
+          await writeFile(thumbFullPath, Buffer.from(svgBase64, 'base64'));
+          thumbnailPath = path.join(
+            DESIGNS_PATH,
+            user.id,
+            calculatorType,
+            thumbName
+          );
+        }
+      }
+    }
+
+    // Сохраняем в БД
+    const dbData = {
+      originalName: file.name,
+      storedName,
+      mimeType: file.type || 'application/octet-stream',
+      extension,
+      sizeBytes: file.size,
+      filePath,
+      thumbnailPath: thumbnailPath || null,
+      calculatorType,
+      fileDimensions: fileDimensions ? JSON.stringify(fileDimensions) : null,
+      embroideryData: (embroideryData && Object.keys(embroideryData).length > 0) ? JSON.stringify(embroideryData) : null,
+      uploadedBy: user.id,
+    };
+    
+    await appendFile('upload-debug.log', `[DEBUG] DB Insert Data: ${JSON.stringify(dbData)}\n`);
+
+    const [dbRecord] = await db
+      .insert(designFiles)
+      .values(dbData)
+      .returning();
+
+    // Формируем ответ
+    const uploadedFile: UploadedDesignFile = {
+      id: dbRecord.id,
+      originalName: dbRecord.originalName,
+      storedName: dbRecord.storedName,
+      mimeType: dbRecord.mimeType,
+      sizeBytes: dbRecord.sizeBytes,
+      filePath: dbRecord.filePath,
+      thumbnailPath: dbRecord.thumbnailPath || undefined,
+      fileUrl: `/api/files/${dbRecord.filePath}`,
+      thumbnailUrl: dbRecord.thumbnailPath ? `/api/files/${dbRecord.thumbnailPath}` : undefined,
+      calculatorType: dbRecord.calculatorType as CalculatorType,
+      dimensions: fileDimensions ? {
+        width: (fileDimensions.widthMm || fileDimensions.widthPx || 0) as number,
+        height: (fileDimensions.heightMm || fileDimensions.heightPx || 0) as number,
+      } : undefined,
+      embroideryData: dbRecord.embroideryData ? (typeof dbRecord.embroideryData === 'string' ? JSON.parse(dbRecord.embroideryData) : dbRecord.embroideryData) as import('@/lib/types/calculators').EmbroideryFileData : undefined,
+      userDimensions: embroideryData
+        ? {
+            widthMm: embroideryData.widthMm,
+            heightMm: embroideryData.heightMm,
+          }
+        : (fileDimensions && fileDimensions.widthPx && fileDimensions.heightPx) 
+        ? {
+            widthMm: calculateMmFromPx(fileDimensions.widthPx),
+            heightMm: calculateMmFromPx(fileDimensions.heightPx),
+          }
+        : undefined,
+      quantity: 1,
+      uploadedAt: dbRecord.uploadedAt,
+    };
+
+    await debugLog(`[SUCCESS] File uploaded: ${dbRecord.id}`);
+    return { success: true, data: uploadedFile };
+  } catch (caughtErr: unknown) {
+    const err = caughtErr as { code?: string, detail?: string, constraint?: string, message?: string, stack?: string };
+    console.error(`[ERROR] uploadDesignFile:`, err);
+    console.error(`[ERROR DETAILS] Code:`, err?.code, `Detail:`, err?.detail, `Constraint:`, err?.constraint, `Message:`, err?.message);
+    if (caughtErr instanceof Error && caughtErr.stack) {
+      console.error(`[STACK]`, caughtErr.stack);
+    }
+    
+    // Пишем ошибку в лог файл для надежности
+    try {
+      await appendFile('upload-debug.log', `[FATAL] DB Error: ${JSON.stringify({
+        message: err?.message || String(err),
+        code: err?.code,
+        detail: err?.detail,
+        constraint: err?.constraint,
+        stack: err?.stack
+      })}\n`);
+    } catch (_e) {}
+
+    return {
+      success: false,
+      error: 'Ошибка при сохранении файла (DB): ' + (err?.message || String(err))
+    };
+  }
+}
+
+/**
+ * Удаляет файл дизайна
+ */
+export const deleteDesignFile = createSafeAction(
+  z.object({ fileId: z.string() }),
+  async ({ fileId }) => {
+    const user = await getCurrentUser();
+    if (!user) throw new Error('Авторизуйтесь для выполнения действия');
+
+    // Получаем файл из БД
+    const file = await db.query.designFiles.findFirst({
+      where: eq(designFiles.id, fileId),
+    });
+
+    if (!file) throw new Error('Файл не найден');
+    if (file.uploadedBy !== user.id) throw new Error('Нет доступа к файлу');
+
+    // Удаляем файлы с диска
+    const fullPath = path.join(STORAGE_BASE, file.filePath);
+    if (existsSync(fullPath)) {
+      await unlink(fullPath);
+    }
+
+    if (file.thumbnailPath) {
+      const thumbPath = path.join(STORAGE_BASE, file.thumbnailPath);
+      if (existsSync(thumbPath)) {
+        await unlink(thumbPath);
+      }
+    }
+
+    // Мягкое удаление в БД
+    await db
+      .update(designFiles)
+      .set({
+        deletedAt: new Date(),
+      })
+      .where(eq(designFiles.id, fileId));
+
+    revalidatePath('/dashboard/production/calculators');
+    return { success: true };
+  }
+);
+
+/**
+ * Получает список файлов пользователя для калькулятора
+ */
+export const getUserDesignFiles = createSafeAction(
+  z.object({ calculatorType: z.string() as z.ZodType<CalculatorType> }),
+  async ({ calculatorType }) => {
+    const user = await getCurrentUser();
+    if (!user) throw new Error('Авторизуйтесь');
+
+    const files = await db.query.designFiles.findMany({
+      where: and(
+        eq(designFiles.uploadedBy, user.id),
+        eq(designFiles.calculatorType, calculatorType),
+        isNull(designFiles.deletedAt)
+      ),
+      orderBy: (df, { desc }) => [desc(df.uploadedAt)],
+      limit: 50,
+    });
+
+    const mappedFiles: UploadedDesignFile[] = files.map((f) => {
+      const fileDims = f.fileDimensions as { widthPx?: number; heightPx?: number; widthMm?: number; heightMm?: number } | null;
+      const embroideryData = f.embroideryData as import('@/lib/types/calculators').EmbroideryFileData | null;
+      
+      const width = (fileDims?.widthMm || fileDims?.widthPx || 0) as number;
+      const height = (fileDims?.heightMm || fileDims?.heightPx || 0) as number;
+
+      return {
+        id: f.id,
+        originalName: f.originalName,
+        storedName: f.storedName,
+        mimeType: f.mimeType,
+        sizeBytes: f.sizeBytes,
+        filePath: f.filePath,
+        thumbnailPath: f.thumbnailPath || undefined,
+        fileUrl: `/api/files/${f.filePath}`,
+        thumbnailUrl: f.thumbnailPath
+          ? `/api/files/${f.thumbnailPath}`
+          : undefined,
+        calculatorType: f.calculatorType as import('@/lib/types/calculators').CalculatorType,
+        dimensions: fileDims ? { width, height } : undefined,
+        embroideryData: embroideryData || undefined,
+        userDimensions: embroideryData ? {
+          widthMm: embroideryData.widthMm,
+          heightMm: embroideryData.heightMm,
+        } : (fileDims?.widthMm && fileDims.heightMm ? {
+          widthMm: fileDims.widthMm,
+          heightMm: fileDims.heightMm,
+        } : (fileDims?.widthPx && fileDims.heightPx ? {
+          widthMm: calculateMmFromPx(fileDims.widthPx),
+          heightMm: calculateMmFromPx(fileDims.heightPx),
+        } : undefined)),
+        quantity: 1,
+        uploadedAt: f.uploadedAt,
+        isManual: false,
+      };
+    });
+
+    return mappedFiles;
+  }
+);

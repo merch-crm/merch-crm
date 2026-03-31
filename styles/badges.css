@@ -1,0 +1,90 @@
+/* ========================================
+   BADGE VARIANTS
+   ======================================== */
+
+@utility badge-base {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    font-weight: 700;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 300ms;
+}
+
+/* Status Badges (Pastel) */
+@utility badge-success {
+    background-color: #ecfdf5;
+    /* emerald-50 */
+    color: #065f46;
+    /* emerald-800 */
+    border: 1px solid #d1fae5;
+    /* emerald-100 */
+}
+
+@utility badge-warning {
+    background-color: #fffbeb;
+    /* amber-50 */
+    color: #92400e;
+    /* amber-800 */
+    border: 1px solid #fef3c7;
+    /* amber-100 */
+}
+
+@utility badge-error {
+    background-color: #fef2f2;
+    /* red-50 */
+    color: #991b1b;
+    /* red-800 */
+    border: 1px solid #fee2e2;
+    /* red-100 */
+}
+
+@utility badge-info {
+    background-color: #eff6ff;
+    /* blue-50 */
+    color: #1e40af;
+    /* blue-800 */
+    border: 1px solid #dbeafe;
+    /* blue-100 */
+}
+
+@utility badge-purple {
+    background-color: #faf5ff;
+    /* purple-50 */
+    color: #6b21a8;
+    /* purple-800 */
+    border: 1px solid #f3e8ff;
+    /* purple-100 */
+}
+
+/* Role Badges */
+@utility badge-role-admin {
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fee2e2;
+}
+
+@utility badge-role-manager {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+}
+
+@utility badge-role-sales {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #d1fae5;
+}
+
+@utility badge-role-designer {
+    background-color: #faf5ff;
+    color: #7e22ce;
+    border: 1px solid #f3e8ff;
+}
+
+@utility badge-role-printer {
+    background-color: #fffaf0;
+    color: #c2410c;
+    border: 1px solid #ffedd5;
+}
