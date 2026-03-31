@@ -1,4 +1,7 @@
 {
+  "enabledSnippets": [
+    "tag-colors"
+  ],
   "newFileLocation": "current",
   "attachmentFolderPath": "./",
   "alwaysUpdateLinks": true,
