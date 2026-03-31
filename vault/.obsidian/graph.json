@@ -11,7 +11,7 @@
       "query": "path:000-Навигация",
       "color": {
         "a": 1,
-        "rgb": 15000804
+        "rgb": 7536895
       }
     },
     {
@@ -25,14 +25,14 @@
       "query": "path:020-Архитектура",
       "color": {
         "a": 1,
-        "rgb": 13395700
+        "rgb": 14783743
       }
     },
     {
       "query": "path:030-Модули",
       "color": {
         "a": 1,
-        "rgb": 5424958
+        "rgb": 5701432
       }
     },
     {
@@ -53,14 +53,14 @@
       "query": "path:060-Roadmap",
       "color": {
         "a": 1,
-        "rgb": 4039893
+        "rgb": 1357311
       }
     },
     {
       "query": "path:070-Шаблоны",
       "color": {
         "a": 1,
-        "rgb": 11776947
+        "rgb": 14856814
       }
     }
   ],
@@ -70,10 +70,10 @@
   "nodeSizeMultiplier": 1.68782118055556,
   "lineSizeMultiplier": 1.428359375,
   "collapse-forces": false,
-  "centerStrength": 0.357682291666667,
-  "repelStrength": 8.35590277777778,
+  "centerStrength": 0.339930555555556,
+  "repelStrength": 8.03211805555556,
   "linkStrength": 1,
   "linkDistance": 481,
-  "scale": 1.0922141756797556,
+  "scale": 0.787488952060854,
   "close": false
 }
