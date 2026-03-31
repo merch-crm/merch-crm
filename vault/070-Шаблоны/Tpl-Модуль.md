@@ -18,7 +18,7 @@
 ## 2. Связи БД (Relations)
 ```mermaid
 erDiagram
-    <% tp.file.title %> ||--o{ OTHER_TABLE : "связь"
+    <% tp.file.title %> ||--o{ ДРУГАЯ_ТАБЛИЦА : "связь"
 ```
 
 ## 3. Требования (Requirements)

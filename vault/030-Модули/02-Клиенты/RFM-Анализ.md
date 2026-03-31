@@ -19,13 +19,13 @@
 ## 2. Связи БД (Relations)
 ```mermaid
 erDiagram
-    CLIENTS ||--o{ ORDERS : "покупки"
-    CLIENTS ||--|| RFM_SCORES : "расчёт"
-    RFM_SCORES {
-        string segment
-        int recencyScore
-        int frequencyScore
-        int monetaryScore
+    КЛИЕНТЫ ||--o{ ЗАКАЗЫ : "покупки"
+    КЛИЕНТЫ ||--|| ПОКАЗАТЕЛИ_RFM : "расчёт"
+    ПОКАЗАТЕЛИ_RFM {
+        string Сегмент
+        int Балл_Recency
+        int Балл_Frequency
+        int Балл_Monetary
     }
 ```
 
