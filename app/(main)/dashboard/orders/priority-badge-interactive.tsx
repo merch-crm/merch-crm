@@ -1,0 +1,113 @@
+"use client";
+
+import { useState, useRef, useEffect } from"react";
+import { Badge } from"@/components/ui/badge";
+import { Zap, Circle, ChevronDown } from"lucide-react";
+import { updateOrderField } from "./actions/core.actions";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { playSound } from "@/lib/sounds";
+
+const priorities = [
+    { id:"normal", label:"Обычный", icon: Circle, color:"text-slate-500", lightBg:"bg-slate-50 border-slate-200", dot:"bg-slate-400" },
+    { id:"high", label:"Срочный", icon: Zap, color:"text-rose-600", lightBg:"bg-rose-50 border-rose-100", dot:"bg-rose-500" },
+];
+
+export default function PriorityBadgeInteractive({ orderId, priority }: { orderId: string, priority: string }) {
+    const [currentPriority, setCurrentPriority] = useState(priority);
+    const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
+    const router = useRouter();
+
+    const activeItem = priorities.find(p => p.id === currentPriority) || priorities[0];
+    const isHigh = currentPriority ==="high";
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleChange = async (newId: string) => {
+        if (newId === currentPriority) {
+            setIsOpen(false);
+            return;
+        }
+
+        setLoading(true);
+        const prevPriority = currentPriority;
+        setCurrentPriority(newId);
+        setIsOpen(false);
+
+        try {
+            const res = await updateOrderField(orderId, "priority", newId);
+            if (!res.success) {
+                setCurrentPriority(prevPriority);
+                toast(res.error || "Не удалось обновить приоритет", "error");
+                playSound("notification_error");
+            } else {
+                toast("Приоритет обновлен", "success");
+                playSound("notification_success");
+                router.refresh();
+            }
+        } catch (_error) {
+            setCurrentPriority(prevPriority);
+            toast("Ошибка соединения", "error");
+            playSound("notification_error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div role="button" tabIndex={0} className="relative inline-block" ref={containerRef} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}>
+            <Badge
+                variant="outline"
+                onClick={() => !loading && setIsOpen(!isOpen)}
+                className={`
+                    rounded-md font-bold text-xs  gap-1.5 px-2 py-0.5 cursor-pointer
+                    transition-all hover:shadow-sm active:scale-95 select-none
+                    ${activeItem.lightBg} ${activeItem.color}
+                    ${loading ? 'opacity-50' : 'opacity-100'}
+                `}
+            >
+                {isHigh ? (
+                    <Zap className="w-3 h-3 fill-rose-600" />
+                ) : (
+                    <Circle className="w-2.5 h-2.5 fill-slate-400 border-none" />
+                )}
+                {activeItem.label}
+                <ChevronDown className={`w-2.5 h-2.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </Badge>
+
+            {isOpen && (
+                <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-200 rounded-2xl shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
+                    {priorities.map((p) => (
+                        <Button
+                            key={p.id}
+                            variant="ghost"
+                            onClick={() => handleChange(p.id)}
+                            className={`
+                                w-full flex items-center gap-2 px-3 py-2 h-auto
+                                hover:bg-slate-50 transition-all text-left justify-start rounded-xl
+                                ${p.id === currentPriority ? 'bg-primary/5' : ''}
+                            `}
+                        >
+                            <div className={`w-1.5 h-1.5 rounded-full ${p.dot}`} />
+                            <span className={`text-xs font-bold  ${p.id === currentPriority ? 'text-primary' : 'text-slate-600'}`}>
+                                {p.label}
+                            </span>
+                        </Button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
