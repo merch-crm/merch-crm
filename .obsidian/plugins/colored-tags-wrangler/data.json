@@ -1,0 +1,342 @@
+{
+  "TagColors": {
+    "ColorPicker": [
+      {
+        "tag_name": "фаза-1",
+        "background_color": {
+          "r": 76,
+          "g": 175,
+          "b": 80
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "фаза-2",
+        "background_color": {
+          "r": 33,
+          "g": 150,
+          "b": 243
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "фаза-3",
+        "background_color": {
+          "r": 255,
+          "g": 152,
+          "b": 0
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "фаза-4",
+        "background_color": {
+          "r": 156,
+          "g": 39,
+          "b": 176
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "roadmap",
+        "background_color": {
+          "r": 244,
+          "g": 67,
+          "b": 54
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "фича",
+        "background_color": {
+          "r": 0,
+          "g": 188,
+          "b": 212
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "бэклог",
+        "background_color": {
+          "r": 96,
+          "g": 125,
+          "b": 139
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "архитектура",
+        "background_color": {
+          "r": 121,
+          "g": 85,
+          "b": 72
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "стандарт",
+        "background_color": {
+          "r": 63,
+          "g": 81,
+          "b": 181
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "навигация",
+        "background_color": {
+          "r": 233,
+          "g": 30,
+          "b": 99
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "статус",
+        "background_color": {
+          "r": 158,
+          "g": 158,
+          "b": 158
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "сессия",
+        "background_color": {
+          "r": 76,
+          "g": 175,
+          "b": 80
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "модуль",
+        "background_color": {
+          "r": 255,
+          "g": 152,
+          "b": 0
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "решение",
+        "background_color": {
+          "r": 0,
+          "g": 150,
+          "b": 136
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "баг",
+        "background_color": {
+          "r": 244,
+          "g": 67,
+          "b": 54
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "ошибка",
+        "background_color": {
+          "r": 244,
+          "g": 67,
+          "b": 54
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "тест",
+        "background_color": {
+          "r": 103,
+          "g": 58,
+          "b": 183
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "агент",
+        "background_color": {
+          "r": 63,
+          "g": 81,
+          "b": 181
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "контекст",
+        "background_color": {
+          "r": 96,
+          "g": 125,
+          "b": 139
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      },
+      {
+        "tag_name": "log",
+        "background_color": {
+          "r": 33,
+          "g": 150,
+          "b": 243
+        },
+        "color": {
+          "r": 255,
+          "g": 255,
+          "b": 255
+        },
+        "luminance_offset": 0.15
+      }
+    ],
+    "EnableMultipleTags": true,
+    "EnableSeparateBackground": true,
+    "EnableBackgroundOpacity": true,
+    "Values": {
+      "BackgroundOpacity": 0.45,
+      "LuminanceOffset": 0.15
+    }
+  },
+  "CSS": {
+    "NoteTags": true,
+    "NoteProperties": true,
+    "NoteBackgrounds": false,
+    "TagsNoWrap": true,
+    "TagsNoWrapText": "pre"
+  },
+  "FolderNote": {
+    "Enable": false,
+    "FolderTagLinks": [],
+    "EnableAutoDetect": true,
+    "EnableBackgroundOpacity": false,
+    "Values": {
+      "BackgroundOpacity": 0.45,
+      "ForceImportant": true,
+      "BorderRadius": "12px",
+      "Padding": "5px"
+    }
+  },
+  "Kanban": {
+    "Enable": true,
+    "EnableCards": false,
+    "EnableLists": false,
+    "HideHashtags": false,
+    "EnableBackgroundOpacity": false,
+    "Values": {
+      "BackgroundOpacity": 0.45,
+      "CardBackgroundOpacity": 0.2,
+      "CardBorderOpacity": 0.3,
+      "ListBackgroundOpacity": 0.2,
+      "ListBorderOpacity": 0.3
+    }
+  },
+  "Canvas": {
+    "Enable": false,
+    "EnableBackgroundOpacity": false,
+    "Values": {
+      "BackgroundOpacity": 0.45,
+      "CardBorderOpacity": 0.3,
+      "CardBackgroundLuminanceOffset": 0.15
+    }
+  },
+  "Debug": {
+    "Enable": false,
+    "EnableExperimentalCommands": false
+  },
+  "Info": {
+    "SettingsVersion": 14
+  }
+}

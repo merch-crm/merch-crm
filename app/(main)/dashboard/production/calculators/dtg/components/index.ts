@@ -1,5 +1,0 @@
-export { GarmentSelector } from './garment-selector'
-export { DtgOrderCard } from './dtg-order-card'
-export { DtgOrderList } from './dtg-order-list'
-export { DtgResultSummary } from './dtg-result-summary'
-export { DtgConsumptionCards } from './dtg-consumption-cards'

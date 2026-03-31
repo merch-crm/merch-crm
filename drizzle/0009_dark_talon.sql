@@ -1,1 +1,0 @@
-ALTER TABLE "promocodes" DROP COLUMN "is_ambassador";

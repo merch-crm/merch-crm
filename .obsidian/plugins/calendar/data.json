@@ -1,0 +1,14 @@
+{
+  "shouldConfirmBeforeCreate": true,
+  "weekStart": "locale",
+  "wordsPerDot": 250,
+  "showWeeklyNote": false,
+  "weeklyNoteFormat": "",
+  "weeklyNoteTemplate": "",
+  "weeklyNoteFolder": "",
+  "localeOverride": "ru",
+  "showWeekNum": true,
+  "shouldStartWithMonday": true,
+  "wordsBeforeDate": "Ближайшие:",
+  "calendarTitleFormat": "MMMM YYYY"
+}

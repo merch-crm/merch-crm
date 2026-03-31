@@ -1,0 +1,22 @@
+filters:
+  and:
+    - 'file.inFolder("030-Модули")'
+    - 'file.ext == "md"'
+    - 'file.name != "030-Модули"'
+
+properties:
+  status:
+    displayName: "Статус"
+  updated:
+    displayName: "Обновлено"
+
+views:
+  - type: table
+    name: "Все Модули"
+    order:
+      - file.name
+      - status
+      - updated
+    groupBy:
+      property: status
+      direction: ASC

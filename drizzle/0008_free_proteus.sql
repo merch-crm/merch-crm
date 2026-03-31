@@ -1,1 +1,0 @@
-ALTER TABLE "promocodes" ADD COLUMN "name" text;

@@ -1,0 +1,4 @@
+{
+  "toolbar": true,
+  "mermaidConfig": "%%{init: {'theme': 'dark'}}%%"
+}

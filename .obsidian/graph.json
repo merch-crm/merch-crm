@@ -1,100 +1,93 @@
 {
-  "collapse-filter": false,
+  "collapse-filter": true,
   "search": "",
-  "showTags": true,
-  "showAttachments": true,
+  "showTags": false,
+  "showAttachments": false,
   "hideUnresolved": false,
-  "showOrphans": false,
-  "collapse-color-groups": true,
+  "showOrphans": true,
+  "collapse-color-groups": false,
   "colorGroups": [
     {
-      "query": "path:01-Менеджмент",
+      "query": "path:000-Навигация",
       "color": {
         "a": 1,
-        "rgb": 16736086
+        "rgb": 7536895
       }
     },
     {
-      "query": "path:02-Разработка",
+      "query": "path:010-Стандарты",
       "color": {
         "a": 1,
-        "rgb": 2607423
+        "rgb": 14701138
       }
     },
     {
-      "query": "path:03-Качество",
+      "query": "path:020-Архитектура",
       "color": {
         "a": 1,
-        "rgb": 16760110
+        "rgb": 14783743
       }
     },
     {
-      "query": "path:04-GSD",
+      "query": "path:030-Модули",
       "color": {
         "a": 1,
-        "rgb": 53759
+        "rgb": 5701432
       }
     },
     {
-      "query": "path:05-Дизайн",
+      "query": "path:040-Решения",
       "color": {
         "a": 1,
-        "rgb": 16711802
+        "rgb": 16753920
       }
     },
     {
-      "query": "tag:#агенты",
+      "query": "path:050-Сессии",
       "color": {
         "a": 1,
-        "rgb": 16777215
+        "rgb": 11041496
       }
     },
     {
-      "query": "tag:#менеджмент",
+      "query": "path:060-Roadmap",
       "color": {
         "a": 1,
-        "rgb": 16736086
+        "rgb": 1357311
       }
     },
     {
-      "query": "tag:#разработка",
+      "query": "path:070-Шаблоны",
       "color": {
         "a": 1,
-        "rgb": 2607423
+        "rgb": 14856814
       }
     },
     {
-      "query": "tag:#качество",
+      "query": "path:080-Агенты",
       "color": {
         "a": 1,
-        "rgb": 16760110
+        "rgb": 3402911
       }
     },
     {
-      "query": "tag:#gsd",
+      "query": "path:090-Тесты",
       "color": {
         "a": 1,
-        "rgb": 53759
-      }
-    },
-    {
-      "query": "tag:#дизайн",
-      "color": {
-        "a": 1,
-        "rgb": 16711802
+        "rgb": 16724787
       }
     }
   ],
   "collapse-display": false,
   "showArrow": true,
-  "textFadeMultiplier": 0.3,
-  "nodeSizeMultiplier": 1.52002170138889,
-  "lineSizeMultiplier": 1,
-  "collapse-forces": true,
-  "centerStrength": 0.615668402777778,
-  "repelStrength": 10.3463541666667,
+  "textFadeMultiplier": -1.1,
+  "nodeSizeMultiplier": 1.68782118055556,
+  "lineSizeMultiplier": 1.428359375,
+  "collapse-forces": false,
+  "centerStrength": 0.127213541666667,
+  "repelStrength": 8.03211805555556,
   "linkStrength": 1,
-  "linkDistance": 207,
-  "scale": 0.2341204563412878,
+  "linkDistance": 481,
+  "scale": 0.39411980432863286,
   "close": false
 }

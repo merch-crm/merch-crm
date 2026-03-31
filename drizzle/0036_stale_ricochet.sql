@@ -1,1 +1,0 @@
-CREATE INDEX "production_time_logs_created_at_idx" ON "production_time_logs" USING btree ("created_at");

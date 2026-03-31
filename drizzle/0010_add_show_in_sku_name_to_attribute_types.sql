@@ -1,2 +1,0 @@
-ALTER TABLE "inventory_attribute_types" ADD COLUMN "show_in_sku" boolean DEFAULT true NOT NULL;--> statement-breakpoint
-ALTER TABLE "inventory_attribute_types" ADD COLUMN "show_in_name" boolean DEFAULT true NOT NULL;

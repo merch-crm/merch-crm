@@ -1,0 +1,16 @@
+{
+  "enableDataviewJs": true,
+  "enableInlineDataviewJs": true,
+  "enableInlineDataview": true,
+  "refreshInterval": 2500,
+  "renderNullAs": "\\-",
+  "dataviewJsKeyword": "dataviewjs",
+  "inlineDataviewJsKeyword": "$=",
+  "inlineDataviewKeyword": "=",
+  "dataviewJsEnableManualRefresh": false,
+  "enableEmojiSymbol": true,
+  "warnOnEmptyTable": false,
+  "primarySortColumn": "File",
+  "primarySortOrder": "Ascending",
+  "maxRecursiveRenderDepth": 10
+}

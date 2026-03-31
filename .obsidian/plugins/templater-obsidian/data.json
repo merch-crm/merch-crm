@@ -1,0 +1,32 @@
+{
+  "command_hotkeys": [],
+  "template_folder": "070-Шаблоны",
+  "newline_at_eof": false,
+  "trigger_on_new_file": true,
+  "focus_after_new_file": true,
+  "folder_templates": true,
+  "folder_template_rules": [
+    {
+      "folder": "030-Модули",
+      "template": "070-Шаблоны/Tpl-Модуль.md"
+    },
+    {
+      "folder": "060-Roadmap",
+      "template": "070-Шаблоны/Tpl-Модуль.md"
+    },
+    {
+      "folder": "050-Сессии",
+      "template": "070-Шаблоны/Tpl-Сессия.md"
+    },
+    {
+      "folder": "100-База-Знаний",
+      "template": "070-Шаблоны/Tpl-Ошибка.md"
+    },
+    {
+      "folder": "040-Решения",
+      "template": "070-Шаблоны/Tpl-Решение.md"
+    }
+  ],
+  "syntax_highlighting": true,
+  "enabled_templates_hotkeys": []
+}

@@ -1,0 +1,11 @@
+{
+  "cardType": "row",
+  "enableCards": true,
+  "enableImages": true,
+  "imageHeight": 120,
+  "cardWidth": "100%",
+  "showTitle": true,
+  "showDescription": true,
+  "showTags": true,
+  "showDataviewFields": true
+}

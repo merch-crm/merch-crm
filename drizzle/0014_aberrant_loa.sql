@@ -1,2 +1,0 @@
-ALTER TABLE "inventory_attribute_types" DROP CONSTRAINT "inventory_attribute_types_slug_unique";--> statement-breakpoint
-CREATE UNIQUE INDEX "inv_attr_types_slug_category_unique" ON "inventory_attribute_types" USING btree ("slug","category_id");
