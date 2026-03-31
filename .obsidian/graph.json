@@ -6,7 +6,85 @@
   "hideUnresolved": false,
   "showOrphans": false,
   "collapse-color-groups": true,
-  "colorGroups": [],
+  "colorGroups": [
+    {
+      "query": "path:01-Менеджмент",
+      "color": {
+        "a": 1,
+        "rgb": 16736086
+      }
+    },
+    {
+      "query": "path:02-Разработка",
+      "color": {
+        "a": 1,
+        "rgb": 2607423
+      }
+    },
+    {
+      "query": "path:03-Качество",
+      "color": {
+        "a": 1,
+        "rgb": 16760110
+      }
+    },
+    {
+      "query": "path:04-GSD",
+      "color": {
+        "a": 1,
+        "rgb": 53759
+      }
+    },
+    {
+      "query": "path:05-Дизайн",
+      "color": {
+        "a": 1,
+        "rgb": 16711802
+      }
+    },
+    {
+      "query": "tag:#агенты",
+      "color": {
+        "a": 1,
+        "rgb": 16777215
+      }
+    },
+    {
+      "query": "tag:#менеджмент",
+      "color": {
+        "a": 1,
+        "rgb": 16736086
+      }
+    },
+    {
+      "query": "tag:#разработка",
+      "color": {
+        "a": 1,
+        "rgb": 2607423
+      }
+    },
+    {
+      "query": "tag:#качество",
+      "color": {
+        "a": 1,
+        "rgb": 16760110
+      }
+    },
+    {
+      "query": "tag:#gsd",
+      "color": {
+        "a": 1,
+        "rgb": 53759
+      }
+    },
+    {
+      "query": "tag:#дизайн",
+      "color": {
+        "a": 1,
+        "rgb": 16711802
+      }
+    }
+  ],
   "collapse-display": false,
   "showArrow": true,
   "textFadeMultiplier": 0.3,

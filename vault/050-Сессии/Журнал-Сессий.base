@@ -28,6 +28,8 @@ views:
     summaries:
       files_changed: Sum
       tokens_used: Sum
+    columnSize:
+      file.name: 119
   - type: cards
     name: Карточки сессий
     groupBy:

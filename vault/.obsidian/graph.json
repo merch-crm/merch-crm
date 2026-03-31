@@ -62,6 +62,20 @@
         "a": 1,
         "rgb": 14856814
       }
+    },
+    {
+      "query": "path:080-Агенты",
+      "color": {
+        "a": 1,
+        "rgb": 3402911
+      }
+    },
+    {
+      "query": "path:090-Тесты",
+      "color": {
+        "a": 1,
+        "rgb": 16724787
+      }
     }
   ],
   "collapse-display": false,
@@ -70,10 +84,10 @@
   "nodeSizeMultiplier": 1.68782118055556,
   "lineSizeMultiplier": 1.428359375,
   "collapse-forces": false,
-  "centerStrength": 0.339930555555556,
+  "centerStrength": 0.127213541666667,
   "repelStrength": 8.03211805555556,
   "linkStrength": 1,
   "linkDistance": 481,
-  "scale": 0.787488952060854,
+  "scale": 0.9096103143334052,
   "close": false
 }
