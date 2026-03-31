@@ -1,5 +1,5 @@
 # Base image
-FROM node:20-slim AS base
+FROM node:22-slim AS base
 
 # ─── Stage 1: Install ALL dependencies (needed for build) ──────────────────────
 FROM base AS deps
