@@ -4,11 +4,11 @@
 статус: в-работе
 прогресс: 0
 tags:
-  - модуль/<% tp.file.folder(true).split('/').pop().toLowerCase() %>
   - статус/в-работе
   - тип/хаб
 ---
 # 🧱 Хаб: <% tp.file.title %>
+#модуль/<% tp.file.folder(true).split('/').pop().toLowerCase() %>
 
 > [!NOTE]
 > Центральный узел навигации и контроля функционала. 

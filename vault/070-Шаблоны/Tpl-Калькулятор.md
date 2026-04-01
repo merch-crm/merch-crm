@@ -4,11 +4,11 @@
 статус: в-работе
 тип: калькулятор
 tags:
-  - модуль/<% tp.file.folder(true).split('/').pop().toLowerCase() %>
   - тип/калькулятор
   - расчет/математика
 ---
 # 🧮 Калькулятор: <% tp.file.title %>
+#модуль/<% tp.file.folder(true).split('/').pop().toLowerCase() %>
 
 > [!NOTE]
 > Математическая модель расчета стоимости и расхода материалов для <% tp.file.title %>.

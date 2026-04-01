@@ -4,11 +4,11 @@
 статус: в-работе
 прогресс: 0
 tags:
-  - модуль/<% tp.file.folder(true).split('/').pop().toLowerCase() %>
   - статус/в-работе
   - тип/страница
 ---
 # 📄 <% tp.file.title %>
+#модуль/<% tp.file.folder(true).split('/').pop().toLowerCase() %>
 
 > [!TIP]
 > Описание конкретного функционала или раздела модуля.
