@@ -44,7 +44,8 @@ export async function forgotPasswordAction(
     const ipLimit = await rateLimit(
         ipKey,
         3,
-        3600
+        3600,
+        true
     );
 
     if (!ipLimit.success) {
@@ -71,7 +72,8 @@ export async function forgotPasswordAction(
     const emailLimit = await rateLimit(
         emailKey,
         3,
-        3600
+        3600,
+        true
     );
 
     if (!emailLimit.success) {

@@ -31,16 +31,21 @@ RUN npm run build
 FROM base AS migrator
 WORKDIR /app
 
-# Only production deps + drizzle-kit for migrations
+# Install deps needed for migration runner (drizzle-orm, pg, dotenv, tsx)
 COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev --legacy-peer-deps --ignore-scripts && npm install drizzle-kit --legacy-peer-deps --ignore-scripts
+RUN npm ci --omit=dev --legacy-peer-deps --ignore-scripts \
+    && npm install tsx --legacy-peer-deps --ignore-scripts
 
+# Copy migration SQL files and runner script
 COPY --from=builder /app/drizzle ./drizzle
 COPY --from=builder /app/drizzle.config.ts ./
 COPY --from=builder /app/lib/schema ./lib/schema
+COPY --from=builder /app/lib/db.ts ./lib/db.ts
+COPY --from=builder /app/lib/env.ts ./lib/env.ts
+COPY --from=builder /app/scripts/db-migrate.ts ./scripts/db-migrate.ts
 
-# Use node env directly so no .env file required - DATABASE_URL must be passed via env
-CMD ["npx", "drizzle-kit", "push", "--force"]
+# DATABASE_URL must be passed via env (no .env file in container)
+CMD ["npx", "tsx", "scripts/db-migrate.ts"]
 
 # ─── Stage 4: Production application runner ─────────────────────────────────────
 FROM base AS runner

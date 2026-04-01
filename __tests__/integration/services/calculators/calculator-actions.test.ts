@@ -39,6 +39,7 @@ describe("Calculator Actions Integration", () => {
       .insert(roles)
       .values({ 
         name: "Calc Admin", 
+        slug: "calc-admin",
         departmentId: dept.id, 
         permissions: { all: true } 
       })

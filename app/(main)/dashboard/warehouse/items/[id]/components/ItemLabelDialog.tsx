@@ -30,11 +30,12 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
         const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(item.sku || item.id)}`;
 
+        const nonce = typeof document !== 'undefined' ? document.body.dataset.nonce : "";
         printWindow.document.write(`
             <html>
                 <head>
                     <title>Печать этикетки - ${escapeHtml(item.name)}</title>
-                    <style>
+                    <style nonce="${nonce}">
                         @page { size: 58mm 40mm; margin: 0; }
                         body { 
                             font-family: 'Inter', sans-serif; 
@@ -105,9 +106,9 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                                 <div class="category">${escapeHtml(item.category?.name || 'Без категории')}</div>
                             </div>
                         </div>
-                        <div class="footer">${new Date().toLocaleDateString('ru-RU')}</div> {/* suppressHydrationWarning */}
+                        <div class="footer">${new Date().toLocaleDateString('ru-RU')}</div>
                     </div>
-                    <script>
+                    <script nonce="${nonce}">
                         window.onload = () => {
                             window.print();
                             setTimeout(() => window.close(), 500);

@@ -22,7 +22,7 @@ export async function exportReportToPDF(params: z.infer<typeof exportParamsSchem
         const session = await getSession();
         if (!session) return { success: false, error: "Не авторизован" };
 
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на экспорт отчётов" };
         }
         const validated = exportParamsSchema.parse(params);
@@ -53,7 +53,7 @@ export async function exportReportToExcel(params: z.infer<typeof exportParamsSch
         const session = await getSession();
         if (!session) return { success: false, error: "Не авторизован" };
 
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на экспорт отчётов" };
         }
         const validated = exportParamsSchema.parse(params);

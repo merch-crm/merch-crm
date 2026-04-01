@@ -33,6 +33,7 @@ export const departmentsRelations = relations(departments, ({ many }) => ({
 export const roles = pgTable("roles", {
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull().unique(),
+    slug: text("slug").notNull().unique(),
     isSystem: boolean("is_system").default(false).notNull(),
     departmentId: uuid("department_id").references(() => departments.id),
     color: text("color"),

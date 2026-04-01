@@ -120,7 +120,7 @@ export async function createPlacement(
         }
 
         // RBAC: Only management and admin can modify placements
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на изменение нанесений" };
         }
 
@@ -211,7 +211,7 @@ export async function updatePlacement(
         }
 
         // RBAC: Only management and admin can modify placements
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на изменение нанесений" };
         }
 
@@ -282,7 +282,7 @@ export async function deletePlacement(
         }
 
         // RBAC: Only management and admin can modify placements
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на удаление нанесений" };
         }
 
@@ -320,7 +320,7 @@ export async function bulkUpdatePlacementPrices(
         }
 
         // RBAC: Only management and admin can modify placements
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на изменение цен" };
         }
 

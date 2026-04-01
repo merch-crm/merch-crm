@@ -13,6 +13,7 @@ export interface Session {
     email: string;
     name: string;
     roleName: string;
+    roleSlug: string;
     roleId: string;
     departmentName: string;
     ua: string;
@@ -62,6 +63,7 @@ export const getSession = cache(async () => {
         email: user.email,
         name: user.name,
         roleName: dbUser.role?.name || "",
+        roleSlug: dbUser.role?.slug || "",
         roleId: dbUser.roleId || "",
         departmentName: dbUser.department?.name || "",
         ua: session.userAgent || "",

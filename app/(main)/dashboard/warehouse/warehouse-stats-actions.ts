@@ -2,12 +2,10 @@
 
 import { eq, sql, gte, and, desc, inArray, isNull, isNotNull, count } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryItems,
-    inventoryTransactions,
-    inventoryCategories,
-    storageLocations
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { storageLocations } from "@/lib/schema/storage";
 import { z } from "zod";
 import { withAuth } from "@/lib/action-helpers";
 import { ok, type ActionResult } from "@/lib/types";

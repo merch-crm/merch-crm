@@ -114,7 +114,7 @@ export async function createMeterPriceTier(
         }
 
         // RBAC: Only management and admin can modify pricing
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на изменение цен" };
         }
 
@@ -181,7 +181,7 @@ export async function updateMeterPriceTier(
         }
 
         // RBAC: Only management and admin can modify pricing
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на изменение цен" };
         }
 
@@ -248,7 +248,7 @@ export async function deleteMeterPriceTier(
         }
 
         // RBAC: Only management and admin can modify pricing
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на удаление цен" };
         }
 
@@ -294,7 +294,7 @@ export async function bulkUpdateMeterPricing(
         }
 
         // RBAC: Only management and admin can modify pricing
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на изменение цен" };
         }
 

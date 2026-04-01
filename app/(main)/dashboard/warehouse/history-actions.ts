@@ -5,7 +5,7 @@ import { z } from "zod";
 import { desc, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { inventoryTransactions } from "@/lib/schema";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
 import { logAction } from "@/lib/audit";
 import { withAuth } from "@/lib/action-helpers";
 

@@ -153,7 +153,7 @@ export async function createPromocode(values: z.infer<typeof PromocodeSchema>): 
 
 export async function updatePromocode(id: string, values: z.infer<typeof PromocodeSchema>): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Недостаточно прав" };
+    if (!session || !["admin", "management"].includes(session.roleSlug)) return { success: false, error: "Недостаточно прав" };
 
     const validated = PromocodeSchema.safeParse(values);
     if (!validated.success) {
@@ -283,7 +283,7 @@ export async function bulkCreatePromocodes(count: number, prefix: string, values
 
 export async function deletePromocode(id: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство"].includes(session.roleName)) return { success: false, error: "Недостаточно прав для удаления промокода" };
+    if (!session || !["admin", "management"].includes(session.roleSlug)) return { success: false, error: "Недостаточно прав для удаления промокода" };
 
     if (!id || typeof id !== "string") return { success: false, error: "Некорректный ID" };
 

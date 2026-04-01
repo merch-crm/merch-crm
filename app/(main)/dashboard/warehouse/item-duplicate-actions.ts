@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm";
 import Fuse from "fuse.js";
 import { db } from "@/lib/db";
-import { inventoryItems } from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { withAuth } from "@/lib/action-helpers";
 import { CheckDuplicateItemSchema } from "./validation";
 

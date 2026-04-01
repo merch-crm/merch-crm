@@ -20,7 +20,7 @@ vi.mock('@/lib/db', () => ({
                     id: 'user-id',
                     name: 'Test User',
                     email: 'test@example.com',
-                    role: { name: 'Администратор', permissions: {} },
+                    role: { name: 'Администратор', slug: 'admin', permissions: {} },
                 }),
             },
         },
@@ -28,7 +28,7 @@ vi.mock('@/lib/db', () => ({
 }));
 
 vi.mock('@/lib/session', () => ({
-    getSession: vi.fn().mockResolvedValue({ id: 'user-id', roleName: 'Администратор' }),
+    getSession: vi.fn().mockResolvedValue({ id: 'user-id', roleSlug: 'admin' }),
 }));
 
 vi.mock('@/lib/audit', () => ({
@@ -40,7 +40,7 @@ vi.mock('@/lib/error-logger', () => ({
 }));
 
 // --- Test Data ---
-const mockSession = { id: 'user-id', email: 'test@example.com', name: 'Test User', roleName: 'Администратор' };
+const mockSession = { id: 'user-id', email: 'test@example.com', name: 'Test User', roleSlug: 'admin' };
 
 describe('export.actions', () => {
     beforeEach(() => {

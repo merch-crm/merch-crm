@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { inventoryItems } from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { logAction } from "@/lib/audit";
 import { withAuth } from "@/lib/action-helpers";
 import { type ActionResult, okVoid, ERRORS } from "@/lib/types";

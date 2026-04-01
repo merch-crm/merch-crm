@@ -17,7 +17,7 @@ export default async function NewOrderPage() {
     return (
         <CreateOrderPageClient
             initialInventory={inventory.map(i => ({ ...i, quantity: i.quantity || 0, unit: null }))}
-            userRoleName={session?.roleName}
+            userRoleSlug={session?.roleSlug}
         />
     );
 }

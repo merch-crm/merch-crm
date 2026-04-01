@@ -124,7 +124,7 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
             return { success: false, error: "Необходима авторизация" };
         }
 
-        const userRole = session.roleName;
+        const userRole = session.roleSlug;
         const userId = session.id;
 
         const file = await db.query.orderDesignFiles.findFirst({
@@ -136,7 +136,7 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
         }
 
         // RBAC: Only admin or the uploader can delete
-        const canDelete = userRole === "Администратор" || userRole === "Руководство" || file.uploadedBy === userId;
+        const canDelete = userRole === "admin" || userRole === "management" || file.uploadedBy === userId;
         if (!canDelete) {
             return { success: false, error: "У вас нет прав на удаление этого файла" };
         }

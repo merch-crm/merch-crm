@@ -1,0 +1,3 @@
+ALTER TABLE "inventory_items" ADD COLUMN "print_version_id" varchar(36);--> statement-breakpoint
+ALTER TABLE "inventory_items" ADD CONSTRAINT "inventory_items_print_version_id_print_design_versions_id_fk" FOREIGN KEY ("print_version_id") REFERENCES "public"."print_design_versions"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "inventory_items_print_version_idx" ON "inventory_items" USING btree ("print_version_id");

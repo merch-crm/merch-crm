@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 vi.mock("@/lib/session", () => ({
-    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleName: "Администратор" }),
+    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleSlug: "admin" }),
 }));
 
 vi.mock("@/lib/db", () => ({

@@ -237,7 +237,7 @@ export async function deleteProductionStaff(id: string): Promise<ActionResult> {
         }
 
         // RBAC: Только Администратор или Руководство могут удалять
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "Недостаточно прав для удаления" };
         }
 

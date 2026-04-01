@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, ListObjectsV2Output, DeleteObjectCommand, CopyObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import sharp from "sharp";
+import { Readable } from "stream";
 
 const endpoint = process.env.S3_ENDPOINT || process.env.REG_STORAGE_ENDPOINT || "https://s3.regru.cloud";
 const region = process.env.S3_REGION || process.env.REG_STORAGE_REGION || "ru-1";
@@ -20,6 +21,9 @@ interface UploadOptions {
     compress?: boolean;
 }
 
+/**
+ * Загрузка файла в S3
+ */
 export async function uploadFile(
     key: string,
     body: Buffer | Uint8Array | Blob | string,
@@ -31,8 +35,6 @@ export async function uploadFile(
     let finalKey = key;
 
     // Image compression logic
-    // Only works if body is Buffer or Uint8Array. If string/Blob, we might skip or convert.
-    // Assuming body is Buffer for uploads.
     if (options.compress && contentType?.startsWith("image/") && !contentType.includes("svg") && !contentType.includes("gif") && (body instanceof Buffer || body instanceof Uint8Array)) {
         try {
             const image = sharp(body as Buffer);
@@ -58,10 +60,49 @@ export async function uploadFile(
 
     try {
         await s3Client.send(command);
-        return finalKey;
+        return {
+            key: finalKey,
+            url: `${endpoint}/${bucketName}/${finalKey}`
+        };
     } catch (error) {
-        console.error("Error uploading file to Reg.ru Storage:", error);
+        console.error("Error uploading file to S3:", error);
         throw error;
+    }
+}
+
+/**
+ * Загрузка файла в S3 через поток (Stream)
+ * Поддерживает большие файлы без перегрузки RAM
+ */
+export async function uploadToS3({
+    stream,
+    fileName,
+    mimeType,
+    destination = "uploads",
+}: {
+    stream: Readable | Buffer | Uint8Array;
+    fileName: string;
+    mimeType: string;
+    destination?: string;
+}) {
+    const key = `${destination}/${Date.now()}-${fileName}`;
+
+    const command = new PutObjectCommand({
+        Bucket: bucketName,
+        Key: key,
+        Body: stream as Buffer | Uint8Array | import("stream").Readable,
+        ContentType: mimeType,
+    });
+
+    try {
+        await s3Client.send(command);
+        return {
+            key,
+            url: `${endpoint}/${bucketName}/${key}`,
+        };
+    } catch (error) {
+        console.error("[S3 Stream Upload Error]:", error);
+        throw new Error("Ошибка загрузки в S3");
     }
 }
 
@@ -80,6 +121,10 @@ export async function getFileUrl(key: string, expiresIn = 3600) {
     }
 }
 
+/**
+ * Alias for getFileUrl for backward compatibility with s3.ts
+ */
+export const getPresignedUrl = getFileUrl;
 
 export async function listFiles(prefix?: string) {
     try {
@@ -214,3 +259,4 @@ export async function getStorageStats() {
 }
 
 export { s3Client };
+export default s3Client;

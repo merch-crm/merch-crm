@@ -3,7 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { eq, inArray, and, lt } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { inventoryItems, inventoryStocks, inventoryTransactions, storageLocations } from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryStocks, inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { storageLocations } from "@/lib/schema/storage";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { withAuth } from "@/lib/action-helpers";

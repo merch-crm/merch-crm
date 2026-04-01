@@ -217,7 +217,7 @@ export async function deleteEditorProject(id: string): Promise<ActionResult> {
         }
 
         // RBAC & IDOR: Only admin or owner can delete
-        const canDelete = session.roleName === "Администратор" || session.roleName === "Руководство" || project.createdBy === session.id;
+        const canDelete = session.roleSlug === "admin" || session.roleSlug === "management" || project.createdBy === session.id;
         if (!canDelete) {
             return { success: false, error: "У вас нет прав на удаление этого проекта" };
         }

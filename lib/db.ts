@@ -20,18 +20,30 @@ export const pool = globalForDb.pool || new Pool({
     // Standard SSL config. Reg.ru typically uses valid certificates.
     // If they use self-signed, user can add sslmode=no-verify to the connection string.
     ssl: (function() {
+        // Local connections or explicit disable flag
         const isLocalConnection = connectionString && (
             connectionString.includes('localhost') ||
             connectionString.includes('127.0.0.1') ||
-            connectionString.includes('@db') ||
-            connectionString.includes('sslmode=disable')
+            connectionString.includes('@db')
         );
+        const sslModeDisable = connectionString?.includes('sslmode=disable');
         const forceDisableSsl = process.env.DB_SSL === 'false';
 
-        if (isLocalConnection || forceDisableSsl) {
+        if (isLocalConnection || sslModeDisable || forceDisableSsl) {
             return false;
         }
         
+        // Production Hardening (Reg.ru / External DB)
+        // If CA certificate is provided, use it for validation.
+        // In production, we strongly prefer rejectUnauthorized: true.
+        if (env.NODE_ENV === "production") {
+            return {
+                rejectUnauthorized: true,
+                ca: (env as any).DATABASE_CA_CERT || undefined,
+            };
+        }
+
+        // Development/Staging fallback if no cert is provided
         return { rejectUnauthorized: false };
     })(),
     max: process.env.DB_POOL_MAX ? parseInt(process.env.DB_POOL_MAX) : 10, // Оптимизировано для баланса serverless/standalone

@@ -7,7 +7,7 @@ import path from "path";
 import sharp from "sharp";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { inventoryCategories } from "@/lib/schema";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
 import { logError } from "@/lib/error-logger";
 import { LOCAL_STORAGE_ROOT } from "@/lib/local-storage";
 import { sanitizeFileName } from "./shared-utils";

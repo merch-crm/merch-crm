@@ -82,7 +82,7 @@ vi.mock('next/cache', () => ({
 // --- Test Data ---
 const mockClientId = '550e8400-e29b-41d4-a716-446655440000';
 const mockContactId = '550e8400-e29b-41d4-a716-446655440001';
-const mockSession = { id: 'user-id', email: 'test@example.com', name: 'Test User', roleName: 'Администратор' };
+const mockSession = { id: 'user-id', email: 'test@example.com', name: 'Test User', roleSlug: 'admin' };
 
 describe('contacts.actions', () => {
     beforeEach(() => {
@@ -92,7 +92,7 @@ describe('contacts.actions', () => {
             id: mockSession.id,
             name: mockSession.name,
             email: mockSession.email,
-            role: { name: mockSession.roleName, permissions: {} },
+            role: { slug: mockSession.roleSlug, name: "Админ", permissions: {} },
         });
     });
 

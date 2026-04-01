@@ -18,7 +18,7 @@ type User = InferSelectModel<typeof users>;
 
 // User Actions
 export async function getCurrentUserAction(): Promise<ActionResult<User & { 
-    role: { id: string; name: string } | null, 
+    role: { id: string; name: string; slug: string | null } | null, 
     department: { id: string; name: string } | null 
 }>> {
     return withAuth(async (session) => {
@@ -32,7 +32,7 @@ export async function getCurrentUserAction(): Promise<ActionResult<User & {
 
         if (!currentUser) return ERRORS.NOT_FOUND("Пользователь");
         return ok(currentUser as User & { 
-            role: { id: string; name: string } | null, 
+            role: { id: string; name: string; slug: string | null } | null, 
             department: { id: string; name: string } | null 
         });
     }, { errorPath: "getCurrentUserAction" });

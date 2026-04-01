@@ -35,10 +35,10 @@ interface OrderInventoryItem {
 
 interface CreateOrderPageClientProps {
     initialInventory: OrderInventoryItem[];
-    userRoleName?: string | null;
+    userRoleSlug?: string | null;
 }
 
-export function CreateOrderPageClient({ initialInventory, userRoleName }: CreateOrderPageClientProps) {
+export function CreateOrderPageClient({ initialInventory, userRoleSlug }: CreateOrderPageClientProps) {
     const branding = useBranding();
     const isClient = useIsClient();
     const currencySymbol = branding?.currencySymbol || "₽";
@@ -316,7 +316,7 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
                                     showHistory={uiState.showHistory}
                                     searchHistory={searchState.history}
                                     isSearching={uiState.isSearching}
-                                    userRoleName={userRoleName || null}
+                                    userRoleSlug={userRoleSlug || null}
                                 />
                             )}
 

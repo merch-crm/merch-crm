@@ -3,12 +3,12 @@
 import { z } from "zod";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryAttributes,
-    inventoryAttributeTypes,
-    inventoryItems,
-    inventoryCategories,
-} from "@/lib/schema";
+import { inventoryAttributes } from "@/lib/schema/warehouse/attributes";
+import { 
+    inventoryAttributeTypes, 
+    inventoryCategories 
+} from "@/lib/schema/warehouse/categories";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { logAction } from "@/lib/audit";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { refreshWarehouse } from "../../warehouse-shared.actions";

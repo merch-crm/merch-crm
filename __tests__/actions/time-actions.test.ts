@@ -37,7 +37,7 @@ describe('Time Actions', () => {
         vi.resetAllMocks();
         vi.mocked(getSession).mockResolvedValue(mockSession({ 
             id: USER_ID,
-            roleName: 'Администратор' 
+            roleSlug: 'admin' 
         }));
     });
 

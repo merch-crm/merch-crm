@@ -29,7 +29,7 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
 
             // Status transition validation
             // Admins and Management can jump any status
-            const isAdmin = ROLE_GROUPS.ADMINS.includes(session.roleName);
+            const isAdmin = ROLE_GROUPS.ADMINS.includes(session.roleSlug);
             
             const allowedTransitions: Record<string, string[]> = {
                 "new": ["design", "production", "cancelled"], 

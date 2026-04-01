@@ -3,7 +3,8 @@
 import { z } from "zod";
 import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { inventoryTransactions, orderItems } from "@/lib/schema";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { orderItems } from "@/lib/schema/orders";
 import { withAuth } from "@/lib/action-helpers";
 import { type ActionResult, ok, ERRORS } from "@/lib/types";
 import { type ItemHistoryTransaction, type ActiveOrderItem } from "./types";

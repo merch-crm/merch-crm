@@ -314,7 +314,7 @@ export async function deleteProductionTask(id: string) {
 
     try {
         // RBAC: Только Администратор или Руководство могут удалять задачи
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "Недостаточно прав для удаления задачи" };
         }
 

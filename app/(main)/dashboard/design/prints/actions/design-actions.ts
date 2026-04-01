@@ -251,7 +251,7 @@ export async function deleteDesign(id: string): Promise<ActionResult> {
             return ERRORS.NOT_FOUND("Макет");
         }
 
-        const isAdmin = session.roleName === "Администратор" || session.roleName === "Руководство";
+        const isAdmin = session.roleSlug === "admin" || session.roleSlug === "management";
         if (!isAdmin && design.creator !== session.id) {
             return ERRORS.FORBIDDEN("Вы не можете удалить этот макет");
         }

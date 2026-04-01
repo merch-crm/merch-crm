@@ -43,7 +43,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
         handleSubmit
     } = useAdjustStock({ item, locations, initialType, onClose });
 
-    const canSeeCost = user?.roleName === "Администратор" || user?.roleName === "Руководство" || user?.departmentName === "Отдел продаж";
+    const canSeeCost = user?.roleSlug === "admin" || user?.roleSlug === "management" || user?.departmentName === "Отдел продаж";
 
     const currentStockOnLocation = Array.isArray(itemStocks)
         ? itemStocks.find(s => s.storageLocationId === selectedLocationId)?.quantity ?? 0

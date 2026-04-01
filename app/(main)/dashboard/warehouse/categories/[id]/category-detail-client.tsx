@@ -167,7 +167,7 @@ export function CategoryDetailClient({
         return counts;
     }, [items]);
 
-    const canSeeCost = user?.roleName === 'Администратор' || user?.roleName === 'Руководство' || user?.departmentName === 'Отдел продаж';
+    const canSeeCost = user?.roleSlug === 'admin' || user?.roleSlug === 'management' || user?.departmentName === 'Отдел продаж';
 
     const subStartIndex = (ui.subCurrentPage - 1) * subsPerPage;
     const currentSubCategories = subCategories.slice(subStartIndex, subStartIndex + subsPerPage);

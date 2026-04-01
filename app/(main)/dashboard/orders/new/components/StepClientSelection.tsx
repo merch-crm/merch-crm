@@ -15,7 +15,7 @@ interface StepClientSelectionProps {
     showHistory: boolean;
     searchHistory: string[];
     isSearching: boolean;
-    userRoleName: string | null;
+    userRoleSlug: string | null;
 }
 
 export function StepClientSelection({
@@ -27,7 +27,7 @@ export function StepClientSelection({
     showHistory,
     searchHistory,
     isSearching,
-    userRoleName
+    userRoleSlug
 }: StepClientSelectionProps) {
     return (
         <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -86,7 +86,7 @@ export function StepClientSelection({
                             <div className="text-left min-w-0 flex-1">
                                 <p className="font-bold text-foreground truncate">{client.displayName || "Без имени"}</p>
                                 <p className="text-xs text-muted-foreground truncate">
-                                    {(client.company && typeof client.company === 'object' ? (client.company as { name: string }).name : String(client.company || "")) || ""} • {["Печатник", "Дизайнер"].includes(userRoleName || "") ? "HIDDEN" : (client.phone || "Нет телефона")}
+                                    {(client.company && typeof client.company === 'object' ? (client.company as { name: string }).name : String(client.company || "")) || ""} • {["printer", "designer"].includes(userRoleSlug || "") ? "HIDDEN" : (client.phone || "Нет телефона")}
                                 </p>
                             </div>
                         </Button>

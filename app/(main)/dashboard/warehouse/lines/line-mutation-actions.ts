@@ -5,12 +5,10 @@ import { okVoid } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 import { eq, sql, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    productLines,
-    inventoryCategories,
-    inventoryItems,
-    printCollections,
-} from "@/lib/schema";
+import { productLines } from "@/lib/schema/product-lines";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { printCollections } from "@/lib/schema/designs";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -205,7 +203,7 @@ export async function deleteProductLine(id: string): Promise<{ success: boolean;
             return { success: false, error: "Линейка не найдена" };
         }
 
-        const isAdmin = session.roleName === "Администратор" || session.roleName === "Руководство";
+        const isAdmin = session.roleSlug === "admin" || session.roleSlug === "management";
         if (!isAdmin && line.createdBy !== session.id) {
             return { success: false, error: "Недостаточно прав для удаления" }
         }

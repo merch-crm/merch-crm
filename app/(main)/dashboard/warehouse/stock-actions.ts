@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { eq, sql, and, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryItems,
-    inventoryTransactions,
-    inventoryStocks,
-    inventoryTransfers,
-    storageLocations,
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { 
+    inventoryStocks, 
+    inventoryTransactions, 
+    inventoryTransfers 
+} from "@/lib/schema/warehouse/stock";
+import { storageLocations } from "@/lib/schema/storage";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { checkItemStockAlerts } from "@/lib/notifications";

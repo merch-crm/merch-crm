@@ -10,6 +10,7 @@ export interface SessionUser {
   email: string;
   name: string;
   roleName: string;
+  roleSlug: string;
   roleId?: string;
   departmentName: string | null;
 }
@@ -18,11 +19,11 @@ export interface UserWithRelations {
   id: string;
   name: string;
   email: string;
-  role: { id: string; name: string; permissions: Record<string, boolean> } | null;
+  role: { id: string; name: string; slug: string; permissions: Record<string, boolean> } | null;
   department: { id: string; name: string } | null;
 }
 
-export type RoleCheck = string[] | ((roleName: string, user: UserWithRelations) => boolean);
+export type RoleCheck = string[] | ((roleSlug: string, user: UserWithRelations) => boolean);
 
 export interface WithAuthOptions {
   /** Список разрешённых ролей или функция проверки */
@@ -64,14 +65,17 @@ export const ForbiddenError = () =>
 // Константы ролей
 // ═══════════════════════════════════════════════════════════
 
+import { ROLE_SLUGS } from "@/lib/roles";
+
 export const ROLES = {
-  ADMIN: "Администратор",
-  MANAGEMENT: "Руководство",
-  SALES: "Отдел продаж",
-  DESIGNER: "Дизайнер",
-  PRINTER: "Печатник",
-  EMBROIDERY: "Вышивка",
-  WAREHOUSE: "Склад",
+  ADMIN: ROLE_SLUGS.ADMIN,
+  MANAGEMENT: ROLE_SLUGS.MANAGEMENT,
+  MANAGER: ROLE_SLUGS.MANAGER,
+  SALES: ROLE_SLUGS.SALES,
+  DESIGNER: ROLE_SLUGS.DESIGNER,
+  PRINTER: ROLE_SLUGS.PRINTER,
+  EMBROIDERY: ROLE_SLUGS.EMBROIDERER,
+  WAREHOUSE: ROLE_SLUGS.WAREHOUSE,
 } as const;
 
 export const ROLE_GROUPS = {

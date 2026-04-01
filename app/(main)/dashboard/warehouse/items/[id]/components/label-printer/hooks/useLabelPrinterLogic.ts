@@ -295,17 +295,18 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
             allContent += `<div class="label-container" style="text-align: ${uiState.alignment}">${content || ''}</div>`;
         }
 
+        const nonce = typeof document !== 'undefined' ? document.body.dataset.nonce : "";
         printWindow.document.write(`
             <html>
                 <head>
                     <title>Печать этикеток - ${escapeHtml(item.name || "")}</title>
-                    <style>${styles}</style>
+                    <style nonce="${nonce}">${styles}</style>
                 </head>
                 <body>
                     <div class="label-page">
                         ${allContent}
                     </div>
-                    <script>
+                    <script nonce="${nonce}">
                         window.onload = () => {
                             window.print();
                         }

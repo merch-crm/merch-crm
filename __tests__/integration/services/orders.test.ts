@@ -35,7 +35,7 @@ describe("Orders Service", () => {
 
     const [role] = await db
       .insert(roles)
-      .values({ name: `Test Admin ${Math.random()}`, departmentId: dept.id, permissions: { all: true } })
+      .values({ name: `Test Admin ${Math.random()}`, slug: `admin-${Math.random()}`, departmentId: dept.id, permissions: { all: true } })
       .returning();
 
     const [user] = await db
@@ -83,7 +83,7 @@ describe("Orders Service", () => {
       email: "test@test.com",
       name: "Тест Юзер",
       roleId: testRoleId,
-      roleName: "Администратор",
+      roleSlug: "admin",
     } as unknown as Session);
   });
 

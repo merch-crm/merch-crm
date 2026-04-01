@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   check:
@@ -37,7 +40,7 @@ jobs:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/merch_crm_test
       TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/merch_crm_test
       REDIS_HOST: localhost
-      AUTH_SECRET: step-id-test-secret-long-enough-32-chars
+      AUTH_SECRET: ci-test-secret-long-enough-32-characters
       SKIP_ENV_VALIDATION: "true"
 
     steps:
@@ -48,11 +51,12 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: npm ci --legacy-peer-deps
 
-      - name: Run Database Migrations
+      - name: Push schema to test DB
         run: npm run db:push
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/merch_crm_test
@@ -116,7 +120,6 @@ jobs:
           tags: ghcr.io/${{ steps.repo_name.outputs.name }}-migrator:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
 
   deploy:
     needs: build-and-push

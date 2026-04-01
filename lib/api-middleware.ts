@@ -20,7 +20,7 @@ export function withRateLimit(
             ? `${options.type}:${options.keyPrefix}:${ip}`
             : `${options.type}:${ip}`;
 
-        const result = await rateLimit(key, config.limit, config.window);
+        const result = await rateLimit(key, config.limit, config.window, options.type === "auth");
 
         if (!result.success) {
             return NextResponse.json(

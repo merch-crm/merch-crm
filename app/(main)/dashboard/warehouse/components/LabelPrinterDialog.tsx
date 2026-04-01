@@ -103,7 +103,8 @@ export function LabelPrinterDialog({ isOpen, onClose, item, attributeTypes, allA
             allContent += `<div class="label-container" style="text-align: ${config.alignment}">${content}</div>`;
         }
 
-        printWindow.document.write(`<html><head><style>${styles}</style></head><body>${allContent}<script>window.onload=()=>window.print()</script></body></html>`);
+        const nonce = typeof document !== 'undefined' ? document.body.dataset.nonce : "";
+        printWindow.document.write(`<html><head><style nonce="${nonce}">${styles}</style></head><body>${allContent}<script nonce="${nonce}">window.onload=()=>window.print()</script></body></html>`);
         printWindow.document.close();
     };
 

@@ -167,7 +167,7 @@ export async function deleteDesignVersion(id: string): Promise<ActionResult> {
             return { success: false, error: "Версия не найдена" };
         }
 
-        const isAdmin = session.roleName === "Администратор" || session.roleName === "Руководство";
+        const isAdmin = session.roleSlug === "admin" || session.roleSlug === "management";
         if (!isAdmin && version.creator !== session.id) {
             return { success: false, error: "Недостаточно прав для удаления" }
         }

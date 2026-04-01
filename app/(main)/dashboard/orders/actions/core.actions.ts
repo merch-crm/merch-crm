@@ -94,7 +94,7 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<ActionRes
         }
         displayName = displayName || 'Неизвестный клиент';
 
-        const shouldHidePhone = ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleName);
+        const shouldHidePhone = ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleSlug);
 
         return ({
           ...order,
@@ -148,7 +148,7 @@ export async function getOrderById(id: string): Promise<ActionResult<OrderWithRe
       }
       client.name = client.name || 'Неизвестный клиент';
 
-      if (ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleName)) {
+      if (ROLE_GROUPS.HIDE_CLIENT_PHONE.includes(session.roleSlug)) {
         client.phone = 'HIDDEN';
       }
     }

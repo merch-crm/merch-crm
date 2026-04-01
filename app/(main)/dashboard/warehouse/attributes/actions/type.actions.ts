@@ -3,13 +3,13 @@
 import { z } from "zod";
 import { eq, asc, inArray, and, isNull, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryAttributes,
-    inventoryAttributeTypes,
-    inventoryItemAttributes,
-    inventoryTransactions,
-    accounts
-} from "@/lib/schema";
+import { 
+    inventoryAttributes, 
+    inventoryItemAttributes 
+} from "@/lib/schema/warehouse/attributes";
+import { inventoryAttributeTypes } from "@/lib/schema/warehouse/categories";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { accounts } from "@/lib/schema/users";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { comparePassword } from "@/lib/password";
 import { refreshWarehouse } from "../../warehouse-shared.actions";
@@ -197,7 +197,7 @@ export async function deleteInventoryAttributeType(id: string, password?: string
         const [type] = await db.select().from(inventoryAttributeTypes).where(eq(inventoryAttributeTypes.id, id)).limit(1);
         if (!type) return ERRORS.NOT_FOUND("Тип атрибута");
 
-        const isAdmin = session.roleName === "Администратор";
+        const isAdmin = session.roleSlug === "admin";
 
         if (type.isSystem) {
             if (!isAdmin) {

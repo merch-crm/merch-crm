@@ -5,13 +5,13 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { eq, and, sql, ne, inArray, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    storageLocations,
-    inventoryStocks,
-    inventoryTransactions,
-    inventoryTransfers,
-    accounts,
-} from "@/lib/schema";
+import { storageLocations } from "@/lib/schema/storage";
+import { 
+    inventoryStocks, 
+    inventoryTransactions, 
+    inventoryTransfers 
+} from "@/lib/schema/warehouse/stock";
+import { accounts } from "@/lib/schema/users";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
@@ -173,7 +173,7 @@ export async function deleteStorageLocation(id: string, password?: string): Prom
         if (!location) return ERRORS.NOT_FOUND("Место хранения");
 
         if (location.isSystem) {
-            if (session.roleName !== "Администратор") {
+            if (session.roleSlug !== "admin") {
                 return ERRORS.FORBIDDEN("Only admin can delete system storage locations");
             }
             if (!password) {

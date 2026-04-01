@@ -14,7 +14,7 @@ const { orders, payments } = schema;
 
 export async function refundOrder(orderId: string, amount: number, reason: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+    if (!session || !["admin", "management", "sales"].includes(session.roleSlug)) {
         return { success: false, error: "Недостаточно прав для оформления возврата" };
     }
 
@@ -53,7 +53,7 @@ export async function refundOrder(orderId: string, amount: number, reason: strin
 
 export async function addPayment(orderId: string, amount: number, method: string, isAdvance: boolean, comment?: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+    if (!session || !["admin", "management", "sales"].includes(session.roleSlug)) {
         return { success: false, error: "Недостаточно прав для добавления оплаты" };
     }
 

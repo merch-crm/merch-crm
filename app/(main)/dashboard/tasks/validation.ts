@@ -179,7 +179,7 @@ export const createAutoTaskSchema = z.object({
   type: taskTypeSchema,
   priority: taskPrioritySchema,
   departmentId: z.string().uuid().optional(),
-  roleName: z.string().optional(),
+  roleSlug: z.string().optional(),
   sourceType: z.string().min(1),
   sourceId: z.string().min(1),
 });

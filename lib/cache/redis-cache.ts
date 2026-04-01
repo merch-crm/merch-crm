@@ -5,8 +5,7 @@
  * Используется для статистики, справочников, часто запрашиваемых данных.
  */
 
-import Redis from "ioredis";
-import { env } from "@/lib/env";
+import { redis } from "@/lib/redis";
 
 export const CACHE_TTL = {
   ORDER_STATS: 60,
@@ -48,75 +47,12 @@ interface CacheResult<T> {
 }
 
 class RedisCache {
-  private client: Redis | null = null;
-  private isConnected = false;
-  private connectionPromise: Promise<void> | null = null;
+  private redis = redis;
 
-  private async getClient(): Promise<Redis> {
-    if (this.client && this.isConnected) return this.client;
-    if (!this.connectionPromise) {
-      this.connectionPromise = this.connect();
-    }
-    await this.connectionPromise;
-    return this.client!;
+  private async getClient() {
+    return this.redis;
   }
 
-  private async connect(): Promise<void> {
-    const redisHost = env.REDIS_HOST || "127.0.0.1";
-    const redisPort = env.REDIS_PORT || 6379;
-    const redisPassword = env.REDIS_PASSWORD;
-
-    this.client = new Redis({
-      host: redisHost,
-      port: redisPort,
-      password: redisPassword || undefined,
-      maxRetriesPerRequest: 3,
-      lazyConnect: true,
-      connectTimeout: 10000,
-      commandTimeout: 5000,
-      enableOfflineQueue: true,
-      retryStrategy: (times) => {
-        if (times > 10) return 2000; // Держим интервал в 2 секунды после 10 попыток
-        return Math.min(times * 200, 2000);
-      },
-      reconnectOnError: (err) => {
-        const targetErrors = ["READONLY", "ECONNRESET", "Connection is closed"];
-        if (targetErrors.some(target => err.message.includes(target))) {
-            return true;
-        }
-        return false;
-      },
-    });
-
-    this.client.on("connect", () => {
-      this.isConnected = true;
-      if (process.env.NODE_ENV === "development") {
-        console.log("[RedisCache] Подключено к Redis");
-      }
-    });
-
-    this.client.on("error", (error) => {
-      this.isConnected = false;
-      this.connectionPromise = null;
-      if (process.env.NODE_ENV === "development") {
-        console.warn("[RedisCache] Ошибка Redis:", error.message);
-      }
-    });
-
-    this.client.on("close", () => {
-      this.isConnected = false;
-      this.connectionPromise = null;
-    });
-
-    try {
-      await this.client.connect();
-    } catch (error) {
-      this.connectionPromise = null;
-      if (process.env.NODE_ENV === "development") {
-        console.warn("[RedisCache] Не удалось подключиться к Redis:", error);
-      }
-    }
-  }
 
   async get<T>(key: string): Promise<T | null> {
     try {
@@ -171,7 +107,7 @@ class RedisCache {
       const client = await this.getClient();
       const keys = await client.keys(pattern);
       if (keys.length === 0) return 0;
-      await client.del(...keys);
+      await (client as any).del(...keys);
       if (process.env.NODE_ENV === "development") {
         console.log(`[RedisCache] Инвалидировано ${keys.length} ключей по паттерну ${pattern}`);
       }
@@ -188,7 +124,7 @@ class RedisCache {
       const tagKey = `crm:tags:${tag}`;
       const keys = await client.smembers(tagKey);
       if (keys.length === 0) return 0;
-      await client.del(...keys, tagKey);
+      await (client as any).del(...keys, tagKey);
       return keys.length;
     } catch (error) {
       console.error(`[RedisCache] Ошибка invalidateByTag(${tag}):`, error);
@@ -240,7 +176,7 @@ class RedisCache {
       const dbSize = await client.dbsize();
       const memoryMatch = info.match(/used_memory_human:(\S+)/);
       return {
-        connected: this.isConnected,
+        connected: true, // Singleton is assumed connected or in reconnect cycle
         keys: dbSize,
         memoryUsed: memoryMatch?.[1] || "unknown",
       };

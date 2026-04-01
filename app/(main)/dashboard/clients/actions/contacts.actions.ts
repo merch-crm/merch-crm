@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clientContacts, clients, type ClientContact } from "@/lib/schema";
+import { clientContacts } from "@/lib/schema/clients/contacts";
+import { clients } from "@/lib/schema/clients/main";
+import type { ClientContact } from "@/lib/schema/clients/contacts";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
@@ -178,7 +180,7 @@ export async function updateClientContact(
  */
 export async function deleteClientContact(contactId: string): Promise<ActionResult> {
     return withAuth(async (session) => {
-        if (!["Администратор", "Руководство", "Отдел продаж"].includes(session.roleName)) {
+        if (!["admin", "management", "sales"].includes(session.roleSlug)) {
             return ERRORS.FORBIDDEN();
         }
 

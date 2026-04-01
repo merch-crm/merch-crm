@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 
-import { inventoryCategories } from "@/lib/schema";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
 import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { Metadata } from "next";

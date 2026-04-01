@@ -239,7 +239,7 @@ export function EditTypeDialog({
                         <Button
                             variant="ghost"
                             onClick={() => setDeleteDialog((prev: DeleteDialogState) => ({ ...prev, type: editingTypeLatest }))}
-                            disabled={editingTypeLatest.isSystem && user?.roleName !== "Администратор"}
+                            disabled={editingTypeLatest.isSystem && user?.roleSlug !== "admin"}
                             className="h-11 px-5 font-bold text-sm flex items-center gap-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale shrink-0"
                         >
                             <Trash2 className="w-4 h-4 shrink-0" />

@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 
 // Mock session
 vi.mock("@/lib/session", () => ({
-    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleName: "Администратор" }),
+    getSession: vi.fn().mockResolvedValue({ id: "user-1", name: "Test User", roleSlug: "admin" }),
 }));
 
 // Mock db

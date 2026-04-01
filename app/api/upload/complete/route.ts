@@ -4,7 +4,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { completeUpload, createUploadReadStream, cleanupTempFile } from "@/lib/upload-stream";
-import { uploadToS3 } from "@/lib/s3";
+import { uploadToS3 } from "@/lib/storage";
 import { getSession } from "@/lib/session";
 
 export async function POST(request: NextRequest) {

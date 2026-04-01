@@ -1,11 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import {
-    inventoryItems,
-    productLines,
-    printDesigns,
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { productLines } from "@/lib/schema/product-lines";
+import { printDesigns } from "@/lib/schema/designs";
 import { eq, and, desc } from "drizzle-orm";
 
 /**

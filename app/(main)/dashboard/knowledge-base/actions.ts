@@ -39,7 +39,7 @@ export async function getKBFolders(): Promise<ActionResult<KBFolder[]>> {
 
 export async function createKBFolder(name: string, parentId: string | null = null): Promise<ActionResult<KBFolder>> {
     const session = await getSession();
-    if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
+    if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
 
@@ -131,7 +131,7 @@ export async function getKBPageDetail(id: string): Promise<ActionResult<KBPage &
 
 export async function createKBPage(data: { title: string, content: string, folderId: string | null }): Promise<ActionResult<typeof wikiPages.$inferSelect>> {
     const session = await getSession();
-    if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
+    if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
 
@@ -168,7 +168,7 @@ export async function createKBPage(data: { title: string, content: string, folde
 
 export async function updateKBPage(id: string, data: { title?: string, content?: string, folderId?: string | null }): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
+    if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
 
@@ -206,7 +206,7 @@ export async function updateKBPage(id: string, data: { title?: string, content?:
 
 export async function deleteKBPage(id: string): Promise<ActionResult> {
     const session = await getSession();
-    if (!session || !["Администратор","Управляющий","Дизайнер"].includes(session.roleName)) {
+    if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
 

@@ -102,7 +102,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
                         onTouchStart={() => loadDialogData('history')}
                         onClick={() => loadDialogData('history')}
                     >
-                        {session?.roleName === "Администратор" && (
+                        {session?.roleSlug === "admin" && (
                             <Button
                                 data-testid="clear-history-btn"
                                 variant="destructive"

@@ -47,7 +47,7 @@ export const ItemFinancialSection = React.memo(({
         costHistoryStats
     } = useItemFinancials({ item, history, timeframe });
 
-    if (user?.roleName === 'Менеджер') return null;
+    if (user?.roleSlug === 'manager') return null;
 
     return (
         <div className={cn("flex flex-col gap-3", className)}>

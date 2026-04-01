@@ -37,7 +37,7 @@ export default async function DashboardLayout({
     try {
         const { pool } = await import('@/lib/db');
         const sql = `
-            SELECT u.name, u.email, u.avatar, r.name as role_name, d.name as department_name
+            SELECT u.name, u.email, u.avatar, r.name as role_name, r.slug as role_slug, d.name as department_name
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             LEFT JOIN departments d ON u.department_id = d.id
@@ -52,7 +52,7 @@ export default async function DashboardLayout({
                 name: row.name,
                 email: row.email,
                 avatar: row.avatar,
-                role: { name: row.role_name },
+                role: { name: row.role_name, slug: row.role_slug },
                 department: { name: row.department_name }
             };
         }
@@ -69,6 +69,7 @@ export default async function DashboardLayout({
         email: userData.email,
         avatar: userData.avatar,
         roleName: userData.role?.name || "Пользователь",
+        roleSlug: userData.role?.slug || "user",
         departmentName: userData.department?.name || ""
     };
 
@@ -83,7 +84,7 @@ export default async function DashboardLayout({
     try {
         const isMaintenance = await getMaintenanceMode();
 
-        if (isMaintenance && user.roleName !== "Администратор") {
+        if (isMaintenance && user.roleSlug !== "admin") {
             return (
                 <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
                     <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-[--padding-xl] space-y-3 animate-in zoom-in-95 duration-700">

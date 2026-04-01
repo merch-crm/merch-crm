@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import type { BrandingSettings } from "@/lib/types";
 
 export function UserNav({ user, branding }: {
-    user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null },
+    user: { name: string, email: string, roleName: string, roleSlug?: string, departmentName: string, avatar?: string | null },
     branding?: BrandingSettings
 }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -151,7 +151,7 @@ export function UserNav({ user, branding }: {
                                         <span className="text-base md:text-sm font-bold md:font-medium">Профиль</span>
                                     </Link>
 
-                                    {(["Руководство", "Отдел продаж"].includes(user.departmentName) || user.roleName === "Администратор") && (
+                                    {(["Руководство", "Отдел продаж"].includes(user.departmentName) || user.roleSlug === "admin" || user.roleName === "Администратор") && (
                                         <>
                                             <Link
                                                 href="/dashboard/warehouse/overview"
@@ -173,7 +173,7 @@ export function UserNav({ user, branding }: {
                                         </>
                                     )}
 
-                                    {user.roleName === "Администратор" && (
+                                    {(user.roleSlug === "admin" || user.roleName === "Администратор") && (
                                         <Link
                                             href="/admin-panel"
                                             onClick={() => setIsOpen(false)}

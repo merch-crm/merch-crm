@@ -2,12 +2,10 @@
 
 import { eq, sql, asc, and, inArray, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    productLines,
-    inventoryCategories,
-    inventoryItems,
-    printCollections,
-} from "@/lib/schema";
+import { productLines } from "@/lib/schema/product-lines";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { printCollections } from "@/lib/schema/designs";
 import { logError } from "@/lib/error-logger";
 import { getSession } from "@/lib/session";
 import { z } from "zod";

@@ -3,10 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { eq, sql, isNull, and, asc, type InferSelectModel } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryCategories,
-    inventoryItems,
-} from "@/lib/schema";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";

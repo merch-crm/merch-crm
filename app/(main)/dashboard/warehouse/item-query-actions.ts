@@ -3,10 +3,8 @@
 import { z } from "zod";
 import { desc, eq, sql, inArray, and, asc, or, ilike, type SQL, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryItems,
-    inventoryStocks,
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryStocks } from "@/lib/schema/warehouse/stock";
 import { withAuth } from "@/lib/action-helpers";
 import { type InventoryFilters, type InventoryItem } from "./types";
 import { type ActionResult, ok, ERRORS } from "@/lib/types";

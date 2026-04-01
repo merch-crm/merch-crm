@@ -81,7 +81,7 @@ export const createOrder = createSafeAction(
   async (data) => {
     const session = await getSession();
 
-    if (!session || !canManageOrders(session.roleName)) {
+    if (!session || !canManageOrders(session.roleSlug)) {
       throw new Error("Недостаточно прав для создания заказа");
     }
 
@@ -249,7 +249,7 @@ export const updateOrderStatus = createSafeAction(
     const previousStatus = order.status;
 
     // Проверка разрешённых переходов для не-админов
-    if (!isAdmin(session.roleName)) {
+    if (!isAdmin(session.roleSlug)) {
       const allowedTransitions: Record<OrderStatus, OrderStatus[]> = {
         new: ["design", "production", "cancelled"],
         design: ["new", "production", "cancelled"],

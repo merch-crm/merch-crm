@@ -35,7 +35,7 @@ describe('Order Actions (Integration)', () => {
       sessionId: 'test-session',
       email: testData.user.email,
       name: testData.user.name,
-      roleName: 'Администратор',
+      roleSlug: 'admin',
       departmentName: 'Тестовый отдел',
       // Fields to satisfy the mock type
       ua: 'test-ua',

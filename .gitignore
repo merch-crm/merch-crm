@@ -66,6 +66,7 @@ errors_post.txt
 errors_final.txt
 /storage/
 *.sql
+!drizzle/*.sql
 predeploy_*.txt
 ship-safe-report.*
 ship-safe-full-report.txt

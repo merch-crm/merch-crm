@@ -205,7 +205,7 @@ export async function getClients(filters: Record<string, unknown> = {}): Promise
                 .limit(1);
 
             const total = Number(countResult?.count || 0);
-            const shouldHidePhone = ["Печатник", "Дизайнер"].includes(ctx.roleName);
+            const shouldHidePhone = ["printer", "designer"].includes(ctx.roleSlug);
 
             const safeData: ClientSummary[] = (data ?? []).map(c => ({
                 ...c,
@@ -232,7 +232,7 @@ export async function getClientDetails(clientId: string): Promise<ActionResult<C
             const client = await db.query.clients.findFirst({ where: eq(clients.id, id), with: { manager: { columns: { name: true } } } });
             if (!client) throw new Error("Клиент не найден");
 
-            const shouldHidePhone = ["Печатник", "Дизайнер"].includes(ctx.roleName);
+            const shouldHidePhone = ["printer", "designer"].includes(ctx.roleSlug);
             if (shouldHidePhone) client.phone = "HIDDEN";
 
             const ordersRaw = await db.query.orders.findMany({ where: eq(orders.clientId, id), orderBy: [desc(orders.createdAt)], limit: 100 });

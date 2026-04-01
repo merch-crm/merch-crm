@@ -86,7 +86,7 @@ describe("Collection Actions", () => {
 
     describe("getCollections", () => {
         it("should return empty array when no collections", async () => {
-            vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleName: "Администратор" }));
+            vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleSlug: "admin" }));
 
             // @ts-expect-error -- mockQuery._results is a test-only property not in the type
             mockSelect()._results = [];
@@ -125,7 +125,7 @@ describe("Collection Actions", () => {
         });
 
         it("should validate input with zod", async () => {
-            vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleName: "Дизайнер" }));
+            vi.mocked(getSession).mockResolvedValue(mockSession({ id: "user-1", roleSlug: "designer" }));
 
             const result = await createCollection({ name: "" });
 

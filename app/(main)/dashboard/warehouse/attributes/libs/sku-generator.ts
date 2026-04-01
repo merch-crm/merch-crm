@@ -1,9 +1,9 @@
 import { type InferSelectModel } from"drizzle-orm";
-import {
-    inventoryAttributes,
-    inventoryCategories,
-    inventoryAttributeTypes
-} from"@/lib/schema";
+import { inventoryAttributes } from "@/lib/schema/warehouse/attributes";
+import { 
+    inventoryCategories, 
+    inventoryAttributeTypes 
+} from "@/lib/schema/warehouse/categories";
 
 type Attribute = InferSelectModel<typeof inventoryAttributes>;
 type Category = InferSelectModel<typeof inventoryCategories>;

@@ -37,7 +37,7 @@ export async function saveEditorExport(rawData: z.infer<typeof SaveExportSchema>
         }
 
         // RBAC: Only admin or management can export
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на экспорт проектов" };
         }
 
@@ -105,7 +105,7 @@ export async function getProjectExports(projectId: string): Promise<ActionResult
         }
 
         // RBAC: Only admin or management can see exports
-        if (session.roleName !== "Администратор" && session.roleName !== "Руководство") {
+        if (session.roleSlug !== "admin" && session.roleSlug !== "management") {
             return { success: false, error: "У вас нет прав на просмотр экспортов" };
         }
 

@@ -14,7 +14,7 @@ interface AutoTaskInput {
   type: TaskType;
   priority: TaskPriority;
   departmentId?: string;
-  roleName?: string;
+  roleSlug?: string;
   sourceType: string;
   sourceId: string;
 }
@@ -45,12 +45,12 @@ export async function createAutoTask(input: AutoTaskInput) {
     const creatorId = systemUser?.id || "00000000-0000-0000-0000-000000000000";
 
     let assigneeIds: string[] = [];
-    if (input.roleName) {
+    if (input.roleSlug) {
       const usersByRole = await db
         .select({ id: users.id })
         .from(users)
         .innerJoin(roles, eq(users.roleId, roles.id))
-        .where(eq(roles.name, input.roleName))
+        .where(eq(roles.slug, input.roleSlug))
         .limit(100);
       
       assigneeIds = usersByRole.map(u => u.id);

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createBaseLineWithPositions, createFinishedLineWithPositions } from "./actions";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
-import { productLines } from "@/lib/schema";
+import { productLines } from "@/lib/schema/product-lines";
 import { revalidatePath } from "next/cache";
 import { mockSession } from "@/tests/helpers/mocks";
 

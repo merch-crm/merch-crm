@@ -32,6 +32,7 @@ export default async function AdminLayout({
         email: currentUser.email,
         avatar: currentUser.avatar,
         roleName: currentUser.role?.name || "Администратор",
+        roleSlug: currentUser.role?.slug || "admin",
         departmentName: currentUser.department?.name || "Руководство"
     } : null;
 

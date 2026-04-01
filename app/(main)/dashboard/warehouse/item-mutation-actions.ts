@@ -4,12 +4,9 @@ import path from "path";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import {
-    inventoryItems,
-    inventoryTransactions,
-    inventoryCategories,
-    inventoryStocks,
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { inventoryStocks, inventoryTransactions } from "@/lib/schema/warehouse/stock";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { checkItemStockAlerts } from "@/lib/notifications";

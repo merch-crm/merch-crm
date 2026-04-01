@@ -76,7 +76,7 @@ export async function updateMockup(id: string, rawData: z.infer<typeof UpdateMoc
         if (!existing) return { success: false, error: "Мокап не найден" };
 
         // RBAC/IDOR: Admin, Management, or Owner
-        const canUpdate = session.roleName === "Администратор" || session.roleName === "Руководство" || (existing.design as unknown as { createdBy: string }).createdBy === session.id;
+        const canUpdate = session.roleSlug === "admin" || session.roleSlug === "management" || (existing.design as unknown as { createdBy: string }).createdBy === session.id;
         if (!canUpdate) return { success: false, error: "Нет прав для изменения этого мокапа" };
 
         const [mockup] = await db
@@ -112,7 +112,7 @@ export async function deleteMockup(id: string) {
         if (!existing) return { success: false, error: "Мокап не найден" };
 
         // RBAC/IDOR: Admin, Management, or Owner
-        const canDelete = session.roleName === "Администратор" || session.roleName === "Руководство" || (existing.design as unknown as { createdBy: string }).createdBy === session.id;
+        const canDelete = session.roleSlug === "admin" || session.roleSlug === "management" || (existing.design as unknown as { createdBy: string }).createdBy === session.id;
         if (!canDelete) return { success: false, error: "Нет прав для удаления этого мокапа" };
 
         const [mockup] = await db
@@ -147,7 +147,7 @@ export async function updateMockupsOrder(designId: string, items: { id: string; 
         if (!design) return { success: false, error: "Дизайн не найден" };
 
         // RBAC/IDOR: Admin, Management, or Owner
-        const canUpdate = session.roleName === "Администратор" || session.roleName === "Руководство" || (design as unknown as { createdBy: string }).createdBy === session.id;
+        const canUpdate = session.roleSlug === "admin" || session.roleSlug === "management" || (design as unknown as { createdBy: string }).createdBy === session.id;
         if (!canUpdate) return { success: false, error: "Нет прав для изменения порядка мокапов" };
 
         await db.transaction(async (tx) => {

@@ -45,7 +45,7 @@ export default async function LoyaltyPage() {
     if (!session) redirect("/auth/login");
 
     // Ограничение доступа (опционально, например только админам)
-    if (session.roleName !== "Администратор") {
+    if (session.roleSlug !== "admin") {
         return (
             <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)]">
                 <h2 className="text-xl font-bold">Доступ ограничен</h2>

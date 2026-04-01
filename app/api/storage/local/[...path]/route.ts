@@ -18,7 +18,7 @@ export async function GET(
         if (!session) {
             return new NextResponse("Unauthorized", { status: 401 });
         }
-        if (session.roleName !== "Администратор") {
+        if (session.roleSlug !== "admin") {
             return new NextResponse("Forbidden", { status: 403 });
         }
     }

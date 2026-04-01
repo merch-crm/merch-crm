@@ -4,11 +4,9 @@ import { z } from "zod";
 import { eq, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
 import { type AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/lib/db";
-import {
-    inventoryAttributes,
-    inventoryItems,
-    inventoryTransactions,
-} from "@/lib/schema";
+import { inventoryAttributes } from "@/lib/schema/warehouse/attributes";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";

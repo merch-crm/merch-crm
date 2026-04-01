@@ -25,9 +25,10 @@ export async function uploadOrderFile(orderId: string, formData: FormData): Prom
 
     try {
         const buffer = Buffer.from(await file.arrayBuffer());
-        const { uploadFile } = await import("@/lib/s3");
+        const { uploadFile } = await import("@/lib/storage");
+        const fileKey = `uploads/${Date.now()}-${file.name}`;
         // Enable compression for order attachments
-        const { key, url } = await uploadFile(buffer, file.name, file.type, { compress: true });
+        const { key, url } = await uploadFile(fileKey, buffer, file.type, { compress: true });
 
         await db.transaction(async (tx) => {
             await tx.insert(orderAttachments).values({

@@ -23,6 +23,10 @@ class RedisMock {
     this.data.set(key, value); 
     return "OK"; 
   }
+  async setex(key: string, seconds: number, value: string) {
+    this.data.set(key, value);
+    return "OK";
+  }
   async del(key: string) { return this.data.delete(key) ? 1 : 0; }
   async incr(key: string) {
     const val = parseInt(this.data.get(key) || "0") + 1;
@@ -31,6 +35,10 @@ class RedisMock {
   }
   async expire(_key: string, _seconds: number) { return 1; }
   async ttl(_key: string) { return 60; }
+  async smembers(_key: string) { return []; }
+  async sadd(_key: string, _member: string) { return 1; }
+  async dbsize() { return this.data.size; }
+  async info(_section?: string) { return "used_memory_human:0B"; }
   
   multi() {
     const commands: (() => Promise<unknown>)[] = [];
@@ -47,6 +55,10 @@ class RedisMock {
         commands.push(() => this.ttl(key));
         return proxy;
       },
+      sadd: (key: string, member: string) => {
+        commands.push(() => this.sadd(key, member));
+        return proxy;
+      },
       exec: async () => {
         const results = [];
         for (const cmd of commands) {
@@ -56,6 +68,10 @@ class RedisMock {
       }
     };
     return proxy;
+  }
+
+  pipeline() {
+    return this.multi();
   }
 
   async keys(pattern: string) {
@@ -88,8 +104,8 @@ export async function invalidateCache(pattern: string): Promise<void> {
   try {
     const keys = await redis.keys(pattern);
     if (keys.length > 0) {
-      // Use cast to void because we don't care about the return value of del
-      await (redis as unknown as { del: (keys: string[]) => Promise<number> }).del(keys);
+      // Use cast to any because ioredis del supports both array and rest params
+      await (redis as any).del(...keys);
     }
   } catch (err) {
     console.error(`Redis invalidation error for pattern ${pattern}:`, err);

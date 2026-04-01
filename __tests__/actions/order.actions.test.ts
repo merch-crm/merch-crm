@@ -88,7 +88,7 @@ describe('Order Actions', () => {
         
         // Ensure mockSession has an id because core.actions.ts uses session.id
         const adminSession = mockSession({ 
-            roleName: 'Администратор',
+            roleSlug: 'admin',
             id: 'user-id' 
         });
         
@@ -97,7 +97,7 @@ describe('Order Actions', () => {
         vi.mocked(db.query.users.findFirst).mockResolvedValue(createMockUser({ 
             id: 'user-id', 
             roleId: 'role-id',
-            role: { name: 'Администратор' }
+            role: { slug: 'admin', name: 'Администратор' }
         }) as never);
     });
 
@@ -168,7 +168,7 @@ describe('Order Actions', () => {
         });
 
         it('должен корректно применить промокод', async () => {
-            vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
+            vi.mocked(getSession).mockResolvedValue(mockSession({ roleSlug: 'admin' }));
             
             mockTx.select.mockReturnValueOnce({
                 from: vi.fn().mockReturnThis(),
@@ -211,7 +211,7 @@ describe('Order Actions', () => {
 
     describe('updateOrderField', () => {
         it('должен обновить приоритет заказа для администратора', async () => {
-            vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Администратор' }));
+            vi.mocked(getSession).mockResolvedValue(mockSession({ roleSlug: 'admin' }));
             
             mockTx.query.orders.findFirst.mockResolvedValueOnce({ id: VALID_ORDER_ID, clientId: VALID_CLIENT_ID });
             // For the second findFirst after transaction
@@ -223,10 +223,10 @@ describe('Order Actions', () => {
         });
 
         it('должен отклонить запрос от роли без прав', async () => {
-            vi.mocked(getSession).mockResolvedValue(mockSession({ roleName: 'Клиент' }));
+            vi.mocked(getSession).mockResolvedValue(mockSession({ roleSlug: 'client' }));
             (db.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
                 id: 'user-id',
-                role: { name: 'Клиент', permissions: {} },
+                role: { slug: 'client', name: 'Клиент', permissions: {} },
             });
             
             const result = await updateOrderField(VALID_ORDER_ID, 'priority', 'high');

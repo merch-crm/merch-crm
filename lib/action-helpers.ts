@@ -63,6 +63,7 @@ export async function withAuth<T>(
         role: dbUser.role ? {
           id: dbUser.role.id,
           name: dbUser.role.name,
+          slug: dbUser.role.slug,
           permissions: (dbUser.role.permissions as Record<string, boolean>) || {},
         } : null,
         department: dbUser.department ? {
@@ -74,8 +75,8 @@ export async function withAuth<T>(
       // 3. Проверяем права
       if (options.roles) {
         const hasAccess = typeof options.roles === 'function'
-          ? options.roles(user.role?.name || '', user)
-          : options.roles.includes(user.role?.name || '');
+          ? options.roles(user.role?.slug || '', user)
+          : options.roles.includes(user.role?.slug || '');
 
         if (!hasAccess) {
           return ERRORS.FORBIDDEN();
@@ -129,17 +130,21 @@ export function createSafeAction<TInput, TOutput>(
   return async (data: TInput): Promise<ActionResult<TOutput>> => {
     try {
       // 1. CSRF-проверка для мутаций
-      if (requireCsrf && process.env.NODE_ENV === "production") {
+      if (requireCsrf && process.env.NODE_ENV !== "test") {
         const headersList = await headers();
         const csrfToken = headersList.get("x-csrf-token");
         
         const isValidCsrf = await verifyCsrfToken(csrfToken);
         if (!isValidCsrf) {
-          console.error("[SafeAction CSRF Error]: Missing or invalid CSRF token in header");
-          return {
-            success: false,
-            error: "Недействительный CSRF-токен. Обновите страницу и попробуйте снова.",
-          };
+          if (process.env.NODE_ENV !== "production") {
+            console.warn("[SafeAction CSRF Warning]: Missing or invalid CSRF token in header. This will block the request in production.");
+          } else {
+            console.error("[SafeAction CSRF Error]: Missing or invalid CSRF token in header");
+            return {
+              success: false,
+              error: "Недействительный CSRF-токен. Обновите страницу и попробуйте снова.",
+            };
+          }
         }
       }
 

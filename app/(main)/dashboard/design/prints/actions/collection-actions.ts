@@ -209,7 +209,7 @@ export async function deleteCollection(id: string): Promise<ActionResult> {
         const [collection] = await db.select().from(printCollections).where(eq(printCollections.id, id)).limit(1);
         if (!collection) return { success: false, error: "Коллекция не найдена" };
 
-        const isAdmin = session.roleName === "Администратор" || session.roleName === "Руководство";
+        const isAdmin = session.roleSlug === "admin" || session.roleSlug === "management";
         if (!isAdmin && collection.createdBy !== session.id) {
             return { success: false, error: "Недостаточно прав для удаления" }
         }

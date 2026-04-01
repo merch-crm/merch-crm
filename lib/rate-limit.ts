@@ -16,7 +16,8 @@ export interface RateLimitResult {
 export async function rateLimit(
   key: string,
   limit: number,
-  windowSeconds: number
+  windowSeconds: number,
+  failClosed: boolean = false
 ): Promise<RateLimitResult> {
   // Check for bypass in dev/test
   if (process.env.DISABLE_RATE_LIMIT === "true") {
@@ -55,7 +56,10 @@ export async function rateLimit(
     };
   } catch (error) {
     console.error("Rate limit error:", error);
-    // Fail safe
+    // Fail safe or Fail closed
+    if (failClosed) {
+      return { success: false, limit, remaining: 0, resetIn: windowSeconds };
+    }
     return { success: true, limit, remaining: limit, resetIn: windowSeconds };
   }
 }

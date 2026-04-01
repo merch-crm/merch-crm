@@ -3,18 +3,17 @@ import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { ActionResult, err, ErrorCode } from "@/lib/types";
 import { AppError, ValidationError } from "@/lib/errors";
-
-// Список системных ролей по умолчанию для экшенов, требующих авторизации
-type AllowedRole = "Администратор" | "Руководство" | "Отдел продаж" | "Дизайнер" | "Печать" | "Вышивка" | "Склад" | "Менеджер";
+import { RoleSlug } from "@/lib/roles";
 
 interface SafeActionContext {
     userId: string;
     roleName: string;
+    roleSlug: string;
 }
 
 interface ActionOptions<TInput, TOutput> {
     schema?: z.ZodType<TInput>;
-    roles?: AllowedRole[];
+    roles?: RoleSlug[];
     requireAuth?: boolean;
     handler: (input: TInput, ctx: SafeActionContext) => Promise<ActionResult<TOutput>>;
     onSuccess?: (data?: TOutput) => void;
@@ -32,7 +31,7 @@ export function createSafeAction<TInput = void, TOutput = void>({
     handler,
 }: ActionOptions<TInput, TOutput>) {
     return async (inputData?: unknown): Promise<ActionResult<TOutput>> => {
-        let ctx: SafeActionContext = { userId: "", roleName: "" };
+        let ctx: SafeActionContext = { userId: "", roleName: "", roleSlug: "" };
 
         // 1. Авторизация и проверка ролей
         if (requireAuth) {
@@ -41,10 +40,10 @@ export function createSafeAction<TInput = void, TOutput = void>({
                 return err("Не авторизован", "UNAUTHORIZED");
             }
 
-            ctx = { userId: session.id, roleName: session.roleName };
+            ctx = { userId: session.id, roleName: session.roleName, roleSlug: session.roleSlug };
 
             if (roles && roles.length > 0) {
-                if (!roles.includes(session.roleName as AllowedRole)) {
+                if (!roles.includes(session.roleSlug as RoleSlug)) {
                     return err("Недостаточно прав", "FORBIDDEN");
                 }
             }

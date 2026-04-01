@@ -1,12 +1,18 @@
 import crypto from 'crypto'
+import { AppError } from './errors'
 
 const ALGORITHM = 'aes-256-gcm'
 const IV_LENGTH = 16
 
 function getEncryptionKey(): Buffer {
-    const key = process.env.ENCRYPTION_KEY || process.env.XIAOMI_ENCRYPTION_KEY || process.env.NEXTAUTH_SECRET || 'default-encryption-key-change-me!'
+    const key = process.env.ENCRYPTION_KEY || process.env.NEXTAUTH_SECRET
+
+    if (!key && process.env.NODE_ENV === 'production') {
+        throw new AppError('Критическая ошибка безопасности: ENCRYPTION_KEY не установлен в окружении', 'SECURITY_ERROR', 500)
+    }
+
     // Приводим к 32 байтам для AES-256
-    return crypto.createHash('sha256').update(key).digest()
+    return crypto.createHash('sha256').update(key || 'dev-fallback-key-only-for-local').digest()
 }
 
 export function encrypt(text: string): string {

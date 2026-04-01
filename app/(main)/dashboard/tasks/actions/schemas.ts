@@ -32,7 +32,7 @@ export const autoTaskInputSchema = z.object({
   type: z.enum(["general", "design", "production", "embroidery", "printing"]),
   priority: z.enum(["low", "medium", "high", "urgent"]),
   departmentId: z.string().uuid().optional(),
-  roleName: z.string().optional(),
+  roleSlug: z.string().optional(),
   sourceType: z.string().min(1),
   sourceId: z.string().min(1),
 });

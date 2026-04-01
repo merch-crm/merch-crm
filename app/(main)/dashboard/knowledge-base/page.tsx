@@ -25,7 +25,7 @@ export default async function KnowledgeBasePage() {
             <KBClient
                 initialFolders={folders}
                 initialPages={pages}
-                userRole={session.roleName ||"Пользователь"}
+                userRole={session.roleSlug || "user"}
             />
         </div>
     );

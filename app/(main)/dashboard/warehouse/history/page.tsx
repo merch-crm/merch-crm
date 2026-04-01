@@ -18,7 +18,7 @@ export default async function HistoryPage() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
             <HistoryTable
                 transactions={history as Transaction[]}
-                isAdmin={session?.roleName ==="Администратор"}
+                isAdmin={session?.roleSlug ==="admin"}
             />
         </div>
     );

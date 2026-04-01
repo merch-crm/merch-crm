@@ -46,8 +46,8 @@ vi.mock('@/lib/avatar-storage', () => ({
     saveAvatarFile: vi.fn().mockResolvedValue('/avatars/user.jpg'),
 }));
 vi.mock('@/lib/admin', () => ({
-    requireAdmin: vi.fn().mockImplementation(async (session: { roleName?: string }) => {
-        if (!session || session.roleName !== 'Администратор') throw new Error('Доступ запрещен');
+    requireAdmin: vi.fn().mockImplementation(async (session: { roleSlug?: string }) => {
+        if (!session || session.roleSlug !== 'admin') throw new Error('Доступ запрещен');
         return { id: 'test-user-id', role: { name: 'Администратор' } };
     }),
 }));

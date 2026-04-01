@@ -169,7 +169,7 @@ export async function deleteDesignFile(id: string): Promise<ActionResult> {
         const [file] = await db.select().from(printDesignFiles).where(eq(printDesignFiles.id, id)).limit(1);
         if (!file) return { success: false, error: "Файл не найден" };
 
-        const isAdmin = session.roleName === "Администратор" || session.roleName === "Руководство";
+        const isAdmin = session.roleSlug === "admin" || session.roleSlug === "management";
         // To enforce IDOR correctly, we have to look up who created the file if the DB supports it, or who created the version/design/collection.
         // Assuming `file` doesn't have `createdBy`, we will look at `printCollections` which does.
         const [designRel] = await db.select({ creator: printCollections.createdBy })

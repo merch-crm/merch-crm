@@ -29,6 +29,7 @@ interface UserNavUser {
     name: string;
     email: string;
     roleName: string;
+    roleSlug?: string;
     departmentName: string;
     avatar?: string | null;
 }

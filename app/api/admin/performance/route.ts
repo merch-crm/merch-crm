@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const session = await getSession();
 
-    if (!session || !isAdmin(session.roleName)) {
+    if (!session || !isAdmin(session.roleSlug)) {
       return NextResponse.json({ error: "Доступ запрещён" }, { status: 403 });
     }
 

@@ -60,6 +60,7 @@ export async function seedTestData() {
   
   const [role] = await db.insert(schema.roles).values({
     name: 'Администратор',
+    slug: 'admin',
     departmentId: department.id,
     permissions: { all: true },
   }).returning()

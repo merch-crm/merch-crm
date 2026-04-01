@@ -66,7 +66,7 @@ export function KBClient({ initialFolders = [], initialPages = [], userRole }: K
         setIsMounted(true);
     }, []);
 
-    const canEdit = ["Администратор","Управляющий","Дизайнер"].includes(userRole);
+    const canEdit = ["admin","manager","designer"].includes(userRole);
 
     const fetchPageDetail = useCallback(async (id: string) => {
         setPageState(prev => ({ ...prev, isLoading: true }));

@@ -26,6 +26,7 @@ const envSchema = z.object({
   REPLICATE_API_TOKEN: z.string().optional(),
   CRON_SECRET: z.string().optional(),
   NEXT_PUBLIC_APP_URL: z.string().url().default("https://merch-crm.ru"),
+  DATABASE_CA_CERT: z.string().optional().describe("CA сертификат для PostgreSQL (Reg.ru)"),
 });
 
 function migrateEnvVars() {

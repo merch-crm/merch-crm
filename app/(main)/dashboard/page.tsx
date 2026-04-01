@@ -17,7 +17,7 @@ export default async function DashboardPage({
         redirect("/login");
     }
 
-    if (!session.roleName) {
+    if (!session.roleSlug) {
         redirect("/login");
     }
 

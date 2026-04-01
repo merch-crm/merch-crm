@@ -1,12 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import {
-    inventoryItems,
-    inventoryStocks,
-    inventoryTransactions,
-    productLines,
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryStocks, inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { productLines } from "@/lib/schema/product-lines";
 import { eq, inArray } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { revalidatePath } from "next/cache";
