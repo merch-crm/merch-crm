@@ -105,7 +105,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                                 <div class="category">${escapeHtml(item.category?.name || 'Без категории')}</div>
                             </div>
                         </div>
-                        <div class="footer">${new Date().toLocaleDateString('ru-RU')}</div>
+                        <div class="footer">${new Date().toLocaleDateString('ru-RU')}</div> {/* suppressHydrationWarning */}
                     </div>
                     <script>
                         window.onload = () => {
@@ -178,7 +178,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
                         <div className="mt-auto pt-2 border-t border-border flex items-center justify-between text-[7px] font-bold text-muted-foreground">
                             <span>Merch CRM System</span>
-                            <span>{new Date().toLocaleDateString('ru-RU')}</span>
+                            <span>{new Date().toLocaleDateString('ru-RU')}</span> {/* suppressHydrationWarning */}
                         </div>
                     </div>
                 </div>

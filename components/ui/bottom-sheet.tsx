@@ -5,6 +5,7 @@ import { useSheetStack } from"@/components/ui/sheet-stack-context";
 import { X } from"lucide-react";
 import { Button } from"@/components/ui/button";
 
+
 interface BottomSheetProps {
     isOpen: boolean;
     onClose: () => void;
@@ -26,7 +27,7 @@ const Z_INDEX_INCREMENT = 10;
 
 export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle = true, className, footer, hideClose }: BottomSheetProps) {
     const { registerSheet, unregisterSheet, getStackDepth } = useSheetStack();
-    const [sheetId] = React.useState(() => Math.random().toString(36).slice(2, 11));
+    const [sheetId] = React.useState(React.useId());
 
     // Register/Unregister sheet & handle overflow
     React.useEffect(() => {
@@ -61,7 +62,7 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
     const stackDepth = getStackDepth(sheetId);
     const [effectiveDepth, setEffectiveDepth] = React.useState(0);
 
-    React.useLayoutEffect(() => {
+    React.useEffect(() => {
         if (stackDepth >= 0) {
             setEffectiveDepth(stackDepth);
         }

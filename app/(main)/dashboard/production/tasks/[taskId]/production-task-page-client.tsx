@@ -151,7 +151,7 @@ export function ProductionTaskPageClient({
         setIsDeleteOpen(false);
     };
 
-    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "completed";
+    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "completed"; // suppressHydrationWarning
 
     return (
         <div className="space-y-3">

@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
@@ -33,6 +34,7 @@ import { toast } from "sonner";
 import { updateEquipmentMaintenance } from "../../actions/equipment-actions";
 import type { Equipment } from "@/lib/schema/production";
 import { cn } from "@/lib/utils";
+import { useIsClient } from "@/hooks/use-is-client";
 
 const formSchema = z.object({
     status: z.enum(["active", "maintenance", "repair", "inactive"]),
@@ -55,6 +57,15 @@ export function MaintenanceDialog({
     equipment,
     onSuccess,
 }: MaintenanceDialogProps) {
+    const isClient = useIsClient();
+    const [now, setNow] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -139,7 +150,7 @@ export function MaintenanceDialog({
                                                 mode="single"
                                                 selected={field.value}
                                                 onSelect={field.onChange}
-                                                disabled={(date) => date < new Date()}
+                                                disabled={(date) => isClient && now ? date < now : false}
                                                 initialFocus
                                             />
                                         </PopoverContent>

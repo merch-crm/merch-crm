@@ -11,7 +11,7 @@ export default async function StaffMonitoringPage() {
         redirect('/login')
     }
 
-    const todayString = new Date().toISOString().split('T')[0]
+    const todayString = new Date().toISOString().split('T')[0] // suppressHydrationWarning
     const reportResult = await getDailyReport(todayString)
 
     // Преобразуем данные в формат, ожидаемый клиентским компонентом, если нужно

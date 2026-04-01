@@ -157,7 +157,7 @@ export function BrandingPageClient() {
         </div>
       </form>
 
-      <PDFPreviewModal isOpen={showPreview} onClose={() => setShowPreview(false)} branding={{ ...form.getValues(), phone: form.getValues().phone || null, email: form.getValues().email || null, website: form.getValues().website || null, address: form.getValues().address || null, inn: form.getValues().inn || null, kpp: form.getValues().kpp || null, ogrn: form.getValues().ogrn || null, bankDetails: form.getValues().bankDetails || null, footerText: form.getValues().footerText || null, id: '', userId: '', logoUrl: logoUrl || '', createdAt: new Date(), updatedAt: new Date() }} />
+      <PDFPreviewModal isOpen={showPreview} onClose={() => setShowPreview(false)} branding={{ ...form.getValues(), phone: form.getValues().phone || null, email: form.getValues().email || null, website: form.getValues().website || null, address: form.getValues().address || null, inn: form.getValues().inn || null, kpp: form.getValues().kpp || null, ogrn: form.getValues().ogrn || null, bankDetails: form.getValues().bankDetails || null, footerText: form.getValues().footerText || null, id: '', userId: '', logoUrl: logoUrl || '', createdAt: new Date(), updatedAt: new Date() }} /> {/* // suppressHydrationWarning */}
     </div>
   );
 }

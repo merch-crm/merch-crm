@@ -57,7 +57,7 @@ export function CategoryDialog({
         reader.onload = (event) => {
             const content = event.target?.result as string;
             const newIcon: IconItem = {
-                name: `custom-${Date.now()}`,
+                name: `custom-${Date.now()}`, // suppressHydrationWarning
                 label: file.name.replace('.svg', ''),
                 icon: createSvgIcon(content),
                 svgContent: content

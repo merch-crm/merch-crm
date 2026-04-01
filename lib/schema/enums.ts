@@ -14,7 +14,8 @@ export const securityEventTypeEnum = pgEnum("security_event_type", [
     "login_success", "login_failed", "logout", "password_change", "password_reset_requested",
     "email_change", "profile_update", "role_change", "permission_change", "data_export",
     "record_delete", "settings_change", "maintenance_mode_toggle", "system_error",
-    "rate_limit_exceeded", "admin_impersonation_start", "admin_impersonation_stop"
+    "rate_limit_exceeded", "admin_impersonation_start", "admin_impersonation_stop",
+    "finance_stats_access", "finance_transactions_access", "promocode_validate", "promocodes_list_access"
 ]);
 export const orderCategoryEnum = pgEnum("order_category", ["print", "embroidery", "merch", "other"]);
 export const inventoryItemTypeEnum = pgEnum("inventory_item_type", ["clothing", "packaging", "consumables"]);

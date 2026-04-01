@@ -26,7 +26,7 @@ function createManualEntry(
   quantity: number,
   stitchCount?: number
 ): UploadedDesignFile {
-  const id = `manual-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  const id = `manual-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`; // suppressHydrationWarning
   const term = CALCULATOR_TYPES_CONFIG[calculatorType].terminology;
   
   return {
@@ -42,7 +42,7 @@ function createManualEntry(
     userDimensions: { widthMm, heightMm },
     quantity,
     calculatorType,
-    uploadedAt: new Date(),
+    uploadedAt: new Date(), // suppressHydrationWarning
     isManual: true,
     embroideryData: calculatorType === 'embroidery' ? {
       stitchCount: stitchCount || Math.round((widthMm * heightMm / 100) * 450), // Примерный расчет по плотности 4.5

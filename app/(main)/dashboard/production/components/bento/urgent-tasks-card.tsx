@@ -1,4 +1,3 @@
-// app/(main)/dashboard/production/components/bento/urgent-tasks-card.tsx
 "use client";
 
 import Link from "next/link";
@@ -16,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { IconType } from "@/components/ui/stat-card";
 import { pluralize } from "@/lib/pluralize";
+import { useIsClient } from "@/hooks/use-is-client";
 import type { UrgentTask } from "../../types";
 
 interface UrgentTasksCardProps {
@@ -98,7 +98,8 @@ interface UrgentTaskRowProps {
 }
 
 function UrgentTaskRow({ task }: UrgentTaskRowProps) {
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
+  const isClient = useIsClient();
+  const isOverdue = isClient && task.dueDate && new Date(task.dueDate) < new Date(); // suppressHydrationWarning
   const status = statusConfig[task.status] || statusConfig.pending;
   const StatusIcon = status.icon;
 
@@ -169,10 +170,10 @@ function UrgentTaskRow({ task }: UrgentTaskRowProps) {
                 просрочено
               </span>
             ) : (
-              formatDistanceToNow(new Date(task.dueDate), {
+              isClient ? formatDistanceToNow(new Date(task.dueDate), {
                 addSuffix: true,
                 locale: ru,
-              })
+              }) : "..."
             )}
           </div>
         )}

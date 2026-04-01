@@ -114,7 +114,7 @@ export function CommunicationsClient({
                 setConversations(prev =>
                     prev.map(c =>
                         c.id === selectedConversation.id
-                            ? { ...c, lastMessagePreview: content, lastMessageAt: new Date() }
+                            ? { ...c, lastMessagePreview: content, lastMessageAt: new Date() } // suppressHydrationWarning
                             : c
                     )
                 );

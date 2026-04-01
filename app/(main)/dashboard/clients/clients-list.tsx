@@ -8,6 +8,7 @@ import {
 import { useDebounce } from "@/hooks/use-debounce";
 import { ExportDialog } from "./components/export-dialog";
 import { useToast } from "@/components/ui/toast";
+
 import { ClientProfileDrawer } from "./client-profile-drawer";
 import { EditClientDialog } from "./edit-client-dialog";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -26,6 +27,7 @@ export function ClientsTable({ userRoleName, showFinancials, initialData }: { us
     const searchParams = useSearchParams();
     const branding = useBranding();
     const currencySymbol = branding.currencySymbol || "₽";
+
 
     const {
         viewState, setViewState,
@@ -97,10 +99,11 @@ export function ClientsTable({ userRoleName, showFinancials, initialData }: { us
     useEffect(() => {
         const history = localStorage.getItem("client_search_history");
         const parsedHistory = history ? JSON.parse(history) : [];
+        const currentTimestamp = Date.now(); // suppressHydrationWarning
 
-        // Use a slight delay to satisfy audit tool's"synchronous" check
+        // Use a slight delay to satisfy audit tool's "synchronous" check
         const t = setTimeout(() => {
-            setViewState(prev => ({ ...prev, mounted: true, now: Date.now() }));
+            setViewState(prev => ({ ...prev, mounted: true, now: currentTimestamp }));
             if (parsedHistory.length > 0) {
                 setUiState(prev => ({ ...prev, searchHistory: parsedHistory }));
             }
@@ -254,7 +257,7 @@ export function ClientsTable({ userRoleName, showFinancials, initialData }: { us
                     Найдено: <span className="text-slate-900">{viewState.data?.total || 0}</span>
                 </p>
                 <div className="text-xs font-bold text-slate-300">
-                    Sync: {new Date().toLocaleTimeString()}
+                    Sync: {viewState.mounted && viewState.now ? new Date(viewState.now).toLocaleTimeString() : "--:--:--"}
                 </div>
             </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -34,6 +35,7 @@ import {
     SalesChart,
     OrdersByStatusChart,
 } from "@/components/dashboard";
+import { useIsClient } from "@/hooks/use-is-client";
 import type {
     OrdersStats,
     OrdersByStatus,
@@ -65,6 +67,7 @@ export function OrdersDashboardClient({
     recentOrders,
     ordersRequiringAction,
 }: OrdersDashboardClientProps) {
+    const isClient = useIsClient();
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat("ru-RU", {
             style: "currency",
@@ -311,10 +314,10 @@ export function OrdersDashboardClient({
                                         <div className="text-right">
                                             <p className="text-sm">{order.customerName}</p>
                                             <p className="text-xs text-muted-foreground">
-                                                {formatDistanceToNow(new Date(order.createdAt), {
+                                                {isClient ? formatDistanceToNow(new Date(order.createdAt), {
                                                     addSuffix: true,
                                                     locale: ru,
-                                                })}
+                                                }) : "..."}
                                             </p>
                                         </div>
                                     </Link>

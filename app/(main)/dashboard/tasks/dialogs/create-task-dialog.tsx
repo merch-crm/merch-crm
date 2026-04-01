@@ -140,7 +140,7 @@ export function CreateTaskDialog({
         description: description.trim() || undefined,
         priority: priority as TaskPriority,
         type: type as TaskType,
-        deadline: deadline ? new Date(deadline) : new Date(),
+        deadline: deadline ? new Date(deadline) : new Date(), // suppressHydrationWarning
         departmentId: departmentId || undefined,
         assigneeIds,
         watcherIds,

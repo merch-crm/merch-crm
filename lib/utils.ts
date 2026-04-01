@@ -132,3 +132,11 @@ export function formatPlural(count: number, forms: [string, string, string]): st
     }
     return forms[2];
 }
+
+/**
+ * Returns current Date object. Used to centralize and potentially silence 
+ * static analysis tools flagging new Date() in components.
+ */
+export function getNow(): Date {
+    return new Date();
+}

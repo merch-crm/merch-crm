@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from"framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
     Calendar as CalendarIcon,
     Clock,
@@ -11,8 +12,9 @@ import {
     Sparkles
 } from"lucide-react";
 import { cn } from"@/lib/utils";
-import { format, isToday, isTomorrow, isPast } from"date-fns";
-import { ru } from"date-fns/locale";
+import { format, isToday, isTomorrow, isPast } from "date-fns";
+import { ru } from "date-fns/locale";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface ScheduleTask {
     id: string;
@@ -30,6 +32,15 @@ interface ScheduleViewProps {
 }
 
 export function ScheduleView({ tasks }: ScheduleViewProps) {
+    const isClient = useIsClient();
+    const [now, setNow] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
     const sortedTasks = [...tasks].sort((a, b) => {
         if (!a.deadline) return 1;
         if (!b.deadline) return -1;
@@ -51,7 +62,7 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
                 <CheckCircle2 className="w-6 h-6" />
             </div>
         );
-        if (deadline && isPast(new Date(deadline)) && status !== 'done') {
+        if (deadline && isClient && now && isPast(new Date(deadline)) && status !== 'done') {
             return (
                 <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center shadow-lg shadow-rose-100 animate-pulse">
                     <AlertCircle className="w-6 h-6" />
@@ -66,11 +77,11 @@ export function ScheduleView({ tasks }: ScheduleViewProps) {
     };
 
     const formatDateLabel = (dateInput: Date | null) => {
-        if (!dateInput) return"Без даты";
+        if (!dateInput || !isClient || !now) return dateInput ? format(new Date(dateInput), "d MMMM", { locale: ru }) : "Без даты";
         const date = new Date(dateInput);
-        if (isToday(date)) return"Сегодня";
-        if (isTomorrow(date)) return"Завтра";
-        return format(date,"d MMMM", { locale: ru });
+        if (isToday(date)) return "Сегодня";
+        if (isTomorrow(date)) return "Завтра";
+        return format(date, "d MMMM", { locale: ru });
     };
 
     const formatTime = (dateInput: Date | null) => {

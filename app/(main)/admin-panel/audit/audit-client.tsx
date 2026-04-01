@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { useIsClient } from "@/hooks/use-is-client";
 import { 
     Search, User, ChevronLeft, ChevronRight, 
     Download, RefreshCw, Box, ShoppingCart, Users, Settings, Database, MoreHorizontal
@@ -53,6 +54,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
+    const isClient = useIsClient();
 
     const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -109,7 +111,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `audit_log_${format(new Date(), "yyyy-MM-dd", { locale: ru })}.csv`);
+        link.setAttribute("download", `audit_log_${format(new Date(), "yyyy-MM-dd", { locale: ru })}.csv`); // suppressHydrationWarning
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -242,10 +244,10 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
                                     <td className="crm-td">
                                         <div className="flex flex-col">
                                             <span className="text-sm font-bold text-slate-900">
-                                                {format(new Date(log.createdAt), "d MMMM", { locale: ru })}
+                                                {isClient ? format(new Date(log.createdAt), "d MMMM", { locale: ru }) : "..." /* suppressHydrationWarning */}
                                             </span>
                                             <span className="text-xs font-medium text-slate-400">
-                                                {format(new Date(log.createdAt), "HH:mm:ss", { locale: ru })}
+                                                {isClient ? format(new Date(log.createdAt), "HH:mm:ss", { locale: ru }) : "..." /* suppressHydrationWarning */}
                                             </span>
                                         </div>
                                     </td>
@@ -351,7 +353,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
                         <div className="text-right">
                              <p className="text-xs font-bold text-slate-400 tracking-wider">Время</p>
                              <p className="text-sm font-black text-slate-900">
-                                {selectedLog && format(new Date(selectedLog.createdAt), "HH:mm:ss, d MMM", { locale: ru })}
+                                {selectedLog && isClient ? format(new Date(selectedLog.createdAt), "HH:mm:ss, d MMM", { locale: ru }) : "..."}
                              </p>
                         </div>
                     </div>

@@ -1,72 +1,21 @@
 "use server";
 
-import { db } from"@/lib/db";
-import { orders, payments, expenses, inventoryTransactions } from"@/lib/schema";
+import { db } from "@/lib/db";
+import { orders, payments, expenses, inventoryTransactions } from "@/lib/schema";
 import { getSession } from "@/lib/session";
-import { and, gte, lte, sql, eq, desc, type SQL } from"drizzle-orm";
-import { subDays } from"date-fns";
-import { logAction } from"@/lib/audit";
-import { logError } from"@/lib/error-logger";
-import { ActionResult } from"@/lib/types";
-import { CreateExpenseSchema } from"./validation";
-import { z } from"zod";
-export type CreateExpenseData = z.infer<typeof CreateExpenseSchema>;
-import { validatePromocode as validatePromoLib } from"@/lib/promocodes";
-import { revalidatePath } from"next/cache";
+import { and, gte, lte, sql, eq, desc, type SQL } from "drizzle-orm";
+import { subDays } from "date-fns";
+import { logAction } from "@/lib/audit";
+import { logSecurityEvent } from "@/lib/security-logger";
+import { logError } from "@/lib/error-logger";
+import { ActionResult } from "@/lib/types";
+import { CreateExpenseSchema } from "./validation";
+import { revalidatePath } from "next/cache";
+import { validatePromocode as validatePromoLib } from "@/lib/promocodes";
+import type { FinancialStats, SalaryStats, FundStats } from "./types";
+export type { FinancialStats, SalaryStats, FundStats, CreateExpenseData } from "./types";
 
-export interface FinancialStats {
-    summary: {
-        totalRevenue: number;
-        orderCount: number;
-        avgOrderValue: number;
-        netProfit: number;
-        averageCost: number;
-        writeOffs: number;
-    };
-    chartData: Array<{
-        date: string;
-        revenue: number;
-        count: number;
-    }>;
-    categories: Array<{
-        name: string;
-        revenue: number;
-        count: number;
-    }>;
-    recentTransactions: Array<{
-        id: string;
-        clientName: string;
-        amount: number;
-        date: Date;
-        status: string;
-        category: string;
-    }>;
-}
 
-export interface SalaryStats {
-    totalBudget: number;
-    employeePayments: Array<{
-        id: string;
-        name: string;
-        role: string;
-        department: string;
-        baseSalary: number;
-        bonus: number;
-        total: number;
-        ordersCount: number;
-    }>;
-}
-
-export interface FundStats {
-    totalRevenue: number;
-    funds: Array<{
-        name: string;
-        percentage: number;
-        amount: number;
-        color: string;
-        icon: string;
-    }>;
-}
 
 export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionResult<FinancialStats>> {
     const session = await getSession();
@@ -75,6 +24,13 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
     if (!["Администратор","Руководство"].includes(session.roleName)) {
         return { success: false, error:"Доступ запрещен" };
     }
+
+    await logSecurityEvent({
+        eventType: "finance_stats_access",
+        userId: session.id,
+        severity: "info",
+        details: { action: "getFinancialStats", from, to }
+    });
 
     try {
         const whereClause: (SQL | undefined)[] = [];
@@ -174,6 +130,13 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
 
+    await logSecurityEvent({
+        eventType: "finance_stats_access",
+        userId: session.id,
+        severity: "info",
+        details: { action: "getSalaryStats", from, to }
+    });
+
     try {
         const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
@@ -239,6 +202,13 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
 
+    await logSecurityEvent({
+        eventType: "finance_stats_access",
+        userId: session.id,
+        severity: "info",
+        details: { action: "getFundsStats", from, to }
+    });
+
     try {
         const whereClause: (SQL | undefined)[] = [];
         if (from) whereClause.push(gte(orders.createdAt, from));
@@ -289,6 +259,13 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
 
+    await logSecurityEvent({
+        eventType: "promocode_validate",
+        userId: session.id,
+        severity: "info",
+        details: { code, totalAmount }
+    });
+
     try {
         const result = await validatePromoLib(code, totalAmount, cartItems);
 
@@ -318,6 +295,13 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
 export async function getFinanceTransactions(type: 'payment' | 'expense', from?: Date, to?: Date): Promise<ActionResult<(typeof payments.$inferSelect | typeof expenses.$inferSelect)[]>> {
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
+
+    await logSecurityEvent({
+        eventType: "finance_transactions_access",
+        userId: session.id,
+        severity: "info",
+        details: { type, from, to }
+    });
 
     try {
         if (type === 'payment') {
@@ -408,6 +392,13 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
 }>> {
     const session = await getSession();
     if (!session) return { success: false, error:"Не авторизован" };
+
+    await logSecurityEvent({
+        eventType: "finance_stats_access",
+        userId: session.id,
+        severity: "info",
+        details: { action: "getPLReport", from, to }
+    });
 
     try {
         const fromDate = from || subDays(new Date(), 30);

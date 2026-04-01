@@ -42,13 +42,18 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
     const containerRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const isMobile = useMediaQuery("(max-width: 767px)");
+    const [isClient, setIsClient] = useState(false);
     const [now, setNow] = useState<Date | null>(null);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const unreadCount = manualUnreadCount !== undefined ? manualUnreadCount : notifications.filter(n => !n.isRead).length;
 
     useEffect(() => {
-        setTimeout(() => setNow(new Date()), 0);
-        const interval = setInterval(() => setNow(new Date()), 60000);
+        setTimeout(() => setNow(new Date()), 0); // suppressHydrationWarning
+        const interval = setInterval(() => setNow(new Date()), 60000); // suppressHydrationWarning
         return () => clearInterval(interval);
     }, []);
 
@@ -222,7 +227,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                                     className="text-xs font-bold md:font-medium text-slate-400 whitespace-nowrap pt-0.5 cursor-help"
                                                                     title={formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')}
                                                                 >
-                                                                    {now && (now.getTime() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
+                                                                    {isClient && now && (now.getTime() - new Date(notification.createdAt).getTime()) < 24 * 60 * 60 * 1000
                                                                         ? formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true, locale: ru })
                                                                         : formatDate(notification.createdAt, branding?.dateFormat || 'DD.MM.YYYY')
                                                                     }

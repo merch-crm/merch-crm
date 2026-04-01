@@ -5,8 +5,9 @@ import { AlertCircle, CreditCard, Tag } from"lucide-react";
 import { cn } from"@/lib/utils";
 import { Button } from"@/components/ui/button";
 import { Input } from"@/components/ui/input";
-import { Select } from"@/components/ui/select";
-import { SwitchRow } from"@/components/ui/switch-row";
+import { Select } from "@/components/ui/select";
+import { SwitchRow } from "@/components/ui/switch-row";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface StepOrderDetailsProps {
     details: {
@@ -41,6 +42,7 @@ export function StepOrderDetails({
     isApplyingPromo,
     currencySymbol
 }: StepOrderDetailsProps) {
+    const isClient = useIsClient();
     return (
         <div className="max-w-2xl space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h4 className="text-lg font-bold text-foreground">Детали заказа</h4>
@@ -63,7 +65,7 @@ export function StepOrderDetails({
                     <Input
                         id="order-deadline"
                         type="date"
-                        min={new Date().toISOString().split('T')[0]}
+                        min={isClient ? new Date().toISOString().split('T')[0] : undefined} // suppressHydrationWarning
                         value={details.deadline}
                         onChange={(e) => onUpdateDetails({ deadline: e.target.value })}
                     />

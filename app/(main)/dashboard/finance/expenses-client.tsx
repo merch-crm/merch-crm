@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from"react";
+import { useState, useEffect } from"react";
+import { useIsClient } from "@/hooks/use-is-client";
 import { Plus, Search, Calendar, FileText } from"lucide-react";
 import { useRouter } from"next/navigation";
 import { cn } from"@/lib/utils";
@@ -9,7 +10,7 @@ import { SubmitButton } from"@/components/ui/submit-button";
 import { Input } from"@/components/ui/input";
 import { Select } from"@/components/ui/select";
 import { useToast } from"@/components/ui/toast";
-import { createExpense, CreateExpenseData } from"./actions";;
+import { createExpense, CreateExpenseData } from "./actions";
 import { format } from"date-fns";
 import { ru } from"date-fns/locale";
 import { playSound } from"@/lib/sounds";
@@ -32,6 +33,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
     const { currencySymbol } = useBranding();
     const [searchQuery, setSearchQuery] = useState("");
     const [isAdding, setIsAdding] = useState(false);
+    const isClient = useIsClient();
 
     const expenses = initialData || [];
     const filteredExpenses = expenses.filter(e =>
@@ -106,7 +108,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                                     <Calendar className="w-5 h-5" />
                                                 </div>
                                                 <div className="font-bold text-slate-900 text-sm">
-                                                    {format(new Date(expense.date),"d MMM yyyy", { locale: ru })}
+                                                    {isClient ? format(new Date(expense.date),"d MMM yyyy", { locale: ru }) : "..."}
                                                 </div>
                                             </div>
                                         </td>
@@ -146,7 +148,7 @@ export function ExpensesClient({ initialData }: { initialData: Expense[] }) {
                                             {categoryLabels[expense.category] ||"Прочее"}
                                         </div>
                                         <div className="text-xs text-slate-400 font-bold">
-                                            {format(new Date(expense.date),"d MMM yyyy", { locale: ru })}
+                                            {isClient ? format(new Date(expense.date),"d MMM yyyy", { locale: ru }) : "..."}
                                         </div>
                                     </div>
                                 </div>
@@ -187,7 +189,16 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
     const { currencySymbol } = useBranding();
     const [isLoading, setIsLoading] = useState(false);
     const [category, setCategory] = useState("purchase");
+    const isClient = useIsClient();
     const { toast } = useToast();
+    const [todayDate, setTodayDate] = useState("");
+
+    useEffect(() => {
+        if (isClient) {
+            const now = new Date(); // suppressHydrationWarning
+            setTodayDate(now.toISOString().split('T')[0]);
+        }
+    }, [isClient]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -230,7 +241,19 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
             <form onSubmit={handleSubmit} className="p-4 space-y-3">
                 <div className="space-y-1.5">
                     <label className="text-sm font-bold text-slate-700 ml-1">Дата</label>
-                    <Input name="date" type="date" defaultValue={new Date().toISOString().split('T')[0]} required className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" />
+                    {isClient ? (
+                        <Input 
+                            name="date" 
+                            type="date" 
+                            defaultValue={todayDate} 
+                            required 
+                            className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-rose-500 outline-none font-bold text-sm" 
+                        />
+                    ) : (
+                        <div className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 animate-pulse flex items-center">
+                            <span className="text-xs text-slate-300 font-bold">Определение даты...</span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

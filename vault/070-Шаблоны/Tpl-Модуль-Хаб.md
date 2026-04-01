@@ -1,7 +1,7 @@
 ---
 название: "<% tp.file.title %>"
 дата: <% tp.file.creation_date("YYYY-MM-DD") %>
-статус: в-работе
+status: planned
 прогресс: 0
 tags:
   - статус/в-работе
@@ -12,7 +12,7 @@ tags:
 
 > [!NOTE]
 > Центральный узел навигации и контроля функционала. 
-> Стандарт: [[010-Стандарты/Правила-Обсидиана|Obsidian Standard 2026]]
+> Стандарт: [[010-Стандарты/Работа-с-Обсидианом|Obsidian Standard 2026]]
 
 ## 📁 Состав модуля
 ```dataview
@@ -23,14 +23,14 @@ SORT file.name ASC
 ```
 
 ## 🔗 Связи и Интеграции
-- **Родитель**: [[000-Навигация/MERCH-CRM|Центр Управления]]
+- **Родитель**: [[000-Навигация/Merch-CRM|Центр Управления]]
 - **Зависимости**:
     - [[...]]
 
 ## 🛠 Техническая реализация
 - **Схема БД**: `lib/schema/<% tp.file.title.toLowerCase() %>.ts`
 - **API**: `app/api/<% tp.file.title.toLowerCase() %>/route.ts`
-- **UI**: `app/(main)/<% tp.file.title.toLowerCase() %>/`
+- **UI**: `app/(main)/dashboard/<% tp.file.title.toLowerCase() %>/`
 
 ---
-[[000-Навигация/MERCH-CRM|Главное Меню]] | **Обновлено**: <% tp.date.now("YYYY-MM-DD") %>
+[[000-Навигация/Merch-CRM|Главное Меню]] | **Обновлено**: <% tp.date.now("YYYY-MM-DD") %>

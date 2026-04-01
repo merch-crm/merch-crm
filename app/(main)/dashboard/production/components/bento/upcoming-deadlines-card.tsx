@@ -1,11 +1,13 @@
 "use client";
 
+import { useMemo } from "react";
 import Link from "next/link";
 import { format, formatDistanceToNow, isToday, isTomorrow, isPast } from "date-fns";
 import { ru } from "date-fns/locale";
 import { AlertTriangle, ArrowRight, CalendarDays } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { useIsClient } from "@/hooks/use-is-client";
 import type { CalendarDeadline } from "../../types";
 
 interface UpcomingDeadlinesCardProps {
@@ -14,20 +16,24 @@ interface UpcomingDeadlinesCardProps {
 }
 
 export function UpcomingDeadlinesCard({ deadlines, className }: UpcomingDeadlinesCardProps) {
+  const isClient = useIsClient();
   // Сортируем по дате и берём ближайшие 7 дней
-  const upcomingDeadlines = deadlines
-    .filter((d) => {
-      const date = new Date(d.date);
-      const now = new Date();
-      const weekFromNow = new Date();
-      weekFromNow.setDate(weekFromNow.getDate() + 7);
-      return date >= now && date <= weekFromNow;
-    })
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(0, 5);
+  const upcomingDeadlines = useMemo(() => {
+    if (!isClient) return [];
+    return deadlines
+      .filter((d) => {
+        const date = new Date(d.date);
+        const now = new Date(); // suppressHydrationWarning
+        const weekFromNow = new Date(); // suppressHydrationWarning
+        weekFromNow.setDate(weekFromNow.getDate() + 7);
+        return date >= now && date <= weekFromNow;
+      })
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .slice(0, 5);
+  }, [deadlines, isClient]);
 
   const hasData = upcomingDeadlines.length > 0;
-  const totalOrders = upcomingDeadlines.reduce((acc, d) => acc + (d.ordersCount ?? d.count), 0);
+  const totalOrders = upcomingDeadlines.reduce((acc: number, d: CalendarDeadline) => acc + (d.ordersCount ?? d.count), 0);
 
   return (
     <div className={cn("crm-card flex flex-col", className)}>
@@ -66,7 +72,7 @@ export function UpcomingDeadlinesCard({ deadlines, className }: UpcomingDeadline
           </div>
         ) : (
           <div className="space-y-2">
-            {upcomingDeadlines.map((deadline) => (
+            {upcomingDeadlines.map((deadline: CalendarDeadline) => (
               <DeadlineRow key={deadline.date} deadline={deadline} />
             ))}
           </div>
@@ -81,20 +87,23 @@ interface DeadlineRowProps {
 }
 
 function DeadlineRow({ deadline }: DeadlineRowProps) {
+  const isClient = useIsClient();
   const date = new Date(deadline.date);
-  const isDateToday = isToday(date);
-  const isDateTomorrow = isTomorrow(date);
-  const isOverdue = isPast(date) && !isDateToday;
+  const isDateToday = isClient && isToday(date);
+  const isDateTomorrow = isClient && isTomorrow(date);
+  const isOverdue = isClient && isPast(date) && !isDateToday;
   const priorities = deadline.priorities ?? { high: 0, medium: 0, low: 0 };
   const hasHighPriority = priorities.high > 0;
 
   const getDateLabel = () => {
+    if (!isClient) return format(date, "d MMMM", { locale: ru });
     if (isDateToday) return "Сегодня";
     if (isDateTomorrow) return "Завтра";
     return format(date, "d MMMM", { locale: ru });
   };
 
   const getDateStyle = () => {
+    if (!isClient) return "bg-slate-100 text-slate-600 border-slate-200";
     if (isOverdue) return "bg-rose-100 text-rose-700 border-rose-200";
     if (isDateToday) return "bg-amber-100 text-amber-700 border-amber-200";
     if (isDateTomorrow) return "bg-orange-100 text-orange-700 border-orange-200";
@@ -141,7 +150,7 @@ function DeadlineRow({ deadline }: DeadlineRowProps) {
           )}
         </div>
         <div className="text-xs font-medium text-slate-400 mt-0.5">
-          {formatDistanceToNow(date, { addSuffix: true, locale: ru })}
+          {isClient ? formatDistanceToNow(date, { addSuffix: true, locale: ru }) : "..."}
         </div>
       </div>
 

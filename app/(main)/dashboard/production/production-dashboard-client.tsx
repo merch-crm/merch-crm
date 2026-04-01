@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { ru } from "date-fns/locale";
+import { useIsClient } from "@/hooks/use-is-client";
 import {
     Plus,
     ListTodo,
@@ -75,16 +76,29 @@ export function ProductionDashboardClient({
     dailyOutput,
 }: ProductionDashboardClientProps) {
     const { setCustomTrail } = useBreadcrumbs();
+    const isClient = useIsClient();
 
     useEffect(() => {
         setCustomTrail([{ label: "Производство", href: "" }]);
         return () => setCustomTrail(null);
     }, [setCustomTrail]);
 
+    const [now, setNow] = React.useState<Date | null>(null);
+
+    React.useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
     const isOverdue = (dueDate: string | null) => {
-        if (!dueDate) return false;
-        return new Date(dueDate) < new Date();
+        if (!isClient || !dueDate || !now) return false;
+        return new Date(dueDate) < now;
     };
+
+    if (!isClient) {
+        return <div className="min-h-screen bg-slate-50/30 animate-pulse" />;
+    }
 
     return (
         <div className="flex flex-col gap-3">
@@ -251,7 +265,7 @@ export function ProductionDashboardClient({
                             <div className="space-y-2">
                                 {urgentTasks.map((task) => {
                                     const status = statusConfig[task.status] || statusConfig.pending;
-                                    const overdue = isOverdue(task.dueDate);
+                                    const overdue = isClient && isOverdue(task.dueDate);
 
                                     return (
                                         <Link
@@ -295,14 +309,13 @@ export function ProductionDashboardClient({
                                                             "text-xs font-bold",
                                                             overdue ? "text-rose-600" : "text-slate-400"
                                                         )}
-                                                        suppressHydrationWarning
                                                     >
-                                                        {overdue
-                                                            ? "ПРОСРОЧЕНО"
-                                                            : formatDistanceToNow(new Date(task.dueDate), {
-                                                                addSuffix: true,
-                                                                locale: ru,
-                                                            })}
+                                                        {task.dueDate
+                                                                ? (isOverdue(task.dueDate) ? "ПРОСРОЧЕНО" : formatDistanceToNow(new Date(task.dueDate), {
+                                                                    addSuffix: true,
+                                                                    locale: ru,
+                                                                }))
+                                                                : "..."}
                                                     </p>
                                                 )}
                                             </div>

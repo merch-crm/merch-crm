@@ -19,6 +19,12 @@ export function TimeTrackerWidget({
     className,
 }: TimeTrackerWidgetProps) {
     const isWorking = status ==="working";
+    const [currentDateLabel, setCurrentDateLabel] = React.useState("...");
+
+    React.useEffect(() => {
+        setCurrentDateLabel(format(new Date(), "d MMMM, EEEE", { locale: ru })); // suppressHydrationWarning
+    }, []);
+
     const elapsed = useTimeTracker(startTime, isWorking);
 
     return (
@@ -34,7 +40,7 @@ export function TimeTrackerWidget({
                         <div>
                             <h3 className="text-sm font-black text-slate-900">Рабочее время</h3>
                             <p className="text-xs font-bold text-slate-400">
-                                {format(new Date(),"d MMMM, EEEE", { locale: ru })}
+                                {currentDateLabel}
                             </p>
                         </div>
                     </div>
@@ -44,7 +50,7 @@ export function TimeTrackerWidget({
                     <span className={cn("text-4xl font-black tabular-nums  mb-2",
                         isWorking ?"text-emerald-600" :"text-slate-300"
                     )}>
-                        {isWorking ? formatDuration(elapsed) :"00:00:00"}
+                        {currentDateLabel !== "..." && isWorking ? formatDuration(elapsed) :"00:00:00"}
                     </span>
                     <div className="flex items-center gap-2">
                         <div className={cn("w-1.5 h-1.5 rounded-full",

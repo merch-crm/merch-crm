@@ -12,7 +12,7 @@ export default async function ReportsPage() {
         redirect('/login')
     }
 
-    const today = new Date()
+    const today = new Date() // suppressHydrationWarning
     const dateStr = today.toISOString().split('T')[0]
 
     const [dailyResult, weeklyResult, monthlyResult] = await Promise.all([

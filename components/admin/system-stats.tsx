@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from "react";
 import {
   getSystemStats,
@@ -45,7 +44,7 @@ export function SystemStats() {
   const [uiState, setUiState] = useState({
     loading: true,
     error: null as string | null,
-    lastUpdated: new Date(),
+    lastUpdated: null as Date | null,
     activeTab: "monitoring" as "monitoring" | "diagnostics" | "backups" | "security" | "action_log",
     showRestartConfirm: false,
     isRestarting: false,
@@ -107,7 +106,7 @@ export function SystemStats() {
       const res = await getSystemStats();
       if (res.success) {
         setMonitoring(prev => ({ ...prev, stats: res.data as StatsData }));
-        setUiState(prev => ({ ...prev, lastUpdated: new Date() }));
+        setUiState(prev => ({ ...prev, lastUpdated: new Date() })); // suppressHydrationWarning
       } else {
         setUiState(prev => ({ ...prev, error: res.error || "" }));
       }

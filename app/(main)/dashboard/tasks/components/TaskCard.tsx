@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { useIsClient } from "@/hooks/use-is-client";
 import type { Task } from "../types";
 import Image from "next/image";
 
@@ -31,8 +32,17 @@ type ExtendedTask = Task & {
 
 export function TaskCard({ task, onClick, onDragStart, onDragEnd }: TaskCardProps) {
   const isDone = task.status === "done";
-  const now = new Date();
-  const isOverdue = new Date(task.deadline) < now && !isDone && ["new", "in_progress", "review"].includes(task.status);
+  const isClient = useIsClient();
+  
+  // Вычисляем просрочку только на клиенте
+  const [isOverdue, setIsOverdue] = React.useState(false);
+
+  React.useEffect(() => {
+    if (isClient) {
+      const now = new Date(); // suppressHydrationWarning
+      setIsOverdue(new Date(task.deadline) < now && !isDone && ["new", "in_progress", "review"].includes(task.status));
+    }
+  }, [isClient, task.deadline, isDone, task.status]);
 
   // Конфигурация приоритета
   const priorityConfig = {

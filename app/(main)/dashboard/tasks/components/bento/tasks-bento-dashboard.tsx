@@ -40,7 +40,7 @@ export function TasksBentoDashboard({
   
   const stats = useMemo(() => {
     const total = tasks.length;
-    const completedToday = tasks.filter(t => t.status === "done" && new Date(t.updatedAt || t.createdAt).toDateString() === new Date().toDateString()).length;
+    const completedToday = tasks.filter(t => t.status === "done" && new Date(t.updatedAt || t.createdAt).toDateString() === new Date().toDateString()).length; // suppressHydrationWarning
     
     const countByStatus = (status: TaskStatus) => tasks.filter(t => t.status === status).length;
     

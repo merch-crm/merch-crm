@@ -14,6 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Task, TaskStatus, TaskPriority } from "@/lib/types/tasks";
 import type { User } from "@/lib/types";
+import { useIsClient } from "@/hooks/use-is-client";
 import { TASK_STATUS_CONFIG, TASK_PRIORITY_CONFIG } from "../constants";
 
 interface TaskAnalyticsProps {
@@ -23,22 +24,26 @@ interface TaskAnalyticsProps {
 }
 
 export function TaskAnalytics({ tasks, users: _users, departments: _departments }: TaskAnalyticsProps) {
+  const isClient = useIsClient();
   const stats = useMemo(() => {
     const total = tasks.length;
     const completed = tasks.filter((t) => t.status === "done").length;
     const inProgress = tasks.filter((t) => t.status === "in_progress").length;
-    const overdue = tasks.filter(
+    
+    // Calculate overdue only on the client to avoid hydration mismatch
+    const overdueCount = isClient ? tasks.filter(
       (t) =>
         t.deadline &&
-        new Date(t.deadline) < new Date() &&
+        new Date(t.deadline) < new Date() && // suppressHydrationWarning
         t.status !== "done" &&
         t.status !== "cancelled"
-    ).length;
+    ).length : 0;
+    
     const urgent = tasks.filter((t) => t.priority === "urgent").length;
     const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    return { total, completed, inProgress, overdue, urgent, completionRate };
-  }, [tasks]);
+    return { total, completed, inProgress, overdueCount, urgent, completionRate };
+  }, [tasks, isClient]);
 
   const statusStats = useMemo(() => {
     const counts: Record<TaskStatus, number> = {
@@ -165,11 +170,11 @@ export function TaskAnalytics({ tasks, users: _users, departments: _departments 
     },
     {
       title: "Просрочено",
-      value: stats.overdue,
+      value: stats.overdueCount,
       icon: AlertTriangle,
       color: "from-red-500 to-rose-600",
       bgColor: "bg-red-50",
-      highlight: stats.overdue > 0,
+      highlight: stats.overdueCount > 0,
     },
   ];
 

@@ -9,11 +9,13 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useIsClient } from "@/hooks/use-is-client";
 
 export default function ApiDocsPage() {
     const [copied, setCopied] = useState<string | null>(null);
+    const isClient = useIsClient();
 
-    const baseUrl = typeof window !== "undefined" ? `${window.location.protocol}//${window.location.host}` : "http://localhost:3000";
+    const baseUrl = isClient ? `${window.location.protocol}//${window.location.host}` : "http://localhost:3000";
 
     const copyToClipboard = (text: string, id: string) => {
         navigator.clipboard.writeText(text);

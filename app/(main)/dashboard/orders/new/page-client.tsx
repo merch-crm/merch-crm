@@ -9,6 +9,7 @@ import {
     Clock,
     ChevronRight
 } from "lucide-react";
+import { useIsClient } from "@/hooks/use-is-client";
 import { createOrder, searchClients } from "../actions/core.actions";
 import { ActionResult, Client } from "@/lib/types";
 import { validatePromocode } from "../../finance/actions";
@@ -39,9 +40,19 @@ interface CreateOrderPageClientProps {
 
 export function CreateOrderPageClient({ initialInventory, userRoleName }: CreateOrderPageClientProps) {
     const branding = useBranding();
+    const isClient = useIsClient();
     const currencySymbol = branding?.currencySymbol || "₽";
     const router = useRouter();
     const { toast } = useToast();
+    const [today, setToday] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            const d = new Date(); // suppressHydrationWarning
+            d.setHours(0, 0, 0, 0);
+            setToday(d);
+        }
+    }, [isClient]);
     // Consolidated UI & Process state
     const [uiState, setUiState] = useState({
         step: 0,
@@ -163,11 +174,9 @@ export function CreateOrderPageClient({ initialInventory, userRoleName }: Create
             setUiState(prev => ({ ...prev, validationError: "Добавьте хотя бы один товар" }));
             return false;
         }
-        if (s === 2 && orderData.details.deadline) {
+        if (s === 2 && orderData.details.deadline && today) {
             const d = new Date(orderData.details.deadline);
             d.setHours(0, 0, 0, 0);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
             if (d < today) {
                 setUiState(prev => ({ ...prev, validationError: "Дедлайн не может быть в прошлом" }));
                 return false;

@@ -307,14 +307,14 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
     {
         label:"Сегодня",
         getValue: () => {
-            const today = new Date();
+            const today = new Date(); // suppressHydrationWarning
             return { from: today, to: today };
         },
     },
     {
         label:"Вчера",
         getValue: () => {
-            const yesterday = new Date();
+            const yesterday = new Date(); // suppressHydrationWarning
             yesterday.setDate(yesterday.getDate() - 1);
             return { from: yesterday, to: yesterday };
         },
@@ -322,8 +322,8 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
     {
         label:"Последние 7 дней",
         getValue: () => {
-            const end = new Date();
-            const start = new Date();
+            const end = new Date(); // suppressHydrationWarning
+            const start = new Date(); // suppressHydrationWarning
             start.setDate(start.getDate() - 6);
             return { from: start, to: end };
         },
@@ -331,8 +331,8 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
     {
         label:"Последние 30 дней",
         getValue: () => {
-            const end = new Date();
-            const start = new Date();
+            const end = new Date(); // suppressHydrationWarning
+            const start = new Date(); // suppressHydrationWarning
             start.setDate(start.getDate() - 29);
             return { from: start, to: end };
         },
@@ -340,14 +340,14 @@ const DEFAULT_PRESETS: DateRangePreset[] = [
     {
         label:"Этот месяц",
         getValue: () => {
-            const now = new Date();
+            const now = new Date(); // suppressHydrationWarning
             return { from: startOfMonth(now), to: now };
         },
     },
     {
         label:"Прошлый месяц",
         getValue: () => {
-            const now = new Date();
+            const now = new Date(); // suppressHydrationWarning
             const lastMonth = subMonths(now, 1);
             return { from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) };
         },

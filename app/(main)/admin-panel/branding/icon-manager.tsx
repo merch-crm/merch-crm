@@ -141,7 +141,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
     };
 
     const handleAddNewCategory = () => {
-        const newId = `cat-${Date.now()}`;
+        const newId = `cat-${Date.now()}`; // suppressHydrationWarning
         const newCategory: IconGroup = {
             id: newId,
             label:"",
@@ -158,7 +158,7 @@ export function IconManager({ initialData }: { initialData?: SerializedIconGroup
         reader.onload = (event) => {
             const content = event.target?.result as string;
             const newIcon: IconItem = {
-                name: `custom-${Date.now()}`,
+                name: `custom-${Date.now()}`, // suppressHydrationWarning
                 label: file.name.replace('.svg', ''),
                 icon: createSvgIcon(content),
                 svgContent: content

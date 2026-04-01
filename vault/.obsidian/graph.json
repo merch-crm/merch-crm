@@ -76,6 +76,13 @@
         "a": 1,
         "rgb": 16724787
       }
+    },
+    {
+      "query": "path:100-База-Знаний",
+      "color": {
+        "a": 1,
+        "rgb": 15655734
+      }
     }
   ],
   "collapse-display": false,
@@ -88,6 +95,6 @@
   "repelStrength": 9.32638888888889,
   "linkStrength": 1,
   "linkDistance": 481,
-  "scale": 0.5447847854944894,
+  "scale": 0.6780560581277617,
   "close": false
 }

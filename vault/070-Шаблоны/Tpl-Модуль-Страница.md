@@ -1,7 +1,7 @@
 ---
 название: "<% tp.file.title %>"
 дата: <% tp.file.creation_date("YYYY-MM-DD") %>
-статус: в-работе
+status: planned
 прогресс: 0
 tags:
   - статус/в-работе
@@ -22,7 +22,7 @@ tags:
 
 ## 🛠 Техническая реализация
 - **UI**: `app/(main)/<% tp.file.folder(true).split('/').pop().toLowerCase() %>/_components/`
-- **Hook**: `lib/hooks/use-<% tp.file.title.toLowerCase().replace(/\s+/g, '-') %>.pc`
+- **Hook**: `lib/hooks/use-<% tp.file.title.toLowerCase().replace(/\s+/g, '-') %>.ts`
 
 ---
 [[030-Модули/<% tp.file.folder(true).split('/').pop() %>/<% tp.file.folder(true).split('/').pop() %>|Назад в Хаб]] | **Обновлено**: <% tp.date.now("YYYY-MM-DD") %>

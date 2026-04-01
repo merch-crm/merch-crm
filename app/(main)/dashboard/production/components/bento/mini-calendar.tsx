@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, getDay } from "date-fns";
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface MiniCalendarProps {
   /** Текущая дата */
@@ -19,19 +20,22 @@ interface MiniCalendarProps {
 const WEEKDAYS_SHORT = ["П", "В", "С", "Ч", "П", "С", "В"];
 
 export function MiniCalendar({
-  currentDate = new Date(),
+  currentDate,
   markedDates = new Map(),
   onDateClick,
   className,
 }: MiniCalendarProps) {
+  const isClient = useIsClient();
+  const effectiveDate = useMemo(() => currentDate || new Date(), [currentDate]); // suppressHydrationWarning
+
   const calendarDays = useMemo(() => {
-    const start = startOfMonth(currentDate);
-    const end = endOfMonth(currentDate);
+    const start = startOfMonth(effectiveDate);
+    const end = endOfMonth(effectiveDate);
     const days = eachDayOfInterval({ start, end });
     const startDayOfWeek = getDay(start);
     const emptyDays = startDayOfWeek === 0 ? 6 : startDayOfWeek - 1;
     return { days, emptyDays };
-  }, [currentDate]);
+  }, [effectiveDate]);
 
   return (
     <div className={cn("", className)}>
@@ -59,7 +63,7 @@ export function MiniCalendar({
         {calendarDays.days.map((day) => {
           const dateStr = format(day, "yyyy-MM-dd", { locale: ru });
           const marker = markedDates.get(dateStr);
-          const isCurrentDay = isToday(day);
+          const isCurrentDay = isClient ? isToday(day) : false;
 
           return (
             <button

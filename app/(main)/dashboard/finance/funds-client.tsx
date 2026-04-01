@@ -13,7 +13,7 @@ import {
 import { cn } from"@/lib/utils";
 import { useBranding } from"@/components/branding-provider";
 
-import { FundStats } from"./actions";;
+import { FundStats } from "./actions";
 
 interface FundsClientProps {
     fundsData: FundStats;
@@ -70,8 +70,8 @@ export function FundsClient({ fundsData }: FundsClientProps) {
     return (
         <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                {fundsData.funds.map((fund, i) => (
-                    <FundCard key={i} fund={fund} currencySymbol={currencySymbol} />
+                {fundsData.funds.map((fund) => (
+                    <FundCard key={fund.name} fund={fund} currencySymbol={currencySymbol} />
                 ))}
             </div>
 
@@ -89,9 +89,9 @@ export function FundsClient({ fundsData }: FundsClientProps) {
                 </div>
 
                 <div className="h-20 w-full flex rounded-[var(--radius-inner)] overflow-hidden shadow-inner bg-slate-50 border border-slate-200/50 p-1.5 mb-14">
-                    {fundsData.funds.map((fund, i) => (
+                    {fundsData.funds.map((fund) => (
                         <div
-                            key={i}
+                            key={fund.name}
                             className={cn("h-full transition-all hover:opacity-90 relative group first:rounded-l-[14px] last:rounded-r-[14px]", fund.color)}
                             style={{ width: `${fund.percentage}%` }}
                         >

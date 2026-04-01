@@ -19,7 +19,11 @@ type SecurityEventType =
     | "system_error"
     | "rate_limit_exceeded"
     | "admin_impersonation_start"
-    | "admin_impersonation_stop";
+    | "admin_impersonation_stop"
+    | "finance_stats_access"
+    | "finance_transactions_access"
+    | "promocode_validate"
+    | "promocodes_list_access";
 
 type SecurityEventSeverity = "info" | "warning" | "critical";
 

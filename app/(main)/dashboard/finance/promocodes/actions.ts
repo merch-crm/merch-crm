@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 
 import { ActionResult, okVoid } from "@/lib/types";
 import { logAction } from "@/lib/audit";
+import { logSecurityEvent } from "@/lib/security-logger";
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { z } from "zod";
@@ -53,6 +54,13 @@ export interface Promocode {
 export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
+
+    await logSecurityEvent({
+        eventType: "promocodes_list_access",
+        userId: session.id,
+        severity: "info",
+        details: { action: "getPromocodes" }
+    });
 
     try {
         const ordersSq = db

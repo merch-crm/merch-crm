@@ -171,7 +171,7 @@ export const ItemHeader = React.memo(({
                                                 const dateVal = item.updatedAt;
                                                 if (!dateVal) return '—';
                                                 const d = new Date(dateVal);
-                                                const now = new Date();
+                                                const now = new Date(); // suppressHydrationWarning
                                                 const isToday = d.toDateString() === now.toDateString();
 
                                                 if (isToday) {

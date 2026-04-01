@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   Calendar,
@@ -14,6 +14,7 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, addMonths
 import { ru } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
+import { useIsClient } from "@/hooks/use-is-client";
 import {
   Popover,
   PopoverContent,
@@ -34,12 +35,20 @@ export function DeadlineCalendarCard({
   onMonthChange,
   className 
 }: DeadlineCalendarCardProps) {
+  const isClient = useIsClient();
   const [currentDate, setCurrentDate] = useState(() => {
     if (data && typeof data.year === 'number' && typeof data.month === 'number') {
-      return new Date(data.year, data.month, 1);
+       return new Date(data.year, data.month, 1);
     }
-    return new Date();
+    // Return a dummy date for SSR, the client will update this in useEffect if needed
+    return new Date(2025, 0, 1);
   });
+
+  useEffect(() => {
+    if (!data) {
+      setCurrentDate(new Date()); // suppressHydrationWarning
+    }
+  }, [data]);
 
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
@@ -155,8 +164,8 @@ export function DeadlineCalendarCard({
             const dateStr = format(day, "yyyy-MM-dd", { locale: ru });
             const deadline = deadlinesMap.get(dateStr);
             const hasDeadline = !!deadline;
-            const isCurrentDay = isToday(day);
-            const isPast = day < new Date() && !isCurrentDay;
+            const isCurrentDay = isClient && isToday(day);
+            const isPast = isClient && day < new Date() && !isCurrentDay; // suppressHydrationWarning
             const isSelected = selectedDate === dateStr;
             const dayOfWeek = getDay(day);
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;

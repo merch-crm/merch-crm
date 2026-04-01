@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { pluralize } from "@/lib/pluralize";
 import { useBranding } from "@/components/branding-provider";
-import { FinancialStats } from "./actions";;
+import { FinancialStats } from "./actions";
 
 interface SalesClientProps {
     salesData: FinancialStats;

@@ -131,7 +131,7 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
 
   const formatRelativeDate = (date: Date | string) => {
     const d = new Date(date);
-    const now = new Date();
+    const now = new Date(); // suppressHydrationWarning
     const diff = now.getTime() - d.getTime();
     const minutes = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);

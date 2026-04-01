@@ -2,7 +2,7 @@
 название: "<% tp.file.title %>"
 дата: <% tp.file.creation_date("YYYY-MM-DD") %>
 обновлено: <% tp.date.now("YYYY-MM-DD") %>
-статус: бэклог
+status: backlog
 прогресс: 0
 ответственный: User
 tags: 

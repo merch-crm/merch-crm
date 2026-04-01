@@ -52,7 +52,7 @@ export function createMockSession(overrides = {}) {
     },
     session: {
       id: "session-id",
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // suppressHydrationWarning
     },
   };
 }
@@ -70,8 +70,8 @@ export function createMockOrder(overrides = {}) {
     totalAmount: "5000.00",
     isUrgent: false,
     priority: "normal",
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date(), // suppressHydrationWarning
+    updatedAt: new Date(), // suppressHydrationWarning
     ...overrides,
   };
 }
@@ -90,8 +90,8 @@ export function createMockClient(overrides = {}) {
     phone: "+79001234567",
     email: "ivanov@example.com",
     isArchived: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date(), // suppressHydrationWarning
+    updatedAt: new Date(), // suppressHydrationWarning
     ...overrides,
   };
 }
@@ -111,8 +111,8 @@ export function createMockInventoryItem(overrides = {}) {
     costPrice: "500.00",
     sellingPrice: "1200.00",
     isArchived: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date(), // suppressHydrationWarning
+    updatedAt: new Date(), // suppressHydrationWarning
     ...overrides,
   };
 }

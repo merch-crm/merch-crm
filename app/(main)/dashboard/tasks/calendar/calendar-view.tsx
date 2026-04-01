@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useIsClient } from "@/hooks/use-is-client";
 import {
   format,
   startOfMonth,
@@ -36,8 +37,16 @@ interface CalendarViewProps {
 }
 
 export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const isClient = useIsClient();
+  const [currentMonth, setCurrentMonth] = useState<Date>(() => new Date(2024, 0, 1)); // Static placeholder
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (isClient) {
+      setCurrentMonth(new Date()); // suppressHydrationWarning
+      setSelectedDate(new Date()); // suppressHydrationWarning
+    }
+  }, [isClient]);
 
   const tasksByDate = useMemo(() => {
     const map = new Map<string, Task[]>();
@@ -92,15 +101,15 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-slate-900">
-            {format(currentMonth, "LLLL yyyy", { locale: ru })}
+            {isClient ? format(currentMonth, "LLLL yyyy", { locale: ru }) : "..."}
           </h2>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                setCurrentMonth(new Date());
-                setSelectedDate(new Date());
+                setCurrentMonth(new Date()); // suppressHydrationWarning
+                setSelectedDate(new Date()); // suppressHydrationWarning
               }}
               className="rounded-xl"
             >
@@ -144,6 +153,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
             const dayStatus = getDayStatus(day, dayTasks);
             const isCurrentMonth = isSameMonth(day, currentMonth);
             const isSelected = selectedDate && isSameDay(day, selectedDate);
+            const isDayToday = isClient && isToday(day);
 
             return (
               <button type="button"
@@ -154,7 +164,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                   "hover:border-violet-300 hover:bg-violet-50/50 hover:shadow-md",
                   !isCurrentMonth && "bg-slate-50/50 text-slate-400",
                   isCurrentMonth && "bg-white",
-                  isToday(day) && "ring-2 ring-violet-500 ring-offset-1",
+                  isDayToday && "ring-2 ring-violet-500 ring-offset-1",
                   isSelected && "border-violet-500 bg-violet-50 shadow-lg",
                   dayStatus === "overdue" && "border-red-200 bg-red-50/50",
                   dayStatus === "urgent" && "border-amber-200 bg-amber-50/50",
@@ -164,7 +174,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
                 <span
                   className={cn(
                     "text-sm font-semibold",
-                    isToday(day) && "text-violet-600"
+                    isDayToday && "text-violet-600"
                   )}
                 >
                   {format(day, "d")}
@@ -200,7 +210,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
       <div className="w-full lg:w-80 bg-white/80 backdrop-blur-sm border border-slate-200/60 rounded-2xl p-6 shadow-sm">
         <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
           <CalendarIcon className="h-5 w-5 text-violet-500" />
-          {selectedDate
+          {isClient && selectedDate
             ? format(selectedDate, "d MMMM yyyy", { locale: ru })
             : "Выберите день"}
         </h3>

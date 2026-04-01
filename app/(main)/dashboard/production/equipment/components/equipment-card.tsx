@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
@@ -37,6 +37,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useIsClient } from "@/hooks/use-is-client";
 
 import { EquipmentFormDialog } from "./equipment-form-dialog";
 import { MaintenanceDialog } from "./maintenance-dialog";
@@ -112,9 +113,20 @@ export function EquipmentCard({
         setIsDeleteOpen(false);
     };
 
+    const isClient = useIsClient();
+    const [now, setNow] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
     const isMaintenanceDue =
+        isClient &&
+        now &&
         equipment.nextMaintenanceAt &&
-        new Date(equipment.nextMaintenanceAt) <= new Date();
+        new Date(equipment.nextMaintenanceAt) <= now;
 
     return (
         <>
@@ -221,7 +233,7 @@ export function EquipmentCard({
                         )}>
                             <div className="flex items-center gap-2">
                                 <Calendar className="h-3.5 w-3.5" />
-                                <span className="text-xs font-bold">ТО: {format(new Date(equipment.nextMaintenanceAt), "dd.MM.yyyy", { locale: ru })}</span>
+                                <span className="text-xs font-bold">ТО: {isClient ? format(new Date(equipment.nextMaintenanceAt), "dd.MM.yyyy", { locale: ru }) : "..."}</span>
                             </div>
                             {isMaintenanceDue && <AlertCircle className="h-3.5 w-3.5 animate-pulse" />}
                         </div>

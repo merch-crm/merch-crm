@@ -2,7 +2,7 @@
 
 /**
  * MerchCRM Full Project Audit Script v5.0
- * 33 категории проверок (включая БД)
+ * 36 категорий проверок (включая БД)
  * 
  * Исправлены ложные срабатывания на самом себе.
  */
@@ -2804,6 +2804,122 @@ function checkForms(files: string[]): AuditError[] {
 }
 
 // ============================================
+// 24. HYDRATION GUARD
+// ============================================
+
+function checkHydration(files: string[]): AuditError[] {
+    logSubSection('24. Hydration Guard');
+    const errors: AuditError[] = [];
+
+    const dangerousPatterns = [
+        { regex: /Date\.now\(\)/g, message: 'Date.now() внутри рендера', suggestion: 'Используй useEffect для установки даты или suppressHydrationWarning' },
+        { regex: /new Date\(\)/g, message: 'new Date() внутри рендера', suggestion: 'Вынеси в useEffect или используй фиксированную дату для SSR' },
+        { regex: /Math\.random\(\)/g, message: 'Math.random() в рендере', suggestion: 'Используй useId() или вынеси в useEffect' },
+        { regex: /typeof window !== ['"]undefined['"]/g, message: 'Прямая проверка window', suggestion: 'Используй хук useIsClient или useEffect' },
+    ];
+
+    for (const file of files) {
+        if (!file.endsWith('.tsx') || file.includes('scripts/audit.ts')) continue;
+        const content = fs.readFileSync(file, 'utf-8');
+        
+        for (const { regex, message, suggestion } of dangerousPatterns) {
+            const matches = [...content.matchAll(regex)];
+            for (const match of matches) {
+                const line = getLineNumber(content, match.index || 0);
+                const fileLines = content.split('\n');
+                const context = fileLines.slice(Math.max(0, line - 1), line + 1).join(' ');
+                
+                if (context.includes('suppressHydrationWarning')) continue;
+
+                errors.push({
+                    file,
+                    line,
+                    severity: 'warning',
+                    category: 'Hydration',
+                    message,
+                    suggestion,
+                });
+            }
+        }
+    }
+
+    if (errors.length === 0) logSuccess('Проблем с гидратацией не обнаружено');
+    else logWarning(`Найдено ${errors.length} потенциальных проблем`);
+    
+    return errors;
+}
+
+// ============================================
+// 25. IMAGE STRATEGY
+// ============================================
+
+function checkImageStrategy(files: string[]): AuditError[] {
+    logSubSection('25. Image Strategy');
+    const errors: AuditError[] = [];
+
+    for (const file of files) {
+        if (!file.endsWith('.tsx') || file.includes('scripts/audit.ts') || file.includes('ui-kit')) continue;
+        const content = fs.readFileSync(file, 'utf-8');
+        
+        const nativeImgMatches = [...content.matchAll(/<img\s+/g)];
+        for (const match of nativeImgMatches) {
+            errors.push({
+                file,
+                line: getLineNumber(content, match.index || 0),
+                severity: 'info',
+                category: 'Performance',
+                message: 'Использование нативного <img />',
+                suggestion: 'Используй next/image для автоматической оптимизации и WebP'
+            });
+        }
+    }
+
+    if (errors.length === 0) logSuccess('Стратегия изображений в норме');
+    else logInfo(`Найдено ${errors.length} нативных тегов img`);
+
+    return errors;
+}
+
+// ============================================
+// 26. FINANCE LOGGING
+// ============================================
+
+function checkFinanceLogging(files: string[]): AuditError[] {
+    logSubSection('26. Finance Logging');
+    const errors: AuditError[] = [];
+
+    for (const file of files) {
+        if (!file.includes('finance') || !file.includes('actions.ts')) continue;
+        const content = fs.readFileSync(file, 'utf-8');
+        
+        const funcRegex = /export\s+(async\s+)?function\s+(\w+)/g;
+        let match;
+        while ((match = funcRegex.exec(content)) !== null) {
+            const funcName = match[2];
+            const funcStart = match.index;
+            const nextFunc = content.indexOf("\nexport ", funcStart + 1);
+            const funcBody = content.substring(funcStart, nextFunc > 0 ? nextFunc : content.length);
+
+            if (!funcBody.includes('console.log') && !funcBody.includes('logger.') && !funcBody.includes('logAction') && !funcBody.includes('logSecurityEvent') && !funcBody.includes('audit-ignore')) {
+                errors.push({
+                    file,
+                    line: getLineNumber(content, funcStart),
+                    severity: 'warning',
+                    category: 'Finance',
+                    message: `Финансовый экшен ${funcName} без логирования`,
+                    suggestion: 'Добавь логирование операции для аудита'
+                });
+            }
+        }
+    }
+
+    if (errors.length === 0) logSuccess('Логирование финансовых операций настроено');
+    else logWarning(`Найдено ${errors.length} экшенов без логирования`);
+
+    return errors;
+}
+
+// ============================================
 // 24. ИЗОБРАЖЕНИЯ И МЕДИА
 // ============================================
 
@@ -3872,7 +3988,7 @@ async function main() {
     const startTime = Date.now();
 
     log(colors.bold('\n🔍 MerchCRM Full Project Audit v5.0\n'));
-    log(colors.gray('33 категории проверок (включая БД)\n'));
+    log(colors.gray('36 категорий проверок (включая БД)\n'));
 
     const allErrors: AuditError[] = [];
 
@@ -3896,7 +4012,7 @@ async function main() {
         totalSize += getFileSize(file);
     }
 
-    logSection('ПРОВЕРКИ (33)');
+    logSection('ПРОВЕРКИ (36)');
 
     // 1-29
     const tsResult = checkTypeScript();
@@ -3961,6 +4077,11 @@ async function main() {
     allErrors.push(...checkImageProcessing(allFiles));
     allErrors.push(...checkCacheInvalidation(allFiles));
     allErrors.push(...checkServerLeaks(allFiles));
+
+    // Выбранные доработки (1, 3, 4)
+    allErrors.push(...checkHydration(tsxFiles));
+    allErrors.push(...checkImageStrategy(tsxFiles));
+    allErrors.push(...checkFinanceLogging(allFiles));
 
     // Фильтруем ошибки, исключая сам скрипт аудита и ui-kit
     const filteredErrors = allErrors.filter(e =>

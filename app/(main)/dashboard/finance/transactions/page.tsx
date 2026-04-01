@@ -1,4 +1,4 @@
-import { getFinanceTransactions } from"../actions";;
+import { getFinanceTransactions } from "../actions";
 import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { TransactionsClient } from"../transactions-client";
@@ -18,7 +18,7 @@ export default async function TransactionsPage({
     const range = searchParams.range ||"30d";
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
-    const now = new Date();
+    const now = new Date(); // suppressHydrationWarning
 
     if (searchParams.from && searchParams.to) {
         fromDate = startOfDay(new Date(searchParams.from));

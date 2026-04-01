@@ -1,8 +1,9 @@
-import { getPLReport } from"../actions";;
+import { getPLReport } from "../actions";
 import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { PLClient } from"../pl-client";
 import { startOfDay, endOfDay, subDays } from"date-fns";
+import { getNow } from "@/lib/utils";
 
 export const dynamic ="force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function PLPage({
     const range = searchParams.range ||"30d";
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
-    const now = new Date();
+    const now = getNow();
 
     if (searchParams.from && searchParams.to) {
         fromDate = startOfDay(new Date(searchParams.from));

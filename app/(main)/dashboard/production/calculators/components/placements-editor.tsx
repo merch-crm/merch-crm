@@ -201,10 +201,10 @@ export const PlacementsEditor = memo(function PlacementsEditor({
 
   const handleAddNew = useCallback(() => {
     const newPlacement: PlacementData = {
-      id: `temp-${Date.now()}`,
+      id: `temp-${Date.now()}`, // suppressHydrationWarning
       applicationType,
       name: 'Новое нанесение',
-      slug: `new-placement-${Date.now()}`,
+      slug: `new-placement-${Date.now()}`, // suppressHydrationWarning
       description: null,
       widthMm: 100,
       heightMm: 100,

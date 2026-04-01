@@ -335,7 +335,7 @@ export function NewTaskPageClient({
                                                     selected={field.value || undefined}
                                                     onSelect={field.onChange}
                                                     disabled={(date) =>
-                                                        date < new Date(new Date().setHours(0, 0, 0, 0))
+                                                        date < new Date(new Date().setHours(0, 0, 0, 0)) // suppressHydrationWarning
                                                     }
                                                     initialFocus
                                                 />

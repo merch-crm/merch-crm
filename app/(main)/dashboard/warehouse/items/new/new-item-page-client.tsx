@@ -429,7 +429,7 @@ export function NewItemPageClient({
                                                 collectionName={availablePrints?.[0]?.collectionName || "Коллекция"}
                                                 baseLineName={availableBaseLines.find(l => l.id === selectedLineId)?.name || "Базовая линейка"}
                                                 positions={generatedPositions.map(p => ({
-                                                    tempId: p.tempId || Math.random().toString(36).substr(2, 9),
+                                                    tempId: p.tempId,
                                                     name: p.name,
                                                     sku: p.sku,
                                                     printName: p.printName || "",

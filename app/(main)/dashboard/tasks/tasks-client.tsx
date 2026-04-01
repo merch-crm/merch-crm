@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   Search,
@@ -13,6 +13,7 @@ import {
   Calendar,
   SlidersHorizontal,
 } from "lucide-react";
+import { useIsClient } from "@/hooks/use-is-client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -56,6 +57,12 @@ export function TasksClient({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isClient = useIsClient();
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    if (isClient) setNow(new Date()); // suppressHydrationWarning
+  }, [isClient]);
 
   const urlView = searchParams.get("view") || "kanban";
   const urlFilter = searchParams.get("filter") || "all";
@@ -138,11 +145,11 @@ export function TasksClient({
         t.assignees?.some((a) => a.userId === additionalFilters.assigneeId)
       );
     }
-    if (additionalFilters.isOverdue) {
+    if (additionalFilters.isOverdue && isClient && now) {
       result = result.filter(
         (t) =>
           t.deadline &&
-          new Date(t.deadline) < new Date() &&
+          new Date(t.deadline) < now &&
           t.status !== "done" &&
           t.status !== "cancelled"
       );
@@ -158,7 +165,7 @@ export function TasksClient({
     }
 
     return result;
-  }, [tasks, filterTab, currentUserId, currentUserDepartmentId, additionalFilters, searchQuery]);
+  }, [tasks, filterTab, currentUserId, currentUserDepartmentId, additionalFilters, searchQuery, isClient, now]);
 
   const tabCounts = useMemo(() => ({
     all: tasks.filter((t) => t.status !== "done" && t.status !== "cancelled").length,

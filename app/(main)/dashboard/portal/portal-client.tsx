@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { TicketModal } from "@/components/portal/ticket-modal";
 import { useState, useMemo, useEffect } from "react";
+import { useIsClient } from "@/hooks/use-is-client";
 import { type PortalData } from "./types";
 import dynamic from "next/dynamic";
 
@@ -34,15 +35,16 @@ interface PortalClientProps {
 
 export function PortalClient({ data }: PortalClientProps) {
     const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+    const isClient = useIsClient();
     
     const chartData = useMemo(() => {
-        if (!data?.stats) return [];
+        if (!data?.stats || !isClient) return [];
         return [...data.stats].reverse().map((s) => ({
             name: format(new Date(s.date as string | Date), "dd.MM", { locale: ru }),
             hours: Math.round(((s.workSeconds as number) || 0) / 3600 * 10) / 10,
             productivity: Number(s.productivity) || 0
         }));
-    }, [data?.stats]);
+    }, [data?.stats, isClient]);
 
     const avgProductivity = useMemo(() => {
         if (!data?.stats || data.stats.length === 0) return 0;
@@ -65,7 +67,7 @@ export function PortalClient({ data }: PortalClientProps) {
         const startTime = new Date(data.currentSession.startTime).getTime();
         
         const updateTimer = () => {
-            const now = new Date().getTime();
+            const now = new Date().getTime(); // suppressHydrationWarning
             const diffMs = Math.max(0, now - startTime);
             
             const h = Math.floor(diffMs / 3600000);
@@ -122,7 +124,7 @@ export function PortalClient({ data }: PortalClientProps) {
                         <p className="text-slate-500 font-bold flex items-center gap-2">
                             {data?.staff?.position || "Сотрудник производства"} 
                             <span className="w-1 h-1 bg-slate-300 rounded-full" />
-                            {format(new Date(), "d MMMM, EEEE", { locale: ru })}
+                            {isClient ? format(new Date(), "d MMMM, EEEE", { locale: ru }) : "..."} {/* // suppressHydrationWarning */}
                         </p>
                     </div>
                 </div>
@@ -320,7 +322,7 @@ export function PortalClient({ data }: PortalClientProps) {
                                 <div className="flex flex-col items-end gap-2">
                                     <div className="text-xs font-black text-slate-400 flex items-center gap-1">
                                         <Clock className="w-3 h-3" />
-                                        До {task.dueDate ? format(new Date(task.dueDate), "dd.MM", { locale: ru }) : '—'}
+                                        До {isClient && task.dueDate ? format(new Date(task.dueDate), "dd.MM", { locale: ru }) : '—'}
                                     </div>
                                     <button 
                                         type="button"

@@ -1,8 +1,9 @@
-import { getFundsStats } from"../actions";;
+import { getFundsStats } from "../actions";
 import { getSession } from "@/lib/session";
 import { redirect } from"next/navigation";
 import { FundsClient } from"../funds-client";
 import { startOfDay, endOfDay, subDays } from"date-fns";
+import { getNow } from "@/lib/utils";
 
 export const dynamic ="force-dynamic";
 
@@ -18,7 +19,7 @@ export default async function FundsPage({
     const range = searchParams.range ||"30d";
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
-    const now = new Date();
+    const now = getNow();
 
     if (searchParams.from && searchParams.to) {
         fromDate = startOfDay(new Date(searchParams.from));

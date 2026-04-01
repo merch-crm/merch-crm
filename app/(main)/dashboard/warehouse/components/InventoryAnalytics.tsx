@@ -24,7 +24,7 @@ interface InventoryAnalyticsProps {
     stagnantItems: StagnantItem[];
 }
 
-const DaysSinceDisplay = ({ lastDate }: { lastDate: Date | null }) => {
+const DaysSinceDisplay = ({ lastDate }: { lastDate: Date | string | null }) => {
     const [mounted, setMounted] = React.useState(false);
     React.useEffect(() => setMounted(true), []);
 
@@ -32,7 +32,8 @@ const DaysSinceDisplay = ({ lastDate }: { lastDate: Date | null }) => {
         return <span className="text-xs font-black tabular-nums text-slate-400">{!lastDate ? 'никогда' : '...'}</span>;
     }
 
-    const daysSince = Math.floor((Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+    const lastActivityDate = typeof lastDate === 'string' ? new Date(lastDate) : lastDate;
+    const daysSince = Math.floor((Date.now() - lastActivityDate.getTime()) / (1000 * 60 * 60 * 24)); // suppressHydrationWarning
 
     return (
         <span className={cn("text-xs font-black tabular-nums",
@@ -135,29 +136,26 @@ export const InventoryAnalytics = React.memo(({
                         </div>
                     ) : (
                         <div className="flex flex-col gap-2 overflow-y-auto max-h-[260px] custom-scrollbar">
-                            {stagnantItems.map((item) => {
-                                const lastDate = item.lastActivityAt ? new Date(item.lastActivityAt) : null;
-                                return (
-                                    <Link
-                                        key={item.id}
-                                        href={`/dashboard/warehouse/items/${item.id}`}
-                                        className="group flex items-center gap-3 p-2.5 rounded-[10px] hover:bg-amber-50/50 border border-transparent hover:border-amber-100 transition-all"
-                                    >
-                                        <div className="w-8 h-8 rounded-[8px] bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0">
-                                            <Package className="w-4 h-4 text-amber-500" aria-hidden="true" />
+                            {stagnantItems.map((item) => (
+                                <Link
+                                    key={item.id}
+                                    href={`/dashboard/warehouse/items/${item.id}`}
+                                    className="group flex items-center gap-3 p-2.5 rounded-[10px] hover:bg-amber-50/50 border border-transparent hover:border-amber-100 transition-all"
+                                >
+                                    <div className="w-8 h-8 rounded-[8px] bg-amber-50 border border-amber-100 flex items-center justify-center shrink-0">
+                                        <Package className="w-4 h-4 text-amber-500" aria-hidden="true" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="text-sm font-semibold text-slate-800 truncate group-hover:text-amber-700 transition-colors">{item.name}</div>
+                                        <div className="text-xs text-slate-400">
+                                            Остаток: <span className="font-bold text-slate-600">{item.quantity} {formatUnit(item.unit)}</span>
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="text-sm font-semibold text-slate-800 truncate group-hover:text-amber-700 transition-colors">{item.name}</div>
-                                            <div className="text-xs text-slate-400">
-                                                Остаток: <span className="font-bold text-slate-600">{item.quantity} {formatUnit(item.unit)}</span>
-                                            </div>
-                                        </div>
-                                        <div className="shrink-0 text-right" suppressHydrationWarning>
-                                            <DaysSinceDisplay lastDate={lastDate} />
-                                        </div>
-                                    </Link>
-                                );
-                            })}
+                                    </div>
+                                    <div className="shrink-0 text-right">
+                                        <DaysSinceDisplay lastDate={item.lastActivityAt} />
+                                    </div>
+                                </Link>
+                            ))}
                         </div>
                     )}
                 </div>

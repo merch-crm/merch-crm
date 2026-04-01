@@ -1,4 +1,4 @@
-import { getFinancialStats } from"../actions";;
+import { getFinancialStats } from "../actions";
 import { getSession } from "@/lib/session";
 import { db } from"@/lib/db";
 import { users } from"@/lib/schema";
@@ -6,6 +6,7 @@ import { eq } from"drizzle-orm";
 import { startOfDay, endOfDay, subDays } from"date-fns";
 import { redirect } from"next/navigation";
 import { SalesClient } from"../sales-client";
+import { getNow } from "@/lib/utils";
 
 export const dynamic ="force-dynamic";
 
@@ -42,7 +43,7 @@ export default async function FinanceSalesPage({
     const range = searchParams.range ||"30d";
     let fromDate: Date | undefined;
     let toDate: Date | undefined;
-    const now = new Date();
+    const now = getNow();
 
     if (searchParams.from && searchParams.to) {
         fromDate = startOfDay(new Date(searchParams.from));

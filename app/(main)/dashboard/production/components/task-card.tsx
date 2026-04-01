@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useIsClient } from "@/hooks/use-is-client";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -52,13 +53,14 @@ const statusConfig: Record<string, { label: string; icon: React.ReactNode }> = {
 };
 
 export function TaskCard({ task, onUpdate }: TaskCardProps) {
+    const isClient = useIsClient();
     const [isUpdating, setIsUpdating] = useState(false);
 
     const progress = task.quantity > 0
         ? Math.round(((task.completedQuantity || 0) / task.quantity) * 100)
         : 0;
 
-    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "completed";
+    const isOverdue = isClient && task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "completed"; // suppressHydrationWarning
 
     const handleStatusChange = async (newStatus: string) => {
         setIsUpdating(true);
@@ -158,10 +160,10 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
                             {task.dueDate && (
                                 <div className="flex items-center gap-1">
                                     <Clock className="h-3 w-3" />
-                                    {formatDistanceToNow(new Date(task.dueDate), {
+                                    {isClient ? formatDistanceToNow(new Date(task.dueDate), {
                                         addSuffix: true,
                                         locale: ru,
-                                    })}
+                                    }) : "..."}
                                 </div>
                             )}
                         </div>

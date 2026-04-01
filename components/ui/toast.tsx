@@ -103,6 +103,7 @@ interface ToastState {
 }
 
 let toastFn: (message: string, type?: ToastType, options?: { action?: ToastAction, mutation?: boolean }) => void = () => { };
+let toastCounter = 0;
 
 const toastApi = {
     toast: (message: string, type?: ToastType, options?: { action?: ToastAction, mutation?: boolean }) => toastFn(message, type, options),
@@ -120,7 +121,8 @@ export function ToastContainer() {
 
     useEffect(() => {
         toastFn = (message: string, type: ToastType ="info", options = {}) => {
-            setActiveToast({ message, type, id: Date.now(), action: options.action });
+            toastCounter++;
+            setActiveToast({ message, type, id: toastCounter, action: options.action });
 
             if (options.mutation) {
                 triggerMutation();

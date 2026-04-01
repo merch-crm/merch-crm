@@ -69,8 +69,8 @@ export const serializeIconGroups = (groups: IconGroupInput[]): SerializedIconGro
 export const hydrateIconGroups = (data: SerializedIconGroup[]): IconGroup[] => {
     // This is a simplified version, the actual Lucia/Lucide mapping 
     // is usually handled via name-to-component dictionary
-    return (data || []).map(group => ({
-        id: group.name?.toLowerCase().replace(/\s+/g, '-') || `cat-${Math.random()}`,
+    return (data || []).map((group, index) => ({
+        id: group.name?.toLowerCase().replace(/\s+/g, '-') || `cat-${index}`,
         label: group.name ||"Untitled",
         groupIcon: (group as unknown as { groupIcon?: React.ComponentType<{ className?: string }> }).groupIcon || (() => null), // Actual mapping happens in main component if needed
         icons: (group.icons || []).map(icon => ({

@@ -6,7 +6,7 @@ import {
     Briefcase
 } from"lucide-react";
 import { pluralize } from"@/lib/pluralize";
-import { SalaryStats } from"./actions";;
+import { SalaryStats } from "./actions";
 import { useBranding } from"@/components/branding-provider";
 import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
 
@@ -83,6 +83,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
                             </div>
                             <ResponsiveDataView<SalaryStats['employeePayments'][number]>
                                 data={emps}
+                                getItemKey={(emp) => emp.id}
                                 mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                                 desktopClassName="hidden md:block"
                                 renderTable={() => (

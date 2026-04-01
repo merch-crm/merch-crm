@@ -75,6 +75,36 @@ Before any design work, answer:
 
 ---
 
+## 📐 MerchCRM Design Sources (MANDATORY - CHECK BEFORE ANY UI WORK)
+
+> 🔴 **Before creating or editing ANY UI**, you MUST check these 3 project-specific design sources in priority order.
+
+### Source 1: UI Kit (`/ui-kit`) — LAW
+- **96 components**, 20 categories (cards, buttons, inputs, badges, tables, modals, tooltips, dropdowns, sliders, etc.)
+- Each component shown in 3 viewports (Desktop 1200px, Tablet 768px, Mobile 375px)
+- Additional sub-pages: Headers (10), Footers (10), Categories (10), Modals, Errors (5), Dropdowns Kit (13), Pagination (30)
+- **Code**: `app/ui-kit/`
+- **Rule**: ALL new interfaces MUST use components from this kit. No custom components when a kit component exists.
+
+### Source 2: References Page (`/dashboard/references`) — STYLE GUIDE
+- ~20 premium interactive React components organized by category: Logistics, Cards, Widgets, Calendars, Interface, Dropdowns, AI
+- **Code**: `app/(main)/dashboard/references/`
+- **Rule**: Cross-reference these components for style patterns, hover effects, animations, border radius, shadows, typography. Maintain visual consistency.
+
+### Source 3: Local Design Images (`vault/Референсы-Дизайн/`) — INSPIRATION ONLY
+- ~96 screenshot files (.jpg/.png/.webp) from best-in-class products
+- Symlink path, not in Git
+- **Rule**: Extract ONLY ideas — composition, rhythm, accents, mood. NEVER copy visual parameters directly.
+
+### Priority Order
+1. `UX-дизайн` standards → **absolute, never break**
+2. UI Kit (`/ui-kit`) → **mandatory base**
+3. References page (`/dashboard/references`) → **style reference**
+4. Tailwind CSS v4 tokens → **only source for colors/spacing**
+5. Local images → **inspiration only**
+
+---
+
 ## 🧠 DEEP DESIGN THINKING (MANDATORY - BEFORE ANY DESIGN)
 
 **⛔ DO NOT start designing until you complete this internal analysis!**

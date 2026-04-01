@@ -21,6 +21,7 @@ interface MatrixSelection {
 }
 
 interface PositionPreview {
+    tempId: string;
     attributes: Record<string, string>;
     name: string;
     sku: string;

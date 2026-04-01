@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { updateInventoryCategoriesOrder } from "./category-actions";
 import { useToast } from "@/components/ui/toast";
 import { cn } from "@/lib/utils";
+import { useIsClient } from "@/hooks/use-is-client";
 
 import {
     DndContext,
@@ -42,6 +43,7 @@ interface InventoryClientProps {
 export function InventoryClient({ categories: initialCategories = [], user }: InventoryClientProps) {
     const router = useRouter();
     const { toast } = useToast();
+    const isClient = useIsClient();
     const [editingCategory, setEditingCategory] = useState<Category | null>(null);
     const [categories, setCategories] = useState<Category[]>(initialCategories);
     const [activeId, setActiveId] = useState<string | null>(null);
@@ -78,7 +80,7 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
         lastDragUpdateTimeRef.current = 0;
         setActiveId(id);
 
-        if (typeof window !== 'undefined' && window.navigator.vibrate) {
+        if (isClient && window.navigator.vibrate) {
             window.navigator.vibrate(5);
         }
     };
@@ -91,7 +93,7 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
         if (lastOverIdRef.current === overId) return;
 
         // Throttle updates during drag
-        const now = typeof window !== 'undefined' ? Date.now() : 0;
+        const now = isClient ? window.performance.now() : 0;
         if (now - lastDragUpdateTimeRef.current < 50) return;
         lastDragUpdateTimeRef.current = now;
         lastOverIdRef.current = overId;
@@ -102,7 +104,7 @@ export function InventoryClient({ categories: initialCategories = [], user }: In
             if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return prev;
             return arrayMove(prev, oldIndex, newIndex);
         });
-    }, []);
+    }, [isClient]);
 
     const handleDragEnd = async (event: DragEndEvent) => {
         setActiveId(null);

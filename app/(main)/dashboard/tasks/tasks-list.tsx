@@ -140,7 +140,7 @@ export function TasksList({ tasks, currentUserId: _currentUserId, onTaskClick }:
                                         </div>
                                         {task.deadline && (
                                             <div className={cn("flex items-center gap-1",
-                                                new Date(task.deadline) < new Date() && !isDone ?"text-rose-500" :""
+                                                new Date(task.deadline) < new Date() && !isDone ?"text-rose-500" :"" // suppressHydrationWarning
                                             )}>
                                                 <Calendar className="w-3 h-3" />
                                                 <span>{format(new Date(task.deadline),"d MMM", { locale: ru })}</span>

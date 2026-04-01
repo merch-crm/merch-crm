@@ -16,11 +16,11 @@ TABLE
   rows.status as "Статусы",
   length(rows) as "Кол-во"
 FROM "060-Roadmap"
-WHERE phase != null AND file.name != "Roadmap-Dashboard"
-GROUP BY phase
+WHERE status != null AND file.name != "Roadmap-Dashboard"
+GROUP BY status
 ```
 
-## 🚀 Текущие задачи (В работе)
+## 🚀 Текущие задачи (In Progress)
 
 ```dataview
 TABLE

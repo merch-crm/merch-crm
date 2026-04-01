@@ -1,13 +1,14 @@
-import React from"react";
+import React, { useState, useEffect } from "react";
+import { useIsClient } from "@/hooks/use-is-client";
 import {
     Activity,
     Package,
     ShoppingCart,
     AlertTriangle
-} from"lucide-react";
-import { cn } from"@/lib/utils";
-import { format, addDays } from"date-fns";
-import { ru } from"date-fns/locale";
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { format, addDays } from "date-fns";
+import { ru } from "date-fns/locale";
 
 interface StockTimelineProps {
     currentQuantity: number;
@@ -35,6 +36,14 @@ export function StockTimeline({
     criticalStockThreshold = 0,
     analytics
 }: StockTimelineProps) {
+    const isClient = useIsClient();
+    const [today, setToday] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            setToday(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
     return (
         <div className="lg:col-span-3 bg-primary/5 rounded-3xl p-5 border border-primary/10 relative overflow-hidden group flex flex-col">
             <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors" />
@@ -59,7 +68,9 @@ export function StockTimeline({
                         <div className="space-y-1 min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2">
                                 <span className="text-xs font-black text-emerald-600 truncate">Сегодня</span>
-                                <span className="text-xs font-black text-muted-foreground shrink-0">{format(new Date(), 'd MMM', { locale: ru })}</span>
+                                <span className="text-xs font-black text-muted-foreground shrink-0">
+                                    {today ? format(today, "d MMM", { locale: ru }) : "..."}
+                                </span>
                             </div>
                             <div className="flex items-baseline gap-1.5 leading-none">
                                 <span className={cn("text-2xl font-black",
@@ -81,9 +92,9 @@ export function StockTimeline({
                         <div className="space-y-1 min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2">
                                 <span className="text-xs font-black text-amber-600 truncate">Порог закупки</span>
-                                {analytics.daysToLow !== Infinity && (
+                                {today && analytics.daysToLow !== Infinity && (
                                     <span className="text-xs font-black text-muted-foreground shrink-0">
-                                        ~ {format(addDays(new Date(), analytics.daysToLow), 'd MMM', { locale: ru })}
+                                        ~ {format(addDays(today, analytics.daysToLow), "d MMM", { locale: ru })}
                                     </span>
                                 )}
                             </div>
@@ -117,9 +128,9 @@ export function StockTimeline({
                         <div className="space-y-1 min-w-0 flex-1">
                             <div className="flex items-center justify-between gap-2">
                                 <span className="text-xs font-black text-rose-600 truncate">Критический</span>
-                                {analytics.daysToCritical !== Infinity && (
+                                {today && analytics.daysToCritical !== Infinity && (
                                     <span className="text-xs font-black text-muted-foreground shrink-0">
-                                        ~ {format(addDays(new Date(), analytics.daysToCritical), 'd MMM', { locale: ru })}
+                                        ~ {format(addDays(today, analytics.daysToCritical), "d MMM", { locale: ru })}
                                     </span>
                                 )}
                             </div>

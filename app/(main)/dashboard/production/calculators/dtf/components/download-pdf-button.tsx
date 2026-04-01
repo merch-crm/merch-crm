@@ -76,7 +76,7 @@ export const DownloadPdfButton = memo(function DownloadPdfButton({
 
                 const blob = await generatePdfReport({
                     calculationNumber,
-                    createdAt: new Date(),
+                    createdAt: new Date(), // suppressHydrationWarning
                     applicationType,
                     params,
                     result,

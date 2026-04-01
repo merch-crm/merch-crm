@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import React, { useEffect, useState } from "react";
 import { ru } from "date-fns/locale";
 import {
     Plus,
@@ -26,6 +27,7 @@ import {
     EmptyWidget,
     ApplicationTypesChart,
 } from "@/components/dashboard";
+import { useIsClient } from "@/hooks/use-is-client";
 import type {
     DesignStats,
     DesignTask,
@@ -63,9 +65,18 @@ export function DesignDashboardClient({
     popularDesigns,
     applicationTypesStats,
 }: DesignDashboardClientProps) {
+    const isClient = useIsClient();
+    const [now, setNow] = useState<Date | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
     const isOverdue = (dueDate: string | null) => {
-        if (!dueDate) return false;
-        return new Date(dueDate) < new Date();
+        if (!dueDate || !now) return false;
+        return new Date(dueDate) < now;
     };
 
     return (
@@ -238,10 +249,10 @@ export function DesignDashboardClient({
                                                 >
                                                     {isOverdue(task.dueDate)
                                                         ? "Просрочено"
-                                                        : formatDistanceToNow(new Date(task.dueDate), {
+                                                        : isClient && task.dueDate ? formatDistanceToNow(new Date(task.dueDate), {
                                                             addSuffix: true,
                                                             locale: ru,
-                                                        })}
+                                                        }) : "..."}
                                                 </p>
                                             )}
                                         </div>

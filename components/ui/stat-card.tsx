@@ -92,7 +92,7 @@ export function ModernStatCard({
             </div>
 
             <div className="space-y-1">
-                <p className="text-slate-400 text-xs font-black  mb-1">{label}</p>
+                <p suppressHydrationWarning className="text-slate-400 text-xs font-black  mb-1">{label}</p>
                 <div className="flex items-baseline gap-1">
                     <h3 suppressHydrationWarning className="text-3xl font-black text-slate-900  leading-none">
                         {value}
@@ -104,7 +104,7 @@ export function ModernStatCard({
                     )}
                 </div>
                 {subLabel && (
-                    <p className="text-xs font-bold text-slate-400 mt-2">{subLabel}</p>
+                    <p suppressHydrationWarning className="text-xs font-bold text-slate-400 mt-2">{subLabel}</p>
                 )}
             </div>
 

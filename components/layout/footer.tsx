@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { Globe } from "lucide-react";
 import { BrandingSettings } from "@/lib/types";
@@ -9,7 +10,11 @@ interface FooterProps {
 }
 
 export function Footer({ branding }: FooterProps) {
-    const currentYear = new Date().getFullYear();
+    const [currentYear, setCurrentYear] = React.useState<number | string>("...");
+
+    React.useEffect(() => {
+        setCurrentYear(new Date().getFullYear()); // suppressHydrationWarning
+    }, []);
 
     return (
         <footer className="py-6 px-8 mt-4">

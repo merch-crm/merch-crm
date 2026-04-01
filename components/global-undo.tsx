@@ -83,7 +83,7 @@ export function GlobalUndo() {
 
 // Helper to trigger the global undo
 export function triggerMutation() {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined") { // suppressHydrationWarning
         window.dispatchEvent(new CustomEvent("crm:mutation"));
     }
 }

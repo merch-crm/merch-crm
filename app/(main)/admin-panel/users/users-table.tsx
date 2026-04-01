@@ -75,6 +75,7 @@ export function UsersTable({ initialUsers, error, currentPage: _currentPage, tot
 
             <ResponsiveDataView<User>
                 data={initialUsers}
+                getItemKey={(user) => user.id}
                 mobileGridClassName="grid grid-cols-1 gap-3 md:hidden"
                 desktopClassName="hidden md:block"
                 renderTable={() => (

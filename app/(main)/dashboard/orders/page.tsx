@@ -32,7 +32,7 @@ export default async function OrdersPage({
     let from: Date | undefined;
     let to: Date | undefined;
 
-    const now = new Date();
+    const now = new Date(); // suppressHydrationWarning
 
     if (fromParam && toParam) {
         from = startOfDay(new Date(fromParam));

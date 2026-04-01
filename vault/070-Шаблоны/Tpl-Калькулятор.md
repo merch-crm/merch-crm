@@ -1,7 +1,7 @@
 ---
 название: "Калькулятор: <% tp.file.title %>"
 дата: <% tp.file.creation_date("YYYY-MM-DD") %>
-статус: в-работе
+status: planned
 тип: калькулятор
 tags:
   - тип/калькулятор

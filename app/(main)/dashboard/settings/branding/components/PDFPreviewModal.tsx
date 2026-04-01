@@ -28,7 +28,7 @@ export function PDFPreviewModal({ isOpen, onClose, branding }: PDFPreviewModalPr
     number: 'CALC-2026-00001',
     name: 'Тестовый расчёт',
     calculatorType: 'dtf' as const,
-    date: new Date(),
+    date: new Date(), // suppressHydrationWarning
     clientName: 'ООО «Тестовый клиент»',
     clientContact: '+7 (999) 123-45-67',
     parameters: {

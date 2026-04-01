@@ -14,7 +14,7 @@ interface MonitoringTabProps {
     monitoringData: MonitoringData | null;
     loading: boolean;
     error: string | null;
-    lastUpdated: Date;
+    lastUpdated: Date | null;
     onRefresh: (force?: boolean) => void;
     onClearRam: () => void;
     isClearingRam: boolean;
@@ -46,7 +46,7 @@ export function MonitoringTab({
                             Обновлено
                         </p>
                         <p className="text-xs text-slate-600 font-medium">
-                            {lastUpdated.toLocaleTimeString()}
+                            {lastUpdated ? lastUpdated.toLocaleTimeString() : "--:--:--"}
                         </p>
                     </div>
                     <Button

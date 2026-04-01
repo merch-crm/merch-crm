@@ -29,7 +29,7 @@ const SYSTEM_PRESETS: TaskFilterPreset[] = [
     isSystem: true,
     isFavorite: false,
     userId: "",
-    createdAt: new Date(),
+    createdAt: new Date("2024-01-01"),
   },
   {
     id: "system-overdue",
@@ -38,7 +38,7 @@ const SYSTEM_PRESETS: TaskFilterPreset[] = [
     isSystem: true,
     isFavorite: false,
     userId: "",
-    createdAt: new Date(),
+    createdAt: new Date("2024-01-01"),
   },
   {
     id: "system-urgent",
@@ -47,7 +47,7 @@ const SYSTEM_PRESETS: TaskFilterPreset[] = [
     isSystem: true,
     isFavorite: false,
     userId: "",
-    createdAt: new Date(),
+    createdAt: new Date("2024-01-01"),
   },
 ];
 

@@ -20,7 +20,7 @@ export function useNewItemState() {
     const [matrixSelection, setMatrixSelection] = useState<Record<string, string[]>>({});
     const [selectedPrintIds, setSelectedPrintIds] = useState<string[]>([]);
     const [generatedPositions, setGeneratedPositions] = useState<Array<{
-        tempId?: string;
+        tempId: string;
         attributes: Record<string, string>;
         name: string;
         sku: string;

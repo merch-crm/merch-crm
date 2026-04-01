@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from"react";
+import React, { useState, useEffect } from "react";
+import { useIsClient } from "@/hooks/use-is-client";
 import { motion, AnimatePresence } from"framer-motion";
 import { format, subDays, addDays } from"date-fns";
 import { ru } from"date-fns/locale";
@@ -38,7 +39,15 @@ interface ItemAnalyticsChartProps {
 }
 
 export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalyticsChartProps) {
+    const isClient = useIsClient();
+    const [today, setToday] = useState<Date | null>(null);
     const [hoveredData, setHoveredData] = useState<{ x: number; y: number; value: number; date: Date } | null>(null);
+
+    useEffect(() => {
+        if (isClient) {
+            setToday(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
 
     if (!analytics) return null;
 
@@ -171,15 +180,15 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                 />
                             ))}
 
-                            {(() => {
+                            {today && (() => {
                                 const labels = [];
                                 for (let i = 0; i <= 2; i++) {
                                     const daysAgo = 30 - (i * 10);
-                                    const date = subDays(new Date(), daysAgo);
+                                    const date = subDays(today, daysAgo);
                                     const x = paddingX + (i / 3) * (forecastSplitX - paddingX);
                                     labels.push(
                                         <text key={`hist-${i}`} x={x} y={height - 5} textAnchor="middle" className="text-[7px] font-bold fill-muted-foreground opacity-60">
-                                            {format(date,"d MMM", { locale: ru })}
+                                            {format(date, "d MMM", { locale: ru })}
                                         </text>
                                     );
                                 }
@@ -188,10 +197,10 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                         Сегодня
                                     </text>
                                 );
-                                const futureDate = addDays(new Date(), 10);
+                                const futureDate = addDays(today, 10);
                                 labels.push(
                                     <text key="future" x={width - paddingX} y={height - 5} textAnchor="end" className="text-[7px] font-bold fill-muted-foreground opacity-40">
-                                        {format(futureDate,"d MMM", { locale: ru })}
+                                        {format(futureDate, "d MMM", { locale: ru })}
                                     </text>
                                 );
                                 return labels;
@@ -277,10 +286,10 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                                                 return (
                                                     <g
                                                         key={i}
-                                                        onMouseEnter={() => setHoveredData({ x, y, value: val, date: subDays(new Date(), (safeData.length - 1) - i) })}
-                                                        onMouseLeave={() => setHoveredData(null)}
-                                                        onClick={() => setHoveredData({ x, y, value: val, date: subDays(new Date(), (safeData.length - 1) - i) })}
-                                                        onTouchStart={() => setHoveredData({ x, y, value: val, date: subDays(new Date(), (safeData.length - 1) - i) })}
+                                                onMouseEnter={() => today && setHoveredData({ x, y, value: val, date: subDays(today, (safeData.length - 1) - i) })}
+                                                onMouseLeave={() => setHoveredData(null)}
+                                                onClick={() => today && setHoveredData({ x, y, value: val, date: subDays(today, (safeData.length - 1) - i) })}
+                                                onTouchStart={() => today && setHoveredData({ x, y, value: val, date: subDays(today, (safeData.length - 1) - i) })}
                                                         className="cursor-pointer group/dot"
                                                     >
                                                         <circle cx={x} cy={y} r="15" fill="transparent" />
@@ -353,7 +362,7 @@ export function ItemAnalyticsChart({ analytics, chartLines, unit }: ItemAnalytic
                         <div className="flex justify-between items-center mt-1 pt-2 border-t border-border">
                             <div className="flex items-center gap-3">
                                 <span className="text-xs font-black text-muted-foreground bg-muted/30 px-3 py-1 rounded-full border border-border/50">
-                                    {format(subDays(new Date(), 29), 'd MMMM', { locale: ru })}
+                                    {isClient && today ? format(subDays(today, 29), "d MMMM", { locale: ru }) : "..."}
                                 </span>
                                 <div className="h-px w-10 bg-border" />
                             </div>

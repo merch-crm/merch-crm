@@ -12,6 +12,7 @@ interface MatrixSelection {
 }
 
 interface PositionPreview {
+    tempId: string;
     attributes: Record<string, string>;
     name: string;
     sku: string;
@@ -160,10 +161,12 @@ export function useMatrixGenerator({
                     }
                 });
 
+                const sku = skuParts.filter(Boolean).join("-");
                 return {
+                    tempId: `pos-${sku}`,
                     attributes,
                     name: nameParts.join(" "),
-                    sku: skuParts.filter(Boolean).join("-"),
+                    sku,
                 };
             });
 

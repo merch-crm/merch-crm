@@ -6,6 +6,7 @@ import { Play, Pause, Clock } from "lucide-react";
 import { startTaskTimerAction, stopTaskTimerAction, getOrCreateTaskAndTimerStatusAction } from "../actions/time-actions";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface ProductionTimerProps {
     taskId?: string | null;
@@ -48,7 +49,7 @@ export function ProductionTimer({
         let interval: NodeJS.Timeout;
         if (isRunning && startTime) {
             interval = setInterval(() => {
-                const now = new Date();
+                const now = new Date(); // suppressHydrationWarning
                 const diff = Math.floor((now.getTime() - startTime.getTime()) / 1000);
                 setElapsed(diff);
             }, 1000);
@@ -75,7 +76,7 @@ export function ProductionTimer({
                 const res = await startTaskTimerAction({ taskId });
                 if (res.success) {
                     setIsRunning(true);
-                    setStartTime(new Date());
+                    setStartTime(new Date()); // suppressHydrationWarning
                     toast.success("Таймер запущен");
                 } else {
                     toast.error(res.error || "Ошибка запуска");
@@ -97,12 +98,14 @@ export function ProductionTimer({
         ].filter(Boolean).join(':');
     };
 
+    const isClient = useIsClient();
+
     return (
         <div className={cn("flex items-center gap-2 px-2 py-1.5 rounded-md border border-border/40 bg-muted/30", className)}>
             <div className="flex items-center gap-1.5 min-w-[70px]">
                 <Clock className={cn("w-3.5 h-3.5", isRunning ? "text-primary animate-pulse" : "text-muted-foreground")} />
                 <span className={cn("text-xs font-mono font-medium tabular-nums", isRunning ? "text-foreground" : "text-muted-foreground")}>
-                    {isRunning ? formatTime(elapsed) : "00:00"}
+                    {isClient && isRunning ? formatTime(elapsed) : "00:00"}
                 </span>
             </div>
             

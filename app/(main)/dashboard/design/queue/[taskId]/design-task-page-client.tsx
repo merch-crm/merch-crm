@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -35,6 +35,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { useIsClient } from "@/hooks/use-is-client";
 
 import { updateDesignTaskStatus, takeDesignTask, DesignTaskFull, DesignFile } from "../../actions/order-design-actions";
 import { FileUploadZone } from "./components/file-upload-zone";
@@ -62,8 +63,16 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
     const router = useRouter();
     const [task, setTask] = useState(initialTask);
     const [isUpdating, setIsUpdating] = useState(false);
+    const isClient = useIsClient();
+    const [now, setNow] = useState<Date | null>(null);
 
-    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "approved";
+    useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
+    const isOverdue = isClient && now && task.dueDate && new Date(task.dueDate) < now && task.status !== "approved";
 
     const handleStatusChange = async (newStatus: string) => {
         setIsUpdating(true);
@@ -360,14 +369,14 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
                                     <div className={`flex items-center gap-2 text-sm ${isOverdue ? "text-red-600 font-semibold" : ""}`}>
                                         <Clock className="h-4 w-4" />
                                         <span>
-                                            {format(new Date(task.dueDate), "d MMMM yyyy", { locale: ru })}
+                                            {isClient ? format(new Date(task.dueDate), "d MMMM yyyy", { locale: ru }) : "..."}
                                         </span>
                                     </div>
                                     <p className="text-xs text-muted-foreground mt-0.5">
-                                        {formatDistanceToNow(new Date(task.dueDate), {
+                                        {isClient ? formatDistanceToNow(new Date(task.dueDate), {
                                             addSuffix: true,
                                             locale: ru,
-                                        })}
+                                        }) : "..."}
                                     </p>
                                 </div>
                             )}
@@ -377,7 +386,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
                             <div>
                                 <p className="text-xs text-muted-foreground mb-1">Создано</p>
                                 <p className="text-xs font-medium">
-                                    {format(new Date(task.createdAt), "d MMMM yyyy, HH:mm", { locale: ru })}
+                                    {isClient ? format(new Date(task.createdAt), "d MMMM yyyy, HH:mm", { locale: ru }) : "..."}
                                 </p>
                                 {task.createdByUser && (
                                     <p className="text-xs text-muted-foreground mt-0.5">

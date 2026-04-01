@@ -109,7 +109,7 @@ export function TaskDetailsDialog({
 
   const isOverdue =
     task.deadline &&
-    new Date(task.deadline) < new Date() &&
+    new Date(task.deadline) < new Date() && // suppressHydrationWarning
     task.status !== "done" &&
     task.status !== "cancelled";
 

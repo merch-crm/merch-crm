@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
@@ -32,6 +32,7 @@ import {
     Tooltip,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { useIsClient } from "@/hooks/use-is-client";
 import { orderItemDesignStatusEnum } from "@/lib/schema/enums";
 
 import { updateDesignTaskStatus, takeDesignTask, DesignTaskFull } from "../../actions/order-design-actions";
@@ -49,8 +50,16 @@ const priorityConfig: Record<number, { label: string; color: string }> = {
 
 export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
     const [isUpdating, setIsUpdating] = useState(false);
+    const isClient = useIsClient();
 
-    const isOverdue = task.dueDate && new Date(task.dueDate) < new Date();
+    const [now, setNow] = useState<Date | null>(null);
+    useEffect(() => {
+        if (isClient) {
+            setNow(new Date()); // suppressHydrationWarning
+        }
+    }, [isClient]);
+
+    const isOverdue = isClient && now && task.dueDate && new Date(task.dueDate) < now;
     const hasPreview = task.files && task.files.length > 0;
 
     const handleStatusChange = async (newStatus: string) => {
@@ -228,10 +237,10 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
                     {task.dueDate && (
                         <div className={`flex items-center gap-1 text-xs ${isOverdue ? "text-red-600" : "text-muted-foreground"}`}>
                             <Clock className="h-3 w-3" />
-                            {formatDistanceToNow(new Date(task.dueDate), {
+                            {isClient && task.dueDate ? formatDistanceToNow(new Date(task.dueDate), {
                                 addSuffix: true,
                                 locale: ru,
-                            })}
+                            }) : "..."}
                         </div>
                     )}
                 </div>

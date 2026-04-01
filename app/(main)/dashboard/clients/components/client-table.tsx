@@ -20,6 +20,7 @@ import { useToast } from "@/components/ui/toast";
 import { LoyaltyLevelSelect } from "./loyalty-level-select";
 import { setClientLoyaltyLevel } from "../actions/loyalty.actions";
 import { RFMSegmentBadge } from "./rfm-segment-badge";
+import { useIsClient } from "@/hooks/use-is-client";
 
 interface ClientTableProps {
     clients: ClientSummary[];
@@ -56,6 +57,7 @@ export const ClientTable = memo(function ClientTable({
 }: ClientTableProps) {
     const router = useRouter();
     const { toast } = useToast();
+    const isClient = useIsClient();
 
     const renderClientInfo = (client: ClientSummary) => (
         <div className="flex flex-col">
@@ -123,6 +125,17 @@ export const ClientTable = memo(function ClientTable({
     );
 
     const renderActivity = (client: ClientSummary) => {
+        if (!isClient || !now) {
+            return (
+                <div className="flex flex-col opacity-50">
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-2 h-2 rounded-full bg-slate-200" />
+                        <span className="text-xs font-bold text-slate-300">Loading...</span>
+                    </div>
+                </div>
+            );
+        }
+
         if (!client.lastOrderDate) return <span className="text-xs text-slate-400 font-bold">Нет заказов</span>;
 
         const lastDate = new Date(client.lastOrderDate);

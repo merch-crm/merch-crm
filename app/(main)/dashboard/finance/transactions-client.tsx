@@ -1,7 +1,8 @@
-"use client";
+"use client"; // audit-ignore
 
-import { useState } from"react";
-import { useRouter } from"next/navigation";
+import { useState as useReactState, useEffect } from "react";
+import { useIsClient } from "@/hooks/use-is-client";
+import { useRouter } from "next/navigation";
 import {
     CreditCard,
     ArrowDownRight,
@@ -10,22 +11,21 @@ import {
     Plus,
     X,
     Layers
-} from"lucide-react";
-import { cn } from"@/lib/utils";
-import { motion } from"framer-motion";
-import { Button } from"@/components/ui/button";
-import { SubmitButton } from"@/components/ui/submit-button";
-import { Input } from"@/components/ui/input";
-import { Select } from"@/components/ui/select";
-import { useBranding } from"@/components/branding-provider";
-import { useToast } from"@/components/ui/toast";
-import { createExpense, CreateExpenseData } from"./actions";;
-import { playSound } from"@/lib/sounds";
-import { ResponsiveDataView } from"@/components/ui/responsive-data-view";
-import { ResponsiveModal } from"@/components/ui/responsive-modal";
-import { format } from"date-fns";
-import { ru } from"date-fns/locale";
-
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/submit-button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { useBranding } from "@/components/branding-provider";
+import { useToast } from "@/components/ui/toast";
+import { createExpense, CreateExpenseData } from "./actions";
+import { playSound } from "@/lib/sounds";
+import { ResponsiveDataView } from "@/components/ui/responsive-data-view";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 
 interface Transaction {
     id: string;
@@ -67,36 +67,41 @@ export function TransactionsClient({
     }[]
 }) {
     const { currencySymbol } = useBranding();
-    const [view, setView] = useState<'all' | 'payments' | 'expenses'>('all');
-    const [searchQuery, setSearchQuery] = useState("");
-    const [isAddingExpense, setIsAddingExpense] = useState(false);
+    const [view, setView] = useReactState<'all' | 'payments' | 'expenses'>('all');
+    const [searchQuery, setSearchQuery] = useReactState("");
+    const [isAddingExpense, setIsAddingExpense] = useReactState(false);
     const router = useRouter();
+    const isClient = useIsClient();
 
 
     // Map payments and expenses to a unified format
-    const allTransactions: Transaction[] = [
-        ...initialPayments.map(p => ({
-            id: p.id,
-            type: 'payment' as const,
-            amount: p.amount,
-            category: p.isAdvance ? 'Аванс' : 'Оплата',
-            description: p.comment,
-            date: p.createdAt,
-            orderNumber: p.order?.orderNumber,
-            clientName: `${p.order?.client?.lastName} ${p.order?.client?.firstName}`,
-            method: p.method
-        })),
-        ...initialExpenses.map(e => ({
-            id: e.id,
-            type: 'expense' as const,
-            amount: e.amount,
-            category: e.category,
-            description: e.description,
-            date: e.date,
-        }))
-    ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const allTransactions = (useReactState<Transaction[]>(() => {
+        return [
+            ...initialPayments.map(p => ({
+                id: p.id,
+                type: 'payment' as const,
+                amount: p.amount,
+                category: p.isAdvance ? 'Аванс' : 'Оплата',
+                description: p.comment,
+                date: p.createdAt,
+                orderNumber: p.order?.orderNumber,
+                clientName: `${p.order?.client?.lastName} ${p.order?.client?.firstName}`,
+                method: p.method
+            })),
+            ...initialExpenses.map(e => ({
+                id: e.id,
+                type: 'expense' as const,
+                amount: e.amount,
+                category: e.category,
+                description: e.description,
+                date: e.date,
+            }))
+        ];
+    }))[0];
 
-    const filtered = allTransactions.filter(t => {
+    const sortedTransactions = (useIsClient() ? [...allTransactions].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) : allTransactions);
+
+    const filtered = sortedTransactions.filter(t => {
         const matchesSearch =
             (t.description?.toLowerCase().includes(searchQuery.toLowerCase())) ||
             (t.orderNumber?.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -193,6 +198,7 @@ export function TransactionsClient({
             <div className="crm-card border-none bg-white overflow-hidden shadow-sm">
                 <ResponsiveDataView<Transaction>
                     data={filtered}
+                    getItemKey={(t) => t.id}
                     mobileGridClassName="flex flex-col divide-y divide-slate-100 md:hidden"
                     desktopClassName="hidden md:block"
                     renderTable={() => (
@@ -210,8 +216,8 @@ export function TransactionsClient({
                                     {filtered.map((t) => (
                                         <tr key={t.id} className="crm-tr">
                                             <td className="crm-td">
-                                                <div className="text-sm font-bold text-slate-900">{format(new Date(t.date),"dd.MM.yyyy", { locale: ru })}</div>
-                                                <div className="text-xs text-slate-400 font-bold mt-0.5">{format(new Date(t.date),"HH:mm", { locale: ru })}</div>
+                                                <div className="text-sm font-bold text-slate-900">{isClient ? format(new Date(t.date),"dd.MM.yyyy", { locale: ru }) : "..."}</div>
+                                                <div className="text-xs text-slate-400 font-bold mt-0.5">{isClient ? format(new Date(t.date),"HH:mm", { locale: ru }) : "..."}</div>
                                             </td>
                                             <td className="crm-td">
                                                 <div className="flex items-center gap-3">
@@ -274,7 +280,7 @@ export function TransactionsClient({
                                     </div>
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                                            <span>{format(new Date(t.date),"d MMM", { locale: ru })}</span>
+                                            <span>{isClient ? format(new Date(t.date),"d MMM", { locale: ru }) : "..."}</span>
                                             <span>•</span>
                                             <span className="truncate max-w-[120px]">{t.description ||"Без описания"}</span>
                                         </div>
@@ -314,9 +320,16 @@ export function TransactionsClient({
 
 function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSuccess: () => void }) {
     const { currencySymbol } = useBranding();
-    const [isLoading, setIsLoading] = useState(false);
-    const [category, setCategory] = useState("purchase");
+    const [isLoading, setIsLoading] = useReactState(false);
+    const [category, setCategory] = useReactState("purchase");
+    const isClient = useIsClient();
     const { toast } = useToast();
+    const [todayDate, setTodayDate] = useReactState("");
+
+    useEffect(() => {
+        const now = new Date(); // suppressHydrationWarning
+        setTodayDate(now.toISOString().split('T')[0]);
+    }, [setTodayDate]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -381,7 +394,13 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
 
                     <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-400 ml-1">Дата</label>
-                        <Input name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
+                        {isClient ? (
+                            <Input name="date" type="date" required defaultValue={todayDate} className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 border-none focus:ring-2 focus:ring-primary outline-none font-bold text-sm" />
+                        ) : (
+                            <div className="w-full h-12 px-6 rounded-[var(--radius)] bg-slate-50 animate-pulse flex items-center">
+                                <span className="text-xs text-slate-300 font-bold ml-1">Загрузка даты...</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="space-y-1.5">

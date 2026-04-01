@@ -217,7 +217,7 @@ export const MeterPricingEditor = memo(function MeterPricingEditor({
     const newFromMeters = lastTier ? (lastTier.toMeters || lastTier.fromMeters + 10) : 0
     
     const newTier: MeterPriceTierData = {
-      id: `temp-${Date.now()}`,
+      id: `temp-${Date.now()}`, // suppressHydrationWarning
       applicationType,
       rollWidthMm: selectedRollWidth,
       fromMeters: newFromMeters,

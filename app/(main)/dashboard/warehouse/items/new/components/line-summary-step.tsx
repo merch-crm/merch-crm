@@ -27,6 +27,7 @@ import type {
 import type { CreationType, LineMode } from "./position-type-step";
 
 interface PositionPreview {
+    tempId: string;
     attributes: Record<string, string>;
     name: string;
     sku: string;
@@ -262,7 +263,7 @@ export function LineSummaryStep({
                                 </thead>
                                 <tbody>
                                     {positions.slice(0, 50).map((pos, index) => (
-                                        <tr key={index} className="border-b border-slate-100 last:border-0">
+                                        <tr key={pos.tempId} className="border-b border-slate-100 last:border-0">
                                             <td className="font-mono text-slate-500 px-4 py-3">
                                                 {index + 1}
                                             </td>
