@@ -78,6 +78,9 @@ audit-report*.md
 audit-report*.json
 lint_output.txt
 
+# Дизайн-референсы (симлинк на локальную папку)
+vault/Референсы-Дизайн/
+
 # Архивы и временные пакеты
 *.tgz
 tmp_tsc_errors.txt

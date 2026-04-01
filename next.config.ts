@@ -6,6 +6,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["canvas", "sharp"],
   transpilePackages: ["jspdf", "jspdf-autotable", "three", "@react-three/drei", "@react-three/fiber", "troika-three-text"],
   devIndicators: {
     position: "top-right",
@@ -57,6 +58,13 @@ const nextConfig: NextConfig = {
     if (dev && !isServer) {
       config.devtool = "eval";
     }
+
+    // Suppress warnings from libheif-js (common with WASM modules in Next.js)
+    config.ignoreWarnings = [
+      { module: /node_modules\/libheif-js/ },
+      { message: /Critical dependency: the request of a dependency is an expression/ }
+    ];
+
     return config;
   },
   async redirects() {

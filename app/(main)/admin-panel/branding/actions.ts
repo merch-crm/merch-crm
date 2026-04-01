@@ -5,10 +5,9 @@ import { systemSettings } from"@/lib/schema";
 import { eq } from"drizzle-orm";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { revalidatePath } from"next/cache";
-import { logAction } from"@/lib/audit";
-import { saveLocalFile } from"@/lib/local-storage";
-import { BrandingSettingsSchema, IconGroupsSchema } from"./validation";
-import sharp from"sharp";
+import { logAction } from "@/lib/audit";
+import { saveLocalFile } from "@/lib/local-storage";
+import { BrandingSettingsSchema, IconGroupsSchema } from "./validation";
 import { logError } from "@/lib/error-logger";
 
 import type { BrandingSettings } from"@/lib/types";
@@ -72,6 +71,7 @@ export async function uploadBrandingFile(formData: FormData): Promise<ActionResu
         }
 
         const buffer = Buffer.from(await file.arrayBuffer());
+        const sharp = (await import("sharp")).default;
         let processedBuffer: Buffer;
         let fileName: string;
 
