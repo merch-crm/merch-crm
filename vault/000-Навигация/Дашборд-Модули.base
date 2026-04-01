@@ -1,6 +1,6 @@
 filters:
   and:
-    - file.inFolder("vault/030-Модули", true)
+    - file.inFolder("030-Модули")
     - file.ext == "md"
 formulas:
   days_since_update: if(file.mtime, (now() - file.mtime).days, "")

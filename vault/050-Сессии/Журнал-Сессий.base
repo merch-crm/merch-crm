@@ -1,6 +1,6 @@
 filters:
   and:
-    - file.inFolder("vault/050-Сессии")
+    - file.inFolder("050-Сессии")
     - file.ext == "md"
 formulas:
   days_ago: (now() - file.ctime).days

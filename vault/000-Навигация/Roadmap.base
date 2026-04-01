@@ -1,22 +1,20 @@
 filters:
   and:
-    - 'file.inFolder("030-Модули")'
-    - 'file.ext == "md"'
-    - 'file.name != "030-Модули"'
-
+    - file.inFolder("030-Модули")
+    - file.ext == "md"
+    - file.name != "030-Модули"
 properties:
   status:
-    displayName: "Статус"
+    displayName: Статус
   updated:
-    displayName: "Обновлено"
-
+    displayName: Обновлено
 views:
   - type: table
-    name: "Все Модули"
+    name: Все Модули
+    groupBy:
+      property: status
+      direction: ASC
     order:
       - file.name
       - status
       - updated
-    groupBy:
-      property: status
-      direction: ASC

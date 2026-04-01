@@ -292,5 +292,12 @@
     "minimumNumberOfDollarSignsToBeAMathBlock": 2,
     "escapeCharacter": "\"",
     "removeUnnecessaryEscapeCharsForMultiLineArrays": false
+  },
+  "consecutive-blank-lines": {
+    "enabled": true
+  },
+  "sort-yaml-array-values": {
+    "enabled": true,
+    "sort-tag-key": true
   }
 }

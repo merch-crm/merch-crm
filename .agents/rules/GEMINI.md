@@ -129,6 +129,7 @@ When user's prompt is NOT in English:
 - Agents: `.agents/` (Project)
 - Skills: `.agents/skills/` (Project)
 - Runtime Scripts: `.agents/skills/<skill>/scripts/`
+- Documentation: Follow `.agents/rules/obsidian-standard.md` for all `vault/` edits.
 
 ### 🧠 Read → Understand → Apply
 
