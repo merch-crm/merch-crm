@@ -90,4 +90,8 @@ export const auth = betterAuth({
   onSessionCreate: async (_session: unknown) => {
     // Можно добавить логирование входа
   },
+
+  advanced: {
+    trustedProxyHeaders: true,
+  },
 });
