@@ -400,6 +400,19 @@ async function runCommand(command, args, cwd, raw) {
       break;
     }
 
+    case 'audit': {
+      const { quick, fast, 'include-tests': includeTests } = parseNamedArgs(args, ['quick', 'fast', 'include-tests']);
+      const quickFlag = (quick || (args.includes('--quick') || args.includes('--fast'))) ? '--quick' : '';
+      const testsFlag = includeTests ? '--include-tests' : '';
+      try {
+        const { execSync } = require('child_process');
+        execSync(`npx tsx scripts/audit.ts ${quickFlag} ${testsFlag}`, { stdio: 'inherit', cwd });
+      } catch (e) {
+        process.exit(1);
+      }
+      break;
+    }
+
     case 'resolve-model': {
       commands.cmdResolveModel(cwd, args[1], raw);
       break;

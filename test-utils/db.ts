@@ -1,8 +1,12 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
-import * as schema from '@/lib/schema'
+import { departments, roles, users } from '@/lib/schema/users'
+import { clients } from '@/lib/schema/clients/main'
+import { orders, orderItems } from '@/lib/schema/orders'
 import { sql } from 'drizzle-orm'
 import * as fs from 'fs'
+
+const schema = { departments, roles, users, clients, orders, orderItems }
 
 const LOG_FILE = '/tmp/vitest-db.log'
 function logToFile(msg: string) {

@@ -1,13 +1,13 @@
 "use server";
 
 import { eq, sql, and, inArray } from "drizzle-orm";
-import type * as schema from "@/lib/schema";
 import { orders, orderItems } from "@/lib/schema/orders";
 import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { OrderStatus } from "@/lib/types/orders";
+import { AppSchema } from "@/lib/db";
 
-export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
+export type Transaction = NodePgDatabase<AppSchema> | Parameters<Parameters<NodePgDatabase<AppSchema>['transaction']>[0]>[0];
 
 /** Helper to release inventory reservations for multiple orders atomically */
 export async function releaseReservationsForOrders(orderIds: string[], tx: Transaction) {

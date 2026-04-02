@@ -27,13 +27,9 @@ const nextConfig: NextConfig = {
     },
     optimizePackageImports: [
       "lucide-react",
-      "@phosphor-icons/react",
-      "@tabler/icons-react",
-      "react-icons",
       "date-fns",
       "recharts",
       "framer-motion",
-      "@radix-ui/react-icons",
     ],
   },
   images: {

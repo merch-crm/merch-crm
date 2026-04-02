@@ -5,7 +5,8 @@ import {
   updateOrderField,
 } from '../actions/core.actions'
 import { getTestDb, cleanupTestDb, closeTestDb, seedTestData } from '@/test-utils/db'
-import * as schema from '@/lib/schema'
+import { clients } from '@/lib/schema/clients/main'
+import { orders } from '@/lib/schema/orders'
 import { eq } from 'drizzle-orm'
 
 // Мокаем getSession
@@ -56,13 +57,13 @@ describe('Order Actions (Integration)', () => {
   describe('getOrders', () => {
     it('возвращает список заказов с клиентами', async () => {
       // Создаём клиента и заказ
-      const [client] = await db.insert(schema.clients).values({
+      const [client] = await db.insert(clients).values({
         firstName: 'Тест',
         lastName: 'Клиент',
         phone: '+79991234567',
       }).returning()
 
-      await db.insert(schema.orders).values({
+      await db.insert(orders).values({
         orderNumber: 'ORD-24-0001',
         clientId: client.id,
         status: 'new',
@@ -82,10 +83,10 @@ describe('Order Actions (Integration)', () => {
   })
 
   describe('createOrder', () => {
-    let testClient: typeof schema.clients.$inferSelect
+    let testClient: typeof clients.$inferSelect
 
     beforeEach(async () => {
-      const [client] = await db.insert(schema.clients).values({
+      const [client] = await db.insert(clients).values({
         firstName: 'Тестовый',
         lastName: 'Клиент',
         phone: '+79991234567',
@@ -107,23 +108,23 @@ describe('Order Actions (Integration)', () => {
       expect(result.success).toBe(true)
 
       // Проверяем что заказ создан в БД
-      const orders = await db.select().from(schema.orders).limit(1)
-      expect(orders!.length).toBe(1)
-      expect(orders[0].totalAmount).toBe('5000.00')
+      const ordersInDb = await db.select().from(orders).limit(1)
+      expect(ordersInDb!.length).toBe(1)
+      expect(ordersInDb[0].totalAmount).toBe('5000.00')
     })
   })
 
   describe('updateOrderField', () => {
-    let testOrder: typeof schema.orders.$inferSelect
+    let testOrder: typeof orders.$inferSelect
 
     beforeEach(async () => {
-      const [client] = await db.insert(schema.clients).values({
+      const [client] = await db.insert(clients).values({
         firstName: 'Тестовый',
         lastName: 'Клиент',
         phone: '+79991234567',
       }).returning();
 
-      [testOrder] = await db.insert(schema.orders).values({
+      [testOrder] = await db.insert(orders).values({
         orderNumber: 'ORD-24-0001',
         clientId: client.id,
         status: 'new',
@@ -140,8 +141,8 @@ describe('Order Actions (Integration)', () => {
       expect(result.success).toBe(true)
 
       const [updated] = await db.select()
-        .from(schema.orders)
-        .where(eq(schema.orders.id, testOrder.id))
+        .from(orders)
+        .where(eq(orders.id, testOrder.id))
         .limit(1)
       expect(updated.priority).toBe('high')
     })

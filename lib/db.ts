@@ -9,9 +9,10 @@ if (process.env.NODE_ENV === "development") {
 }
 
 import * as schema from "./schema";
+export type AppSchema = typeof schema;
 
 const globalForDb = global as unknown as {
-    db: NodePgDatabase<typeof schema>;
+    db: NodePgDatabase<AppSchema>;
     pool: Pool;
 };
 

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { execSync, spawn } from 'child_process';
+import { execSync, spawn, spawnSync } from 'child_process';
 import dotenv from 'dotenv';
 
 // Цвета для вывода
@@ -39,22 +39,35 @@ async function setup() {
     log(`Целевые локальные порты: DB=${localDbPort}, Redis=${localRedisPort}`);
 
     let redisContainerIp = '127.0.0.1';
+    let dbContainerIp = '127.0.0.1';
     try {
-        log('Запрос IP контейнера Redis на сервере...');
+        log('Запрос IP контейнера Redis и DB на сервере...');
         // ship-safe-ignore: Command arguments are fixed, no user input
-        const result = spawnSync('ssh', [
+        const resultRedis = spawnSync('ssh', [
             '-i', SSH_KEY,
             `root@${SERVER_IP}`,
             `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' merch-crm-redis`
         ], { encoding: 'utf8' });
         
-        const ip = result.stdout?.trim();
-        if (ip) {
-            redisContainerIp = ip;
+        const ipR = resultRedis.stdout?.trim();
+        if (ipR) {
+            redisContainerIp = ipR;
             log(`IP Redis найден: ${redisContainerIp}`);
         }
+
+        const resultDb = spawnSync('ssh', [
+            '-i', SSH_KEY,
+            `root@${SERVER_IP}`,
+            `docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' merch-crm-db`
+        ], { encoding: 'utf8' });
+        
+        const ipD = resultDb.stdout?.trim();
+        if (ipD) {
+            dbContainerIp = ipD;
+            log(`IP DB найден: ${dbContainerIp}`);
+        }
     } catch (e) {
-        warn('Не удалось получить IP Redis, использую 127.0.0.1');
+        warn('Не удалось получить IP, использую 127.0.0.1');
     }
 
     // 3. Очистка локальных портов и старых процессов
@@ -84,7 +97,7 @@ async function setup() {
         '-o', 'ServerAliveCountMax=3',
         '-o', 'ExitOnForwardFailure=yes',
         '-N', // Не выполнять команду, только туннель
-        '-L', `${localDbPort}:127.0.0.1:5432`,
+        '-L', `${localDbPort}:${dbContainerIp}:5432`,
         '-L', `${localRedisPort}:${redisContainerIp}:6379`,
         '-L', `${localGo2rtcPort}:127.0.0.1:1984`,
         `root@${SERVER_IP}`
