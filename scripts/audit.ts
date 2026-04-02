@@ -27,6 +27,7 @@ const CONFIG = {
 
 const ARGS = process.argv.slice(2);
 const INCLUDE_TESTS = ARGS.includes('--include-tests');
+const QUICK_MODE = ARGS.includes('--quick') || ARGS.includes('--fast');
 
 // ============================================
 // ТИПЫ

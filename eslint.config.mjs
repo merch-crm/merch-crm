@@ -36,7 +36,14 @@ const eslintConfig = [
         "warn",
         { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }
       ],
-      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "error",
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "ImportDeclaration[source.value='@/lib/schema'] > ImportNamespaceSpecifier",
+          "message": "Global schema imports (import * from '@/lib/schema') are forbidden. You must import tables granularly from their respective module files."
+        }
+      ],
       "@typescript-eslint/no-require-imports": "warn",
       "react-hooks/exhaustive-deps": "warn",
       "react-hooks/rules-of-hooks": "warn",

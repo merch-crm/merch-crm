@@ -5,316 +5,379 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1768064124909,
+      "when": 1775158242933,
       "tag": "0000_handy_mystique",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1768069814087,
+      "when": 1775158242933,
       "tag": "0001_absurd_solo",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1768071942446,
-      "tag": "0002_colossal_the_professor",
+      "when": 1775158242933,
+      "tag": "0002_step1_add_tables",
       "breakpoints": true
     },
     {
       "idx": 3,
       "version": "7",
-      "when": 1768459685898,
-      "tag": "0003_goofy_talon",
+      "when": 1775158242933,
+      "tag": "0003_colossal_the_professor",
       "breakpoints": true
     },
     {
       "idx": 4,
       "version": "7",
-      "when": 1768973095598,
-      "tag": "0004_chunky_charles_xavier",
+      "when": 1775158242933,
+      "tag": "0004_step2_drop_old_role",
       "breakpoints": true
     },
     {
       "idx": 5,
       "version": "7",
-      "when": 1769083684508,
-      "tag": "0005_flat_doctor_strange",
+      "when": 1775158242933,
+      "tag": "0005_goofy_talon",
       "breakpoints": true
     },
     {
       "idx": 6,
       "version": "7",
-      "when": 1769317903588,
-      "tag": "0006_great_maestro",
+      "when": 1775158242933,
+      "tag": "0006_chunky_charles_xavier",
       "breakpoints": true
     },
     {
       "idx": 7,
       "version": "7",
-      "when": 1770087253587,
-      "tag": "0007_regular_major_mapleleaf",
+      "when": 1775158242933,
+      "tag": "0007_flat_doctor_strange",
       "breakpoints": true
     },
     {
       "idx": 8,
       "version": "7",
-      "when": 1770088064968,
-      "tag": "0008_free_proteus",
+      "when": 1775158242933,
+      "tag": "0008_great_maestro",
       "breakpoints": true
     },
     {
       "idx": 9,
       "version": "7",
-      "when": 1770088970332,
-      "tag": "0009_dark_talon",
+      "when": 1775158242933,
+      "tag": "0009_regular_major_mapleleaf",
       "breakpoints": true
     },
     {
       "idx": 10,
       "version": "7",
-      "when": 1770113908716,
-      "tag": "0010_add_show_in_sku_name_to_attribute_types",
+      "when": 1775158242933,
+      "tag": "0010_free_proteus",
       "breakpoints": true
     },
     {
       "idx": 11,
       "version": "7",
-      "when": 1770114357634,
-      "tag": "0011_add_show_in_sku_name_to_categories",
+      "when": 1775158242933,
+      "tag": "0011_dark_talon",
       "breakpoints": true
     },
     {
       "idx": 12,
       "version": "7",
-      "when": 1771347090565,
-      "tag": "0012_hot_anthem",
+      "when": 1775158242933,
+      "tag": "0012_add_show_in_sku_name_to_attribute_types",
       "breakpoints": true
     },
     {
       "idx": 13,
       "version": "7",
-      "when": 1771384058485,
-      "tag": "0013_cool_greymalkin",
+      "when": 1775158242933,
+      "tag": "0013_add_show_in_sku_name_to_categories",
       "breakpoints": true
     },
     {
       "idx": 14,
       "version": "7",
-      "when": 1771772323866,
-      "tag": "0014_aberrant_loa",
+      "when": 1775158242933,
+      "tag": "0014_hot_anthem",
       "breakpoints": true
     },
     {
       "idx": 15,
       "version": "7",
-      "when": 1772434057659,
-      "tag": "0015_add_indexes",
+      "when": 1775158242933,
+      "tag": "0015_cool_greymalkin",
       "breakpoints": true
     },
     {
       "idx": 16,
       "version": "7",
-      "when": 1772686879646,
-      "tag": "0016_next_krista_starr",
+      "when": 1775158242933,
+      "tag": "0016_aberrant_loa",
       "breakpoints": true
     },
     {
       "idx": 17,
       "version": "7",
-      "when": 1772756267457,
-      "tag": "0017_luxuriant_magma",
+      "when": 1775158242933,
+      "tag": "0017_add_indexes",
       "breakpoints": true
     },
     {
       "idx": 18,
       "version": "7",
-      "when": 1772872804714,
-      "tag": "0018_mature_slipstream",
+      "when": 1775158242933,
+      "tag": "0018_add_presence_tracking",
       "breakpoints": true
     },
     {
       "idx": 19,
       "version": "7",
-      "when": 1773013369737,
-      "tag": "0019_common_network",
+      "when": 1775158242933,
+      "tag": "0019_next_krista_starr",
       "breakpoints": true
     },
     {
       "idx": 20,
       "version": "7",
-      "when": 1773020959653,
-      "tag": "0020_amusing_redwing",
+      "when": 1775158242933,
+      "tag": "0020_luxuriant_magma",
       "breakpoints": true
     },
     {
       "idx": 21,
       "version": "7",
-      "when": 1773021028169,
-      "tag": "0021_tan_agent_brand",
+      "when": 1775158242933,
+      "tag": "0021_mature_slipstream",
       "breakpoints": true
     },
     {
       "idx": 22,
       "version": "7",
-      "when": 1773021089365,
-      "tag": "0022_neat_silver_samurai",
+      "when": 1775158242933,
+      "tag": "0022_common_network",
       "breakpoints": true
     },
     {
       "idx": 23,
       "version": "7",
-      "when": 1773023120389,
-      "tag": "0023_ambiguous_orphan",
+      "when": 1775158242933,
+      "tag": "0023_amusing_redwing",
       "breakpoints": true
     },
     {
       "idx": 24,
       "version": "7",
-      "when": 1773027522422,
-      "tag": "0024_add_created_at_indexes",
+      "when": 1775158242933,
+      "tag": "0024_tan_agent_brand",
       "breakpoints": true
     },
     {
       "idx": 25,
       "version": "7",
-      "when": 1773128156813,
-      "tag": "0025_wonderful_freak",
+      "when": 1775158242933,
+      "tag": "0025_neat_silver_samurai",
       "breakpoints": true
     },
     {
       "idx": 26,
       "version": "7",
-      "when": 1773241113386,
-      "tag": "0026_third_anita_blake",
+      "when": 1775158242933,
+      "tag": "0026_ambiguous_orphan",
       "breakpoints": true
     },
     {
       "idx": 27,
       "version": "7",
-      "when": 1773258130427,
-      "tag": "0027_regular_joseph",
+      "when": 1775158242933,
+      "tag": "0027_add_created_at_indexes",
       "breakpoints": true
     },
     {
       "idx": 28,
       "version": "7",
-      "when": 1773260035768,
-      "tag": "0028_milky_living_lightning",
+      "when": 1775158242933,
+      "tag": "0028_little_junta",
       "breakpoints": true
     },
     {
       "idx": 29,
       "version": "7",
-      "when": 1773527144072,
-      "tag": "0029_loving_imperial_guard",
+      "when": 1775158242933,
+      "tag": "0029_wonderful_freak",
       "breakpoints": true
     },
     {
       "idx": 30,
       "version": "7",
-      "when": 1773590354011,
-      "tag": "0030_fix_tasks_schema",
+      "when": 1775158242933,
+      "tag": "0030_third_anita_blake",
       "breakpoints": true
     },
     {
       "idx": 31,
       "version": "7",
-      "when": 1773625899862,
-      "tag": "0031_flaky_morlun",
+      "when": 1775158242933,
+      "tag": "0031_regular_joseph",
       "breakpoints": true
     },
     {
       "idx": 32,
       "version": "7",
-      "when": 1773637038423,
-      "tag": "0032_fix_schema_integrity",
+      "when": 1775158242933,
+      "tag": "0032_milky_living_lightning",
       "breakpoints": true
     },
     {
       "idx": 33,
       "version": "7",
-      "when": 1774643387861,
-      "tag": "0033_flaky_wilson_fisk",
+      "when": 1775158242933,
+      "tag": "0033_loving_imperial_guard",
       "breakpoints": true
     },
     {
       "idx": 34,
       "version": "7",
-      "when": 1774885234216,
-      "tag": "0034_same_barracuda",
+      "when": 1775158242933,
+      "tag": "0034_fix_tasks_schema",
       "breakpoints": true
     },
     {
       "idx": 35,
       "version": "7",
-      "when": 1774898160745,
-      "tag": "0035_rapid_forgotten_one",
+      "when": 1775158242933,
+      "tag": "0035_flaky_morlun",
       "breakpoints": true
     },
     {
       "idx": 36,
       "version": "7",
-      "when": 1774905926383,
-      "tag": "0036_stale_ricochet",
+      "when": 1775158242933,
+      "tag": "0036_fix_schema_integrity",
       "breakpoints": true
     },
     {
       "idx": 37,
       "version": "7",
-      "when": 1774920901306,
-      "tag": "0037_fast_trish_tilby",
+      "when": 1775158242933,
+      "tag": "0037_add_calculators_tables",
       "breakpoints": true
     },
     {
       "idx": 38,
       "version": "7",
-      "when": 1775053948637,
-      "tag": "0038_futuristic_machine_man",
+      "when": 1775158242933,
+      "tag": "0038_flaky_wilson_fisk",
       "breakpoints": true
     },
     {
       "idx": 39,
       "version": "7",
-      "when": 1775061491274,
-      "tag": "0039_add_role_slug",
+      "when": 1775158242933,
+      "tag": "0039_same_barracuda",
       "breakpoints": true
     },
     {
       "idx": 40,
       "version": "7",
-      "when": 1775117721773,
-      "tag": "0040_sync_client_stats",
+      "when": 1775158242933,
+      "tag": "0040_add_inventory_sync_trigger",
       "breakpoints": true
     },
     {
       "idx": 41,
       "version": "7",
-      "when": 1775118593595,
-      "tag": "0041_minor_lady_bullseye",
+      "when": 1775158242933,
+      "tag": "0041_rapid_forgotten_one",
       "breakpoints": true
     },
     {
       "idx": 42,
       "version": "7",
-      "when": 1775118740145,
-      "tag": "0042_yielding_dracula",
+      "when": 1775158242933,
+      "tag": "0042_stale_ricochet",
       "breakpoints": true
     },
     {
       "idx": 43,
       "version": "7",
-      "when": 1775119800000,
-      "tag": "0043_set_updated_at_trigger",
+      "when": 1775158242933,
+      "tag": "0043_fast_trish_tilby",
       "breakpoints": true
     },
     {
       "idx": 44,
       "version": "7",
-      "when": 1775152517765,
-      "tag": "0044_dear_mephistopheles",
+      "when": 1775158242933,
+      "tag": "0044_futuristic_machine_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0045_add_role_slug",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0046_sync_client_stats",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0047_minor_lady_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0048_yielding_dracula",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0049_set_updated_at_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0050_complete_client_stats_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0051_dear_mephistopheles",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0052_sync_avatar_to_image",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1775158242933,
+      "tag": "0053_fix_client_stats_trigger_archived_status",
       "breakpoints": true
     }
   ]

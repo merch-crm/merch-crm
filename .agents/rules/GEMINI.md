@@ -103,6 +103,19 @@ When user's prompt is NOT in English:
 2. **Respond in user's language** - match their communication
 3. **Code comments/variables** remain in English
 
+### 🧠 Token-Efficient Behavior (Global Mandatory)
+
+**Approach:** Think before acting. Read existing files before writing code. Be concise but thorough in reasoning. Prefer targeted edits.
+**Response Style:** No sycophantic openers or closing fluff. Do not restate the question. Skip basic explanations unless asked.
+**Code Quality:** Simplest working solution. No abstractions for single-use operations. Read files before modifying.
+**Formatting:** Plain hyphens and straight quotes only. Code output must be copy-paste safe.
+**Safety:** Never invent file paths, API endpoints, or function names. If unknown: say so.
+
+**ALL agents MUST follow their corresponding token-efficient output profile:**
+- **Development/Review**: Follow `.agents/rules/coding.md`.
+- **Research/Data Analysis**: Follow `.agents/rules/analysis.md`.
+- **Pipeline/JSON Output**: Follow `.agents/rules/agents.md`.
+- **Trivial/Fast Changes**: Follow `.agents/rules/benchmark.md`.
 ### 🧹 Clean Code (Global Mandatory)
 
 **ALL code MUST follow `@[skills/clean-code]` rules. No exceptions.**
