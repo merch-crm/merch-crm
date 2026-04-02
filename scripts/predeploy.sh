@@ -33,4 +33,8 @@ if [[ "$DB_STATUS_BEFORE" != "$DB_STATUS_AFTER" ]]; then
   exit 1
 fi
 
+# 6. Синхронизация документации
+echo "📌 Шаг 6: Синхронизация документации Obsidian..."
+npx tsx scripts/sync-modules.ts
+
 echo "✅ Стабильность подтверждена! Код готов к пушу на GitHub."
