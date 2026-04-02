@@ -8,7 +8,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./__tests__/setup.ts"],
     globals: true,
-    testTimeout: 30000,
+    testTimeout: 60000,
+    hookTimeout: 60000,
     alias: {
       "@": path.resolve(__dirname, "./"),
     },

@@ -2,6 +2,17 @@ import { drizzle } from 'drizzle-orm/node-postgres'
 import { Pool } from 'pg'
 import * as schema from '@/lib/schema'
 import { sql } from 'drizzle-orm'
+import * as fs from 'fs'
+
+const LOG_FILE = '/tmp/vitest-db.log'
+function logToFile(msg: string) {
+  try {
+    const timestamp = new Date().toISOString()
+    fs.appendFileSync(LOG_FILE, `[${timestamp}] ${msg}\n`)
+  } catch (e) {
+    // Ignore log errors
+  }
+}
 
 // Тестовая БД (используется для интеграционных тестов)
 const TEST_DATABASE_URL = process.env.TEST_DATABASE_URL || 
@@ -12,17 +23,22 @@ let testDb: ReturnType<typeof drizzle> | null = null
 
 export async function getTestDb() {
   if (!testDb) {
-    testPool = new Pool({ connectionString: TEST_DATABASE_URL, max: 5 })
+    logToFile('🔌 Initializing test connection pool (max: 10)...')
+    testPool = new Pool({ 
+      connectionString: TEST_DATABASE_URL, 
+      max: 10,
+      idleTimeoutMillis: 60000,
+      connectionTimeoutMillis: 30000,
+    })
     testDb = drizzle(testPool, { schema })
   }
   return testDb
 }
 
 export async function cleanupTestDb() {
+  const start = Date.now()
+  logToFile('🧪 Starting cleanupTestDb...')
   const db = await getTestDb()
-  
-  // Отключаем foreign key checks временно
-  await db.execute(sql`SET session_replication_role = 'replica'`)
   
   // Очищаем таблицы в правильном порядке
   const tables = [
@@ -31,13 +47,10 @@ export async function cleanupTestDb() {
     'clients', 'sessions', 'users', 'roles', 'departments'
   ]
   
-  for (const table of tables) {
-    // ship-safe-ignore: Table name is from fixed static list above
-    await db.execute(sql`TRUNCATE TABLE ${sql.identifier(table)} CASCADE`)
-  }
+  const tableNames = tables.map(t => `"${t}"`).join(', ')
+  await db.execute(sql.raw(`TRUNCATE TABLE ${tableNames} CASCADE`))
   
-  // Включаем обратно
-  await db.execute(sql`SET session_replication_role = 'origin'`)
+  logToFile(`✅ cleanupTestDb finished in ${Date.now() - start}ms`)
 }
 
 export async function closeTestDb() {
@@ -50,6 +63,8 @@ export async function closeTestDb() {
 
 // Сид базовых данных
 export async function seedTestData() {
+  const start = Date.now()
+  logToFile('🌱 Starting seedTestData...')
   const db = await getTestDb()
   
   // Создаём отдел и роль
@@ -73,5 +88,6 @@ export async function seedTestData() {
     departmentId: department.id,
   }).returning()
   
+  logToFile(`✅ seedTestData finished in ${Date.now() - start}ms`)
   return { department, role, user }
 }

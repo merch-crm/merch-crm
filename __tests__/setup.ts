@@ -66,6 +66,12 @@ vi.mock("next/headers", () => ({
   headers: () => new Headers(),
 }));
 
+// Мокаем фоновую очередь, чтобы не было утечек соединений к БД в тестах
+vi.mock("@/lib/queue", () => ({
+  queueClientStatsUpdate: vi.fn(),
+  queueTask: vi.fn((_name, task) => task()), // Выполняем сразу или не выполняем вовсе (сейчас просто мокаем)
+}));
+
 // Глобальные моки
 Object.defineProperty(window, "matchMedia", {
   writable: true,
