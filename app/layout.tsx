@@ -35,7 +35,12 @@ export async function generateMetadata(): Promise<Metadata> {
         icons: {
           icon: faviconUrl,
         }
-      } : {}),
+      } : {
+        icons: {
+          icon: '/favicon.ico',
+          apple: '/apple-icon.png',
+        }
+      }),
     };
   } catch (error) {
     console.error("Metadata generation error:", error);
