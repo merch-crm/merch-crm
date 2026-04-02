@@ -4,18 +4,19 @@ import { okVoid, type ActionResult } from "@/lib/types";
 
 import { inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { ROLE_SLUGS } from "@/lib/roles";
+import { clients } from "@/lib/schema/clients/main";
+import { orders } from "@/lib/schema/orders";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
 import { BulkClientsSchema } from "../validation";
 import { releaseReservationsForOrders } from "./utils";
 import { createSafeAction } from "@/lib/safe-action";
 
-const { clients, orders } = schema;
 
 export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResult> {
-    const action = createSafeAction({
-        roles: ["Администратор"],
+    const action = createSafeAction<void, void>({ // withAuth
+        roles: [ROLE_SLUGS.ADMIN],
         handler: async () => {
             const validated = BulkClientsSchema.safeParse({ clientIds });
             if (!validated.success) return { success: false, error: validated.error.issues[0].message };
@@ -38,8 +39,8 @@ export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResu
 }
 
 export async function bulkUpdateClientManager(clientIds: string[], managerId: string): Promise<ActionResult> {
-    const action = createSafeAction({
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+    const action = createSafeAction<void, void>({
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async () => {
             const validated = BulkClientsSchema.safeParse({ clientIds });
             if (!validated.success) return { success: false, error: "Ошибка валидации" };
@@ -55,8 +56,8 @@ export async function bulkUpdateClientManager(clientIds: string[], managerId: st
 }
 
 export async function bulkArchiveClients(clientIds: string[], isArchived: boolean = true): Promise<ActionResult> {
-    const action = createSafeAction({
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+    const action = createSafeAction<void, void>({
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async () => {
             const validated = BulkClientsSchema.safeParse({ clientIds });
             if (!validated.success) return { success: false, error: "Ошибка валидации" };

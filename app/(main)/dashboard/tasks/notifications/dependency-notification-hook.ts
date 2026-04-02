@@ -2,7 +2,9 @@
 
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { tasks, taskDependencies, taskAssignees } from "@/lib/schema";
+import { tasks } from "@/lib/schema/tasks";
+import { taskDependencies } from "@/lib/schema/task-dependencies";
+import { taskAssignees } from "@/lib/schema/task-assignees";
 import { notifyDependencyResolved } from "./task-notification-service";
 
 /**

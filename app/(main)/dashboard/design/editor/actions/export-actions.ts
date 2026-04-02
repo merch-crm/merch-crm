@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { editorExports } from "@/lib/schema";
+import { editorExports } from "@/lib/schema/editor";
 import { eq, desc } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { logAction } from "@/lib/audit";

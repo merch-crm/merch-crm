@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, clients, notifications } from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { clients } from "@/lib/schema/clients/main";
+import { notifications } from "@/lib/schema/system";
 import { count, sum, inArray, and, gte, lte, eq, desc } from "drizzle-orm";
 import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.actions";
 import {

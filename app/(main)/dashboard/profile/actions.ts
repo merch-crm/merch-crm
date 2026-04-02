@@ -3,7 +3,12 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from "@/lib/db";
-import { users, orders, tasks, auditLogs, clients, taskAssignees } from "@/lib/schema";
+import { users } from "@/lib/schema/users";
+import { orders } from "@/lib/schema/orders";
+import { tasks } from "@/lib/schema/tasks";
+import { auditLogs } from "@/lib/schema/system";
+import { clients } from "@/lib/schema/clients/main";
+import { taskAssignees } from "@/lib/schema/task-assignees";
 import { auth } from "@/lib/auth";
 import { getSession } from "@/lib/session";
 import { eq, count, sum, desc, and, gte, lte, sql } from "drizzle-orm";

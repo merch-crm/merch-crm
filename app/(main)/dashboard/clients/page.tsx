@@ -6,7 +6,7 @@ import { getCachedBranding } from "@/lib/cache/branding";
 import { PageHeader } from "@/components/layout/page-header";
 
 import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 

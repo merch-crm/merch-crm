@@ -1,12 +1,14 @@
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { orders, orderItems } from "@/lib/schema/orders";
+import { clients } from "@/lib/schema/clients/main";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { promocodes } from "@/lib/schema/promocodes";
+import { payments } from "@/lib/schema/finance";
 import { eq, and, sql, desc } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
 import { releaseOrderReservation } from "@/app/(main)/dashboard/orders/actions/utils";
 import { queueClientStatsUpdate } from "@/lib/queue";
 import { ValidationError } from "@/lib/action-helpers";
-
-const { orders, orderItems, clients, inventoryItems, promocodes, payments } = schema;
 
 export class OrderService {
     /**

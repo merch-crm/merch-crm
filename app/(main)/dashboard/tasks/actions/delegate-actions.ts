@@ -3,7 +3,9 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { tasks, taskHistory, taskAssignees } from "@/lib/schema";
+import { tasks } from "@/lib/schema/tasks";
+import { taskHistory } from "@/lib/schema/task-history";
+import { taskAssignees } from "@/lib/schema/task-assignees";
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import { notifyTaskDelegated } from "../notifications";

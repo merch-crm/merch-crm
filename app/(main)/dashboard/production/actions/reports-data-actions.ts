@@ -6,9 +6,9 @@ import {
     productionLogs,
     productionStaff,
     productionLines,
-    inventoryTransactions,
-    inventoryItems,
-} from "@/lib/schema";
+} from "@/lib/schema/production";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { and, eq, gte, lte, sql, desc, count, sum } from "drizzle-orm";
 import { z } from "zod";
 import { getSession } from "@/lib/session";

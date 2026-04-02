@@ -4,7 +4,7 @@ import {
     printDesignVersions,
     printDesignFiles,
     printDesignMockups
-} from "@/lib/schema";
+} from "@/lib/schema/designs";
 import { InferSelectModel } from "drizzle-orm";
 
 export type Collection = InferSelectModel<typeof printCollections>;

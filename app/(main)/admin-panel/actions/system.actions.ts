@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { systemSettings, auditLogs } from "@/lib/schema";
+import { systemSettings, auditLogs } from "@/lib/schema/system";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
 import { sql } from "drizzle-orm";

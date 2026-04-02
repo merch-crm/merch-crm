@@ -8,9 +8,9 @@ import {
     printDesigns,
     printDesignVersions,
     printDesignFiles,
-    inventoryCategories,
-    productLines,
-} from "@/lib/schema";
+} from "@/lib/schema/designs";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { productLines } from "@/lib/schema/product-lines";
 import { invalidateCache } from "@/lib/redis";
 import { withAuth } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
@@ -136,7 +136,7 @@ export async function getDesignById(id: string): Promise<ActionResult<DesignWith
             .where(eq(productLines.printCollectionId, design.collectionId))
             .orderBy(asc(productLines.name));
 
-        const { printDesignMockups } = await import("@/lib/schema");
+        const { printDesignMockups } = await import("@/lib/schema/designs");
         const mockups = await db
             .select()
             .from(printDesignMockups)

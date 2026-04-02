@@ -4,11 +4,10 @@ import { db } from "@/lib/db";
 import { 
     productionTasks, 
     productionStaff, 
-    userAchievements,
-    dailyWorkStats,
-    tickets,
-    workSessions
-} from "@/lib/schema";
+} from "@/lib/schema/production";
+import { userAchievements } from "@/lib/schema/achievements";
+import { dailyWorkStats, workSessions } from "@/lib/schema/presence/sessions";
+import { tickets } from "@/lib/schema/tickets";
 import { eq, and, desc, gte, sql, isNull } from "drizzle-orm";
 import { subDays } from "date-fns";
 import { revalidatePath } from "next/cache";

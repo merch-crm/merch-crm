@@ -1,7 +1,7 @@
 import { getSalaryStats } from "../actions";
 import { getSession } from "@/lib/session";
 import { db } from"@/lib/db";
-import { users } from"@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from"drizzle-orm";
 import { startOfDay, endOfDay, subDays } from"date-fns";
 import { redirect } from"next/navigation";
@@ -24,7 +24,7 @@ export default async function SalaryPage({
         with: { department: true, role: true }
     });
 
-    const isAllowed = user?.role?.name ==="Администратор" || ["Руководство"].includes(user?.department?.name ||"");
+    const isAllowed = user?.role?.slug === "admin" || ["Руководство"].includes(user?.department?.name || "");
     if (!isAllowed) return redirect("/dashboard/finance");
 
     const range = searchParams.range ||"30d";

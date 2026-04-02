@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { systemSettings } from "@/lib/schema";
+import { systemSettings } from "@/lib/schema/system";
 import { eq } from "drizzle-orm";
 import { cache } from "react";
 

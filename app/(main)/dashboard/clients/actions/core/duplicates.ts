@@ -1,12 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { clients } from "@/lib/schema/clients/main";
 import { eq, ne, or, ilike, sql, type SQL, desc, and } from "drizzle-orm";
 import { logError } from "@/lib/error-logger";
 import { ActionResult } from "@/lib/types";
-
-const { clients } = schema;
 
 export async function checkClientDuplicates(data: {
     phone?: string;

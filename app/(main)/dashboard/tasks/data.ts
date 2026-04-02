@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { users, departments, orders } from "@/lib/schema";
+import { users, departments } from "@/lib/schema/users";
+import { orders } from "@/lib/schema/orders";
 import { getTasks } from "./actions/task-actions";
 
 export async function getInitialTasks() {

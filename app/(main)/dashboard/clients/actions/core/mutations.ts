@@ -9,13 +9,15 @@ import { createSafeAction } from "@/lib/safe-action";
 import { ClientService } from "@/lib/services/client.service";
 
 // Импортируем типы возврата из схемы Drizzle для совместимости с UI
-import * as schema from "@/lib/schema";
-type ClientEntity = typeof schema.clients.$inferSelect;
+import { ROLE_SLUGS } from "@/lib/roles";
+import { clients } from "@/lib/schema/clients/main";
+import { z } from "zod";
+type ClientEntity = typeof clients.$inferSelect;
 
 export async function addClient(formData: FormData): Promise<ActionResult<{ duplicates?: ClientEntity[] } | void>> {
-    const action = createSafeAction({
-        schema: ClientSchema,
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+    const action = createSafeAction<z.infer<typeof ClientSchema>, { duplicates?: ClientEntity[] } | void>({
+        schema: ClientSchema as z.ZodType<z.infer<typeof ClientSchema>>,
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async (data, _ctx) => {
             const res = await ClientService.createClient({
                 ...data,
@@ -35,9 +37,9 @@ export async function addClient(formData: FormData): Promise<ActionResult<{ dupl
 }
 
 export async function updateClient(clientId: string, formData: FormData): Promise<ActionResult> {
-    const action = createSafeAction({
-        schema: ClientUpdateSchema,
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+    const action = createSafeAction<z.infer<typeof ClientUpdateSchema>, void>({
+        schema: ClientUpdateSchema as z.ZodType<z.infer<typeof ClientUpdateSchema>>,
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async (data, _ctx) => {
             await ClientService.updateClient(clientId, data as Parameters<typeof ClientService.updateClient>[1]);
             revalidatePath("/dashboard/clients");
@@ -49,8 +51,8 @@ export async function updateClient(clientId: string, formData: FormData): Promis
 }
 
 export async function deleteClient(clientId: string): Promise<ActionResult> {
-    const action = createSafeAction({
-        roles: ["Администратор"], // Только администратор
+    const action = createSafeAction<void, void>({
+        roles: [ROLE_SLUGS.ADMIN], // Только администратор
         handler: async () => {
             await ClientService.deleteClient(clientId);
             revalidatePath("/dashboard/clients");
@@ -61,9 +63,9 @@ export async function deleteClient(clientId: string): Promise<ActionResult> {
 }
 
 export async function updateClientField(clientId: string, field: string, value: unknown): Promise<ActionResult> {
-    const action = createSafeAction({
+    const action = createSafeAction<z.infer<typeof UpdateClientFieldSchema>, void>({
         schema: UpdateClientFieldSchema,
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async (data) => {
             await ClientService.updateField(data.clientId, data.field, data.value);
             revalidatePath("/dashboard/clients");
@@ -75,8 +77,8 @@ export async function updateClientField(clientId: string, field: string, value: 
 }
 
 export async function toggleClientArchived(clientId: string, isArchived: boolean): Promise<ActionResult> {
-    const action = createSafeAction({
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+    const action = createSafeAction<void, void>({
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async () => {
             await ClientService.updateField(clientId, "isArchived", isArchived);
             revalidatePath("/dashboard/clients");
@@ -87,8 +89,8 @@ export async function toggleClientArchived(clientId: string, isArchived: boolean
 }
 
 export async function updateClientComments(clientId: string, comments: string): Promise<ActionResult> {
-    const action = createSafeAction({
-        roles: ["Администратор", "Руководство", "Отдел продаж"],
+    const action = createSafeAction<void, void>({
+        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
         handler: async () => {
             await ClientService.updateField(clientId, "comments", comments);
             revalidatePath("/dashboard/clients");

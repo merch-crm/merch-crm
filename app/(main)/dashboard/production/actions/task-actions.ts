@@ -65,7 +65,7 @@ export async function getProductionTasks(options?: {
     limit?: number;
     offset?: number;
 }) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
@@ -118,7 +118,7 @@ export async function getProductionTasks(options?: {
 }
 
 export async function getProductionTaskById(id: string) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
@@ -160,7 +160,7 @@ export async function getProductionTaskById(id: string) {
 export const getProductionTask = getProductionTaskById;
 
 export async function createProductionTask(data: z.infer<typeof TaskSchema>) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = TaskSchema.safeParse(data);
@@ -204,7 +204,7 @@ export async function createProductionTask(data: z.infer<typeof TaskSchema>) {
 }
 
 export async function updateProductionTaskStatus(taskId: string, status: ProductionTask["status"], comment?: string) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
@@ -242,7 +242,7 @@ export async function updateProductionTaskStatus(taskId: string, status: Product
 export const updateTaskStatus = updateProductionTaskStatus;
 
 export async function updateProductionTaskProgress(taskId: string, completedQuantity: number) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
@@ -280,7 +280,7 @@ export async function updateProductionTaskProgress(taskId: string, completedQuan
 export const updateTaskProgress = updateProductionTaskProgress;
 
 export async function updateProductionTaskAssignee(taskId: string, assigneeId: string | null) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {
@@ -309,7 +309,7 @@ export const assignTask = updateProductionTaskAssignee;
 export const updateTaskAssignee = updateProductionTaskAssignee;
 
 export async function deleteProductionTask(id: string) {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     try {

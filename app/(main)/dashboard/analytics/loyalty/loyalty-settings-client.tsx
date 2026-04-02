@@ -16,7 +16,7 @@ import {
     deleteLoyaltyLevel,
     recalculateAllClientsLoyalty
 } from "@/app/(main)/dashboard/clients/actions/loyalty.actions";
-import type { LoyaltyLevel } from "@/lib/schema";
+import type { LoyaltyLevel } from "@/lib/schema/clients/loyalty";
 import { LoyaltyLevelCard } from "./components/loyalty-level-card";
 import { LoyaltyLevelModal } from "./components/loyalty-level-modal";
 

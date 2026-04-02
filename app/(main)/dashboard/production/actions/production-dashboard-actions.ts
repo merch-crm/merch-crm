@@ -6,8 +6,8 @@ import {
     productionLines,
     productionStaff,
     equipment,
-} from "@/lib/schema";
-import { orderItems, orders } from "@/lib/schema";
+} from "@/lib/schema/production";
+import { orderItems, orders } from "@/lib/schema/orders";
 import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, subDays, format } from "date-fns";
 import { z } from "zod";

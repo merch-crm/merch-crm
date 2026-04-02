@@ -4,7 +4,7 @@
  */
 
 import { InferSelectModel, InferInsertModel } from "drizzle-orm";
-import { orders, orderItems } from "@/lib/schema";
+import { orders, orderItems } from "@/lib/schema/orders";
 
 /**
  * Статус заказа в системе

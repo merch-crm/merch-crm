@@ -3,13 +3,12 @@
 
 import { db } from "@/lib/db";
 import {
-  productionTasks,
-  orders,
-  orderItems,
-  applicationTypes,
-  productionLines,
-  clients,
-} from "@/lib/schema";
+    productionTasks,
+    productionLines,
+    applicationTypes,
+} from "@/lib/schema/production";
+import { orders, orderItems } from "@/lib/schema/orders";
+import { clients } from "@/lib/schema/clients/main";
 import {
   eq,
   and,

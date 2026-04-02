@@ -1,13 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import {
-    clientConversations,
-    conversationMessages,
-    communicationChannels,
-    clients,
-    users
-} from "@/lib/schema";
+import { clientConversations, conversationMessages, communicationChannels } from "@/lib/schema/communications";
+import { clients } from "@/lib/schema/clients/main";
+import { users } from "@/lib/schema/users";
 import { eq, and, desc, sql, count, isNull, or, ilike } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
@@ -15,8 +11,8 @@ import { z } from "zod";
 import type {
     ChannelType,
     ConversationStatus,
-    ClientConversation
-} from "@/lib/schema";
+    ClientConversation,
+} from "@/lib/schema/communications";
 import { SendMessageSchema, CreateConversationSchema } from "./chat.schemas";
 import { ConversationWithDetails, MessageWithSender } from "./chat.types";
 import { type ActionResult, ok } from "@/lib/types";

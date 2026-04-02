@@ -7,7 +7,7 @@ import { startOfDay, endOfDay, subDays } from"date-fns";
 import { Pagination } from"@/components/ui/pagination";
 import { getSession } from "@/lib/session";
 import { db } from"@/lib/db";
-import { users } from"@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from"drizzle-orm";
 import { PageContainer } from"@/components/ui/page-container";
 import { PageHeader } from "@/components/layout/page-header";

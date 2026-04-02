@@ -41,7 +41,7 @@ export async function getEquipment(options?: {
     status?: string;
 }): Promise<ActionResult<Equipment[]>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -78,7 +78,7 @@ export async function getEquipment(options?: {
 // Получить по ID
 export async function getEquipmentById(id: string): Promise<ActionResult<Equipment>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -103,7 +103,7 @@ export async function createEquipment(
     data: z.infer<typeof EquipmentSchema>
 ): Promise<ActionResult<Equipment>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -142,7 +142,7 @@ export async function updateEquipment(
     data: Partial<z.infer<typeof EquipmentSchema>>
 ): Promise<ActionResult<Equipment>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -186,7 +186,7 @@ export async function updateEquipment(
 // Удалить
 export async function deleteEquipment(id: string): Promise<ActionResult> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -218,7 +218,7 @@ export async function updateEquipmentStatus(
     status: "active" | "maintenance" | "repair" | "inactive"
 ): Promise<ActionResult<Equipment>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -251,7 +251,7 @@ export async function updateEquipmentMaintenance(
     }
 ): Promise<ActionResult<Equipment>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -296,7 +296,7 @@ export async function getEquipmentStats(): Promise<ActionResult<{
     needsMaintenance: number;
 }>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }

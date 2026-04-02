@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { payments } from "@/lib/schema/finance";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/session";
@@ -9,8 +10,6 @@ import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
 import { AddPaymentSchema, RefundOrderSchema } from "../validation";
 import { ActionResult, okVoid } from "@/lib/types";
-
-const { orders, payments } = schema;
 
 export async function refundOrder(orderId: string, amount: number, reason: string): Promise<ActionResult> {
     const session = await getSession();

@@ -28,7 +28,7 @@ import { toast } from "sonner";
 
 import { createProductionStaff, updateProductionStaff } from "../../actions/staff-actions";
 import { ProductionLine } from "../../actions/line-actions";
-import { ProductionStaff, ApplicationType } from "@/lib/schema";
+import { ProductionStaff, ApplicationType } from "@/lib/schema/production";
 
 const formSchema = z.object({
     name: z.string().min(1, "Имя обязательно").max(255),

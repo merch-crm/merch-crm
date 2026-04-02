@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { cn } from "@/lib/utils";
-import type { LoyaltyLevel } from "@/lib/schema";
+import type { LoyaltyLevel } from "@/lib/schema/clients/loyalty";
 
 const COLOR_PRESETS = [
     "#64748b", // slate

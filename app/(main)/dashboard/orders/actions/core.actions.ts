@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { clients } from "@/lib/schema/clients/main";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { revalidatePath } from "next/cache";
 import { eq, sql, and, or, ilike, desc, gte, lte, type SQL, InferSelectModel } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
@@ -22,8 +24,6 @@ import { getBrandingSettings } from "@/app/(main)/admin-panel/actions/branding.a
 import { sendStaffNotifications } from "@/lib/notifications";
 import { redisCache, CACHE_KEYS, CACHE_TTL, INVALIDATION_PATTERNS } from "@/lib/cache";
 import type { OrderWithRelations, GetOrdersResult, GetOrdersParams } from "@/lib/types/orders";
-
-const { orders, clients, inventoryItems } = schema;
 
 // ═══════════════════════════════════════════════════════════
 // Типы

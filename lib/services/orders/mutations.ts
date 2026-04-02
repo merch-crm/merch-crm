@@ -6,7 +6,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, orderItems, inventoryItems, auditLogs, payments } from "@/lib/schema";
+import { orders, orderItems } from "@/lib/schema/orders";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { auditLogs } from "@/lib/schema/system";
+import { payments } from "@/lib/schema/finance";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";

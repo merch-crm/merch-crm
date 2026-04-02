@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { auditLogs, securityEvents, systemErrors, users, systemSettings } from "@/lib/schema";
+import { auditLogs, securityEvents, systemErrors, systemSettings } from "@/lib/schema/system";
+import { users } from "@/lib/schema/users";
 import { auth } from "@/lib/auth";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logSecurityEvent } from "@/lib/security-logger";

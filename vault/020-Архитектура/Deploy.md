@@ -38,35 +38,19 @@ MerchCRM Unified v3.0 оптимизирована для работы в Docker
    - `S3_ENDPOINT`
    - `S3_BUCKET`
 
-## 3. Docker Compose (Production)
-
-В проекте используется автоматизированное развертывание (`deploy_production.md` или `smart_push`). На сервере выполняется сборка образа и запуск контейнеров с ключом `--force-recreate`.
-
-Запуск вручную на сервере (через SSH):
-```bash
-docker build -t ghcr.io/merch-crm/merch-crm:latest . && docker compose up -d --force-recreate
-```
-
-### Пример переменных окружения (.env.production / .env):
-```bash
-NODE_ENV=production
-DATABASE_URL=postgresql://user:pass@db:5432/merch_crm
-REDIS_HOST=redis-server-url
-REDIS_PASSWORD=***
-
-# Better Auth Configuration
-BETTER_AUTH_URL=https://merch-crm.ваш-домен.ru
-BETTER_AUTH_SECRET=long-random-string
-
-# Безопасность (API-ключ для внутреннего Presence Service)
-PRESENCE_SERVICE_API_KEY=16-chars-long-secure-key
-```
+## 3. GitHub Actions & CI/CD
+Развертывание полностью автоматизировано:
+- **CI Checks**: При открытии PR запускаются линтинг, типизация и тесты (`.github/workflows/ci.yml`). Merged-блокировка при неуспехе.
+- **CD Deploy**: При пуше в `main` автоматически собираются Docker-образы (`app` и `migrator`) и отправляются в Registry. После чего сервер обновляется через SSH (`.github/workflows/deploy.yml`).
 
 ## 4. Обновление и миграции
-При обновлении кода необходимо запустить миграции базы данных:
-```bash
-npx drizzle-kit migrate
-```
+Миграции применяются автоматически при каждом деплое через **Init-контейнер**.
+
+1. **Migrator-контейнер**: Перед запуском приложения стартует образ `ghcr.io/merch-crm/merch-crm-migrator`.
+2. **Логика**: Сервис использует `npx tsx scripts/db-migrate.ts` для применения новых SQL-файлов.
+3. **Безопасность**: Приложение не запустится, если миграция завершилась ошибкой.
+
+Логи миграций: `docker logs merch-crm-migrate`
 
 ## 5. Мониторинг
 Логи приложения доступны через `docker logs -f merch-crm-app`. Критические ошибки бэкенда также сохраняются в таблицу `api_error_logs`.

@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { achievements, userAchievements } from "@/lib/schema";
+import { achievements, userAchievements } from "@/lib/schema/achievements";
 import { eq, and } from "drizzle-orm";
 
 export class GamificationService {

@@ -32,7 +32,7 @@ export async function getProductionLines(options?: {
     activeOnly?: boolean;
 }): Promise<ActionResult<ProductionLineWithStats[]>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -93,7 +93,7 @@ export async function getProductionLines(options?: {
 // Получить линию по ID
 export async function getProductionLineById(id: string): Promise<ActionResult<ProductionLineFull>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -135,7 +135,7 @@ export async function createProductionLine(
     data: z.infer<typeof LineSchema>
 ): Promise<ActionResult<ProductionLine>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -175,7 +175,7 @@ export async function updateProductionLine(
     data: Partial<z.infer<typeof LineSchema>>
 ): Promise<ActionResult<ProductionLine>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -219,7 +219,7 @@ export async function updateProductionLine(
 // Удалить линию
 export async function deleteProductionLine(id: string): Promise<ActionResult> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -264,7 +264,7 @@ export async function updateLinesOrder(
     items: { id: string; sortOrder: number }[]
 ): Promise<ActionResult> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }

@@ -9,7 +9,7 @@ import { ArrowLeft, Calendar, User, Phone, MapPin, Mail, Instagram, Send, Clock,
 import Link from "next/link";
 import OrderAttachments from "./order-attachments";
 import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { RefundDialog } from "./refund-dialog";

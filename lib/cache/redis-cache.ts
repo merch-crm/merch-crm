@@ -107,7 +107,7 @@ class RedisCache {
       const client = await this.getClient();
       const keys = await client.keys(pattern);
       if (keys.length === 0) return 0;
-      await (client as any).del(...keys);
+      await client.del(...keys);
       if (process.env.NODE_ENV === "development") {
         console.log(`[RedisCache] Инвалидировано ${keys.length} ключей по паттерну ${pattern}`);
       }
@@ -124,7 +124,7 @@ class RedisCache {
       const tagKey = `crm:tags:${tag}`;
       const keys = await client.smembers(tagKey);
       if (keys.length === 0) return 0;
-      await (client as any).del(...keys, tagKey);
+      await client.del(...keys, tagKey);
       return keys.length;
     } catch (error) {
       console.error(`[RedisCache] Ошибка invalidateByTag(${tag}):`, error);

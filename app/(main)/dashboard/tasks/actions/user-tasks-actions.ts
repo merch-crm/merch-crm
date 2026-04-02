@@ -2,7 +2,8 @@
 
 import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { tasks, taskAssignees } from "@/lib/schema";
+import { tasks } from "@/lib/schema/tasks";
+import { taskAssignees } from "@/lib/schema/task-assignees";
 import { withAuth } from "@/lib/action-helpers";
 import { ActionResult, ok, ERRORS } from "@/lib/types";
 import type { Task } from "@/lib/types/tasks";

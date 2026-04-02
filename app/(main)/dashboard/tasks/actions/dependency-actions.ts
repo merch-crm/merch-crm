@@ -3,7 +3,8 @@
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { taskDependencies, taskHistory } from "@/lib/schema";
+import { taskDependencies } from "@/lib/schema/task-dependencies";
+import { taskHistory } from "@/lib/schema/task-history";
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import type { Task, TaskActionResult } from "@/lib/types/tasks";

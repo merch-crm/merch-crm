@@ -1,7 +1,14 @@
 import fs from "fs";
 import path from "path";
 import { db } from "@/lib/db";
-import { users, roles, departments, clients, orders, inventoryCategories, inventoryItems, storageLocations, tasks, auditLogs } from "@/lib/schema";
+import { users, roles, departments } from "@/lib/schema/users";
+import { clients } from "@/lib/schema/clients/main";
+import { orders } from "@/lib/schema/orders";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { storageLocations } from "@/lib/schema/storage";
+import { tasks } from "@/lib/schema/tasks";
+import { auditLogs } from "@/lib/schema/system";
 import { PgTable } from "drizzle-orm/pg-core";
 
 export async function performDatabaseBackup(initiatedByUserId: string | null = null, trigger: "manual" | "auto" | "cron" = "manual") {

@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { roles, users, accounts } from "@/lib/schema";
+import { roles, users, accounts } from "@/lib/schema/users";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
 import { comparePassword } from "@/lib/password";
@@ -9,6 +9,7 @@ import { eq, asc, and, type InferSelectModel } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { CreateRoleSchema, UpdateRoleSchema } from "../validation";
 import { ActionResult, ok, okVoid, err, ERRORS } from "@/lib/types";
+import { slugify } from "@/lib/utils";
 
 type Role = InferSelectModel<typeof roles>;
 
@@ -37,6 +38,7 @@ export async function createRole(formData: FormData): Promise<ActionResult<Role>
 
         const [newRole] = await db.insert(roles).values({
             ...validated.data,
+            slug: slugify(validated.data.name),
             permissions: {},
             departmentId: validated.data.departmentId || null
         }).returning();

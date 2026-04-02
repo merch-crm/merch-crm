@@ -3,7 +3,7 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from "@/lib/db";
-import { editorProjects, editorExports } from "@/lib/schema";
+import { editorProjects, editorExports } from "@/lib/schema/editor";
 import { eq, desc, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/session";

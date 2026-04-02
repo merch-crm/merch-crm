@@ -1,7 +1,10 @@
 "use server";
 
 import { db } from"@/lib/db";
-import { orders, tasks, users, taskAssignees } from"@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { users } from "@/lib/schema/users";
+import { tasks } from "@/lib/schema/tasks";
+import { taskAssignees } from "@/lib/schema/task-assignees";
 import { eq, sql } from"drizzle-orm";
 import { getSession } from "@/lib/session";
 import { logError } from"@/lib/error-logger";

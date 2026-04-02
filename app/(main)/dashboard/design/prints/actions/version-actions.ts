@@ -8,7 +8,7 @@ import {
     printDesigns,
     printDesignFiles,
     printCollections,
-} from "@/lib/schema";
+} from "@/lib/schema/designs";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";

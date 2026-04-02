@@ -4,7 +4,7 @@ import { ActionResult, okVoid, ok, ERRORS, type ClientSummary } from "@/lib/type
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 
 import { db } from "@/lib/db";
-import { clients } from "@/lib/schema";
+import { clients } from "@/lib/schema/clients/main";
 import { eq, and, isNull, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";

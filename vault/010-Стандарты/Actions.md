@@ -5,6 +5,24 @@ tags:
 
 # Стандарт Server Actions (Unified v3.0)
 
+## 7. Модульный импорт схем (Item 14)
+Для минимизации времени холодного старта (Cold Start) в serverless-окружениях запрещено использовать монолитный импорт всей схемы через `import * as schema from "@/lib/schema"`.
+
+**Правило**: Всегда импортируйте только необходимые таблицы из соответствующих модулей `lib/schema/`.
+
+```typescript
+// НЕПРАВИЛЬНО (загружает всю БД в память)
+import { users } from "@/lib/schema";
+
+// ПРАВИЛЬНО (загружает только нужный модуль)
+import { users } from "@/lib/schema/users";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+```
+
+Это критично для производительности и потребления ресурсов сервера.
+
+---
+
 В MerchCRM все серверные действия (Server Actions) должны создаваться через обертку `createSafeAction`. Это гарантирует единообразную обработку ошибок, валидацию данных и контроль доступа.
 
 ## Основной паттерн
@@ -27,11 +45,11 @@ const CreateOrderSchema = z.object({
 // 2. Создание экшена
 export const createOrderAction = createSafeAction({
   schema: CreateOrderSchema,
-  roles: ["Администратор", "Менеджер", "Отдел продаж"], // Опционально: ограничение ролей
+  roles: ["admin", "management", "sales"], // Опционально: ограничение ролей (используются slug)
   requireAuth: true, // По умолчанию true
   handler: async (input, ctx) => {
     // input гарантированно валидирован Zod
-    // ctx содержит userId и roleName текущего пользователя
+    // ctx содержит userId, roleName и roleSlug текущего пользователя
     
     const newOrder = await db.insert(orders).values({
       ...input,

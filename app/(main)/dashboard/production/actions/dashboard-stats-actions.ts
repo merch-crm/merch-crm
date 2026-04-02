@@ -6,7 +6,7 @@ import {
     productionTasks,
     productionLines,
     productionStaff,
-} from "@/lib/schema";
+} from "@/lib/schema/production";
 import { eq, and, gte, lte, sql, count, sum } from "drizzle-orm";
 import { startOfDay, endOfDay, startOfWeek } from "date-fns";
 import { getSession } from "@/lib/session";

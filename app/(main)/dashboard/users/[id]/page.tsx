@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getSession } from "@/lib/session";
 import { redirect, notFound } from "next/navigation";
 import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from "drizzle-orm";
 import { UserTasksSection } from "./components/user-tasks-section";
 import { Skeleton } from "@/components/ui/skeleton";

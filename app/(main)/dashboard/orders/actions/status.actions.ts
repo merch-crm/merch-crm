@@ -1,7 +1,12 @@
 "use server";
 
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { 
+    inventoryTransactions, 
+    inventoryStocks 
+} from "@/lib/schema/warehouse/stock";
 import { revalidatePath } from "next/cache";
 import { eq, and, gte, sql, desc } from "drizzle-orm";
 import { withAuth, ROLE_GROUPS, ROLES } from "@/lib/action-helpers";
@@ -9,8 +14,6 @@ import { logAction } from "@/lib/audit";
 import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema } from "../validation";
 import { ActionResult, okVoid, ERRORS } from "@/lib/types";
 import { releaseOrderReservation } from "./utils";
-
-const { orders, inventoryItems, inventoryTransactions, inventoryStocks } = schema;
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
     const validated = UpdateOrderStatusSchema.safeParse({ orderId, newStatus, reason });

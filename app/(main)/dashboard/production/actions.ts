@@ -3,7 +3,14 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from"@/lib/db";
-import { orderItems, orders, inventoryItems, inventoryTransactions, clients, orderAttachments } from"@/lib/schema";
+import {
+    orderItems,
+    orders,
+    orderAttachments
+} from "@/lib/schema/orders";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { clients } from "@/lib/schema/clients/main";
 import { revalidatePath } from"next/cache";
 import { eq, sql } from"drizzle-orm";
 import { getSession } from "@/lib/session";

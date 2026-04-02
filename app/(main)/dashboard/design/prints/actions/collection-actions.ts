@@ -6,9 +6,10 @@ import { db } from "@/lib/db";
 import {
     printCollections,
     printDesigns,
-    productLines,
     printDesignVersions,
-} from "@/lib/schema";
+} from "@/lib/schema/designs";
+import { productLines } from "@/lib/schema/product-lines";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
 
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
@@ -20,7 +21,7 @@ import { v4 as uuidv4 } from "uuid";
 import { CollectionWithStats,
     CollectionWithFullStats,
     ActionResult, okVoid } from "@/lib/types";
-import { inventoryCategories } from "@/lib/schema";
+
 
 type PrintCollection = InferSelectModel<typeof printCollections>;
 

@@ -37,7 +37,7 @@ export async function getProductionStaff(options?: {
     lineId?: string;
 }): Promise<ActionResult<ProductionStaffWithStats[]>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -108,7 +108,7 @@ export async function getProductionStaff(options?: {
 // Получить сотрудника по ID
 export async function getProductionStaffById(id: string): Promise<ActionResult<ProductionStaffFull>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -169,7 +169,7 @@ export async function createProductionStaff(
     data: z.infer<typeof StaffSchema>
 ): Promise<ActionResult<ProductionStaffMember>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -200,7 +200,7 @@ export async function updateProductionStaff(
     data: Partial<z.infer<typeof StaffSchema>>
 ): Promise<ActionResult<ProductionStaffMember>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -231,7 +231,7 @@ export async function updateProductionStaff(
 // Удалить сотрудника
 export async function deleteProductionStaff(id: string): Promise<ActionResult> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -277,7 +277,7 @@ export async function getAvailableStaff(options?: {
     applicationTypeId?: string;
 }): Promise<ActionResult<ProductionStaffMember[]>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }

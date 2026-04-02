@@ -3,11 +3,9 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from "@/lib/db";
-import {
-  inventoryItems,
-  inventoryTransactions,
-  inventoryCategories,
-} from "@/lib/schema";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
+import { inventoryCategories } from "@/lib/schema/warehouse/categories";
 import { auditLogs } from "@/lib/schema/system";
 import {
   eq,

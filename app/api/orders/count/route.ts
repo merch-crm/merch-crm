@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { orders } from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
 import { count } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/session";

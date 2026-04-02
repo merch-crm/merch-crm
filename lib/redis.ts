@@ -27,7 +27,13 @@ class RedisMock {
     this.data.set(key, value);
     return "OK";
   }
-  async del(key: string) { return this.data.delete(key) ? 1 : 0; }
+  async del(...keys: string[]) { 
+    let count = 0;
+    for (const key of keys) {
+      if (this.data.delete(key)) count++;
+    }
+    return count;
+  }
   async incr(key: string) {
     const val = parseInt(this.data.get(key) || "0") + 1;
     this.data.set(key, val.toString());
@@ -104,8 +110,7 @@ export async function invalidateCache(pattern: string): Promise<void> {
   try {
     const keys = await redis.keys(pattern);
     if (keys.length > 0) {
-      // Use cast to any because ioredis del supports both array and rest params
-      await (redis as any).del(...keys);
+      await redis.del(...keys);
     }
   } catch (err) {
     console.error(`Redis invalidation error for pattern ${pattern}:`, err);

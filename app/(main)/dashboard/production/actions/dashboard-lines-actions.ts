@@ -5,7 +5,7 @@ import { z } from "zod";
 import {
     productionTasks,
     productionLines,
-} from "@/lib/schema";
+} from "@/lib/schema/production";
 import { eq, and, sql, count, sum } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { LineLoad } from "../types";

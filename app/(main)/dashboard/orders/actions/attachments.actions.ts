@@ -3,15 +3,13 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from"@/lib/db";
-import * as schema from"@/lib/schema";
+import { orderAttachments } from "@/lib/schema/orders";
 import { revalidatePath } from"next/cache";
 import { getSession } from "@/lib/session";
 import { logAction } from"@/lib/audit";
 import { logError } from"@/lib/error-logger";
 import { OrderIdSchema } from"../validation";
 import { ActionResult } from"@/lib/types";
-
-const { orderAttachments } = schema;
 
 export async function uploadOrderFile(orderId: string, formData: FormData): Promise<ActionResult> {
     const session = await getSession();

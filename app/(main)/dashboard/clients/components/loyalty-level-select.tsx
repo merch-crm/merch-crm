@@ -6,7 +6,7 @@ import { ChevronDown, Check, Lock, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LoyaltyLevelBadge } from "./loyalty-level-badge";
 import { getLoyaltyLevels } from "../actions/loyalty.actions";
-import type { LoyaltyLevel } from "@/lib/schema";
+import type { LoyaltyLevel } from "@/lib/schema/clients/loyalty";
 
 interface LoyaltyLevelSelectProps {
     value: string | null;

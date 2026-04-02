@@ -1,10 +1,9 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import * as schema from "@/lib/schema";
+import { auditLogs } from "@/lib/schema/system";
 import { db } from "@/lib/db";
-const { auditLogs } = schema;
 import { getSession } from "@/lib/session";
 
-type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
+type Transaction = NodePgDatabase<Record<string, unknown>> | Parameters<Parameters<NodePgDatabase<Record<string, unknown>>['transaction']>[0]>[0];
 
 export async function logAction(
     action: string,

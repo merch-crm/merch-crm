@@ -39,7 +39,7 @@ export async function archiveInventoryItems(ids: string[], reason: string): Prom
 
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "archiveInventoryItems" 
     });
 }
@@ -70,7 +70,7 @@ export async function restoreInventoryItems(ids: string[], reason: string): Prom
 
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "restoreInventoryItems" 
     });
 }
@@ -92,7 +92,7 @@ export async function deleteInventoryItems(ids: string[]): Promise<ActionResult>
 
         return okVoid();
     }, { 
-        roles: ["Администратор"],
+        roles: ["admin"],
         errorPath: "deleteInventoryItems" 
     });
 }
@@ -219,7 +219,7 @@ export async function bulkMoveInventoryItems(ids: string[], targetLocationId: st
         revalidatePath("/dashboard/warehouse");
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "bulkMoveInventoryItems" 
     });
 }
@@ -242,7 +242,7 @@ export async function bulkUpdateInventoryCategory(ids: string[], categoryId: str
         revalidatePath("/dashboard/warehouse");
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "bulkUpdateInventoryCategory" 
     });
 }

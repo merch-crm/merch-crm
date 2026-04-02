@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { systemFonts } from "@/lib/schema";
+import { systemFonts } from "@/lib/schema/system-fonts";
 import { eq, asc } from "drizzle-orm";
 import { getSession } from "@/lib/session";
 import { writeFile, mkdir } from "fs/promises";

@@ -8,7 +8,7 @@ import {
     printDesigns,
     printDesignFiles,
     printCollections,
-} from "@/lib/schema";
+} from "@/lib/schema/designs";
 import { invalidateCache } from "@/lib/redis";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
@@ -142,11 +142,11 @@ export async function uploadFile(versionId: string, formData: FormData): Promise
                 .limit(1);
 
             if (!currentVersion?.preview) {
-                await db.update(printDesignVersions).set({ preview: relativePath }).where(eq(printDesignVersions.id, versionId));
+                await db.update(printDesignVersions).set({ preview: relativePath, updatedAt: new Date() }).where(eq(printDesignVersions.id, versionId));
 
                 const [currentDesign] = await db.select({ preview: printDesigns.preview }).from(printDesigns).where(eq(printDesigns.id, design.id)).limit(1);
                 if (!currentDesign?.preview) {
-                    await db.update(printDesigns).set({ preview: relativePath }).where(eq(printDesigns.id, design.id));
+                    await db.update(printDesigns).set({ preview: relativePath, updatedAt: new Date() }).where(eq(printDesigns.id, design.id));
                 }
             }
         }

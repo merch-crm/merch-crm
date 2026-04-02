@@ -18,7 +18,7 @@ type KBFolder = typeof wikiFolders.$inferSelect;
 export type KBPage = typeof wikiPages.$inferSelect & { author: { name: string } | null };
 
 export async function getKBFolders(): Promise<ActionResult<KBFolder[]>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error:"Не авторизован" };
 
     try {
@@ -38,7 +38,7 @@ export async function getKBFolders(): Promise<ActionResult<KBFolder[]>> {
 }
 
 export async function createKBFolder(name: string, parentId: string | null = null): Promise<ActionResult<KBFolder>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
@@ -75,7 +75,7 @@ export async function createKBFolder(name: string, parentId: string | null = nul
 // --- Pages ---
 
 export async function getKBPages(folderId?: string): Promise<ActionResult<KBPage[]>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error:"Не авторизован" };
 
     try {
@@ -103,7 +103,7 @@ export async function getKBPages(folderId?: string): Promise<ActionResult<KBPage
 }
 
 export async function getKBPageDetail(id: string): Promise<ActionResult<KBPage & { folder: KBFolder | null }>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error:"Не авторизован" };
 
     try {
@@ -130,7 +130,7 @@ export async function getKBPageDetail(id: string): Promise<ActionResult<KBPage &
 }
 
 export async function createKBPage(data: { title: string, content: string, folderId: string | null }): Promise<ActionResult<typeof wikiPages.$inferSelect>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
@@ -167,7 +167,7 @@ export async function createKBPage(data: { title: string, content: string, folde
 }
 
 export async function updateKBPage(id: string, data: { title?: string, content?: string, folderId?: string | null }): Promise<ActionResult> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }
@@ -205,7 +205,7 @@ export async function updateKBPage(id: string, data: { title?: string, content?:
 }
 
 export async function deleteKBPage(id: string): Promise<ActionResult> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session || !["admin","manager","designer"].includes(session.roleSlug)) {
         return { success: false, error:"Недостаточно прав" };
     }

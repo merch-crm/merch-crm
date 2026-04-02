@@ -2,7 +2,9 @@
 
 import { db } from "@/lib/db";
 import { eq, and, lt, ne } from "drizzle-orm";
-import { tasks, taskAssignees, taskDeadlineNotifications } from "@/lib/schema";
+import { tasks } from "@/lib/schema/tasks";
+import { taskAssignees } from "@/lib/schema/task-assignees";
+import { taskDeadlineNotifications } from "@/lib/schema/task-deadline-notifications";
 import { notifyDeadlineApproaching } from "./task-notification-service";
 import { logError } from "@/lib/error-logger";
 

@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clients, loyaltyLevels, funnelStages, funnelStageLabels, funnelStageColors } from "@/lib/schema";
+import { clients, funnelStages, funnelStageLabels, funnelStageColors } from "@/lib/schema/clients/main";
+import { loyaltyLevels } from "@/lib/schema/clients/loyalty";
 import { eq, sql, and, count, isNull, isNotNull } from "drizzle-orm";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { type ActionResult, ok } from "@/lib/types";

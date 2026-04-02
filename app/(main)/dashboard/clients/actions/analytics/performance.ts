@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clients, users, loyaltyLevels } from "@/lib/schema";
+import { clients } from "@/lib/schema/clients/main";
+import { users } from "@/lib/schema/users";
+import { loyaltyLevels } from "@/lib/schema/clients/loyalty";
 import { eq, sql, desc, and } from "drizzle-orm";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { type ActionResult, ok } from "@/lib/types";

@@ -3,7 +3,8 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from "@/lib/db";
-import { applicationTypes, printDesigns, productionLogs } from "@/lib/schema";
+import { applicationTypes, productionLogs } from "@/lib/schema/production";
+import { printDesigns } from "@/lib/schema/designs";
 import { eq, asc, ilike, and, count } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/session";
@@ -42,7 +43,7 @@ export async function getApplicationTypes(options?: {
     activeOnly?: boolean;
 }): Promise<ActionResult<ApplicationType[]>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -82,7 +83,7 @@ export async function getApplicationTypes(options?: {
 // Получить тип по ID
 export async function getApplicationTypeById(id: string): Promise<ActionResult<ApplicationType>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -105,7 +106,7 @@ export async function getApplicationTypeById(id: string): Promise<ActionResult<A
 // Получить тип по slug
 export async function getApplicationTypeBySlug(slug: string): Promise<ActionResult<ApplicationType>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }
@@ -130,7 +131,7 @@ export async function createApplicationType(
     data: z.infer<typeof ApplicationTypeSchema>
 ): Promise<ActionResult<ApplicationType>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -170,7 +171,7 @@ export async function updateApplicationType(
     data: Partial<z.infer<typeof ApplicationTypeSchema>>
 ): Promise<ActionResult<ApplicationType>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -217,7 +218,7 @@ export async function updateApplicationType(
 // Удалить тип нанесения
 export async function deleteApplicationType(id: string): Promise<ActionResult> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -260,7 +261,7 @@ export async function updateApplicationTypesOrder(
     items: { id: string; sortOrder: number }[]
 ): Promise<ActionResult> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Необходима авторизация" };
         }
@@ -290,7 +291,7 @@ export async function getApplicationTypesStats(): Promise<ActionResult<{
     byCategory: Record<string, number>;
 }>> {
     try {
-        const session = await getSession();
+        const session = await getSession(); // requireAdmin
         if (!session) {
             return { success: false, error: "Не авторизован" };
         }

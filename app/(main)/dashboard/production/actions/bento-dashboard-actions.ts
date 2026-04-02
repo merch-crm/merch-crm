@@ -4,11 +4,11 @@
 import { db } from "@/lib/db";
 import {
   productionTasks,
-  orders,
   productionLines,
-  inventoryItems,
   productionStaff,
-} from "@/lib/schema";
+} from "@/lib/schema/production";
+import { orders } from "@/lib/schema/orders";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import {
   eq,
   and,

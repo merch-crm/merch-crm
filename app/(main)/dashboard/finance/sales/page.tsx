@@ -1,7 +1,7 @@
 import { getFinancialStats } from "../actions";
 import { getSession } from "@/lib/session";
 import { db } from"@/lib/db";
-import { users } from"@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from"drizzle-orm";
 import { startOfDay, endOfDay, subDays } from"date-fns";
 import { redirect } from"next/navigation";
@@ -26,8 +26,8 @@ export default async function FinanceSalesPage({
     });
 
     const isAllowed =
-        user?.role?.name ==="Администратор" ||
-        ["Руководство","Отдел продаж"].includes(user?.department?.name ||"");
+        user?.role?.slug === "admin" ||
+        ["Руководство", "Отдел продаж"].includes(user?.department?.name || "");
 
     if (!isAllowed) {
         return (

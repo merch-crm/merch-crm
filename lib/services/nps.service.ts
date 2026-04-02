@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
-import { customerFeedback, orders } from "@/lib/schema";
+import { customerFeedback } from "@/lib/schema/clients/feedback";
+import { orders } from "@/lib/schema/orders";
 import { eq, and, isNull, lt } from "drizzle-orm";
 import { sendEmail } from "@/lib/email";
 import { env } from "@/lib/env";

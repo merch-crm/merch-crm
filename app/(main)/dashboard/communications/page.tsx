@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { CommunicationsClient } from "./communications-client";
 import { getConversations, getMessageTemplates, getCommunicationsStats } from "./actions";
 import { Loader2, MessageSquare } from "lucide-react";
-import { MessageTemplate } from "@/lib/schema";
+import { MessageTemplate } from "@/lib/schema/communications";
 
 export const metadata = {
     title: "Коммуникации | CRM",

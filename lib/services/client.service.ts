@@ -1,11 +1,10 @@
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { clients } from "@/lib/schema/clients/main";
+import { orders } from "@/lib/schema/orders";
 import { eq } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
 import { releaseReservationsForOrders } from "@/app/(main)/dashboard/clients/actions/utils";
 import { checkClientDuplicates } from "@/app/(main)/dashboard/clients/actions/core/duplicates";
-
-const { clients, orders } = schema;
 
 export class ClientService {
     static async createClient(

@@ -125,7 +125,7 @@ export async function addInventoryCategory(formData: FormData): Promise<ActionRe
         }).returning();
 
         const fullPath = await getCategoryFullPath(category.id);
-        await db.update(inventoryCategories).set({ fullPath }).where(eq(inventoryCategories.id, category.id));
+        await db.update(inventoryCategories).set({ fullPath, updatedAt: new Date() }).where(eq(inventoryCategories.id, category.id));
 
         await logAction("Создана категория", "inventory_category", category.id, { name: category.name });
         invalidateCache("warehouse:categories");
@@ -180,7 +180,7 @@ export async function updateInventoryCategory(id: string, formData: FormData): P
         if (!category) return ERRORS.NOT_FOUND("Категория");
 
         const fullPath = await getCategoryFullPath(id);
-        await db.update(inventoryCategories).set({ fullPath }).where(eq(inventoryCategories.id, id));
+        await db.update(inventoryCategories).set({ fullPath, updatedAt: new Date() }).where(eq(inventoryCategories.id, id));
 
         await updateChildrenPaths(id);
 
@@ -247,7 +247,7 @@ export async function updateInventoryCategoriesOrder(items: { id: string; sortOr
         await db.transaction(async (tx) => {
             for (const item of validation.data) {
                 await tx.update(inventoryCategories)
-                    .set({ sortOrder: item.sortOrder })
+                    .set({ sortOrder: item.sortOrder, updatedAt: new Date() })
                     .where(eq(inventoryCategories.id, item.id));
             }
         });

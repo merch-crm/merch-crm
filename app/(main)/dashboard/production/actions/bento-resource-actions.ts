@@ -2,12 +2,12 @@
 
 import { db } from "@/lib/db";
 import {
-  productionTasks,
-  productionLines,
-  productionStaff,
-  equipment,
-  users,
-} from "@/lib/schema";
+    productionTasks,
+    productionLines,
+    productionStaff,
+    equipment,
+} from "@/lib/schema/production";
+import { users } from "@/lib/schema/users";
 import {
   eq,
   and,

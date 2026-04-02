@@ -3,7 +3,7 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from"@/lib/db";
-import { systemSettings } from"@/lib/schema";
+import { systemSettings } from "@/lib/schema/system";
 import { getSession } from "@/lib/session";
 import { requireAdmin } from"@/lib/admin";
 import { eq } from"drizzle-orm";

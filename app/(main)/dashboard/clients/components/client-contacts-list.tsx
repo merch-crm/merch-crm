@@ -27,7 +27,7 @@ import {
     setPrimaryContact,
 } from "../actions/contacts.actions";
 import { ContactEditDialog } from "./contact-edit-dialog";
-import type { ClientContact } from "@/lib/schema";
+import type { ClientContact } from "@/lib/schema/clients/contacts";
 
 interface ClientContactsListProps {
     clientId: string;

@@ -49,7 +49,7 @@ export async function deleteInventoryTransactions(ids: string[]): Promise<Action
         revalidatePath("/dashboard/warehouse");
         return okVoid();
     }, { 
-        roles: ["Администратор"],
+        roles: ["admin"],
         errorPath: "deleteInventoryTransactions" 
     });
 }
@@ -64,7 +64,7 @@ export async function clearInventoryHistory(): Promise<ActionResult> {
         revalidatePath("/dashboard/warehouse");
         return okVoid();
     }, { 
-        roles: ["Администратор"],
+        roles: ["admin"],
         errorPath: "clearInventoryHistory" 
     });
 }

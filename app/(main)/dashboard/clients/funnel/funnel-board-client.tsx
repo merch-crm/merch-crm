@@ -40,7 +40,7 @@ import {
     funnelStageLabels,
     funnelStageColors,
     FunnelStage
-} from "@/lib/schema";
+} from "@/lib/schema/clients/main";
 import { updateClientFunnelStage, markClientAsLost } from "../actions/funnel.actions";
 import { Button } from "@/components/ui/button";
 import {

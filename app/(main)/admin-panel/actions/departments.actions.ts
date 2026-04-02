@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { departments, roles, users, accounts } from "@/lib/schema";
+import { departments, roles, users, accounts } from "@/lib/schema/users";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
 import { comparePassword } from "@/lib/password";

@@ -1,7 +1,9 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders, payments, expenses, inventoryTransactions } from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { payments, expenses } from "@/lib/schema/finance";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
 import { getSession } from "@/lib/session";
 import { and, gte, lte, sql, eq, desc, type SQL } from "drizzle-orm";
 import { subDays } from "date-fns";
@@ -90,12 +92,12 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
                 averageCost: Number(summaryData.orderCount || 0) > 0 ? (actualCOGS / Number(summaryData.orderCount)) : 0,
                 writeOffs: actualCOGS * 0.05,
             },
-            chartData: dailyStats.map((d: any) => ({
+            chartData: dailyStats.map((d) => ({
                 date: d.date,
                 revenue: Number(d.revenue || 0),
                 count: Number(d.count || 0)
             })),
-            categories: categoryStats.map((c: any) => ({
+            categories: categoryStats.map((c) => ({
                 name: c.category || "Другое",
                 revenue: Number(c.revenue || 0),
                 count: Number(c.count || 0)
@@ -109,7 +111,7 @@ export async function getFinancialStats(from?: Date, to?: Date): Promise<ActionR
                 category: o.category || "other"
             }))
         };
-
+        await logAction("Просмотр финансовой статистики", "finance", "global", { from: fromDate, to: toDate }, undefined, "view");
         return { success: true, data: result };
     } catch (error) {
         await logError({
@@ -169,6 +171,7 @@ export async function getSalaryStats(from?: Date, to?: Date): Promise<ActionResu
 
         const totalBudget = employeePayments.reduce((sum, e) => sum + e.total, 0);
 
+        await logAction("Просмотр статистики зарплат", "finance", "global", { from: fromDate, to: toDate }, undefined, "view");
         return {
             success: true,
             data: {
@@ -216,6 +219,7 @@ export async function getFundsStats(from?: Date, to?: Date): Promise<ActionResul
             amount: (totalRevenue * f.percentage) / 100
         }));
 
+        await logAction("Просмотр статистики фондов", "finance", "global", { from: fromDate, to: toDate }, undefined, "view");
         return {
             success: true,
             data: {
@@ -244,6 +248,7 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
             return { success: false, error: result.error || "Промокод невалиден" };
         }
 
+        await logAction("Валидация промокода", "finance", "promocode", { code, isValid: true, discount: result.discount }, undefined, "validate");
         return {
             success: true,
             data: {
@@ -262,7 +267,7 @@ export async function validatePromocode(code: string, totalAmount: number = 0, c
     }
 }
 
-export async function getFinanceTransactions(type: 'payment' | 'expense', from?: Date, to?: Date): Promise<ActionResult<any[]>> {
+export async function getFinanceTransactions(type: 'payment' | 'expense', from?: Date, to?: Date): Promise<ActionResult<unknown[]>> {
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
@@ -277,6 +282,7 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
                 orderBy: [desc(payments.createdAt)],
                 limit: 1000
             });
+            await logAction("Просмотр транзакций", "finance", "global", { type, from: fromDate, to: toDate }, undefined, "view");
             return { success: true, data };
         } else {
             const data = await db.query.expenses.findMany({
@@ -284,6 +290,7 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
                 orderBy: [desc(expenses.createdAt)],
                 limit: 1000
             });
+            await logAction("Просмотр транзакций", "finance", "global", { type, from: fromDate, to: toDate }, undefined, "view");
             return { success: true, data };
         }
     } catch (error) {
@@ -296,7 +303,7 @@ export async function getFinanceTransactions(type: 'payment' | 'expense', from?:
     }
 }
 
-export async function createExpense(data: unknown): Promise<ActionResult<any>> {
+export async function createExpense(data: unknown): Promise<ActionResult<Record<string, unknown>>> {
     const session = await getSession();
     if (!session) return { success: false, error: "Не авторизован" };
 
@@ -310,7 +317,7 @@ export async function createExpense(data: unknown): Promise<ActionResult<any>> {
     try {
         const newExpense = await db.transaction(async (tx) => {
             const [expense] = await tx.insert(expenses).values({
-                category: category as any,
+                category: category as "other" | "rent" | "salary" | "purchase" | "tax",
                 amount: String(amount),
                 description: description,
                 date: date ? date.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
@@ -327,7 +334,7 @@ export async function createExpense(data: unknown): Promise<ActionResult<any>> {
         });
 
         revalidatePath("/dashboard/finance");
-        return { success: true, data: newExpense };
+        return { success: true, data: newExpense as Record<string, unknown> };
     } catch (error) {
         await logError({
             error,
@@ -391,6 +398,7 @@ export async function getPLReport(from?: Date, to?: Date): Promise<ActionResult<
         const grossProfit = totalRevenue - totalCOGS;
         const netProfit = grossProfit - totalOverhead;
 
+        await logAction("Просмотр отчета P&L", "finance", "global", { from: fromDate, to: toDate }, undefined, "view");
         return {
             success: true,
             data: {

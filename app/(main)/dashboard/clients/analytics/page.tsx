@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/session";
 import { db } from "@/lib/db";
-import { users } from "@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { eq } from "drizzle-orm";
 import { PageHeader } from "@/components/layout/page-header";
 import { ClientAnalyticsDashboard } from "./analytics-dashboard-client";

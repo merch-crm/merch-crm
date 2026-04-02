@@ -3,7 +3,8 @@
 import { okVoid } from "@/lib/types";
 
 import { db } from"@/lib/db";
-import * as schema from"@/lib/schema";
+import { orders } from "@/lib/schema/orders";
+import { users } from "@/lib/schema/users";
 import { revalidatePath } from"next/cache";
 import { eq, inArray } from"drizzle-orm";
 import { getSession } from "@/lib/session";
@@ -13,8 +14,6 @@ import { BulkOrdersSchema, UpdateOrderPrioritySchema } from"../validation";
 import { ActionResult } from"@/lib/types";
 import { updateOrderStatus } from"./status.actions";
 import { releaseOrderReservation } from"./utils";
-
-const { orders, users } = schema;
 
 export async function bulkUpdateOrderStatus(orderIds: string[], newStatus: (typeof orders.$inferInsert)["status"]): Promise<ActionResult> {
     const session = await getSession();

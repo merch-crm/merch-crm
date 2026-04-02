@@ -46,7 +46,7 @@ const getSession = cache(async () => {
         { ttl: 300 }
     );
     
-    return { id, email, name, roleName, departmentName, ... };
+    return { id, email, name, roleName, roleSlug, departmentName, ... };
 });
 ```
 

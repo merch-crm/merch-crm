@@ -2,7 +2,9 @@
 
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { tasks, taskAssignees, roles, users } from "@/lib/schema";
+import { tasks } from "@/lib/schema/tasks";
+import { taskAssignees } from "@/lib/schema/task-assignees";
+import { roles, users } from "@/lib/schema/users";
 import { logError } from "@/lib/error-logger";
 import { notifyTaskCreated } from "../notifications";
 import type { TaskType, TaskPriority } from "@/lib/types/tasks";

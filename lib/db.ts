@@ -39,7 +39,7 @@ export const pool = globalForDb.pool || new Pool({
         if (env.NODE_ENV === "production") {
             return {
                 rejectUnauthorized: true,
-                ca: (env as any).DATABASE_CA_CERT || undefined,
+                ca: process.env.DATABASE_CA_CERT || undefined,
             };
         }
 

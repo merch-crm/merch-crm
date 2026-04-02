@@ -20,6 +20,12 @@ interface ItemLabelDialogProps {
 
 export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps) {
     const { toast } = useToast();
+    const [currentDateString, setCurrentDateString] = React.useState("");
+
+    React.useEffect(() => {
+        setCurrentDateString(new Date().toLocaleDateString('ru-RU'));
+    }, []);
+
     const handlePrint = () => {
 
         const printWindow = window.open('', '_blank');
@@ -179,7 +185,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
                         <div className="mt-auto pt-2 border-t border-border flex items-center justify-between text-[7px] font-bold text-muted-foreground">
                             <span>Merch CRM System</span>
-                            <span>{new Date().toLocaleDateString('ru-RU')}</span> {/* suppressHydrationWarning */}
+                            <span>{currentDateString}</span>
                         </div>
                     </div>
                 </div>

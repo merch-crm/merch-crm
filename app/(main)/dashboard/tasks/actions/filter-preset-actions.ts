@@ -5,7 +5,7 @@ import { okVoid } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 import { eq, and } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { taskFilterPresets } from "@/lib/schema";
+import { taskFilterPresets } from "@/lib/schema/task-filter-presets";
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import type { TaskActionResult, TaskFilterPreset, TaskFilters } from "@/lib/types/tasks";

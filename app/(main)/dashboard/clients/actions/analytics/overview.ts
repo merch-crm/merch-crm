@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clients } from "@/lib/schema";
+import { clients } from "@/lib/schema/clients/main";
 import { sql, and, gte, count, eq } from "drizzle-orm";
 import { withAuth, ROLE_GROUPS } from "@/lib/action-helpers";
 import { type ActionResult, ok, ERRORS } from "@/lib/types";

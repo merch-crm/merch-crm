@@ -2,12 +2,10 @@
 
 import { eq, sql } from"drizzle-orm";
 import { db } from"@/lib/db";
-import * as schema from"@/lib/schema";
-import { NodePgDatabase } from"drizzle-orm/node-postgres";
+import { orderItems } from "@/lib/schema/orders";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 
-const { inventoryItems, orderItems } = schema;
-
-export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
+export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 /**
  * Helper to release inventory reservations for a specific order.

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { systemSettings } from "@/lib/schema";
+import { systemSettings } from "@/lib/schema/system";
 import { performDatabaseBackup } from "@/lib/backup";
 
 export const dynamic = "force-dynamic";

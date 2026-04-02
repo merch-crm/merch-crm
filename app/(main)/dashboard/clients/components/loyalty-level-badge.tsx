@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Star, Award, Crown, User, Sparkles } from "lucide-react";
-import type { LoyaltyLevel } from "@/lib/schema";
+import type { LoyaltyLevel } from "@/lib/schema/clients/loyalty";
 
 interface LoyaltyLevelBadgeProps {
     level: LoyaltyLevel | null;

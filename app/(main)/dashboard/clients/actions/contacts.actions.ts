@@ -1,9 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { clientContacts } from "@/lib/schema/clients/contacts";
+import { clientContacts, type ClientContact } from "@/lib/schema/clients/contacts";
 import { clients } from "@/lib/schema/clients/main";
-import type { ClientContact } from "@/lib/schema/clients/contacts";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";

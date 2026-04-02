@@ -1,7 +1,10 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { systemSettings, users, clients, orders, notifications, roles } from "@/lib/schema";
+import { systemSettings, notifications } from "@/lib/schema/system";
+import { users, roles } from "@/lib/schema/users";
+import { clients } from "@/lib/schema/clients/main";
+import { orders } from "@/lib/schema/orders";
 import { eq, sql, type InferInsertModel } from "drizzle-orm";
 import { z } from "zod";
 

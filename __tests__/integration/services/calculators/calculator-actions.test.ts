@@ -2,7 +2,8 @@
 
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 import { db } from "@/lib/db";
-import { calculationHistory, users, departments, roles } from "@/lib/schema";
+import { calculationHistory } from "@/lib/schema/calculation-history";
+import { users, departments, roles } from "@/lib/schema/users";
 import { saveCalculation, getCalculationHistory } from "@/lib/actions/calculators/history";
 import { eq } from "drizzle-orm";
 import { getCurrentUser } from "@/lib/auth/session";

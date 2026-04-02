@@ -3,9 +3,9 @@
 import { db } from "@/lib/db";
 import {
   productionTasks,
-  inventoryTransactions,
   productionLines,
-} from "@/lib/schema";
+} from "@/lib/schema/production";
+import { inventoryTransactions } from "@/lib/schema/warehouse/stock";
 import {
   and,
   gte,

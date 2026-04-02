@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/session";
 import { db } from "@/lib/db";
 import { eq } from "drizzle-orm";
-import * as schema from "@/lib/schema";
+import { users } from "@/lib/schema/users";
 import { logError } from "@/lib/error-logger";
 import { 
   ActionResult, 
@@ -45,7 +45,7 @@ export async function withAuth<T>(
     
     if (options?.roles || options?.loadUser) {
       const dbUser = await db.query.users.findFirst({
-        where: eq(schema.users.id, session.id),
+        where: eq(users.id, session.id),
         with: {
           role: true,
           department: true,

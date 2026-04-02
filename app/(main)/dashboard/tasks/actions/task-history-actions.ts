@@ -2,7 +2,7 @@
 
 import { eq, desc } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { taskHistory } from "@/lib/schema";
+import { taskHistory } from "@/lib/schema/task-history";
 import { getSession } from "@/lib/session";
 import { logError } from "@/lib/error-logger";
 import type { TaskHistoryEntry, TaskActionResult } from "@/lib/types/tasks";

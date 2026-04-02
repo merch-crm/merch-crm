@@ -28,7 +28,7 @@ import {
     reorderLoyaltyLevels,
     recalculateAllClientsLoyalty,
 } from "../../actions/loyalty.actions";
-import type { LoyaltyLevel } from "@/lib/schema";
+import type { LoyaltyLevel } from "@/lib/schema/clients/loyalty";
 
 interface LoyaltySettingsClientProps {
     initialLevels: LoyaltyLevel[];

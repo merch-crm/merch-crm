@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { promocodes } from "@/lib/schema";
+import { promocodes } from "@/lib/schema/promocodes";
 import { eq, sql, type InferSelectModel } from "drizzle-orm";
 
 import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";

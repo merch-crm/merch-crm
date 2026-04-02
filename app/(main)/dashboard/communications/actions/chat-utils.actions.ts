@@ -5,13 +5,13 @@ import {
     messageTemplates,
     communicationChannels,
     clientConversations
-} from "@/lib/schema";
+} from "@/lib/schema/communications";
 import { eq, and, desc, sql, count } from "drizzle-orm";
 import { logAction } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 import type {
     TemplateCategory
-} from "@/lib/schema";
+} from "@/lib/schema/communications";
 import {
     AssignManagerSchema,
     TemplateUsageSchema,

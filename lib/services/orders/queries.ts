@@ -6,7 +6,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { orders } from "@/lib/schema";
+import { orders } from "@/lib/schema/orders";
 import { eq, desc, and, gte, lte, or, ilike, sql } from "drizzle-orm";
 import type { GetOrdersParams, GetOrdersResult, OrderWithRelations } from "@/lib/types/orders";
 

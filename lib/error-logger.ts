@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { systemErrors } from "@/lib/schema";
+import { systemErrors } from "@/lib/schema/system";
 import { headers } from "next/headers";
 import { getSession } from "@/lib/session";
 

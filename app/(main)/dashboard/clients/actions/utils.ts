@@ -1,11 +1,11 @@
 "use server";
 
 import { eq, sql, and, inArray } from "drizzle-orm";
-import * as schema from "@/lib/schema";
+import type * as schema from "@/lib/schema";
+import { orders, orderItems } from "@/lib/schema/orders";
+import { inventoryItems } from "@/lib/schema/warehouse/items";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { OrderStatus } from "@/lib/types/orders";
-
-const { orders, inventoryItems } = schema;
 
 export type Transaction = NodePgDatabase<typeof schema> | Parameters<Parameters<NodePgDatabase<typeof schema>['transaction']>[0]>[0];
 
@@ -30,7 +30,7 @@ export async function releaseReservationsForOrders(orderIds: string[], tx: Trans
 
     // Find all items for these orders
     const items = await tx.query.orderItems.findMany({
-        where: inArray(schema.orderItems.orderId, actualOrderIds),
+        where: inArray(orderItems.orderId, actualOrderIds),
         limit: 1000
     });
 

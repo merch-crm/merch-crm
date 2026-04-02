@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { LoyaltySettingsClient } from "./loyalty-settings-client";
 import { getLoyaltyLevels } from "@/app/(main)/dashboard/clients/actions/loyalty.actions";
 import { getLoyaltyDistribution } from "@/app/(main)/dashboard/clients/actions/analytics.actions";
-import { type LoyaltyLevel } from "@/lib/schema";
+import { type LoyaltyLevel } from "@/lib/schema/clients/loyalty";
 import { type LoyaltyDistributionData } from "@/app/(main)/dashboard/clients/actions/analytics/types";
 
 export const metadata = {

@@ -1,7 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import * as schema from "@/lib/schema";
+import { clients } from "@/lib/schema/clients/main";
+import { orders } from "@/lib/schema/orders";
+import { payments } from "@/lib/schema/finance";
+import { auditLogs } from "@/lib/schema/system";
+
 import { sql, and, or, ilike, eq, lt, desc, asc, gte, lte, count, type SQL } from "drizzle-orm";
 import { redisCache, CACHE_TTL } from "@/lib/cache";
 import { ClientFiltersSchema } from "../../validation";
@@ -15,8 +19,6 @@ import {
     ActionResult,
     AuditLogDetails
 } from "@/lib/types";
-
-const { clients, orders, payments, auditLogs } = schema;
 
 export async function getAcquisitionSources(): Promise<ActionResult<string[]>> {
     const action = createSafeAction({
@@ -44,8 +46,8 @@ export async function getManagers(): Promise<ActionResult<{ id: string; name: st
             const result = await redisCache.getOrSet("clients:managers", async () => {
                 return await db.query.users.findMany({
                     columns: { id: true, name: true },
-                    where: (users, { eq }) => eq(users.isSystem, false),
-                    orderBy: (users, { asc }) => [asc(users.name)],
+                    where: (u, { eq }) => eq(u.isSystem, false),
+                    orderBy: (u, { asc }) => [asc(u.name)],
                     limit: 100,
                 });
             }, { ttl: CACHE_TTL.DICTIONARIES });

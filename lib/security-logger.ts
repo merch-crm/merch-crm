@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { securityEvents } from "@/lib/schema";
+import { securityEvents } from "@/lib/schema/system";
 import { headers } from "next/headers";
 
 type SecurityEventType =

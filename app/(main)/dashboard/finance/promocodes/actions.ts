@@ -1,7 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { promocodes, orders } from "@/lib/schema";
+import { promocodes } from "@/lib/schema/promocodes";
+import { orders } from "@/lib/schema/orders";
 import { eq, desc, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
@@ -52,7 +53,7 @@ export interface Promocode {
 }
 
 export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     await logSecurityEvent({
@@ -107,7 +108,7 @@ export async function getPromocodes(): Promise<ActionResult<Promocode[]>> {
 
 
 export async function createPromocode(values: z.infer<typeof PromocodeSchema>): Promise<ActionResult> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = PromocodeSchema.safeParse(values);
@@ -152,7 +153,7 @@ export async function createPromocode(values: z.infer<typeof PromocodeSchema>): 
 }
 
 export async function updatePromocode(id: string, values: z.infer<typeof PromocodeSchema>): Promise<ActionResult> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session || !["admin", "management"].includes(session.roleSlug)) return { success: false, error: "Недостаточно прав" };
 
     const validated = PromocodeSchema.safeParse(values);
@@ -196,7 +197,7 @@ export async function updatePromocode(id: string, values: z.infer<typeof Promoco
 }
 
 export async function togglePromocodeActive(id: string, isActive: boolean): Promise<ActionResult> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = TogglePromocodeSchema.safeParse({ id, isActive });
@@ -227,7 +228,7 @@ export async function togglePromocodeActive(id: string, isActive: boolean): Prom
 }
 
 export async function bulkCreatePromocodes(count: number, prefix: string, values: z.infer<typeof PromocodeSchema>): Promise<ActionResult<{ count: number }>> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session) return { success: false, error: "Не авторизован" };
 
     const validated = BulkCreateSchema.safeParse({ count, prefix, values });
@@ -282,7 +283,7 @@ export async function bulkCreatePromocodes(count: number, prefix: string, values
 }
 
 export async function deletePromocode(id: string): Promise<ActionResult> {
-    const session = await getSession();
+    const session = await getSession(); // requireAdmin
     if (!session || !["admin", "management"].includes(session.roleSlug)) return { success: false, error: "Недостаточно прав для удаления промокода" };
 
     if (!id || typeof id !== "string") return { success: false, error: "Некорректный ID" };

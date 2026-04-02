@@ -142,7 +142,7 @@ export async function addInventoryItem(formData: FormData): Promise<ActionResult
 
         return ok({ id: newItem.id });
     }, { 
-        roles: ["Администратор", "Руководство", "Склад", "Отдел продаж"],
+        roles: ["admin", "management", "warehouse", "sales"],
         errorPath: "/dashboard/warehouse/add" 
     });
 }
@@ -283,7 +283,7 @@ export async function updateInventoryItem(id: string, formData: FormData): Promi
         if (categoryId) revalidatePath(`/dashboard/warehouse/categories/${categoryId}`);
         return ok(updatedItem);
     }, { 
-        roles: ["Администратор", "Руководство", "Склад", "Отдел продаж"],
+        roles: ["admin", "management", "warehouse", "sales"],
         errorPath: `/dashboard/warehouse/edit/${id}` 
     });
 }

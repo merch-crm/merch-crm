@@ -159,7 +159,7 @@ export async function adjustInventoryStock(
 
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "adjustInventoryStock" 
     });
 }
@@ -246,7 +246,7 @@ export async function transferInventoryStock(itemId: string, fromLocationId: str
         revalidatePath(`/dashboard/warehouse/items/${itemId}`);
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "transferInventoryStock" 
     });
 }
@@ -381,7 +381,7 @@ export async function moveInventoryItem(formData: FormData): Promise<ActionResul
         await checkItemStockAlerts(itemId);
         return okVoid();
     }, { 
-        roles: ["Администратор", "Руководство", "Склад"],
+        roles: ["admin", "management", "warehouse"],
         errorPath: "moveInventoryItem" 
     });
 }
