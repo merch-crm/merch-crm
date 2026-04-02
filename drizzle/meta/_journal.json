@@ -281,6 +281,34 @@
       "when": 1775061491274,
       "tag": "0039_add_role_slug",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1775117721773,
+      "tag": "0040_sync_client_stats",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1775118593595,
+      "tag": "0041_minor_lady_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1775118740145,
+      "tag": "0042_yielding_dracula",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1775119800000,
+      "tag": "0043_set_updated_at_trigger",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "order_items" ADD CONSTRAINT "order_items_application_type_id_application_types_id_fk" FOREIGN KEY ("application_type_id") REFERENCES "public"."application_types"("id") ON DELETE set null ON UPDATE no action;

@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const nonce = btoa(crypto.randomUUID());
+  const nonce = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+
   const isDev = process.env.NODE_ENV === 'development';
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
   const isHttps = appUrl.startsWith('https');
@@ -14,13 +15,13 @@ export function middleware(request: NextRequest) {
     default-src 'self';
     script-src ${scriptSrc};
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' data: https: blob:;
+    img-src 'self' data: blob: s3.regru.cloud *.s3.regru.cloud images.unsplash.com i.pravatar.cc api.dicebear.com api.qrserver.com randomuser.me www.transparenttextures.com;
     font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
-    connect-src 'self' http: https: blob: data: ${isDev ? "ws: wss:" : ""};
+    connect-src 'self' blob: data: s3.regru.cloud *.s3.regru.cloud api.resend.com api.replicate.com api.qrserver.com fonts.googleapis.com fonts.gstatic.com ${isDev ? "ws: wss: localhost:* 127.0.0.1:*" : ""};
     worker-src 'self' blob:;
     ${isHttps ? "upgrade-insecure-requests;" : ""}
   `.replace(/\s{2,}/g, ' ').trim();
@@ -36,6 +37,8 @@ export function middleware(request: NextRequest) {
   });
 
   response.headers.set('Content-Security-Policy', cspHeader);
+  response.headers.set('x-nonce', nonce);
+
 
   return response;
 }
@@ -50,7 +53,7 @@ export const config = {
      * - favicon.ico (favicon file)
      */
     {
-      source: '/((?!api|_next/static|_next/image|favicon.ico|dashboard/production/calculators).*)',
+      source: '/((?!_next/static|_next/image|favicon.ico|dashboard/production/calculators).*)',
       missing: [
         { type: 'header', key: 'next-router-prefetch' },
         { type: 'header', key: 'purpose', value: 'prefetch' },

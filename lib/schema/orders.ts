@@ -11,7 +11,7 @@ import { applicationTypes } from "./production";
 
 export const orders = pgTable("orders", {
     id: uuid("id").defaultRandom().primaryKey(),
-    clientId: uuid("client_id").references(() => clients.id, { onUpdate: 'cascade' }),
+    clientId: uuid("client_id").references(() => clients.id, { onUpdate: 'cascade', onDelete: 'set null' }),
     clientName: text("client_name"),
     status: orderStatusEnum("status").default("new").notNull(),
     totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull().default("0"),
@@ -24,13 +24,13 @@ export const orders = pgTable("orders", {
     estimatedDeliveryDate: timestamp("estimated_delivery_date"),
     actualDeliveryDate: timestamp("actual_delivery_date"),
     comments: text("comments"),
-    managerId: uuid("manager_id").references(() => users.id),
-    createdBy: uuid("created_by").references(() => users.id),
+    managerId: uuid("manager_id").references(() => users.id, { onDelete: 'set null' }),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: 'restrict' }),
     source: text("source"),
     deadline: timestamp("deadline"),
     priority: text("priority").default("normal").notNull(),
     discountAmount: decimal("discount_amount", { precision: 10, scale: 2 }).default("0"),
-    promocodeId: uuid("promocode_id").references(() => promocodes.id),
+    promocodeId: uuid("promocode_id").references(() => promocodes.id, { onDelete: 'set null' }),
     externalOrderNumber: text("external_order_number"),
     orderNumber: text("order_number").unique(),
     isUrgent: boolean("is_urgent").default(false).notNull(),
@@ -38,7 +38,7 @@ export const orders = pgTable("orders", {
     category: orderCategoryEnum("category").default("other").notNull(),
     isArchived: boolean("is_archived").default(false).notNull(),
     archivedAt: timestamp("archived_at"),
-    archivedBy: uuid("archived_by").references(() => users.id),
+    archivedBy: uuid("archived_by").references(() => users.id, { onDelete: 'set null' }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {
@@ -100,7 +100,7 @@ export const orderItems = pgTable("order_items", {
     stageApplicationStatus: productionStageStatusEnum("stage_application_status").default("pending").notNull(),
     stagePackagingStatus: productionStageStatusEnum("stage_packaging_status").default("pending").notNull(),
     designStatus: orderItemDesignStatusEnum("design_status").default("pending").notNull(),
-    applicationTypeId: uuid("application_type_id"),
+    applicationTypeId: uuid("application_type_id").references(() => applicationTypes.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => {

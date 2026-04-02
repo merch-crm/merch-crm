@@ -17,8 +17,11 @@ export async function rateLimit(
   key: string,
   limit: number,
   windowSeconds: number,
-  failClosed: boolean = false
+  failClosed?: boolean
 ): Promise<RateLimitResult> {
+  // Умный fail-closed: безопасное поведение по-умолчанию для auth-маршрутов
+  const isAuthRoute = /auth|password|login|session|verify|otp/i.test(key);
+  const strictFail = failClosed !== undefined ? failClosed : isAuthRoute;
   // Check for bypass in dev/test
   if (process.env.DISABLE_RATE_LIMIT === "true") {
       return { success: true, limit, remaining: limit, resetIn: windowSeconds };
@@ -57,7 +60,7 @@ export async function rateLimit(
   } catch (error) {
     console.error("Rate limit error:", error);
     // Fail safe or Fail closed
-    if (failClosed) {
+    if (strictFail) {
       return { success: false, limit, remaining: 0, resetIn: windowSeconds };
     }
     return { success: true, limit, remaining: limit, resetIn: windowSeconds };

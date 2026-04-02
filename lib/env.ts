@@ -27,40 +27,20 @@ const envSchema = z.object({
   CRON_SECRET: z.string().optional(),
   NEXT_PUBLIC_APP_URL: z.string().url().default("https://merch-crm.ru"),
   DATABASE_CA_CERT: z.string().optional().describe("CA сертификат для PostgreSQL (Reg.ru)"),
+  TRUST_PROXY: z.coerce.boolean().default(false).describe("Доверять заголовокам прокси-сервера (X-Forwarded-*)"),
 });
 
-function migrateEnvVars() {
-  if (process.env.JWT_SECRET_KEY && !process.env.AUTH_SECRET) {
-    process.env.AUTH_SECRET = process.env.JWT_SECRET_KEY;
-    console.warn("[ENV] JWT_SECRET_KEY устарел, используйте AUTH_SECRET");
-  }
-  
-  if (process.env.BETTER_AUTH_SECRET && !process.env.AUTH_SECRET) {
-    process.env.AUTH_SECRET = process.env.BETTER_AUTH_SECRET;
-    console.warn("[ENV] BETTER_AUTH_SECRET устарел, используйте AUTH_SECRET");
-  }
-  
-  if (process.env.AUTH_SECRET) {
-    process.env.JWT_SECRET_KEY = process.env.AUTH_SECRET;
-    process.env.BETTER_AUTH_SECRET = process.env.AUTH_SECRET;
-  }
-  
-  if (process.env.RESEND_FROM_EMAIL && !process.env.FROM_EMAIL) {
-    process.env.FROM_EMAIL = process.env.RESEND_FROM_EMAIL;
-  }
-}
+// Migration function removed for strict environment clarity
 
 if (process.env.SKIP_ENV_VALIDATION === "true" && process.env.NX_PLD_VLD_01) {
   process.env.AUTH_SECRET = process.env.NX_PLD_VLD_01;
 }
 
-migrateEnvVars();
-
 const result = envSchema.safeParse(process.env);
 
 if (!result.success) {
   console.error("❌ Invalid environment variables:", JSON.stringify(result.error.format(), null, 2));
-  if (process.env.NODE_ENV === "production" && process.env.SKIP_ENV_VALIDATION !== "true") {
+  if (process.env.SKIP_ENV_VALIDATION !== "true") {
     throw new Error("Invalid environment variables");
   }
 }

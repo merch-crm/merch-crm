@@ -9,8 +9,6 @@ import {
 import { Printer } from"lucide-react";
 import { InventoryItem } from"@/app/(main)/dashboard/warehouse/types";
 import { Button } from"@/components/ui/button";
-import { escapeHtml } from"@/lib/utils";
-import { useToast } from"@/components/ui/toast";
 
 interface ItemLabelDialogProps {
     item: InventoryItem;
@@ -19,7 +17,6 @@ interface ItemLabelDialogProps {
 }
 
 export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps) {
-    const { toast } = useToast();
     const [currentDateString, setCurrentDateString] = React.useState("");
 
     React.useEffect(() => {
@@ -28,104 +25,16 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
     }, []);
 
     const handlePrint = () => {
+        const params = new URLSearchParams({
+            id: item.id,
+            q: "1",
+            auto: "true"
+        });
 
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.","error");
-            return;
-        }
-
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(item.sku || item.id)}`;
-
-        const nonce = typeof document !== 'undefined' ? document.body.dataset.nonce : "";
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Печать этикетки - ${escapeHtml(item.name)}</title>
-                    <style nonce="${nonce}">
-                        @page { size: 58mm 40mm; margin: 0; }
-                        body { 
-                            font-family: 'Inter', sans-serif; 
-                            margin: 0; 
-                            padding: 4mm;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        }
-                        .label {
-                            width: 50mm;
-                            height: 32mm;
-                            border: 1px solid #eee;
-                            display: flex;
-                            flex-direction: column;
-                            position: relative;
-                            overflow: hidden;
-                        }
-                        .header {
-                            font-size: 8pt;
-                            font-weight: 900;
-                            margin-bottom: 2mm;
-                            line-height: 1.1;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                        }
-                        .content {
-                            display: flex;
-                            flex: 1;
-                            gap: 2mm;
-                        }
-                        .qr {
-                            width: 18mm;
-                            height: 18mm;
-                        }
-                        .info {
-                            flex: 1;
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                        }
-                        .sku {
-                            font-size: 7pt;
-                            font-weight: 700;
-                            margin-bottom: 1mm;
-                        }
-                        .category {
-                            font-size: 6pt;
-                            color: #666;
-                        }
-                        .footer {
-                            font-size: 5pt;
-                            color: #999;
-                            margin-top: auto;
-                            text-align: right;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="label">
-                        <div class="header">${escapeHtml(item.name)}</div>
-                        <div class="content">
-                            <${"img"} src="${qrUrl}" class="qr" />
-                            <div class="info">
-                                <div class="sku">SKU: ${escapeHtml(item.sku || 'N/A')}</div>
-                                <div class="category">${escapeHtml(item.category?.name || 'Без категории')}</div>
-                            </div>
-                        </div>
-                        <div class="footer">${currentDateString}</div>
-                    </div>
-                    <script nonce="${nonce}">
-                        window.onload = () => {
-                            window.print();
-                            setTimeout(() => window.close(), 500);
-                        };
-                    </script>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
+        window.open(`/dashboard/warehouse/print-label?${params.toString()}`, '_blank');
     };
+
+
 
     return (
         <ResponsiveModal

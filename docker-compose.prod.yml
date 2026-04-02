@@ -67,7 +67,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       # Password matching the production DB
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -75,8 +75,6 @@ services:
       - ./backups:/backups
       - ./postgresql.conf:/etc/postgresql/postgresql.conf:ro
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
-    ports:
-      - "127.0.0.1:5432:5432"
     networks:
       - app_network
     healthcheck:
@@ -91,16 +89,19 @@ services:
     container_name: merch-crm-redis
     restart: always
     command: redis-server --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
     networks:
       - app_network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   app_network:
