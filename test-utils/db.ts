@@ -9,7 +9,7 @@ function logToFile(msg: string) {
   try {
     const timestamp = new Date().toISOString()
     fs.appendFileSync(LOG_FILE, `[${timestamp}] ${msg}\n`)
-  } catch (e) {
+  } catch (_e) {
     // Ignore log errors
   }
 }
