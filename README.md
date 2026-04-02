@@ -112,3 +112,6 @@ npm run dev:ssh
 
 ---
 © 2026 Merch-CRM Team. Private Property.
+
+# CI Test
+This is a test commit to trigger GitHub Actions.
