@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { manrope } from "@/app/fonts";
-import { headers } from "next/headers";
 import "./globals.css";
 import { ToastContainer } from "@/components/ui/toast";
 
@@ -63,12 +62,10 @@ export default async function RootLayout({
 }>) {
   const branding = await getBrandingSettings();
 
-  const headerList = await headers();
-  const nonce = headerList.get("x-nonce") || "";
-
   return (
     <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning>
-      <body className="antialiased font-sans" data-nonce={nonce}>
+      <body className="antialiased font-sans">
+
         <CsrfProvider>
           <BrandingProvider initialData={branding}>
             <SheetStackProvider>

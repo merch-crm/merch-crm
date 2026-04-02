@@ -1,9 +1,9 @@
 /**
- * Модуль ротации секретов
- * Обеспечивает плавную смену BETTER_AUTH_SECRET без разлогина пользователей
+ * Обеспечивает плавную смену AUTH_SECRET без разлогина пользователей
  */
 
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac } from "crypto";
+import { safeCompare } from "./crypto";
 
 interface SecretConfig {
   /** Текущий активный секрет */
@@ -16,15 +16,15 @@ interface SecretConfig {
  * Получает конфигурацию секретов из переменных окружения
  */
 export function getSecretConfig(): SecretConfig {
-  const current = process.env.BETTER_AUTH_SECRET;
-  const previous = process.env.BETTER_AUTH_SECRET_PREVIOUS;
+  const current = process.env.AUTH_SECRET;
+  const previous = process.env.AUTH_SECRET_PREVIOUS;
 
   if (!current) {
-    throw new Error("BETTER_AUTH_SECRET не установлен");
+    throw new Error("AUTH_SECRET не установлен");
   }
 
   if (current.length < 32) {
-    throw new Error("BETTER_AUTH_SECRET должен быть минимум 32 символа");
+    throw new Error("AUTH_SECRET должен быть минимум 32 символа");
   }
 
   return {
@@ -63,14 +63,7 @@ export function verifySignature(data: string, signature: string): boolean {
   return false;
 }
 
-/**
- * Безопасное сравнение строк (защита от timing attacks)
- */
-function safeCompare(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  
-  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
-}
+
 
 /**
  * Проверяет, нужна ли ротация (есть старый секрет в использовании)
@@ -92,7 +85,7 @@ export function getRotationStatus(): {
   return {
     inProgress,
     recommendation: inProgress
-      ? "Ротация активна. Удалите BETTER_AUTH_SECRET_PREVIOUS через 7 дней после смены."
+      ? "Ротация активна. Удалите AUTH_SECRET_PREVIOUS через 7 дней после смены."
       : "Ротация не требуется. Рекомендуется менять секрет каждые 90 дней.",
   };
 }

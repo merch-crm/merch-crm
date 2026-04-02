@@ -117,8 +117,4 @@ export * from "./tickets";
 export { wikiFolders, wikiFoldersRelations, wikiPages, wikiPagesRelations } from "./wiki";
 
 // ./calculators (New)
-export * from './calculation-history';
-export * from './calculator-defaults';
-export * from './placement-items';
-export * from './design-files';
 export * from './branding';

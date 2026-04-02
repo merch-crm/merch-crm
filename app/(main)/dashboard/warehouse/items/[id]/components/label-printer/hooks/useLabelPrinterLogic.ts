@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useToast } from "@/components/ui/toast";
-import { escapeHtml } from "@/lib/utils";
 import { InventoryItem, AttributeType, InventoryAttribute } from "@/app/(main)/dashboard/warehouse/types";
 
 export type PaperSize = '58x40' | '58x60' | '75x120' | 'a4' | 'custom';
@@ -49,7 +47,6 @@ export interface UseLabelPrinterLogicProps {
 }
 
 export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOpen }: UseLabelPrinterLogicProps) {
-    const { toast } = useToast();
 
     // =============== STATE ===============
     const [dimensions, setDimensions] = useState({
@@ -164,7 +161,7 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
         }
     }, [dimensions.customWidth, dimensions.customHeight]);
 
-    const getPrintSize = useCallback((size: PaperSize, landscape: boolean) => {
+    const _getPrintSize = useCallback((size: PaperSize, landscape: boolean) => {
         if (size === 'a4') return 'A4';
         const dims = getSizeDimensions(size);
         return landscape ? `${dims.height} ${dims.width}` : `${dims.width} ${dims.height}`;
@@ -242,80 +239,19 @@ export function useLabelPrinterLogic({ item, attributeTypes, allAttributes, isOp
     const scale = getBaseScale(dimensions.paperSize);
 
     const handlePrint = useCallback(() => {
-        const printWindow = window.open('', '_blank');
-        if (!printWindow) {
-            toast("Браузер заблокировал всплывающее окно. Разрешите всплывающие окна для печати.", "error");
-            return;
-        }
+        const params = new URLSearchParams({
+            id: item.id,
+            q: uiState.quantity.toString(),
+            layout: uiState.layoutStyle,
+            landscape: dimensions.isLandscape.toString(),
+            width: getSizeDimensions(dimensions.paperSize).width,
+            height: getSizeDimensions(dimensions.paperSize).height,
+            auto: "true"
+        });
 
-        const styles = `
-            @page {
-                size: ${getPrintSize(dimensions.paperSize, dimensions.isLandscape)};
-                margin: 0;
-            }
-            body {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                font-family: -apple-system, BlinkMacSystemFont,"Segoe UI", Roboto, sans-serif;
-            }
-            .label-page {
-                width: 100%;
-                height: 100vh;
-                display: flex;
-                flex-wrap: wrap;
-                align-content: flex-start;
-            }
-            .label-container {
-                width: ${dimensions.isLandscape ? getSizeDimensions(dimensions.paperSize).height : getSizeDimensions(dimensions.paperSize).width};
-                height: ${dimensions.isLandscape ? getSizeDimensions(dimensions.paperSize).width : getSizeDimensions(dimensions.paperSize).height};
-                page-break-inside: avoid;
-                display: grid;
-                grid-template-rows: ${uiState.layoutStyle === 'minimal' ? 'auto 1fr' : 'min-content 1fr min-content'};
-                padding: 4mm;
-                box-sizing: border-box;
-                overflow: hidden;
-                border: 1px dotted #eee;
-            }
-            @media print {
-                .label-container {
-                    border: none;
-                }
-            }
-            * {
-                color: black !important;
-                border-color: black !important;
-            }
-        `;
+        window.open(`/dashboard/warehouse/print-label?${params.toString()}`, '_blank');
+    }, [item.id, uiState.quantity, uiState.layoutStyle, dimensions.isLandscape, dimensions.paperSize, getSizeDimensions]);
 
-        const content = document.getElementById('label-preview-content')?.innerHTML;
-
-        let allContent = '';
-        for (let i = 0; i < uiState.quantity; i++) {
-            allContent += `<div class="label-container" style="text-align: ${uiState.alignment}">${content || ''}</div>`;
-        }
-
-        const nonce = typeof document !== 'undefined' ? document.body.dataset.nonce : "";
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Печать этикеток - ${escapeHtml(item.name || "")}</title>
-                    <style nonce="${nonce}">${styles}</style>
-                </head>
-                <body>
-                    <div class="label-page">
-                        ${allContent}
-                    </div>
-                    <script nonce="${nonce}">
-                        window.onload = () => {
-                            window.print();
-                        }
-                    </script>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-    }, [dimensions.paperSize, dimensions.isLandscape, getPrintSize, getSizeDimensions, uiState.layoutStyle, uiState.alignment, uiState.quantity, item.name, toast]);
 
     const previewStyle = useMemo(() => ({
         width: dimensions.isLandscape ? `${heightNum}mm` : `${widthNum}mm`,

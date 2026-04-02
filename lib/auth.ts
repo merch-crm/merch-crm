@@ -5,6 +5,7 @@ import * as schema from "./schema";
 import { admin, twoFactor } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 import { hashPassword, comparePassword } from "./password";
+import { env } from "./env";
 
 /** 
  * Конфигурация аутентификации Better-Auth 
@@ -31,14 +32,13 @@ export const auth = betterAuth({
       },
       verify: async ({ hash, password }: { hash: string; password: string }) => {
         const match = await comparePassword(password, hash);
-        console.log(`[Better Auth] Password compare - Hash: ${hash.substring(0, 15)}..., Match: ${match}`);
         return match;
       },
     },
   },
 
-  // Секретный ключ для подписи сессий (берется из .env)
-  secret: process.env.BETTER_AUTH_SECRET || process.env.AUTH_SECRET,
+  // Секретный ключ для подписи сессий (берется из строго валидированных env)
+  secret: env.AUTH_SECRET,
 
   // Социальные провайдеры и другие методы
   socialProviders: {},
@@ -92,6 +92,6 @@ export const auth = betterAuth({
   },
 
   advanced: {
-    trustedProxyHeaders: true,
+    trustedProxyHeaders: process.env.NODE_ENV === "development" ? true : env.TRUST_PROXY,
   },
 });

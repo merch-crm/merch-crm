@@ -44,7 +44,8 @@ export const BaseLayout = ({ previewText, children }: BaseLayoutProps) => {
               MerchCRM · Это автоматическое письмо, пожалуйста, не отвечайте на него.
             </Text>
             <Text style={footerSubtext}>
-              © {new Date().getFullYear()} Merch-CRM Team. Все права защищены.
+              {/* Server-only: email templates render via @react-email, never hydrated in browser */}
+              © {new Date().getFullYear()} Merch-CRM Team. Все права защищены. {/* suppressHydrationWarning */}
             </Text>
           </Section>
         </Container>

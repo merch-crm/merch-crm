@@ -1,7 +1,28 @@
 import { cookies } from "next/headers";
 import { createHmac, randomBytes } from "crypto";
+import { safeCompare } from "./crypto";
 
-const CSRF_SECRET = process.env.CSRF_SECRET || process.env.BETTER_AUTH_SECRET || "build_time_secret_placeholder";
+
+
+/**
+ * Получает секрет для CSRF с проверкой безопасности
+ */
+function getCsrfSecret(): string {
+  const secret = process.env.CSRF_SECRET || process.env.AUTH_SECRET;
+  
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("❌ КРИТИЧЕСКАЯ ОШИБКА БЕЗОПАСНОСТИ: CSRF_SECRET или AUTH_SECRET не установлены в PRODUCTION. Работа заблокирована для предотвращения атак.");
+    }
+    // В разработке используем безопасный плейсхолдер
+    return "dev_csrf_secret_fallback_only_for_local_development";
+  }
+  
+  return secret;
+}
+
+const CSRF_SECRET = getCsrfSecret();
+
 const CSRF_COOKIE_NAME = "csrf_token";
 
 /**
@@ -33,7 +54,7 @@ export function validateCsrfToken(token: string): boolean {
     .update(`${tokenValue}:${timestamp}`)
     .digest("hex");
 
-  if (signature !== expectedSignature) return false;
+  if (!safeCompare(signature, expectedSignature)) return false;
 
   // Проверяем срок действия (24 часа)
   const tokenAge = Date.now() - parseInt(timestamp, 10);
@@ -77,5 +98,6 @@ export async function verifyCsrfToken(headerToken: string | null): Promise<boole
   if (!cookieToken) return false;
 
   // Токены должны совпадать И быть валидными
-  return headerToken === cookieToken && validateCsrfToken(cookieToken);
+  return safeCompare(headerToken, cookieToken) && validateCsrfToken(cookieToken);
+
 }

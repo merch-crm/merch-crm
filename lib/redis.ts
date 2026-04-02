@@ -1,5 +1,6 @@
 
 import Redis from "ioredis";
+import type { RedisMock } from "./redis-mock";
 import { env } from "@/lib/env";
 
 const redisOptions = {
@@ -14,81 +15,7 @@ const redisOptions = {
   maxRetriesPerRequest: 1,
 };
 
-// Mock Redis for test environments without a real Redis server
-class RedisMock {
-  private data: Map<string, string> = new Map();
-  
-  async get(key: string) { return this.data.get(key) || null; }
-  async set(key: string, value: string, _mode?: string, _duration?: number) { 
-    this.data.set(key, value); 
-    return "OK"; 
-  }
-  async setex(key: string, seconds: number, value: string) {
-    this.data.set(key, value);
-    return "OK";
-  }
-  async del(...keys: string[]) { 
-    let count = 0;
-    for (const key of keys) {
-      if (this.data.delete(key)) count++;
-    }
-    return count;
-  }
-  async incr(key: string) {
-    const val = parseInt(this.data.get(key) || "0") + 1;
-    this.data.set(key, val.toString());
-    return val;
-  }
-  async expire(_key: string, _seconds: number) { return 1; }
-  async ttl(_key: string) { return 60; }
-  async smembers(_key: string) { return []; }
-  async sadd(_key: string, _member: string) { return 1; }
-  async dbsize() { return this.data.size; }
-  async info(_section?: string) { return "used_memory_human:0B"; }
-  
-  multi() {
-    const commands: (() => Promise<unknown>)[] = [];
-    const proxy = {
-      incr: (key: string) => {
-        commands.push(() => this.incr(key));
-        return proxy;
-      },
-      expire: (key: string, seconds: number) => {
-        commands.push(() => this.expire(key, seconds));
-        return proxy;
-      },
-      ttl: (key: string) => {
-        commands.push(() => this.ttl(key));
-        return proxy;
-      },
-      sadd: (key: string, member: string) => {
-        commands.push(() => this.sadd(key, member));
-        return proxy;
-      },
-      exec: async () => {
-        const results = [];
-        for (const cmd of commands) {
-          results.push([null, await cmd()]);
-        }
-        return results;
-      }
-    };
-    return proxy;
-  }
-
-  pipeline() {
-    return this.multi();
-  }
-
-  async keys(pattern: string) {
-    const regex = new RegExp("^" + pattern.replace(/\*/g, ".*") + "$");
-    return Array.from(this.data.keys()).filter(key => regex.test(key));
-  }
-  
-  async ping() { return "PONG"; }
-  
-  async flushall() { this.data.clear(); return "OK"; }
-}
+// RedisMock вынесен в lib/redis-mock.ts и загружается динамически для оптимизации Production bundle
 
 const isTest = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const skipRedis = process.env.SKIP_REDIS === "true";
@@ -99,19 +26,40 @@ declare global {
   var redis: Redis | RedisMock | undefined;
 }
 
-export const redis = global.redis || (isTest || skipRedis ? new RedisMock() : new Redis(redisOptions));
+// Загрузка инстанса (TLA - Top Level Await безопасен для сервера Next.js)
+let redisInstance: Redis | RedisMock;
+
+if (global.redis) {
+  redisInstance = global.redis;
+} else if (isTest || skipRedis) {
+  // Динамический импорт: Webpack вынесет этот код в отдельный файл (Chunk),
+  // что гарантирует чистоту Production bundle от тестовых моков.
+  const { RedisMock } = await import("./redis-mock");
+  redisInstance = new RedisMock();
+} else {
+  redisInstance = new Redis(redisOptions);
+}
+
+export const redis = redisInstance;
 
 if (process.env.NODE_ENV !== "production") {
   global.redis = redis;
 }
 
-/** Invalidate cache pattern helper */
+/** Invalidate cache pattern helper using SCAN (non-blocking) */
 export async function invalidateCache(pattern: string): Promise<void> {
   try {
-    const keys = await redis.keys(pattern);
-    if (keys.length > 0) {
-      await redis.del(...keys);
-    }
+    let cursor = "0";
+    do {
+      // Ищем ключи пачками по 100 штук
+      const [nextCursor, keys] = await redis.scan(cursor, "MATCH", pattern, "COUNT", 100) as [string, string[]];
+      cursor = nextCursor;
+
+      if (keys.length > 0) {
+        // Удаляем локальные батчи, чтобы не нагружать Redis
+        await redis.del(...keys);
+      }
+    } while (cursor !== "0");
   } catch (err) {
     console.error(`Redis invalidation error for pattern ${pattern}:`, err);
   }
