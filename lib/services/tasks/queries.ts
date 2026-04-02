@@ -30,7 +30,7 @@ export async function getTasks(params: {
             columns: {
               id: true,
               name: true,
-              avatar: true,
+              image: true,
             },
           },
         },
@@ -46,7 +46,7 @@ export async function getTasks(params: {
         columns: {
           id: true,
           name: true,
-          avatar: true,
+          image: true,
         },
       },
     },
@@ -97,7 +97,7 @@ export async function getTaskById(taskId: string) {
             columns: {
               id: true,
               name: true,
-              avatar: true,
+              image: true,
             },
           },
         },

@@ -146,7 +146,7 @@ export async function getDesignTask(id: string): Promise<ActionResult<DesignTask
                     limit: 50,
                     with: {
                         performedByUser: {
-                            columns: { id: true, name: true, avatar: true },
+                            columns: { id: true, name: true, image: true },
                         },
                     },
                 },
@@ -180,7 +180,7 @@ export async function getDesignTasksByOrder(orderId: string): Promise<ActionResu
                     columns: { id: true, name: true, color: true },
                 },
                 assignee: {
-                    columns: { id: true, name: true, avatar: true },
+                    columns: { id: true, name: true, image: true },
                 },
                 files: {
                     where: eq(orderDesignFiles.isActive, true),

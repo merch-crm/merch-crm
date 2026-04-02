@@ -24,6 +24,7 @@ interface AdminUser {
     name: string;
     email: string;
     avatar?: string | null;
+    image?: string | null;
     role?: {
         name: string;
     } | null;
@@ -133,8 +134,8 @@ export function AdminUserCard({ user }: AdminSidebarProps) {
             >
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 overflow-hidden shrink-0 relative">
-                        {user?.avatar ? (
-                            <Image src={user.avatar} alt={user.name ||"User"} fill className="object-cover" />
+                        {(user?.image || user?.avatar) ? (
+                            <Image src={user.image || user.avatar!} alt={user.name ||"User"} fill className="object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-xs font-black text-slate-500 bg-slate-900">
                                 {user?.name?.charAt(0) ||"A"}

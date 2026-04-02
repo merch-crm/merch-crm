@@ -342,7 +342,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
                                 {task.assignee ? (
                                     <div className="flex items-center gap-2">
                                         <Avatar className="h-8 w-8">
-                                            <AvatarImage src={task.assignee.avatar || undefined} />
+                                            <AvatarImage src={task.assignee.image || undefined} />
                                             <AvatarFallback className="text-xs">
                                                 {task.assignee.name.charAt(0)}
                                             </AvatarFallback>

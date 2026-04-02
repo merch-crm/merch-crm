@@ -37,6 +37,14 @@ Identify weaknesses and edge cases:
 
 **CRITICAL**: Designs that only work with perfect data aren't production-ready. Harden against reality.
 
+### Security Hardening (CSP & Headers)
+
+**Content Security Policy (CSP)**:
+- Use **Nonce-based** execution for all scripts and styles.
+- **Nonce-aware Styles**: Implementation requires a fallback strategy (`'nonce-... 'unsafe-inline'`) for compatibility with React's `style={{}}` attributes which do not support nonces.
+- **Route Segregation**: Exclude JSON-only API routes from CSP to avoid overhead and keep headers clean.
+- **Nonce Redaction**: Ensure `x-nonce` is removed from response headers; transport nonces via `requestHeaders` to Server Components only.
+
 ## Hardening Dimensions
 
 Systematically improve resilience:

@@ -242,7 +242,7 @@ export async function getStaffPerformance(params: z.infer<typeof dateRangeSchema
             .select({
                 id: productionStaff.id,
                 name: productionStaff.name,
-                avatar: productionStaff.avatarPath,
+                image: productionStaff.avatarPath,
                 completedTasks: sql<number>`
                     (SELECT COUNT(*) FROM ${productionTasks} 
                      WHERE ${productionTasks.assigneeId} = ${productionStaff.id}
@@ -272,7 +272,7 @@ export async function getStaffPerformance(params: z.infer<typeof dateRangeSchema
         const result = staffPerformance.map((staff) => ({
             id: staff.id,
             name: staff.name,
-            avatar: staff.avatar,
+            image: staff.image,
             completedTasks: Number(staff.completedTasks) || 0,
             efficiency: Number(staff.totalTasks) > 0 ? (Number(staff.completedTasks) / Number(staff.totalTasks)) * 100 : 0,
             defectRate: Number(staff.completedTasks) > 0 ? (Number(staff.defects) / Number(staff.completedTasks)) * 100 : 0,

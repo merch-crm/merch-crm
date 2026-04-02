@@ -31,7 +31,9 @@ export interface RecentTransaction {
     } | null;
     creator?: {
         name: string;
+        /** @deprecated Use `image` instead. */
         avatar?: string | null;
+        image?: string | null;
     } | null;
 }
 

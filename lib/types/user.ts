@@ -80,8 +80,7 @@ export interface User extends BaseEntity {
     displayName?: string;
     name: string; // From DB schema
 
-    // Аватар
-    avatar?: string;
+    image?: string | null;
 
     // Роль и статус
     roleId: string | null; // Совместимость
@@ -162,7 +161,7 @@ export interface UserFormData {
     department?: Department;
     position?: string;
     permissions?: Permission[];
-    avatar?: File;
+    image?: File;
 }
 
 // Фильтры пользователей
@@ -192,7 +191,7 @@ export interface UserSummary {
     fullName: string;
     displayName: string;
     name?: string; // Совместимость
-    avatar?: string;
+    image?: string | null;
     role: Role;
     department?: Department;
     isOnline: boolean;

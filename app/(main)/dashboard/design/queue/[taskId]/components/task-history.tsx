@@ -100,7 +100,7 @@ export function TaskHistory({ history }: TaskHistoryProps) {
                                 {item.performedByUser && (
                                     <div className="flex items-center gap-2 mt-3 pt-2 border-t border-muted/50">
                                         <Avatar className="h-5 w-5">
-                                            <AvatarImage src={item.performedByUser.avatar || undefined} />
+                                            <AvatarImage src={item.performedByUser.image || undefined} />
                                             <AvatarFallback className="text-xs">
                                                 {item.performedByUser.name.charAt(0)}
                                             </AvatarFallback>

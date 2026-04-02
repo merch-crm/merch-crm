@@ -44,7 +44,7 @@ export interface TaskComment {
     id: string;
     name: string;
     email: string;
-    avatar: string | null;
+    image?: string | null;
   };
 }
 
@@ -60,7 +60,7 @@ export interface TaskHistoryEntry {
   user?: {
     id: string;
     name: string;
-    avatar: string | null;
+    image?: string | null;
   };
 }
 
@@ -75,7 +75,7 @@ export interface TaskAssignee {
     id: string;
     name: string;
     email: string;
-    avatar: string | null;
+    image?: string | null;
   };
 }
 
@@ -90,7 +90,7 @@ export interface TaskWatcher {
     id: string;
     name: string;
     email: string;
-    avatar: string | null;
+    image?: string | null;
   };
 }
 
@@ -139,7 +139,7 @@ export interface Task {
     id: string;
     name: string;
     email: string;
-    avatar: string | null;
+    image?: string | null;
   };
   department?: {
     id: string;

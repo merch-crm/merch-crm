@@ -17,7 +17,7 @@ import { revalidatePath } from "next/cache";
 import { startOfMonth, endOfMonth } from "date-fns";
 import { logAction } from "@/lib/audit";
 import { logError } from "@/lib/error-logger";
-import { saveAvatarFile } from "@/lib/avatar-storage";
+
 import { z } from "zod";
 
 const ProfileSchema = z.object({
@@ -117,20 +117,13 @@ export async function updateProfile(formData: FormData) {
             updatedAt: new Date()
         };
 
-        // Option 1: File provided (legacy/direct)
+        // Option 1: File provided (legacy/direct) - NO LONGER SUPPORTED
         if (avatarFile && avatarFile.size > 0) {
-            const currentUser = await db.query.users.findFirst({
-                where: eq(users.id, session.id),
-                columns: { avatar: true }
-            });
-
-            const buffer = Buffer.from(await avatarFile.arrayBuffer());
-            const displayName = name || session.name || "user";
-            updateData.avatar = await saveAvatarFile(buffer, session.id, displayName, currentUser?.avatar || null);
+           return { success: false, error: "Прямая загрузка файлов более не поддерживается. Используйте новый загрузчик." };
         }
         // Option 2: Server URL provided (from advanced uploader)
         else if (avatarUrl) {
-            updateData.avatar = avatarUrl;
+            updateData.image = avatarUrl;
         }
 
         await db.transaction(async (tx) => {
@@ -139,7 +132,7 @@ export async function updateProfile(formData: FormData) {
                 .where(eq(users.id, session.id));
 
             await logAction("profile_update", "users", session.id, {
-                changedFields: Object.keys(updateData).filter(k => k !== 'avatar')
+                changedFields: Object.keys(updateData)
             }, tx);
         });
 
@@ -279,7 +272,7 @@ export async function getUpcomingBirthdays() {
     try {
         const allUsers = await db.query.users.findMany({
             where: (users, { isNotNull, eq }) => and(isNotNull(users.birthday), eq(users.isSystem, false)),
-            columns: { name: true, birthday: true, avatar: true },
+            columns: { name: true, birthday: true, image: true },
             limit: 50
         });
 

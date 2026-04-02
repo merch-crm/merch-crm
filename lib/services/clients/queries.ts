@@ -47,7 +47,7 @@ export async function getClients(params: GetClientsParams = {}) {
         columns: {
           id: true,
           name: true,
-          avatar: true,
+          image: true,
         },
       },
     },

@@ -71,7 +71,7 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
         email: string;
         roleName: string;
         departmentName: string;
-        avatar?: string | null;
+        image?: string | null;
     };
 }
 

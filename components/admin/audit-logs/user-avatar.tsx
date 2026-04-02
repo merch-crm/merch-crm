@@ -20,13 +20,13 @@ export function UserAvatar({ user, size = 28 }: UserAvatarProps) {
             )}
             style={{ width: size, height: size }}
         >
-            {user?.avatar ? (
+            {user?.image ? (
                 <>
                     <span className="absolute inset-0 flex items-center justify-center">
                         {initial}
                     </span>
                     <NextImage
-                        src={user.avatar}
+                        src={user.image}
                         alt={user.name || "User"}
                         className="w-full h-full object-cover relative z-10"
                         width={size}

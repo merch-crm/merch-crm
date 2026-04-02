@@ -48,9 +48,9 @@ export function ActiveUsersList({ monitoringData }: ActiveUsersListProps) {
                                     >
                                         <div className="relative">
                                             <div className="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-500 overflow-hidden relative">
-                                                {user.avatar ? (
+                                                {user.image ? (
                                                     <Image
-                                                        src={user.avatar}
+                                                        src={user.image}
                                                         alt={user.name}
                                                         fill
                                                         className="object-cover"

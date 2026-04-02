@@ -12,7 +12,7 @@ export async function getInitialTasks() {
 
 export async function getReferenceData() {
   const [allUsers, allDepartments, allOrders] = await Promise.all([
-    db.select({ id: users.id, name: users.name, avatar: users.avatar }).from(users).limit(100),
+    db.select({ id: users.id, name: users.name, image: users.image }).from(users).limit(100),
     db.select({ id: departments.id, name: departments.name, color: departments.color }).from(departments).limit(50),
     db.select({ id: orders.id, orderNumber: orders.orderNumber }).from(orders).limit(100),
   ]);

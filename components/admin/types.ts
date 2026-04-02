@@ -41,7 +41,7 @@ export interface MonitoringData {
         id: string;
         name: string;
         email: string;
-        avatar: string | null;
+        image: string | null;
         role?: string;
         department?: string;
         lastActiveAt: Date | null;

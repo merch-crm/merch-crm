@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
     DropdownMenu,
@@ -131,6 +131,7 @@ export function ChatWindow({
             <div className="h-16 px-4 bg-white border-b border-slate-200 flex items-center justify-between flex-shrink-0">
                 <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
+                        <AvatarImage src={conversation.clientAvatar || undefined} alt={conversation.clientName} />
                         <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold">
                             {conversation.clientName.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
@@ -225,6 +226,7 @@ export function ChatWindow({
                                         <div className="w-8 mr-2 flex-shrink-0">
                                             {showAvatar && (
                                                 <Avatar className="h-8 w-8">
+                                                    <AvatarImage src={conversation.clientAvatar || undefined} alt={conversation.clientName} />
                                                     <AvatarFallback className="bg-slate-200 text-slate-600 text-xs">
                                                         {conversation.clientName.slice(0, 2).toUpperCase()}
                                                     </AvatarFallback>

@@ -55,15 +55,18 @@ import { SheetStackProvider } from "@/components/ui/sheet-stack-context";
 import { TypographyProvider } from "@/components/typography-provider";
 import { CsrfProvider } from "@/components/csrf-provider";
 
+import { headers } from "next/headers";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const branding = await getBrandingSettings();
+  const nonce = (await headers()).get("x-nonce") || "";
 
   return (
-    <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning>
+    <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning nonce={nonce}>
       <body className="antialiased font-sans">
 
         <CsrfProvider>

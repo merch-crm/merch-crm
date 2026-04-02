@@ -5,7 +5,7 @@ const ALGORITHM = 'aes-256-gcm'
 const IV_LENGTH = 16
 
 function getEncryptionKey(): Buffer {
-    const key = process.env.ENCRYPTION_KEY || process.env.NEXTAUTH_SECRET
+    const key = process.env.ENCRYPTION_KEY || process.env.AUTH_SECRET
 
     if (!key && process.env.NODE_ENV === 'production') {
         throw new AppError('Критическая ошибка безопасности: ENCRYPTION_KEY не установлен в окружении', 'SECURITY_ERROR', 500)
@@ -57,7 +57,10 @@ export function decrypt(encryptedText: string): string {
  */
 export function safeCompare(a: string, b: string): boolean {
     if (typeof a !== 'string' || typeof b !== 'string') return false;
-    if (a.length !== b.length) return false;
     
-    return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
+    // Hash strings to normalize their length before comparison to avoid length oracle attacks
+    const hashA = crypto.createHash('sha256').update(a).digest();
+    const hashB = crypto.createHash('sha256').update(b).digest();
+    
+    return crypto.timingSafeEqual(hashA, hashB);
 }

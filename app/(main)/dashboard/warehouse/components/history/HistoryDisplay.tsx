@@ -15,6 +15,7 @@ import { cn, formatUnit } from "@/lib/utils";
 import { type Transaction } from "../../history-types";
 import { EmptyState } from "@/components/ui/empty-state";
 import { History as HistoryIcon } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface HistoryDisplayProps {
     currentItems: Transaction[];
@@ -186,8 +187,20 @@ export function HistoryDisplay({
                                     {t.reason || "—"}
                                 </div>
                                 <div className="w-[180px] hidden lg:block text-right">
-                                    <div className="text-[13px] font-bold text-slate-900 truncate">{t.creator?.name || "Система"}</div>
-                                    <div className="text-xs font-bold text-slate-400 truncate">{t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}</div>
+                                    <div className="flex items-center justify-end gap-2 text-right">
+                                        <div className="min-w-0 pr-1">
+                                            <div className="text-[13px] font-bold text-slate-900 truncate">{t.creator?.name || "Система"}</div>
+                                            <div className="text-xs font-bold text-slate-400 truncate">{t.creator?.role?.name || (t.creator ? "Оператор" : "Система")}</div>
+                                        </div>
+                                        {t.creator && (
+                                            <Avatar className="h-8 w-8 shrink-0 border border-slate-100">
+                                                <AvatarImage src={t.creator.image || undefined} alt={t.creator.name} />
+                                                <AvatarFallback className="bg-slate-100 text-slate-600 text-xs font-bold">
+                                                    {t.creator.name.slice(0, 2).toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
+                                        )}
+                                    </div>
                                 </div>
                             </button>
                         );

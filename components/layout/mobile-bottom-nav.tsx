@@ -20,7 +20,7 @@ interface UserProp {
     email: string;
     roleName: string;
     departmentName: string;
-    avatar?: string | null;
+    image?: string | null;
 }
 
 export function MobileBottomNav({ user }: { user: UserProp }) {

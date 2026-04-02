@@ -57,7 +57,7 @@ export async function getProductionStaff(options?: {
             orderBy: [asc(productionStaff.name)],
             with: {
                 user: {
-                    columns: { id: true, name: true, email: true, avatar: true },
+                    columns: { id: true, name: true, email: true, image: true },
                 },
             },
         });
@@ -314,7 +314,7 @@ export async function getAvailableStaff(options?: {
 // Типы
 export type ProductionStaffMember = typeof productionStaff.$inferSelect;
 export type ProductionStaffWithStats = ProductionStaffMember & {
-    user?: { id: string; name: string; email: string; avatar: string | null } | null;
+    user?: { id: string; name: string; email: string; image: string | null } | null;
     stats: {
         active: number;
         completed: number;

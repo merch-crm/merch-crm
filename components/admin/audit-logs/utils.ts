@@ -19,7 +19,7 @@ export interface AuditLog {
     userId: string | null;
     user?: {
         name: string;
-        avatar?: string | null;
+        image?: string | null;
     } | null;
 }
 

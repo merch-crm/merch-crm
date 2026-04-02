@@ -91,7 +91,7 @@ export interface OrderWithRelations extends Order {
   creator: {
     id: string;
     name: string;
-    avatar: string | null;
+    image?: string | null;
   } | null;
   payments: Array<{
     id: string;

@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -93,6 +93,7 @@ export function ConversationList({
                                     <div className="flex items-start gap-3">
                                         <div className="relative flex-shrink-0">
                                             <Avatar className="h-12 w-12">
+                                                <AvatarImage src={conversation.clientAvatar || undefined} alt={conversation.clientName} />
                                                 <AvatarFallback className="bg-slate-100 text-slate-600 font-semibold">
                                                     {conversation.clientName.slice(0, 2).toUpperCase()}
                                                 </AvatarFallback>

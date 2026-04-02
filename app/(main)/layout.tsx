@@ -37,7 +37,7 @@ export default async function DashboardLayout({
     try {
         const { pool } = await import('@/lib/db');
         const sql = `
-            SELECT u.name, u.email, u.avatar, r.name as role_name, r.slug as role_slug, d.name as department_name
+            SELECT u.name, u.email, u.image, r.name as role_name, r.slug as role_slug, d.name as department_name
             FROM users u
             LEFT JOIN roles r ON u.role_id = r.id
             LEFT JOIN departments d ON u.department_id = d.id
@@ -51,7 +51,7 @@ export default async function DashboardLayout({
             userData = {
                 name: row.name,
                 email: row.email,
-                avatar: row.avatar,
+                image: row.image,
                 role: { name: row.role_name, slug: row.role_slug },
                 department: { name: row.department_name }
             };
@@ -67,7 +67,7 @@ export default async function DashboardLayout({
     const user = {
         name: userData.name,
         email: userData.email,
-        avatar: userData.avatar,
+        image: userData.image,
         roleName: userData.role?.name || "Пользователь",
         roleSlug: userData.role?.slug || "user",
         departmentName: userData.department?.name || ""

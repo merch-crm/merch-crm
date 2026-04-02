@@ -6,7 +6,7 @@ import { ru } from "date-fns/locale";
 import { ArrowLeftRight, ArrowUpRight, Layers } from "lucide-react";
 import { cn, formatUnit } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
-import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { RecentTransaction } from "./warehouse-stats-actions";
 
@@ -75,19 +75,12 @@ export function RecentTransactionsClient({ transactions = [] }: { transactions: 
                         <div className="flex items-center justify-between sm:justify-end gap-3 min-w-[120px]">
                             {tx.creator && (
                                 <div className="flex items-center gap-2" title={tx.creator.name}>
-                                    {tx.creator.avatar ? (
-                                        <Image
-                                            src={tx.creator.avatar}
-                                            alt="аватар"
-                                            width={24}
-                                            height={24}
-                                            className="w-6 h-6 rounded-full border border-slate-200"
-                                        />
-                                    ) : (
-                                        <div className="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold text-slate-600">
+                                    <Avatar className="w-6 h-6 border border-slate-200">
+                                        <AvatarImage src={tx.creator.image || undefined} alt={tx.creator.name} />
+                                        <AvatarFallback className="bg-slate-200 text-xs font-bold text-slate-600">
                                             {tx.creator.name.substring(0, 2).toUpperCase()}
-                                        </div>
-                                    )}
+                                        </AvatarFallback>
+                                    </Avatar>
                                     <span className="text-[12px] font-medium text-slate-600 hidden sm:block">
                                         {tx.creator.name}
                                     </span>

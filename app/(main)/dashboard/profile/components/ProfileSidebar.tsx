@@ -106,8 +106,8 @@ export function ProfileSidebar({
                     <div className="relative z-10">
                         <div className="flex items-center gap-3 mb-3">
                             <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10 overflow-hidden shrink-0">
-                                {user.avatar ? (
-                                    <Image src={user.avatar} alt={user.name} width={40} height={40} className="w-full h-full object-cover" />
+                                {user.image ? (
+                                    <Image src={user.image} alt={user.name} width={40} height={40} className="w-full h-full object-cover" />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
                                         {user.name.charAt(0)}

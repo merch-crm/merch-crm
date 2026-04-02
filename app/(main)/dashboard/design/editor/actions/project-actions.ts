@@ -76,7 +76,7 @@ export async function getEditorProjects(options?: {
             limit: options?.limit || 50,
             with: {
                 createdByUser: {
-                    columns: { id: true, name: true, avatar: true },
+                    columns: { id: true, name: true, image: true },
                 },
                 order: true,
             },
@@ -101,7 +101,7 @@ export async function getEditorProject(id: string): Promise<ActionResult<EditorP
             where: eq(editorProjects.id, id),
             with: {
                 createdByUser: {
-                    columns: { id: true, name: true, avatar: true },
+                    columns: { id: true, name: true, image: true },
                 },
                 order: true,
                 design: {
@@ -366,7 +366,7 @@ export async function createProjectFromTemplate(
 // Типы
 type EditorProject = typeof editorProjects.$inferSelect;
 type EditorProjectFull = EditorProject & {
-    createdByUser: { id: string; name: string; avatar: string | null };
+    createdByUser: { id: string; name: string; image: string | null };
     order?: { id: string; orderNumber: string; status: string } | null;
     design?: { id: string; name: string; preview: string | null } | null;
     exports: (typeof editorExports.$inferSelect)[];

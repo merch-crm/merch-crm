@@ -30,7 +30,7 @@ export async function getDepartmentTasks(departmentId: string): Promise<Task[]> 
               columns: {
                 id: true,
                 name: true,
-                avatar: true
+                image: true
               }
             }
           }
@@ -41,7 +41,7 @@ export async function getDepartmentTasks(departmentId: string): Promise<Task[]> 
               columns: {
                 id: true,
                 name: true,
-                avatar: true
+                image: true
               }
             }
           }

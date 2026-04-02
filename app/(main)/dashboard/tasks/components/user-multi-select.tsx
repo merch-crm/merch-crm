@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 
 
 interface UserMultiSelectProps {
-  users: Array<{ id: string; name: string; avatar?: string | null; email?: string }>;
+  users: Array<{ id: string; name: string; image?: string | null; email?: string }>;
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
   placeholder?: string;
@@ -152,7 +152,7 @@ export function UserMultiSelect({
                   )}
                 >
                   <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
-                    <AvatarImage src={user.avatar || undefined} />
+                    <AvatarImage src={user.image || undefined} />
                     <AvatarFallback className="bg-gradient-to-br from-violet-400 to-purple-400 text-white text-xs font-semibold">
                       {getInitials(user.name)}
                     </AvatarFallback>

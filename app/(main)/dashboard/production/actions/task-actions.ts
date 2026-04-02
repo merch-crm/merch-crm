@@ -30,14 +30,14 @@ export type ProductionTaskFull = ProductionTask & {
     applicationType: ApplicationType | null;
     line: ProductionLine | null;
     assignee: (ProductionStaff & {
-        user: { id: string; name: string; avatar: string | null } | null;
+        user: { id: string; name: string; image: string | null } | null;
     }) | null;
     orderItem: {
         order: { id: string; orderNumber: string | null } | null;
         inventory: InventoryItem | null;
     } | null;
     logs: (InferSelectModel<typeof productionLogs> & {
-        performedByUser: { id: string; name: string; avatar: string | null } | null;
+        performedByUser: { id: string; name: string; image: string | null } | null;
     })[];
 };
 
@@ -92,7 +92,7 @@ export async function getProductionTasks(options?: {
                 assignee: {
                     with: {
                         user: {
-                            columns: { id: true, name: true, avatar: true }
+                            columns: { id: true, name: true, image: true }
                         }
                     }
                 },
@@ -129,7 +129,7 @@ export async function getProductionTaskById(id: string) {
                 line: true,
                 assignee: {
                     with: {
-                        user: { columns: { id: true, name: true, avatar: true } }
+                        user: { columns: { id: true, name: true, image: true } }
                     }
                 },
                 orderItem: {
@@ -140,7 +140,7 @@ export async function getProductionTaskById(id: string) {
                 },
                 logs: {
                     with: {
-                        performedByUser: { columns: { id: true, name: true, avatar: true } }
+                        performedByUser: { columns: { id: true, name: true, image: true } }
                     },
                     orderBy: [desc(productionLogs.createdAt)]
                 }

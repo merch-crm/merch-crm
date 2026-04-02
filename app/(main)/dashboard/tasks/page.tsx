@@ -46,7 +46,7 @@ export default async function TasksPage() {
     <Suspense fallback={<TasksSkeleton />}>
       <TasksClient
         initialTasks={tasks}
-        users={allUsers.map(u => ({ id: u.id, name: u.name, avatar: u.avatar || undefined, email: u.email }))}
+        users={allUsers.map(u => ({ id: u.id, name: u.name, image: u.image || undefined, email: u.email }))}
         departments={allDepartments.map(d => ({ id: d.id, name: d.name }))}
         userPresets={presets}
         currentUserId={session.id}

@@ -67,8 +67,8 @@ export async function getUserStats(userId: string) {
             data: {
                 user: {
                     name: user.name,
-                    role: user.role?.name ||"N/A",
-                    avatar: user.avatar
+                    role: typeof user.role === 'object' ? user.role?.name || "N/A" : String(user.role),
+                    image: user.image
                 },
                 orders: {
                     total: ordersStats[0].totalCount,

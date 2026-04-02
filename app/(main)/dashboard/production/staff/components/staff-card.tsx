@@ -100,7 +100,7 @@ export function StaffCard({
                     <div className="flex items-center gap-3 min-w-0">
                         <div className="relative">
                             <Avatar className="h-12 w-12 rounded-2xl border-2 border-white shadow-sm">
-                                <AvatarImage src={member.avatarPath || member.user?.avatar || undefined} />
+                                <AvatarImage src={member.avatarPath || member.user?.image || undefined} />
                                 <AvatarFallback className="rounded-2xl bg-slate-100 text-slate-600 font-bold">
                                     {member.name.slice(0, 2).toUpperCase()}
                                 </AvatarFallback>

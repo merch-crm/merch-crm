@@ -35,7 +35,7 @@ const mockInTransaction = {
     item: { id: 'item-1', name: 'Футболка белая', unit: 'pcs' },
     storageLocation: { id: 'loc-1', name: 'Центральный склад' },
     fromStorageLocation: null,
-    creator: { id: 'user-1', name: 'Иван Петров', avatar: null },
+    creator: { id: 'user-1', name: 'Иван Петров', image: null },
 };
 
 const mockTransferTransaction = {
@@ -46,7 +46,7 @@ const mockTransferTransaction = {
     item: { id: 'item-2', name: 'Худи синее', unit: 'pcs' },
     storageLocation: { id: 'loc-2', name: 'Склад 2' },
     fromStorageLocation: { id: 'loc-1', name: 'Центральный склад' },
-    creator: { id: 'user-2', name: 'Анна Смирнова', avatar: 'https://example.com/avatar.jpg' },
+    creator: { id: 'user-2', name: 'Анна Смирнова', image: 'https://example.com/avatar.jpg' },
 };
 
 const mockTransferWithoutCreator = {

@@ -175,7 +175,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
                         {task.assignee ? (
                             <div className="flex items-center gap-2">
                                 <Avatar className="h-8 w-8">
-                                    <AvatarImage src={task.assignee.avatarPath || undefined} />
+                                    <AvatarImage src={task.assignee.user?.image || task.assignee.avatarPath || undefined} />
                                     <AvatarFallback>
                                         {task.assignee.name.charAt(0).toUpperCase()}
                                     </AvatarFallback>

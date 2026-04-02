@@ -311,7 +311,7 @@ export function TaskListView({
                             className="h-8 w-8 border-2 border-background ring-1 ring-border/30 shadow-sm"
                           >
                             <AvatarImage
-                              src={assignee.user?.avatar || undefined}
+                              src={assignee.user?.image || undefined}
                             />
                             <AvatarFallback className="text-xs font-bold">
                               {assignee.user?.name?.[0] || <Users className="h-3.5 w-3.5" />}

@@ -16,7 +16,7 @@ import { BasicInfoStep, ParticipantsStep, DetailsStep } from "./components/task-
 interface CreateTaskDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  users: Array<{ id: string; name: string; avatar?: string; email?: string }>;
+  users: Array<{ id: string; name: string; image?: string | null; email?: string | null }>;
   departments: Array<{ id: string; name: string }>;
   currentUserId: string;
   defaultDepartmentId?: string;
@@ -270,7 +270,7 @@ export function CreateTaskDialog({
             <ParticipantsStep 
               data={{ assigneeIds, watcherIds, departmentId }}
               actions={{ setAssigneeIds, setWatcherIds, setDepartmentId }}
-              options={{ users, departmentOptions }}
+              options={{ users: (users || []).map(u => ({ ...u, image: u.image || undefined, email: u.email || undefined })), departmentOptions }}
             />
           )}
 

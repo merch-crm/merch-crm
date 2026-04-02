@@ -164,7 +164,7 @@ export function TaskCommentsSection({
                 className={`flex gap-3 ${isOwn ? "flex-row-reverse" : ""}`}
               >
                 <Avatar className="h-9 w-9 shrink-0">
-                  <AvatarImage src={comment.user?.avatar || undefined} />
+                  <AvatarImage src={comment.user?.image || undefined} />
                   <AvatarFallback className="text-xs">
                     {comment.user?.name?.[0] || <User className="h-4 w-4" />}
                   </AvatarFallback>

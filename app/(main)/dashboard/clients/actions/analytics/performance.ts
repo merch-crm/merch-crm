@@ -19,7 +19,7 @@ export async function getManagerPerformance(): Promise<ActionResult<ManagerPerfo
             .select({
                 managerId: clients.managerId,
                 managerName: sql<string>`COALESCE(${users.name}, 'Не назначен')`,
-                managerAvatar: users.avatar,
+                managerAvatar: users.image,
                 clientCount: sql<number>`COUNT(*)`,
                 activeClients: sql<number>`COUNT(*) FILTER (WHERE (${clients.daysSinceLastOrder} < 90 OR ${clients.daysSinceLastOrder} IS NULL) AND ${clients.lostAt} IS NULL)`,
                 atRiskClients: sql<number>`COUNT(*) FILTER (WHERE ${clients.daysSinceLastOrder} >= 90 AND ${clients.lostAt} IS NULL)`,
@@ -30,7 +30,7 @@ export async function getManagerPerformance(): Promise<ActionResult<ManagerPerfo
             .from(clients)
             .leftJoin(users, eq(clients.managerId, users.id))
             .where(eq(clients.isArchived, false))
-            .groupBy(clients.managerId, users.name, users.avatar)
+            .groupBy(clients.managerId, users.name, users.image)
             .orderBy(desc(sql`COUNT(*)`));
 
         const result: ManagerPerformanceData[] = managersData.map((row) => ({

@@ -128,7 +128,7 @@ export interface ItemHistoryTransaction {
     } | null;
     creator: {
         name: string;
-        avatar?: string | null;
+        image?: string | null;
         role?: { name: string } | null;
     } | null;
     storageLocation: { name: string } | null;
