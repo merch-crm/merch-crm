@@ -1,10 +1,10 @@
-
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
 import * as schema from "./schema";
 import { admin, twoFactor } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
+import { hashPassword, comparePassword } from "./password";
 
 /** 
  * Конфигурация аутентификации Better-Auth 
@@ -27,12 +27,12 @@ export const auth = betterAuth({
     enabled: true,
     password: {
       hash: async (password: string) => {
-        const { hashPassword } = await import("./password");
         return await hashPassword(password);
       },
       verify: async ({ hash, password }: { hash: string; password: string }) => {
-        const { comparePassword } = await import("./password");
-        return await comparePassword(password, hash);
+        const match = await comparePassword(password, hash);
+        console.log(`[Better Auth] Password compare - Hash: ${hash.substring(0, 15)}..., Match: ${match}`);
+        return match;
       },
     },
   },
