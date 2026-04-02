@@ -11,13 +11,12 @@ import { revalidatePath } from "next/cache";
 import { logAction } from "@/lib/audit";
 import { BulkClientsSchema } from "../validation";
 import { releaseReservationsForOrders } from "./utils";
-import { createSafeAction } from "@/lib/safe-action";
+import { withAuth, ActionError } from "@/lib/action-helpers";
 
 
 export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResult> {
-    const action = createSafeAction<void, void>({ // withAuth
-        roles: [ROLE_SLUGS.ADMIN],
-        handler: async () => {
+    return withAuth(async () => {
+        try {
             const validated = BulkClientsSchema.safeParse({ clientIds });
             if (!validated.success) return { success: false, error: validated.error.issues[0].message };
 
@@ -33,15 +32,15 @@ export async function bulkDeleteClients(clientIds: string[]): Promise<ActionResu
             revalidatePath("/dashboard/clients");
             await logAction("Групповое удаление клиентов", "client", "bulk", { count: clientIds.length });
             return okVoid();
+        } catch (_error) {
+            throw new ActionError("Ошибка при удалении", "INTERNAL_ERROR");
         }
-    });
-    return action();
+    }, { roles: [ROLE_SLUGS.ADMIN], errorPath: "bulkDeleteClients" });
 }
 
 export async function bulkUpdateClientManager(clientIds: string[], managerId: string): Promise<ActionResult> {
-    const action = createSafeAction<void, void>({
-        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
-        handler: async () => {
+    return withAuth(async () => {
+        try {
             const validated = BulkClientsSchema.safeParse({ clientIds });
             if (!validated.success) return { success: false, error: "Ошибка валидации" };
 
@@ -50,15 +49,15 @@ export async function bulkUpdateClientManager(clientIds: string[], managerId: st
 
             revalidatePath("/dashboard/clients");
             return okVoid();
+        } catch (_error) {
+            throw new ActionError("Ошибка при обновлении", "INTERNAL_ERROR");
         }
-    });
-    return action();
+    }, { roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES], errorPath: "bulkUpdateClientManager" });
 }
 
 export async function bulkArchiveClients(clientIds: string[], isArchived: boolean = true): Promise<ActionResult> {
-    const action = createSafeAction<void, void>({
-        roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES],
-        handler: async () => {
+    return withAuth(async () => {
+        try {
             const validated = BulkClientsSchema.safeParse({ clientIds });
             if (!validated.success) return { success: false, error: "Ошибка валидации" };
 
@@ -67,7 +66,8 @@ export async function bulkArchiveClients(clientIds: string[], isArchived: boolea
 
             revalidatePath("/dashboard/clients");
             return okVoid();
+        } catch (_error) {
+            throw new ActionError("Ошибка при архивации", "INTERNAL_ERROR");
         }
-    });
-    return action();
+    }, { roles: [ROLE_SLUGS.ADMIN, ROLE_SLUGS.MANAGEMENT, ROLE_SLUGS.SALES], errorPath: "bulkArchiveClients" });
 }

@@ -23,7 +23,8 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
     const [currentDateString, setCurrentDateString] = React.useState("");
 
     React.useEffect(() => {
-        setCurrentDateString(new Date().toLocaleDateString('ru-RU'));
+        const now = new Date(); // suppressHydrationWarning
+        setCurrentDateString(now.toLocaleDateString('ru-RU'));
     }, []);
 
     const handlePrint = () => {
@@ -112,7 +113,7 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
                                 <div class="category">${escapeHtml(item.category?.name || 'Без категории')}</div>
                             </div>
                         </div>
-                        <div class="footer">${new Date().toLocaleDateString('ru-RU')}</div>
+                        <div class="footer">${currentDateString}</div>
                     </div>
                     <script nonce="${nonce}">
                         window.onload = () => {
