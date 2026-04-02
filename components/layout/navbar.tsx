@@ -70,7 +70,7 @@ export function Navbar({
         email: string;
         roleName: string;
         departmentName: string;
-        avatar?: string | null;
+        image?: string | null;
     };
     branding: BrandingSettings;
     notifications: Notification[];

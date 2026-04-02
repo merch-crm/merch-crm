@@ -103,7 +103,7 @@ export async function getTasks(
       },
       with: {
         creator: {
-          columns: { id: true, name: true, avatar: true },
+          columns: { id: true, name: true, image: true },
         },
         department: {
           columns: { id: true, name: true },
@@ -111,14 +111,14 @@ export async function getTasks(
         assignees: {
           with: {
             user: {
-              columns: { id: true, name: true, avatar: true },
+              columns: { id: true, name: true, image: true },
             },
           },
         },
         watchers: {
           with: {
             user: {
-              columns: { id: true, name: true, avatar: true },
+              columns: { id: true, name: true, image: true },
             },
           },
         },
@@ -154,7 +154,7 @@ export async function getTask(taskId: string): Promise<TaskActionResult<Task>> {
       where: eq(tasks.id, taskId),
       with: {
         creator: {
-          columns: { id: true, name: true, email: true, avatar: true },
+          columns: { id: true, name: true, email: true, image: true },
         },
         department: {
           columns: { id: true, name: true },
@@ -162,14 +162,14 @@ export async function getTask(taskId: string): Promise<TaskActionResult<Task>> {
         assignees: {
           with: {
             user: {
-              columns: { id: true, name: true, email: true, avatar: true },
+              columns: { id: true, name: true, email: true, image: true },
             },
           },
         },
         watchers: {
           with: {
             user: {
-              columns: { id: true, name: true, email: true, avatar: true },
+              columns: { id: true, name: true, email: true, image: true },
             },
           },
         },
@@ -183,7 +183,7 @@ export async function getTask(taskId: string): Promise<TaskActionResult<Task>> {
         history: {
           with: {
             user: {
-              columns: { id: true, name: true, avatar: true },
+              columns: { id: true, name: true, image: true },
             },
           },
           orderBy: [desc(taskHistory.createdAt)],

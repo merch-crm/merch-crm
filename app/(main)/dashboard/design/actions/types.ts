@@ -22,11 +22,11 @@ export type DesignTaskFull = DesignTask & {
     orderItem?: typeof orderItems.$inferSelect | null;
     applicationType?: { id: string, name: string, color: string | null } | null;
     sourceDesign?: (typeof printDesigns.$inferSelect & { collection?: { id: string, name: string } | null }) | null;
-    assignee?: { id: string; name: string; avatar: string | null } | null;
+    assignee?: { id: string; name: string; image: string | null } | null;
     createdByUser?: { id: string; name: string } | null;
     files?: DesignFile[];
     history?: (typeof orderDesignHistory.$inferSelect & {
-        performedByUser?: { id: string; name: string; avatar: string | null } | null;
+        performedByUser?: { id: string; name: string; image: string | null } | null;
     })[];
 };
 

@@ -124,7 +124,7 @@ interface ParticipantsStepProps {
         setDepartmentId: (val: string) => void;
     };
     options: {
-        users: Array<{ id: string; name: string; avatar?: string; email?: string }>;
+        users: Array<{ id: string; name: string; image?: string; email?: string }>;
         departmentOptions: Array<{ id: string; title: string }>;
     };
 }
@@ -162,7 +162,7 @@ export function ParticipantsStep({ data, actions, options }: ParticipantsStepPro
                                     className="pl-1 pr-2 py-1 gap-2 rounded-[14px] bg-slate-50 border-none text-slate-700 font-bold shadow-sm"
                                 >
                                     <Avatar className="h-6 w-6 ring-2 ring-white">
-                                        <AvatarImage src={user.avatar || undefined} />
+                                        <AvatarImage src={user.image || undefined} />
                                         <AvatarFallback className="text-xs bg-indigo-100 text-indigo-700">
                                             {user.name?.[0]}
                                         </AvatarFallback>

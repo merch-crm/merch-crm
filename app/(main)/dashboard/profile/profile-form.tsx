@@ -17,7 +17,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: "", text: "" });
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(user.avatar || null);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(user.image || user.avatar || null);
 
 
     // Advanced Image Uploader Hook

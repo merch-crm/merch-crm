@@ -112,7 +112,7 @@ export function ProductionTaskPageClient({
                 user: staffMember.userId ? {
                     id: staffMember.userId,
                     name: staffMember.name,
-                    avatar: staffMember.avatarPath
+                    image: staffMember.avatarPath
                 } : null
             } : null;
             setTask({ 

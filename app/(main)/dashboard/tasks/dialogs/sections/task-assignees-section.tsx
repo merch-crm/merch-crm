@@ -24,7 +24,7 @@ import type { Task } from "@/lib/types/tasks";
 
 interface TaskAssigneesSectionProps {
   task: Task;
-  users: Array<{ id: string; name: string; avatar?: string | null; email?: string }>;
+  users: Array<{ id: string; name: string; image?: string | null; email?: string }>;
   currentUserId: string;
   canEdit: boolean;
   onTaskUpdated?: () => void;
@@ -145,7 +145,7 @@ export function TaskAssigneesSection({
         </h4>
         <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
           <Avatar className="h-10 w-10 ring-2 ring-amber-500/20">
-            <AvatarImage src={task.creator?.avatar || undefined} />
+            <AvatarImage src={task.creator?.image || undefined} />
             <AvatarFallback>
               <UserIcon className="h-5 w-5" />
             </AvatarFallback>
@@ -234,7 +234,7 @@ export function TaskAssigneesSection({
                 className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 group"
               >
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={user.avatar || undefined} />
+                  <AvatarImage src={user.image || undefined} />
                   <AvatarFallback>
                     <UserIcon className="h-5 w-5" />
                   </AvatarFallback>
@@ -346,7 +346,7 @@ export function TaskAssigneesSection({
                   className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 group"
                 >
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={user.avatar || undefined} />
+                    <AvatarImage src={user.image || undefined} />
                     <AvatarFallback>
                       <UserIcon className="h-5 w-5" />
                     </AvatarFallback>

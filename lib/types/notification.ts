@@ -55,7 +55,9 @@ export interface Notification extends BaseEntity {
     // Автор (если есть)
     senderId?: string;
     senderName?: string;
+    /** @deprecated Use `senderImage` instead. */
     senderAvatar?: string;
+    senderImage?: string;
 
     // Статус
     isRead: boolean;

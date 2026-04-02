@@ -131,6 +131,13 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 | Error messages | User-friendly |
 | Edge cases | Empty, large, special chars |
 
+### Realistic Infrastructure Mocking
+
+When testing business logic that involves batches, iterations, or high-volume data:
+- **Pagination Support**: Mocks (e.g., `RedisMock.scan`) **must** implement realistic pagination with cursors.
+- **Fail Fast**: Mocks should not return all data at once if a `COUNT` or `LIMIT` is specified, as this hides bugs in `do...while` or recursive loops.
+- **State Consistency**: Ensure mocks handle state changes (like deletions) during active scans/iterations to mirror performance and data integrity edge cases.
+
 ---
 
 ## 7. Test Organization

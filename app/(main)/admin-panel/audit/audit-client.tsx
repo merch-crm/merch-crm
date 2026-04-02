@@ -26,7 +26,7 @@ export interface AuditLog {
     entityId: string;
     details: unknown;
     createdAt: string;
-    user?: { name: string; email: string; avatar?: string | null };
+    user?: { name: string; email: string; avatar?: string | null; image?: string | null };
 }
 
 interface AuditClientProps {
@@ -265,8 +265,8 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
                                     <td className="crm-td">
                                         <div className="flex items-center gap-2">
                                             <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-black text-slate-500 overflow-hidden relative">
-                                                {log.user?.avatar ? (
-                                                    <Image src={log.user.avatar} fill className="object-cover" alt="" unoptimized />
+                                                {(log.user?.image || log.user?.avatar) ? (
+                                                    <Image src={log.user.image || log.user.avatar!} fill className="object-cover" alt="" unoptimized />
                                                 ) : (
                                                     log.user?.name?.charAt(0) || "S"
                                                 )}

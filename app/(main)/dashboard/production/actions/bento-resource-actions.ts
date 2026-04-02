@@ -41,7 +41,7 @@ export async function getStaffLoadData(): Promise<DashboardActionResult<StaffLoa
       .select({
         id: productionStaff.id,
         name: productionStaff.name,
-        avatarUrl: productionStaff.avatarPath,
+        avatarUrl: sql<string | null>`COALESCE(${productionStaff.avatarPath}, ${users.image})`,
         position: productionStaff.position,
         lineName: productionLines.name,
         activeTasks: sql<number>`
@@ -61,7 +61,7 @@ export async function getStaffLoadData(): Promise<DashboardActionResult<StaffLoa
       .leftJoin(productionTasks, eq(productionTasks.assigneeId, productionStaff.id))
       .leftJoin(productionLines, eq(productionTasks.lineId, productionLines.id))
       .where(eq(productionStaff.isActive, true))
-      .groupBy(productionStaff.id, productionStaff.name, productionStaff.avatarPath, productionStaff.position, productionLines.name)
+      .groupBy(productionStaff.id, productionStaff.name, productionStaff.avatarPath, productionStaff.position, productionLines.name, users.image)
       .limit(10);
 
     const formattedStaff = staff.map((s) => ({

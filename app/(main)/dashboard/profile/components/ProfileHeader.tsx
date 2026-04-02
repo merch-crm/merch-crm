@@ -49,8 +49,8 @@ export function ProfileHeader({
                         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }}
                         onClick={() => handleNavClick("settings")}
                     >
-                        {user.avatar ? (
-                            <Image src={user.avatar} alt={user.name} width={40} height={40} className="w-full h-full object-cover" />
+                        {user.image ? (
+                            <Image src={user.image} alt={user.name} width={40} height={40} className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400 bg-slate-100">
                                 {user.name.charAt(0)}

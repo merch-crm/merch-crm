@@ -30,7 +30,7 @@ export default async function AdminLayout({
     const user = currentUser ? {
         name: currentUser.name,
         email: currentUser.email,
-        avatar: currentUser.avatar,
+        image: currentUser.image,
         roleName: currentUser.role?.name || "Администратор",
         roleSlug: currentUser.role?.slug || "admin",
         departmentName: currentUser.department?.name || "Руководство"

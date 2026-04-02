@@ -173,9 +173,9 @@ export function TaskCard({ task, onClick, onDragStart, onDragEnd }: TaskCardProp
               className="relative w-7 h-7 rounded-full border-2 border-white bg-slate-100 overflow-hidden shadow-sm"
               title={assignee.user?.name}
             >
-              {assignee.user?.avatar ? (
+              {assignee.user?.image ? (
                 <Image 
-                  src={assignee.user.avatar} 
+                  src={assignee.user.image} 
                   alt={assignee.user.name || "User"} 
                   width={28} 
                   height={28} 

@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 interface TopPerformer {
     id: string;
     name: string;
-    avatar: string | null;
+    avatar?: string | null;
+    image?: string | null;
     completedTasks: number;
     efficiency: number;
     defectRate: number;

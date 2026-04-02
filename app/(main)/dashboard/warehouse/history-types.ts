@@ -21,7 +21,7 @@ export interface Transaction {
     } | null;
     creator: {
         name: string;
-        avatar: string | null;
+        image?: string | null;
         role: {
             name: string;
         } | null;

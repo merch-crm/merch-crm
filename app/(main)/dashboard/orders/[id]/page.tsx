@@ -289,9 +289,9 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                                 <span className="text-slate-400 font-medium">Ответственный</span>
                                 <div className="flex items-center font-bold">
                                     <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center text-xs mr-2 overflow-hidden">
-                                        {order.creator?.avatar ? (
+                                        {order.creator?.image ? (
                                             <NextImage
-                                                src={order.creator.avatar}
+                                                src={order.creator.image}
                                                 alt={order.creator.name || 'Avatar'}
                                                 width={24}
                                                 height={24}

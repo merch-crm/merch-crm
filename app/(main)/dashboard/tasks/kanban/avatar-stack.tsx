@@ -49,7 +49,7 @@ export function AvatarStack({ users, maxDisplay = 3, size = "sm" }: AvatarStackP
                 )}
                 style={{ zIndex: displayUsers.length - index }}
               >
-                <AvatarImage src={user.avatar || undefined} />
+                <AvatarImage src={user.image || undefined} />
                 <AvatarFallback className="bg-gradient-to-br from-violet-400 to-purple-500 text-white font-semibold">
                   {getInitials(user.name)}
                 </AvatarFallback>

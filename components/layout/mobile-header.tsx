@@ -25,7 +25,7 @@ const routeNames: Record<string, string> = {
 };
 
 export function MobileHeader({ user, branding, notifications, unreadCount }: {
-    user: { name: string, email: string, roleName: string, departmentName: string, avatar?: string | null };
+    user: { name: string, email: string, roleName: string, departmentName: string, image?: string | null };
     branding: BrandingSettings;
     notifications: Notification[];
     unreadCount: number;

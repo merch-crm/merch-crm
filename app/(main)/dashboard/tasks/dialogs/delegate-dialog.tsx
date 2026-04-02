@@ -24,7 +24,7 @@ interface DelegateDialogProps {
   task: Task;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  users: Array<{ id: string; name: string; avatar?: string | null; email?: string }>;
+  users: Array<{ id: string; name: string; image?: string | null; email?: string }>;
   currentUserId: string;
   onTaskUpdated?: () => void;
 }
@@ -130,7 +130,7 @@ export function DelegateDialog({
                   >
                     <RadioGroupItem value={user.id} id={user.id} />
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src={user.avatar || undefined} />
+                      <AvatarImage src={user.image || undefined} />
                       <AvatarFallback>
                         <UserIcon className="h-4 w-4" />
                       </AvatarFallback>

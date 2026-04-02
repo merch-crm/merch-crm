@@ -71,7 +71,7 @@ interface TaskDetailsDialogProps {
   task: Task | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  users: Array<{ id: string; name: string; avatar?: string | null; email?: string }>;
+  users: Array<{ id: string; name: string; image?: string | null; email?: string }>;
   departments: Array<{ id: string; name: string }>;
   allTasks: Task[];
   currentUserId: string;
@@ -424,7 +424,7 @@ export function TaskDetailsDialog({
               <span className="flex items-center gap-1.5">
                 Создал:
                 <Avatar className="h-5 w-5 ring-2 ring-white shadow-sm">
-                  <AvatarImage src={task.creator?.avatar || undefined} />
+                  <AvatarImage src={task.creator?.image || undefined} />
                   <AvatarFallback className="text-xs bg-violet-100 text-violet-700">
                     {task.creator?.name?.[0]}
                   </AvatarFallback>

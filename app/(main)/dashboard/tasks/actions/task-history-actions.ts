@@ -25,7 +25,7 @@ export async function getTaskHistory(
       where: eq(taskHistory.taskId, taskId),
       with: {
         user: {
-          columns: { id: true, name: true, avatar: true },
+          columns: { id: true, name: true, image: true },
         },
       },
       orderBy: [desc(taskHistory.createdAt)],

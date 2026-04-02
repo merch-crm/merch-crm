@@ -68,10 +68,48 @@ export class RedisMock {
     return Array.from(this.data.keys()).filter(key => regex.test(key));
   }
   
-  async scan(cursor: string | number, matchParam: string, pattern: string, _countParam?: string, _count?: number) {
-    // Простая реализация мока: возвращает все совпадающие ключи за один раз
-    const keys = await this.keys(pattern);
-    return ["0", keys]; // "0" - признак окончания сканирования
+  async scan(cursor: string | number, ...args: (string | number)[]) {
+    // Sort keys to have a stable order for pagination
+    const allKeys = Array.from(this.data.keys()).sort();
+    
+    let start = 0;
+    if (cursor !== "0" && cursor !== 0) {
+      const cursorStr = cursor.toString();
+      // Find where we left off. If the cursor key was deleted, 
+      // we find the next available key in sorted order.
+      const idx = allKeys.findIndex(k => k >= cursorStr);
+      if (idx !== -1) {
+        start = allKeys[idx] === cursorStr ? idx + 1 : idx;
+      } else {
+        start = allKeys.length;
+      }
+    }
+    
+    // Default Redis values
+    let pattern = '*';
+    let count = 10; 
+
+    // Extract MATCH and COUNT from variadic arguments
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] === 'MATCH' && args[i+1]) {
+        pattern = args[i+1] as string;
+        i++;
+      } else if (args[i] === 'COUNT' && args[i+1]) {
+        count = parseInt(args[i+1] as string, 10);
+        i++;
+      }
+    }
+
+    const end = Math.min(start + count, allKeys.length);
+    const chunk = allKeys.slice(start, end);
+    
+    const regex = new RegExp("^" + pattern.replace(/\*/g, ".*") + "$");
+    const matchedKeys = chunk.filter(key => regex.test(key));
+    
+    // The next cursor is the last key we looked at in this batch, or "0" if we're done
+    const nextCursor = end >= allKeys.length ? "0" : allKeys[end - 1];
+    
+    return [nextCursor, matchedKeys];
   }
   
   async ping() { return "PONG"; }

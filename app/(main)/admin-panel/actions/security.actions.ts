@@ -16,7 +16,7 @@ import { z } from "zod";
 type AuditLog = InferSelectModel<typeof auditLogs>;
 type SecurityEvent = InferSelectModel<typeof securityEvents>;
 type SystemError = InferSelectModel<typeof systemErrors>;
-type UserSub = { id: string; name: string; email: string; avatar?: string | null };
+type UserSub = { id: string; name: string; email: string; avatar?: string | null; image?: string | null };
 
 export type AuditLogWithUser = AuditLog & { user?: UserSub | null };
 export type SecurityEventWithUser = SecurityEvent & { user?: UserSub | null };
@@ -268,7 +268,7 @@ export async function getSecurityEvents(
             where: whereClause,
             with: {
                 user: {
-                    columns: { id: true, name: true, email: true }
+                    columns: { id: true, name: true, email: true, image: true }
                 }
             },
             orderBy: [desc(securityEvents.createdAt)],

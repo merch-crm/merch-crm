@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import type { BrandingSettings } from "@/lib/types";
 
 export function UserNav({ user, branding }: {
-    user: { name: string, email: string, roleName: string, roleSlug?: string, departmentName: string, avatar?: string | null },
+    user: { name: string, email: string, roleName: string, roleSlug?: string, departmentName: string, image?: string | null },
     branding?: BrandingSettings
 }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -45,8 +45,8 @@ export function UserNav({ user, branding }: {
             >
                 <div className="relative shrink-0">
                     <div className="h-8 w-8 rounded-[var(--radius-inner)] bg-transparent flex items-center justify-center text-slate-400 border border-slate-200 overflow-hidden shadow-sm hover:border-slate-300 transition-colors">
-                        {user.avatar ? (
-                            <Image src={user.avatar} alt={user.name} width={32} height={32} className="w-full h-full object-cover" />
+                        {user.image ? (
+                            <Image src={user.image} alt={user.name} width={32} height={32} className="w-full h-full object-cover" />
                         ) : (
                             <User className="h-4 w-4" />
                         )}
@@ -113,8 +113,8 @@ export function UserNav({ user, branding }: {
                                 <div className="flex items-start gap-3">
                                     <div className="relative shrink-0">
                                         <div className="h-16 w-16 md:h-12 md:w-12 rounded-[var(--radius-inner)] bg-indigo-100/30 flex items-center justify-center text-indigo-500 overflow-hidden shadow-inner border border-indigo-200/20">
-                                            {user.avatar ? (
-                                                <Image src={user.avatar} alt={user.name} width={64} height={64} className="w-full h-full object-cover" />
+                                            {user.image ? (
+                                                <Image src={user.image} alt={user.name} width={64} height={64} className="w-full h-full object-cover" />
                                             ) : (
                                                 <User className="h-8 w-8 md:h-6 md:w-6" />
                                             )}

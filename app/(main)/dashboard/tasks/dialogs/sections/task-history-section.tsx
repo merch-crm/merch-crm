@@ -252,7 +252,7 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
               {entry.user && (
                 <div className="flex items-center gap-2 mt-2">
                   <Avatar className="h-6 w-6 ring-2 ring-background">
-                    <AvatarImage src={entry.user.avatar || undefined} />
+                    <AvatarImage src={entry.user.image || undefined} />
                     <AvatarFallback className="text-xs">
                       {entry.user.name?.[0] || <User className="h-3 w-3" />}
                     </AvatarFallback>

@@ -133,7 +133,7 @@ export async function getConversationMessages(
                 sentAt: conversationMessages.sentAt,
                 sentById: conversationMessages.sentById,
                 sentByName: users.name,
-                sentByAvatar: users.avatar,
+                sentByAvatar: users.image,
             })
             .from(conversationMessages)
             .leftJoin(users, eq(conversationMessages.sentById, users.id))
@@ -218,7 +218,7 @@ export async function sendMessage(
         return ok({
             ...message,
             sentByName: user?.name || null,
-            sentByAvatar: user?.avatar || null,
+            sentByAvatar: user?.image || null,
         } as MessageWithSender);
     }, { errorPath: "sendMessage" });
 }

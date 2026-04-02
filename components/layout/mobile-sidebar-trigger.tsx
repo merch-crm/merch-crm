@@ -11,7 +11,7 @@ interface UserProp {
     email: string;
     roleName: string;
     departmentName: string;
-    avatar?: string | null;
+    image?: string | null;
 }
 
 export function MobileSidebarTrigger({ user }: { user: UserProp }) {

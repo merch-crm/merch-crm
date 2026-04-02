@@ -96,7 +96,7 @@ export async function getOrders(params: GetOrdersParams = {}): Promise<GetOrders
         columns: {
           id: true,
           name: true,
-          avatar: true,
+          image: true,
         },
       },
       payments: true,
@@ -158,7 +158,7 @@ export async function getOrderById(orderId: string): Promise<OrderWithRelations 
             columns: {
               id: true,
               name: true,
-              avatar: true,
+              image: true,
             },
           },
         },
@@ -179,7 +179,7 @@ export async function getOrderById(orderId: string): Promise<OrderWithRelations 
         columns: {
           id: true,
           name: true,
-          avatar: true,
+          image: true,
         },
       },
       attachments: {
@@ -196,7 +196,7 @@ export async function getOrderById(orderId: string): Promise<OrderWithRelations 
                 columns: {
                   id: true,
                   name: true,
-                  avatar: true,
+                  image: true,
                 },
               },
             },

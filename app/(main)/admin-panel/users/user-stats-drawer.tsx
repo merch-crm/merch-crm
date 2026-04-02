@@ -17,7 +17,6 @@ interface StatsData {
     user: {
         name: string;
         role: string;
-        avatar: string | null;
     };
     orders: {
         total: number;

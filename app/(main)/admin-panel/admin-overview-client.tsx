@@ -23,6 +23,7 @@ import { useIsMobile } from"@/hooks/use-mobile";
 interface ActiveUser {
     name?: string;
     avatar?: string | null;
+    image?: string | null;
     role?: string;
 }
 
@@ -210,8 +211,8 @@ export function AdminOverviewClient({ stats, monitoring, security, backups }: Ad
                                     }}
                                 >
                                     <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-200 overflow-hidden shrink-0">
-                                        {user.avatar ? (
-                                            <Image src={user.avatar} alt={user.name ||"User"} width={48} height={48} className="w-full h-full object-cover" />
+                                        {(user.image || user.avatar) ? (
+                                            <Image src={user.image || user.avatar!} alt={user.name ||"User"} width={48} height={48} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-sm font-black text-slate-400">
                                                 {(user.name ||"")[0]}

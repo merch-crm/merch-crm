@@ -215,7 +215,7 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
                     {task.assignee ? (
                         <Tooltip content={task.assignee.name} className="text-xs">
                             <Avatar className="h-6 w-6 cursor-help">
-                                <AvatarImage src={task.assignee.avatar || undefined} />
+                                <AvatarImage src={task.assignee.image || undefined} />
                                 <AvatarFallback className="text-xs">
                                     {task.assignee.name.charAt(0)}
                                 </AvatarFallback>

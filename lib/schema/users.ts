@@ -63,7 +63,6 @@ export const users = pgTable("users", {
     phone: text("phone"),
     birthday: date("birthday"),
     image: text("image"), // Better Auth standard field.
-    avatar: text("avatar"), // Legacy field, kept for reverse compatibility with existing UI. Use 'image' for new features.
     telegram: text("telegram"),
     instagram: text("instagram"),
     socialMax: text("social_max"),
