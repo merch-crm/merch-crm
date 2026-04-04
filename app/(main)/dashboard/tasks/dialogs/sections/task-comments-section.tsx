@@ -301,7 +301,7 @@ export function TaskCommentsSection({
             )}
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-2 tracking-tight">
+        <p className="text-xs text-muted-foreground mt-2 ">
           Ctrl/Cmd + Enter для быстрой отправки
         </p>
       </div>

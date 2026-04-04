@@ -78,7 +78,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
              <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
                 <Shirt className="w-5 h-5" />
              </div>
-             <h3 className="text-xl font-black text-slate-800 tracking-tight">Выберите изделие</h3>
+             <h3 className="text-xl font-black text-slate-800 ">Выберите изделие</h3>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setIsExpanded(false)} className="rounded-full h-10 w-10">
             <X className="w-6 h-6 text-slate-400" />
@@ -141,7 +141,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
                       до {garment.maxColors} цветов
                     </Badge>
                   </div>
-                  <p className="text-xl font-black text-slate-900 mt-3 tracking-tighter">
+                  <p className="text-xl font-black text-slate-900 mt-3 ">
                     {formatCurrency(garment.basePrice)}
                   </p>
                 </div>

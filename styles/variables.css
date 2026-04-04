@@ -66,6 +66,78 @@
     --dept-sales: oklch(0.65 0.2 210);       /* Balanced Blue */
     --dept-production: oklch(0.75 0.15 80);  /* Balanced Amber */
     --dept-design: oklch(0.65 0.2 330);      /* Balanced Pink */
+
+    /* --- AlignUI Semantic Tokens (v1.2) adapted to Purple --- */
+    
+    /* Primary (Purple) */
+    --primary-base: var(--primary);
+    --primary-50: oklch(0.97 0.02 281.33);
+    --primary-100: oklch(0.92 0.05 281.33);
+    --primary-200: oklch(0.85 0.1 281.33);
+    --primary-300: oklch(0.75 0.15 281.33);
+    --primary-400: oklch(0.65 0.2 281.33);
+    --primary-500: oklch(0.55 0.25 281.33);
+    --primary-600: oklch(0.45 0.25 281.33);
+    --primary-700: oklch(0.35 0.2 281.33);
+    --primary-800: oklch(0.25 0.15 281.33);
+    --primary-900: oklch(0.15 0.1 281.33);
+    --primary-950: oklch(0.08 0.05 281.33);
+    --primary-alpha-10: oklch(0.51 0.28 281.33 / 0.1);
+    --primary-alpha-20: oklch(0.51 0.28 281.33 / 0.2);
+
+    /* Neutral (Grays with a hint of purple) */
+    --neutral-base: oklch(0.5 0.02 281.33);
+    --neutral-50: oklch(0.98 0.005 281.33);
+    --neutral-100: oklch(0.95 0.005 281.33);
+    --neutral-200: oklch(0.9 0.01 281.33);
+    --neutral-300: oklch(0.8 0.01 281.33);
+    --neutral-400: oklch(0.7 0.02 281.33);
+    --neutral-500: oklch(0.6 0.02 281.33);
+    --neutral-600: oklch(0.5 0.02 281.33);
+    --neutral-700: oklch(0.4 0.02 281.33);
+    --neutral-800: oklch(0.3 0.02 281.33);
+    --neutral-900: oklch(0.2 0.02 281.33);
+    --neutral-950: oklch(0.1 0.02 281.33);
+
+    /* Error (Red) */
+    --error-base: oklch(0.6 0.18 25);
+    --error-light: oklch(0.9 0.05 25);
+    --error-lighter: oklch(0.95 0.02 25);
+    --error-dark: oklch(0.45 0.15 25);
+
+    /* Success (Green) */
+    --success-base: oklch(0.7 0.15 145);
+    --success-light: oklch(0.92 0.04 145);
+    --success-lighter: oklch(0.96 0.02 145);
+
+    /* Warning (Orange) */
+    --warning-base: oklch(0.75 0.15 75);
+    --warning-light: oklch(0.94 0.04 75);
+    --warning-lighter: oklch(0.97 0.02 75);
+
+    /* Information (Blue) */
+    --information-base: oklch(0.6 0.15 245);
+    --information-light: oklch(0.9 0.04 245);
+    --information-lighter: oklch(0.95 0.02 245);
+
+    /* Surface Tokens */
+    --bg-white-0: #ffffff;
+    --bg-weak-50: oklch(0.98 0.005 281.33);
+    --bg-soft-200: oklch(0.94 0.01 281.33);
+    --bg-sub-300: oklch(0.88 0.02 281.33);
+    
+    /* Text Tokens */
+    --text-strong-950: oklch(0.1 0.02 281.33);
+    --text-sub-600: oklch(0.45 0.03 281.33);
+    --text-soft-400: oklch(0.65 0.02 281.33);
+    --text-disabled-300: oklch(0.8 0.01 281.33);
+    --text-white-0: #ffffff;
+
+    /* Stroke Tokens */
+    --stroke-strong-950: oklch(0.1 0.02 281.33);
+    --stroke-sub-600: oklch(0.45 0.03 281.33);
+    --stroke-soft-200: oklch(0.9 0.01 281.33);
+    --stroke-white-0: #ffffff;
 }
 
 @theme {
@@ -118,4 +190,76 @@
     --color-dept-sales: var(--dept-sales);
     --color-dept-production: var(--dept-production);
     --color-dept-design: var(--dept-design);
+
+    /* AlignUI Color Palette Mappings */
+    --color-primary-base: var(--primary-base);
+    --color-primary-50: var(--primary-50);
+    --color-primary-100: var(--primary-100);
+    --color-primary-200: var(--primary-200);
+    --color-primary-300: var(--primary-300);
+    --color-primary-400: var(--primary-400);
+    --color-primary-500: var(--primary-500);
+    --color-primary-600: var(--primary-600);
+    --color-primary-700: var(--primary-700);
+    --color-primary-800: var(--primary-800);
+    --color-primary-900: var(--primary-900);
+    --color-primary-950: var(--primary-950);
+    --color-primary-alpha-10: var(--primary-alpha-10);
+    --color-primary-alpha-20: var(--primary-alpha-20);
+
+    --color-neutral-base: var(--neutral-base);
+    --color-neutral-50: var(--neutral-50);
+    --color-neutral-100: var(--neutral-100);
+    --color-neutral-200: var(--neutral-200);
+    --color-neutral-300: var(--neutral-300);
+    --color-neutral-400: var(--neutral-400);
+    --color-neutral-500: var(--neutral-500);
+    --color-neutral-600: var(--neutral-600);
+    --color-neutral-700: var(--neutral-700);
+    --color-neutral-800: var(--neutral-800);
+    --color-neutral-900: var(--neutral-900);
+    --color-neutral-950: var(--neutral-950);
+
+    --color-error-base: var(--error-base);
+    --color-error-light: var(--error-light);
+    --color-error-lighter: var(--error-lighter);
+    --color-error-dark: var(--error-dark);
+
+    --color-success-base: var(--success-base);
+    --color-success-light: var(--success-light);
+    --color-success-lighter: var(--success-lighter);
+
+    --color-warning-base: var(--warning-base);
+    --color-warning-light: var(--warning-light);
+    --color-warning-lighter: var(--warning-lighter);
+
+    --color-information-base: var(--information-base);
+    --color-information-light: var(--information-light);
+    --color-information-lighter: var(--information-lighter);
+
+    /* AlignUI Semantic Mappings */
+    --color-bg-white-0: var(--bg-white-0);
+    --color-bg-weak-50: var(--bg-weak-50);
+    --color-bg-soft-200: var(--bg-soft-200);
+    --color-bg-sub-300: var(--bg-sub-300);
+
+    --color-text-strong-950: var(--text-strong-950);
+    --color-text-sub-600: var(--text-sub-600);
+    --color-text-soft-400: var(--text-soft-400);
+    --color-text-disabled-300: var(--text-disabled-300);
+    --color-text-white-0: var(--text-white-0);
+
+    --color-stroke-strong-950: var(--stroke-strong-950);
+    --color-stroke-sub-600: var(--stroke-sub-600);
+    --color-stroke-soft-200: var(--stroke-soft-200);
+    --color-stroke-white-0: var(--stroke-white-0);
+
+    --color-static-white: #ffffff;
+    --color-static-black: #000000;
+
+    /* Shadows */
+    --shadow-regular-xs: 0 1px 2px 0 rgba(16, 24, 40, 0.05);
+    --shadow-regular-sm: 0 1px 3px 0 rgba(16, 24, 40, 0.1), 0 1px 2px 0 rgba(16, 24, 40, 0.06);
+    --shadow-regular-md: 0 4px 8px -2px rgba(16, 24, 40, 0.1), 0 2px 4px -2px rgba(16, 24, 40, 0.06);
+    --shadow-button-primary-focus: 0 0 0 4px oklch(0.51 0.28 281.33 / 0.24);
 }

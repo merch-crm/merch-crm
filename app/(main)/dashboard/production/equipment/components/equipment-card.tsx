@@ -147,7 +147,7 @@ export function EquipmentCard({
                         </div>
                         <div className="min-w-0">
                             <h3 className="font-bold text-slate-900 truncate leading-tight">{equipment.name}</h3>
-                            <p className="text-xs font-bold text-slate-400 mt-0.5 tracking-tight">
+                            <p className="text-xs font-bold text-slate-400 mt-0.5 ">
                                 {equipment.code || "Без кода"}
                             </p>
                         </div>
@@ -198,13 +198,13 @@ export function EquipmentCard({
                     "bg-slate-100 border-slate-200 text-slate-400"
                 )}>
                     <StatusIcon className="h-4 w-4" />
-                    <span className="text-xs font-bold tracking-tight">{status.label}</span>
+                    <span className="text-xs font-bold ">{status.label}</span>
                 </div>
 
                 {/* Info Grid */}
                 <div className="grid grid-cols-2 gap-3">
                     <div className="flex flex-col gap-1">
-                         <span className="text-xs font-bold text-slate-400 tracking-wider">Локация</span>
+                         <span className="text-xs font-bold text-slate-400 ">Локация</span>
                         <div className="flex items-center gap-1.5 text-slate-600">
                             <MapPin className="h-3.5 w-3.5 text-slate-400" />
                             <span className="text-xs font-bold truncate">{equipment.location || "—"}</span>
@@ -212,7 +212,7 @@ export function EquipmentCard({
                     </div>
                     {equipment.printSpeed && (
                         <div className="flex flex-col gap-1">
-                             <span className="text-xs font-bold text-slate-400 tracking-wider">Скорость</span>
+                             <span className="text-xs font-bold text-slate-400 ">Скорость</span>
                             <div className="flex items-center gap-1.5 text-slate-600">
                                 <Gauge className="h-3.5 w-3.5 text-slate-400" />
                                 <span className="text-xs font-bold truncate">{equipment.printSpeed}</span>

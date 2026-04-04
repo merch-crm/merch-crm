@@ -334,7 +334,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                         isLoading={isSubmitting}
                         text="Переместить"
                         loadingText="Перемещение..."
-                        variant="btn-dark"
+                        variant="action"
                         disabled={isSubmitting || !fromLocationId || !toLocationId || !reason.trim() || amount <= 0}
                         className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none"
                     />

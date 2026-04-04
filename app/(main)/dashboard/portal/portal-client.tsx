@@ -163,7 +163,7 @@ export function PortalClient({ data }: PortalClientProps) {
                             <span className="text-xs font-black bg-white/10 px-2 py-1 rounded-lg border border-white/10">Месяц</span>
                 </div>
                 <div>
-                    <h3 className="text-indigo-100/70 text-sm font-bold mb-1 tracking-tight">Сдельная оплата (План)</h3>
+                    <h3 className="text-indigo-100/70 text-sm font-bold mb-1 ">Сдельная оплата (План)</h3>
                     <div className="flex items-baseline gap-2">
                         <span className="text-4xl font-black">{(pieceworkTotal / 100).toLocaleString('ru-RU')}</span>
                         <span className="text-xl font-bold opacity-60">₽</span>
@@ -184,7 +184,7 @@ export function PortalClient({ data }: PortalClientProps) {
                 <div className="w-10 h-10 rounded-2xl bg-emerald-100 border border-emerald-200 flex items-center justify-center text-emerald-600">
                     <Clock className="w-5 h-5" />
                 </div>
-                <div className="px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-xs font-black border border-emerald-200 tracking-tighter">На смене</div>
+                <div className="px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-xs font-black border border-emerald-200 ">На смене</div>
             </div>
             <div>
                 <div className="text-3xl font-black text-slate-900 tabular-nums">
@@ -219,7 +219,7 @@ export function PortalClient({ data }: PortalClientProps) {
                 </div>
             </div>
             <div>
-                <h3 className="text-slate-400 text-xs font-black mb-1 tracking-tight">Мои достижения</h3>
+                <h3 className="text-slate-400 text-xs font-black mb-1 ">Мои достижения</h3>
                 <div className="flex items-center gap-2">
                     <span className="text-3xl font-black text-slate-900">{achievements.length}</span>
                     <span className="text-slate-400 font-bold">разблокировано</span>
@@ -241,7 +241,7 @@ export function PortalClient({ data }: PortalClientProps) {
                                     {ua.achievement.icon || "🏆"}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-xs font-black text-slate-900 tracking-tight truncate">{ua.achievement.name}</p>
+                                    <p className="text-xs font-black text-slate-900  truncate">{ua.achievement.name}</p>
                                     <p className="text-xs text-slate-400 font-bold">Unlocked</p>
                                 </div>
                             </motion.div>
@@ -249,7 +249,7 @@ export function PortalClient({ data }: PortalClientProps) {
                     </div>
                 ) : (
                     <div className="p-6 border border-dashed border-slate-200 rounded-3xl bg-slate-50/50 text-center">
-                        <p className="text-xs text-slate-400 font-black tracking-wider leading-relaxed">
+                        <p className="text-xs text-slate-400 font-black  leading-relaxed">
                             Начните выполнять задачи, чтобы разблокировать уникальные награды
                         </p>
                     </div>
@@ -266,12 +266,12 @@ export function PortalClient({ data }: PortalClientProps) {
             <div className="bg-white/80 backdrop-blur-md rounded-[32px] p-8 border border-white/60 shadow-xl shadow-slate-200/40">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h3 className="text-lg font-black text-slate-900 tracking-tight">Рабочая активность</h3>
+                        <h3 className="text-lg font-black text-slate-900 ">Рабочая активность</h3>
                         <p className="text-xs text-slate-500 font-bold">Часы работы за последние 7 дней</p>
                     </div>
                     <div className="flex items-center gap-1.5 px-4 py-1.5 bg-indigo-50/50 rounded-full border border-indigo-100/50">
                         <div className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-                        <span className="text-xs font-black text-indigo-600 tracking-wider">Live Stats</span>
+                        <span className="text-xs font-black text-indigo-600 ">Live Stats</span>
                     </div>
                 </div>
                 
@@ -304,15 +304,15 @@ export function PortalClient({ data }: PortalClientProps) {
                                 )} />
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
-                                        <span className="text-xs font-black text-slate-400 tracking-tight bg-slate-100 px-1.5 py-0.5 rounded leading-none">#{task.number}</span>
+                                        <span className="text-xs font-black text-slate-400  bg-slate-100 px-1.5 py-0.5 rounded leading-none">#{task.number}</span>
                                         <span className={cn(
-                                            "text-xs font-black tracking-tight px-1.5 py-0.5 rounded leading-none border",
+                                            "text-xs font-black  px-1.5 py-0.5 rounded leading-none border",
                                             task.status === 'in_progress' ? "bg-indigo-50 text-indigo-600 border-indigo-100" : "bg-slate-50 text-slate-500 border-slate-100"
                                         )}>
                                             {task.status === 'in_progress' ? "В работе" : "Ожидает"}
                                         </span>
                                     </div>
-                                    <h4 className="font-black text-slate-900 text-sm truncate tracking-tight">{task.title}</h4>
+                                    <h4 className="font-black text-slate-900 text-sm truncate ">{task.title}</h4>
                                     <p className="text-xs text-slate-500 font-bold flex items-center gap-1 mt-0.5">
                                         <span>Тираж: <b className="text-slate-900">{task.quantity}шт</b></span>
                                         <span className="text-slate-300">•</span>
@@ -401,7 +401,7 @@ export function PortalClient({ data }: PortalClientProps) {
                     <LifeBuoy className="w-6 h-6" />
                 </div>
                 <div>
-                    <h4 className="font-black text-slate-900 tracking-tight text-sm mb-1">Нужна помощь?</h4>
+                    <h4 className="font-black text-slate-900  text-sm mb-1">Нужна помощь?</h4>
                     <p className="text-xs text-slate-600 font-medium leading-relaxed mb-4">
                         Если возникли сложности с заказом или оборудованием, создайте тикет.
                     </p>

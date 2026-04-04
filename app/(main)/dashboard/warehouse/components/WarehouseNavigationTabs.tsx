@@ -52,7 +52,7 @@ export function WarehouseNavigationTabs({ activeTab }: WarehouseNavigationTabsPr
                                         tab.activeColor || "bg-slate-900 shadow-slate-900/10",
                                         tab.shadowColor
                                     )}
-                                    transition={{ type: "spring", bounce: 0.1, duration: 0.5 }}
+                                    transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
                                 />
                             )}
                             <Icon className={cn("w-4.5 h-4.5 relative z-10", isActive && "scale-105")} />
@@ -86,7 +86,7 @@ export function WarehouseNavigationTabs({ activeTab }: WarehouseNavigationTabsPr
                                         tab.activeColor || "bg-slate-900 shadow-slate-900/10",
                                         tab.shadowColor
                                     )}
-                                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                    transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
                                 />
                             )}
                             <tab.icon className="w-3.5 h-3.5 sm:w-5 sm:h-5 relative z-10 shrink-0" />

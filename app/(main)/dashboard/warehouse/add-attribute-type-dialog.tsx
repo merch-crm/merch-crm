@@ -154,14 +154,14 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
                                                     </div>
                                                 )}
                                             </div>
-                                            <span className={cn("text-xs font-bold tracking-tight text-center leading-none",
+                                            <span className={cn("text-xs font-bold  text-center leading-none",
                                                 isAlreadyExists ? "text-emerald-600/80" : ""
                                             )}>
                                                 {type.title}
                                             </span>
                                             {isAlreadyExists && (
                                                 <div className="absolute inset-0 bg-white/20 rounded-[var(--radius-inner)] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <span className="text-xs font-black text-emerald-600 tracking-tighter bg-white px-1.5 py-0.5 rounded shadow-sm border border-emerald-100">Создано</span>
+                                                    <span className="text-xs font-black text-emerald-600  bg-white px-1.5 py-0.5 rounded shadow-sm border border-emerald-100">Создано</span>
                                                 </div>
                                             )}
                                         </button>
@@ -191,7 +191,7 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
                         <SubmitButton
                             isLoading={isLoading}
                             disabled={isLoading}
-                            variant="btn-dark"
+                            variant="action"
                             className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
                             text="Создать"
                             loadingText="Создание..."

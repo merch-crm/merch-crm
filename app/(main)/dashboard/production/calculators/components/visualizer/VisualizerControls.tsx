@@ -51,7 +51,7 @@ export function VisualizerControls({
       <div className="flex flex-wrap items-center gap-3 flex-1 min-w-0">
         {/* Width Selector */}
         <div className="flex items-center gap-3 shrink-0">
-          <Label className="text-xs font-black tracking-wider text-slate-400">Ширина:</Label>
+          <Label className="text-xs font-black  text-slate-400">Ширина:</Label>
           <Select
             value={settings.rollWidthMm.toString()}
             onChange={(v) => updateSettings({ rollWidthMm: parseInt(v, 10) })}
@@ -73,7 +73,7 @@ export function VisualizerControls({
               <div className="space-y-3">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-black tracking-wider text-slate-400">Поля пленки</Label>
+                    <Label className="text-xs font-black  text-slate-400">Поля пленки</Label>
                     <span className="text-xs font-mono font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">{settings.edgeMarginMm} мм</span>
                   </div>
                   <Slider
@@ -87,7 +87,7 @@ export function VisualizerControls({
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label className="text-xs font-black tracking-wider text-slate-400">Зазор принтов</Label>
+                    <Label className="text-xs font-black  text-slate-400">Зазор принтов</Label>
                     <span className="text-xs font-mono font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">{settings.gapMm} мм</span>
                   </div>
                   <Slider
@@ -109,7 +109,7 @@ export function VisualizerControls({
         {/* Toggles Group */}
         <div className="flex items-center gap-3 shrink-0">
           <div className="flex items-center gap-3">
-            <Label className="text-xs font-black tracking-wider text-slate-400 hidden lg:block">Авто-поворот:</Label>
+            <Label className="text-xs font-black  text-slate-400 hidden lg:block">Авто-поворот:</Label>
             <Switch 
               checked={settings.allowRotation} 
               onCheckedChange={(v) => updateSettings({ allowRotation: v })} 
@@ -118,7 +118,7 @@ export function VisualizerControls({
             />
           </div>
           <div className="flex items-center gap-3">
-            <Label className="text-xs font-black tracking-wider text-slate-400 hidden lg:block">Сетка:</Label>
+            <Label className="text-xs font-black  text-slate-400 hidden lg:block">Сетка:</Label>
             <Switch 
               checked={showGrid} 
               onCheckedChange={setShowGrid} 

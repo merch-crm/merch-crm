@@ -172,7 +172,7 @@ export function TaskDependenciesSection({
             <div className="p-4 rounded-xl bg-muted/50 space-y-3 animate-in fade-in slide-in-from-top-2 border border-primary/10">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground tracking-wider">Тип связи</label>
+                  <label className="text-xs font-medium text-muted-foreground ">Тип связи</label>
                   <Select
                     value={selectedType}
                     onChange={setSelectedType}
@@ -182,7 +182,7 @@ export function TaskDependenciesSection({
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground tracking-wider">Задача</label>
+                  <label className="text-xs font-medium text-muted-foreground ">Задача</label>
                   <Select
                     value={selectedTaskId}
                     onChange={setSelectedTaskId}
@@ -286,7 +286,7 @@ export function TaskDependenciesSection({
                         >
                           {linkedTask.title}
                         </p>
-                        <p className="text-xs text-muted-foreground tracking-tight">
+                        <p className="text-xs text-muted-foreground ">
                           {TASK_STATUS_CONFIG[linkedTask.status]?.label}
                         </p>
                       </div>
@@ -331,7 +331,7 @@ export function TaskDependenciesSection({
                       <ArrowRight className="h-5 w-5 text-primary shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate text-sm">{linkedTask.title}</p>
-                        <p className="text-xs text-muted-foreground tracking-tight">
+                        <p className="text-xs text-muted-foreground ">
                           {TASK_STATUS_CONFIG[linkedTask.status]?.label}
                         </p>
                       </div>
@@ -376,7 +376,7 @@ export function TaskDependenciesSection({
                       <Link2 className="h-5 w-5 text-violet-500 shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate text-sm">{linkedTask.title}</p>
-                        <p className="text-xs text-muted-foreground tracking-tight">
+                        <p className="text-xs text-muted-foreground ">
                           {TASK_STATUS_CONFIG[linkedTask.status]?.label}
                         </p>
                       </div>

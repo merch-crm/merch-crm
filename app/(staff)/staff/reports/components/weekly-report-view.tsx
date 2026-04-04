@@ -74,7 +74,7 @@ export function WeeklyReportView({ data }: { data: WeeklyReport }) {
                                 </div>
                                 <div className="text-right">
                                     <p className="font-black text-slate-900">{emp.totalHours.toFixed(1)}</p>
-                                    <p className="text-[8px] font-bold text-slate-400 leading-none">часов</p>
+                                    <p className="text-[10px] font-bold text-slate-400 leading-none">часов</p>
                                 </div>
                             </div>
                         ))}

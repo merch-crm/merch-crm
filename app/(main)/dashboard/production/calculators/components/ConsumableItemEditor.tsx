@@ -205,7 +205,7 @@ export function ConsumableItemEditor({
               </CollapsibleTrigger>
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
-                  <span className="font-black text-lg text-slate-900 tracking-tight">{item.name}</span>
+                  <span className="font-black text-lg text-slate-900 ">{item.name}</span>
                   {isModified && (
                     <Badge variant="outline" className="text-xs font-black px-2 py-0.5 rounded-full text-indigo-600 bg-indigo-50 border-indigo-200">
                       изменено
@@ -218,7 +218,7 @@ export function ConsumableItemEditor({
                         Склад: {selectedWarehouseItem.name}
                         </Badge>
                     )}
-                    <p className="text-xs text-slate-400 font-bold tracking-tight leading-none">
+                    <p className="text-xs text-slate-400 font-bold  leading-none">
                         Себестоимость: {formatCurrency(item.pricePerUnit)}/{item.unit}
                     </p>
                 </div>
@@ -231,7 +231,7 @@ export function ConsumableItemEditor({
                 <p className="text-xl font-black text-indigo-600 leading-none">
                   {formatCurrency(costPerUnit)}
                 </p>
-                <p className="text-xs text-slate-300 font-black tracking-tight mt-1">
+                <p className="text-xs text-slate-300 font-black  mt-1">
                   за {item.consumptionUnit}
                 </p>
               </div>
@@ -256,7 +256,7 @@ export function ConsumableItemEditor({
             {/* Источник данных */}
             <div className="grid grid-cols-2 gap-3 px-1">
                 <div className="space-y-3">
-                    <Label className="text-[12px] font-black text-slate-400 tracking-tight ml-1">Источник цены</Label>
+                    <Label className="text-[12px] font-black text-slate-400  ml-1">Источник цены</Label>
                     <div className="flex gap-3">
                         <label className="flex items-center gap-2.5 cursor-pointer group">
                         <input
@@ -267,7 +267,7 @@ export function ConsumableItemEditor({
                             disabled={disabled}
                             className="h-5 w-5 accent-slate-900 border-slate-200"
                         />
-                        <div className="flex items-center gap-2 text-[13px] font-black text-slate-500 group-hover:text-slate-900 transition-colors tracking-tight">
+                        <div className="flex items-center gap-2 text-[13px] font-black text-slate-500 group-hover:text-slate-900 transition-colors ">
                             Вручную
                         </div>
                         </label>
@@ -280,7 +280,7 @@ export function ConsumableItemEditor({
                             disabled={disabled}
                             className="h-5 w-5 accent-indigo-600"
                         />
-                        <div className="flex items-center gap-2 text-[13px] font-black text-slate-500 group-hover:text-indigo-600 transition-colors tracking-tight">
+                        <div className="flex items-center gap-2 text-[13px] font-black text-slate-500 group-hover:text-indigo-600 transition-colors ">
                             Склад
                         </div>
                         </label>
@@ -289,7 +289,7 @@ export function ConsumableItemEditor({
 
                 {/* Основное поле цены (Всегда на виду) */}
                 <div className="space-y-2">
-                    <Label className="text-[12px] font-black text-slate-400 tracking-tight ml-1">Цена за {item.unit}</Label>
+                    <Label className="text-[12px] font-black text-slate-400  ml-1">Цена за {item.unit}</Label>
                     <div className="relative">
                         <Input
                             type="number"
@@ -313,7 +313,7 @@ export function ConsumableItemEditor({
             {/* Выбор материала со склада */}
             {item.source === 'warehouse' && (
               <div className="space-y-3 animate-in fade-in zoom-in-95 px-1 bg-indigo-50/30 p-5 rounded-[20px] border border-indigo-100/30">
-                <Label className="text-[12px] font-black text-indigo-400 tracking-tight ml-1">Выберите материал со склада</Label>
+                <Label className="text-[12px] font-black text-indigo-400  ml-1">Выберите материал со склада</Label>
                 {warehouseItems.length > 0 ? (
                 <Select
                   value={item.warehouseItemId || ''}
@@ -340,7 +340,7 @@ export function ConsumableItemEditor({
                         onClick={() =>
                           onCreateWarehouseItem(item.category as ConsumableCategory)
                         }
-                        className="rounded-xl font-black bg-white text-xs tracking-tight px-4"
+                        className="rounded-xl font-black bg-white text-xs  px-4"
                       >
                         <Plus className="h-3 w-3 mr-2" />
                         Добавить
@@ -357,11 +357,11 @@ export function ConsumableItemEditor({
                     <div className="bg-slate-50/50 p-6 rounded-[24px] border border-slate-100/50 space-y-3">
                         <div className="flex items-center gap-2 text-indigo-500">
                              <Calculator className="w-4 h-4" />
-                             <span className="text-[12px] font-black tracking-tight">Инженерные настройки</span>
+                             <span className="text-[12px] font-black ">Инженерные настройки</span>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="space-y-2">
-                                <Label className="text-xs font-black text-slate-400 tracking-tight ml-1">Расход на {item.consumptionUnit}</Label>
+                                <Label className="text-xs font-black text-slate-400  ml-1">Расход на {item.consumptionUnit}</Label>
                                 <div className="relative">
                                     <Input
                                         type="number"
@@ -384,7 +384,7 @@ export function ConsumableItemEditor({
                                     <div className="space-y-1">
                                     <p className="text-xs font-bold text-slate-600 leading-tight">{hint.description}</p>
                                     <div className="flex items-center gap-2">
-                                       <span className="text-xs font-black text-indigo-500 tracking-tight">
+                                       <span className="text-xs font-black text-indigo-500 ">
                                            Рекомендация:
                                        </span>
                                        <span className="text-xs font-black text-slate-900">

@@ -76,7 +76,7 @@ export function NPSClient({ token, initialData }: NPSClientProps) {
                         <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
                             <Star className="w-6 h-6 fill-current" />
                         </div>
-                        <span className="font-bold text-indigo-600 tracking-wider text-sm">Оцените качество</span>
+                        <span className="font-bold text-indigo-600  text-sm">Оцените качество</span>
                     </div>
                     <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight mb-4">
                         Как вам ваш заказ <span className="text-indigo-600">#{initialData.orderNumber}</span>?

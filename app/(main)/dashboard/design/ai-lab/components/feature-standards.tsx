@@ -23,8 +23,8 @@ export function FeatureStandards() {
                         <item.icon className="w-6 h-6" />
                     </div>
                     <div>
-                        <h4 className="font-bold text-xs mb-1 text-slate-900 tracking-tight">{item.label}</h4>
-                        <p className="text-xs text-slate-400 leading-relaxed font-bold tracking-tight opacity-70">
+                        <h4 className="font-bold text-xs mb-1 text-slate-900 ">{item.label}</h4>
+                        <p className="text-xs text-slate-400 leading-relaxed font-bold  opacity-70">
                             {item.text}
                         </p>
                     </div>

@@ -228,7 +228,7 @@ export const DtgOrderCard = memo(function DtgOrderCard({
                     {order.garmentColor === 'dark' ? <Moon className="w-4 h-4 text-indigo-500" /> : <Sun className="w-4 h-4 text-amber-500" />}
                 </div>
                 <div>
-                    <p className="text-sm font-black tracking-tight">Цвет основы</p>
+                    <p className="text-sm font-black ">Цвет основы</p>
                     <p className="text-xs text-slate-500">Влияет на расход белого и праймера</p>
                 </div>
             </div>

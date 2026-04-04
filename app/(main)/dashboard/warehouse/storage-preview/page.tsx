@@ -23,7 +23,7 @@ export default async function StoragePreviewPage() {
                             дизайн-концепт v1.0
                         </span>
                     </div>
-                    <h1 className="text-4xl font-extrabold tracking-tight text-white lg:text-5xl">
+                    <h1 className="text-4xl font-extrabold  text-white lg:text-5xl">
                         Storage <span className="text-primary">Intelligence</span>
                     </h1>
                     <p className="max-w-md font-medium text-white/40">

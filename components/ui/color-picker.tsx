@@ -1,193 +1,151 @@
 "use client";
 
-import React, { useState, useEffect } from"react";
-import { HexColorPicker } from"react-colorful";
-import { Pipette, Hash } from"lucide-react";
-import { Popover, PopoverContent, PopoverTrigger } from"@/components/ui/popover";
-import { Button } from"@/components/ui/button";
-import { Input } from"@/components/ui/input";
-import { cn } from"@/lib/utils";
+import * as React from "react";
+import {
+  ColorArea,
+  ColorAreaProps,
+  ColorField,
+  ColorFieldProps,
+  ColorPicker as AriaColorPicker,
+  ColorSlider,
+  ColorSliderProps,
+  ColorSwatch,
+  ColorSwatchProps,
+  ColorThumb,
+  SliderTrack,
+} from "react-aria-components";
+import { cn } from "@/lib/utils";
 
-interface ColorPickerProps {
-    color: string;
-    onChange: (color: string) => void;
-    label?: string;
-    icon?: React.ReactNode;
-    className?: string;
-    presets?: string[];
+/**
+ * Root component for the ColorPicker.
+ */
+const Root = AriaColorPicker;
+
+/**
+ * Control wrapper (UI sugar).
+ */
+const Control = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col gap-3", className)} {...props} />
+);
+
+/**
+ * The interactive area for selecting color (saturation/brightness).
+ */
+const Area = ({ className, ...props }: ColorAreaProps) => (
+  <ColorArea
+    className={cn(
+      "relative h-[192px] w-full cursor-crosshair rounded-xl",
+      className
+    )}
+    {...props}
+  >
+    <ColorThumb className="z-10 h-5 w-5 rounded-full border-2 border-white bg-transparent shadow-[0_2px_4px_rgba(0,0,0,0.2)] transition-transform hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none" />
+  </ColorArea>
+);
+
+/**
+ * A slider for specific color channels (Hue, Alpha, etc.).
+ */
+const Slider = ({ className, ...props }: ColorSliderProps) => (
+  <ColorSlider
+    className={cn("flex flex-col gap-2", className)}
+    {...props}
+  >
+    <SliderTrack className="relative h-3 w-full rounded-full border border-black/5">
+      <ColorThumb className="z-10 h-5 w-5 rounded-full border-2 border-white bg-transparent shadow-[0_2px_4px_rgba(0,0,0,0.2)] transition-transform hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none" />
+    </SliderTrack>
+  </ColorSlider>
+);
+
+/**
+ * The thumb (used inside Area or Slider if needed separately).
+ */
+const SliderThumb = ColorThumb;
+
+/**
+ * Input field for Hex/RGBA values.
+ */
+const Input = ({ className, ...props }: ColorFieldProps) => (
+  <ColorField {...props}>
+    <input
+      className={cn(
+        "flex h-10 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm font-medium ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary/40 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
+        className
+      )}
+    />
+  </ColorField>
+);
+
+/**
+ * A color swatch (preset).
+ */
+const Swatch = ({ className, color, ...props }: ColorSwatchProps) => (
+  <ColorSwatch
+    className={cn(
+      "h-8 w-8 rounded-lg border border-black/5 transition-transform hover:scale-110 active:scale-95 cursor-pointer",
+      className
+    )}
+    color={color}
+    {...props}
+  />
+);
+
+/**
+ * Eye dropper button placeholder.
+ */
+const EyeDropperButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>((props, ref) => {
+  return (
+    <button
+      ref={ref}
+      type="button"
+      className={cn(
+        "flex items-center justify-center h-10 w-10 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-colors",
+        props.className
+      )}
+      {...props}
+    />
+  );
+});
+EyeDropperButton.displayName = "EyeDropperButton";
+
+/**
+ * Compatibility component for older usage.
+ */
+interface ColorPickerCompatProps {
+  value?: string;
+  color?: string;
+  onChange?: (value: string) => void;
+  label?: string;
+  className?: string;
+  isInline?: boolean;
 }
 
-const DEFAULT_PRESETS = ["var(--primary)", // Brand Primary"#0F172A", // Slate 900"#64748B", // Slate 500"#F43F5E", // Rose 500"#10B981", // Emerald 500"#F59E0B", // Amber 500"#3B82F6", // Blue 500"#8B5CF6", // Violet 500"#EC4899", // Pink 500"#FFFFFF", // White
-];
+const ColorPicker = ({ value, color, onChange, label, className }: ColorPickerCompatProps) => {
+  const actualValue = value || color || "";
+  return (
+    <Root value={actualValue} onChange={(newColor) => onChange?.(newColor.toString())}>
+      <div className="space-y-2">
+        {label && <label className="text-sm font-bold text-slate-700 ml-1 block">{label}</label>}
+        <Control className={cn("flex flex-row items-center gap-2", className)}>
+          <Swatch color={actualValue} />
+          <Input />
+        </Control>
+      </div>
+    </Root>
+  );
+};
 
-export function ColorPicker({
-    color,
-    onChange,
-    label,
-    icon,
-    className,
-    presets = DEFAULT_PRESETS,
-    isInline = false
-}: ColorPickerProps & { isInline?: boolean }) {
-    const [inputValue, setInputValue] = useState(color);
-
-    useEffect(() => {
-        setInputValue(color);
-    }, [color]);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        setInputValue(value);
-        if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-            onChange(value);
-        }
-    };
-
-    const pickerNode = (
-        <div className={cn("p-1 space-y-3", !isInline &&"p-3.5")}>
-            <style>{colorPickerStyles}</style>
-
-            <div className="custom-color-picker-wrapper block w-full">
-                <HexColorPicker
-                    color={color}
-                    onChange={onChange}
-                    className="!w-full !h-32"
-                />
-            </div>
-
-            {!isInline && (
-                <div className="space-y-3.5">
-                    <div className="flex items-center gap-2 p-2 bg-slate-50/80 rounded-xl border border-slate-100 shadow-inner group/hex">
-                        <Hash className="w-3.5 h-3.5 text-slate-400 group-focus-within/hex:text-primary transition-colors" />
-                        <input
-                            value={inputValue}
-                            onChange={handleInputChange}
-                            className="bg-transparent border-none outline-none font-mono text-xs font-bold text-slate-900 w-full"
-                            spellCheck={false}
-                        />
-                    </div>
-
-                    <div className="grid grid-cols-5 gap-2 px-0.5">
-                        {presets.map((p) => (
-                            <Button
-                                key={p}
-                                type="button"
-                                variant="ghost"
-                                onClick={() => onChange(p)}
-                                className={cn("w-full h-auto aspect-square p-0 rounded-full border border-slate-100 shadow-sm transition-all hover:scale-110 active:scale-90 flex items-center justify-center bg-transparent hover:bg-transparent",
-                                    color.toLowerCase() === p.toLowerCase() &&"ring-2 ring-primary ring-offset-1"
-                                )}
-                                style={{ backgroundColor: p }}
-                            >
-                                {color.toLowerCase() === p.toLowerCase() && (
-                                    <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" style={{ backgroundColor: p ==="#FFFFFF" ?"#cbd5e1" :"white" }} />
-                                )}
-                            </Button>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-
-    if (isInline) {
-        return (
-            <div className={cn("flex flex-col gap-2", className)}>
-                {label && (
-                    <label className="flex items-center gap-2 text-[13px] font-bold text-slate-700 mb-2">
-                        {icon}
-                        {label}
-                    </label>
-                )}
-                <div className="bg-white rounded-2xl border border-slate-100 p-2 shadow-sm">
-                    {pickerNode}
-                </div>
-            </div>
-        );
-    }
-
-    return (
-        <div className={cn("flex flex-col gap-2", className)}>
-            {label && (
-                <label className="flex items-center gap-2 text-[13px] font-bold text-slate-700 mb-2">
-                    {icon}
-                    {label}
-                </label>
-            )}
-            <div className="flex items-center gap-3">
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="relative w-11 h-11 shrink-0 p-0 rounded-xl hover:bg-transparent"
-                        >
-                            <div
-                                className="w-full h-full rounded-xl border border-slate-200 shadow-sm transition-all group-hover:shadow-md group-hover:border-primary/30"
-                                style={{ backgroundColor: color }}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5 rounded-xl">
-                                <Pipette className="w-4 h-4 text-white drop-shadow-sm" />
-                            </div>
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                        className="w-[240px] p-0 bg-white shadow-[0_10px_40px_-5px_rgba(0,0,0,0.15)] rounded-2xl border border-slate-200 overflow-hidden z-[1000]"
-                        side="bottom"
-                        align="start"
-                        sideOffset={8}
-                        collisionPadding={20}
-                    >
-                        {pickerNode}
-                    </PopoverContent>
-                </Popover>
-
-                <div className="relative flex-1 group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-primary transition-colors">
-                        <Hash className="w-4 h-4" />
-                    </div>
-                    <Input
-                        value={inputValue}
-                        onChange={handleInputChange}
-                        placeholder="#000000"
-                        className="w-full h-11 pl-10 pr-4 rounded-xl bg-slate-50 border border-slate-200 focus-visible:bg-white focus-visible:border-primary focus-visible:ring-4 focus-visible:ring-primary/5 outline-none font-mono transition-all font-bold text-sm text-slate-900 shadow-sm"
-                    />
-                </div>
-            </div>
-        </div>
-    );
-}
-
-const colorPickerStyles = `
-    .custom-color-picker-wrapper .react-colorful {
-        border-radius: 10px;
-        border: none;
-        width: 100% !important;
-    }
-    .custom-color-picker-wrapper .react-colorful__interactive {
-        outline: none;
-    }
-    .custom-color-picker-wrapper .react-colorful__saturation {
-
-        border-radius: 8px;
-        border-bottom: none;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
-    }
-    .custom-color-picker-wrapper .react-colorful__hue {
-        height: 12px;
-        border-radius: 10px;
-        margin-top: 12px;
-    }
-    .custom-color-picker-wrapper .react-colorful__pointer {
-        width: 18px;
-        height: 18px;
-        border: 3px solid #fff;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2), 0 0 0 1px rgba(0,0,0,0.05);
-    }
-    .custom-color-picker-wrapper .react-colorful__saturation-pointer {
-        border-radius: 50%;
-    }
-`;
-
-export function ColorPickerStyles() {
-    return <style>{colorPickerStyles}</style>;
-}
+export {
+  Root,
+  Control,
+  Area,
+  Slider,
+  SliderThumb,
+  Input,
+  Swatch,
+  EyeDropperButton,
+  ColorPicker,
+};

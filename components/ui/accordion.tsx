@@ -7,6 +7,7 @@ import { cn } from"@/lib/utils";
 
 // Базовые примитивы
 const AccordionRoot = AccordionPrimitive.Root;
+const AccordionHeader = AccordionPrimitive.Header;
 
 const AccordionItem = React.forwardRef<
     React.ElementRef<typeof AccordionPrimitive.Item>,
@@ -338,6 +339,32 @@ function AccordionSteps({
     );
 }
 
+const AccordionIcon = ({
+  as: IconComp,
+  className,
+  ...props
+}: {
+  as: React.ComponentType<{ className?: string }>;
+  className?: string;
+} & React.ComponentPropsWithoutRef<"svg">) => {
+  return <IconComp className={cn('size-5 shrink-0 text-slate-400', className)} {...props} />;
+};
+
+const AccordionArrow = React.forwardRef<
+  SVGSVGElement,
+  React.ComponentPropsWithoutRef<typeof ChevronDown>
+>(({ className, ...props }, ref) => (
+  <ChevronDown
+    ref={ref}
+    className={cn(
+      'size-4 text-slate-400 shrink-0 transition-transform duration-300',
+      className
+    )}
+    {...props}
+  />
+));
+AccordionArrow.displayName = 'AccordionArrow';
+
 export {
     Accordion,
     AccordionCards,
@@ -345,7 +372,13 @@ export {
     AccordionSettings,
     AccordionBordered,
     AccordionSteps,
-    // Примитивы для кастомных случаев
+    AccordionRoot as Root,
+    AccordionItem as Item,
+    AccordionTrigger as Trigger,
+    AccordionContent as Content,
+    AccordionIcon as Icon,
+    AccordionArrow as Arrow,
+    AccordionHeader as Header,
     AccordionRoot,
     AccordionItem,
     AccordionTrigger,

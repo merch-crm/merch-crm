@@ -127,7 +127,7 @@ export function CalculatorResultBlock({
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm">
             <TrendingUp className="h-5 w-5 text-indigo-600" />
           </div>
-          <h3 className="text-lg font-bold text-slate-900 tracking-tight">Результат расчёта</h3>
+          <h3 className="text-lg font-bold text-slate-900 ">Результат расчёта</h3>
         </div>
       </div>
       <div className="pt-6 space-y-3">
@@ -191,7 +191,7 @@ export function CalculatorResultBlock({
             step={5}
             className="w-full"
           />
-          <div className="flex justify-between text-xs sm:text-xs font-black tracking-tighter text-slate-400">
+          <div className="flex justify-between text-xs sm:text-xs font-black  text-slate-400">
             <span>0%</span>
             <span>150%</span>
             <span>300%</span>

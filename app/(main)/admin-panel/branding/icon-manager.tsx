@@ -10,7 +10,7 @@ import { Button } from"@/components/ui/button";
 import { cn } from"@/lib/utils";
 import { motion, AnimatePresence } from"framer-motion";
 import { ICON_GROUPS as INITIAL_ICON_GROUPS, SerializedIconGroup } from"@/app/(main)/dashboard/warehouse/category-utils";
-import { updateIconGroups } from"./actions";
+import { updateIconGroups } from "../actions/branding.actions";
 import { useToast } from"@/components/ui/toast";
 import {
     pluralize,

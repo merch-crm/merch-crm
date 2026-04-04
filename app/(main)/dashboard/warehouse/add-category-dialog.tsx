@@ -325,7 +325,7 @@ export function AddCategoryDialog({
                         <SubmitButton
                             text="Сохранить"
                             loadingText="Выполняется..."
-                            variant="btn-dark"
+                            variant="action"
                             className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50"
                         />
                     </div>

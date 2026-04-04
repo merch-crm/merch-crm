@@ -86,7 +86,7 @@ export const AntigravityLocationCard = memo(({
                 {/* Main Content */}
                 <div className="my-8 flex flex-col justify-center">
                     <div className="flex items-baseline gap-2">
-                        <span className="text-7xl font-black tracking-tighter text-white">
+                        <span className="text-7xl font-black  text-white">
                             {totalItems}
                         </span>
                         <Package className="h-6 w-6 text-[#9EFF00]/50" />

@@ -104,7 +104,26 @@ const TableCaption = React.forwardRef<
 ))
 TableCaption.displayName = "TableCaption"
 
+const TableRowDivider = React.forwardRef<
+  HTMLTableRowElement,
+  React.HTMLAttributes<HTMLTableRowElement>
+>(({ className, ...props }, ref) => (
+  <tr ref={ref} className={cn('h-px bg-stroke-soft-200', className)} {...props}>
+    <td colSpan={100} />
+  </tr>
+));
+TableRowDivider.displayName = 'TableRowDivider';
+
 export {
+    Table as Root,
+    TableHeader as Header,
+    TableBody as Body,
+    TableFooter as Footer,
+    TableHead as Head,
+    TableRow as Row,
+    TableCell as Cell,
+    TableCaption as Caption,
+    TableRowDivider as RowDivider,
     Table,
     TableHeader,
     TableBody,
@@ -113,4 +132,5 @@ export {
     TableRow,
     TableCell,
     TableCaption,
+    TableRowDivider,
 }

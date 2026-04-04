@@ -47,7 +47,7 @@ export function ConversionStatsCard({ stats, className }: ConversionStatsCardPro
           </ResponsiveContainer>
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
             <span className="text-2xl font-bold text-slate-900">{total}</span>
-            <span className="text-xs text-slate-400 tracking-wider font-semibold">Всего</span>
+            <span className="text-xs text-slate-400  font-semibold">Всего</span>
           </div>
         </div>
 

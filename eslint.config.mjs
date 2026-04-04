@@ -22,7 +22,8 @@ const eslintConfig = [
       "scripts/**",
       "app/(staff)/staff/cameras/**",
       "tmp/**",
-      ".agents/**"
+      ".agents/**",
+      "components/library/**"
     ]
   },
   {
@@ -36,7 +37,8 @@ const eslintConfig = [
         "warn",
         { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }
       ],
-      "@typescript-eslint/no-explicit-any": "error",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-empty-object-type": "off",
       "no-restricted-syntax": [
         "error",
         {

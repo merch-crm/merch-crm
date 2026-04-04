@@ -42,20 +42,20 @@ export const ThreadConsumptionCard = memo(function ThreadConsumptionCard({
           <div className="space-y-1">
             <p className="text-xs font-black text-slate-400 leading-none">Общий метраж</p>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-slate-900 tracking-tighter">
+              <span className="text-4xl font-black text-slate-900 ">
                 {Math.round(totalThreadConsumption).toLocaleString()}
               </span>
-              <span className="text-lg font-bold text-slate-400 tracking-tight">метра</span>
+              <span className="text-lg font-bold text-slate-400 ">метра</span>
             </div>
           </div>
 
           <div className="space-y-1">
             <p className="text-xs font-black text-slate-400 leading-none">Нагрузка (стежков)</p>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-slate-900 tracking-tighter">
+              <span className="text-4xl font-black text-slate-900 ">
                 {(totalStitches / 1000).toFixed(1)}
               </span>
-              <span className="text-lg font-bold text-slate-400 tracking-tight">K</span>
+              <span className="text-lg font-bold text-slate-400 ">K</span>
             </div>
           </div>
         </div>
@@ -66,7 +66,7 @@ export const ThreadConsumptionCard = memo(function ThreadConsumptionCard({
                  <Droplets className="w-5 h-5" />
               </div>
               <div>
-                 <p className="text-sm font-black text-indigo-900 tracking-tight leading-tight">Запас материалов</p>
+                 <p className="text-sm font-black text-indigo-900  leading-tight">Запас материалов</p>
                  <p className="text-xs font-bold text-indigo-600 mt-1">Рекомендуется иметь запас +15% при вышивке сложных макетов</p>
               </div>
            </div>

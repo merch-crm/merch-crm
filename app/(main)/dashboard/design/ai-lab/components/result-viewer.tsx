@@ -21,7 +21,7 @@ export function ResultViewer({ resultImage, isPending, processingType }: ResultV
                         <Sparkles className="w-5 h-5" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-black text-slate-900 tracking-wider mb-0.5">Результат</h3>
+                        <h3 className="text-sm font-black text-slate-900  mb-0.5">Результат</h3>
                         <p className="text-xs text-slate-400 font-bold">AI Обработка</p>
                     </div>
                 </div>
@@ -54,7 +54,7 @@ export function ResultViewer({ resultImage, isPending, processingType }: ResultV
                                         </div>
                                     </div>
                                     <div className="space-y-3">
-                                        <h4 className="text-2xl font-black text-slate-900 tracking-tight">Магия в процессе...</h4>
+                                        <h4 className="text-2xl font-black text-slate-900 ">Магия в процессе...</h4>
                                         <p className="text-xs font-black text-slate-400 opacity-60">
                                             Настраиваем пиксели и векторы
                                         </p>
@@ -65,7 +65,7 @@ export function ResultViewer({ resultImage, isPending, processingType }: ResultV
                                     <div className="w-28 h-28 rounded-[40px] bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto transition-all duration-700 group-hover:scale-105 shadow-sm group-hover:bg-white group-hover:shadow-2xl group-hover:shadow-slate-200">
                                         <Activity className="w-12 h-12 text-slate-200 group-hover:text-primary/50 transition-colors" />
                                     </div>
-                                    <p className="text-sm text-slate-400 max-w-[280px] mx-auto leading-relaxed font-bold tracking-wide opacity-80">
+                                    <p className="text-sm text-slate-400 max-w-[280px] mx-auto leading-relaxed font-bold  opacity-80">
                                         Здесь появится финальный вариант после обработки.
                                     </p>
                                 </div>

@@ -82,7 +82,7 @@ export default async function RFMPage() {
                     <div className="crm-card p-6 bg-white space-y-3 shadow-sm border-2 border-slate-100 rounded-3xl">
                         <div className="flex items-center gap-3 text-primary">
                             <Target className="w-5 h-5" />
-                            <h3 className="text-sm font-bold tracking-wider">Что такое RFM?</h3>
+                            <h3 className="text-sm font-bold ">Что такое RFM?</h3>
                         </div>
                         <div className="space-y-3">
                             <div>
@@ -103,7 +103,7 @@ export default async function RFMPage() {
                     <div className="crm-card p-6 bg-slate-900 text-white space-y-3 shadow-xl shadow-slate-200 rounded-3xl">
                         <div className="flex items-center gap-3">
                             <Users className="w-5 h-5 text-primary" />
-                            <h3 className="text-sm font-bold tracking-wider">Важность сегментации</h3>
+                            <h3 className="text-sm font-bold ">Важность сегментации</h3>
                         </div>
                         <p className="text-xs text-slate-400 leading-relaxed font-medium">
                             Разным сегментам нужны разные маркетинговые подходы.

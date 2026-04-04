@@ -10,6 +10,8 @@ echo -e "${GREEN}🚀 Запуск dev-окружения MerchCRM${NC}"
 echo ""
 
 # 1. Настройка адаптивного SSH-туннеля
+# setup-ssh-tunnel.mjs динамически определяет IP Docker-контейнеров (merch-crm-db, merch-crm-redis)
+# и пробрасывает туннели напрямую к ним. Postgres в Docker НЕ публикует порт на хост-машину.
 echo -e "${YELLOW}📌 Шаг 1: Настройка SSH-туннеля...${NC}"
 node scripts/setup-ssh-tunnel.mjs
 if [ $? -eq 0 ]; then
@@ -28,7 +30,7 @@ echo -e "${GREEN}✅ Пароль синхронизирован${NC}"
 
 # 2.5. Синхронизация файлов с продакшна
 echo -e "${YELLOW}📌 Шаг 2.5: Синхронизация файлов local-storage с продакшна...${NC}"
-mkdir -p local-storage && rsync -az -e "ssh -i ~/.ssh/antigravity_key" root@89.104.69.25:/root/merch-crm/local-storage/ ./local-storage/
+mkdir -p local-storage && rsync -az -e "ssh -i ~/.ssh/antigravity_key -o StrictHostKeyChecking=no" root@89.104.69.25:/root/merch-crm/local-storage/ ./local-storage/
 echo -e "${GREEN}✅ local-storage синхронизирован${NC}"
 
 # 3. Проверка подключения

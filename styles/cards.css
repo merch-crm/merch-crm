@@ -31,7 +31,7 @@
     border-radius: var(--radius-outer);
     padding: var(--current-padding);
     box-shadow: var(--crm-shadow-sm);
-    overflow: hidden;
+    overflow: visible;
     transition: all 0.3s ease;
     position: relative;
     z-index: 0;

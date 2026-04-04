@@ -1,0 +1,194 @@
+app/(main)/dashboard/warehouse/components/characteristic/ValueForm.tsx(185,55): error TS7006: Parameter 'val' implicitly has an 'any' type.
+app/providers.tsx(3,10): error TS2305: Module '"@heroui/react"' has no exported member 'HeroUIProvider'.
+components/branding-provider.tsx(12,5): error TS2353: Object literal may only specify known properties, and 'faviconUrl' does not exist in type 'BrandingSettings'.
+components/library/aceternity/components/3d-card.tsx(131,6): error TS2745: This JSX tag's 'children' prop expects type 'never' which requires multiple children, but only a single child was provided.
+components/library/aceternity/components/3d-card.tsx(132,7): error TS2322: Type 'RefObject<HTMLDivElement | null>' is not assignable to type 'never'.
+components/library/aceternity/components/3d-card.tsx(133,7): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/aceternity/components/hover-border-gradient.tsx(55,6): error TS2746: This JSX tag's 'children' prop expects a single child of type 'never', but multiple children were provided.
+components/library/aceternity/components/hover-border-gradient.tsx(56,7): error TS2322: Type '() => void' is not assignable to type 'never'.
+components/library/aceternity/components/hover-border-gradient.tsx(57,7): error TS2322: Type '() => void' is not assignable to type 'never'.
+components/library/aceternity/components/hover-border-gradient.tsx(58,7): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/alignui/components/accordion.tsx(67,6): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/accordion.tsx(89,9): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/alignui/components/accordion.tsx(99,9): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/alignui/components/alert.tsx(200,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, AlertSharedProps>, "status" | "as" | "size" | "className" | "variant">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, AlertSharedProps>, "status" | "as" | "size" | "className" | "variant">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/alert.tsx(215,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, AlertSharedProps>, "status" | "as" | "size" | "className" | "variant">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, AlertSharedProps>, "status" | "as" | "size" | "className" | "variant">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/badge.tsx(151,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, BadgeSharedProps>, "color" | "as" | "size" | "className" | "variant" | "disabled">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, BadgeSharedProps>, "color" | "as" | "size" | "className" | "variant" | "disabled">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/breadcrumbs.tsx(66,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/breadcrumbs.tsx(81,8): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/button.tsx(218,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, ButtonSharedProps>, "mode" | "as" | "size" | "className" | "variant">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, ButtonSharedProps>, "mode" | "as" | "size" | "className" | "variant">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/command-menu.tsx(154,6): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/compact-button.tsx(126,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, CompactButtonSharedProps>, "as" | "size" | "className" | "variant">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, CompactButtonSharedProps>, "as" | "size" | "className" | "variant">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/dropdown.tsx(172,6): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/hint.tsx(79,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, HintSharedProps>, "as" | "className" | "disabled" | "hasError">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, HintSharedProps>, "as" | "className" | "disabled" | "hasError">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/input.tsx(135,6): error TS2322: Type '{ className: string; } & Omit<InputIconProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<InputIconProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/segmented-control.tsx(33,7): error TS2322: Type 'Ref<HTMLElement>' is not assignable to type 'Ref<HTMLDivElement> | undefined'.
+  Type 'RefObject<HTMLElement | null>' is not assignable to type 'Ref<HTMLDivElement> | undefined'.
+    Type 'RefObject<HTMLElement | null>' is not assignable to type 'RefObject<HTMLDivElement | null>'.
+      Type 'HTMLElement | null' is not assignable to type 'HTMLDivElement | null'.
+        Property 'align' is missing in type 'HTMLElement' but required in type 'HTMLDivElement'.
+components/library/alignui/components/status-badge.tsx(137,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, StatusBadgeSharedProps>, "status" | "as" | "className" | "variant">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, StatusBadgeSharedProps>, "status" | "as" | "className" | "variant">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/tab-menu-h.tsx(65,9): error TS2322: Type 'Ref<HTMLElement>' is not assignable to type 'Ref<HTMLDivElement> | undefined'.
+  Type 'RefObject<HTMLElement | null>' is not assignable to type 'Ref<HTMLDivElement> | undefined'.
+    Type 'RefObject<HTMLElement | null>' is not assignable to type 'RefObject<HTMLDivElement | null>'.
+      Type 'HTMLElement | null' is not assignable to type 'HTMLDivElement | null'.
+        Property 'align' is missing in type 'HTMLElement' but required in type 'HTMLDivElement'.
+components/library/alignui/components/tab-menu-h.tsx(120,6): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/tab-menu-v.tsx(65,6): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/tab-menu-v.tsx(83,6): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T>, "as" | "className">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/tag.tsx(116,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, TagSharedProps>, "as" | "className" | "variant" | "disabled">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, TagSharedProps>, "as" | "className" | "variant" | "disabled">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/alignui/components/tag.tsx(159,11): error TS2322: Type '{ className: string; } & Omit<PolymorphicComponentProps<T, TagSharedProps>, "as" | "className" | "variant" | "disabled">' is not assignable to type 'IntrinsicAttributes & LibraryManagedAttributes<T, never>'.
+  Type '{ className: string; } & Omit<PolymorphicComponentProps<T, TagSharedProps>, "as" | "className" | "variant" | "disabled">' is not assignable to type 'LibraryManagedAttributes<T, never>'.
+components/library/custom/components/activity-feed.tsx(51,23): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/custom/components/bento-activity-stack.tsx(90,23): error TS2322: Type 'number' is not assignable to type 'never'.
+components/library/custom/components/bento-pulse-widget.tsx(77,23): error TS2322: Type 'number' is not assignable to type 'never'.
+components/library/custom/components/bento-pulse-widget.tsx(77,33): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/custom/components/bento-quick-actions.tsx(58,25): error TS2322: Type 'number' is not assignable to type 'never'.
+components/library/custom/components/bento-quick-actions.tsx(58,35): error TS2322: Type 'number' is not assignable to type 'never'.
+components/library/custom/components/bento-quick-actions.tsx(78,28): error TS2322: Type 'number' is not assignable to type 'never'.
+components/library/custom/components/bento-storage-drive.tsx(98,30): error TS2322: Type 'number' is not assignable to type 'never'.
+components/library/custom/components/buttons/bento-cta-glow.tsx(35,8): error TS2322: Type '{ children: ReactNode; disabled?: boolean | undefined; form?: string | undefined; formAction?: string | ((formData: FormData) => void | Promise<void>) | undefined; ... 284 more ...; className: string; }' is not assignable to type 'Omit<HTMLMotionProps<"button">, "ref">'.
+  Types of property 'onDrag' are incompatible.
+    Type 'DragEventHandler<HTMLButtonElement> | undefined' is not assignable to type '((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void) | undefined'.
+      Type 'DragEventHandler<HTMLButtonElement>' is not assignable to type '(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void'.
+        Types of parameters 'event' and 'event' are incompatible.
+          Type 'MouseEvent | TouchEvent | PointerEvent' is not assignable to type 'DragEvent<HTMLButtonElement>'.
+            Type 'MouseEvent' is missing the following properties from type 'DragEvent<HTMLButtonElement>': dataTransfer, nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/library/custom/components/buttons/bento-elevated-button.tsx(17,6): error TS2322: Type '{ children: ReactNode; disabled?: boolean | undefined; form?: string | undefined; formAction?: string | ((formData: FormData) => void | Promise<void>) | undefined; ... 284 more ...; className: string; }' is not assignable to type 'Omit<HTMLMotionProps<"button">, "ref">'.
+  Types of property 'onDrag' are incompatible.
+    Type 'DragEventHandler<HTMLButtonElement> | undefined' is not assignable to type '((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void) | undefined'.
+      Type 'DragEventHandler<HTMLButtonElement>' is not assignable to type '(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void'.
+        Types of parameters 'event' and 'event' are incompatible.
+          Type 'MouseEvent | TouchEvent | PointerEvent' is not assignable to type 'DragEvent<HTMLButtonElement>'.
+            Type 'MouseEvent' is missing the following properties from type 'DragEvent<HTMLButtonElement>': dataTransfer, nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/library/custom/components/buttons/bento-glass-button.tsx(17,6): error TS2322: Type '{ children: ReactNode; disabled?: boolean | undefined; form?: string | undefined; formAction?: string | ((formData: FormData) => void | Promise<void>) | undefined; ... 284 more ...; className: string; }' is not assignable to type 'Omit<HTMLMotionProps<"button">, "ref">'.
+  Types of property 'onDrag' are incompatible.
+    Type 'DragEventHandler<HTMLButtonElement> | undefined' is not assignable to type '((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void) | undefined'.
+      Type 'DragEventHandler<HTMLButtonElement>' is not assignable to type '(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void'.
+        Types of parameters 'event' and 'event' are incompatible.
+          Type 'MouseEvent | TouchEvent | PointerEvent' is not assignable to type 'DragEvent<HTMLButtonElement>'.
+            Type 'MouseEvent' is missing the following properties from type 'DragEvent<HTMLButtonElement>': dataTransfer, nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/library/custom/components/buttons/bento-magnetic-button.tsx(42,6): error TS2322: Type '{ children: Element; disabled?: boolean | undefined; form?: string | undefined; formAction?: string | ((formData: FormData) => void | Promise<void>) | undefined; ... 285 more ...; className: string; }' is not assignable to type 'Omit<HTMLMotionProps<"button">, "ref">'.
+  Types of property 'onDrag' are incompatible.
+    Type 'DragEventHandler<HTMLButtonElement> | undefined' is not assignable to type '((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void) | undefined'.
+      Type 'DragEventHandler<HTMLButtonElement>' is not assignable to type '(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void'.
+        Types of parameters 'event' and 'event' are incompatible.
+          Type 'MouseEvent | TouchEvent | PointerEvent' is not assignable to type 'DragEvent<HTMLButtonElement>'.
+            Type 'MouseEvent' is missing the following properties from type 'DragEvent<HTMLButtonElement>': dataTransfer, nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/library/custom/components/buttons/bento-shiny-button.tsx(21,6): error TS2322: Type '{ children: Element[]; disabled?: boolean | undefined; form?: string | undefined; formAction?: string | ((formData: FormData) => void | Promise<void>) | undefined; ... 284 more ...; className: string; }' is not assignable to type 'Omit<HTMLMotionProps<"button">, "ref">'.
+  Types of property 'onDrag' are incompatible.
+    Type 'DragEventHandler<HTMLButtonElement> | undefined' is not assignable to type '((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void) | undefined'.
+      Type 'DragEventHandler<HTMLButtonElement>' is not assignable to type '(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void'.
+        Types of parameters 'event' and 'event' are incompatible.
+          Type 'MouseEvent | TouchEvent | PointerEvent' is not assignable to type 'DragEvent<HTMLButtonElement>'.
+            Type 'MouseEvent' is missing the following properties from type 'DragEvent<HTMLButtonElement>': dataTransfer, nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/library/custom/components/buttons/bento-split-action-button.tsx(26,23): error TS2353: Object literal may only specify known properties, and 'bg' does not exist in type 'string[] | TargetAndTransition'.
+components/library/custom/components/buttons/bento-spring-button.tsx(27,6): error TS2322: Type '{ children: ReactNode; disabled?: boolean | undefined; form?: string | undefined; formAction?: string | ((formData: FormData) => void | Promise<void>) | undefined; ... 285 more ...; className: string; }' is not assignable to type 'Omit<HTMLMotionProps<"button">, "ref">'.
+  Types of property 'onDrag' are incompatible.
+    Type 'DragEventHandler<HTMLButtonElement> | undefined' is not assignable to type '((event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void) | undefined'.
+      Type 'DragEventHandler<HTMLButtonElement>' is not assignable to type '(event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => void'.
+        Types of parameters 'event' and 'event' are incompatible.
+          Type 'MouseEvent | TouchEvent | PointerEvent' is not assignable to type 'DragEvent<HTMLButtonElement>'.
+            Type 'MouseEvent' is missing the following properties from type 'DragEvent<HTMLButtonElement>': dataTransfer, nativeEvent, isDefaultPrevented, isPropagationStopped, persist
+components/library/custom/components/call-log.tsx(40,15): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/custom/components/charts/bento-revenue-gauge.tsx(38,87): error TS2322: Type '{ key: string; fill: string; cornerRadius: number; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'cornerRadius' does not exist on type 'IntrinsicAttributes & Props'.
+components/library/custom/components/communications/bento-comm-widgets.tsx(40,114): error TS2304: Cannot find name 'Smile'.
+components/library/custom/components/communications/bento-comm-widgets.tsx(104,70): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'size' does not exist in type 'Partial<unknown> & Attributes'.
+components/library/custom/components/communications/bento-comm-widgets.tsx(156,12): error TS2304: Cannot find name 'TrendingUp'.
+components/library/custom/components/lead-score-badge.tsx(32,13): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/custom/components/timeline-view.tsx(46,23): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/heroui/components/accordion/accordion.tsx(82,44): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+components/library/heroui/components/checkbox/checkbox-group.tsx(31,67): error TS2339: Property 'orientation' does not exist on type 'CheckboxGroupProps'.
+components/library/heroui/components/checkbox/checkbox-group.tsx(36,36): error TS2322: Type 'ClassNameOrFunction<CheckboxGroupRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: CheckboxGroupRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/checkbox/checkbox-group.tsx(37,7): error TS2322: Type '{ children: ("" | Element | undefined)[]; value?: string[] | undefined; id?: string | undefined; name?: string | undefined; defaultValue?: string[] | undefined; 'aria-describedby'?: string | undefined; ... 89 more ...; orientation: any; }' is not assignable to type 'IntrinsicAttributes & CheckboxGroupProps & RefAttributes<HTMLDivElement>'.
+  Property 'orientation' does not exist on type 'IntrinsicAttributes & CheckboxGroupProps & RefAttributes<HTMLDivElement>'.
+components/library/heroui/components/checkbox/checkbox-group.tsx(41,37): error TS2322: Type 'ChildrenOrFunction<CheckboxGroupRenderProps>' is not assignable to type 'ReactNode'.
+  Type '(values: CheckboxGroupRenderProps & { defaultChildren: ReactNode; }) => ReactNode' is not assignable to type 'ReactNode'.
+components/library/heroui/components/checkbox/checkbox.tsx(69,55): error TS2322: Type 'string | number | bigint | true | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | ((values: CheckboxRenderProps & { ...; }) => ReactNode)' is not assignable to type 'ReactNode'.
+  Type '(values: CheckboxRenderProps & { defaultChildren: ReactNode; }) => ReactNode' is not assignable to type 'ReactNode'.
+components/library/heroui/components/checkbox/radio-group.tsx(45,36): error TS2322: Type 'ClassNameOrFunction<RadioGroupRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: RadioGroupRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/checkbox/radio-group.tsx(50,37): error TS2322: Type 'ChildrenOrFunction<RadioGroupRenderProps>' is not assignable to type 'ReactNode'.
+  Type '(values: RadioGroupRenderProps & { defaultChildren: ReactNode; }) => ReactNode' is not assignable to type 'ReactNode'.
+components/library/heroui/components/chip/chip.tsx(51,18): error TS2320: Interface 'ChipProps' cannot simultaneously extend types 'HTMLAttributes<HTMLDivElement>' and 'VariantProps<TVReturnType<{ variant: { flat: string; outline: string; solid: string; }; color: { default: string; primary: string; secondary: string; success: string; warning: string; danger: string; }; }, undefined, "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border transition-c...'.
+  Named property 'color' of types 'HTMLAttributes<HTMLDivElement>' and 'VariantProps<TVReturnType<{ variant: { flat: string; outline: string; solid: string; }; color: { default: string; primary: string; secondary: string; success: string; warning: string; danger: string; }; }, undefined, "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border transition-c...' are not identical.
+components/library/heroui/components/chip/chip.tsx(57,34): error TS2322: Type 'string | undefined' is not assignable to type '"default" | "warning" | "success" | "primary" | "secondary" | "danger" | undefined'.
+  Type 'string' is not assignable to type '"default" | "warning" | "success" | "primary" | "secondary" | "danger" | undefined'.
+components/library/heroui/components/form/form.tsx(21,7): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/input/input-otp.tsx(21,6): error TS2322: Type '{ children: Element[]; defaultChecked?: boolean | undefined; defaultValue?: string | number | readonly string[] | undefined; suppressContentEditableWarning?: boolean | undefined; suppressHydrationWarning?: boolean | undefined; ... 272 more ...; className: string; }' is not assignable to type 'GroupProps'.
+  Types of property 'role' are incompatible.
+    Type 'AriaRole | undefined' is not assignable to type '"group" | "presentation" | "region" | undefined'.
+      Type '"status"' is not assignable to type '"group" | "presentation" | "region" | undefined'.
+components/library/heroui/components/input/meter.tsx(42,36): error TS2322: Type 'ClassNameOrFunction<MeterRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: MeterRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/input/number-field.tsx(37,36): error TS2322: Type 'ClassNameOrFunction<NumberFieldRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: NumberFieldRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/input/search-field.tsx(36,36): error TS2322: Type 'ClassNameOrFunction<SearchFieldRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: SearchFieldRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/input/slider.tsx(34,36): error TS2322: Type 'ClassNameOrFunction<SliderRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: SliderRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/input/text-field.tsx(32,36): error TS2322: Type 'ClassNameOrFunction<TextFieldRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: TextFieldRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/input/textarea.tsx(32,36): error TS2322: Type 'ClassNameOrFunction<TextFieldRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: TextFieldRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/label/description.tsx(27,7): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/label/label.tsx(17,7): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/modal/modal.tsx(98,9): error TS2322: Type 'ChildrenOrFunction<ModalRenderProps>' is not assignable to type 'ReactNode'.
+  Type '(values: ModalRenderProps & { defaultChildren: ReactNode; }) => ReactNode' is not assignable to type 'ReactNode'.
+components/library/heroui/components/modal/modal.tsx(130,9): error TS2322: Type 'ChildrenOrFunction<ModalRenderProps>' is not assignable to type 'ReactNode'.
+  Type '(values: ModalRenderProps & { defaultChildren: ReactNode; }) => ReactNode' is not assignable to type 'ReactNode'.
+components/library/heroui/components/pagination/pagination.tsx(53,78): error TS2552: Cannot find name 'HTMLLiElement'. Did you mean 'HTMLLIElement'?
+components/library/heroui/components/pagination/pagination.tsx(104,7): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/progress-bar/progress-circle.tsx(33,36): error TS2322: Type 'ClassNameOrFunction<ProgressBarRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: ProgressBarRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/select/list-box.tsx(49,41): error TS2339: Property 'children' does not exist on type '{ id?: Key | undefined; value?: T | undefined; textValue?: string | undefined; 'aria-label'?: string | undefined; isDisabled?: boolean | undefined; onAction?: (() => void) | undefined; ... 91 more ...; inert?: boolean | undefined; }'.
+components/library/heroui/components/select/list-box.tsx(49,51): error TS2322: Type 'ClassNameOrFunction<ListBoxItemRenderProps> | undefined' is not assignable to type 'ClassNameValue'.
+  Type '(values: ListBoxItemRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'ClassNameValue'.
+components/library/heroui/components/select/list-box.tsx(53,35): error TS2345: Argument of type 'ChildrenOrFunction<ListBoxItemRenderProps>' is not assignable to parameter of type 'string | ((v: ListBoxItemRenderProps & { defaultChildren: ReactNode; }) => string) | undefined'.
+  Type 'null' is not assignable to type 'string | ((v: ListBoxItemRenderProps & { defaultChildren: ReactNode; }) => string) | undefined'.
+components/library/heroui/components/select/list-box.tsx(63,52): error TS2339: Property 'title' does not exist on type 'SectionProps<T>'.
+components/library/heroui/components/select/select.tsx(70,44): error TS2349: This expression is not callable.
+  Type 'never' has no call signatures.
+components/library/heroui/components/separator/separator.tsx(27,7): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/spinner/spinner.tsx(23,18): error TS2320: Interface 'SpinnerProps' cannot simultaneously extend types 'SVGProps<SVGSVGElement>' and 'VariantProps<TVReturnType<{ size: { sm: string; md: string; lg: string; }; color: { primary: string; white: string; current: string; }; }, undefined, "animate-spin", { size: { sm: string; md: string; lg: string; }; color: { primary: string; white: string; current: string; }; }, undefined, TVReturnType<...>>>'.
+  Named property 'color' of types 'SVGProps<SVGSVGElement>' and 'VariantProps<TVReturnType<{ size: { sm: string; md: string; lg: string; }; color: { primary: string; white: string; current: string; }; }, undefined, "animate-spin", { size: { sm: string; md: string; lg: string; }; color: { primary: string; white: string; current: string; }; }, undefined, TVReturnType<...>>>' are not identical.
+components/library/heroui/components/spinner/spinner.tsx(39,47): error TS2322: Type 'string | undefined' is not assignable to type '"primary" | "current" | "white" | undefined'.
+  Type 'string' is not assignable to type '"primary" | "current" | "white" | undefined'.
+components/library/heroui/components/switch/switch.tsx(74,55): error TS2322: Type 'string | number | bigint | true | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...> | ((values: SwitchRenderProps & { ...; }) => ReactNode)' is not assignable to type 'ReactNode'.
+  Type '(values: SwitchRenderProps & { defaultChildren: ReactNode; }) => ReactNode' is not assignable to type 'ReactNode'.
+components/library/heroui/components/table/table.tsx(60,7): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/table/table.tsx(69,19): error TS2322: Type 'string | ((v: unknown) => string)' is not assignable to type 'string | undefined'.
+  Type '(v: unknown) => string' is not assignable to type 'string'.
+components/library/heroui/components/tabs/tabs.tsx(128,60): error TS2345: Argument of type 'ClassNameOrFunction<SharedElementRenderProps> | undefined' is not assignable to parameter of type 'string | undefined'.
+  Type '(values: SharedElementRenderProps & { defaultClassName: string | undefined; }) => string' is not assignable to type 'string'.
+components/library/reactbits/animations/star-border.tsx(21,6): error TS2746: This JSX tag's 'children' prop expects a single child of type 'never', but multiple children were provided.
+components/library/reactbits/animations/star-border.tsx(22,7): error TS2322: Type 'string' is not assignable to type 'never'.
+components/library/reactbits/animations/star-border.tsx(26,7): error TS2322: Type 'CSSProperties' is not assignable to type 'never'.

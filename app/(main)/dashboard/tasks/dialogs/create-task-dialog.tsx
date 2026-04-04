@@ -210,7 +210,7 @@ export function CreateTaskDialog({
               <Plus className="h-8 w-8 stroke-[2.5px]" />
             </div>
             <div>
-              <h2 className="text-3xl font-black tracking-tight text-slate-900 leading-none">
+              <h2 className="text-3xl font-black  text-slate-900 leading-none">
                 Новая задача
               </h2>
               <p className="text-sm font-bold text-slate-400 mt-2">

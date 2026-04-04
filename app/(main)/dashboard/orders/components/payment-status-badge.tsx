@@ -37,7 +37,7 @@ export function PaymentStatusBadge({ status, className }: PaymentStatusBadgeProp
   return (
     <div
       className={cn(
-        "flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-xs font-black  tracking-wider transition-all duration-300",
+        "flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-xs font-black   transition-all duration-300",
         statusClassName,
         className
       )}

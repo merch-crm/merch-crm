@@ -24,7 +24,7 @@ export const Variant4Action = () => {
                                     <div className={`w-1.5 h-10 rounded-full ${op.changeType === 'positive' ? 'bg-emerald-400' : 'bg-rose-400'}`}></div>
                                 </td>
                                 <td className="p-4 pl-6 w-32">
-                                    <div className={`text-2xl font-black tracking-tighter ${op.changeType === 'positive' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                                    <div className={`text-2xl font-black  ${op.changeType === 'positive' ? 'text-emerald-600' : 'text-rose-600'}`}>
                                         {op.change}
                                     </div>
                                 </td>

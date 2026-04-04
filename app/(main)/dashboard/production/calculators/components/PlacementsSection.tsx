@@ -75,7 +75,7 @@ export function PlacementsSection({
               👕
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 tracking-tight">Нанесения на изделия</h3>
+              <h3 className="text-lg font-bold text-slate-900 ">Нанесения на изделия</h3>
               <p className="text-sm text-slate-500 font-medium">
                 Выберите места нанесения и их количество
               </p>
@@ -231,7 +231,7 @@ export function PlacementsSection({
               <Badge 
                 key={p.areaId}
                 variant="outline" 
-                className="bg-white border-blue-100 text-blue-700 text-xs py-0 px-2 h-6 font-medium tracking-tight pr-1"
+                className="bg-white border-blue-100 text-blue-700 text-xs py-0 px-2 h-6 font-medium  pr-1"
               >
                 {p.count}× {String(p.areaName)} ({String(p.productName)})
                 <button 

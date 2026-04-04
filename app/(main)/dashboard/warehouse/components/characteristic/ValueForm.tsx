@@ -182,7 +182,7 @@ export function ValueForm({
                                     {showColorPicker && (
                                         <ColorPicker
                                             color={valueForm.colorHex}
-                                            onChange={val => setValueForm((prev: ValueFormState) => ({ ...prev, colorHex: val }))}
+                                            onChange={(val: string) => setValueForm((prev: ValueFormState) => ({ ...prev, colorHex: val }))}
                                             isInline={true}
                                         />
                                     )}

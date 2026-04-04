@@ -76,7 +76,7 @@ export function CalculatorHeader(props: CalculatorHeaderProps) {
           </Button>
         </Link>
         <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 truncate">{title}</h1>
+          <h1 className="text-xl sm:text-2xl font-bold  text-slate-900 truncate">{title}</h1>
           {description && (
             <p 
               className="text-xs sm:text-sm text-slate-500 font-medium line-clamp-1"
@@ -194,7 +194,7 @@ export function CalculatorSection({
   return (
     <div className={`crm-card hover:shadow-md transition-shadow duration-300 ${className || ''}`}>
       <div className="mb-6">
-        <h3 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h3>
+        <h3 className="text-xl font-bold text-slate-900 ">{title}</h3>
         {description && (
           <p className="text-sm text-slate-500 font-medium mt-1">{description}</p>
         )}

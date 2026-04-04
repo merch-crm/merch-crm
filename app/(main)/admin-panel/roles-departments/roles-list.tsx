@@ -106,7 +106,7 @@ export function RolesList({ roles, loading, onRefresh }: RolesListProps) {
                             <div className="mt-auto relative z-10 flex items-center justify-between pt-4 border-t border-slate-100/60">
                                 <div className="flex items-center gap-1.5 opacity-60">
                                      <Key className="w-3 h-3 text-slate-400" />
-                                     <span className="text-xs font-black text-slate-500 tracking-wider">Access Level</span>
+                                     <span className="text-xs font-black text-slate-500 ">Access Level</span>
                                 </div>
                                 <div className="flex gap-1.5">
                                     <button 

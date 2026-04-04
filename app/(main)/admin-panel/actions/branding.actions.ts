@@ -18,7 +18,6 @@ export async function getBrandingAction(): Promise<ActionResult<BrandingSettings
             companyName: "MerchCRM",
             logoUrl: null,
             primaryColor: "var(--primary)",
-            faviconUrl: null,
             radiusOuter: 24,
             radiusInner: 14,
             loginSlogan: "Ваша CRM для управления мерчем",
@@ -51,7 +50,6 @@ export async function getBrandingAction(): Promise<ActionResult<BrandingSettings
             ...val,
             primaryColor: (val.primaryColor as string) || (val.primary_color as string) || "var(--primary)",
             logoUrl: (val.logoUrl as string) || (val.system_logo as string) || (val.logo_url as string) || null,
-            faviconUrl: (val.faviconUrl as string) || (val.favicon_url as string) || null,
             radiusOuter: (val.radiusOuter as number) || (val.radius_outer as number) || 24,
             radiusInner: (val.radiusInner as number) || (val.radius_inner as number) || 14,
             isVibrationEnabled: val.isVibrationEnabled !== undefined ? (val.isVibrationEnabled as boolean) : (val.vibrationEnabled !== undefined ? (val.vibrationEnabled as boolean) : true),
@@ -67,7 +65,6 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
             companyName:"MerchCRM",
             logoUrl: null,
             primaryColor:"var(--primary)",
-            faviconUrl: null,
             backgroundColor:"#f2f2f2",
             currencySymbol:"₽"
         } as BrandingSettings;
@@ -76,7 +73,6 @@ export async function getBrandingSettings(): Promise<BrandingSettings> {
             companyName:"MerchCRM",
             logoUrl: null,
             primaryColor:"var(--primary)",
-            faviconUrl: null,
             backgroundColor:"#f2f2f2",
             currencySymbol:"₽"
         } as BrandingSettings;
@@ -104,7 +100,6 @@ export async function updateBrandingAction(data: BrandingSettings): Promise<Acti
         // Sync for legacy support
         if (data.primaryColor) saveData['primary_color'] = data.primaryColor;
         if (data.logoUrl !== undefined) saveData['logo_url'] = data.logoUrl;
-        if (data.faviconUrl !== undefined) saveData['favicon_url'] = data.faviconUrl;
         if (data.radiusOuter !== undefined) saveData['radius_outer'] = data.radiusOuter;
         if (data.radiusInner !== undefined) saveData['radius_inner'] = data.radiusInner;
 
@@ -137,9 +132,6 @@ export async function uploadBrandingFile(formData: FormData): Promise<ActionResu
         if (type === "logo") {
             processedBuffer = await sharp(buffer).resize({ width: 500, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer();
             fileName = `branding/logo_brand_crm.webp`;
-        } else if (type === "favicon") {
-            processedBuffer = await sharp(buffer).resize(48, 48).png().toBuffer();
-            fileName = `branding/favicon.png`;
         } else if (type === "background") {
             processedBuffer = await sharp(buffer).resize({ width: 1920, withoutEnlargement: true }).webp({ quality: 70 }).toBuffer();
             fileName = `branding/bg_${Date.now()}.webp`;

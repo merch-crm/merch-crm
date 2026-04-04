@@ -62,7 +62,7 @@ export function LabelPrinterSettings({
             <div className="flex-none px-6 pt-6 pb-2 space-y-3 shrink-0 bg-white z-10">
                 {/* Paper Size */}
                 <div className="space-y-2.5">
-                    <label className="text-xs font-bold text-slate-500 ml-1 tracking-wider">Размер этикетки</label>
+                    <label className="text-xs font-bold text-slate-500 ml-1 ">Размер этикетки</label>
                     <div className="grid grid-cols-2 gap-2">
                         {['58x40', '58x60', '75x120', 'a4', 'custom'].map((size) => (
                             <Button
@@ -108,7 +108,7 @@ export function LabelPrinterSettings({
 
                 {/* Layout Style Settings */}
                 <div className="space-y-2.5">
-                    <label className="text-xs font-bold text-slate-500 ml-1 tracking-wider">Стиль макета</label>
+                    <label className="text-xs font-bold text-slate-500 ml-1 ">Стиль макета</label>
                     <div className="grid grid-cols-2 gap-2">
                         {[
                             { id: 'standard', label: 'Стандарт' },
@@ -134,7 +134,7 @@ export function LabelPrinterSettings({
 
             {/* 3. Scrollable Characteristics Area (ONLY this scrolls) */}
             <div className={cn("flex-1 px-6 py-4 overflow-y-auto custom-scrollbar relative min-h-[100px]", uiState.layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
-                <label className="text-xs font-bold text-slate-500 ml-1 mb-3 tracking-wider block">Характеристики</label>
+                <label className="text-xs font-bold text-slate-500 ml-1 mb-3  block">Характеристики</label>
                 <div className="grid grid-cols-2 gap-x-1 gap-y-0.5">
                     <ToggleItem label="Артикул товара" checked={contentSettings.showArticle} onChange={(v) => setContentSettings(prev => ({ ...prev, showArticle: v }))} compact />
                     <ToggleItem label="Цена изделия" checked={contentSettings.showPrice} onChange={(v) => setContentSettings(prev => ({ ...prev, showPrice: v }))} compact />
@@ -169,7 +169,7 @@ export function LabelPrinterSettings({
             <div className="flex-none px-6 pt-4 pb-6 space-y-3 bg-white border-t border-slate-100 shrink-0 z-10 w-full">
                 {/* Custom Text */}
                 <div className={cn("space-y-2.5 transition-opacity", uiState.layoutStyle === 'minimal' && "opacity-40 pointer-events-none")}>
-                    <label className="text-xs font-bold text-slate-500 ml-1 tracking-wider">Дополнительная строка</label>
+                    <label className="text-xs font-bold text-slate-500 ml-1 ">Дополнительная строка</label>
                     <Input
                         type="text"
                         value={contentSettings.customText}
@@ -182,7 +182,7 @@ export function LabelPrinterSettings({
 
                 {/* Layout Alignment Settings */}
                 <div className="space-y-2.5">
-                    <label className="text-xs font-bold text-slate-500 ml-1 tracking-wider">Расположение контента</label>
+                    <label className="text-xs font-bold text-slate-500 ml-1 ">Расположение контента</label>
                     <div className="grid grid-cols-2 gap-2">
                         <Button
                             type="button"
@@ -223,7 +223,7 @@ export function LabelPrinterSettings({
             <div className="flex-none px-6 pt-5 pb-6 bg-white border-t border-slate-200 z-50 space-y-3 shadow-[0_-12px_30px_-15px_rgba(0,0,0,0.08)] shrink-0 w-full relative">
                 {/* Quantity Row */}
                 <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-500 ml-1 tracking-wider">Тираж</label>
+                    <label className="text-xs font-bold text-slate-500 ml-1 ">Тираж</label>
                     <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-2xl">
                         <Button type="button" size="icon" variant="outline" onClick={() => setUiState(prev => ({ ...prev, quantity: Math.max(1, prev.quantity - 1) }))} className="w-8 h-8 rounded-2xl bg-white border-slate-200 hover:bg-slate-100 text-slate-900 shadow-sm transition-all active:scale-90">
                             <Minus className="w-3.5 h-3.5" />

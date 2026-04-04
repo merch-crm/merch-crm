@@ -88,7 +88,7 @@ export function ItemImagePreview({
                 <div className="crm-card bg-white shadow-sm border border-slate-100 flex flex-col gap-3 animate-in slide-in-from-top-2 duration-500">
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold tracking-wider text-slate-400">Масштаб</span>
+                            <span className="text-xs font-bold  text-slate-400">Масштаб</span>
                             <span className="text-xs font-black text-slate-900">{Math.round(currentSettings.zoom * 100)}%</span>
                         </div>
                         <input
@@ -105,7 +105,7 @@ export function ItemImagePreview({
                     <div className="grid grid-cols-2 gap-3">
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold tracking-wider text-slate-400">Ось X</span>
+                                <span className="text-xs font-bold  text-slate-400">Ось X</span>
                                 <span className="text-xs font-black text-slate-900">{Math.round(currentSettings.x)}%</span>
                             </div>
                             <input
@@ -120,7 +120,7 @@ export function ItemImagePreview({
                         </div>
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold tracking-wider text-slate-400">Ось Y</span>
+                                <span className="text-xs font-bold  text-slate-400">Ось Y</span>
                                 <span className="text-xs font-black text-slate-900">{Math.round(currentSettings.y)}%</span>
                             </div>
                             <input

@@ -12,8 +12,11 @@ import { eq, and, gte, sql, desc } from "drizzle-orm";
 import { withAuth, ROLE_GROUPS, ROLES } from "@/lib/action-helpers";
 import { logAction } from "@/lib/audit";
 import { UpdateOrderStatusSchema, UpdateOrderPrioritySchema } from "../validation";
-import { ActionResult, okVoid, ERRORS } from "@/lib/types";
+import { ERRORS, ActionResult, okVoid } from "@/lib/types";
 import { releaseOrderReservation } from "./utils";
+import { sendEmail } from "@/lib/email";
+import { orderStatusEmailTemplate } from "@/lib/email-templates";
+import { getOrderStatusLabel, getOrderStatusColor } from "@/lib/utils/order-status";
 
 export async function updateOrderStatus(orderId: string, newStatus: string, reason?: string): Promise<ActionResult> {
     const validated = UpdateOrderStatusSchema.safeParse({ orderId, newStatus, reason });
@@ -23,7 +26,10 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
         await db.transaction(async (tx) => {
             const order = await tx.query.orders.findFirst({
                 where: eq(orders.id, orderId),
-                with: { items: { with: { inventory: true } } }
+                with: { 
+                    items: { with: { inventory: true } },
+                    client: true
+                }
             });
 
             if (!order) throw new Error("Заказ не найден");
@@ -106,6 +112,22 @@ export async function updateOrderStatus(orderId: string, newStatus: string, reas
 
             const { autoGenerateTasks } = await import("@/lib/automations");
             await autoGenerateTasks(orderId, newStatus, session.id!);
+
+            // 📧 Отправка Email-уведомления (Async, non-blocking for transaction)
+            if (order.client?.email) {
+                const statusLabel = getOrderStatusLabel(newStatus);
+                const statusColor = getOrderStatusColor(newStatus);
+                const clientName = `${order.client.firstName} ${order.client.lastName}`;
+                
+                // В Next.js Server Actions мы можем запустить промис без await, 
+                // если не хотим ждать завершения для ответа пользователю, 
+                // но лучше дождаться или обработать ошибку.
+                sendEmail({
+                    to: order.client.email,
+                    subject: `Обновление статуса заказа #${order.orderNumber} — MerchCRM`,
+                    html: orderStatusEmailTemplate(order.orderNumber || orderId, statusLabel, clientName, statusColor)
+                }).catch(err => console.error("[Email] Ошибка фоновой отправки:", err));
+            }
         });
 
         revalidatePath("/dashboard/orders");

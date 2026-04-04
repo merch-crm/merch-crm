@@ -221,7 +221,7 @@ export function PlacementProductModal({
             <div className="w-8 h-8 rounded-lg bg-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-200">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <DialogTitle className="text-2xl font-black text-slate-900 tracking-tight">
+            <DialogTitle className="text-2xl font-black text-slate-900 ">
               {product ? 'Редактирование изделия' : 'Новое изделие'}
             </DialogTitle>
           </div>

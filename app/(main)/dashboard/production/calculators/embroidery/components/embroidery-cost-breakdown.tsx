@@ -61,7 +61,7 @@ export const EmbroideryCostBreakdown = memo(function EmbroideryCostBreakdown({
             <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 group hover:border-slate-200 transition-colors">
               <div className="flex items-center gap-3">
                 <div className={`w-3 h-3 rounded-full ${segment.color}`} />
-                <span className="text-xs font-bold text-slate-600 tracking-tight">{segment.label}</span>
+                <span className="text-xs font-bold text-slate-600 ">{segment.label}</span>
               </div>
               <div className="text-right">
                 <p className="text-sm font-black text-slate-900 leading-none">{formatCurrency(segment.value)}</p>

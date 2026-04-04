@@ -16,8 +16,10 @@ interface SegmentedControlProps<T extends string> {
     value: T;
     onChange: (value: T) => void;
     className?: string;
-    /** Background color for the container; default: bg-slate-100/80 */
+    /** Background color for the container; default: bg-white */
     bgClassName?: string;
+    /** Optional stable ID for shared layout animations */
+    layoutId?: string;
 }
 
 /**
@@ -30,14 +32,16 @@ export function SegmentedControl<T extends string>({
     value,
     onChange,
     className,
-    bgClassName = "bg-slate-200/50",
+    bgClassName = "bg-white",
+    layoutId: propLayoutId,
 }: SegmentedControlProps<T>) {
-    const layoutId = React.useId();
+    const internalLayoutId = React.useId();
+    const activeLayoutId = propLayoutId || internalLayoutId;
 
     return (
         <div 
             className={cn(
-                "flex items-center gap-1.5 p-1 rounded-[18px] relative overflow-hidden border border-slate-200/60", 
+                "flex items-center gap-1.5 p-1 rounded-[18px] relative overflow-hidden border border-slate-200/80 shadow-sm", 
                 bgClassName, 
                 className
             )}
@@ -51,7 +55,7 @@ export function SegmentedControl<T extends string>({
                         type="button"
                         onClick={() => onChange(opt.value)}
                         className={cn(
-                            "relative flex-1 h-11 px-4 lg:px-6 rounded-[14px] font-bold text-[14px] transition-all flex items-center justify-center gap-2 outline-none z-10 active:scale-95",
+                            "relative flex-1 h-11 px-4 lg:px-6 rounded-[14px] font-bold text-[14px] flex items-center justify-center gap-2 outline-none z-10",
                             isActive
                                 ? "text-white"
                                 : "text-slate-500 hover:text-slate-900"
@@ -60,10 +64,10 @@ export function SegmentedControl<T extends string>({
                     >
                         {isActive && (
                             <motion.div
-                                layoutId={layoutId}
+                                layoutId={activeLayoutId}
                                 className="absolute inset-0 bg-slate-950 rounded-[14px] shadow-lg shadow-black/20 -z-10"
                                 initial={false}
-                                transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+                                transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
                             />
                         )}
                         {Icon && <Icon className={cn("w-4 h-4 transition-transform duration-300", isActive ? "text-white scale-110" : "text-slate-400")} />}

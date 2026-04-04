@@ -161,7 +161,7 @@ export function TaskListView({
             className="pl-10 bg-muted/40 border-none shadow-none focus-visible:ring-1 focus-visible:ring-primary/20"
           />
         </div>
-        <div className="text-xs text-muted-foreground font-medium tracking-wider">
+        <div className="text-xs text-muted-foreground font-medium ">
           Показано {paginatedTasks.length} из {filteredAndSortedTasks.length}
         </div>
       </div>
@@ -181,7 +181,7 @@ export function TaskListView({
                 />
               </TableHead>
               <TableHead
-                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs tracking-tight py-4"
+                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs  py-4"
                 onClick={() => handleSort("title")}
               >
                 <div className="flex items-center gap-2">
@@ -190,7 +190,7 @@ export function TaskListView({
                 </div>
               </TableHead>
               <TableHead
-                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs tracking-tight"
+                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs "
                 onClick={() => handleSort("status")}
               >
                 <div className="flex items-center gap-2">
@@ -199,7 +199,7 @@ export function TaskListView({
                 </div>
               </TableHead>
               <TableHead
-                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs tracking-tight"
+                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs "
                 onClick={() => handleSort("priority")}
               >
                 <div className="flex items-center gap-2">
@@ -207,11 +207,11 @@ export function TaskListView({
                   {sortField === "priority" && <SortIcon className="h-3.5 w-3.5 text-primary" />}
                 </div>
               </TableHead>
-              <TableHead className="font-semibold text-xs tracking-tight">
+              <TableHead className="font-semibold text-xs ">
                 Исполнители
               </TableHead>
               <TableHead
-                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs tracking-tight"
+                className="cursor-pointer hover:text-primary transition-colors font-semibold text-xs "
                 onClick={() => handleSort("deadline")}
               >
                 <div className="flex items-center gap-2">
@@ -284,7 +284,7 @@ export function TaskListView({
                     <TableCell>
                       <Badge
                         variant="outline"
-                        className="h-6 px-2 text-xs tracking-wide font-bold"
+                        className="h-6 px-2 text-xs  font-bold"
                         style={{
                           borderColor: `${statusConfig.color}40`,
                           color: statusConfig.color,
@@ -387,7 +387,7 @@ export function TaskListView({
       {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-2 pt-2">
-          <p className="text-xs text-muted-foreground font-medium tracking-wide">
+          <p className="text-xs text-muted-foreground font-medium ">
             Стр. <span className="text-foreground">{currentPage}</span> из {totalPages}
           </p>
           <div className="flex items-center gap-2">

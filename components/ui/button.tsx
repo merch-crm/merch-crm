@@ -38,7 +38,7 @@ export interface ButtonProps
     asChild?: boolean
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Root = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ({ className, variant, size, asChild = false, type = "button", ...props }, ref) => {
         const Comp = asChild ? Slot : "button"
         return (
@@ -51,6 +51,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )
     }
 )
-Button.displayName = "Button"
+Root.displayName = "Button"
 
-export { Button, buttonVariants }
+const Icon = ({
+  as: IconComp,
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<'svg'> & {
+  as: React.ComponentType<{ className?: string }>;
+}) => {
+  return <IconComp className={cn('size-5 shrink-0 text-slate-400', className)} {...props} />;
+};
+
+export { 
+  Root,
+  Root as Button,
+  Icon,
+  Icon as ButtonIcon,
+  buttonVariants 
+}

@@ -82,7 +82,7 @@ export const ItemWarehouseBreakdown = React.memo(({ stocks }: ItemWarehouseBreak
                                     <span className="text-[13px] font-bold text-foreground tabular-nums">
                                         {s.quantity.toLocaleString('ru-RU')}
                                     </span>
-                                    <span className="text-xs text-muted-foreground tracking-tight">шт.</span>
+                                    <span className="text-xs text-muted-foreground ">шт.</span>
                                 </div>
                             </div>
 

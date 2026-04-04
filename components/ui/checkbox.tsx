@@ -15,7 +15,7 @@ interface CheckboxProps {
     indeterminate?: boolean;
 }
 
-export function Checkbox({
+const Checkbox = ({
     checked,
     onCheckedChange,
     onChange,
@@ -23,7 +23,7 @@ export function Checkbox({
     disabled = false,
     id,
     indeterminate: propsIndeterminate
-}: CheckboxProps) {
+}: CheckboxProps) => {
     const isIndeterminate = checked === "indeterminate" || propsIndeterminate;
     const isChecked = checked === true && !propsIndeterminate;
 
@@ -87,3 +87,4 @@ export function Checkbox({
         </button>
     );
 }
+export { Checkbox as Root, Checkbox };

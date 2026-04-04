@@ -107,7 +107,7 @@ const ProductCard = memo(function ProductCard({
           </p>
           {product.pricePerUnit > 0 && (
             <div className="mt-1 flex items-center gap-1">
-                <span className="text-xs font-bold text-slate-400 tracking-tight">Заготовка:</span>
+                <span className="text-xs font-bold text-slate-400 ">Заготовка:</span>
                 <span className="text-xs font-bold text-slate-700">{formatCurrency(product.pricePerUnit)}</span>
             </div>
           )}

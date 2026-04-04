@@ -22,7 +22,7 @@ export const Variant1Match = () => {
                         <div className="w-12 h-12 bg-[#1C202E] text-white rounded-xl flex items-center justify-center shadow-sm">
                             <Activity className="w-6 h-6" />
                         </div>
-                        <h2 className="text-[22px] font-bold tracking-tight text-[#1E293B]">История операций</h2>
+                        <h2 className="text-[22px] font-bold  text-[#1E293B]">История операций</h2>
                     </div>
                     <button type="button" className="px-5 py-2.5 bg-black hover:bg-slate-800 text-white font-semibold rounded-[10px] transition-colors text-[14px] flex items-center gap-2">
                         <Download className="w-[18px] h-[18px]" /> Скачать
@@ -55,7 +55,7 @@ export const Variant1Match = () => {
                 {/* Table Area / Card List */}
                 <div className="bg-[#f8fafc] px-6 py-6 border-t border-slate-100 rounded-b-[24px]">
                     {/* Table Headers */}
-                    <div className="flex items-center px-6 mb-4 text-[12px] font-bold tracking-wider text-[#94A3B8] select-none">
+                    <div className="flex items-center px-6 mb-4 text-[12px] font-bold  text-[#94A3B8] select-none">
                         <div className="w-48 shrink-0 flex items-center gap-2.5">
                             <Layers className="w-[18px] h-[18px]" /> Тип
                         </div>
@@ -97,7 +97,7 @@ export const Variant1Match = () => {
 
                                 {/* Delta Badge */}
                                 <div className="w-28 shrink-0 px-4">
-                                    <span className={`inline-flex items-center justify-center px-3 py-1 rounded-md text-sm font-bold font-mono tracking-tight
+                                    <span className={`inline-flex items-center justify-center px-3 py-1 rounded-md text-sm font-bold font-mono 
                                         ${op.changeType === 'positive' ? 'bg-[#ebfbf3] text-[#10b981]' : 'text-[#f43f5e] bg-[#fff1f2]'}`}>
                                         {op.change}
                                     </span>

@@ -5,6 +5,12 @@ import { RoleBadge } from"@/components/ui/role-badge";
 import { Button } from"@/components/ui/button";
 import { StatisticsData, Task } from"../../types";
 import { ProfileView } from"../../hooks/useProfile";
+import dynamic from "next/dynamic";
+
+const Lanyard3D = dynamic(
+  () => import("@/components/library/custom/components/lanyard-3d").then((mod) => mod.Lanyard3D),
+  { ssr: false, loading: () => <div className="w-full h-full flex items-center justify-center text-white/50 text-xs font-medium animate-pulse">Загрузка Digital ID...</div> }
+);
 
 interface OverviewTabProps {
     statsData: StatisticsData | null;
@@ -131,17 +137,35 @@ export function OverviewTab({
 
             {/* Right Column - Info & Tasks */}
             <div className="lg:col-span-4 space-y-3">
-                <div className="crm-card !bg-primary !border-primary/50 text-white !rounded-3xl  shadow-2xl shadow-primary/30 relative overflow-hidden group">
+                <div className="crm-card !bg-primary !border-primary/50 text-white !rounded-3xl shadow-2xl shadow-primary/30 relative overflow-hidden group min-h-[380px] flex flex-col">
                     <div className="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all duration-700" />
                     <div className="absolute -left-10 bottom-0 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
 
-                    <div className="relative z-10">
-                        <h3 className="text-xl font-bold mb-3">{departmentName}</h3>
-                        <p className="text-white/70 text-sm font-medium leading-relaxed mb-8">
-                            Вы являетесь ключевым сотрудником отдела. Продолжайте в том же духе, ваш вклад важен для команды!
-                        </p>
-                        <div className="flex flex-wrap gap-2">
-                            <RoleBadge roleName={roleName} className="bg-white/20 text-white border-none shadow-none text-xs py-1 px-3" />
+                    <div className="relative z-10 flex flex-col h-full">
+                        <div className="mb-4">
+                            <h3 className="text-xl font-bold mb-3">{departmentName}</h3>
+                            <p className="text-white/70 text-sm font-medium leading-relaxed mb-4">
+                                Вы являетесь ключевым сотрудником отдела. Ваша Digital визитка доступна ниже.
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                <RoleBadge roleName={roleName} className="bg-white/20 text-white border-none shadow-none text-xs py-1 px-3" />
+                            </div>
+                        </div>
+
+                        {/* Merch CRM 3D Lanyard Badge container */}
+                        <div className="flex-1 mt-4 relative bg-black/10 rounded-2xl overflow-hidden border border-white/10 min-h-[220px]">
+                            <div className="absolute top-0 left-0 right-0 p-3 flex justify-between items-center z-20 pointer-events-none">
+                                <p className="text-xs font-bold text-white/50">Digital ID</p>
+                                <div className="w-1.5 h-1.5 rounded-full bg-white/40 animate-pulse" />
+                            </div>
+                            
+                            <div className="absolute inset-0 z-10">
+                                <Lanyard3D 
+                                    position={[0, 0, 30]} 
+                                    gravity={[0, -40, 0]} 
+                                    transparent={true} 
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -168,7 +168,7 @@ export function EquipmentPageClient({
                             <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                                 <Box className="w-4 h-4" />
                             </div>
-                            <span className="text-xs font-bold tracking-tight">Всего единиц</span>
+                            <span className="text-xs font-bold ">Всего единиц</span>
                         </div>
                         <div>
                             <span className="text-3xl font-bold text-slate-900">{stats.total}</span>
@@ -180,7 +180,7 @@ export function EquipmentPageClient({
                             <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
                                 <CheckCircle className="w-4 h-4" />
                             </div>
-                            <span className="text-xs font-bold tracking-tight">Активно</span>
+                            <span className="text-xs font-bold ">Активно</span>
                         </div>
                         <div>
                             <span className="text-3xl font-bold text-slate-900">{stats.byStatus.active || 0}</span>
@@ -192,7 +192,7 @@ export function EquipmentPageClient({
                             <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
                                 <Wrench className="w-4 h-4" />
                             </div>
-                            <span className="text-xs font-bold tracking-tight">На обслуживании</span>
+                            <span className="text-xs font-bold ">На обслуживании</span>
                         </div>
                         <div>
                             <span className="text-3xl font-bold text-slate-900">{stats.byStatus.maintenance || 0}</span>
@@ -204,7 +204,7 @@ export function EquipmentPageClient({
                             <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500">
                                 <XCircle className="w-4 h-4" />
                             </div>
-                            <span className="text-xs font-bold tracking-tight">Неактивно</span>
+                            <span className="text-xs font-bold ">Неактивно</span>
                         </div>
                         <div>
                             <span className="text-3xl font-bold text-slate-900">{stats.byStatus.inactive || 0}</span>

@@ -141,7 +141,7 @@ export function LineCard({
 
                             <div className="min-w-0">
                                 <h3 className="font-bold text-slate-900 truncate leading-tight">{line.name}</h3>
-                                <p className="text-xs font-bold text-slate-400 mt-0.5 tracking-tight">{line.code}</p>
+                                <p className="text-xs font-bold text-slate-400 mt-0.5 ">{line.code}</p>
                             </div>
                         </div>
 
@@ -210,15 +210,15 @@ export function LineCard({
                     <div className="grid grid-cols-3 gap-2">
                         <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex flex-col items-center group/stat">
                             <span className="text-xl font-bold text-slate-900">{line.stats.pending}</span>
-                            <span className="text-xs font-bold text-slate-400 mt-0.5 tracking-tight">Ожидают</span>
+                            <span className="text-xs font-bold text-slate-400 mt-0.5 ">Ожидают</span>
                         </div>
                         <div className="p-3 bg-blue-50/50 rounded-2xl border border-blue-100/50 flex flex-col items-center">
                             <span className="text-xl font-bold text-blue-600">{line.stats.inProgress}</span>
-                            <span className="text-xs font-bold text-blue-400 mt-0.5 tracking-tight">В работе</span>
+                            <span className="text-xs font-bold text-blue-400 mt-0.5 ">В работе</span>
                         </div>
                         <div className="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/50 flex flex-col items-center">
                             <span className="text-xl font-bold text-emerald-600">{line.stats.completed}</span>
-                            <span className="text-xs font-bold text-emerald-400 mt-0.5 tracking-tight">Готово</span>
+                            <span className="text-xs font-bold text-emerald-400 mt-0.5 ">Готово</span>
                         </div>
                     </div>
 
@@ -226,7 +226,7 @@ export function LineCard({
                     {line.capacity && (
                         <div className="pt-2">
                             <div className="flex items-center justify-between text-xs font-bold mb-2">
-                                <span className="text-slate-500 tracking-tight">Загрузка линии</span>
+                                <span className="text-slate-500 ">Загрузка линии</span>
                                 <span className={cn(
                                     utilizationPercent > 80 ? "text-rose-500" : 
                                     utilizationPercent > 50 ? "text-amber-500" : "text-emerald-500"

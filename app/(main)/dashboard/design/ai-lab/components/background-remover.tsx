@@ -30,7 +30,7 @@ export function BackgroundRemover({ isPending, processingType, onProcess }: Back
                 {isActive ? <Loader2 className="w-6 h-6 animate-spin" /> : <Eraser className="w-6 h-6" />}
             </div>
             <div className="text-left leading-tight">
-                <div className="text-sm font-black tracking-tight">Удалить фон</div>
+                <div className="text-sm font-black ">Удалить фон</div>
                 <div className="text-xs font-bold opacity-60 mt-0.5">Трассировка</div>
             </div>
         </Button>

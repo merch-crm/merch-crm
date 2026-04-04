@@ -29,7 +29,7 @@ export default function NotFound() {
                 </div>
 
                 <div className="flex-1 w-full flex flex-col items-center relative z-10">
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">Страница не найдена</h2>
+                    <h2 className="text-3xl font-extrabold text-slate-900  mb-3">Страница не найдена</h2>
                     <p className="text-sm font-medium text-slate-500 mb-8 max-w-[320px]">
                         Запрашиваемый ресурс был удален, перемещен или никогда не существовал.
                     </p>

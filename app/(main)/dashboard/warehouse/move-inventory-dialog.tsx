@@ -216,7 +216,7 @@ export function MoveInventoryDialog({
                             isLoading={isPending}
                             text="Переместить"
                             loadingText="Обработка..."
-                            variant="btn-dark"
+                            variant="action"
                             className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none"
                         />
                     </div>

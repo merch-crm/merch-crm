@@ -18,6 +18,8 @@ export default function Error({
         console.error('--------------------------------------------------')
     }, [error])
 
+
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-50 font-sans p-6">
             <div className="relative overflow-hidden rounded-[42px] border-2 border-slate-200/60 shadow-2xl shadow-slate-200/50 p-10 flex flex-col items-center text-center max-w-[480px] w-full bg-white/90 backdrop-blur-xl animate-in zoom-in-95 duration-700 ring-8 ring-slate-100/30">
@@ -34,7 +36,7 @@ export default function Error({
                 </div>
 
                 <div className="flex-1 w-full flex flex-col items-center relative z-10">
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-3">
+                    <h2 className="text-3xl font-extrabold text-slate-900  mb-3">
                         Произошла ошибка
                     </h2>
                     <p className="text-sm font-medium text-slate-500 mb-8 max-w-[320px]">

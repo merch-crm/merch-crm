@@ -66,7 +66,7 @@ export const DtgConsumptionCards = memo(function DtgConsumptionCards({
                 {item.name}
               </p>
               <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-black text-slate-900 tracking-tight">
+                  <span className="text-3xl font-black text-slate-900 ">
                     {item.value.toFixed(1)}
                   </span>
                   <span className="text-sm font-bold text-slate-400">{item.unit}</span>

@@ -134,7 +134,7 @@ export function StaffMonitoringClient({ initialReport }: Props) {
                                     </div>
                                     <div className="flex items-center gap-3">
                                         {emp.lateMinutes > 0 && (
-                                            <span className="px-2.5 py-1 text-xs leading-tight text-orange-600 font-bold tracking-wider bg-orange-50 rounded-lg border border-orange-100">
+                                            <span className="px-2.5 py-1 text-xs leading-tight text-orange-600 font-bold  bg-orange-50 rounded-lg border border-orange-100">
                                                 Опоздание {emp.lateMinutes}м
                                             </span>
                                         )}
@@ -180,7 +180,7 @@ function StatCard({
                 </div>
                 <div>
                     <p className="text-3xl font-bold text-slate-900 tabular-nums">{value}</p>
-                    <p className="text-sm font-semibold text-slate-500 mt-1 tracking-wide">{title}</p>
+                    <p className="text-sm font-semibold text-slate-500 mt-1 ">{title}</p>
                 </div>
             </CardBody>
         </Card>

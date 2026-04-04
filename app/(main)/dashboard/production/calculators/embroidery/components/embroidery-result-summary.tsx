@@ -38,7 +38,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                 <span className="text-sm font-black text-slate-400">Итоговая себестоимость</span>
               </div>
               <div className="flex items-baseline gap-3">
-                <p className="text-6xl font-black text-slate-900 tracking-tighter">
+                <p className="text-6xl font-black text-slate-900 ">
                   {formatCurrency(result.totalCost)}
                 </p>
                 {result.discountPercent > 0 && (
@@ -48,7 +48,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                   </Badge>
                 )}
               </div>
-              <div className="flex items-center gap-2 text-xl font-bold text-pink-600 pt-2 tracking-tight">
+              <div className="flex items-center gap-2 text-xl font-bold text-pink-600 pt-2 ">
                 <span>{formatCurrency(result.avgCostPerItem)}</span>
                 <span className="text-slate-300 font-light">/ средняя за ед.</span>
               </div>
@@ -60,7 +60,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                   <Calculator className="w-4 h-4" />
                   <span className="text-xs font-black leading-none">Изделий</span>
                 </div>
-                <p className="text-3xl font-black text-slate-800 tracking-tighter">{result.totalQuantity}<span className="text-lg font-bold ml-1">шт</span></p>
+                <p className="text-3xl font-black text-slate-800 ">{result.totalQuantity}<span className="text-lg font-bold ml-1">шт</span></p>
               </div>
 
               <div className="space-y-1">
@@ -68,7 +68,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                   <Sparkles className="w-4 h-4" />
                   <span className="text-xs font-black leading-none">Всего стежков</span>
                 </div>
-                <p className="text-3xl font-black text-slate-800 tracking-tighter">{result.totalStitches.toLocaleString()}</p>
+                <p className="text-3xl font-black text-slate-800 ">{result.totalStitches.toLocaleString()}</p>
               </div>
 
               <div className="space-y-1 col-span-2 sm:col-span-1">
@@ -76,7 +76,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                   <Scissors className="w-4 h-4" />
                   <span className="text-xs font-black leading-none">Дигитайзинг</span>
                 </div>
-                <p className="text-3xl font-black text-slate-800 tracking-tighter">{formatCurrency(result.totalDigitizingCost)}</p>
+                <p className="text-3xl font-black text-slate-800 ">{formatCurrency(result.totalDigitizingCost)}</p>
               </div>
             </div>
           </div>
@@ -97,7 +97,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                     {order.quantity}
                   </div>
                   <div>
-                    <p className="font-bold text-slate-900 tracking-tight leading-none mb-1">{order.garment.name}</p>
+                    <p className="font-bold text-slate-900  leading-none mb-1">{order.garment.name}</p>
                     <p className="text-xs font-black text-slate-400">Тираж изделия</p>
                   </div>
                 </div>
@@ -119,7 +119,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
                   </div>
                 )}
                 <div className="pt-2 border-t border-slate-100 flex justify-between items-center">
-                  <span className="text-lg font-black text-slate-900 tracking-tighter">
+                  <span className="text-lg font-black text-slate-900 ">
                     {formatCurrency(order.totalCost)}
                   </span>
                   <Badge variant="outline" className="text-xs font-black bg-pink-50 text-pink-600 border-pink-100">

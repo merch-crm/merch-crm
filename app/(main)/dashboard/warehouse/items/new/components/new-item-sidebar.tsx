@@ -48,7 +48,7 @@ export function NewItemSidebar({
                     </Button>
 
                     <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-bold text-slate-400 tracking-wider mb-0.5 leading-none">
+                        <span className="text-xs font-bold text-slate-400  mb-0.5 leading-none">
                             Шаг {steps.findIndex(s => s.id === step) !== -1 ? steps.findIndex(s => s.id === step) + 1 : 1} из {steps.filter(s => !(s.id === 1 && !hasSubCategories)).length}
                         </span>
                         <span className="text-sm font-bold text-slate-900 truncate leading-none">

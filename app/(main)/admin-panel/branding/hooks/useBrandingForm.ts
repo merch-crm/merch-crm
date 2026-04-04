@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { updateBrandingSettings } from "../actions";
+import { updateBrandingSettings } from "../../actions/branding.actions";
 import { BrandingSettingsSchema } from "../../validation";
 import { playSound, setGlobalSoundConfig } from "@/lib/sounds";
 import { useImageUploader } from "@/hooks/use-image-uploader";
@@ -15,7 +15,6 @@ export interface BrandingUiState {
     activeSoundTab: string;
     uploads: {
         logo: boolean;
-        favicon: boolean;
         background: boolean;
         printLogo: boolean;
         emailLogo: boolean;
@@ -39,7 +38,6 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         activeSoundTab: "notifications",
         uploads: {
             logo: false,
-            favicon: false,
             background: false,
             printLogo: false,
             emailLogo: false,
@@ -108,14 +106,13 @@ export function useBrandingForm(initialSettings: BrandingSettings) {
         setUi(prev => ({ ...prev, isLoading: false }));
     };
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "favicon" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => {
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo" | "favicon", soundKey?: string) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
         // Map internal types to uploader folders and settings keys
         const configMap: Record<string, { folder: string, field: keyof BrandingSettings, maxSize?: number }> = {
             logo: { folder: "branding", field: "logoUrl", maxSize: 2 },
-            favicon: { folder: "branding", field: "faviconUrl", maxSize: 1 },
             background: { folder: "branding", field: "loginBackgroundUrl", maxSize: 10 },
             print_logo: { folder: "branding", field: "printLogoUrl", maxSize: 5 },
             crm_background: { folder: "branding", field: "crmBackgroundUrl", maxSize: 10 },

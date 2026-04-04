@@ -280,7 +280,7 @@ export function CategorySelector({
 
                             {/* Text content */}
                             <div className="flex flex-col items-center w-full min-h-0">
-                                <h3 className={cn("font-bold text-slate-900 break-words leading-tight tracking-tight mt-0.5 sm:mt-0",
+                                <h3 className={cn("font-bold text-slate-900 break-words leading-tight  mt-0.5 sm:mt-0",
                                     isCompact ? "text-xs sm:text-sm mb-0" : "text-xs sm:text-lg mb-0 sm:mb-0.5"
                                 )}>
                                     {category.name}
@@ -293,7 +293,7 @@ export function CategorySelector({
                                             0 {pluralize(0, "активный SKU", "активных SKU", "активных SKU")}
                                         </p>
                                         <div className="w-full h-px bg-slate-100 mb-2" />
-                                        <div className="text-[32px] sm:text-[40px] font-black text-slate-900 leading-none tracking-tighter mb-0.5 sm:mb-1 mt-3">
+                                        <div className="text-[32px] sm:text-[40px] font-black text-slate-900 leading-none  mb-0.5 sm:mb-1 mt-3">
                                             0
                                         </div>
                                         <div className="text-xs font-bold mb-1 text-slate-500">
@@ -312,10 +312,10 @@ export function CategorySelector({
 
                                 {/* Stats — mobile only: instant hide when compact */}
                                 <div className={cn("xl:hidden flex flex-col items-center w-full", isCompact ? "hidden" : "block")}>
-                                    <div className="text-sm font-black text-slate-900 leading-none tracking-tighter mt-1">
+                                    <div className="text-sm font-black text-slate-900 leading-none  mt-1">
                                         0
                                     </div>
-                                    <div className="text-[8px] font-bold text-slate-400 mt-0.5">
+                                    <div className="text-[10px] font-bold text-slate-400 mt-0.5">
                                         ед.
                                     </div>
                                 </div>

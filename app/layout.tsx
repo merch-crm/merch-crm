@@ -16,8 +16,6 @@ export const revalidate = 0;
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const branding = await getBrandingSettings();
-    const faviconUrl = (branding as { faviconUrl?: string })?.faviconUrl;
-
     return {
       title: {
         template: "%s",
@@ -28,18 +26,10 @@ export async function generateMetadata(): Promise<Metadata> {
         index: false,
         follow: false,
       },
-      // Next.js automatically detects favicon.ico and icon.png in the app directory.
-      // We only provide icons if there's a custom dynamic override.
-      ...(faviconUrl ? {
-        icons: {
-          icon: faviconUrl,
-        }
-      } : {
-        icons: {
-          icon: '/favicon.ico',
-          apple: '/apple-icon.png',
-        }
-      }),
+      icons: {
+        icon: '/favicon.ico',
+        apple: '/apple-icon.png',
+      }
     };
   } catch (error) {
     console.error("Metadata generation error:", error);
@@ -49,13 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
     };
   }
 }
-
-import { BrandingProvider } from "@/components/branding-provider";
-import { SheetStackProvider } from "@/components/ui/sheet-stack-context";
-import { TypographyProvider } from "@/components/typography-provider";
-import { CsrfProvider } from "@/components/csrf-provider";
-
 import { headers } from "next/headers";
+import { Providers } from "./providers";
 
 export default async function RootLayout({
   children,
@@ -63,21 +48,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const branding = await getBrandingSettings();
-  const nonce = (await headers()).get("x-nonce") || "";
+  const headersList = await headers();
+  const nonce = headersList.get("x-nonce") || "";
 
   return (
     <html lang="ru" className={`${manrope.variable}`} suppressHydrationWarning nonce={nonce}>
       <body className="antialiased font-sans">
-
-        <CsrfProvider>
-          <BrandingProvider initialData={branding}>
-            <SheetStackProvider>
-              <TypographyProvider>
-                {children}
-              </TypographyProvider>
-            </SheetStackProvider>
-          </BrandingProvider>
-        </CsrfProvider>
+        <Providers branding={branding}>
+          {children}
+        </Providers>
         <ToastContainer />
       </body>
     </html>

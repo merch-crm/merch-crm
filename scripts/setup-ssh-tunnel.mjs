@@ -116,7 +116,7 @@ async function setup() {
     tunnel.unref();
 
     // Даем время на установку соединения
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     log('✅ SSH-туннель запущен в фоновом режиме');
     process.exit(0);

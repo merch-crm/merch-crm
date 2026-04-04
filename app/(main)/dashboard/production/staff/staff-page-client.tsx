@@ -89,7 +89,7 @@ export function StaffPageClient({
                         <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                             <Users className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Всего сотрудников</span>
+                        <span className="text-xs font-bold ">Всего сотрудников</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{staff.length}</span>
@@ -101,7 +101,7 @@ export function StaffPageClient({
                         <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Активных</span>
+                        <span className="text-xs font-bold ">Активных</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{activeStaffCount}</span>
@@ -113,7 +113,7 @@ export function StaffPageClient({
                         <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                             <Briefcase className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Задач в работе</span>
+                        <span className="text-xs font-bold ">Задач в работе</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{totalActiveTasks}</span>
@@ -125,7 +125,7 @@ export function StaffPageClient({
                         <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
                             <UserCheck className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Выполнено</span>
+                        <span className="text-xs font-bold ">Выполнено</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{totalCompletedTasks}</span>

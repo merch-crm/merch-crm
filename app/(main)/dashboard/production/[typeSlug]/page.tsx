@@ -77,7 +77,7 @@ export default async function ProductionTypePage({ params }: ProductionTypePageP
                                 className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: (applicationType.color as string) || undefined }}
                             />
-                            <h2 className="text-xl font-bold tracking-tight text-slate-900">{applicationType.name}</h2>
+                            <h2 className="text-xl font-bold  text-slate-900">{applicationType.name}</h2>
                             {applicationType.description && (
                                 <span className="text-sm font-medium text-slate-500">
                                     — {applicationType.description}

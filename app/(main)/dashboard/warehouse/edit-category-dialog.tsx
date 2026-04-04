@@ -351,7 +351,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         isLoading={uiState.isPending}
                         text="Сохранить"
                         loadingText="Сохранение..."
-                        variant="btn-dark"
+                        variant="action"
                         className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm transition-all"
                     />
                 </div>

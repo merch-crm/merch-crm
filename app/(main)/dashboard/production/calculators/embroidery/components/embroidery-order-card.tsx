@@ -152,8 +152,8 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
 
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-0.5">
-              <h4 className="font-bold text-slate-900 truncate tracking-tight">{garment.name}</h4>
-              <Badge variant="secondary" className="bg-slate-100 text-slate-600 text-xs font-bold tracking-tight">
+              <h4 className="font-bold text-slate-900 truncate ">{garment.name}</h4>
+              <Badge variant="secondary" className="bg-slate-100 text-slate-600 text-xs font-bold ">
                 {order.positions.length} поз.
               </Badge>
             </div>
@@ -182,7 +182,7 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
               <Minus className="w-3.5 h-3.5" />
             </Button>
             <div className="flex flex-col items-center px-2 min-w-[3rem]">
-              <span className="text-xs font-bold text-slate-400 tracking-tighter">Тираж</span>
+              <span className="text-xs font-bold text-slate-400 ">Тираж</span>
               <Input
                 type="number"
                 value={order.quantity === 0 ? '' : order.quantity}
@@ -311,7 +311,7 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
             {designs.length === 0 && (
               <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl flex items-center gap-3 text-amber-700">
                 <AlertCircle className="w-5 h-5 shrink-0" />
-                <p className="text-sm font-bold tracking-tight">Внимание: создайте хотя бы один дизайн сверху, чтобы выбрать его для этого изделия</p>
+                <p className="text-sm font-bold ">Внимание: создайте хотя бы один дизайн сверху, чтобы выбрать его для этого изделия</p>
               </div>
             )}
           </div>

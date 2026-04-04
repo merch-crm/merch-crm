@@ -78,7 +78,7 @@ export const DtgResultSummary = memo(function DtgResultSummary({
                     {formatCurrency(result.totalCost)}
                 </p>
                 <div className="flex items-center gap-2 mb-1.5 bg-white/10 px-3 py-1 rounded-full border border-white/20">
-                    <span className="text-xs font-black tracking-tight text-white/80">В среднем:</span>
+                    <span className="text-xs font-black  text-white/80">В среднем:</span>
                     <span className="text-lg font-black">{formatCurrency(result.avgCostPerItem)}</span>
                 </div>
             </div>
@@ -122,7 +122,7 @@ export const DtgResultSummary = memo(function DtgResultSummary({
                         </div>
                         <div>
                             <span className="text-sm font-black text-slate-800">{item.label}</span>
-                            <p className="text-xs font-bold text-slate-400 tracking-tight">{item.percent.toFixed(1)}% от чека</p>
+                            <p className="text-xs font-bold text-slate-400 ">{item.percent.toFixed(1)}% от чека</p>
                         </div>
                     </div>
                     <div className="text-right">
@@ -159,16 +159,16 @@ export const DtgResultSummary = memo(function DtgResultSummary({
                     <div>
                     <p className="font-black text-sm">{item.garment.name}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs font-bold tracking-tight opacity-60">{item.quantity} шт</span>
+                        <span className="text-xs font-bold  opacity-60">{item.quantity} шт</span>
                         <div className="w-1 h-1 rounded-full bg-current opacity-20" />
-                        <span className="text-xs font-bold tracking-tight opacity-60">{item.positions.length} поз.</span>
+                        <span className="text-xs font-bold  opacity-60">{item.positions.length} поз.</span>
                     </div>
                     </div>
                 </div>
                 
                 <div className="text-right">
                     <p className="font-black text-base">{formatCurrency(item.totalCost)}</p>
-                    <p className="text-xs font-bold tracking-tight opacity-60">{formatCurrency(item.costPerItem)} / шт</p>
+                    <p className="text-xs font-bold  opacity-60">{formatCurrency(item.costPerItem)} / шт</p>
                 </div>
                 </div>
             ))}

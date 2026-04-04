@@ -30,7 +30,7 @@ export function Upscaler({ isPending, processingType, onProcess }: UpscalerProps
                 {isActive ? <Loader2 className="w-6 h-6 animate-spin" /> : <Maximize className="w-6 h-6" />}
             </div>
             <div className="text-left leading-tight">
-                <div className="text-sm font-black tracking-tight">Увеличение</div>
+                <div className="text-sm font-black ">Увеличение</div>
                 <div className="text-xs font-bold opacity-60 mt-0.5">Upscale x2</div>
             </div>
         </Button>

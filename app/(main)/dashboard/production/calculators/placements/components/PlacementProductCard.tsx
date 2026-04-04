@@ -150,7 +150,7 @@ export function PlacementProductCard({
               {productType.icon}
             </div>
             <div className="min-w-0">
-              <h3 className="font-black text-xl text-slate-900 tracking-tight leading-tight mb-1 truncate">
+              <h3 className="font-black text-xl text-slate-900  leading-tight mb-1 truncate">
                 {product.name}
               </h3>
               <p className="text-xs font-bold text-slate-400">
@@ -204,7 +204,7 @@ export function PlacementProductCard({
               <p className="text-xs font-bold text-slate-400 mb-1">
                 Стоимость работы
               </p>
-              <p className="text-2xl font-black text-slate-900 tracking-tighter">
+              <p className="text-2xl font-black text-slate-900 ">
                 {minPrice === maxPrice
                   ? formatCurrency(minPrice)
                   : `${formatCurrency(minPrice)} – ${formatCurrency(maxPrice)}`}

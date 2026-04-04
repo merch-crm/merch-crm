@@ -185,7 +185,7 @@ export function LoyaltySettingsClient({ initialLevels }: LoyaltySettingsClientPr
             <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-3 text-white shadow-xl shadow-indigo-100 relative overflow-hidden">
                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-3">
                     <div className="space-y-2 text-center md:text-left">
-                        <h3 className="text-2xl font-bold tracking-tight flex items-center gap-3 justify-center md:justify-start">
+                        <h3 className="text-2xl font-bold  flex items-center gap-3 justify-center md:justify-start">
                             <ShieldCheck className="w-8 h-8" />
                             Автоматическая лояльность
                         </h3>
@@ -251,7 +251,7 @@ export function LoyaltySettingsClient({ initialLevels }: LoyaltySettingsClientPr
 
                                 <div className="flex-1">
                                     <div className="flex items-center gap-3">
-                                        <h5 className="font-bold text-slate-900 text-lg tracking-tight">{level.levelName}</h5>
+                                        <h5 className="font-bold text-slate-900 text-lg ">{level.levelName}</h5>
                                         {!level.isActive && (
                                             <span className="text-xs font-bold bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full">
                                                 Черновик

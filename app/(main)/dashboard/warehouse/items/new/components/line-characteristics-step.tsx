@@ -341,7 +341,7 @@ export function LineCharacteristicsStep({
                                 </div>
                             </div>
 
-                            <p className="relative z-10 text-xs font-bold text-white/40 mt-6 leading-none tracking-wide">
+                            <p className="relative z-10 text-xs font-bold text-white/40 mt-6 leading-none ">
                                 <span className="text-white/60">ПРИМЕР:</span> Футболка <span className="text-white">{displayName || "Muse 220"}</span> Овен Белый S
                             </p>
                         </div>

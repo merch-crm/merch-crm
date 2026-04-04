@@ -35,7 +35,7 @@ export function DesignHeader({
                     <FileText className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">{design.name}</h1>
+                    <h1 className="text-2xl font-bold ">{design.name}</h1>
                     <div className="flex items-center gap-3 mt-1 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                             <Layers className="h-3.5 w-3.5" />

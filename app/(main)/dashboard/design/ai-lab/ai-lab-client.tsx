@@ -208,8 +208,8 @@ export function AiLabClient() {
                             <Sparkles className="w-6 h-6" />
                         </div>
                         <div>
-                            <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">AI Лаборатория</h1>
-                            <p className="text-xs text-slate-500 font-bold tracking-wider opacity-70">
+                            <h1 className="text-3xl font-black text-slate-900  leading-none mb-1">AI Лаборатория</h1>
+                            <p className="text-xs text-slate-500 font-bold  opacity-70">
                                 Улучшение макетов и векторизация до 300 DPI
                             </p>
                         </div>
@@ -266,7 +266,7 @@ export function AiLabClient() {
                                     <ImageIcon className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-black text-slate-900 tracking-wider mb-0.5">Оригинал</h3>
+                                    <h3 className="text-sm font-black text-slate-900  mb-0.5">Оригинал</h3>
                                     <p className="text-xs text-slate-400 font-bold">Исходный файл</p>
                                 </div>
                             </div>
@@ -295,8 +295,8 @@ export function AiLabClient() {
                                                 isDragging ? "animate-bounce text-primary" : "group-hover:-translate-y-1 group-hover:text-primary"
                                             )} />
                                         </div>
-                                        <h3 className="text-2xl font-black mb-3 text-slate-900 tracking-tight">Загрузите макет</h3>
-                                        <p className="text-sm text-slate-400 mb-10 max-w-[320px] leading-relaxed font-bold tracking-wide opacity-80">
+                                        <h3 className="text-2xl font-black mb-3 text-slate-900 ">Загрузите макет</h3>
+                                        <p className="text-sm text-slate-400 mb-10 max-w-[320px] leading-relaxed font-bold  opacity-80">
                                             ИИ проанализирует изображение и предложит улучшения для печати.
                                         </p>
                                         <input 
@@ -377,7 +377,7 @@ export function AiLabClient() {
                                                         {processingType === "vectorize" ? <Loader2 className="w-6 h-6 animate-spin" /> : <FileCode className="w-6 h-6" />}
                                                     </div>
                                                     <div className="text-left leading-tight">
-                                                        <div className="text-base font-black tracking-tight">AI Vectorizer</div>
+                                                        <div className="text-base font-black ">AI Vectorizer</div>
                                                         <div className="text-xs font-bold opacity-60 mt-0.5">Конвертация растра в кривые SVG</div>
                                                     </div>
                                                 </Button>

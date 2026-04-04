@@ -77,7 +77,7 @@ export function TaskFiltersPanel({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Status */}
         <div className="space-y-2">
-          <Label className="text-xs font-semibold text-slate-500 tracking-wider">
+          <Label className="text-xs font-semibold text-slate-500 ">
             Статус
           </Label>
           <Select
@@ -98,7 +98,7 @@ export function TaskFiltersPanel({
 
         {/* Priority */}
         <div className="space-y-2">
-          <Label className="text-xs font-semibold text-slate-500 tracking-wider">
+          <Label className="text-xs font-semibold text-slate-500 ">
             Приоритет
           </Label>
           <Select
@@ -119,7 +119,7 @@ export function TaskFiltersPanel({
 
         {/* Department */}
         <div className="space-y-2">
-          <Label className="text-xs font-semibold text-slate-500 tracking-wider">
+          <Label className="text-xs font-semibold text-slate-500 ">
             Отдел
           </Label>
           <Select
@@ -139,7 +139,7 @@ export function TaskFiltersPanel({
 
         {/* Assignee */}
         <div className="space-y-2">
-          <Label className="text-xs font-semibold text-slate-500 tracking-wider">
+          <Label className="text-xs font-semibold text-slate-500 ">
             Исполнитель
           </Label>
           <Select

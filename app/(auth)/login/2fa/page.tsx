@@ -43,7 +43,7 @@ export default function TwoFactorPage() {
                         inputMode="numeric"
                         maxLength={6}
                         placeholder="000 000"
-                        className="text-center text-2xl tracking-wider h-14"
+                        className="text-center text-2xl  h-14"
                         autoFocus
                         required
                     />

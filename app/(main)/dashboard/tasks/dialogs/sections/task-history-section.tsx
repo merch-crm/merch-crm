@@ -158,7 +158,7 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
         return (
           <Badge
             variant="outline"
-            className="h-5 px-1.5 text-xs tracking-wider"
+            className="h-5 px-1.5 text-xs "
             style={{
               borderColor: config.color,
               color: config.color,
@@ -177,7 +177,7 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
         return (
           <Badge
             variant="outline"
-            className="h-5 px-1.5 text-xs tracking-wider"
+            className="h-5 px-1.5 text-xs "
             style={{
               borderColor: config.color,
               color: config.color,
@@ -229,8 +229,8 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
             {/* Content */}
             <div className="space-y-2">
               <div className="flex items-center gap-2 flex-wrap justify-between">
-                <span className="font-semibold text-sm tracking-tight">{config.label}</span>
-                <span className="text-xs text-muted-foreground tracking-wide font-medium">
+                <span className="font-semibold text-sm ">{config.label}</span>
+                <span className="text-xs text-muted-foreground  font-medium">
                   {formatRelativeDate(entry.createdAt)}
                 </span>
               </div>

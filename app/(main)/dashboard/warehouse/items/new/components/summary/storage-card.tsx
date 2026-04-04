@@ -42,7 +42,7 @@ export function StorageCard({ formData, storageLocations }: StorageCardProps) {
                 <div className="flex flex-col items-end gap-0.5">
                     <div className="text-xs font-black text-slate-400">остаток</div>
                     <div className="flex items-baseline gap-1">
-                        <div className="text-2xl sm:text-[28px] font-black text-slate-900 leading-none tracking-tight">{formData.quantity}</div>
+                        <div className="text-2xl sm:text-[28px] font-black text-slate-900 leading-none ">{formData.quantity}</div>
                         <span className="text-xs font-bold text-slate-400">шт</span>
                     </div>
                 </div>

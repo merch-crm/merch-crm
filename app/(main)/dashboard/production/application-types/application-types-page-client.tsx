@@ -102,7 +102,7 @@ function StatCard({ label, value, icon, iconBg = "bg-slate-50", iconColor = "tex
                 <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center", iconBg)}>
                     {pulse ? <div className={cn("w-2 h-2 rounded-full animate-pulse", iconBg.replace('bg-', 'bg-').split('-')[0] + '-500')} /> : icon}
                 </div>
-                <span className="text-xs font-bold tracking-tight">{label}</span>
+                <span className="text-xs font-bold ">{label}</span>
             </div>
             <div>
                 <span className="text-3xl font-bold text-slate-900">{value}</span>
@@ -118,7 +118,7 @@ function ActiveStatCard({ label, value }: { label: string, value: number }) {
                 <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 </div>
-                <span className="text-xs font-bold tracking-tight">{label}</span>
+                <span className="text-xs font-bold ">{label}</span>
             </div>
             <div>
                 <span className="text-3xl font-bold text-slate-900">{value}</span>
@@ -238,7 +238,7 @@ export function ApplicationTypesPageClient({
                     size="sm"
                     onClick={() => setIsSorting(!isSorting)}
                     className={cn(
-                        "h-11 px-5 rounded-xl border-slate-100 gap-2 font-bold text-xs tracking-tight transition-all duration-300",
+                        "h-11 px-5 rounded-xl border-slate-100 gap-2 font-bold text-xs  transition-all duration-300",
                         isSorting 
                             ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
                             : "bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-200"

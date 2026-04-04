@@ -275,7 +275,6 @@ describe('Admin Panel Actions', () => {
                 companyName: 'New name',
                 primaryColor: '#000000',
                 logoUrl: null,
-                faviconUrl: null,
                 radiusOuter: 24,
                 radiusInner: 14,
                 crmBackgroundBrightness: 100

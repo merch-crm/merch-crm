@@ -221,7 +221,7 @@ function StatItem({ label, value, primary, success }: { label: string, value: st
     <div className="space-y-1">
       <p className="text-xs font-bold text-muted-foreground">{label}</p>
       <p className={cn(
-        "text-xl font-black tracking-tight",
+        "text-xl font-black ",
         primary && "text-primary",
         success && "text-emerald-600"
       )}>

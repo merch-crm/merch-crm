@@ -67,7 +67,7 @@ export function ItemCharacteristicSection({ className }: { className?: string })
                                         <div>
                                             <h2 className="text-[12px] font-bold text-slate-400 mb-1 leading-none">Резерв и остаток</h2>
                                             <div className="flex items-baseline gap-1.5">
-                                                <span className="text-5xl md:text-6xl font-black text-slate-900 leading-none cursor-pointer tracking-tighter" onDoubleClick={handleStartEdit}>{currentQuantity}</span>
+                                                <span className="text-5xl md:text-6xl font-black text-slate-900 leading-none cursor-pointer " onDoubleClick={handleStartEdit}>{currentQuantity}</span>
                                                 <span className="text-sm font-black text-slate-400">{displayUnit}</span>
                                             </div>
                                         </div>

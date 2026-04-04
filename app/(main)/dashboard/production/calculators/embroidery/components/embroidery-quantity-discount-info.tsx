@@ -69,8 +69,8 @@ export const EmbroideryQuantityDiscountInfo = memo(function EmbroideryQuantityDi
                 <div className="flex flex-col">
                   <span className="text-xs font-black opacity-60">от {tier.minQuantity} шт</span>
                   <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-2xl font-black tracking-tight">-{tier.discount}%</span>
-                    <span className="text-xs font-bold opacity-60 tracking-tighter">экономии</span>
+                    <span className="text-2xl font-black ">-{tier.discount}%</span>
+                    <span className="text-xs font-bold opacity-60 ">экономии</span>
                   </div>
                 </div>
 
@@ -97,7 +97,7 @@ export const EmbroideryQuantityDiscountInfo = memo(function EmbroideryQuantityDi
                   <TrendingDown className="w-5 h-5 text-pink-400" />
                 </div>
                 <div>
-                   <p className="text-sm font-bold tracking-tight">
+                   <p className="text-sm font-bold ">
                      Добавьте еще <span className="text-pink-400 font-black">{nextDiscount.minQuantity - currentQuantity} изд.</span>
                    </p>
                     <p className="text-xs font-bold text-slate-400 mt-1">
@@ -114,7 +114,7 @@ export const EmbroideryQuantityDiscountInfo = memo(function EmbroideryQuantityDi
                 <Sparkles className="w-5 h-5" />
              </div>
               <div>
-                <p className="text-sm font-bold tracking-tight">Максимальная скидка!</p>
+                <p className="text-sm font-bold ">Максимальная скидка!</p>
                 <p className="text-xs font-bold text-white/70">Вы используете лучшую цену для данного тиража.</p>
               </div>
           </div>

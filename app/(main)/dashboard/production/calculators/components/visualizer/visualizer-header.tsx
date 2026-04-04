@@ -18,7 +18,7 @@ export function VisualizerHeader({ hasDesigns, onExportPNG, onExportSVG }: Visua
             <Layers className="h-5 w-5 text-indigo-600" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900 tracking-tight">Раскладка на плёнке</h3>
+            <h3 className="text-lg font-bold text-slate-900 ">Раскладка на плёнке</h3>
           </div>
         </div>
 

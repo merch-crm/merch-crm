@@ -3,9 +3,10 @@
 import React, { useState, useMemo, useId, useEffect } from "react";
 import { ChevronDown, Check, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import * as Popover from "./popover";
 import { AnimatePresence, motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
+import * as SelectPrimitive from "@radix-ui/react-select"
 
 export interface SelectOption {
     id: string;
@@ -18,14 +19,6 @@ export interface SelectOption {
 
 type LayoutType = "list" | "grid-2" | "grid-3" | "list-with-search";
 
-/**
- * Автоматически определяет оптимальный layout для выпадающего списка
- * Правила:
- * - 1-3 опции: вертикальный список
- * - 4-8 опций со средней длиной текста ≤10: grid 2 колонки
- * - 9-15 опций с короткой длиной текста ≤4: grid 3 колонки
- * - 16+ опций: вертикальный список с поиском
- */
 function getOptimalLayout(options: SelectOption[]): LayoutType {
     const count = options.length;
     if (count === 0) return "list";
@@ -68,7 +61,7 @@ export interface SelectProps extends SelectAppearance, SelectSearch {
     error?: boolean;
 }
 
-export function Select({
+function Select({
     options,
     value,
     onChange,
@@ -93,14 +86,12 @@ export function Select({
     const triggerId = useId();
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    // Prevent hydration mismatch: only render dynamic popover after mount
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // Автоматическое определение layout
     const computedLayout = useMemo(() => {
         if (gridColumns) {
             return gridColumns === 2 ? "grid-2" : "grid-3";
@@ -145,8 +136,8 @@ export function Select({
 
             {name && <input type="hidden" name={name} value={value} />}
 
-            <Popover open={mounted ? open : false} onOpenChange={setOpen}>
-                <PopoverTrigger asChild>
+            <Popover.Root open={mounted ? open : false} onOpenChange={setOpen}>
+                <Popover.Trigger asChild>
                     <button
                         id={triggerId}
                         type="button"
@@ -223,10 +214,10 @@ export function Select({
                             )} />
                         </div>
                     </button>
-                </PopoverTrigger>
+                </Popover.Trigger>
                 <AnimatePresence>
                     {open && mounted && (
-                        <PopoverContent
+                        <Popover.Content
                             className="!p-0 !bg-white !border !border-slate-200 !shadow-lg !w-auto !rounded-[12px] !ring-0 !overflow-hidden !duration-0 data-[state=open]:!animate-none data-[state=closed]:!animate-none"
                             align={align}
                             alignOffset={alignOffset}
@@ -294,7 +285,6 @@ export function Select({
                                                                 ]
                                                             )}
                                                         >
-                                                            {/* Grid layout content */}
                                                             {effectiveGridColumns && (
                                                                 <div className="flex items-center gap-2 w-full min-w-0">
                                                                     {option.icon && <div className="shrink-0 opacity-70 group-hover/item:opacity-100 transition-opacity">{option.icon}</div>}
@@ -310,11 +300,9 @@ export function Select({
                                                                 </div>
                                                             )}
 
-                                                            {/* List layout content */}
                                                             {!effectiveGridColumns && (
                                                                 <>
                                                                     <div className="flex items-center gap-3 min-w-0">
-                                                                        {/* Style indicator based on type */}
                                                                         {(option.color || option.icon) ? (
                                                                             <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all border",
                                                                                 isSelected ? "bg-white border-slate-200 text-slate-900 shadow-[0_1px_3px_rgba(0,0,0,0.05)]" : "bg-slate-50 border-slate-200/50 text-slate-500 group-hover/item:border-slate-300 group-hover/item:bg-white",
@@ -348,7 +336,6 @@ export function Select({
                                                                             )}
                                                                         </div>
                                                                     </div>
-
                                                                 </>
                                                             )}
                                                         </button>
@@ -363,12 +350,106 @@ export function Select({
                                     </div>
                                 </div>
                             </motion.div>
-                        </PopoverContent>
+                        </Popover.Content>
                     )}
                 </AnimatePresence>
-            </Popover>
+            </Popover.Root>
         </div>
     );
 }
 
+const Group = SelectPrimitive.Group
+const Value = SelectPrimitive.Value
 
+const SelectTrigger = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "flex h-12 w-full items-center justify-between rounded-[12px] border border-slate-200 bg-slate-50/80 px-4 py-2 text-sm font-semibold text-slate-900 ring-offset-background placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      className
+    )}
+    {...props}
+  >
+    {children}
+    <SelectPrimitive.Icon asChild>
+      <ChevronDown className="h-4 w-4 opacity-50" />
+    </SelectPrimitive.Icon>
+  </SelectPrimitive.Trigger>
+))
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
+
+const SelectContent = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
+>(({ className, children, position = "popper", ...props }, ref) => (
+  <SelectPrimitive.Portal>
+    <SelectPrimitive.Content
+      ref={ref}
+      className={cn(
+        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-[12px] border border-slate-200 bg-white text-slate-900 shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        position === "popper" &&
+          "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+        className
+      )}
+      position={position}
+      {...props}
+    >
+      <SelectPrimitive.Viewport
+        className={cn(
+          "p-1",
+          position === "popper" &&
+            "h-[var(--radix-select-content-available-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+        )}
+      >
+        {children}
+      </SelectPrimitive.Viewport>
+    </SelectPrimitive.Content>
+  </SelectPrimitive.Portal>
+))
+SelectContent.displayName = SelectPrimitive.Content.displayName
+
+const SelectItem = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>
+>(({ className, children, ...props }, ref) => (
+  <SelectPrimitive.Item
+    ref={ref}
+    className={cn(
+      "relative flex w-full cursor-default select-none items-center rounded-[8px] py-2 pl-8 pr-2 text-sm font-medium outline-none focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      className
+    )}
+    {...props}
+  >
+    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+      <SelectPrimitive.ItemIndicator>
+        <Check className="h-4 w-4" />
+      </SelectPrimitive.ItemIndicator>
+    </span>
+    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+  </SelectPrimitive.Item>
+))
+SelectItem.displayName = SelectPrimitive.Item.displayName
+
+const Root = SelectPrimitive.Root
+const Trigger = SelectTrigger;
+const Content = SelectContent;
+const Item = SelectItem;
+
+export { 
+    Select,
+    Root,
+    Group,
+    Value,
+    Trigger,
+    Content,
+    Item,
+    Root as SelectRoot,
+    Group as SelectGroup,
+    Value as SelectValue,
+    Trigger as SelectTrigger,
+    Content as SelectContent,
+    Item as SelectItem,
+}

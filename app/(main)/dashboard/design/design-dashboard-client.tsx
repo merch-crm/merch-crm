@@ -84,7 +84,7 @@ export function DesignDashboardClient({
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                    <h1 className="text-3xl font-extrabold tracking-tight">Дизайн</h1>
+                    <h1 className="text-3xl font-extrabold ">Дизайн</h1>
                     <p className="text-muted-foreground mt-1 text-base">
                         Управление дизайнами и задачами
                     </p>
