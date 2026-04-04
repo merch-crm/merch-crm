@@ -25,8 +25,6 @@ export * from './components/company-card';
 
 // Communication & Tasks
 export * from './components/email-preview';
-export * from './components/chat-bubble';
-export * from './components/call-log';
 export * from './components/task-card';
 export * from './components/event-card';
 export * from './components/timeline-view';

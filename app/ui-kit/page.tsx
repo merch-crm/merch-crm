@@ -3,7 +3,7 @@ import {
   RectangleHorizontal, CreditCard, TextCursorInput, ListFilter, Compass, Table2, UserCircle,
   MessageCircle, Type, Image, LayoutGrid, FileText,
   AlertTriangle, Wand2, Briefcase, BarChart3, Puzzle, ToggleLeft, FoldVertical, Database,
-  Calculator, MessageSquareText, Activity,
+  Calculator, Activity,
   CalendarDays, UploadCloud, QrCode, Palette
 } from 'lucide-react';
 import { cn } from '@/components/library/custom/utils/cn';
@@ -45,7 +45,6 @@ const categoryGroups = [
     title: "CRM-компоненты",
     description: "Специфичные модули",
     items: [
-      { slug: 'communications', label: 'Коммуникации', icon: MessageSquareText, count: 10, color: 'text-sky-600', bg: 'bg-sky-50' },
       { slug: 'statuses', label: 'Бейджи и статусы', icon: Activity, count: 5, color: 'text-indigo-500', bg: 'bg-indigo-50' },
       { slug: 'dates', label: 'Даты и время', icon: CalendarDays, count: 16, color: 'text-rose-600', bg: 'bg-rose-50' },
       { slug: 'uploads', label: 'Медиа и Загрузки', icon: UploadCloud, count: 12, color: 'text-purple-600', bg: 'bg-purple-50' },

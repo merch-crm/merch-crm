@@ -30,12 +30,13 @@ import {
   Database,
   SlidersHorizontal,
   Briefcase,
+  type LucideIcon,
 } from "lucide-react";
 
 interface Category {
   name: string;
   href: string;
-  icon: any;
+  icon: LucideIcon;
   count: number | null;
 }
 

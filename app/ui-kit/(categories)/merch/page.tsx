@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
-import { MerchStatusStepper } from "@/components/library/custom/components/merch/print-status-stepper";
+import { MerchStatusStepper, type MerchStatus } from "@/components/library/custom/components/merch/print-status-stepper";
 import { ProductSizeGrid } from "@/components/library/custom/components/merch/product-size-grid";
 import { motion } from 'framer-motion';
 import { Shirt, Trash2, Edit3, Fingerprint, Layers, CloudRain } from 'lucide-react';
 import { cn } from "@/components/library/custom/utils/cn";
 
 export default function MerchPage() {
-  const [selectedStatus, setSelectedStatus] = useState<any>('printing');
+  const [selectedStatus, setSelectedStatus] = useState<MerchStatus>('printing');
 
   return (
     <CategoryPage
@@ -25,7 +25,7 @@ export default function MerchPage() {
                  {['queued', 'printing', 'drying', 'quality_check', 'packed', 'shipped'].map(s => (
                    <button 
                      key={s}
-                     onClick={() => setSelectedStatus(s)}
+                     onClick={() => setSelectedStatus(s as MerchStatus)}
                      className={cn(
                        "px-3 py-1.5 text-[11px] font-black   rounded-xl transition-all",
                        selectedStatus === s ? "bg-primary-base text-white shadow-md" : "text-gray-400 hover:text-gray-600"
