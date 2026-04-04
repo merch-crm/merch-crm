@@ -24,8 +24,6 @@ import { BentoMonthSlider } from "@/components/library/custom/components/dates/B
 
 export default function DatesPage() {
   const today = startOfToday();
-  const [date, setDate] = useState<Date | undefined>(today);
-  const [pickerDate, setPickerDate] = useState<Date | undefined>(undefined);
   const [range, setRange] = useState<DateRange>({ from: subDays(today, 7), to: today });
   const [rangeWithPresets, setRangeWithPresets] = useState<DateRange>({ from: today, to: today });
   const [isTracking, setIsTracking] = useState(false);
