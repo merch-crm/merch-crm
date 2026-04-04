@@ -63,12 +63,12 @@ export function CommunicationSettings({ formData, setFormData, handleFileUpload,
                             <ColorPicker
                                 label="Цвет кнопок и ссылок"
                                 color={formData.emailPrimaryColor || "var(--primary)"}
-                                onChange={(c) => setFormData(prev => ({ ...prev, emailPrimaryColor: c }))}
+                                onChange={(c: string) => setFormData(prev => ({ ...prev, emailPrimaryColor: c }))}
                             />
                             <ColorPicker
                                 label="Цвет текста на кнопках"
                                 color={formData.emailContrastColor || "#ffffff"}
-                                onChange={(c) => setFormData(prev => ({ ...prev, emailContrastColor: c }))}
+                                onChange={(c: string) => setFormData(prev => ({ ...prev, emailContrastColor: c }))}
                             />
                         </div>
 

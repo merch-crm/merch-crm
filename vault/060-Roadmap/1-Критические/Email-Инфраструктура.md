@@ -16,6 +16,6 @@ tags: [feature, roadmap, integration, email]
 - [x] Базовая отправка через Resend API
 - [x] Система шаблонов (`message_templates`)
 - [ ] Настройка домена merchcrm.ru
-- [ ] Авто-уведомления при смене статусов заказов
+- [x] Авто-уведомления при смене статусов заказов
 - [ ] Массовые рассылки (Resend Broadcasts)
                                

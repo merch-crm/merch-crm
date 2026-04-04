@@ -117,14 +117,14 @@ export function ItemPlacementWrapper({
 
                     <div className={cn("px-3 py-1.5 rounded-full border border-current flex items-center gap-2", status.bg, status.text)}>
                         <div className={cn("w-2 h-2 rounded-full", status.color)} />
-                        <span className="text-xs font-bold tracking-wider">{status.label}</span>
+                        <span className="text-xs font-bold ">{status.label}</span>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between mb-4">
                     <div className="space-y-3">
                         <div className="flex items-baseline gap-1.5">
-                            <span className="text-6xl font-black text-slate-900 tracking-tighter">
+                            <span className="text-6xl font-black text-slate-900 ">
                                 {totalQuantity.toLocaleString('ru-RU')}
                             </span>
                             <span className="text-xl font-black text-slate-400">шт.</span>
@@ -169,7 +169,7 @@ export function ItemPlacementWrapper({
                         className="p-4 rounded-xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                         onDoubleClick={handleStartEdit}
                     >
-                        <span className="text-xs font-bold tracking-wider text-slate-400 block mb-2">Мин. остаток</span>
+                        <span className="text-xs font-bold  text-slate-400 block mb-2">Мин. остаток</span>
                         <div className="flex items-baseline gap-1.5">
                             {isEditing ? (
                                 <Input
@@ -190,7 +190,7 @@ export function ItemPlacementWrapper({
                         className="p-4 rounded-xl bg-slate-50 border border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                         onDoubleClick={handleStartEdit}
                     >
-                        <span className="text-xs font-bold tracking-wider text-slate-400 block mb-2">Крит. остаток</span>
+                        <span className="text-xs font-bold  text-slate-400 block mb-2">Крит. остаток</span>
                         <div className="flex items-baseline gap-1.5">
                             {isEditing ? (
                                 <Input

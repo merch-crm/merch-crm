@@ -1,0 +1,38 @@
+import { type Variants, type TargetAndTransition } from "framer-motion";
+
+export const anim = {
+  container: {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.06, delayChildren: 0.02 }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.96,
+      filter: "blur(4px)",
+      transition: { duration: 0.15, ease: "easeOut" }
+    }
+  } as Variants,
+  item: {
+    hidden: { opacity: 0, y: 12, filter: "blur(3px)", scale: 0.96 },
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      filter: "blur(0px)", 
+      scale: 1, 
+      transition: { type: "spring", stiffness: 350, damping: 25 } 
+    }
+  } as Variants,
+  icon: {
+    hidden: { opacity: 0, scale: 0.4, rotate: -20 },
+    show: { 
+      opacity: 1, 
+      scale: 1, 
+      rotate: 0, 
+      transition: { type: "spring", stiffness: 400, damping: 18 } 
+    }
+  } as Variants,
+  btnHover: { scale: 1.02, y: -1 } as TargetAndTransition,
+  btnTap: { scale: 0.97 } as TargetAndTransition
+};

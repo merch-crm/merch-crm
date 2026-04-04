@@ -383,7 +383,7 @@ export function AttributeCustomModal({
                                     <div className="space-y-1.5 w-full col-span-2 mt-2">
                                         <label className="text-sm font-bold text-slate-700 ml-1">Выбор цвета</label>
                                         <div className="p-4 bg-white border border-slate-200 rounded-[var(--radius-inner)] shadow-sm">
-                                            <ColorPicker color={customForm.hex} onChange={hex => setCustomForm(prev => ({ ...prev, hex }))} isInline={true} />
+                                            <ColorPicker color={customForm.hex} onChange={(hex: string) => setCustomForm(prev => ({ ...prev, hex }))} isInline={true} />
                                         </div>
                                     </div>
                                 )}

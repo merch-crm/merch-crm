@@ -81,11 +81,11 @@ export function ShiftEfficiencyCard({ data, className }: ShiftEfficiencyCardProp
         <div className="w-full space-y-3">
           <div className="flex justify-between items-end">
             <div className="space-y-1">
-              <div className="text-xs text-slate-400 tracking-wider">Прогресс</div>
+              <div className="text-xs text-slate-400 ">Прогресс</div>
               <div className="text-sm font-bold text-slate-900">{progress}%</div>
             </div>
             <div className="text-right space-y-1">
-              <div className="text-xs text-slate-400 tracking-wider">План</div>
+              <div className="text-xs text-slate-400 ">План</div>
               <div className="text-xs font-medium text-slate-600">{completedItems} / {totalItems} шт.</div>
             </div>
           </div>
@@ -95,7 +95,7 @@ export function ShiftEfficiencyCard({ data, className }: ShiftEfficiencyCardProp
           </div>
 
           <div className="flex items-center justify-between pt-2">
-            <div className="text-xs text-slate-400 tracking-wider">Осталось</div>
+            <div className="text-xs text-slate-400 ">Осталось</div>
             <div className="text-sm font-bold text-slate-900">{timeRemaining}</div>
           </div>
         </div>

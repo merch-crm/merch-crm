@@ -99,17 +99,17 @@ export const SublimationGroupsList = memo(function SublimationGroupsList({
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                         <Layers className="w-4 h-4 text-slate-400" />
-                        <span className="text-xs font-bold text-slate-500 tracking-tight">Групп:</span>
+                        <span className="text-xs font-bold text-slate-500 ">Групп:</span>
                         <span className="text-sm font-black text-slate-900">{stats.filledCount}</span>
                     </div>
                     <div className="flex items-center gap-2 border-l border-slate-200 pl-4">
                         <Package className="w-4 h-4 text-slate-400" />
-                        <span className="text-xs font-bold text-slate-500 tracking-tight">Изделий:</span>
+                        <span className="text-xs font-bold text-slate-500 ">Изделий:</span>
                         <span className="text-sm font-black text-slate-900">{stats.totalQuantity}</span>
                     </div>
                 </div>
                 <div className="bg-white px-3 py-1.5 rounded-xl shadow-sm border border-slate-200/50">
-                    <span className="text-xs font-bold text-primary tracking-tight mr-2">Площадь:</span>
+                    <span className="text-xs font-bold text-primary  mr-2">Площадь:</span>
                     <span className="text-sm font-black text-slate-900">{stats.totalAreaM2.toFixed(3)} м²</span>
                 </div>
             </div>
@@ -141,7 +141,7 @@ export const SublimationGroupsList = memo(function SublimationGroupsList({
         <Plus className="w-5 h-5 mr-2" />
         Добавить группу изделий
         {groups.length >= maxGroups && (
-          <span className="ml-2 text-xs font-bold tracking-tight opacity-60">(лимит: {maxGroups})</span>
+          <span className="ml-2 text-xs font-bold  opacity-60">(лимит: {maxGroups})</span>
         )}
       </Button>
     </div>

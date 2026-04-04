@@ -54,7 +54,6 @@ export const BrandingSettingsSchema = z.object({
     companyName: z.string().min(2, "Название компании должно быть не менее 2 символов"),
     primaryColor: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Некорректный HEX-код цвета").optional(),
     logoUrl: z.string().nullable().optional(),
-    faviconUrl: z.string().nullable().optional(),
     radiusOuter: z.number().min(0).max(100).optional(),
     radiusInner: z.number().min(0).max(100).optional(),
     loginSlogan: z.string().nullable().optional(),

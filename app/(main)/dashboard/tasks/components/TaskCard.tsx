@@ -78,7 +78,7 @@ export function TaskCard({ task, onClick, onDragStart, onDragEnd }: TaskCardProp
           {/* Отдел */}
           {task.department && (
             <span 
-              className="px-2 py-0.5 rounded-full text-xs font-bold text-white tracking-wider"
+              className="px-2 py-0.5 rounded-full text-xs font-bold text-white "
               style={{ backgroundColor: extTask.department?.color || "#94a3b8" }}
             >
               {task.department.name}
@@ -86,7 +86,7 @@ export function TaskCard({ task, onClick, onDragStart, onDragEnd }: TaskCardProp
           )}
           
           {/* Тип задачи */}
-          <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold tracking-wider">
+          <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-lg text-xs font-bold ">
             {task.type}
           </span>
 

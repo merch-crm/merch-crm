@@ -112,7 +112,7 @@ export function Navbar({
                                     : "M."}
                             </div>
                         )}
-                        <span className="font-bold text-lg text-slate-800 tracking-tight hidden lg:block ml-1">
+                        <span className="font-bold text-lg text-slate-800  hidden lg:block ml-1">
                             {branding.companyName || "MerchCRM"}
                         </span>
                     </Link>

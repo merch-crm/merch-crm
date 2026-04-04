@@ -69,7 +69,7 @@ function SimpleInput({
   return (
     <div className="space-y-2">
       <div className="flex flex-col ml-1">
-        {label && <Label className="text-sm font-black text-slate-900 tracking-tight">{label}</Label>}
+        {label && <Label className="text-sm font-black text-slate-900 ">{label}</Label>}
         {description && <p className="text-xs font-bold text-slate-400 mt-0.5">{description}</p>}
       </div>
       <div className="relative group">
@@ -127,11 +127,11 @@ function ActionCard({
       </div>
       <div className="space-y-1">
         <span className={cn(
-            "text-base font-black tracking-tight block",
+            "text-base font-black  block",
             active ? "text-white" : "text-slate-900"
         )}>{label}</span>
         <span className={cn(
-            "text-sm font-bold tracking-tight block",
+            "text-sm font-bold  block",
             active ? "text-white/60" : "text-slate-400"
         )}>{sublabel}</span>
       </div>
@@ -219,13 +219,13 @@ export function GlobalSettingsModal({
         {/* Хедер */}
         <div className="flex items-center justify-between p-10 pb-4">
           <div className="space-y-1">
-              <h2 className="text-3xl font-black text-slate-900 tracking-tighter leading-none flex items-center gap-3">
+              <h2 className="text-3xl font-black text-slate-900  leading-none flex items-center gap-3">
                  <div className="p-3 bg-indigo-50 rounded-[20px] border border-indigo-100 shadow-sm">
                     <IconSettings className="h-6 w-6 text-indigo-500" />
                  </div>
                  Настройки
               </h2>
-              <p className="text-[14px] font-bold text-slate-400 tracking-tight ml-16">
+              <p className="text-[14px] font-bold text-slate-400  ml-16">
                  Управляйте прибылью и ресурсами
               </p>
           </div>
@@ -341,13 +341,13 @@ export function GlobalSettingsModal({
                 <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-400">
                    <div className="flex items-center justify-between px-2">
                       <div className="space-y-0.5">
-                         <h3 className="text-xl font-black text-slate-900 tracking-tight">Список материалов</h3>
+                         <h3 className="text-xl font-black text-slate-900 ">Список материалов</h3>
                          <p className="text-sm font-bold text-slate-400">Пленки, краска, клей и др.</p>
                       </div>
                       <Button 
                         variant="ghost" 
                         onClick={() => setShowAdvanced(!showAdvanced)}
-                        className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors tracking-tight gap-2"
+                        className="text-xs font-black text-slate-400 hover:text-indigo-600 transition-colors  gap-2"
                       >
                          {showAdvanced ? <IconEyeOff className="w-3.5 h-3.5" /> : <IconEye className="w-3.5 h-3.5" />}
                          {showAdvanced ? "Скрыть тех. детали" : "Для профи"}
@@ -385,7 +385,7 @@ export function GlobalSettingsModal({
               <Button 
                 variant="ghost" 
                 onClick={onClose}
-                className="text-xs font-black text-slate-400 hover:text-slate-900 transition-colors tracking-tight px-0"
+                className="text-xs font-black text-slate-400 hover:text-slate-900 transition-colors  px-0"
               >
                 Отмена
               </Button>

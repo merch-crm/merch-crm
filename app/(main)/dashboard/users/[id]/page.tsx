@@ -36,7 +36,7 @@ export default async function UserPage({ params }: UserPageProps) {
     <div className="p-6 lg:p-[--padding-xl] space-y-3">
       <BreadcrumbLabelSync id={id} label={userName} />
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">
+        <h1 className="text-3xl font-black text-slate-900 ">
           Профиль сотрудника
         </h1>
         <p className="text-slate-500 font-medium">

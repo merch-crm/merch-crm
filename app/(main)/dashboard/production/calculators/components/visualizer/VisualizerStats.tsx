@@ -14,7 +14,7 @@ export function VisualizerStats({ layoutResult }: VisualizerStatsProps) {
           <Ruler className="h-4 w-4 text-indigo-600 group-hover/stat:text-white" />
         </div>
         <div className="flex flex-col">
-          <span className="text-xs font-black tracking-wider text-slate-400">Длина печати</span>
+          <span className="text-xs font-black  text-slate-400">Длина печати</span>
           <span className="text-sm font-bold text-slate-900">{(layoutResult.stats.totalLengthMm / 10).toFixed(1)} см</span>
         </div>
       </div>
@@ -25,7 +25,7 @@ export function VisualizerStats({ layoutResult }: VisualizerStatsProps) {
           <TrendingUp className="h-4 w-4 text-blue-600 group-hover/stat:text-white" />
         </div>
         <div className="flex flex-col">
-          <span className="text-xs font-black tracking-wider text-blue-400/80">Эффективность</span>
+          <span className="text-xs font-black  text-blue-400/80">Эффективность</span>
           <span className="text-sm font-bold text-blue-600">{layoutResult.stats.efficiency}%</span>
         </div>
       </div>
@@ -36,7 +36,7 @@ export function VisualizerStats({ layoutResult }: VisualizerStatsProps) {
           <Maximize className="h-4 w-4 text-emerald-600 group-hover/stat:text-white" />
         </div>
         <div className="flex flex-col">
-          <span className="text-xs font-black tracking-wider text-slate-400">Общая площадь</span>
+          <span className="text-xs font-black  text-slate-400">Общая площадь</span>
           <span className="text-sm font-bold text-slate-900 font-mono">{(layoutResult.stats.totalAreaMm2 / 1000000).toFixed(3)} м²</span>
         </div>
       </div>
@@ -47,7 +47,7 @@ export function VisualizerStats({ layoutResult }: VisualizerStatsProps) {
           <Layers className="h-4 w-4 text-amber-600 group-hover/stat:text-white" />
         </div>
         <div className="flex flex-col">
-          <span className="text-xs font-black tracking-wider text-slate-400">Принтов</span>
+          <span className="text-xs font-black  text-slate-400">Принтов</span>
           <span className="text-sm font-bold text-slate-900">{layoutResult.stats.printCount} шт</span>
         </div>
       </div>

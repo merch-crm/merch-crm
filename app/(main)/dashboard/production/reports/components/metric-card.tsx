@@ -48,7 +48,7 @@ export function MetricCard({
                 >
                     <Icon className="w-4 h-4" />
                 </div>
-                <span className="text-xs font-bold tracking-tight">{title}</span>
+                <span className="text-xs font-bold ">{title}</span>
             </div>
             <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-slate-900">

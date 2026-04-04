@@ -96,7 +96,7 @@ export function TwoFactorSetup() {
                             <p className="text-sm text-slate-500 mb-2">Сохраните эти коды в надежном месте. Они понадобятся, если вы потеряете доступ к телефону.</p>
                             <div className="grid grid-cols-2 gap-2 max-w-sm">
                                 {backupCodes.map((code) => (
-                                    <div key={code} className="bg-slate-100 p-2 text-center rounded text-sm font-mono tracking-wider">
+                                    <div key={code} className="bg-slate-100 p-2 text-center rounded text-sm font-mono ">
                                         {code}
                                     </div>
                                 ))}
@@ -108,7 +108,7 @@ export function TwoFactorSetup() {
                             <Input
                                 type="text"
                                 placeholder="Введите 6-значный код"
-                                className="text-center tracking-wider text-lg h-12"
+                                className="text-center  text-lg h-12"
                                 maxLength={6}
                                 onChange={(e) => {
                                     if (e.target.value.length === 6) {

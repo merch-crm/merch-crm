@@ -58,7 +58,7 @@ export function Breadcrumbs({
                 <>
                     <Link
                         href={homeHref}
-                        className="text-slate-400 hover:text-primary transition-all hover:scale-125 active:scale-90 flex-shrink-0"
+                        className="text-slate-400 hover:text-primary transition-all flex-shrink-0"
                     >
                         <Home className="w-3.5 h-3.5" />
                     </Link>
@@ -85,7 +85,7 @@ export function Breadcrumbs({
                                 {item.href && !isLast ? (
                                     <Link
                                         href={item.href}
-                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all hover:scale-[1.05] active:scale-95 truncate group"
+                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all truncate group"
                                     >
                                         {Icon && <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />}
                                         <span className="truncate">{item.label}</span>
@@ -94,7 +94,7 @@ export function Breadcrumbs({
                                     <button
                                         type="button"
                                         onClick={item.onClick}
-                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all hover:scale-[1.05] active:scale-95 truncate group"
+                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all truncate group"
                                     >
                                         {Icon && <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />}
                                         <span className="truncate">{item.label}</span>

@@ -194,13 +194,13 @@ function BoardColumn({
                         <Icon className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-bold text-slate-900 tracking-tight leading-none group flex items-center gap-1.5">
+                        <h3 className="text-sm font-bold text-slate-900  leading-none group flex items-center gap-1.5">
                             {label}
                             <span className="text-xs font-black text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full">
                                 {(clients || []).length}
                             </span>
                         </h3>
-                        <p className="text-xs font-bold text-slate-400 tracking-wider mt-1.5">
+                        <p className="text-xs font-bold text-slate-400  mt-1.5">
                             {Math.round(stats.amount).toLocaleString()} ₽
                         </p>
                     </div>

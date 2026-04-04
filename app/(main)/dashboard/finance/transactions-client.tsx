@@ -478,7 +478,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
  >
  Отмена
  </Button>
- <SubmitButton variant="btn-dark" isLoading={isLoading} className="h-11 w-full md:w-auto md:px-10 rounded-full sm:rounded-[var(--radius-inner)] font-bold shadow-sm shadow-slate-900/10 border-none transition-all active:scale-95">Сохранить</SubmitButton>
+ <SubmitButton variant="action" isLoading={isLoading} className="h-11 w-full md:w-auto md:px-10 rounded-full sm:rounded-[var(--radius-inner)] font-bold shadow-sm shadow-slate-900/10 border-none transition-all active:scale-95">Сохранить</SubmitButton>
  </div>
  </div>
  </form>

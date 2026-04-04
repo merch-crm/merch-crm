@@ -94,7 +94,7 @@ export function LostReasonModal({ open, onClose, onConfirm }: LostReasonModalPro
                                 </div>
                                 <span
                                     className={cn(
-                                        "font-bold text-sm tracking-tight",
+                                        "font-bold text-sm ",
                                         isSelected ? "text-red-900" : "text-slate-700"
                                     )}
                                 >
@@ -117,7 +117,7 @@ export function LostReasonModal({ open, onClose, onConfirm }: LostReasonModalPro
 
                 {/* Комментарий */}
                 <div className="space-y-3">
-                    <label className="text-xs font-bold tracking-wider text-slate-400 px-1">
+                    <label className="text-xs font-bold  text-slate-400 px-1">
                         Комментарий (необязательно)
                     </label>
                     <Textarea

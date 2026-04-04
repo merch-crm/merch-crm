@@ -272,7 +272,7 @@ export const ItemMediaSection = React.memo(({
                                             unoptimized
                                         />
                                         <div className="absolute inset-x-4 bottom-4 p-5 rounded-[24px] bg-white/60 backdrop-blur-xl border border-white/40 shadow-2xl opacity-0 group-hover/item:opacity-100 transition-all duration-500 translate-y-2 group-hover/item:translate-y-0">
-                                            <h4 className="text-xl font-bold text-slate-900 tracking-tight mb-0.5">{mainImg.label}</h4>
+                                            <h4 className="text-xl font-bold text-slate-900  mb-0.5">{mainImg.label}</h4>
                                             <span className="text-xs font-black text-slate-500 block">Основной ракурс</span>
                                         </div>
                                         <div className="absolute top-6 right-6 flex gap-1.5 opacity-0 group-hover/item:opacity-100 transition-all translate-x-4 group-hover/item:translate-x-0">

@@ -110,11 +110,11 @@ export function HeatmapView() {
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-100">
                   <div className="text-center">
-                    <p className="text-xs text-slate-400 font-bold tracking-wider">Факт</p>
+                    <p className="text-xs text-slate-400 font-bold ">Факт</p>
                     <p className="text-sm font-bold text-slate-700">{stage.avgDurationMinutes}м</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-xs text-slate-400 font-bold tracking-wider">План</p>
+                    <p className="text-xs text-slate-400 font-bold ">План</p>
                     <p className="text-sm font-bold text-slate-500">{stage.estimatedTime}м</p>
                   </div>
                   <div className="text-right">

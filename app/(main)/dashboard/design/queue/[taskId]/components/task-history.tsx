@@ -68,7 +68,7 @@ export function TaskHistory({ history }: TaskHistoryProps) {
 
                         <div className="flex-1 space-y-1.5 pb-2">
                             <div className="flex items-center justify-between">
-                                <span className="font-bold text-xs tracking-tight">{config.label}</span>
+                                <span className="font-bold text-xs ">{config.label}</span>
                                 <span className="text-xs tabular-nums text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                                     {format(new Date(item.createdAt), "d MMM, HH:mm", { locale: ru })}
                                 </span>

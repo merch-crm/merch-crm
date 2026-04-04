@@ -30,7 +30,7 @@ export default function ProductionSettingsPage() {
                     </Button>
                 </Link>
                 <div className="flex-1">
-                    <h1 className="text-2xl font-semibold tracking-tight">Настройки производства</h1>
+                    <h1 className="text-2xl font-semibold ">Настройки производства</h1>
                     <p className="text-muted-foreground">
                         Конфигурация раздела производства
                     </p>

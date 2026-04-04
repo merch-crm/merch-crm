@@ -145,7 +145,7 @@ function TransferSubmitButton() {
     const { pending } = useFormStatus();
     return (
         <Button
-            variant="btn-dark"
+            variant="action"
             type="submit"
             disabled={pending}
             className="w-full h-11 rounded-[var(--radius-inner)] font-bold text-sm active:scale-95 flex items-center justify-center gap-2"

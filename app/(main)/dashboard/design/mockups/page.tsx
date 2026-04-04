@@ -7,7 +7,7 @@ const ThreeViewer = dynamic(() => import("@/components/mockups/3d-viewer"), {
     loading: () => (
         <div className="w-full h-full min-h-[400px] rounded-2xl bg-slate-50/50 flex flex-col items-center justify-center text-slate-800 gap-3 border border-slate-200/60 shadow-sm backdrop-blur-xl">
             <div className="w-10 h-10 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin" />
-            <span className="text-xs font-bold text-slate-500 tracking-wide">Подготовка 3D сцены...</span>
+            <span className="text-xs font-bold text-slate-500 ">Подготовка 3D сцены...</span>
         </div>
     )
 });
@@ -141,7 +141,7 @@ export default function MockupsPage() {
                         <Palette className="w-5 h-5 text-indigo-600" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold text-slate-900 tracking-tight">3D визуализатор</h1>
+                        <h1 className="text-xl font-bold text-slate-900 ">3D визуализатор</h1>
                         <p className="text-xs text-slate-500 font-medium">Создание и предпросмотр дизайна в реальном времени</p>
                     </div>
                 </div>
@@ -258,7 +258,7 @@ export default function MockupsPage() {
                         <div className="grid grid-cols-2 gap-3">
                             {/* Окрас изделия */}
                             <div className="space-y-2">
-                                <Label className="text-xs font-bold text-slate-400 tracking-wider">ИЗДЕЛИЕ</Label>
+                                <Label className="text-xs font-bold text-slate-400 ">ИЗДЕЛИЕ</Label>
                                 <div className="flex flex-wrap gap-1.5">
                                     {COLORS.map((c) => (
                                         <button
@@ -281,7 +281,7 @@ export default function MockupsPage() {
 
                             {/* Фон сцены */}
                             <div className="space-y-2 border-l border-slate-100 pl-4">
-                                <Label className="text-xs font-bold text-slate-400 tracking-wider">СЦЕНА</Label>
+                                <Label className="text-xs font-bold text-slate-400 ">СЦЕНА</Label>
                                 <div className="flex flex-wrap gap-1.5">
                                     {["#020617", "#ffffff", "#f8fafc", "#f1f5f9", "#e2e8f0"].map((bg) => (
                                         <button

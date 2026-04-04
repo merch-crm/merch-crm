@@ -48,7 +48,7 @@ export const Variant6Timeline = () => {
                                         </div>
                                     </div>
                                     <p className="text-sm text-slate-600 mt-2 bg-slate-100/80 p-2.5 rounded-lg border border-slate-200">
-                                        <span className="text-slate-400 block text-xs tracking-wider font-semibold mb-1">Причина</span>
+                                        <span className="text-slate-400 block text-xs  font-semibold mb-1">Причина</span>
                                         {op.reason}
                                     </p>
                                 </div>

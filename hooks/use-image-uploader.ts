@@ -69,20 +69,21 @@ export function useImageUploader(options: UseImageUploaderOptions = {}) {
             const remainingSlots = maxFiles - currentCount;
             if (remainingSlots <= 0) return [];
 
-            const filesArray = Array.from(files);
-            const processedImages: ProcessedImage[] = [];
-
-            setIsProcessing(true);
-            let processedCount = 0;
-
-            const handleInternalFileProcessing = async (file: File): Promise<ProcessedImage | null> => {
-                try {
-                    return await compressImage(file, { maxSizeMB, type, maxWidth, maxHeight });
-                } catch (error) {
-                    console.error("Ошибка при сжатии изображения:", error);
-                    return null;
+            const filesArray = Array.from(files).filter(f => {
+                if (processedHashes.current.has(`${f.name}-${f.size}`)) return false;
+                if (f.size > maxOriginalSizeMB * 1024 * 1024) {
+                    onError?.(`Файл ${f.name} слишком большой. Максимум ${maxOriginalSizeMB}MB.`, f);
+                    return false;
                 }
-            };
+                if (!f.type.startsWith('image/')) {
+                    onError?.(`Файл ${f.name} не является изображением.`, f);
+                    return false;
+                }
+                return true;
+            });
+
+            const toProcess = filesArray.slice(0, remainingSlots);
+            setIsProcessing(true);
 
             const internalNetworkUpload = (index: number, processedFile: File, onComplete: (url: string) => void, onInternalError: (err: string) => void) => {
                 setUploadStates((prev) => ({ ...prev, [index]: { uploading: true, progress: 0, uploaded: false } }));
@@ -117,51 +118,49 @@ export function useImageUploader(options: UseImageUploaderOptions = {}) {
                 xhr.send(formData);
             };
 
-            for (let i = 0; i < filesArray.length; i++) {
-                if (processedCount >= remainingSlots) break;
-                const file = filesArray[i];
+            const uploadTask = async (file: File, index: number): Promise<ProcessedImage | null> => {
                 const fileHash = `${file.name}-${file.size}`;
-                if (processedHashes.current.has(fileHash)) continue;
-                if (file.size > maxOriginalSizeMB * 1024 * 1024) {
-                    onError?.(`Файл ${file.name} слишком большой. Максимум ${maxOriginalSizeMB}MB.`, file);
-                    continue;
-                }
-                if (!file.type.startsWith('image/')) {
-                    onError?.(`Файл ${file.name} не является изображением.`, file);
-                    continue;
-                }
                 processedHashes.current.add(fileHash);
-                const globalIndex = currentCount + processedCount;
 
-                const processed = await handleInternalFileProcessing(file);
-                if (processed) {
-                    await new Promise<void>((resolve) => {
+                try {
+                    const processed = await compressImage(file, { maxSizeMB, type, maxWidth, maxHeight });
+                    if (!processed) throw new Error("Compression failed");
+
+                    return await new Promise<ProcessedImage>((resolve, reject) => {
                         internalNetworkUpload(
-                            globalIndex,
+                            index,
                             processed.file,
-                            (url) => {
-                                const finalProcessed = { ...processed, preview: url };
-                                processedImages.push(finalProcessed);
-                                onFileProcessed?.(finalProcessed, globalIndex);
-                                resolve();
+                            (url: string) => {
+                                resolve({ ...processed, preview: url });
                             },
-                            (errMsj) => {
-                                onError?.(`Ошибка сети: ${errMsj}`, file);
+                            (errMsj: string) => {
                                 processedHashes.current.delete(fileHash);
-                                resolve();
+                                reject(new Error(errMsj));
                             }
                         );
                     });
-                    processedCount++;
-                } else {
-                    onError?.(`Не удалось сжать ${file.name}`, file);
+                } catch (error: unknown) {
+                    const message = error instanceof Error ? error.message : `Не удалось загрузить ${file.name}`;
+                    onError?.(message, file);
                     processedHashes.current.delete(fileHash);
+                    return null;
                 }
+            };
+
+            // Process in parallel with concurrency limit
+            const results: ProcessedImage[] = [];
+            const concurrency = 3;
+            for (let i = 0; i < toProcess.length; i += concurrency) {
+                const chunk = toProcess.slice(i, i + concurrency);
+                const chunkResults = await Promise.all(
+                    chunk.map((file, chunkIdx) => uploadTask(file, currentCount + i + chunkIdx))
+                );
+                results.push(...chunkResults.filter((r): r is ProcessedImage => r !== null));
             }
 
             setIsProcessing(false);
             setTimeout(() => setUploadStates({}), 1000);
-            return processedImages;
+            return results;
         },
         [maxFiles, maxSizeMB, maxWidth, maxHeight, type, maxOriginalSizeMB, folder]
     );

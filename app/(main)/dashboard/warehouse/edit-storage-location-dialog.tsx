@@ -108,7 +108,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                                 <div className="pt-2">
                                     <Button
                                         type="button"
-                                        variant="btn-dark"
+                                        variant="action"
                                         onClick={onClose}
                                         className="w-full h-11 rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-black/10 transition-all active:scale-[0.98]"
                                     >

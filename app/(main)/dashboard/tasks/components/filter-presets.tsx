@@ -139,7 +139,7 @@ export function FilterPresets({
           <div className="max-h-72 overflow-y-auto p-2">
             {/* System Presets */}
             <div className="mb-2">
-              <p className="text-xs font-semibold text-slate-400 tracking-wider px-3 py-2">
+              <p className="text-xs font-semibold text-slate-400  px-3 py-2">
                 Системные
               </p>
               {SYSTEM_PRESETS.map((preset) => (
@@ -158,7 +158,7 @@ export function FilterPresets({
             {/* User Presets */}
             {userPresets.length > 0 && (
               <div className="pt-2 border-t border-slate-100">
-                <p className="text-xs font-semibold text-slate-400 tracking-wider px-3 py-2">
+                <p className="text-xs font-semibold text-slate-400  px-3 py-2">
                   Мои пресеты
                 </p>
                 {userPresets.map((preset) => (

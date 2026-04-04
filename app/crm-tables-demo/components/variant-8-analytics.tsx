@@ -20,10 +20,10 @@ export const Variant8Analytics = () => {
                 <table className="w-full text-left">
                     <thead className="border-b border-slate-200 bg-slate-50/50">
                         <tr>
-                            <th className="px-6 py-4 text-xs tracking-wider text-slate-400 font-bold">Операция</th>
-                            <th className="px-6 py-4 text-xs tracking-wider text-slate-400 font-bold text-center w-24">Дельта</th>
-                            <th className="px-6 py-4 text-xs tracking-wider text-slate-400 font-bold">Контекст (Склад / Причина)</th>
-                            <th className="px-6 py-4 text-xs tracking-wider text-slate-400 font-bold text-right">Метрика Времени</th>
+                            <th className="px-6 py-4 text-xs  text-slate-400 font-bold">Операция</th>
+                            <th className="px-6 py-4 text-xs  text-slate-400 font-bold text-center w-24">Дельта</th>
+                            <th className="px-6 py-4 text-xs  text-slate-400 font-bold">Контекст (Склад / Причина)</th>
+                            <th className="px-6 py-4 text-xs  text-slate-400 font-bold text-right">Метрика Времени</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">

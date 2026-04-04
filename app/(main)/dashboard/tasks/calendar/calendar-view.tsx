@@ -139,7 +139,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
           {weekDays.map((day) => (
             <div
               key={day}
-              className="text-center text-xs font-semibold text-slate-500 py-3 tracking-wider"
+              className="text-center text-xs font-semibold text-slate-500 py-3 "
             >
               {day}
             </div>

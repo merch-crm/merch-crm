@@ -260,7 +260,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
  <Briefcase className="w-6 h-6" />
  </div>
  <div>
- <h3 className="font-black text-slate-900 text-lg leading-tight tracking-tight">{deptName}</h3>
+ <h3 className="font-black text-slate-900 text-lg leading-tight ">{deptName}</h3>
  <div className="flex items-center gap-2 mt-1">
  <span className="text-xs font-black text-slate-400">Департамент</span>
  <span className="w-1 h-1 rounded-full bg-slate-300" />
@@ -315,7 +315,7 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
  <td className="px-4 py-5 text-center">
  <div className="inline-flex flex-col items-center">
  <div className="font-black text-emerald-600 text-[14px]">+{emp.bonus.toLocaleString('ru-RU')} {currencySymbol}</div>
- <div className="text-xs font-bold text-slate-400 leading-none mt-1 tracking-tighter">за {emp.ordersCount} заказов</div>
+ <div className="text-xs font-bold text-slate-400 leading-none mt-1 ">за {emp.ordersCount} заказов</div>
  </div>
  </td>
  <td className="px-8 py-5 text-right">

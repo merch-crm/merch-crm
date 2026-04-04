@@ -171,7 +171,7 @@ export function ApplicationTypeCard({
                         </div>
                         <div className="min-w-0">
                             <h3 className="font-bold text-slate-900 truncate leading-tight">{type.name}</h3>
-                            <p className="text-xs font-black text-slate-400 mt-0.5 tracking-tight">
+                            <p className="text-xs font-black text-slate-400 mt-0.5 ">
                                 {type.slug}
                             </p>
                         </div>
@@ -215,11 +215,11 @@ export function ApplicationTypeCard({
 
                 {/* Badge Row */}
                 <div className="flex items-center gap-2">
-                    <div className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold tracking-wider">
+                    <div className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold ">
                         {categoryLabels[type.category]}
                     </div>
                     {!type.isActive && (
-                        <div className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-500 text-xs font-bold tracking-wider border border-rose-100">
+                        <div className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-500 text-xs font-bold  border border-rose-100">
                             Неактивен
                         </div>
                     )}
@@ -258,7 +258,7 @@ export function ApplicationTypeCard({
                 {/* Pricing Footer */}
                 {(type.baseCost || type.costPerUnit) && (
                     <div className="flex items-center justify-between pt-1">
-                        <span className="text-xs font-bold text-slate-400 tracking-tight">Стоимость:</span>
+                        <span className="text-xs font-bold text-slate-400 ">Стоимость:</span>
                         <div className="flex items-center gap-1.5">
                             <span className="text-sm font-black text-slate-900">{formatCost(type.baseCost)}</span>
                             {type.costPerUnit && (

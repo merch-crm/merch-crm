@@ -108,7 +108,7 @@ export function HubClient({ stats, plReport }: HubClientProps) {
  </div>
  <div>
  <p className="text-slate-400 text-sm font-bold mb-1">{card.label}</p>
- <div className="text-3xl font-black text-slate-900 tracking-tight">
+ <div className="text-3xl font-black text-slate-900 ">
  {card.value} <span className="text-lg text-slate-300 font-bold ml-1">{card.suffix}</span>
  </div>
  </div>

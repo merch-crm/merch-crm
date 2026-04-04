@@ -152,7 +152,7 @@ function BentoCard({ calc }: { calc: CalculatorItem }) {
             </div>
             
             <div className="mt-8 z-10 w-full lg:w-[85%]">
-              <h3 className="text-3xl font-bold tracking-tight mb-3 text-white">{calc.title}</h3>
+              <h3 className="text-3xl font-bold  mb-3 text-white">{calc.title}</h3>
               <p className="text-indigo-100/90 text-sm md:text-base leading-relaxed font-medium">{calc.description}</p>
             </div>
           </div>
@@ -181,7 +181,7 @@ function BentoCard({ calc }: { calc: CalculatorItem }) {
         </div>
         
         <div className="relative z-10 flex-1">
-          <h3 className="font-bold text-slate-900 text-lg tracking-tight mb-2 group-hover:text-indigo-600 transition-colors">
+          <h3 className="font-bold text-slate-900 text-lg  mb-2 group-hover:text-indigo-600 transition-colors">
             {calc.title}
           </h3>
           <p className="text-slate-500 text-sm leading-relaxed font-medium">{calc.description}</p>

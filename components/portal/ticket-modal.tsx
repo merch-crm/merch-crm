@@ -79,7 +79,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                     <form onSubmit={handleSubmit}>
                         <div className="p-8 space-$1-3">
                             <DialogHeader>
-                                <DialogTitle className="text-2xl font-black text-slate-900 tracking-tight">Создать тикет</DialogTitle>
+                                <DialogTitle className="text-2xl font-black text-slate-900 ">Создать тикет</DialogTitle>
                                 <DialogDescription className="text-slate-500 font-bold">
                                     Опишите проблему или запрос на помощь. Мы постараемся ответить как можно быстрее.
                                 </DialogDescription>

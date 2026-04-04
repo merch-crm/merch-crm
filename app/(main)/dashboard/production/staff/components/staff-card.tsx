@@ -111,7 +111,7 @@ export function StaffCard({
                         </div>
                         <div className="min-w-0">
                             <h3 className="font-bold text-slate-900 truncate leading-tight">{member.name}</h3>
-                            <p className="text-xs font-bold text-slate-400 mt-0.5 tracking-tight">{member.position || "Производство"}</p>
+                            <p className="text-xs font-bold text-slate-400 mt-0.5 ">{member.position || "Производство"}</p>
                         </div>
                     </div>
 
@@ -155,11 +155,11 @@ export function StaffCard({
                 <div className="grid grid-cols-2 gap-2">
                     <div className="p-3 bg-blue-50/50 rounded-2xl border border-blue-100/50 flex flex-col items-center">
                         <span className="text-xl font-bold text-blue-600">{member.stats.active}</span>
-                        <span className="text-xs font-bold text-blue-400 mt-0.5 tracking-tight">В работе</span>
+                        <span className="text-xs font-bold text-blue-400 mt-0.5 ">В работе</span>
                     </div>
                     <div className="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-100/50 flex flex-col items-center">
                         <span className="text-xl font-bold text-emerald-600">{member.stats.completed}</span>
-                        <span className="text-xs font-bold text-emerald-400 mt-0.5 tracking-tight">Готово</span>
+                        <span className="text-xs font-bold text-emerald-400 mt-0.5 ">Готово</span>
                     </div>
                 </div>
 
@@ -170,7 +170,7 @@ export function StaffCard({
                             {memberLines.map((line) => (
                                 <div key={line.id} className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 border border-slate-100 rounded-lg">
                                     <Factory className="h-3 w-3 text-slate-400" />
-                                    <span className="text-xs font-bold text-slate-600 tracking-tight">{line.name}</span>
+                                    <span className="text-xs font-bold text-slate-600 ">{line.name}</span>
                                 </div>
                             ))}
                         </div>
@@ -189,7 +189,7 @@ export function StaffCard({
                                     }}
                                 >
                                     <Briefcase className="h-3 w-3" />
-                                    <span className="text-xs font-bold tracking-tight">{type.name}</span>
+                                    <span className="text-xs font-bold ">{type.name}</span>
                                 </div>
                             ))}
                         </div>

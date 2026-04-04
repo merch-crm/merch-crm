@@ -146,7 +146,7 @@ export function HeaderSearch() {
                                 return (
                                     <div key={type}>
                                         <div className="px-4 pt-3 pb-1">
-                                            <span className="text-xs font-bold text-slate-400 tracking-wider">
+                                            <span className="text-xs font-bold text-slate-400 ">
                                                 {config.label}
                                             </span>
                                         </div>

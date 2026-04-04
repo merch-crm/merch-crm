@@ -1,5 +1,13 @@
 /* v1.0.1 */
-@import "tailwindcss";
+@utility wrap-break-word {
+  word-wrap: break-word;
+}
+@import "tailwindcss" source(none);
+@source "../app";
+@source "../components";
+@source "../styles";
+@import "tw-animate-css";
+@import "@heroui/styles";
 
 @import "../styles/variables.css";
 @import "../styles/base.css";
@@ -43,3 +51,38 @@
         padding-right: 16px;
     }
 }
+
+/* React Bits — required animations (rb- prefixed) */
+@keyframes rb-shine {
+  from { background-position: 200% center; }
+  to { background-position: -200% center; }
+}
+.animate-rb-shine {
+  animation: rb-shine 5s linear infinite;
+}
+
+@keyframes rb-gradient {
+  0% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+  100% { background-position: 0% center; }
+}
+.animate-rb-gradient {
+  animation: rb-gradient 8s linear infinite;
+}
+
+@keyframes rb-glitch-1 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 3px); }
+  40% { clip-path: inset(40% 0 40% 0); transform: translate(3px, -3px); }
+  60% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, 0); }
+  80% { clip-path: inset(80% 0 0 0); transform: translate(3px, 3px); }
+}
+@keyframes rb-glitch-2 {
+  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+  20% { clip-path: inset(10% 0 70% 0); transform: translate(3px, -3px); }
+  40% { clip-path: inset(30% 0 50% 0); transform: translate(-3px, 3px); }
+  60% { clip-path: inset(50% 0 30% 0); transform: translate(3px, 0); }
+  80% { clip-path: inset(70% 0 10% 0); transform: translate(-3px, -3px); }
+}
+.animate-rb-glitch-1 { animation: rb-glitch-1 2s infinite; }
+.animate-rb-glitch-2 { animation: rb-glitch-2 3s infinite; }

@@ -247,7 +247,7 @@ export function DocsClient() {
         {/* Sidebar */}
         <aside className="w-72 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full">
           <div className="p-4 border-b border-slate-100 flex-shrink-0">
-            <h3 className="text-xs font-semibold text-slate-400 tracking-wider">Разделы системы</h3>
+            <h3 className="text-xs font-semibold text-slate-400 ">Разделы системы</h3>
           </div>
           <nav className="flex-1 overflow-y-auto p-3 space-y-1">
             {crmDocumentationSections.map((section) => {
@@ -280,7 +280,7 @@ export function DocsClient() {
                 <div className="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 mb-4">
                   Раздел документации
                 </div>
-                <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">{currentSection.title}</h2>
+                <h2 className="text-3xl font-extrabold  text-slate-900">{currentSection.title}</h2>
               </div>
               
               <article className="prose prose-slate max-w-none 

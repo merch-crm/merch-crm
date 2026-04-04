@@ -286,7 +286,7 @@ export function ProductionDashboardClient({
                                                     <status.icon className="h-5 w-5" />
                                                 </div>
                                                 <div className="min-w-0">
-                                                    <p className="font-bold text-slate-900 truncate leading-tight text-xs tracking-tight">
+                                                    <p className="font-bold text-slate-900 truncate leading-tight text-xs ">
                                                         {task.title}
                                                     </p>
                                                     <div className="flex items-center gap-2 mt-1">

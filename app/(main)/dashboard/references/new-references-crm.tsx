@@ -1505,7 +1505,7 @@ export default function NewReferencesCRM() {
         switch (activeTab) {
             case"logistics":
                 return (
-                    <div className="space-y-24">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><TruckIcon className="text-blue-500" />Отслеживание и статус</h3>
                             <DeliveryTracking />
@@ -1518,7 +1518,7 @@ export default function NewReferencesCRM() {
                 );
             case"ai":
                 return (
-                    <div className="space-y-24">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Sparkles className="text-purple-500" />Модули AI чата</h3>
                             <AIChatCards />
@@ -1527,7 +1527,7 @@ export default function NewReferencesCRM() {
                 );
             case"cards":
                 return (
-                    <div className="space-y-24">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><CreditCard className="text-orange-500" />Invoice Dashboard</h3>
                             <InvoiceDashboard />
@@ -1544,7 +1544,7 @@ export default function NewReferencesCRM() {
                 );
             case"widgets":
                 return (
-                    <div className="space-y-24">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Layers className="text-purple-500" />Обмен криптовалюты</h3>
                             <CryptoSwap />
@@ -1561,7 +1561,7 @@ export default function NewReferencesCRM() {
                 );
             case"calendar":
                 return (
-                    <div className="space-y-24">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><Calendar className="text-red-500" />Расписание (Тёмная тема)</h3>
                             <DarkSchedule />
@@ -1578,7 +1578,7 @@ export default function NewReferencesCRM() {
                 );
             case"ui":
                 return (
-                    <div className="space-y-24">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><MousePointer2 className="text-green-500" />Установка приложения (PWA)</h3>
                             <PWAPrompt />
@@ -1595,7 +1595,7 @@ export default function NewReferencesCRM() {
                 );
             case"dropdowns":
                 return (
-                    <div className="space-y-38">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <h3 className="text-xl font-bold flex items-center gap-2"><ChevronDown className="text-blue-500" />Современный Dropdown</h3>
                             <ModernDropdown />
@@ -1604,7 +1604,7 @@ export default function NewReferencesCRM() {
                 );
             default:
                 return (
-                    <div className="space-y-34">
+                    <div className="space-y-3">
                         <section className="space-y-3">
                             <div className="flex items-center gap-3 border-b pb-4">
                                 <TruckIcon className="w-8 h-8 text-blue-500" />

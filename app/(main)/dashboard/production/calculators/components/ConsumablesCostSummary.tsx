@@ -98,7 +98,7 @@ export function ConsumablesCostSummary({
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm text-xl">
                 <Package className="h-5 w-5 text-indigo-600" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900 tracking-tight">Расходники</h3>
+              <h3 className="text-lg font-bold text-slate-900 ">Расходники</h3>
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-white border-slate-200 text-slate-900 font-bold px-3 py-1 text-sm shadow-sm">

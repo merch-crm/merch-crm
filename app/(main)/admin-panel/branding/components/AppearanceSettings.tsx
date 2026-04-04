@@ -10,7 +10,7 @@ interface AppearanceSettingsProps {
     formData: BrandingSettings;
     setFormData: React.Dispatch<React.SetStateAction<BrandingSettings>>;
     ui: BrandingUiState;
-    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "favicon" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => Promise<void>;
+    handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, type: "logo" | "background" | "print_logo" | "sound" | "crm_background" | "email_logo", soundKey?: string) => Promise<void>;
     cancelUpload: (index: number) => void;
     uploadStates: Record<number, { uploading: boolean; progress: number }>;
     initialIconGroups: SerializedIconGroup[];
@@ -25,25 +25,14 @@ export function AppearanceSettings({ formData, setFormData, handleFileUpload, ca
                 {/* Color & Background Settings Block */}
                 <div className="crm-card p-6 space-y-3">
                     <div className="space-y-3">
-                        <div className="grid grid-cols-2 gap-3">
-                            <div>
-                                <ColorPicker
-                                    label="Фирменный цвет"
-                                    color={formData.primaryColor}
-                                    onChange={(newColor) => setFormData(prev => ({ ...prev, primaryColor: newColor }))}
-                                />
-                                <p className="text-xs text-slate-400 mt-2">Кнопки, активные состояния, иконки</p>
-                            </div>
-
                             <div>
                                 <ColorPicker
                                     label="Фоновый цвет CRM"
                                     color={formData.backgroundColor || "#f2f2f2"}
-                                    onChange={(newColor) => setFormData(prev => ({ ...prev, backgroundColor: newColor }))}
+                                    onChange={(newColor: string) => setFormData(prev => ({ ...prev, backgroundColor: newColor }))}
                                 />
                                 <p className="text-xs text-slate-400 mt-2">Основной фон страниц</p>
                             </div>
-                        </div>
 
                         <div className="pt-4 border-t border-slate-100 space-y-3">
                             <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
@@ -321,45 +310,6 @@ export function AppearanceSettings({ formData, setFormData, handleFileUpload, ca
                                     </Button>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Favicon */}
-                        <div>
-                            <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">
-                                Иконка вкладки (Favicon)
-                            </label>
-                            <div className="flex items-center gap-3 p-4 bg-slate-50/50 rounded-2xl border border-slate-200/60 border-dashed">
-                                <div className="relative group">
-                                    {formData.faviconUrl ? (
-                                        <div className="relative">
-                                            <Image
-                                                src={formData.faviconUrl}
-                                                alt="Favicon"
-                                                className="w-12 h-12 object-contain"
-                                                width={48}
-                                                height={48}
-                                            />
-                                            <Button type="button" variant="ghost" size="icon" onClick={() => setFormData(prev => ({ ...prev, faviconUrl: null }))} className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-md hover:bg-rose-600 hover:text-white p-0"><X className="w-3 h-3" /></Button>
-                                        </div>
-                                    ) : <div className="h-12 w-12 rounded-xl border-2 border-dashed border-slate-200 bg-white flex items-center justify-center text-slate-300"><LucideImage className="w-5 h-5" /></div>}
-                                </div>
-                                <div className="flex-1">
-                                    <input type="file" id="fav-u" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, "favicon")} />
-                                    <Button type="button" variant="outline" className="w-full h-11 px-4 bg-white font-bold rounded-xl border-slate-200" onClick={() => document.getElementById("fav-u")?.click()} disabled={currentUpload?.uploading}>
-                                        {currentUpload?.uploading ? (
-                                            <div className="flex items-center gap-2 justify-center">
-                                                <Loader2 className="w-4 h-4 animate-spin" />
-                                                <span>{Math.round(currentUpload.progress)}%</span>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                <Upload className="w-4 h-4 mr-2" /> {formData.faviconUrl ? "Заменить" : "Загрузить иконку"}
-                                            </>
-                                        )}
-                                    </Button>
-                                </div>
-                            </div>
-                            <p className="text-xs text-slate-400 mt-2 pl-1">Рекомендуется: 32x32px или 64x64px</p>
                         </div>
                     </div>
                 </div>

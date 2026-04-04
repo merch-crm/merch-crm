@@ -113,7 +113,7 @@ export function CalculatorsTabs({ className }: CalculatorsTabsProps) {
                   <motion.div
                     layoutId="calculators-tab-indicator"
                     className="absolute inset-0 bg-primary rounded-[14px] shadow-lg shadow-primary/25"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                    transition={{ type: "tween", ease: "circOut", duration: 0.3 }}
                   />
                 )}
                 <span className="relative z-10 flex items-center gap-2">

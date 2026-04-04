@@ -1,11 +1,11 @@
 "use client";
 
 import { useFormStatus } from "react-dom";
-import { Button, ButtonProps } from "@/components/ui/button";
+import { CrmButton, CrmButtonProps } from "@/components/ui/crm-button";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface SubmitButtonProps extends ButtonProps {
+interface SubmitButtonProps extends CrmButtonProps {
     isLoading?: boolean;
     text?: string;
     loadingText?: string;
@@ -18,27 +18,28 @@ export function SubmitButton({
     disabled,
     text,
     loadingText,
+    variant = "action",
     ...props
 }: SubmitButtonProps) {
     const { pending } = useFormStatus();
     const isLoadingState = isLoading || pending;
 
     return (
-        <Button
+        <CrmButton
             type="submit"
             disabled={disabled || isLoadingState}
+            variant={variant}
             className={cn("gap-2", className)}
-            suppressHydrationWarning
             {...props}
         >
             {isLoadingState ? (
                 <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span suppressHydrationWarning>{loadingText || text || children}</span>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    <span>{loadingText || text || children}</span>
                 </>
             ) : (
-                <span suppressHydrationWarning>{text || children}</span>
+                <span>{text || children}</span>
             )}
-        </Button>
+        </CrmButton>
     );
 }

@@ -5,7 +5,7 @@ import { Undo2, X } from "lucide-react";
 import { undoLastAction } from "@/app/(main)/dashboard/undo-actions";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { Root as Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function GlobalUndo() {

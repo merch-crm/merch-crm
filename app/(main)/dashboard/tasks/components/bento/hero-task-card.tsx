@@ -46,7 +46,7 @@ export function HeroTaskCard({ totalTasks, completedToday, className }: HeroTask
       {/* Основные показатели */}
       <div className="relative z-10 mt-8">
         <div className="flex items-baseline gap-3">
-          <span className="text-6xl sm:text-7xl md:text-8xl font-bold tabular-nums tracking-tight">
+          <span className="text-6xl sm:text-7xl md:text-8xl font-bold tabular-nums ">
             {totalTasks}
           </span>
           <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white/70">

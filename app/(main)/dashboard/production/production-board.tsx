@@ -71,10 +71,10 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                                 <Icon className="w-6 h-6" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <h3 className="text-base font-bold text-slate-900 truncate tracking-tight">{stage.label}</h3>
+                                <h3 className="text-base font-bold text-slate-900 truncate ">{stage.label}</h3>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                     <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                    <p className="text-xs text-slate-400 font-bold tracking-wider">
+                                    <p className="text-xs text-slate-400 font-bold ">
                                         {stageItems.length} {pluralize(stageItems.length, 'позиция', 'позиции', 'позиций')}
                                     </p>
                                 </div>

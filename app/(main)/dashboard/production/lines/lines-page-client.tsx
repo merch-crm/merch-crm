@@ -138,7 +138,7 @@ export function LinesPageClient({
                         <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
                             <Factory className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Всего линий</span>
+                        <span className="text-xs font-bold ">Всего линий</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{lines.length}</span>
@@ -150,7 +150,7 @@ export function LinesPageClient({
                         <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
                             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Активных сейчас</span>
+                        <span className="text-xs font-bold ">Активных сейчас</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{activeLinesCount}</span>
@@ -162,7 +162,7 @@ export function LinesPageClient({
                         <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
                             <GripVertical className="w-4 h-4" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">Общая мощность</span>
+                        <span className="text-xs font-bold ">Общая мощность</span>
                     </div>
                     <div className="flex items-baseline gap-1">
                         <span className="text-3xl font-bold text-slate-900">{totalCapacity}</span>
@@ -175,7 +175,7 @@ export function LinesPageClient({
                         <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600">
                             <Plus className="w-4 h-4 rotate-45" />
                         </div>
-                        <span className="text-xs font-bold tracking-tight">В работе</span>
+                        <span className="text-xs font-bold ">В работе</span>
                     </div>
                     <div>
                         <span className="text-3xl font-bold text-slate-900">{totalInProgress}</span>
@@ -196,7 +196,7 @@ export function LinesPageClient({
                     size="sm"
                     onClick={() => setIsSorting(!isSorting)}
                     className={cn(
-                        "h-11 px-5 rounded-xl border-slate-100 gap-2 font-bold text-xs tracking-tight transition-all duration-300",
+                        "h-11 px-5 rounded-xl border-slate-100 gap-2 font-bold text-xs  transition-all duration-300",
                         isSorting 
                             ? "bg-slate-900 text-white shadow-lg shadow-slate-200" 
                             : "bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-200"

@@ -44,7 +44,7 @@ export function DesignInfoCard({ design }: DesignInfoCardProps) {
                     <div className="flex-1 p-6 space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-3">
                             <div className="space-y-1">
-                                <p className="text-xs text-muted-foreground flex items-center gap-1 tracking-wider font-semibold">
+                                <p className="text-xs text-muted-foreground flex items-center gap-1  font-semibold">
                                     <Layout className="h-3 w-3" />
                                     Коллекция
                                 </p>
@@ -54,7 +54,7 @@ export function DesignInfoCard({ design }: DesignInfoCardProps) {
                             </div>
 
                             <div className="space-y-1">
-                                <p className="text-xs text-muted-foreground flex items-center gap-1 tracking-wider font-semibold">
+                                <p className="text-xs text-muted-foreground flex items-center gap-1  font-semibold">
                                     <Calendar className="h-3 w-3" />
                                     Дата создания
                                 </p>
@@ -64,7 +64,7 @@ export function DesignInfoCard({ design }: DesignInfoCardProps) {
                             </div>
 
                             <div className="space-y-1 sm:col-span-2">
-                                <p className="text-xs text-muted-foreground tracking-wider font-semibold">
+                                <p className="text-xs text-muted-foreground  font-semibold">
                                     Описание
                                 </p>
                                 <p className="text-sm text-balance">

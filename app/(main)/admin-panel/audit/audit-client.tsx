@@ -346,12 +346,12 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
                                 {selectedLog && getEntityIcon(selectedLog.entityType)}
                              </div>
                              <div>
-                                <p className="text-xs font-bold text-slate-400 tracking-wider">Действие</p>
+                                <p className="text-xs font-bold text-slate-400 ">Действие</p>
                                 <p className="text-sm font-black text-slate-900">{selectedLog?.action}</p>
                              </div>
                         </div>
                         <div className="text-right">
-                             <p className="text-xs font-bold text-slate-400 tracking-wider">Время</p>
+                             <p className="text-xs font-bold text-slate-400 ">Время</p>
                              <p className="text-sm font-black text-slate-900">
                                 {selectedLog && isClient ? format(new Date(selectedLog.createdAt), "HH:mm:ss, d MMM", { locale: ru }) : "..."}
                              </p>

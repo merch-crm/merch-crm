@@ -131,7 +131,7 @@ export function ClientStatsWidget({
                                 </div>
                                 <p className="text-xs font-bold text-slate-900 leading-none">{item.label}</p>
                             </div>
-                            <p className="font-bold text-slate-900 text-sm tracking-tight">{item.value}</p>
+                            <p className="font-bold text-slate-900 text-sm ">{item.value}</p>
                         </motion.div>
                     );
                 })}

@@ -23,7 +23,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                     <p className="text-xs font-semibold text-slate-500">Задачи в работе</p>
                 </div>
                 <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-[52px] font-black text-slate-900 tracking-tight leading-none tabular-nums">{stats.newTasks}</span>
+                    <span className="text-[52px] font-black text-slate-900  leading-none tabular-nums">{stats.newTasks}</span>
                     <span className="text-[13px] font-semibold text-slate-400 mb-1">активных</span>
                 </div>
                 <p className="text-[12px] text-slate-400 mt-2">Дизайн-студия · Текущая очередь</p>
@@ -38,7 +38,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                     <p className="text-xs font-semibold text-slate-500">На утверждении</p>
                 </div>
                 <div className="flex items-baseline gap-1.5 mt-1">
-                    <span className="text-[52px] font-black text-amber-500 tracking-tight leading-none tabular-nums">{stats.pendingApproval}</span>
+                    <span className="text-[52px] font-black text-amber-500  leading-none tabular-nums">{stats.pendingApproval}</span>
                 </div>
                 <p className="text-[12px] text-slate-400 mt-2">Ожидают ответа клиента</p>
             </div>
@@ -52,7 +52,7 @@ export function DesignWidgets({ stats }: DesignStatsProps) {
                     <p className="text-xs font-semibold text-slate-500">Эффективность</p>
                 </div>
                 <div className="flex items-baseline gap-1 mt-1">
-                    <span className="text-[52px] font-black text-emerald-500 tracking-tight leading-none tabular-nums">{stats.efficiency}</span>
+                    <span className="text-[52px] font-black text-emerald-500  leading-none tabular-nums">{stats.efficiency}</span>
                     <span className="text-[22px] font-bold text-emerald-400 mb-1">%</span>
                 </div>
                 <p className="text-[12px] text-slate-400 mt-2">Принято с первого раза</p>

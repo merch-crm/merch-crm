@@ -185,19 +185,19 @@ export const FabricCalculator = memo(function FabricCalculator({
               </div>
               <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
                   <div>
-                      <p className="text-xs font-bold text-slate-500 tracking-tight">Тип ткани</p>
+                      <p className="text-xs font-bold text-slate-500 ">Тип ткани</p>
                       <p className="text-xs font-bold text-slate-900 truncate">{fabricTypeLabels[params.fabricType]}</p>
                   </div>
                   <div>
-                      <p className="text-xs font-bold text-slate-500 tracking-tight">Цена за м²</p>
+                      <p className="text-xs font-bold text-slate-500 ">Цена за м²</p>
                       <p className="text-xs font-bold text-slate-900">{formatCurrency(calculations.pricePerM2)}</p>
                   </div>
                   <div>
-                      <p className="text-xs font-bold text-slate-500 tracking-tight">Общая площадь</p>
+                      <p className="text-xs font-bold text-slate-500 ">Общая площадь</p>
                       <p className="text-xs font-bold text-slate-900">{calculations.totalAreaM2.toFixed(2)} м²</p>
                   </div>
                   <div>
-                      <p className="text-xs font-bold text-slate-500 tracking-tight">Итого за ткань</p>
+                      <p className="text-xs font-bold text-slate-500 ">Итого за ткань</p>
                       <p className="text-sm font-black text-violet-700">{formatCurrency(calculations.fabricCost)}</p>
                   </div>
               </div>

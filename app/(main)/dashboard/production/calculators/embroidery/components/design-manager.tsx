@@ -74,7 +74,7 @@ const DesignCard = memo(function DesignCard({
         <div className="flex flex-col gap-3">
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 flex flex-col gap-1">
-              <label className="text-xs font-bold text-slate-500 tracking-tighter ml-1">
+              <label className="text-xs font-bold text-slate-500  ml-1">
                 Название дизайна
               </label>
               <Input
@@ -86,7 +86,7 @@ const DesignCard = memo(function DesignCard({
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold text-slate-500 tracking-tighter ml-1">
+              <label className="text-xs font-bold text-slate-500  ml-1">
                 Ширина × Высота (мм)
               </label>
               <div className="flex items-center gap-2">
@@ -117,7 +117,7 @@ const DesignCard = memo(function DesignCard({
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold text-slate-500 tracking-tighter ml-1">
+              <label className="text-xs font-bold text-slate-500  ml-1">
                 Количество стежков
               </label>
               <Input
@@ -129,7 +129,7 @@ const DesignCard = memo(function DesignCard({
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold text-slate-500 tracking-tighter ml-1">
+              <label className="text-xs font-bold text-slate-500  ml-1">
                 Количество цветов
               </label>
               <Input
@@ -142,7 +142,7 @@ const DesignCard = memo(function DesignCard({
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-bold text-slate-500 tracking-tighter ml-1">
+              <label className="text-xs font-bold text-slate-500  ml-1">
                 Плотность заливки
               </label>
               <Select
@@ -160,7 +160,7 @@ const DesignCard = memo(function DesignCard({
             </div>
 
             <div className="flex flex-col gap-1 border-t pt-2 col-span-2">
-              <label className="text-xs font-bold text-slate-500 tracking-tighter ml-1">
+              <label className="text-xs font-bold text-slate-500  ml-1">
                 Тип нити
               </label>
               <Select
@@ -210,7 +210,7 @@ const DesignCard = memo(function DesignCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1.5">
-            <h4 className="font-bold text-slate-900 truncate text-lg tracking-tight">{design.name}</h4>
+            <h4 className="font-bold text-slate-900 truncate text-lg ">{design.name}</h4>
             {design.hasDigitizing && (
               <Badge variant="secondary" className="bg-pink-100 text-pink-700 border-pink-200 text-xs py-0 font-bold">
                 + Дигитайзинг
@@ -290,7 +290,7 @@ export const DesignManager = memo(function DesignManager({
             </div>
             <div>
               <h3 className="text-lg font-bold text-slate-800 leading-none mb-1">Макеты для вышивки</h3>
-              <p className="text-xs font-bold text-slate-400 tracking-tight leading-none mb-1">Настройте параметры каждого дизайна</p>
+              <p className="text-xs font-bold text-slate-400  leading-none mb-1">Настройте параметры каждого дизайна</p>
             </div>
           </div>
           {designs.length > 0 && (

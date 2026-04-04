@@ -7,7 +7,6 @@ export interface BrandingSettings {
     logoUrl: string | null;
     primaryColor: string;
     secondaryColor?: string;
-    faviconUrl?: string | null;
     radiusOuter?: number;
     radiusInner?: number;
     phone?: string | null;

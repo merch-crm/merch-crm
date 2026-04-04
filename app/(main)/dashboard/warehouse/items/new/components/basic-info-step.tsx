@@ -153,7 +153,7 @@ export function BasicInfoStep({
                                                 </div>
 
                                                 <div className="relative space-y-2 max-w-sm">
-                                                    <h4 className="text-xl font-bold text-slate-900 tracking-tight">Характеристики еще не заданы</h4>
+                                                    <h4 className="text-xl font-bold text-slate-900 ">Характеристики еще не заданы</h4>
                                                     <p className="text-sm font-medium text-slate-500 leading-relaxed px-4">
                                                         Для этой категории пока не настроены дополнительные поля.
                                                         Вы можете добавить их в настройках, чтобы сделать описание позиций более детальным.

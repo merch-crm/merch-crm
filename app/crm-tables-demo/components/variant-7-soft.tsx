@@ -28,7 +28,7 @@ export const Variant7Soft = () => {
 
                                 {/* Change Badge */}
                                 <div className="w-16 text-center">
-                                    <span className={`text-lg font-black font-mono tracking-tighter ${op.changeType === 'positive' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                    <span className={`text-lg font-black font-mono  ${op.changeType === 'positive' ? 'text-emerald-500' : 'text-rose-500'}`}>
                                         {op.change}
                                     </span>
                                 </div>

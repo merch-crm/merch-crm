@@ -30,7 +30,7 @@ export default function CRMTablesDemo() {
                             <Activity className="w-5 h-5" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold tracking-tight text-slate-900">История операций</h1>
+                            <h1 className="text-xl font-bold  text-slate-900">История операций</h1>
                             <p className="text-sm text-slate-500">10 вариантов дизайна для ваших данных.</p>
                         </div>
                     </div>
@@ -42,7 +42,7 @@ export default function CRMTablesDemo() {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-6 space-y-24 mt-12">
+            <div className="max-w-7xl mx-auto px-6 space-y-3 mt-12">
                 <Variant1Match />
                 <Variant2Card />
                 <Variant3Dark />

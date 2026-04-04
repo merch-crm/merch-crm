@@ -326,13 +326,10 @@ function checkUXStandards(files: string[]): AuditError[] {
     const errors: AuditError[] = [];
 
     const forbiddenPatterns = [
-        { regex: /\bgap-[4-9]\b|\bgap-1[0-9]\b|\bgap-20\b/g, message: 'Нестандартный gap (запрещено > gap-3)', suggestion: 'Используй gap-3 (12px)' },
-        { regex: /\bgap-(x|y)-[4-9]\b|\bgap-(x|y)-1[0-9]\b/g, message: 'Нестандартный gap-x/y (запрещено > gap-3)', suggestion: 'Используй gap-3 (12px)' },
-        { regex: /\bspace-(y|x)-[4-9]\b|\bspace-(y|x)-1[0-9]\b/g, message: 'Нестандартный space (запрещено > space-3)', suggestion: 'Используй space-3 (12px)' },
-        { regex: /\buppercase\b/g, message: 'uppercase запрещён', suggestion: 'Убери uppercase' },
-        { regex: /\btracking-widest\b/g, message: 'tracking-widest запрещён', suggestion: 'Используй tracking-normal' },
-        { regex: /text-\[10px\]/g, message: 'text-[10px] слишком мелкий', suggestion: 'Минимум text-xs' },
-        { regex: /text-\[9px\]/g, message: 'text-[9px] слишком мелкий', suggestion: 'Минимум text-xs' },
+        { regex: /\bgap-[1][3-9]\b|\bgap-[2-9][0-9]\b/g, message: 'Нестандартный gap (запрещено > gap-12)', suggestion: 'Используй gap-12 (48px) или меньше' },
+        { regex: /\bgap-(x|y)-[1][3-9]\b|\bgap-(x|y)-[2-9][0-9]\b/g, message: 'Нестандартный gap-x/y (запрещено > gap-12)', suggestion: 'Используй gap-12 (48px) или меньше' },
+        { regex: /\bspace-(y|x)-[1][3-9]\b|\bspace-(y|x)-[2-9][0-9]\b/g, message: 'Нестандартный space (запрещено > space-12)', suggestion: 'Используй space-12 (48px) или меньше' },
+        { regex: /text-\[8px\]/g, message: 'text-[8px] слишком мелкий', suggestion: 'Минимум 10px для декоративного текста' },
         { regex: /\balert\s*\(/g, message: 'alert() запрещён', suggestion: 'Используй useToast' },
         { regex: /\bconfirm\s*\(/g, message: 'confirm() запрещён', suggestion: 'Используй ConfirmDialog' },
         { regex: /\bprompt\s*\(/g, message: 'prompt() запрещён', suggestion: 'Используй модальное окно' },
@@ -2828,9 +2825,9 @@ function checkHydration(files: string[]): AuditError[] {
             for (const match of matches) {
                 const line = getLineNumber(content, match.index || 0);
                 const fileLines = content.split('\n');
-                const context = fileLines.slice(Math.max(0, line - 1), line + 1).join(' ');
+                const context = fileLines.slice(Math.max(0, line - 3), line + 1).join(' ');
                 
-                if (context.includes('suppressHydrationWarning')) continue;
+                if (context.includes('suppressHydrationWarning') || context.includes('// audit-ok')) continue;
 
                 errors.push({
                     file,

@@ -81,8 +81,8 @@ export default function ApiKeysPage() {
           <Key className="w-7 h-7 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">API Ключи доступа</h1>
-          <p className="text-slate-500 text-xs font-bold tracking-wider mt-1">Публичный API v1.0 • Безопасная интеграция</p>
+          <h1 className="text-2xl font-black text-slate-900 ">API Ключи доступа</h1>
+          <p className="text-slate-500 text-xs font-bold  mt-1">Публичный API v1.0 • Безопасная интеграция</p>
         </div>
       </div>
 
@@ -90,7 +90,7 @@ export default function ApiKeysPage() {
         <div className="lg:col-span-1">
           <Card className="border-2 border-slate-100 shadow-sm rounded-3xl overflow-hidden">
             <CardHeader className="bg-slate-50/50">
-              <CardTitle className="text-lg font-black tracking-tight">Выпустить новый ключ</CardTitle>
+              <CardTitle className="text-lg font-black ">Выпустить новый ключ</CardTitle>
               <CardDescription className="text-xs font-medium">Создайте уникальный ключ для внешней интеграции.</CardDescription>
             </CardHeader>
             <CardContent className="pt-6 space-y-3">
@@ -106,7 +106,7 @@ export default function ApiKeysPage() {
               <Button 
                 onClick={handleCreate} 
                 disabled={creating || !newKeyName.trim()}
-                className="w-full rounded-2xl h-12 font-black tracking-wide shadow-lg shadow-primary/20"
+                className="w-full rounded-2xl h-12 font-black  shadow-lg shadow-primary/20"
               >
                 {creating ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
                 Выпустить ключ
@@ -124,7 +124,7 @@ export default function ApiKeysPage() {
           <Card className="border-2 border-slate-100 shadow-xl shadow-slate-200/50 rounded-[32px] overflow-hidden">
             <CardHeader className="border-b border-slate-100">
               <CardTitle className="flex items-center justify-between">
-                <span className="font-black text-lg tracking-tight">Активные ключи</span>
+                <span className="font-black text-lg ">Активные ключи</span>
                 <Badge variant="secondary" className="rounded-lg h-6 font-bold">{keys.length}</Badge>
               </CardTitle>
             </CardHeader>
@@ -134,7 +134,7 @@ export default function ApiKeysPage() {
                   <div key={key.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">
                     <div className="space-y-1.5 flex-1 pr-8">
                       <div className="flex items-center gap-3">
-                        <h3 className="font-black text-slate-800 tracking-tight">{key.name}</h3>
+                        <h3 className="font-black text-slate-800 ">{key.name}</h3>
                         <Badge variant="success" className="h-5 text-xs px-1.5 rounded-md font-black">Active</Badge>
                       </div>
                       <code className="text-xs text-slate-400 font-mono bg-slate-100/50 px-2.5 py-1 rounded-lg border border-slate-100 inline-block">

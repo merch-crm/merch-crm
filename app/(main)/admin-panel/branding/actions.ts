@@ -33,7 +33,6 @@ export async function updateBrandingSettings(data: BrandingSettings): Promise<Ac
         // Sync camelCase and snake_case properties for DB compatibility (legacy support)
         if (data.primaryColor) saveData['primary_color'] = data.primaryColor;
         if (data.logoUrl !== undefined) saveData['logo_url'] = data.logoUrl;
-        if (data.faviconUrl !== undefined) saveData['favicon_url'] = data.faviconUrl;
         if (data.radiusOuter !== undefined) saveData['radius_outer'] = data.radiusOuter;
         if (data.radiusInner !== undefined) saveData['radius_inner'] = data.radiusInner;
 
@@ -63,7 +62,7 @@ export async function updateBrandingSettings(data: BrandingSettings): Promise<Ac
 export async function uploadBrandingFile(formData: FormData): Promise<ActionResult<{ url: string }>> {
     return withAuth(async () => {
         const file = formData.get("file") as File;
-        const type = formData.get("type") as"logo" |"favicon" |"background" |"sound" |"print_logo" |"crm_background" |"email_logo";
+        const type = formData.get("type") as"logo" |"background" |"sound" |"print_logo" |"crm_background" |"email_logo";
         const soundKey = formData.get("soundKey") as string | null;
 
         if (!file || !type) {
@@ -81,12 +80,6 @@ export async function uploadBrandingFile(formData: FormData): Promise<ActionResu
                 .webp({ quality: 80 })
                 .toBuffer();
             fileName = `branding/logo_brand_crm.webp`;
-        } else if (type ==="favicon") {
-            processedBuffer = await sharp(buffer)
-                .resize(48, 48)
-                .png()
-                .toBuffer();
-            fileName = `branding/favicon.png`;
         } else if (type ==="background") {
             processedBuffer = await sharp(buffer)
                 .resize({ width: 1920, withoutEnlargement: true })

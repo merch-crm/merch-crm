@@ -327,7 +327,7 @@ export const CategoryCardContent = React.memo(({
                                     <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
                                     <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full" />
                                 </div>
-                                <div className="text-[12px] font-bold text-slate-400 text-center tracking-tight px-4 line-clamp-2">
+                                <div className="text-[12px] font-bold text-slate-400 text-center  px-4 line-clamp-2">
                                     {category.description || "Нет подкатегорий"}
                                 </div>
                                 <div className="flex items-center gap-3 w-full max-w-[180px]">
@@ -346,7 +346,7 @@ export const CategoryCardContent = React.memo(({
                     )}>
                         <div className="flex flex-col items-center w-full">
                             <div className="mb-1 flex flex-col items-center">
-                                <span className="text-[44px] font-black text-slate-900 leading-[1.1] tabular-nums tracking-tight">
+                                <span className="text-[44px] font-black text-slate-900 leading-[1.1] tabular-nums ">
                                     {(category.totalQuantity || 0).toLocaleString()}
                                 </span>
                                 <span className="text-[12px] font-bold" style={{ color: hexColor }}>
@@ -354,7 +354,7 @@ export const CategoryCardContent = React.memo(({
                                 </span>
                             </div>
                             <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 w-max mb-4">
-                                <span className="text-xs font-bold text-slate-400 tracking-wide">На сумму:</span>
+                                <span className="text-xs font-bold text-slate-400 ">На сумму:</span>
                                 <span className="text-slate-800 font-extrabold tabular-nums text-[12px]">
                                     {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(Number(category.totalCost || 0))}
                                 </span>
