@@ -24,9 +24,11 @@ import {
   BentoProgressRing3D,
   BentoFinancialBullet,
 } from '@/components/library/custom';
-import { StatusTimeline } from '@/components/ui/status-timeline';
+import { StatusTimeline, type StatusEvent } from '@/components/ui/status-timeline';
+import { DeliveryTracker } from '@/components/ui/delivery-tracker/DeliveryTracker';
+import { DeliveryInfo } from '@/components/ui/delivery-tracker/types';
 
-const MOCK_EVENTS = [
+const MOCK_EVENTS: StatusEvent[] = [
   {
     id: '1',
     status: 'created',
@@ -53,12 +55,27 @@ const MOCK_EVENTS = [
     state: 'current'
   }
 ];
+
+const MOCK_DELIVERY: DeliveryInfo = {
+  trackingNumber: '1425678901',
+  provider: 'cdek',
+  status: 'in_transit',
+  events: [
+    { id: '1', status: 'created', title: 'Создан', timestamp: new Date('2025-04-01T10:00:00Z'), location: 'Москва' },
+    { id: '2', status: 'accepted', title: 'Принят', timestamp: new Date('2025-04-01T14:30:00Z'), location: 'Склад МСК-1' },
+    { id: '3', status: 'in_transit', title: 'В пути', timestamp: new Date('2025-04-02T09:15:00Z'), location: 'В пути в Санкт-Петербург' }
+  ],
+  lastUpdate: new Date(),
+  senderCity: 'Москва',
+  receiverCity: 'Санкт-Петербург'
+};
+
 export default function ChartsPage() {
   return (
     <CategoryPage
       title="Графики и Визуализация"
       description="Премиальные bento-виджеты для аналитики: от тепловых карт активности до 3D-колец прогресса и финансовых «пуль-графиков»."
-      count={8}
+      count={9}
     >
       {/* Section 1: Dashboard & Metrics */}
       <section className="flex flex-col gap-3 mt-12">
@@ -204,7 +221,7 @@ export default function ChartsPage() {
           code={`<StatusTimeline events={events} />`}
         >
           <div className="max-w-md w-full mx-auto bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-             <StatusTimeline events={MOCK_EVENTS as any} />
+             <StatusTimeline events={MOCK_EVENTS} />
           </div>
         </ComponentShowcase>
 
@@ -233,7 +250,17 @@ export default function ChartsPage() {
           </div>
         </ComponentShowcase>
 
-
+        <ComponentShowcase 
+          title="Трекер доставки (Custom)" 
+          source="custom" 
+          desc="Интерактивный трекер доставки со статусами и историей событий." 
+          importPath="import { DeliveryTracker } from '@/components/ui/delivery-tracker/DeliveryTracker'" 
+          code={`<DeliveryTracker delivery={mockDelivery} />`}
+        >
+          <div className="max-w-md w-full mx-auto">
+             <DeliveryTracker delivery={MOCK_DELIVERY} />
+          </div>
+        </ComponentShowcase>
 
       </div>
     </CategoryPage>

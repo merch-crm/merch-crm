@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
 import { 
-  Home, LayoutDashboard, Briefcase, Users, 
+  LayoutDashboard, Briefcase, Users, 
   MessageSquare, Settings, Bell, 
   Command, ChevronRight, BellRing, Search
 } from 'lucide-react';
@@ -13,9 +13,7 @@ import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { SegmentedControl } from '@/components/ui/segmented-control';
 import { motion } from 'framer-motion';
 
-// Bento Navigation Components
-import { BentoFloatingDock } from "@/components/library/custom/components/navigation/bento-floating-dock";
-import { BentoTabs } from "@/components/library/custom/components/navigation/bento-tabs";
+
 
 export default function NavigationPage() {
   const [segmentedValue, setSegmentedValue] = useState('week');
@@ -28,32 +26,6 @@ export default function NavigationPage() {
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
         
-        {/* 1. Bento Floating Dock */}
-        <ComponentShowcase title="Плавающий док (Bento)" source="custom">
-          <div className="flex justify-center w-full py-4">
-             <BentoFloatingDock items={[
-               { icon: <Home className="size-5" />, label: 'Главная', color: 'bg-indigo-500' },
-               { icon: <LayoutDashboard className="size-5" />, label: 'Панель', color: 'bg-emerald-500' },
-               { icon: <MessageSquare className="size-5" />, label: 'Сообщения', color: 'bg-rose-500', badge: 3 },
-               { icon: <Settings className="size-5" />, label: 'Настройки', color: 'bg-slate-700' }
-             ]} />
-          </div>
-        </ComponentShowcase>
-
-        {/* 2. Bento Navigation (Tabs) */}
-        <ComponentShowcase title="Навигация (Bento Tabs)" source="custom">
-           <div className="flex justify-center w-full py-4 scale-90 origin-center">
-              <BentoTabs 
-                tabs={[
-                  { id: '1', label: 'Обзор', count: 12 },
-                  { id: '2', label: 'Задачи', count: 5 },
-                  { id: '3', label: 'Профиль' }
-                ]} 
-                defaultValue="1"
-                onChange={() => {}}
-              />
-           </div>
-        </ComponentShowcase>
 
         {/* 4. Tabs Shadcn Custom */}
         <ComponentShowcase 
