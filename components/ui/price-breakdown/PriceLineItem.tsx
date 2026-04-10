@@ -21,18 +21,7 @@ export function PriceLineItem({
 
     return (
         <div className={cn(nested &&"ml-8 border-l-2 border-slate-100")}>
-            <PriceRow
-                icon={icon}
-                colorClasses={colors}
-                label={line.label}
-                description={line.description}
-                amount={line.amount}
-                currency={currency}
-                isNegative={line.isNegative}
-                highlighted={line.highlighted}
-                hasDetails={hasDetails}
-                showDetails={showDetails}
-                onClick={hasDetails ? () => setShowDetails(!showDetails) : undefined}
+            <PriceRow icon={icon} colorClasses={colors} label={line.label} description={line.description} amount={line.amount} currency={currency} isNegative={line.isNegative} highlighted={line.highlighted} hasDetails={hasDetails} showDetails={showDetails} onClick={hasDetails ? () => setShowDetails(!showDetails) : undefined}
                 quantityInfo={showQuantity && showUnitPrice && line.quantity && line.unitPrice ?
                     `${line.quantity} × ${formatPrice(line.unitPrice, currency)}` : undefined
                 }
@@ -42,14 +31,7 @@ export function PriceLineItem({
             {hasDetails && showDetails && (
                 <div className="bg-slate-50 border-t border-slate-100">
                     {line.details!.map((detail) => (
-                        <PriceLineItem
-                            key={detail.id}
-                            line={detail}
-                            currency={currency}
-                            showQuantity={showQuantity}
-                            showUnitPrice={showUnitPrice}
-                            nested
-                        />
+                        <PriceLineItem key={detail.id} line={detail} currency={currency} showQuantity={showQuantity} showUnitPrice={showUnitPrice} nested />
                     ))}
                 </div>
             )}

@@ -14,7 +14,7 @@ interface PaginationProps {
     className?: string;
     itemName?: string;
     itemNames?: [string, string, string];
-    variant?: "default" | "light" | "card";
+    variant?: "md" | "light" | "card";
 }
 
 export function Pagination({
@@ -25,7 +25,7 @@ export function Pagination({
     className,
     itemName = "позиций",
     itemNames,
-    variant = "default",
+    variant = "md",
 }: PaginationProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -96,7 +96,7 @@ export function Pagination({
 
     return (
         <div className={cn(
-            variant === "default" && "pagination pagination-with-info",
+            (variant === "md" || variant === "light") && "pagination pagination-with-info",
             variant === "card" && "bg-card shadow-sm rounded-2xl sm:rounded-[var(--radius)] py-4 px-6 flex items-center justify-between w-full pagination-with-info crm-card",
             className
         )}>

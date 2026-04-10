@@ -13,7 +13,7 @@ import { OrderQueueCardCompact } from"./order-queue-card-compact";
 
 export interface OrderQueueCardProps {
     order: OrderData;
-    variant?:"default" |"compact" |"detailed";
+    variant?: "md" |"compact" |"detailed";
     selected?: boolean;
     dragging?: boolean;
     onClick?: () => void;
@@ -27,7 +27,7 @@ export interface OrderQueueCardProps {
 
 export function OrderQueueCard({
     order,
-    variant ="default",
+    variant = "md",
     selected = false,
     dragging = false,
     onClick,
@@ -45,12 +45,7 @@ export function OrderQueueCard({
 
     if (variant ==="compact") {
         return (
-            <OrderQueueCardCompact
-                order={order}
-                selected={selected}
-                onClick={onClick}
-                className={className}
-            />
+            <OrderQueueCardCompact order={order} selected={selected} onClick={onClick} className={className} />
         );
     }
 
@@ -119,13 +114,7 @@ export function OrderQueueCard({
                             title={item.name}
                         >
                             {item.image ? (
-                                <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    className="w-full h-full object-cover"
-                                    width={40}
-                                    height={40}
-                                />
+                                <Image src={item.image} alt={item.name} className="w-full h-full object-cover" width={40} height={40} />
                             ) : (
                                 <Package className="w-5 h-5 text-slate-400" />
                             )}

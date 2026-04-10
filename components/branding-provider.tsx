@@ -9,6 +9,7 @@ const BrandingContext = createContext<BrandingSettings>({
     companyName: "MerchCRM",
     logoUrl: null,
     primaryColor: "#5d00ff",
+    color: "#5d00ff",
     radiusOuter: 24,
     radiusInner: 14,
     currencySymbol: "₽",
@@ -51,16 +52,22 @@ export function BrandingProvider({ children, initialData }: { children: React.Re
         loadBranding();
     }, [initialData, branding, setBranding]);
 
-    const values = branding || initialData || {
+    const values = (branding || initialData || {
         companyName: "MerchCRM",
         logoUrl: null,
         primaryColor: "#5d00ff",
+        color: "#5d00ff",
         radiusOuter: 24,
         radiusInner: 14,
         currencySymbol: "₽",
         dateFormat: "DD.MM.YYYY",
         timezone: "Europe/Moscow"
-    };
+    }) as BrandingSettings;
+
+    // Гарантируем наличие color, если он отсутствует в объекте из БД
+    if (values && !values.color && values.primaryColor) {
+        values.color = values.primaryColor;
+    }
 
     const primaryColor = values.primaryColor || "#5d00ff";
     const radiusOuter = values.radiusOuter || 24;

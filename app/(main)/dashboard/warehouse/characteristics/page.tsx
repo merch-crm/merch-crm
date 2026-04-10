@@ -5,36 +5,31 @@ import { AttributeType } from"../types";
 import { getSession } from "@/lib/session";
 
 export const metadata = {
-    title:"Склад | Характеристики",
+  title:"Склад | Характеристики",
 };
 
 export const dynamic ="force-dynamic";
 
 export default async function CharacteristicsPage() {
-    const [
-        attrRes,
-        attrTypesRes,
-        catsRes,
-        session
-    ] = await Promise.all([
-        getInventoryAttributes(),
-        getInventoryAttributeTypes(),
-        getInventoryCategories(),
-        getSession()
-    ]);
+  const [
+    attrRes,
+    attrTypesRes,
+    catsRes,
+    session
+  ] = await Promise.all([
+    getInventoryAttributes(),
+    getInventoryAttributeTypes(),
+    getInventoryCategories(),
+    getSession()
+  ]);
 
-    const attributes = 'data' in attrRes && attrRes.data ? attrRes.data : [];
-    const attributeTypes = 'data' in attrTypesRes && attrTypesRes.data ? attrTypesRes.data : [];
-    const categories = 'data' in catsRes && catsRes.data ? catsRes.data : [];
+  const attributes = 'data' in attrRes && attrRes.data ? attrRes.data : [];
+  const attributeTypes = 'data' in attrTypesRes && attrTypesRes.data ? attrTypesRes.data : [];
+  const categories = 'data' in catsRes && catsRes.data ? catsRes.data : [];
 
-    return (
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
-            <WarehouseCharacteristic
-                attributes={attributes}
-                attributeTypes={attributeTypes as AttributeType[]}
-                categories={categories}
-                user={session}
-            />
-        </div>
-    );
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-700">
+      <WarehouseCharacteristic attributes={attributes} attributeTypes={attributeTypes as AttributeType[]} categories={categories} user={session} />
+    </div>
+  );
 }

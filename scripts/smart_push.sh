@@ -1,11 +1,12 @@
 #!/bin/bash
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
 
 # ==============================================================================
 # SMART PUSH (CLI Edition)
 # Автоматизированный цикл: Pre-push check -> PR -> Merge -> Deploy
 # ==============================================================================
 
-GH_CLI="/Users/leonidmolchanov/Downloads/gh_2.89.0_macOS_amd64/bin/gh"
+GH_CLI="/opt/homebrew/bin/gh"
 PREDEPLOY_SCRIPT="./scripts/predeploy.sh"
 
 echo "🚀 Запуск процесса Smart Push..."

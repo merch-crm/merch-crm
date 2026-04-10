@@ -74,21 +74,7 @@ const CrmButton = React.forwardRef<HTMLButtonElement, CrmButtonProps>(
     const Comp = asChild ? Slot : "button"
     
     return (
-      <Comp
-        className={cn(
-          crmButtonVariants({ variant, size, className }),
-          isLoading && (
-            variant?.startsWith("danger") ? "bg-[#E11D48] text-white border-transparent cursor-wait hover:bg-[#E11D48]" :
-            variant?.startsWith("success") ? "bg-[#10B981] text-white border-transparent cursor-wait hover:bg-[#10B981]" :
-            variant?.startsWith("warning") ? "bg-[#F59E0B] text-white border-transparent cursor-wait hover:bg-[#F59E0B]" :
-            variant?.startsWith("brand") ? "bg-[#4F46E5] text-white border-transparent cursor-wait hover:bg-[#4F46E5]" :
-            "bg-[#949BAB] text-white border-transparent cursor-wait hover:bg-[#949BAB]"
-          )
-        )}
-        ref={ref}
-        disabled={isLoading || props.disabled}
-        {...props}
-      >
+      <Comp className={cn( crmButtonVariants({ variant, size, className }), isLoading && ( variant?.startsWith("danger") ? "bg-[#E11D48] text-white border-transparent cursor-wait hover:bg-[#E11D48]" : variant?.startsWith("success") ? "bg-[#10B981] text-white border-transparent cursor-wait hover:bg-[#10B981]" : variant?.startsWith("warning") ? "bg-[#F59E0B] text-white border-transparent cursor-wait hover:bg-[#F59E0B]" : variant?.startsWith("brand") ? "bg-[#4F46E5] text-white border-transparent cursor-wait hover:bg-[#4F46E5]" : "bg-[#949BAB] text-white border-transparent cursor-wait hover:bg-[#949BAB]" ) )} ref={ref} disabled={isLoading || props.disabled} {...props}>
         {isLoading ? (
           <>
             <Loader2 className="size-4 animate-spin mr-2" />

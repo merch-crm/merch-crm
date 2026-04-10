@@ -133,9 +133,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
 
     return (
         <div className="space-y-3">
-            <AuditLogsFilters
-                searchTerm={uiState.searchTerm}
-                onSearchChange={(val) => setUiState(prev => ({ ...prev, searchTerm: val }))}
+            <AuditLogsFilters searchTerm={uiState.searchTerm} onSearchChange={(val) => setUiState(prev => ({ ...prev, searchTerm: val }))}
                 selectedUserId={uiState.selectedUserId}
                 onUserChange={(val) => setUiState(prev => ({ ...prev, selectedUserId: val }))}
                 users={dataState.allUsers}
@@ -160,9 +158,7 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 isClearing={uiState.clearing}
             />
 
-            <ConfirmDialog
-                isOpen={uiState.showConfirmDialog}
-                onClose={() => setUiState(prev => ({ ...prev, showConfirmDialog: false }))}
+            <ConfirmDialog isOpen={uiState.showConfirmDialog} onClose={() => setUiState(prev => ({ ...prev, showConfirmDialog: false }))}
                 onConfirm={handleClearLogs}
                 title="Очистка логов аудита"
                 description="Вы уверены, что хотите очистить все логи аудита? Это действие необратимо."
@@ -171,17 +167,9 @@ export function AuditLogsTable({ isAdmin }: { isAdmin?: boolean }) {
                 isLoading={uiState.clearing}
             />
 
-            <AuditLogsList
-                logs={dataState.logs}
-                loading={uiState.loading}
-            />
+            <AuditLogsList logs={dataState.logs} loading={uiState.loading} />
 
-            <Pagination
-                totalItems={dataState.totalLogs}
-                pageSize={PAGE_SIZE}
-                currentPage={page}
-                itemNames={['запись', 'записи', 'записей']}
-            />
+            <Pagination totalItems={dataState.totalLogs} pageSize={PAGE_SIZE} currentPage={page} itemNames={['запись', 'записи', 'записей']} />
         </div>
     );
 }

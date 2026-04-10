@@ -109,11 +109,11 @@ Use Task tool with `subagent_type="gsd-codebase-mapper"`, `model="{mapper_model}
 
 ```
 Task(
-  subagent_type="gsd-codebase-mapper",
-  model="{mapper_model}",
-  run_in_background=true,
-  description="Map codebase tech stack",
-  prompt="Focus: tech
+ subagent_type="gsd-codebase-mapper",
+ model="{mapper_model}",
+ run_in_background=true,
+ description="Map codebase tech stack",
+ prompt="Focus: tech
 
 Analyze this codebase for technology stack and external integrations.
 
@@ -130,11 +130,11 @@ ${AGENT_SKILLS_MAPPER}"
 
 ```
 Task(
-  subagent_type="gsd-codebase-mapper",
-  model="{mapper_model}",
-  run_in_background=true,
-  description="Map codebase architecture",
-  prompt="Focus: arch
+ subagent_type="gsd-codebase-mapper",
+ model="{mapper_model}",
+ run_in_background=true,
+ description="Map codebase architecture",
+ prompt="Focus: arch
 
 Analyze this codebase architecture and directory structure.
 
@@ -151,11 +151,11 @@ ${AGENT_SKILLS_MAPPER}"
 
 ```
 Task(
-  subagent_type="gsd-codebase-mapper",
-  model="{mapper_model}",
-  run_in_background=true,
-  description="Map codebase conventions",
-  prompt="Focus: quality
+ subagent_type="gsd-codebase-mapper",
+ model="{mapper_model}",
+ run_in_background=true,
+ description="Map codebase conventions",
+ prompt="Focus: quality
 
 Analyze this codebase for coding conventions and testing patterns.
 
@@ -172,11 +172,11 @@ ${AGENT_SKILLS_MAPPER}"
 
 ```
 Task(
-  subagent_type="gsd-codebase-mapper",
-  model="{mapper_model}",
-  run_in_background=true,
-  description="Map codebase concerns",
-  prompt="Focus: concerns
+ subagent_type="gsd-codebase-mapper",
+ model="{mapper_model}",
+ run_in_background=true,
+ description="Map codebase concerns",
+ prompt="Focus: concerns
 
 Analyze this codebase for technical debt, known issues, and areas of concern.
 
@@ -197,9 +197,9 @@ Wait for all 4 agents to complete using TaskOutput tool.
 **For each agent task_id returned by the Agent tool calls above:**
 ```
 TaskOutput tool:
-  task_id: "{task_id from Agent result}"
-  block: true
-  timeout: 300000
+ task_id: "{task_id from Agent result}"
+ block: true
+ timeout: 300000
 ```
 
 Call TaskOutput for all 4 agents in parallel (single message with 4 TaskOutput calls).
@@ -286,7 +286,7 @@ grep -E '(sk-[a-zA-Z0-9]{20,}|sk_live_[a-zA-Z0-9]+|sk_test_[a-zA-Z0-9]+|ghp_[a-z
 **If SECRETS_FOUND=true:**
 
 ```
-⚠️  SECURITY ALERT: Potential secrets detected in codebase documents!
+⚠️ SECURITY ALERT: Potential secrets detected in codebase documents!
 
 Found patterns that look like API keys or tokens in:
 [show grep output]

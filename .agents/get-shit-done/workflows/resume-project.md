@@ -71,14 +71,14 @@ ls .planning/phases/*/.continue-here*.md 2>/dev/null || true
 
 # Check for plans without summaries (incomplete execution)
 for plan in .planning/phases/*/*-PLAN.md; do
-  [ -e "$plan" ] || continue
-  summary="${plan/PLAN/SUMMARY}"
-  [ ! -f "$summary" ] && echo "Incomplete: $plan"
+ [ -e "$plan" ] || continue
+ summary="${plan/PLAN/SUMMARY}"
+ [ ! -f "$summary" ] && echo "Incomplete: $plan"
 done 2>/dev/null || true
 
 # Check for interrupted agents (use has_interrupted_agent and interrupted_agent_id from init)
 if [ "$has_interrupted_agent" = "true" ]; then
-  echo "Interrupted agent: $interrupted_agent_id"
+ echo "Interrupted agent: $interrupted_agent_id"
 fi
 ```
 
@@ -109,46 +109,46 @@ fi
 - Subagent was spawned but session ended before completion
 - Read agent-history.json for task details
 - Flag: "Found interrupted agent"
-  </step>
+ </step>
 
 <step name="present_status">
 Present complete project status to user:
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║  PROJECT STATUS                                               ║
+║ PROJECT STATUS                        ║
 ╠══════════════════════════════════════════════════════════════╣
-║  Building: [one-liner from PROJECT.md "What This Is"]         ║
-║                                                               ║
-║  Phase: [X] of [Y] - [Phase name]                            ║
-║  Plan:  [A] of [B] - [Status]                                ║
-║  Progress: [██████░░░░] XX%                                  ║
-║                                                               ║
-║  Last activity: [date] - [what happened]                     ║
+║ Building: [one-liner from PROJECT.md "What This Is"]     ║
+║                                ║
+║ Phase: [X] of [Y] - [Phase name]              ║
+║ Plan: [A] of [B] - [Status]                ║
+║ Progress: [██████░░░░] XX%                 ║
+║                                ║
+║ Last activity: [date] - [what happened]           ║
 ╚══════════════════════════════════════════════════════════════╝
 
 [If incomplete work found:]
-⚠️  Incomplete work detected:
-    - [.continue-here file or incomplete plan]
+⚠️ Incomplete work detected:
+  - [.continue-here file or incomplete plan]
 
 [If interrupted agent found:]
-⚠️  Interrupted agent detected:
-    Agent ID: [id]
-    Task: [task description from agent-history.json]
-    Interrupted: [timestamp]
+⚠️ Interrupted agent detected:
+  Agent ID: [id]
+  Task: [task description from agent-history.json]
+  Interrupted: [timestamp]
 
-    Resume with: Task tool (resume parameter with agent ID)
+  Resume with: Task tool (resume parameter with agent ID)
 
 [If pending todos exist:]
 📋 [N] pending todos — /gsd-check-todos to review
 
 [If blockers exist:]
-⚠️  Carried concerns:
-    - [blocker 1]
-    - [blocker 2]
+⚠️ Carried concerns:
+  - [blocker 1]
+  - [blocker 2]
 
 [If alignment is not ✓:]
-⚠️  Brief alignment: [status] - [assessment]
+⚠️ Brief alignment: [status] - [assessment]
 ```
 
 </step>
@@ -180,11 +180,11 @@ Based on project state, determine the most logical next action:
 → Check if CONTEXT.md exists for this phase:
 
 - If CONTEXT.md missing:
-  → Primary: Discuss phase vision (how user imagines it working)
-  → Secondary: Plan directly (skip context gathering)
+ → Primary: Discuss phase vision (how user imagines it working)
+ → Secondary: Plan directly (skip context gathering)
 - If CONTEXT.md exists:
-  → Primary: Plan the phase
-  → Option: Review roadmap
+ → Primary: Plan the phase
+ → Option: Review roadmap
 
 **If phase ready to execute:**
 → Primary: Execute next plan
@@ -199,11 +199,11 @@ What would you like to do?
 
 [Primary action based on state - e.g.:]
 1. Resume interrupted agent [if interrupted agent found]
-   OR
+  OR
 1. Execute phase (/gsd-execute-phase {phase} ${GSD_WS})
-   OR
+  OR
 1. Discuss Phase 3 context (/gsd-discuss-phase 3 ${GSD_WS}) [if CONTEXT.md missing]
-   OR
+  OR
 1. Plan Phase 3 (/gsd-plan-phase 3 ${GSD_WS}) [if CONTEXT.md exists or discuss option declined]
 
 [Secondary options:]
@@ -228,39 +228,39 @@ Wait for user selection.
 Based on user selection, route to appropriate workflow:
 
 - **Execute plan** → Show command for user to run after clearing:
-  ```
-  ---
+ ```
+ ---
 
-  ## ▶ Next Up
+ ## ▶ Next Up
 
-  **{phase}-{plan}: [Plan Name]** — [objective from PLAN.md]
+ **{phase}-{plan}: [Plan Name]** — [objective from PLAN.md]
 
-  `/gsd-execute-phase {phase} ${GSD_WS}`
+ `/gsd-execute-phase {phase} ${GSD_WS}`
 
-  <sub>`/clear` first → fresh context window</sub>
+ <sub>`/clear` first → fresh context window</sub>
 
-  ---
-  ```
+ ---
+ ```
 - **Plan phase** → Show command for user to run after clearing:
-  ```
-  ---
+ ```
+ ---
 
-  ## ▶ Next Up
+ ## ▶ Next Up
 
-  **Phase [N]: [Name]** — [Goal from ROADMAP.md]
+ **Phase [N]: [Name]** — [Goal from ROADMAP.md]
 
-  `/gsd-plan-phase [phase-number] ${GSD_WS}`
+ `/gsd-plan-phase [phase-number] ${GSD_WS}`
 
-  <sub>`/clear` first → fresh context window</sub>
+ <sub>`/clear` first → fresh context window</sub>
 
-  ---
+ ---
 
-  **Also available:**
-  - `/gsd-discuss-phase [N] ${GSD_WS}` — gather context first
-  - `/gsd-research-phase [N] ${GSD_WS}` — investigate unknowns
+ **Also available:**
+ - `/gsd-discuss-phase [N] ${GSD_WS}` — gather context first
+ - `/gsd-research-phase [N] ${GSD_WS}` — investigate unknowns
 
-  ---
-  ```
+ ---
+ ```
 - **Advance to next phase** → ./transition.md (internal workflow, invoked inline — NOT a user command)
 - **Check todos** → Read .planning/todos/pending/, present summary
 - **Review alignment** → Read PROJECT.md, compare to current state
@@ -303,7 +303,7 @@ This handles cases where:
 - Project predates STATE.md introduction
 - File was accidentally deleted
 - Cloning repo without full .planning/ state
-  </reconstruction>
+ </reconstruction>
 
 <quick_resume>
 If user says "continue" or "go":
@@ -323,4 +323,4 @@ Resume is complete when:
 - [ ] Contextual next actions offered
 - [ ] User knows exactly where project stands
 - [ ] Session continuity updated
-      </success_criteria>
+   </success_criteria>

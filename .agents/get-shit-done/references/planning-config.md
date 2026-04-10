@@ -5,14 +5,14 @@ Configuration options for `.planning/` directory behavior.
 <config_schema>
 ```json
 "planning": {
-  "commit_docs": true,
-  "search_gitignored": false
+ "commit_docs": true,
+ "search_gitignored": false
 },
 "git": {
-  "branching_strategy": "none",
-  "phase_branch_template": "gsd/phase-{phase}-{slug}",
-  "milestone_branch_template": "gsd/{milestone}-{slug}",
-  "quick_branch_template": null
+ "branching_strategy": "none",
+ "phase_branch_template": "gsd/phase-{phase}-{slug}",
+ "milestone_branch_template": "gsd/{milestone}-{slug}",
+ "quick_branch_template": null
 }
 ```
 
@@ -87,23 +87,23 @@ The CLI checks `commit_docs` config and gitignore status internally — no manua
 To use uncommitted mode:
 
 1. **Set config:**
-   ```json
-   "planning": {
-     "commit_docs": false,
-     "search_gitignored": true
-   }
-   ```
+  ```json
+  "planning": {
+   "commit_docs": false,
+   "search_gitignored": true
+  }
+  ```
 
 2. **Add to .gitignore:**
-   ```
-   .planning/
-   ```
+  ```
+  .planning/
+  ```
 
 3. **Existing tracked files:** If `.planning/` was previously tracked:
-   ```bash
-   git rm -r --cached .planning/
-   git commit -m "chore: stop tracking planning docs"
-   ```
+  ```bash
+  git rm -r --cached .planning/
+  git commit -m "chore: stop tracking planning docs"
+  ```
 
 4. **Branch merges:** When using `branching_strategy: phase` or `milestone`, the `complete-milestone` workflow automatically strips `.planning/` files from staging before merge commits when `commit_docs: false`.
 
@@ -165,16 +165,16 @@ if [[ "$INIT" == @file:* ]]; then INIT=$(cat "${INIT#@file:}"); fi
 ```bash
 # For phase strategy
 if [ "$BRANCHING_STRATEGY" = "phase" ]; then
-  PHASE_SLUG=$(echo "$PHASE_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
-  BRANCH_NAME=$(echo "$PHASE_BRANCH_TEMPLATE" | sed "s/{phase}/$PADDED_PHASE/g" | sed "s/{slug}/$PHASE_SLUG/g")
-  git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
+ PHASE_SLUG=$(echo "$PHASE_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+ BRANCH_NAME=$(echo "$PHASE_BRANCH_TEMPLATE" | sed "s/{phase}/$PADDED_PHASE/g" | sed "s/{slug}/$PHASE_SLUG/g")
+ git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
 fi
 
 # For milestone strategy
 if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
-  MILESTONE_SLUG=$(echo "$MILESTONE_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
-  BRANCH_NAME=$(echo "$MILESTONE_BRANCH_TEMPLATE" | sed "s/{milestone}/$MILESTONE_VERSION/g" | sed "s/{slug}/$MILESTONE_SLUG/g")
-  git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
+ MILESTONE_SLUG=$(echo "$MILESTONE_NAME" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+ BRANCH_NAME=$(echo "$MILESTONE_BRANCH_TEMPLATE" | sed "s/{milestone}/$MILESTONE_VERSION/g" | sed "s/{slug}/$MILESTONE_SLUG/g")
+ git checkout -b "$BRANCH_NAME" 2>/dev/null || git checkout "$BRANCH_NAME"
 fi
 ```
 

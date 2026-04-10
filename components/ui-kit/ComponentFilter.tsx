@@ -2,13 +2,10 @@
 
 import { cn } from "@/components/library/custom/utils/cn";
 
-type Source = "all" | "aceternity" | "reactbits" | "heroui" | "alignui" | "custom";
+type Source = "all" | "alignui" | "custom";
 
 const sources: { value: Source; label: string }[] = [
   { value: "all", label: "Все" },
-  { value: "heroui", label: "HeroUI" },
-  { value: "aceternity", label: "Aceternity" },
-  { value: "reactbits", label: "React Bits" },
   { value: "alignui", label: "AlignUI" },
   { value: "custom", label: "Свои" },
 ];

@@ -106,9 +106,9 @@ ls ${phase_dir}/*-CONTEXT.md 2>/dev/null || true
 - header: "Context"
 - question: "Phase [X] already has context. What do you want to do?"
 - options:
-  - "Update it" — Re-analyze codebase and refresh assumptions
-  - "View it" — Show me what's there
-  - "Skip" — Use existing context as-is
+ - "Update it" — Re-analyze codebase and refresh assumptions
+ - "View it" — Show me what's there
+ - "Skip" — Use existing context as-is
 
 If "Update": Load existing, continue to load_prior_context
 If "View": Display CONTEXT.md, then offer update/skip
@@ -124,9 +124,9 @@ Check `has_plans` and `plan_count` from init. **If `has_plans` is true:**
 - header: "Plans exist"
 - question: "Phase [X] already has {plan_count} plan(s) created without user context. Your decisions here won't affect existing plans unless you replan."
 - options:
-  - "Continue and replan after"
-  - "View existing plans"
-  - "Cancel"
+ - "Continue and replan after"
+ - "View existing plans"
+ - "Cancel"
 
 If "Continue and replan after": Continue to load_prior_context.
 If "View existing plans": Display plan files, then offer "Continue" / "Cancel".
@@ -259,9 +259,9 @@ Return EXACTLY this structure:
 
 ### [Area Name] (e.g., "Technical Approach")
 - **Assumption:** [Decision statement]
-  - **Why this way:** [Evidence from codebase — cite file paths]
-  - **If wrong:** [Concrete consequence of this being wrong]
-  - **Confidence:** Confident | Likely | Unclear
+ - **Why this way:** [Evidence from codebase — cite file paths]
+ - **If wrong:** [Concrete consequence of this being wrong]
+ - **Confidence:** Confident | Likely | Unclear
 
 (3-5 areas, calibrated by tier:
 - full_maturity: 3-5 areas, 2-3 alternatives per Likely/Unclear item
@@ -341,17 +341,17 @@ Based on codebase analysis, here's what I'd go with:
 
 **If `--auto`:**
 - If all assumptions are Confident or Likely: log assumptions, skip to write_context.
-  Log: `[auto] All assumptions Confident/Likely — proceeding to context capture.`
+ Log: `[auto] All assumptions Confident/Likely — proceeding to context capture.`
 - If any assumptions are Unclear: log a warning, auto-select recommended alternative for
-  each Unclear item. Log: `[auto] {N} Unclear assumptions auto-resolved with recommended defaults.`
-  Proceed to write_context.
+ each Unclear item. Log: `[auto] {N} Unclear assumptions auto-resolved with recommended defaults.`
+ Proceed to write_context.
 
 **Otherwise:** Use AskUserQuestion:
 - header: "Assumptions"
 - question: "These all look right?"
 - options:
-  - "Yes, proceed" — Write CONTEXT.md with these assumptions as decisions
-  - "Let me correct some" — Select which assumptions to change
+ - "Yes, proceed" — Write CONTEXT.md with these assumptions as decisions
+ - "Let me correct some" — Select which assumptions to change
 
 **If "Yes, proceed":** Skip to write_context.
 **If "Let me correct some":** Continue to correct_assumptions.
@@ -541,8 +541,8 @@ Update STATE.md with session info:
 
 ```bash
 node ".agent/get-shit-done/bin/gsd-tools.cjs" state record-session \
-  --stopped-at "Phase ${PHASE} context gathered (assumptions mode)" \
-  --resume-file "${phase_dir}/${padded_phase}-CONTEXT.md"
+ --stopped-at "Phase ${PHASE} context gathered (assumptions mode)" \
+ --resume-file "${phase_dir}/${padded_phase}-CONTEXT.md"
 ```
 
 Commit STATE.md:
@@ -599,16 +599,16 @@ Check for auto-advance trigger:
 
 1. Parse `--auto` flag from $ARGUMENTS
 2. Sync chain flag:
-   ```bash
-   if [[ ! "$ARGUMENTS" =~ --auto ]]; then
-     node ".agent/get-shit-done/bin/gsd-tools.cjs" config-set workflow._auto_chain_active false 2>/dev/null
-   fi
-   ```
+  ```bash
+  if [[ ! "$ARGUMENTS" =~ --auto ]]; then
+   node ".agent/get-shit-done/bin/gsd-tools.cjs" config-set workflow._auto_chain_active false 2>/dev/null
+  fi
+  ```
 3. Read chain flag and user preference:
-   ```bash
-   AUTO_CHAIN=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow._auto_chain_active 2>/dev/null || echo "false")
-   AUTO_CFG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow.auto_advance 2>/dev/null || echo "false")
-   ```
+  ```bash
+  AUTO_CHAIN=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow._auto_chain_active 2>/dev/null || echo "false")
+  AUTO_CFG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow.auto_advance 2>/dev/null || echo "false")
+  ```
 
 **If `--auto` flag present AND `AUTO_CHAIN` is not true:**
 ```bash

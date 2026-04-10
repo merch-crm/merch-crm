@@ -24,22 +24,12 @@ export function BentoDonutChart({ title, data, centerMetric, className }: BentoD
       <div className="relative w-full aspect-square max-w-[240px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie
-              data={data}
-              innerRadius="70%"
-              outerRadius="90%"
-              paddingAngle={5}
-              dataKey="value"
-              stroke="none"
-              cornerRadius={12}
-            >
+            <Pie data={data} innerRadius="70%" outerRadius="90%" paddingAngle={5} dataKey="value" stroke="none" cornerRadius={12}>
               {data?.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip 
-              contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-            />
+            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} />
           </PieChart>
         </ResponsiveContainer>
         

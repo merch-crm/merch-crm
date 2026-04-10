@@ -28,11 +28,7 @@ export function PeriodSelector() {
         <div className="flex items-center gap-1 bg-white p-1 rounded-[18px] border border-slate-200/60 shadow-sm">
             <div className="flex items-center gap-1">
                 {periods.map((period) => (
-                    <Button
-                        key={period.value}
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setPeriod(period.value)}
+                    <Button key={period.value} variant="ghost" size="sm" onClick={() => setPeriod(period.value)}
                         className={cn(
                             "rounded-[18px] px-3.5 h-8 text-xs font-bold  transition-all",
                             currentPeriod === period.value

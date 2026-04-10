@@ -83,8 +83,7 @@ export function ProductPriceCalculator({
             {/* Разбивка */}
             <div className="divide-y divide-slate-100">
                 {/* Бланк */}
-                <PriceRow
-                    icon={<Box className="w-4 h-4" />}
+                <PriceRow icon={<Box className="w-4 h-4" />}
                     colorClasses={TYPE_COLORS.blank}
                     label={blankName}
                     amount={blankTotal}
@@ -94,9 +93,7 @@ export function ProductPriceCalculator({
 
                 {/* Нанесение */}
                 {printDetails.map((opt) => (
-                    <PriceRow
-                        key={opt.id}
-                        icon={<Paintbrush className="w-4 h-4" />}
+                    <PriceRow key={opt.id} icon={<Paintbrush className="w-4 h-4" />}
                         colorClasses={TYPE_COLORS.print}
                         label={opt.name}
                         amount={opt.total}
@@ -107,8 +104,7 @@ export function ProductPriceCalculator({
 
                 {/* Скидка */}
                 {discount && discountAmount > 0 && (
-                    <PriceRow
-                        icon={<Percent className="w-4 h-4" />}
+                    <PriceRow icon={<Percent className="w-4 h-4" />}
                         colorClasses={TYPE_COLORS.discount}
                         label={discount.label ||"Скидка"}
                         amount={discountAmount}
@@ -121,8 +117,7 @@ export function ProductPriceCalculator({
 
                 {/* Доставка */}
                 {shippingAmount > 0 && (
-                    <PriceRow
-                        icon={<Truck className="w-4 h-4" />}
+                    <PriceRow icon={<Truck className="w-4 h-4" />}
                         colorClasses={TYPE_COLORS.shipping}
                         label="Доставка"
                         amount={shippingAmount}

@@ -68,7 +68,7 @@ Extract `MILESTONE_REQ_IDS` from REQUIREMENTS.md traceability table — all REQ-
 
 ```
 Task(
-  prompt="Check cross-phase integration and E2E flows.
+ prompt="Check cross-phase integration and E2E flows.
 
 Phases: {phase_dirs}
 Phase exports: {from SUMMARYs}
@@ -81,8 +81,8 @@ MUST map each integration finding to affected requirement IDs where applicable.
 
 Verify cross-phase wiring and E2E user flows.
 ${AGENT_SKILLS_CHECKER}",
-  subagent_type="gsd-integration-checker",
-  model="{integration_checker_model}"
+ subagent_type="gsd-integration-checker",
+ model="{integration_checker_model}"
 )
 ```
 
@@ -112,8 +112,8 @@ For each phase's VERIFICATION.md, extract the expanded requirements table:
 For each phase's SUMMARY.md, extract `requirements-completed` from YAML frontmatter:
 ```bash
 for summary in .planning/phases/*-*/*-SUMMARY.md; do
-  [ -e "$summary" ] || continue
-  node ".agent/get-shit-done/bin/gsd-tools.cjs" summary-extract "$summary" --fields requirements_completed --pick requirements_completed
+ [ -e "$summary" ] || continue
+ node ".agent/get-shit-done/bin/gsd-tools.cjs" summary-extract "$summary" --fields requirements_completed --pick requirements_completed
 done
 ```
 
@@ -123,12 +123,12 @@ For each REQ-ID, determine status using all three sources:
 
 | VERIFICATION.md Status | SUMMARY Frontmatter | REQUIREMENTS.md | → Final Status |
 |------------------------|---------------------|-----------------|----------------|
-| passed                 | listed              | `[x]`           | **satisfied**  |
-| passed                 | listed              | `[ ]`           | **satisfied** (update checkbox) |
-| passed                 | missing             | any             | **partial** (verify manually) |
-| gaps_found             | any                 | any             | **unsatisfied** |
-| missing                | listed              | any             | **partial** (verification gap) |
-| missing                | missing             | any             | **unsatisfied** |
+| passed         | listed       | `[x]`      | **satisfied** |
+| passed         | listed       | `[ ]`      | **satisfied** (update checkbox) |
+| passed         | missing       | any       | **partial** (verify manually) |
+| gaps_found       | any         | any       | **unsatisfied** |
+| missing        | listed       | any       | **partial** (verification gap) |
+| missing        | missing       | any       | **unsatisfied** |
 
 ### 5e. FAIL Gate and Orphan Detection
 
@@ -170,29 +170,29 @@ milestone: {version}
 audited: {timestamp}
 status: passed | gaps_found | tech_debt
 scores:
-  requirements: N/M
-  phases: N/M
-  integration: N/M
-  flows: N/M
-gaps:  # Critical blockers
-  requirements:
-    - id: "{REQ-ID}"
-      status: "unsatisfied | partial | orphaned"
-      phase: "{assigned phase}"
-      claimed_by_plans: ["{plan files that reference this requirement}"]
-      completed_by_plans: ["{plan files whose SUMMARY marks it complete}"]
-      verification_status: "passed | gaps_found | missing | orphaned"
-      evidence: "{specific evidence or lack thereof}"
-  integration: [...]
-  flows: [...]
-tech_debt:  # Non-critical, deferred
-  - phase: 01-auth
-    items:
-      - "TODO: add rate limiting"
-      - "Warning: no password strength validation"
-  - phase: 03-dashboard
-    items:
-      - "Deferred: mobile responsive layout"
+ requirements: N/M
+ phases: N/M
+ integration: N/M
+ flows: N/M
+gaps: # Critical blockers
+ requirements:
+  - id: "{REQ-ID}"
+   status: "unsatisfied | partial | orphaned"
+   phase: "{assigned phase}"
+   claimed_by_plans: ["{plan files that reference this requirement}"]
+   completed_by_plans: ["{plan files whose SUMMARY marks it complete}"]
+   verification_status: "passed | gaps_found | missing | orphaned"
+   evidence: "{specific evidence or lack thereof}"
+ integration: [...]
+ flows: [...]
+tech_debt: # Non-critical, deferred
+ - phase: 01-auth
+  items:
+   - "TODO: add rate limiting"
+   - "Warning: no password strength validation"
+ - phase: 03-dashboard
+  items:
+   - "Deferred: mobile responsive layout"
 ---
 ```
 
@@ -248,7 +248,7 @@ All requirements covered. Cross-phase integration verified. E2E flows complete.
 
 {For each unsatisfied requirement:}
 - **{REQ-ID}: {description}** (Phase {X})
-  - {reason}
+ - {reason}
 
 ### Cross-Phase Issues
 

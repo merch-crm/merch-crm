@@ -137,10 +137,10 @@ Write to: .planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
 
 ```
 Task(
-  prompt=filled_prompt,
-  subagent_type="gsd-phase-researcher",
-  model="{researcher_model}",
-  description="Research Phase {phase}"
+ prompt=filled_prompt,
+ subagent_type="gsd-phase-researcher",
+ model="{researcher_model}",
+ description="Research Phase {phase}"
 )
 ```
 
@@ -173,10 +173,10 @@ Continue research for Phase {phase_number}: {phase_name}
 
 ```
 Task(
-  prompt=continuation_prompt,
-  subagent_type="gsd-phase-researcher",
-  model="{researcher_model}",
-  description="Continue research Phase {phase}"
+ prompt=continuation_prompt,
+ subagent_type="gsd-phase-researcher",
+ model="{researcher_model}",
+ description="Continue research Phase {phase}"
 )
 ```
 

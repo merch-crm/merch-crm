@@ -11,21 +11,21 @@ import { BrandButtons } from "./_components/brand-buttons";
 import { DropdownMenus } from "./_components/dropdown-menus";
 
 export default function ButtonsPage() {
-  return (
-    <CategoryPage 
-      title="Кнопки" 
-      description="Стандартизированные системные кнопки CRM, разделенные на 7 основных функциональных типов." 
-      count={7}
-    >
-      <div className="flex flex-col gap-3">
-        <ActionButtons />
-        <DropdownMenus />
-        <DangerButtons />
-        <NeutralButtons />
-        <SuccessButtons />
-        <WarningButtons />
-        <BrandButtons />
-      </div>
-    </CategoryPage>
-  );
+ return (
+  <CategoryPage 
+   title="Кнопки" 
+   description="Стандартизированные системные кнопки CRM, разделенные на 7 основных функциональных типов." 
+   count={7}
+  >
+   <div className="flex flex-col gap-3">
+    <ActionButtons />
+    <DropdownMenus />
+    <DangerButtons />
+    <NeutralButtons />
+    <SuccessButtons />
+    <WarningButtons />
+    <BrandButtons />
+   </div>
+  </CategoryPage>
+ );
 }

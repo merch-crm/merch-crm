@@ -49,10 +49,7 @@ export function MonitoringTab({
                             {lastUpdated ? lastUpdated.toLocaleTimeString() : "--:--:--"}
                         </p>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => onRefresh(true)}
+                    <Button variant="outline" size="icon" onClick={() => onRefresh(true)}
                         disabled={loading}
                         className="bg-white border-slate-200 text-slate-600 hover:text-[var(--primary)] hover:bg-indigo-50/30 rounded-[18px] h-10 w-10"
                     >
@@ -79,12 +76,7 @@ export function MonitoringTab({
                 <h5 className="text-xs font-bold text-slate-400 mb-4 px-1">
                     Инструменты обслуживания
                 </h5>
-                <MaintenanceControls
-                    onClearRam={onClearRam}
-                    isClearingRam={isClearingRam}
-                    onRestartRequest={onRestartRequest}
-                    isRestartingAction={isRestartingAction}
-                />
+                <MaintenanceControls onClearRam={onClearRam} isClearingRam={isClearingRam} onRestartRequest={onRestartRequest} isRestartingAction={isRestartingAction} />
             </div>
 
             {/* Activity Graph */}

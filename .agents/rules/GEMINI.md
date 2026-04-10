@@ -22,7 +22,7 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 ### 2. Enforcement Protocol
 
 1. **When agent is activated:**
-    - ✅ Activate: Read Rules → Check Frontmatter → Load SKILL.md → Apply All.
+  - ✅ Activate: Read Rules → Check Frontmatter → Load SKILL.md → Apply All.
 2. **Forbidden:** Never skip reading agent rules or skill instructions. "Read → Understand → Apply" is mandatory.
 
 ---
@@ -31,14 +31,14 @@ Agent activated → Check frontmatter "skills:" → Read SKILL.md (INDEX) → Re
 
 **Before ANY action, classify the request:**
 
-| Request Type     | Trigger Keywords                           | Active Tiers                   | Result                      |
+| Request Type   | Trigger Keywords              | Active Tiers          | Result           |
 | ---------------- | ------------------------------------------ | ------------------------------ | --------------------------- |
-| **QUESTION**     | "what is", "how does", "explain"           | TIER 0 only                    | Text Response               |
-| **SURVEY/INTEL** | "analyze", "list files", "overview"        | TIER 0 + Explorer              | Session Intel (No File)     |
-| **SIMPLE CODE**  | "fix", "add", "change" (single file)       | TIER 0 + TIER 1 (lite)         | Inline Edit                 |
+| **QUESTION**   | "what is", "how does", "explain"      | TIER 0 only          | Text Response        |
+| **SURVEY/INTEL** | "analyze", "list files", "overview"    | TIER 0 + Explorer       | Session Intel (No File)   |
+| **SIMPLE CODE** | "fix", "add", "change" (single file)    | TIER 0 + TIER 1 (lite)     | Inline Edit         |
 | **COMPLEX CODE** | "build", "create", "implement", "refactor" | TIER 0 + TIER 1 (full) + Agent | **{task-slug}.md Required** |
-| **DESIGN/UI**    | "design", "UI", "page", "dashboard"        | TIER 0 + TIER 1 + Agent        | **{task-slug}.md Required** |
-| **SLASH CMD**    | /create, /orchestrate, /debug              | Command-specific flow          | Variable                    |
+| **DESIGN/UI**  | "design", "UI", "page", "dashboard"    | TIER 0 + TIER 1 + Agent    | **{task-slug}.md Required** |
+| **SLASH CMD**  | /create, /orchestrate, /debug       | Command-specific flow     | Variable          |
 
 ---
 
@@ -163,11 +163,11 @@ When user's prompt is NOT in English:
 
 ### 📱 Project Type Routing
 
-| Project Type                           | Primary Agent         | Skills                        |
+| Project Type              | Primary Agent     | Skills            |
 | -------------------------------------- | --------------------- | ----------------------------- |
-| **MOBILE** (iOS, Android, RN, Flutter) | `mobile-developer`    | mobile-design                 |
-| **WEB** (Next.js, React web)           | `frontend-specialist` | frontend-design               |
-| **BACKEND** (API, server, DB)          | `backend-specialist`  | api-patterns, database-design |
+| **MOBILE** (iOS, Android, RN, Flutter) | `mobile-developer`  | mobile-design         |
+| **WEB** (Next.js, React web)      | `frontend-specialist` | frontend-design        |
+| **BACKEND** (API, server, DB)     | `backend-specialist` | api-patterns, database-design |
 
 > 🔴 **Mobile + frontend-specialist = WRONG.** Mobile = mobile-developer ONLY.
 
@@ -179,13 +179,13 @@ When user's prompt is NOT in English:
 
 **MANDATORY: Every user request must pass through the Socratic Gate before ANY tool use or implementation.**
 
-| Request Type            | Strategy       | Required Action                                                   |
+| Request Type      | Strategy    | Required Action                          |
 | ----------------------- | -------------- | ----------------------------------------------------------------- |
-| **New Feature / Build** | Deep Discovery | ASK minimum 3 strategic questions                                 |
-| **Code Edit / Bug Fix** | Context Check  | Confirm understanding + ask impact questions                      |
-| **Vague / Simple**      | Clarification  | Ask Purpose, Users, and Scope                                     |
-| **Full Orchestration**  | Gatekeeper     | **STOP** subagents until user confirms plan details               |
-| **Direct "Proceed"**    | Validation     | **STOP** → Even if answers are given, ask 2 "Edge Case" questions |
+| **New Feature / Build** | Deep Discovery | ASK minimum 3 strategic questions                 |
+| **Code Edit / Bug Fix** | Context Check | Confirm understanding + ask impact questions           |
+| **Vague / Simple**   | Clarification | Ask Purpose, Users, and Scope                   |
+| **Full Orchestration** | Gatekeeper   | **STOP** subagents until user confirms plan details        |
+| **Direct "Proceed"**  | Validation   | **STOP** → Even if answers are given, ask 2 "Edge Case" questions |
 
 **Protocol:**
 
@@ -198,10 +198,10 @@ When user's prompt is NOT in English:
 
 **Trigger:** When the user says "son kontrolleri yap", "final checks", "çalıştır tüm testleri", or similar phrases.
 
-| Task Stage       | Command                                            | Purpose                        |
+| Task Stage    | Command                      | Purpose            |
 | ---------------- | -------------------------------------------------- | ------------------------------ |
-| **Manual Audit** | `node .agents/get-shit-done/bin/gsd-tools.cjs audit .` | Priority-based project audit   |
-| **Pre-Deploy**   | `node .agents/get-shit-done/bin/gsd-tools.cjs ship . --url <URL>` | Full Suite + Performance + E2E |
+| **Manual Audit** | `node .agents/get-shit-done/bin/gsd-tools.cjs audit .` | Priority-based project audit  |
+| **Pre-Deploy**  | `node .agents/get-shit-done/bin/gsd-tools.cjs ship . --url <URL>` | Full Suite + Performance + E2E |
 
 **Priority Execution Order:**
 
@@ -214,30 +214,30 @@ When user's prompt is NOT in English:
 
 **Available Scripts (12 total):**
 
-| Script                     | Skill                 | When to Use         |
+| Script           | Skill         | When to Use     |
 | -------------------------- | --------------------- | ------------------- |
-| `security_audit`           | vulnerability-scanner | Always on deploy    |
-| `dependency_analyzer`      | vulnerability-scanner | Weekly / Deploy     |
-| `lint_runner`              | lint-and-validate     | Every code change   |
-| `test_runner`              | testing-patterns      | After logic change  |
-| `schema_validator`         | database-design       | After DB change     |
-| `ux_audit`                 | frontend-design       | After UI change     |
-| `accessibility_checker`    | frontend-design       | After UI change     |
-| `seo_checker`              | seo-fundamentals      | After page change   |
-| `bundle_analyzer`          | performance-profiling | Before deploy       |
-| `mobile_audit`             | mobile-design         | After mobile change |
-| `lighthouse_audit`         | performance-profiling | Before deploy       |
-| `playwright_runner`        | webapp-testing        | Before deploy       |
+| `security_audit`      | vulnerability-scanner | Always on deploy  |
+| `dependency_analyzer`   | vulnerability-scanner | Weekly / Deploy   |
+| `lint_runner`       | lint-and-validate   | Every code change  |
+| `test_runner`       | testing-patterns   | After logic change |
+| `schema_validator`     | database-design    | After DB change   |
+| `ux_audit`         | frontend-design    | After UI change   |
+| `accessibility_checker`  | frontend-design    | After UI change   |
+| `seo_checker`       | seo-fundamentals   | After page change  |
+| `bundle_analyzer`     | performance-profiling | Before deploy    |
+| `mobile_audit`       | mobile-design     | After mobile change |
+| `lighthouse_audit`     | performance-profiling | Before deploy    |
+| `playwright_runner`    | webapp-testing    | Before deploy    |
 
 > 🔴 **Agents & Skills can invoke ANY script** via `node .agents/get-shit-done/bin/gsd-tools.cjs [script-name]`
 
 ### 🎭 Gemini Mode Mapping
 
-| Mode     | Agent             | Behavior                                     |
+| Mode   | Agent       | Behavior                   |
 | -------- | ----------------- | -------------------------------------------- |
 | **plan** | `project-planner` | 4-phase methodology. NO CODE before Phase 4. |
-| **ask**  | -                 | Focus on understanding. Ask questions.       |
-| **edit** | `orchestrator`    | Execute. Check `{task-slug}.md` first.       |
+| **ask** | -         | Focus on understanding. Ask questions.    |
+| **edit** | `orchestrator`  | Execute. Check `{task-slug}.md` first.    |
 
 **Plan Mode (4-Phase):**
 
@@ -254,10 +254,10 @@ When user's prompt is NOT in English:
 
 > **Design rules are in the specialist agents, NOT here.**
 
-| Task         | Read                             |
+| Task     | Read               |
 | ------------ | -------------------------------- |
-| Web UI/UX    | `.agents/frontend-specialist.md` |
-| Mobile UI/UX | `.agents/mobile-developer.md`    |
+| Web UI/UX  | `.agents/frontend-specialist.md` |
+| Mobile UI/UX | `.agents/mobile-developer.md`  |
 
 **These agents contain:**
 

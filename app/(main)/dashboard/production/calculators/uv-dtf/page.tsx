@@ -4,14 +4,14 @@ import { UVDTFCalculatorClient } from './uv-dtf-calculator-client';
 import { CalculatorPageSkeleton } from '../components/CalculatorPageSkeleton';
 
 export const metadata = {
-  title: 'UV DTF калькулятор | MerchCRM',
-  description: 'Калькулятор расчета себестоимости UV DTF печати',
+ title: 'UV DTF калькулятор | MerchCRM',
+ description: 'Калькулятор расчета себестоимости UV DTF печати',
 };
 
 export default function UVDTFCalculatorPage() {
-  return (
-    <Suspense fallback={<CalculatorPageSkeleton />}>
-      <UVDTFCalculatorClient />
-    </Suspense>
-  );
+ return (
+  <Suspense fallback={<CalculatorPageSkeleton />}>
+   <UVDTFCalculatorClient />
+  </Suspense>
+ );
 }

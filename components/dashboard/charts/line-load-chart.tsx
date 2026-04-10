@@ -103,20 +103,8 @@ export function LineLoadChart({
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} layout="vertical" margin={{ left: 10, right: 30 }}>
                             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
-                            <XAxis
-                                type="number"
-                                tick={{ fontSize: 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                            />
-                            <YAxis
-                                type="category"
-                                dataKey="name"
-                                tick={{ fontSize: 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                                width={60}
-                            />
+                            <XAxis type="number" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                            <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} width={60} />
                             <Tooltip content={<CustomTooltip />} />
                             <Bar dataKey="tasks" radius={[0, 4, 4, 0]}>
                                 {chartData.map((entry, index) => (

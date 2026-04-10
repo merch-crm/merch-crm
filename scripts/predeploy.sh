@@ -1,5 +1,5 @@
-#!/bin/bash
 set -e
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
 
 echo "🚀 Запуск стабильности перед деплоем (Pre-push check)..."
 
@@ -12,8 +12,11 @@ echo "📌 Шаг 2: Проверка ESLint..."
 npm run lint
 
 # 3. Запуск тестов
-echo "📌 Шаг 3: Запуск Unit и Integration тестов (Vitest)..."
-npm run test -- --run
+echo "📌 Шаг 3: Запуск Unit-тестов..."
+npm run test:unit
+
+echo "📌 Шаг 3.1: Запуск Integration-тестов (последовательно)..."
+npm run test:integration
 
 # 4. Проверка билда
 echo "📌 Шаг 4: Тестовая сборка Next.js..."

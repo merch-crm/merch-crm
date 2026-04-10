@@ -64,13 +64,7 @@ function RadioGroup({
             {label && (
                 <span className="text-sm font-bold text-slate-700 ml-1">{label}</span>
             )}
-            <RadioGroupRoot
-                value={value}
-                onValueChange={onValueChange}
-                className={cn(
-                    orientation ==="horizontal" ?"flex flex-wrap gap-3" :"grid gap-3"
-                )}
-            >
+            <RadioGroupRoot value={value} onValueChange={onValueChange} className={cn( orientation ==="horizontal" ?"flex flex-wrap gap-3" :"grid gap-3" )}>
                 {options.map((option) => (
                     <label
                         key={option.value}
@@ -126,11 +120,7 @@ function RadioCards({
             {label && (
                 <span className="text-sm font-bold text-slate-700 ml-1">{label}</span>
             )}
-            <RadioGroupRoot
-                value={value}
-                onValueChange={onValueChange}
-                className={cn("grid gap-3", gridCols[columns])}
-            >
+            <RadioGroupRoot value={value} onValueChange={onValueChange} className={cn("grid gap-3", gridCols[columns])}>
                 {options.map((option) => (
                     <label
                         key={option.value}
@@ -141,11 +131,7 @@ function RadioCards({
                             option.disabled &&"cursor-not-allowed opacity-50"
                         )}
                     >
-                        <RadioGroupItem
-                            value={option.value}
-                            disabled={option.disabled}
-                            className="mt-0.5 shrink-0"
-                        />
+                        <RadioGroupItem value={option.value} disabled={option.disabled} className="mt-0.5 shrink-0" />
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                                 {option.icon && (
@@ -187,13 +173,7 @@ function RadioSegments({
     };
 
     return (
-        <RadioGroupRoot
-            value={value}
-            onValueChange={onValueChange}
-            className={cn("inline-flex rounded-lg bg-slate-100 p-1",
-                className
-            )}
-        >
+        <RadioGroupRoot value={value} onValueChange={onValueChange} className={cn("inline-flex rounded-lg bg-slate-100 p-1", className )}>
             {options.map((option) => (
                 <label
                     key={option.value}
@@ -226,9 +206,7 @@ interface ClientTypeRadioProps {
 
 function ClientTypeRadio({ value, onValueChange, className }: ClientTypeRadioProps) {
     return (
-        <RadioCards
-            value={value}
-            onValueChange={(v) => onValueChange(v as"b2b" |"b2c")}
+        <RadioCards value={value} onValueChange={(v) => onValueChange(v as"b2b" |"b2c")}
             label="Тип клиента"
             columns={2}
             className={className}
@@ -285,11 +263,7 @@ function RadioIcons({
             {label && (
                 <span className="text-sm font-bold text-slate-700 ml-1">{label}</span>
             )}
-            <RadioGroupRoot
-                value={value}
-                onValueChange={onValueChange}
-                className="flex gap-2"
-            >
+            <RadioGroupRoot value={value} onValueChange={onValueChange} className="flex gap-2">
                 {options.map((option) => (
                     <label
                         key={option.value}
@@ -341,11 +315,7 @@ function RadioColors({
             {label && (
                 <span className="text-sm font-bold text-slate-700 ml-1">{label}</span>
             )}
-            <RadioGroupRoot
-                value={value}
-                onValueChange={onValueChange}
-                className="flex flex-wrap gap-2"
-            >
+            <RadioGroupRoot value={value} onValueChange={onValueChange} className="flex flex-wrap gap-2">
                 {options.map((option) => (
                     <label
                         key={option.value}

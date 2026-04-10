@@ -23,9 +23,7 @@ export function TrackingInput({ onTrack, isLoading = false, className }: Trackin
             <div className="flex gap-2 items-end">
                 <div className="w-[160px]">
                     <label className="text-xs font-bold text-slate-400 ml-1 mb-1 block">Перевозчик</label>
-                    <Select
-                        value={provider}
-                        onChange={(val) => setProvider(val as DeliveryProvider)}
+                    <Select value={provider} onChange={(val) => setProvider(val as DeliveryProvider)}
                         options={Object.entries(PROVIDER_CONFIG).map(([key, config]) => ({
                             id: key,
                             title: config.name

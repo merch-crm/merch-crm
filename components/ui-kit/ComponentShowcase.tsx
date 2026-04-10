@@ -9,9 +9,9 @@ import { Eye, Code2 } from "lucide-react";
 type ViewMode = "preview" | "code" | "responsive";
 
 interface ComponentShowcaseProps {
-  title: string;
-  description?: string;
-  desc?: string;
+  title: ReactNode;
+  description?: ReactNode;
+  desc?: ReactNode;
   source: Source;
   importPath?: string;
   code?: string;

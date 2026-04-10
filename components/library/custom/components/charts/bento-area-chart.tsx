@@ -38,32 +38,11 @@ export function BentoAreaChart({
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-10 dark:opacity-20" />
-            <XAxis 
-              dataKey={categoryKey} 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fontSize: 12 }} 
-              dy={10}
-              className="text-muted-foreground"
+            <XAxis dataKey={categoryKey} axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} className="text-muted-foreground" />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} className="text-muted-foreground" tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(0)}k` : val}
             />
-            <YAxis 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fontSize: 12 }} 
-              className="text-muted-foreground"
-              tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(0)}k` : val}
-            />
-            <Tooltip 
-              contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-            />
-            <Area 
-              type="monotone" 
-              dataKey={dataKey} 
-              stroke={color} 
-              strokeWidth={4}
-              fillOpacity={1} 
-              fill={`url(#${gradientId})`} 
-            />
+            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} />
+            <Area type="monotone" dataKey={dataKey} stroke={color} strokeWidth={4} fillOpacity={1} fill={`url(#${gradientId})`} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

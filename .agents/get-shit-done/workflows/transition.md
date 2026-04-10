@@ -80,8 +80,8 @@ cat .planning/config.json 2>/dev/null || true
 # Count outstanding items in current phase
 OUTSTANDING=""
 for f in .planning/phases/XX-current/*-UAT.md .planning/phases/XX-current/*-VERIFICATION.md; do
-  [ -f "$f" ] || continue
-  grep -q "result: pending\|result: blocked\|status: partial\|status: human_needed\|status: diagnosed" "$f" && OUTSTANDING="$OUTSTANDING\n$(basename $f)"
+ [ -f "$f" ] || continue
+ grep -q "result: pending\|result: blocked\|status: partial\|status: human_needed\|status: diagnosed" "$f" && OUTSTANDING="$OUTSTANDING\n$(basename $f)"
 done
 ```
 
@@ -197,24 +197,24 @@ cat .planning/phases/XX-current/*-SUMMARY.md
 **Assess requirement changes:**
 
 1. **Requirements validated?**
-   - Any Active requirements shipped in this phase?
-   - Move to Validated with phase reference: `- ✓ [Requirement] — Phase X`
+  - Any Active requirements shipped in this phase?
+  - Move to Validated with phase reference: `- ✓ [Requirement] — Phase X`
 
 2. **Requirements invalidated?**
-   - Any Active requirements discovered to be unnecessary or wrong?
-   - Move to Out of Scope with reason: `- [Requirement] — [why invalidated]`
+  - Any Active requirements discovered to be unnecessary or wrong?
+  - Move to Out of Scope with reason: `- [Requirement] — [why invalidated]`
 
 3. **Requirements emerged?**
-   - Any new requirements discovered during building?
-   - Add to Active: `- [ ] [New requirement]`
+  - Any new requirements discovered during building?
+  - Add to Active: `- [ ] [New requirement]`
 
 4. **Decisions to log?**
-   - Extract decisions from SUMMARY.md files
-   - Add to Key Decisions table with outcome if known
+  - Extract decisions from SUMMARY.md files
+  - Add to Key Decisions table with outcome if known
 
 5. **"What This Is" still accurate?**
-   - If the product has meaningfully changed, update the description
-   - Keep it current and accurate
+  - If the product has meaningfully changed, update the description
+  - Keep it current and accurate
 
 **Update PROJECT.md:**
 
@@ -406,7 +406,7 @@ In flat mode, go directly to **Route B**.
 ```bash
 # Only check if we're in workstream mode
 if [ -n "$GSD_WORKSTREAM" ]; then
-  WS_LIST=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" workstream list --raw)
+ WS_LIST=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" workstream list --raw)
 fi
 ```
 
@@ -545,8 +545,8 @@ This workstream's phases are complete. Other workstreams are still active:
 
 | Workstream | Status | Phase | Progress |
 |------------|--------|-------|----------|
-| {name}     | {status} | {current_phase} | {completed_phases}/{phase_count} |
-| ...        | ...    | ...   | ...      |
+| {name}   | {status} | {current_phase} | {completed_phases}/{phase_count} |
+| ...    | ...  | ...  | ...   |
 
 ---
 

@@ -65,14 +65,7 @@ export function StatCard({
     const TrendIcon = getTrendIcon();
 
     return (
-        <Card
-            className={cn(
-                statCardVariants({ variant }),
-                onClick && "cursor-pointer hover:shadow-md transition-shadow",
-                className
-            )}
-            onClick={onClick}
-        >
+        <Card className={cn( statCardVariants({ variant }), onClick && "cursor-pointer hover:shadow-md transition-shadow", className )} onClick={onClick}>
             <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                     <div className="space-y-1">

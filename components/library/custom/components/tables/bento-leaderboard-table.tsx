@@ -53,12 +53,7 @@ export function BentoLeaderboardTable({ title, users: propUsers, className }: Be
                   <div className="flex items-center gap-3">
                     {user.avatar ? (
                       <div className="relative w-8 h-8 rounded-full overflow-hidden shadow-sm bg-background">
-                        <Image 
-                          src={user.avatar} 
-                          alt={user.name} 
-                          fill 
-                          className="object-cover transition-opacity hover:opacity-80" 
-                        />
+                        <Image src={user.avatar} alt={user.name} fill className="object-cover transition-opacity hover:opacity-80" />
                       </div>
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs ring-2 ring-background">

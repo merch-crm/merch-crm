@@ -18,23 +18,12 @@ export function PreviewModal({
     onExternalOpen
 }: PreviewModalProps) {
     return (
-        <ResponsiveModal
-            isOpen={!!file}
-            onClose={onClose}
-            title="Просмотр файла"
-            description={file?.name || "Информация о файле"}
-        >
+        <ResponsiveModal isOpen={!!file} onClose={onClose} title="Просмотр файла" description={file?.name || "Информация о файле"}>
             {file && (
                 <div className="space-y-3">
                     <div className="relative aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl group">
                         {file.type === 'image' ? (
-                            <NextImage
-                                src={file.url}
-                                alt={file.name}
-                                fill
-                                className="object-contain"
-                                unoptimized
-                            />
+                            <NextImage src={file.url} alt={file.name} fill className="object-contain" unoptimized />
                         ) : (
                             <div className="flex flex-col items-center justify-center h-full">
                                 <File size={48} className="text-slate-700 mb-4" />
@@ -52,17 +41,13 @@ export function PreviewModal({
                     </div>
 
                     <div className="flex gap-3">
-                        <Button
-                            onClick={() => onExternalOpen(file.url)}
+                        <Button onClick={() => onExternalOpen(file.url)}
                             className="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-bold h-12"
                         >
                             <ExternalLink size={16} className="mr-2" />
                             Открыть
                         </Button>
-                        <Button
-                            onClick={onClose}
-                            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold h-12 shadow-md shadow-emerald-100"
-                        >
+                        <Button onClick={onClose} className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold h-12 shadow-md shadow-emerald-100">
                             Закрыть
                         </Button>
                     </div>

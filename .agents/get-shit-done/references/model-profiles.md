@@ -51,13 +51,13 @@ To assign different models to different agents, add `model_overrides` with model
 
 ```json
 {
-  "resolve_model_ids": "omit",
-  "model_overrides": {
-    "gsd-planner": "o3",
-    "gsd-executor": "o4-mini",
-    "gsd-debugger": "o3",
-    "gsd-codebase-mapper": "o4-mini"
-  }
+ "resolve_model_ids": "omit",
+ "model_overrides": {
+  "gsd-planner": "o3",
+  "gsd-executor": "o4-mini",
+  "gsd-debugger": "o3",
+  "gsd-codebase-mapper": "o4-mini"
+ }
 }
 ```
 
@@ -74,7 +74,7 @@ If you're using Claude Code with OpenRouter, a local model, or any non-Anthropic
 
 # Or manually in .planning/config.json
 {
-  "model_profile": "inherit"
+ "model_profile": "inherit"
 }
 ```
 
@@ -97,11 +97,11 @@ Override specific agents without changing the entire profile:
 
 ```json
 {
-  "model_profile": "balanced",
-  "model_overrides": {
-    "gsd-executor": "opus",
-    "gsd-planner": "haiku"
-  }
+ "model_profile": "balanced",
+ "model_overrides": {
+  "gsd-executor": "opus",
+  "gsd-planner": "haiku"
+ }
 }
 ```
 
@@ -114,7 +114,7 @@ Runtime: `/gsd-set-profile <profile>`
 Per-project default: Set in `.planning/config.json`:
 ```json
 {
-  "model_profile": "balanced"
+ "model_profile": "balanced"
 }
 ```
 

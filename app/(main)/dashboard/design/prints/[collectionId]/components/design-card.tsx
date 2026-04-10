@@ -36,16 +36,9 @@ export function DesignCard({ design, isSortMode, onClick }: DesignCardProps) {
  };
 
  return (
- <Card
- ref={setNodeRef}
- style={style}
- className={cn(
-"cursor-pointer transition-all hover:shadow-md group",
- isDragging &&"opacity-50 shadow-lg z-50",
- isSortMode &&"ring-2 ring-primary/20"
-)}
- onClick={isSortMode ? undefined : onClick}
- >
+ <Card ref={setNodeRef} style={style} className={cn(
+"cursor-pointer transition-all hover:shadow-md group", isDragging &&"opacity-50 shadow-lg z-50", isSortMode &&"ring-2 ring-primary/20"
+)} onClick={isSortMode ? undefined : onClick}>
  <CardContent className="p-0 relative">
  {/* Drag handle */}
  {isSortMode && (
@@ -61,12 +54,7 @@ export function DesignCard({ design, isSortMode, onClick }: DesignCardProps) {
  {/* Preview */}
  <div className="aspect-square relative bg-muted rounded-t-lg overflow-hidden">
  {design.preview ? (
- <Image
- src={design.preview}
- alt={design.name}
- fill
- className="object-cover transition-transform group-hover:scale-105"
- />
+ <Image src={design.preview} alt={design.name} fill className="object-cover transition-transform group-hover:scale-105" />
 ) : (
  <div className="w-full h-full flex items-center justify-center">
  <ImageIcon className="h-12 w-12 text-muted-foreground/50"/>

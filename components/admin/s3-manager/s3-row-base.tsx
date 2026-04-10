@@ -81,10 +81,7 @@ export const S3RowBase = ({
                         <>
                             {extraActions}
                             {onRename && (
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={(e) => {
+                                <Button variant="ghost" size="icon" onClick={(e) => {
                                         e.stopPropagation();
                                         onRename();
                                     }}
@@ -95,10 +92,7 @@ export const S3RowBase = ({
                                 </Button>
                             )}
                             {onDelete && (
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={(e) => {
+                                <Button variant="ghost" size="icon" onClick={(e) => {
                                         e.stopPropagation();
                                         onDelete();
                                     }}

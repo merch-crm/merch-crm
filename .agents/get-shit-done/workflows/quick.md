@@ -36,9 +36,9 @@ If `$DESCRIPTION` is empty after parsing, prompt user interactively:
 
 ```
 AskUserQuestion(
-  header: "Quick Task",
-  question: "What do you want to do?",
-  followUp: null
+ header: "Quick Task",
+ question: "What do you want to do?",
+ followUp: null
 )
 ```
 
@@ -203,15 +203,15 @@ Each gray area should be a concrete decision point, not a vague category. Exampl
 
 ```
 AskUserQuestion(
-  header: "Gray Areas",
-  question: "Which areas need clarification before planning?",
-  options: [
-    { label: "${area_1}", description: "${why_it_matters_1}" },
-    { label: "${area_2}", description: "${why_it_matters_2}" },
-    { label: "${area_3}", description: "${why_it_matters_3}" },
-    { label: "All clear", description: "Skip discussion — I know what I want" }
-  ],
-  multiSelect: true
+ header: "Gray Areas",
+ question: "Which areas need clarification before planning?",
+ options: [
+  { label: "${area_1}", description: "${why_it_matters_1}" },
+  { label: "${area_2}", description: "${why_it_matters_2}" },
+  { label: "${area_3}", description: "${why_it_matters_3}" },
+  { label: "All clear", description: "Skip discussion — I know what I want" }
+ ],
+ multiSelect: true
 )
 ```
 
@@ -223,15 +223,15 @@ For each selected area, ask 1-2 focused questions via AskUserQuestion:
 
 ```
 AskUserQuestion(
-  header: "${area_name}",
-  question: "${specific_question_about_this_area}",
-  options: [
-    { label: "${concrete_choice_1}", description: "${what_this_means}" },
-    { label: "${concrete_choice_2}", description: "${what_this_means}" },
-    { label: "${concrete_choice_3}", description: "${what_this_means}" },
-    { label: "You decide", description: "the agent's discretion" }
-  ],
-  multiSelect: false
+ header: "${area_name}",
+ question: "${specific_question_about_this_area}",
+ options: [
+  { label: "${concrete_choice_1}", description: "${what_this_means}" },
+  { label: "${concrete_choice_2}", description: "${what_this_means}" },
+  { label: "${concrete_choice_3}", description: "${what_this_means}" },
+  { label: "You decide", description: "the agent's discretion" }
+ ],
+ multiSelect: false
 )
 ```
 
@@ -317,7 +317,7 @@ Spawn a single focused researcher (not 4 parallel researchers like full phases �
 
 ```
 Task(
-  prompt="
+ prompt="
 <research_context>
 
 **Mode:** quick-task
@@ -351,9 +351,9 @@ Use standard research format but keep it lean — skip sections that don't apply
 Return: ## RESEARCH COMPLETE with file path
 </output>
 ",
-  subagent_type="gsd-phase-researcher",
-  model="{planner_model}",
-  description="Research: ${DESCRIPTION}"
+ subagent_type="gsd-phase-researcher",
+ model="{planner_model}",
+ description="Research: ${DESCRIPTION}"
 )
 ```
 
@@ -373,7 +373,7 @@ If research file not found, warn but continue: "Research agent did not produce o
 
 ```
 Task(
-  prompt="
+ prompt="
 <planning_context>
 
 **Mode:** ${FULL_MODE ? 'quick-full' : 'quick'}
@@ -407,9 +407,9 @@ Write plan to: ${QUICK_DIR}/${quick_id}-PLAN.md
 Return: ## PLANNING COMPLETE with plan path
 </output>
 ",
-  subagent_type="gsd-planner",
-  model="{planner_model}",
-  description="Quick plan: ${DESCRIPTION}"
+ subagent_type="gsd-planner",
+ model="{planner_model}",
+ description="Quick plan: ${DESCRIPTION}"
 )
 ```
 
@@ -470,10 +470,10 @@ ${DISCUSS_MODE ? '- Context compliance: Does the plan honor locked decisions fro
 
 ```
 Task(
-  prompt=checker_prompt,
-  subagent_type="gsd-plan-checker",
-  model="{checker_model}",
-  description="Check quick plan: ${DESCRIPTION}"
+ prompt=checker_prompt,
+ subagent_type="gsd-plan-checker",
+ model="{checker_model}",
+ description="Check quick plan: ${DESCRIPTION}"
 )
 ```
 
@@ -515,10 +515,10 @@ Return what changed.
 
 ```
 Task(
-  prompt=revision_prompt,
-  subagent_type="gsd-planner",
-  model="{planner_model}",
-  description="Revise quick plan: ${DESCRIPTION}"
+ prompt=revision_prompt,
+ subagent_type="gsd-planner",
+ model="{planner_model}",
+ description="Revise quick plan: ${DESCRIPTION}"
 )
 ```
 
@@ -538,7 +538,7 @@ Spawn gsd-executor with plan reference:
 
 ```
 Task(
-  prompt="
+ prompt="
 Execute quick task ${quick_id}.
 
 <files_to_read>
@@ -557,10 +557,10 @@ ${AGENT_SKILLS_EXECUTOR}
 - Do NOT update ROADMAP.md (quick tasks are separate from planned phases)
 </constraints>
 ",
-  subagent_type="gsd-executor",
-  model="{executor_model}",
-  isolation="worktree",
-  description="Execute: ${DESCRIPTION}"
+ subagent_type="gsd-executor",
+ model="{executor_model}",
+ isolation="worktree",
+ description="Execute: ${DESCRIPTION}"
 )
 ```
 
@@ -592,7 +592,7 @@ Display banner:
 
 ```
 Task(
-  prompt="Verify quick task goal achievement.
+ prompt="Verify quick task goal achievement.
 Task directory: ${QUICK_DIR}
 Task goal: ${DESCRIPTION}
 
@@ -603,9 +603,9 @@ Task goal: ${DESCRIPTION}
 ${AGENT_SKILLS_VERIFIER}
 
 Check must_haves against actual codebase. Create VERIFICATION.md at ${QUICK_DIR}/${quick_id}-VERIFICATION.md.",
-  subagent_type="gsd-verifier",
-  model="{verifier_model}",
-  description="Verify: ${DESCRIPTION}"
+ subagent_type="gsd-verifier",
+ model="{verifier_model}",
+ description="Verify: ${DESCRIPTION}"
 )
 ```
 

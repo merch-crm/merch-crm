@@ -1,18 +1,18 @@
 "use client";
 
-import * as React from"react";
-import * as ScrollAreaPrimitive from"@radix-ui/react-scroll-area";
-import { cn } from"@/lib/utils";
-import { ChevronLeft, ChevronRight, ArrowDown } from"lucide-react";
-import { useScrollFade, useHorizontalScroll, useAutoScroll } from"@/components/hooks/useScrollArea";
+import * as React from "react";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, ArrowDown } from "lucide-react";
+import { useScrollFade, useHorizontalScroll, useAutoScroll } from "@/components/hooks/useScrollArea";
 
 // Базовый ScrollArea
 const ScrollArea = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
-        orientation?:"vertical" |"horizontal" |"both";
+        orientation?: "vertical" | "horizontal" | "both";
     }
->(({ className, children, orientation ="vertical", ...props }, ref) => (
+>(({ className, children, orientation = "vertical", ...props }, ref) => (
     <ScrollAreaPrimitive.Root
         ref={ref}
         className={cn("relative overflow-hidden", className)}
@@ -21,10 +21,10 @@ const ScrollArea = React.forwardRef<
         <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
             {children}
         </ScrollAreaPrimitive.Viewport>
-        {(orientation ==="vertical" || orientation ==="both") && (
+        {(orientation === "vertical" || orientation === "both") && (
             <ScrollBar orientation="vertical" />
         )}
-        {(orientation ==="horizontal" || orientation ==="both") && (
+        {(orientation === "horizontal" || orientation === "both") && (
             <ScrollBar orientation="horizontal" />
         )}
         <ScrollAreaPrimitive.Corner />
@@ -35,23 +35,23 @@ ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 // Скроллбар
 interface ScrollBarProps
     extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar> {
-    variant?:"default" |"thin" |"hidden";
+    variant?: "md" | "thin" | "hidden";
 }
 
 const ScrollBar = React.forwardRef<
     React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
     ScrollBarProps
->(({ className, orientation ="vertical", variant ="default", ...props }, ref) => {
-    const sizeClasses = {
-        default: orientation ==="vertical" ?"w-2.5" :"h-2.5",
-        thin: orientation ==="vertical" ?"w-1.5" :"h-1.5",
-        hidden:"opacity-0",
+>(({ className, orientation = "vertical", variant = "md", ...props }, ref) => {
+    const sizeClasses: Record<string, string> = {
+        md: orientation === "vertical" ? "w-2.5" : "h-2.5",
+        thin: orientation === "vertical" ? "w-1.5" : "h-1.5",
+        hidden: "opacity-0",
     };
 
-    const thumbSizeClasses = {
-        default:"",
-        thin: orientation ==="vertical" ?"w-1" :"h-1",
-        hidden:"",
+    const thumbSizeClasses: Record<string, string> = {
+        md: "",
+        thin: orientation === "vertical" ? "w-1" : "h-1",
+        hidden: "",
     };
 
     return (
@@ -59,8 +59,8 @@ const ScrollBar = React.forwardRef<
             ref={ref}
             orientation={orientation}
             className={cn("flex touch-none select-none transition-colors",
-                orientation ==="vertical" &&"h-full border-l border-l-transparent p-[1px]",
-                orientation ==="horizontal" &&"flex-col w-full border-t border-t-transparent p-[1px]",
+                orientation === "vertical" && "h-full border-l border-l-transparent p-[1px]",
+                orientation === "horizontal" && "flex-col w-full border-t border-t-transparent p-[1px]",
                 sizeClasses[variant],
                 className
             )}
@@ -82,8 +82,8 @@ interface ScrollAreaFixedProps {
     height?: number | string;
     maxHeight?: number | string;
     className?: string;
-    orientation?:"vertical" |"horizontal" |"both";
-    variant?:"default" |"thin" |"hidden";
+    orientation?: "vertical" | "horizontal" | "both";
+    variant?: "md" | "thin" | "hidden";
 }
 
 function ScrollAreaFixed({
@@ -91,12 +91,12 @@ function ScrollAreaFixed({
     height,
     maxHeight,
     className,
-    orientation ="vertical",
-    variant ="default",
+    orientation = "vertical",
+    variant = "md",
 }: ScrollAreaFixedProps) {
     const style: React.CSSProperties = {};
-    if (height) style.height = typeof height ==="number" ? `${height}px` : height;
-    if (maxHeight) style.maxHeight = typeof maxHeight ==="number" ? `${maxHeight}px` : maxHeight;
+    if (height) style.height = typeof height === "number" ? `${height}px` : height;
+    if (maxHeight) style.maxHeight = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
 
     return (
         <ScrollAreaPrimitive.Root
@@ -106,10 +106,10 @@ function ScrollAreaFixed({
             <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
                 {children}
             </ScrollAreaPrimitive.Viewport>
-            {(orientation ==="vertical" || orientation ==="both") && (
+            {(orientation === "vertical" || orientation === "both") && (
                 <ScrollBar orientation="vertical" variant={variant} />
             )}
-            {(orientation ==="horizontal" || orientation ==="both") && (
+            {(orientation === "horizontal" || orientation === "both") && (
                 <ScrollBar orientation="horizontal" variant={variant} />
             )}
             <ScrollAreaPrimitive.Corner />
@@ -117,7 +117,7 @@ function ScrollAreaFixed({
     );
 }
 
-// ScrollArea с градиентными тенями (показывают что есть ещё контент)
+// ScrollArea с градиентными тенями
 interface ScrollAreaFadedProps extends ScrollAreaFixedProps {
     fadeSize?: number;
     fadeColor?: string;
@@ -128,43 +128,42 @@ function ScrollAreaFaded({
     height,
     maxHeight,
     className,
-    orientation ="vertical",
-    variant ="default",
+    orientation = "vertical",
+    variant = "md",
     fadeSize = 24,
-    fadeColor ="255, 255, 255",
+    fadeColor = "255, 255, 255",
 }: ScrollAreaFadedProps) {
     const viewportRef = React.useRef<HTMLDivElement>(null);
     const { showTopFade, showBottomFade, showLeftFade, showRightFade, checkScroll } = useScrollFade(orientation, viewportRef);
 
     const style: React.CSSProperties = {};
-    if (height) style.height = typeof height ==="number" ? `${height}px` : height;
-    if (maxHeight) style.maxHeight = typeof maxHeight ==="number" ? `${maxHeight}px` : maxHeight;
+    if (height) style.height = typeof height === "number" ? `${height}px` : height;
+    if (maxHeight) style.maxHeight = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
 
     return (
         <div className={cn("relative", className)} style={style}>
             <ScrollAreaPrimitive.Root className="h-full w-full overflow-hidden">
                 <ScrollAreaPrimitive.Viewport
                     ref={viewportRef}
-                    className="h-full w-full rounded-[inherit] px-1" // px-1 чтобы избежать скачков
-                    onScroll={checkScroll} // Нужно повесить слушатель прямо сюда для ScrollAreaPrimitive? ScrollAreaPrimitive.Viewport рендерит div, но лучше использовать ref и useEffect как выше. Но Radix Viewport не прокидывает onScroll? А, прокидывает props.
+                    className="h-full w-full rounded-[inherit] px-1"
+                    onScroll={checkScroll}
                 >
                     {children}
                 </ScrollAreaPrimitive.Viewport>
-                {(orientation ==="vertical" || orientation ==="both") && (
+                {(orientation === "vertical" || orientation === "both") && (
                     <ScrollBar orientation="vertical" variant={variant} />
                 )}
-                {(orientation ==="horizontal" || orientation ==="both") && (
+                {(orientation === "horizontal" || orientation === "both") && (
                     <ScrollBar orientation="horizontal" variant={variant} />
                 )}
                 <ScrollAreaPrimitive.Corner />
             </ScrollAreaPrimitive.Root>
 
-            {/* Градиентные тени */}
-            {(orientation ==="vertical" || orientation ==="both") && (
+            {(orientation === "vertical" || orientation === "both") && (
                 <>
                     <div
                         className={cn("absolute top-0 left-0 right-0 pointer-events-none transition-opacity duration-200 z-10",
-                            showTopFade ?"opacity-100" :"opacity-0"
+                            showTopFade ? "opacity-100" : "opacity-0"
                         )}
                         style={{
                             height: fadeSize,
@@ -173,7 +172,7 @@ function ScrollAreaFaded({
                     />
                     <div
                         className={cn("absolute bottom-0 left-0 right-0 pointer-events-none transition-opacity duration-200 z-10",
-                            showBottomFade ?"opacity-100" :"opacity-0"
+                            showBottomFade ? "opacity-100" : "opacity-0"
                         )}
                         style={{
                             height: fadeSize,
@@ -183,11 +182,11 @@ function ScrollAreaFaded({
                 </>
             )}
 
-            {(orientation ==="horizontal" || orientation ==="both") && (
+            {(orientation === "horizontal" || orientation === "both") && (
                 <>
                     <div
                         className={cn("absolute top-0 left-0 bottom-0 pointer-events-none transition-opacity duration-200 z-10",
-                            showLeftFade ?"opacity-100" :"opacity-0"
+                            showLeftFade ? "opacity-100" : "opacity-0"
                         )}
                         style={{
                             width: fadeSize,
@@ -196,7 +195,7 @@ function ScrollAreaFaded({
                     />
                     <div
                         className={cn("absolute top-0 right-0 bottom-0 pointer-events-none transition-opacity duration-200 z-10",
-                            showRightFade ?"opacity-100" :"opacity-0"
+                            showRightFade ? "opacity-100" : "opacity-0"
                         )}
                         style={{
                             width: fadeSize,
@@ -213,25 +212,25 @@ function ScrollAreaFaded({
 interface ScrollAreaHorizontalListProps {
     children: React.ReactNode;
     className?: string;
-    gap?:"sm" |"md" |"lg";
+    gap?: "sm" | "md" | "lg";
     showArrows?: boolean;
-    variant?:"default" |"thin" |"hidden";
+    variant?: "md" | "thin" | "hidden";
 }
 
 function ScrollAreaHorizontalList({
     children,
     className,
-    gap ="md",
+    gap = "md",
     showArrows = false,
-    variant ="hidden",
+    variant = "hidden",
 }: ScrollAreaHorizontalListProps) {
     const viewportRef = React.useRef<HTMLDivElement>(null);
     const { canScrollLeft, canScrollRight, scroll } = useHorizontalScroll(viewportRef);
 
     const gapClasses = {
-        sm:"gap-2",
-        md:"gap-3",
-        lg:"gap-3",
+        sm: "gap-2",
+        md: "gap-3",
+        lg: "gap-3",
     };
 
     return (
@@ -246,16 +245,15 @@ function ScrollAreaHorizontalList({
                 <ScrollBar orientation="horizontal" variant={variant} />
             </ScrollAreaPrimitive.Root>
 
-            {/* Стрелки навигации */}
             {showArrows && (
                 <>
                     <button
                         type="button"
                         onClick={() => scroll("left")}
-                        className={cn("absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center transition-all z-20","hover:bg-slate-50 active:scale-95",
+                        className={cn("absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center transition-all z-20", "hover:bg-slate-50 active:scale-95",
                             canScrollLeft
-                                ?"opacity-100 -translate-x-1/2"
-                                :"opacity-0 pointer-events-none -translate-x-full"
+                                ? "opacity-100 -translate-x-1/2"
+                                : "opacity-0 pointer-events-none -translate-x-full"
                         )}
                     >
                         <ChevronLeft className="w-4 h-4 text-slate-600" />
@@ -263,10 +261,10 @@ function ScrollAreaHorizontalList({
                     <button
                         type="button"
                         onClick={() => scroll("right")}
-                        className={cn("absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center transition-all z-20","hover:bg-slate-50 active:scale-95",
+                        className={cn("absolute right-0 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-md border border-slate-100 flex items-center justify-center transition-all z-20", "hover:bg-slate-50 active:scale-95",
                             canScrollRight
-                                ?"opacity-100 translate-x-1/2"
-                                :"opacity-0 pointer-events-none translate-x-full"
+                                ? "opacity-100 translate-x-1/2"
+                                : "opacity-0 pointer-events-none translate-x-full"
                         )}
                     >
                         <ChevronRight className="w-4 h-4 text-slate-600" />
@@ -274,15 +272,14 @@ function ScrollAreaHorizontalList({
                 </>
             )}
 
-            {/* Градиенты по краям */}
             <div
                 className={cn("absolute top-0 left-0 bottom-0 w-8 pointer-events-none transition-opacity bg-gradient-to-r from-white to-transparent z-10",
-                    canScrollLeft ?"opacity-100" :"opacity-0"
+                    canScrollLeft ? "opacity-100" : "opacity-0"
                 )}
             />
             <div
                 className={cn("absolute top-0 right-0 bottom-0 w-8 pointer-events-none transition-opacity bg-gradient-to-l from-white to-transparent z-10",
-                    canScrollRight ?"opacity-100" :"opacity-0"
+                    canScrollRight ? "opacity-100" : "opacity-0"
                 )}
             />
         </div>
@@ -298,7 +295,7 @@ interface ScrollAreaTableProps {
 
 function ScrollAreaTable({ children, maxHeight, className }: ScrollAreaTableProps) {
     const style: React.CSSProperties = {};
-    if (maxHeight) style.maxHeight = typeof maxHeight ==="number" ? `${maxHeight}px` : maxHeight;
+    if (maxHeight) style.maxHeight = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
 
     return (
         <div className={cn("relative rounded-2xl border border-slate-200 overflow-hidden", className)}>
@@ -314,7 +311,7 @@ function ScrollAreaTable({ children, maxHeight, className }: ScrollAreaTableProp
     );
 }
 
-// Скролл для модальных окон / сайдбаров
+// Скролл для модальных окон
 interface ScrollAreaModalProps {
     children: React.ReactNode;
     className?: string;
@@ -332,7 +329,7 @@ function ScrollAreaModal({ children, className }: ScrollAreaModalProps) {
     );
 }
 
-// Автоскролл к низу (для чатов, логов)
+// Автоскролл к низу
 interface ScrollAreaAutoScrollProps {
     children: React.ReactNode;
     height?: number | string;
@@ -352,8 +349,8 @@ function ScrollAreaAutoScroll({
     const { showButton, scrollToBottom } = useAutoScroll(viewportRef, autoScroll, children);
 
     const style: React.CSSProperties = {};
-    if (height) style.height = typeof height ==="number" ? `${height}px` : height;
-    if (maxHeight) style.maxHeight = typeof maxHeight ==="number" ? `${maxHeight}px` : maxHeight;
+    if (height) style.height = typeof height === "number" ? `${height}px` : height;
+    if (maxHeight) style.maxHeight = typeof maxHeight === "number" ? `${maxHeight}px` : maxHeight;
 
     return (
         <div className={cn("relative", className)} style={style}>
@@ -368,7 +365,6 @@ function ScrollAreaAutoScroll({
                 <ScrollAreaPrimitive.Corner />
             </ScrollAreaPrimitive.Root>
 
-            {/* Кнопка скролла вниз */}
             {showButton && (
                 <button
                     type="button"

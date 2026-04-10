@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { format, addDays } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/library/heroui/components/button/button";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/library/heroui/components/tooltip/popover";
+} from "@/components/ui/popover";
 import { cn } from "@/components/library/custom/utils/cn";
 
 export function BentoDatePickerPop() {
@@ -63,33 +63,18 @@ export function BentoDatePickerPop() {
           </button>
         </PopoverTrigger>
 
-        <PopoverContent className="p-0 border-none bg-transparent shadow-none" offset={10}>
+        <PopoverContent className="p-0 border-none bg-transparent shadow-none" sideOffset={10}>
           <div className="bg-white rounded-[32px] border border-slate-100 shadow-2xl p-4">
-             <Calendar
-               mode="single"
-               selected={selected || undefined}
-               onSelect={(date: Date | undefined) => setSelected(date || null)}
+             <Calendar mode="single" selected={selected || undefined} onSelect={(date: Date | undefined) => setSelected(date || null)}
                initialFocus
                className="rounded-2xl"
              />
              <div className="grid grid-cols-2 gap-2 mt-4">
-                <Button 
-                  type="button"
-                  variant="outline" 
-                  size="sm" 
-                  className="rounded-xl font-black text-[11px] uppercase tracking-tighter"
-                  // audit-ok: hydration (inside event handler)
-                  onPress={() => setSelected(new Date())}
+                <Button type="button" variant="outline" size="sm" className="rounded-xl font-black text-[11px] uppercase tracking-tighter" // audit-ok: hydration (inside event handler) onClick={() => setSelected(new Date())}
                 >
                    Сегодня
                 </Button>
-                <Button 
-                  type="button"
-                  variant="primary" 
-                  size="sm" 
-                  className="rounded-xl font-black text-[11px] uppercase tracking-tighter"
-                  // audit-ok: hydration (inside event handler)
-                  onPress={() => setSelected(addDays(new Date(), 7))}
+                <Button type="button" variant="solid" color="primary" size="sm" className="rounded-xl font-black text-[11px] uppercase tracking-tighter" // audit-ok: hydration (inside event handler) onClick={() => setSelected(addDays(new Date(), 7))}
                 >
                    Через неделю
                 </Button>

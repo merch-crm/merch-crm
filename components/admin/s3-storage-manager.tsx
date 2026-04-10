@@ -68,12 +68,7 @@ export function S3StorageManager() {
     return (
         <div className="space-y-3">
             {/* Header Info */}
-            <StorageStats
-                data={data}
-                loading={loading}
-                formatSize={formatSize}
-                fetchData={fetchData}
-            />
+            <StorageStats data={data} loading={loading} formatSize={formatSize} fetchData={fetchData} />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                 {/* S3 Storage Management */}
@@ -88,24 +83,17 @@ export function S3StorageManager() {
                                         </div>
                                         <div>
                                             <CardTitle className="text-xl font-bold text-slate-900">Облачное хранилище S3</CardTitle>
-                                            <CardDescription className="text-xs font-bold  text-slate-400 mt-1">Управление структурой файлов</CardDescription>
+                                            <CardDescription className="text-xs font-bold text-slate-400 mt-1">Управление структурой файлов</CardDescription>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <div className="relative">
                                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                            <Input
-                                                type="text"
-                                                placeholder="Поиск..."
-                                                value={searchTerm}
-                                                onChange={(e) => setSearchTerm(e.target.value)}
+                                            <Input type="text" placeholder="Поиск..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                                                 className="pl-10 w-full sm:w-48 bg-slate-50 border-none focus-visible:ring-indigo-500"
                                             />
                                         </div>
-                                        <Button
-                                            variant={selection.isMultiMode ? "default" : "secondary"}
-                                            size="sm"
-                                            onClick={() => {
+                                        <Button variant={selection.isMultiMode ? "solid" : "outline"} size="sm" onClick={() => {
                                                 setSelection(prev => ({
                                                     isMultiMode: !prev.isMultiMode,
                                                     keys: new Set()
@@ -119,10 +107,7 @@ export function S3StorageManager() {
                                             <CheckSquare size={18} />
                                             <span className="text-xs font-bold">Выбор</span>
                                         </Button>
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: true } }))}
+                                        <Button variant="solid" color="neutral" size="sm" onClick={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: true } }))}
                                             className="gap-2 bg-indigo-50 text-primary hover:bg-indigo-100 border-none"
                                         >
                                             <FolderPlus size={18} />
@@ -141,26 +126,15 @@ export function S3StorageManager() {
                                             <span className="text-sm font-bold text-slate-700">выбрано</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <Button
-                                                variant="secondary"
-                                                size="sm"
-                                                onClick={() => selectAll(filteredFolders, filteredFiles)}
+                                            <Button variant="solid" color="neutral" size="sm" onClick={() => selectAll(filteredFolders, filteredFiles)}
                                                 className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8"
                                             >
                                                 Выбрать все
                                             </Button>
-                                            <Button
-                                                variant="secondary"
-                                                size="sm"
-                                                onClick={deselectAll}
-                                                className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8"
-                                            >
+                                            <Button variant="solid" color="neutral" size="sm" onClick={deselectAll} className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8">
                                                 Снять выбор
                                             </Button>
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
+                                            <Button variant="solid" color="danger" size="sm" onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
                                                 className="gap-2 text-xs h-8"
                                             >
                                                 <Trash2 size={14} />
@@ -171,31 +145,11 @@ export function S3StorageManager() {
                                 )}
 
                                 {/* Breadcrumbs */}
-                                <StorageBreadcrumbs
-                                    currentPrefix={currentPrefix}
-                                    breadcrumbs={breadcrumbs}
-                                    navigateTo={navigateTo}
-                                />
+                                <StorageBreadcrumbs currentPrefix={currentPrefix} breadcrumbs={breadcrumbs} navigateTo={navigateTo} />
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <StorageList
-                                loading={loading}
-                                filteredFolders={filteredFolders}
-                                filteredFiles={filteredFiles}
-                                selection={selection}
-                                currentPrefix={currentPrefix}
-                                allItemsSelected={allItemsSelected}
-                                toggleSelection={toggleSelection}
-                                selectAll={selectAll}
-                                deselectAll={deselectAll}
-                                navigateTo={navigateTo}
-                                openRenameModal={openRenameModal}
-                                handleFileClick={handleFileClick}
-                                setDeletingKey={setDeletingKey}
-                                setModals={setModals}
-                                formatSize={formatSize}
-                            />
+                            <StorageList loading={loading} filteredFolders={filteredFolders} filteredFiles={filteredFiles} selection={selection} currentPrefix={currentPrefix} allItemsSelected={allItemsSelected} toggleSelection={toggleSelection} selectAll={selectAll} deselectAll={deselectAll} navigateTo={navigateTo} openRenameModal={openRenameModal} handleFileClick={handleFileClick} setDeletingKey={setDeletingKey} setModals={setModals} formatSize={formatSize} />
                         </CardContent>
                     </Card>
                 </div>
@@ -205,38 +159,26 @@ export function S3StorageManager() {
             </div>
 
             {/* Create Folder Dialog */}
-            <ResponsiveModal
-                isOpen={modals.create.open}
-                onClose={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: false } }))}
+            <ResponsiveModal isOpen={modals.create.open} onClose={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: false } }))}
                 title="Новая папка"
                 description={`Введите имя папки. Она будет создана в: ${currentPrefix || "/"}`}
             >
                 <div className="space-y-3">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400">Имя папки</label>
-                        <Input
-                            type="text"
-                            placeholder="Название папки..."
-                            value={modals.create.name}
-                            onChange={(e) => setModals(prev => ({ ...prev, create: { ...prev.create, name: e.target.value } }))}
+                        <Input type="text" placeholder="Название папки..." value={modals.create.name} onChange={(e) => setModals(prev => ({ ...prev, create: { ...prev.create, name: e.target.value } }))}
                             onKeyDown={(e) => e.key === "Enter" && handleCreateFolder()}
                             autoFocus
                             className="w-full text-lg font-bold"
                         />
                     </div>
                     <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <Button
-                            variant="ghost"
-                            onClick={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: false } }))}
+                        <Button variant="ghost" onClick={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: false } }))}
                             className="px-8 rounded-[18px] font-bold text-xs text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
-                        <Button
-                            onClick={handleCreateFolder}
-                            disabled={modals.create.processing || !modals.create.name.trim()}
-                            className="bg-primary hover:bg-primary/90 text-white px-10 rounded-[18px] font-bold text-xs py-6 shadow-lg shadow-indigo-200"
-                        >
+                        <Button onClick={handleCreateFolder} disabled={modals.create.processing || !modals.create.name.trim()} className="bg-primary hover:bg-primary/90 text-white px-10 rounded-[18px] font-bold text-xs py-6 shadow-lg shadow-indigo-200">
                             {modals.create.processing ? <RefreshCw className="animate-spin mr-2 h-4 w-4" /> : "Создать"}
                         </Button>
                     </div>
@@ -244,38 +186,26 @@ export function S3StorageManager() {
             </ResponsiveModal>
 
             {/* Rename Dialog */}
-            <ResponsiveModal
-                isOpen={modals.rename.open}
-                onClose={() => setModals(prev => ({ ...prev, rename: { ...prev.rename, open: false } }))}
+            <ResponsiveModal isOpen={modals.rename.open} onClose={() => setModals(prev => ({ ...prev, rename: { ...prev.rename, open: false } }))}
                 title="Переименование"
                 description={`Введите новое имя для ${modals.rename.key?.endsWith("/") ? "папки" : "файла"}`}
             >
                 <div className="space-y-3">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-400">Новое имя</label>
-                        <Input
-                            type="text"
-                            placeholder="Новое имя..."
-                            value={modals.rename.name}
-                            onChange={(e) => setModals(prev => ({ ...prev, rename: { ...prev.rename, name: e.target.value } }))}
+                        <Input type="text" placeholder="Новое имя..." value={modals.rename.name} onChange={(e) => setModals(prev => ({ ...prev, rename: { ...prev.rename, name: e.target.value } }))}
                             onKeyDown={(e) => e.key === "Enter" && handleRename()}
                             autoFocus
                             className="w-full text-lg font-bold"
                         />
                     </div>
                     <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                        <Button
-                            variant="ghost"
-                            onClick={() => setModals(prev => ({ ...prev, rename: { ...prev.rename, open: false } }))}
+                        <Button variant="ghost" onClick={() => setModals(prev => ({ ...prev, rename: { ...prev.rename, open: false } }))}
                             className="px-8 rounded-[18px] font-bold text-xs text-slate-400 py-6"
                         >
                             Отмена
                         </Button>
-                        <Button
-                            onClick={handleRename}
-                            disabled={modals.rename.processing || !modals.rename.name.trim()}
-                            className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold text-xs py-6 shadow-lg shadow-amber-200"
-                        >
+                        <Button onClick={handleRename} disabled={modals.rename.processing || !modals.rename.name.trim()} className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold text-xs py-6 shadow-lg shadow-amber-200">
                             {modals.rename.processing ? <RefreshCw className="animate-spin mr-2 h-4 w-4" /> : "Переименовать"}
                         </Button>
                     </div>
@@ -283,9 +213,7 @@ export function S3StorageManager() {
             </ResponsiveModal>
 
             {/* Delete Confirmation */}
-            <ConfirmDialog
-                isOpen={!!deletingKey}
-                onClose={() => setDeletingKey(null)}
+            <ConfirmDialog isOpen={!!deletingKey} onClose={() => setDeletingKey(null)}
                 onConfirm={handleDelete}
                 title="Удалить из облака?"
                 description={`Вы собираетесь удалить "${deletingKey?.split('/').pop() || deletingKey}". Это действие необратимо.`}
@@ -295,9 +223,7 @@ export function S3StorageManager() {
             />
 
             {/* Delete Multiple Confirmation */}
-            <ConfirmDialog
-                isOpen={modals.multiDelete.open}
-                onClose={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: false } }))}
+            <ConfirmDialog isOpen={modals.multiDelete.open} onClose={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: false } }))}
                 onConfirm={handleDeleteMultiple}
                 title="Массовое удаление"
                 description={`Вы собираетесь удалить ${formatCount(selection.keys.size, 'объект', 'объекта', 'объектов')}. Это действие необратимо и все выбранные файлы и папки будут удалены навсегда.`}
@@ -307,9 +233,7 @@ export function S3StorageManager() {
             />
 
             {/* Preview Dialog */}
-            <ResponsiveModal
-                isOpen={!!preview.file}
-                onClose={() => setPreview(prev => ({ ...prev, file: null }))}
+            <ResponsiveModal isOpen={!!preview.file} onClose={() => setPreview(prev => ({ ...prev, file: null }))}
                 title="Просмотр файла"
                 description={preview.file?.name || "Информация о файле"}
             >
@@ -317,13 +241,7 @@ export function S3StorageManager() {
                     <div className="space-y-3">
                         <div className="relative aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-2xl group">
                             {preview.file.type === 'image' ? (
-                                <NextImage
-                                    src={preview.file.url}
-                                    alt={preview.file.name}
-                                    fill
-                                    className="object-contain"
-                                    unoptimized
-                                />
+                                <NextImage src={preview.file.url} alt={preview.file.name} fill className="object-contain" unoptimized />
                             ) : (
                                 <div className="flex flex-col items-center justify-center h-full">
                                     <File size={48} className="text-slate-700 mb-4" />
@@ -331,10 +249,7 @@ export function S3StorageManager() {
                                 </div>
                             )}
                             <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button
-                                    variant="secondary"
-                                    size="icon"
-                                    onClick={() => openInNewTab(preview.file!.url)}
+                                <Button variant="solid" color="neutral" size="icon" onClick={() => openInNewTab(preview.file!.url)}
                                     className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl border-none h-10 w-10"
                                     aria-label="Открыть в новой вкладке"
                                 >
@@ -344,15 +259,13 @@ export function S3StorageManager() {
                         </div>
 
                         <div className="flex gap-3">
-                            <Button
-                                onClick={() => openInNewTab(preview.file!.url)}
+                            <Button onClick={() => openInNewTab(preview.file!.url)}
                                 className="flex-1 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-bold h-12"
                             >
                                 <ExternalLink size={16} className="mr-2" />
                                 Открыть
                             </Button>
-                            <Button
-                                onClick={() => setPreview(prev => ({ ...prev, file: null }))}
+                            <Button onClick={() => setPreview(prev => ({ ...prev, file: null }))}
                                 className="flex-1 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold h-12 shadow-md shadow-primary/10"
                             >
                                 Закрыть

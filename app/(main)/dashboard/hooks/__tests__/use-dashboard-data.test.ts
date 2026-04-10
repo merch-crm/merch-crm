@@ -5,98 +5,98 @@ import { getDashboardStatsByPeriod, getDashboardNotifications } from '../../acti
 
 // --- Mocks ---
 vi.mock('../../actions', () => ({
-    getDashboardStatsByPeriod: vi.fn(),
-    getDashboardNotifications: vi.fn(),
+  getDashboardStatsByPeriod: vi.fn(),
+  getDashboardNotifications: vi.fn(),
 }));
 
 const mockStats = {
-    totalClients: 100,
-    newClients: 10,
-    totalOrders: 50,
-    inProduction: 5,
-    revenue: "100 000 ₽",
-    averageCheck: "2 000 ₽",
-    rawRevenue: 100000,
+  totalClients: 100,
+  newClients: 10,
+  totalOrders: 50,
+  inProduction: 5,
+  revenue: "100 000 ₽",
+  averageCheck: "2 000 ₽",
+  rawRevenue: 100000,
 };
 
 describe('useDashboardData', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-        vi.useFakeTimers();
-        vi.mocked(getDashboardStatsByPeriod).mockResolvedValue(mockStats);
-        vi.mocked(getDashboardNotifications).mockResolvedValue([]);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.useFakeTimers();
+    vi.mocked(getDashboardStatsByPeriod).mockResolvedValue(mockStats);
+    vi.mocked(getDashboardNotifications).mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('initializes with initialStats', () => {
+    const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
+
+    expect(result.current.statsData).toEqual(mockStats);
+    expect(result.current.isMounted).toBe(false);
+  });
+
+  it('sets isMounted after timeout', async () => {
+    const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
+
+    act(() => {
+      vi.advanceTimersByTime(0);
     });
 
-    afterEach(() => {
-        vi.useRealTimers();
+    expect(result.current.isMounted).toBe(true);
+  });
+
+  it('fetches data on mount and period change', async () => {
+    const { result: _result, rerender } = renderHook(({ period }) => useDashboardData(mockStats, period), {
+      initialProps: { period: 'month' }
     });
 
-    it('initializes with initialStats', () => {
-        const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
-
-        expect(result.current.statsData).toEqual(mockStats);
-        expect(result.current.isMounted).toBe(false);
+    // При инициализации (on mount)
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(350); // Ждем >300ms (задержка в хуке)
     });
 
-    it('sets isMounted after timeout', async () => {
-        const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
+    expect(getDashboardStatsByPeriod).toHaveBeenCalledWith('month');
+    expect(getDashboardNotifications).toHaveBeenCalled();
 
-        act(() => {
-            vi.advanceTimersByTime(0);
-        });
-
-        expect(result.current.isMounted).toBe(true);
+    // При смене периода
+    rerender({ period: 'year' });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(350);
     });
 
-    it('fetches data on mount and period change', async () => {
-        const { result: _result, rerender } = renderHook(({ period }) => useDashboardData(mockStats, period), {
-            initialProps: { period: 'month' }
-        });
+    expect(getDashboardStatsByPeriod).toHaveBeenCalledWith('year');
+  });
 
-        // При инициализации (on mount)
-        await act(async () => {
-            await vi.advanceTimersByTimeAsync(350); // Ждем >300ms (задержка в хуке)
-        });
+  it('updates data on interval', async () => {
+    renderHook(() => useDashboardData(mockStats, 'month'));
 
-        expect(getDashboardStatsByPeriod).toHaveBeenCalledWith('month');
-        expect(getDashboardNotifications).toHaveBeenCalled();
-
-        // При смене периода
-        rerender({ period: 'year' });
-        await act(async () => {
-            await vi.advanceTimersByTimeAsync(350);
-        });
-
-        expect(getDashboardStatsByPeriod).toHaveBeenCalledWith('year');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(350); // Первичный запрос
     });
 
-    it('updates data on interval', async () => {
-        renderHook(() => useDashboardData(mockStats, 'month'));
+    expect(getDashboardStatsByPeriod).toHaveBeenCalledTimes(1);
 
-        await act(async () => {
-            await vi.advanceTimersByTimeAsync(350); // Первичный запрос
-        });
-
-        expect(getDashboardStatsByPeriod).toHaveBeenCalledTimes(1);
-
-        await act(async () => {
-            await vi.advanceTimersByTimeAsync(15000); // interval fetch
-        });
-
-        expect(getDashboardStatsByPeriod).toHaveBeenCalledTimes(2);
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(15000); // interval fetch
     });
 
-    it('formats time and date correctly', async () => {
-        const mockDate = new Date('2024-03-16T10:00:00');
-        vi.setSystemTime(mockDate);
+    expect(getDashboardStatsByPeriod).toHaveBeenCalledTimes(2);
+  });
 
-        const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
+  it('formats time and date correctly', async () => {
+    const mockDate = new Date('2024-03-16T10:00:00');
+    vi.setSystemTime(mockDate);
 
-        await act(async () => {
-            await vi.advanceTimersByTimeAsync(350);
-        });
+    const { result } = renderHook(() => useDashboardData(mockStats, 'month'));
 
-        expect(result.current.formattedTime).toBe('10:00');
-        expect(result.current.formattedDate).toContain('16 марта');
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(350);
     });
+
+    expect(result.current.formattedTime).toBe('10:00');
+    expect(result.current.formattedDate).toContain('16 марта');
+  });
 });

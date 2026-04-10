@@ -15,30 +15,30 @@ tags: [searchable tech: jwt, stripe, react, postgres, prisma]
 
 # Dependency graph
 requires:
-  - phase: [prior phase this depends on]
-    provides: [what that phase built that this uses]
+ - phase: [prior phase this depends on]
+  provides: [what that phase built that this uses]
 provides:
-  - [bullet list of what this phase built/delivered]
+ - [bullet list of what this phase built/delivered]
 affects: [list of phase names or keywords that will need this context]
 
 # Tech tracking
 tech-stack:
-  added: [libraries/tools added in this phase]
-  patterns: [architectural/code patterns established]
+ added: [libraries/tools added in this phase]
+ patterns: [architectural/code patterns established]
 
 key-files:
-  created: [important files created]
-  modified: [important files modified]
+ created: [important files created]
+ modified: [important files modified]
 
 key-decisions:
-  - "Decision 1"
-  - "Decision 2"
+ - "Decision 1"
+ - "Decision 2"
 
 patterns-established:
-  - "Pattern 1: description"
-  - "Pattern 2: description"
+ - "Pattern 1: description"
+ - "Pattern 2: description"
 
-requirements-completed: []  # REQUIRED — Copy ALL requirement IDs from this plan's `requirements` frontmatter field.
+requirements-completed: [] # REQUIRED — Copy ALL requirement IDs from this plan's `requirements` frontmatter field.
 
 # Metrics
 duration: Xmin

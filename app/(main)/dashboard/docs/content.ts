@@ -13,17 +13,17 @@ import { databaseSection } from "./sections/database";
 import { workflowsSection } from "./sections/workflows";
 
 export const crmDocumentationSections = [
-  introSection,
-  globalArchitectureSection,
-  authSection,
-  clientsSection,
-  ordersSection,
-  productionSection,
-  warehouseSection,
-  financeSection,
-  designSection,
-  systemModulesSection,
-  adminPanelSection,
-  databaseSection,
-  workflowsSection
+ introSection,
+ globalArchitectureSection,
+ authSection,
+ clientsSection,
+ ordersSection,
+ productionSection,
+ warehouseSection,
+ financeSection,
+ designSection,
+ systemModulesSection,
+ adminPanelSection,
+ databaseSection,
+ workflowsSection
 ];

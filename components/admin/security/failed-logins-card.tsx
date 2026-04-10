@@ -40,26 +40,14 @@ export function FailedLoginsCard({
                             </p>
                         </div>
                     </div>
-                    <Button
-                        size="sm"
-                        onClick={onClearFailedLogins}
-                        disabled={isClearingLogins || !failedLogins.length}
-                        className={cn(
-                            "gap-2 text-xs h-8 rounded-[18px]",
-                            failedLogins.length && !isClearingLogins
-                                ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
-                                : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 hover:bg-slate-100"
-                        )}
-                    >
+                    <Button size="sm" onClick={onClearFailedLogins} disabled={isClearingLogins || !failedLogins.length} className={cn( "gap-2 text-xs h-8 rounded-[18px]", failedLogins.length && !isClearingLogins ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200" : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 hover:bg-slate-100" )}>
                         <Trash2 size={14} />
                         {isClearingLogins ? "Очистка..." : "Очистить список"}
                     </Button>
                 </div>
             </CardHeader>
             <CardContent className="p-0">
-                <ResponsiveDataView
-                    data={failedLogins}
-                    renderCard={(login, idx) => (
+                <ResponsiveDataView data={failedLogins} renderCard={(login, idx) => (
                         <div
                             key={login.id || idx}
                             className="p-4 bg-white border border-slate-100 rounded-2xl space-y-3"

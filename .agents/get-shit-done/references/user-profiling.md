@@ -462,10 +462,10 @@ The profiler agent must never select quotes containing any of the following patt
 
 ```json
 {
-  "sensitive_excluded": [
-    { "type": "api_key_pattern", "count": 2 },
-    { "type": "file_path_with_username", "count": 1 }
-  ]
+ "sensitive_excluded": [
+  { "type": "api_key_pattern", "count": 2 },
+  { "type": "file_path_with_username", "count": 1 }
+ ]
 }
 ```
 
@@ -543,95 +543,95 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
 
 ```json
 {
-  "profile_version": "1.0",
-  "analyzed_at": "ISO-8601 timestamp",
-  "data_source": "session_analysis",
-  "projects_analyzed": ["project-name-1", "project-name-2"],
-  "messages_analyzed": 0,
-  "message_threshold": "full|hybrid|insufficient",
-  "sensitive_excluded": [
-    { "type": "string", "count": 0 }
-  ],
-  "dimensions": {
-    "communication_style": {
-      "rating": "terse-direct|conversational|detailed-structured|mixed",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [
-        {
-          "signal": "Pattern interpretation describing what the quote demonstrates",
-          "quote": "Trimmed quote, approximately 100 characters",
-          "project": "project-name"
-        }
-      ],
-      "summary": "One to two sentence description of the observed pattern",
-      "claude_instruction": "Imperative directive for the agent: 'Match structured communication style' not 'You tend to provide structured context'"
-    },
-    "decision_speed": {
-      "rating": "fast-intuitive|deliberate-informed|research-first|delegator",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
-    },
-    "explanation_depth": {
-      "rating": "code-only|concise|detailed|educational",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
-    },
-    "debugging_approach": {
-      "rating": "fix-first|diagnostic|hypothesis-driven|collaborative",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
-    },
-    "ux_philosophy": {
-      "rating": "function-first|pragmatic|design-conscious|backend-focused",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
-    },
-    "vendor_philosophy": {
-      "rating": "pragmatic-fast|conservative|thorough-evaluator|opinionated",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
-    },
-    "frustration_triggers": {
-      "rating": "scope-creep|instruction-adherence|verbosity|regression",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
-    },
-    "learning_style": {
-      "rating": "self-directed|guided|documentation-first|example-driven",
-      "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
-      "evidence_count": 0,
-      "cross_project_consistent": true,
-      "evidence_quotes": [],
-      "summary": "string",
-      "claude_instruction": "string"
+ "profile_version": "1.0",
+ "analyzed_at": "ISO-8601 timestamp",
+ "data_source": "session_analysis",
+ "projects_analyzed": ["project-name-1", "project-name-2"],
+ "messages_analyzed": 0,
+ "message_threshold": "full|hybrid|insufficient",
+ "sensitive_excluded": [
+  { "type": "string", "count": 0 }
+ ],
+ "dimensions": {
+  "communication_style": {
+   "rating": "terse-direct|conversational|detailed-structured|mixed",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [
+    {
+     "signal": "Pattern interpretation describing what the quote demonstrates",
+     "quote": "Trimmed quote, approximately 100 characters",
+     "project": "project-name"
     }
+   ],
+   "summary": "One to two sentence description of the observed pattern",
+   "claude_instruction": "Imperative directive for the agent: 'Match structured communication style' not 'You tend to provide structured context'"
+  },
+  "decision_speed": {
+   "rating": "fast-intuitive|deliberate-informed|research-first|delegator",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
+  },
+  "explanation_depth": {
+   "rating": "code-only|concise|detailed|educational",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
+  },
+  "debugging_approach": {
+   "rating": "fix-first|diagnostic|hypothesis-driven|collaborative",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
+  },
+  "ux_philosophy": {
+   "rating": "function-first|pragmatic|design-conscious|backend-focused",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
+  },
+  "vendor_philosophy": {
+   "rating": "pragmatic-fast|conservative|thorough-evaluator|opinionated",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
+  },
+  "frustration_triggers": {
+   "rating": "scope-creep|instruction-adherence|verbosity|regression",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
+  },
+  "learning_style": {
+   "rating": "self-directed|guided|documentation-first|example-driven",
+   "confidence": "HIGH|MEDIUM|LOW|UNSCORED",
+   "evidence_count": 0,
+   "cross_project_consistent": true,
+   "evidence_quotes": [],
+   "summary": "string",
+   "claude_instruction": "string"
   }
+ }
 }
 ```
 
@@ -645,10 +645,10 @@ The profiler agent must return JSON matching this exact schema, wrapped in `<ana
 - **`message_threshold`**: Which threshold mode was triggered (`full`, `hybrid`, `insufficient`)
 - **`sensitive_excluded`**: Array of excluded sensitive content types with counts (empty array if none found)
 - **`claude_instruction`**: Must be written in imperative form directed at the agent. This field is how the profile becomes actionable.
-  - Good: "Provide structured responses with headers and numbered lists to match this developer's communication style."
-  - Bad: "You tend to like structured responses."
-  - Good: "Ask before making changes beyond the stated request -- this developer values bounded execution."
-  - Bad: "The developer gets frustrated when you do extra work."
+ - Good: "Provide structured responses with headers and numbered lists to match this developer's communication style."
+ - Bad: "You tend to like structured responses."
+ - Good: "Ask before making changes beyond the stated request -- this developer values bounded execution."
+ - Bad: "The developer gets frustrated when you do extra work."
 
 ---
 

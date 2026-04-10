@@ -88,8 +88,8 @@ PHASE_INFO=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" roadmap get-phase "${
 ```bash
 PRD_CONTENT=$(cat "$PRD_FILE" 2>/dev/null)
 if [ -z "$PRD_CONTENT" ]; then
-  echo "Error: PRD file not found: $PRD_FILE"
-  exit 1
+ echo "Error: PRD file not found: $PRD_FILE"
+ exit 1
 fi
 ```
 
@@ -104,11 +104,11 @@ Generating CONTEXT.md from requirements...
 ```
 
 3. Parse the PRD content and generate CONTEXT.md. The orchestrator should:
-   - Extract all requirements, user stories, acceptance criteria, and constraints from the PRD
-   - Map each to a locked decision (everything in the PRD is treated as a locked decision)
-   - Identify any areas the PRD doesn't cover and mark as "the agent's Discretion"
-   - **Extract canonical refs** from ROADMAP.md for this phase, plus any specs/ADRs referenced in the PRD — expand to full file paths (MANDATORY)
-   - Create CONTEXT.md in the phase directory
+  - Extract all requirements, user stories, acceptance criteria, and constraints from the PRD
+  - Map each to a locked decision (everything in the PRD is treated as a locked decision)
+  - Identify any areas the PRD doesn't cover and mark as "the agent's Discretion"
+  - **Extract canonical refs** from ROADMAP.md for this phase, plus any specs/ADRs referenced in the PRD — expand to full file paths (MANDATORY)
+  - Create CONTEXT.md in the phase directory
 
 4. Write CONTEXT.md:
 ```markdown
@@ -214,23 +214,23 @@ Otherwise use AskUserQuestion:
 - header: "No context"
 - question: "No CONTEXT.md found for Phase {X}. Plans will use research and requirements only — your design preferences won't be included. Continue or capture context first?"
 - options:
-  - "Continue without context" — Plan using research + requirements only
-  If `DISCUSS_MODE` is `"assumptions"`:
-  - "Gather context (assumptions mode)" — Analyze codebase and surface assumptions before planning
-  If `DISCUSS_MODE` is `"discuss"` (or unset):
-  - "Run discuss-phase first" — Capture design decisions before planning
+ - "Continue without context" — Plan using research + requirements only
+ If `DISCUSS_MODE` is `"assumptions"`:
+ - "Gather context (assumptions mode)" — Analyze codebase and surface assumptions before planning
+ If `DISCUSS_MODE` is `"discuss"` (or unset):
+ - "Run discuss-phase first" — Capture design decisions before planning
 
 If "Continue without context": Proceed to step 5.
 If "Run discuss-phase first":
-  **IMPORTANT:** Do NOT invoke discuss-phase as a nested Skill/Task call — AskUserQuestion
-  does not work correctly in nested subcontexts (#1009). Instead, display the command
-  and exit so the user runs it as a top-level command:
-  ```
-  Run this command first, then re-run /gsd-plan-phase {X} ${GSD_WS}:
+ **IMPORTANT:** Do NOT invoke discuss-phase as a nested Skill/Task call — AskUserQuestion
+ does not work correctly in nested subcontexts (#1009). Instead, display the command
+ and exit so the user runs it as a top-level command:
+ ```
+ Run this command first, then re-run /gsd-plan-phase {X} ${GSD_WS}:
 
-  /gsd-discuss-phase {X} ${GSD_WS}
-  ```
-  **Exit the plan-phase workflow. Do not continue.**
+ /gsd-discuss-phase {X} ${GSD_WS}
+ ```
+ **Exit the plan-phase workflow. Do not continue.**
 
 ## 5. Handle Research
 
@@ -256,15 +256,15 @@ Enter number:
 Otherwise use AskUserQuestion:
 ```
 AskUserQuestion([
-  {
-    question: "Research before planning Phase {X}: {phase_name}?",
-    header: "Research",
-    multiSelect: false,
-    options: [
-      { label: "Research first (Recommended)", description: "Investigate domain, patterns, and dependencies before planning. Best for new features, unfamiliar integrations, or architectural changes." },
-      { label: "Skip research", description: "Plan directly from context and requirements. Best for bug fixes, simple refactors, or well-understood tasks." }
-    ]
-  }
+ {
+  question: "Research before planning Phase {X}: {phase_name}?",
+  header: "Research",
+  multiSelect: false,
+  options: [
+   { label: "Research first (Recommended)", description: "Investigate domain, patterns, and dependencies before planning. Best for new features, unfamiliar integrations, or architectural changes." },
+   { label: "Skip research", description: "Plan directly from context and requirements. Best for bug fixes, simple refactors, or well-understood tasks." }
+  ]
+ }
 ])
 ```
 
@@ -318,10 +318,10 @@ Write to: {phase_dir}/{phase_num}-RESEARCH.md
 
 ```
 Task(
-  prompt=research_prompt,
-  subagent_type="gsd-phase-researcher",
-  model="{researcher_model}",
-  description="Research Phase {phase}"
+ prompt=research_prompt,
+ subagent_type="gsd-phase-researcher",
+ model="{researcher_model}",
+ description="Research Phase {phase}"
 )
 ```
 
@@ -405,9 +405,9 @@ Otherwise use AskUserQuestion:
 - header: "UI Design Contract"
 - question: "Phase {N} has frontend indicators but no UI-SPEC.md. Generate a design contract before planning?"
 - options:
-  - "Generate UI-SPEC first" → Display: "Run `/gsd-ui-phase {N} ${GSD_WS}` then re-run `/gsd-plan-phase {N} ${GSD_WS}`". Exit workflow.
-  - "Continue without UI-SPEC" → Continue to step 6.
-  - "Not a frontend phase" → Continue to step 6.
+ - "Generate UI-SPEC first" → Display: "Run `/gsd-ui-phase {N} ${GSD_WS}` then re-run `/gsd-plan-phase {N} ${GSD_WS}`". Exit workflow.
+ - "Continue without UI-SPEC" → Continue to step 6.
+ - "Not a frontend phase" → Continue to step 6.
 
 **If `HAS_UI` is 1 (no frontend indicators):** Skip silently to step 6.
 
@@ -455,7 +455,7 @@ VALIDATION_EXISTS=$(ls "${PHASE_DIR}"/*-VALIDATION.md 2>/dev/null | head -1)
 If missing and Nyquist is still enabled/applicable — ask user:
 1. Re-run: `/gsd-plan-phase {PHASE} --research ${GSD_WS}`
 2. Disable Nyquist with the exact command:
-   `node ".agent/get-shit-done/bin/gsd-tools.cjs" config-set workflow.nyquist_validation false`
+  `node ".agent/get-shit-done/bin/gsd-tools.cjs" config-set workflow.nyquist_validation false`
 3. Continue anyway (plans fail Dimension 8)
 
 Proceed to Step 8 only if user selects 2 or 3.
@@ -512,25 +512,25 @@ Output consumed by /gsd-execute-phase. Plans need:
 Every task MUST include these fields — they are NOT optional:
 
 1. **`<read_first>`** — Files the executor MUST read before touching anything. Always include:
-   - The file being modified (so executor sees current state, not assumptions)
-   - Any "source of truth" file referenced in CONTEXT.md (reference implementations, existing patterns, config files, schemas)
-   - Any file whose patterns, signatures, types, or conventions must be replicated or respected
+  - The file being modified (so executor sees current state, not assumptions)
+  - Any "source of truth" file referenced in CONTEXT.md (reference implementations, existing patterns, config files, schemas)
+  - Any file whose patterns, signatures, types, or conventions must be replicated or respected
 
 2. **`<acceptance_criteria>`** — Verifiable conditions that prove the task was done correctly. Rules:
-   - Every criterion must be checkable with grep, file read, test command, or CLI output
-   - NEVER use subjective language ("looks correct", "properly configured", "consistent with")
-   - ALWAYS include exact strings, patterns, values, or command outputs that must be present
-   - Examples:
-     - Code: `auth.py contains def verify_token(` / `test_auth.py exits 0`
-     - Config: `.env.example contains DATABASE_URL=` / `Dockerfile contains HEALTHCHECK`
-     - Docs: `README.md contains '## Installation'` / `API.md lists all endpoints`
-     - Infra: `deploy.yml has rollback step` / `docker-compose.yml has healthcheck for db`
+  - Every criterion must be checkable with grep, file read, test command, or CLI output
+  - NEVER use subjective language ("looks correct", "properly configured", "consistent with")
+  - ALWAYS include exact strings, patterns, values, or command outputs that must be present
+  - Examples:
+   - Code: `auth.py contains def verify_token(` / `test_auth.py exits 0`
+   - Config: `.env.example contains DATABASE_URL=` / `Dockerfile contains HEALTHCHECK`
+   - Docs: `README.md contains '## Installation'` / `API.md lists all endpoints`
+   - Infra: `deploy.yml has rollback step` / `docker-compose.yml has healthcheck for db`
 
 3. **`<action>`** — Must include CONCRETE values, not references. Rules:
-   - NEVER say "align X with Y", "match X to Y", "update to be consistent" without specifying the exact target state
-   - ALWAYS include the actual values: config keys, function signatures, SQL statements, class names, import paths, env vars, etc.
-   - If CONTEXT.md has a comparison table or expected values, copy them into the action verbatim
-   - The executor should be able to complete the task from the action text alone, without needing to read CONTEXT.md or reference files (read_first is for verification, not discovery)
+  - NEVER say "align X with Y", "match X to Y", "update to be consistent" without specifying the exact target state
+  - ALWAYS include the actual values: config keys, function signatures, SQL statements, class names, import paths, env vars, etc.
+  - If CONTEXT.md has a comparison table or expected values, copy them into the action verbatim
+  - The executor should be able to complete the task from the action text alone, without needing to read CONTEXT.md or reference files (read_first is for verification, not discovery)
 
 **Why this matters:** Executor agents work from the plan text. Vague instructions like "update the config to match production" produce shallow one-line changes. Concrete instructions like "add DATABASE_URL=postgresql://... , set POOL_SIZE=20, add REDIS_URL=redis://..." produce complete work. The cost of verbose plans is far less than the cost of re-doing shallow execution.
 </deep_work_rules>
@@ -550,10 +550,10 @@ Every task MUST include these fields — they are NOT optional:
 
 ```
 Task(
-  prompt=filled_prompt,
-  subagent_type="gsd-planner",
-  model="{planner_model}",
-  description="Plan Phase {phase}"
+ prompt=filled_prompt,
+ subagent_type="gsd-planner",
+ model="{planner_model}",
+ description="Plan Phase {phase}"
 )
 ```
 
@@ -605,10 +605,10 @@ ${AGENT_SKILLS_CHECKER}
 
 ```
 Task(
-  prompt=checker_prompt,
-  subagent_type="gsd-plan-checker",
-  model="{checker_model}",
-  description="Verify Phase {phase} plans"
+ prompt=checker_prompt,
+ subagent_type="gsd-plan-checker",
+ model="{checker_model}",
+ description="Verify Phase {phase} plans"
 )
 ```
 
@@ -651,10 +651,10 @@ Return what changed.
 
 ```
 Task(
-  prompt=revision_prompt,
-  subagent_type="gsd-planner",
-  model="{planner_model}",
-  description="Revise Phase {phase} plans"
+ prompt=revision_prompt,
+ subagent_type="gsd-planner",
+ model="{planner_model}",
+ description="Revise Phase {phase} plans"
 )
 ```
 
@@ -727,16 +727,16 @@ Check for auto-advance trigger:
 
 1. Parse `--auto` flag from $ARGUMENTS
 2. **Sync chain flag with intent** — if user invoked manually (no `--auto`), clear the ephemeral chain flag from any previous interrupted `--auto` chain. This does NOT touch `workflow.auto_advance` (the user's persistent settings preference):
-   ```bash
-   if [[ ! "$ARGUMENTS" =~ --auto ]]; then
-     node ".agent/get-shit-done/bin/gsd-tools.cjs" config-set workflow._auto_chain_active false 2>/dev/null
-   fi
-   ```
+  ```bash
+  if [[ ! "$ARGUMENTS" =~ --auto ]]; then
+   node ".agent/get-shit-done/bin/gsd-tools.cjs" config-set workflow._auto_chain_active false 2>/dev/null
+  fi
+  ```
 3. Read both the chain flag and user preference:
-   ```bash
-   AUTO_CHAIN=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow._auto_chain_active 2>/dev/null || echo "false")
-   AUTO_CFG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow.auto_advance 2>/dev/null || echo "false")
-   ```
+  ```bash
+  AUTO_CHAIN=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow._auto_chain_active 2>/dev/null || echo "false")
+  AUTO_CFG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" config-get workflow.auto_advance 2>/dev/null || echo "false")
+  ```
 
 **If `--auto` flag present OR `AUTO_CHAIN` is true OR `AUTO_CFG` is true:**
 
@@ -758,22 +758,22 @@ The `--no-transition` flag tells execute-phase to return status after verificati
 
 **Handle execute-phase return:**
 - **PHASE COMPLETE** → Display final summary:
-  ```
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   GSD ► PHASE ${PHASE} COMPLETE ✓
-  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ ```
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  GSD ► PHASE ${PHASE} COMPLETE ✓
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  Auto-advance pipeline finished.
+ Auto-advance pipeline finished.
 
-  Next: /gsd-discuss-phase ${NEXT_PHASE} --auto ${GSD_WS}
-  ```
+ Next: /gsd-discuss-phase ${NEXT_PHASE} --auto ${GSD_WS}
+ ```
 - **GAPS FOUND / VERIFICATION FAILED** → Display result, stop chain:
-  ```
-  Auto-advance stopped: Execution needs review.
+ ```
+ Auto-advance stopped: Execution needs review.
 
-  Review the output above and continue manually:
-  /gsd-execute-phase ${PHASE} ${GSD_WS}
-  ```
+ Review the output above and continue manually:
+ /gsd-execute-phase ${PHASE} ${GSD_WS}
+ ```
 
 **If neither `--auto` nor config enabled:**
 Route to `<offer_next>` (existing behavior).
@@ -791,8 +791,8 @@ Output this markdown directly (not as a code block):
 
 | Wave | Plans | What it builds |
 |------|-------|----------------|
-| 1    | 01, 02 | [objectives] |
-| 2    | 03     | [objective]  |
+| 1  | 01, 02 | [objectives] |
+| 2  | 03   | [objective] |
 
 Research: {Completed | Used existing | Skipped}
 Verification: {Passed | Passed with override | Skipped}
@@ -824,15 +824,15 @@ stdio deadlocks with MCP servers — see Claude Code issue anthropics/claude-cod
 
 1. **Force-kill:** Close the terminal (Ctrl+C may not work)
 2. **Clean up orphaned processes:**
-   ```powershell
-   # Kill orphaned node processes from stale MCP servers
-   Get-Process node -ErrorAction SilentlyContinue | Where-Object {$_.StartTime -lt (Get-Date).AddHours(-1)} | Stop-Process -Force
-   ```
+  ```powershell
+  # Kill orphaned node processes from stale MCP servers
+  Get-Process node -ErrorAction SilentlyContinue | Where-Object {$_.StartTime -lt (Get-Date).AddHours(-1)} | Stop-Process -Force
+  ```
 3. **Clean up stale task directories:**
-   ```powershell
-   # Remove stale subagent task dirs (Claude Code never cleans these on crash)
-   Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\tasks\*" -ErrorAction SilentlyContinue
-   ```
+  ```powershell
+  # Remove stale subagent task dirs (Claude Code never cleans these on crash)
+  Remove-Item -Recurse -Force "$env:USERPROFILE\.claude\tasks\*" -ErrorAction SilentlyContinue
+  ```
 4. **Reduce MCP server count:** Temporarily disable non-essential MCP servers in settings.json
 5. **Retry:** Restart Claude Code and run `/gsd-plan-phase` again
 

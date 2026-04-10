@@ -21,11 +21,7 @@ export function LogoDecal({ url, position, rotation, scale }: {
     if (!url) return null;
 
     return (
-        <Decal 
-            position={position} 
-            rotation={rotation} 
-            scale={scale} 
-        >
+        <Decal position={position} rotation={rotation} scale={scale}>
             <meshStandardMaterial
                 map={texture}
                 transparent

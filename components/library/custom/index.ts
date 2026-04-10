@@ -8,14 +8,9 @@ export * from './components/sparkline-chart';
 export * from './components/conversion-funnel';
 export * from './components/revenue-chart';
 export * from './components/activity-feed';
-export * from './components/pipeline-bar';
 export * from './components/charts';
 
 // Pipeline & Deals
-export * from './components/kanban-board';
-export * from './components/kanban-column';
-export * from './components/deal-card';
-export * from './components/deal-timeline';
 
 // Contacts & Leads
 export * from './components/contact-card';

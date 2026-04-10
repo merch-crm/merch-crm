@@ -16,7 +16,7 @@ Check if `--repair` flag is present in the command arguments.
 ```
 REPAIR_FLAG=""
 if arguments contain "--repair"; then
-  REPAIR_FLAG="--repair"
+ REPAIR_FLAG="--repair"
 fi
 ```
 </step>
@@ -62,10 +62,10 @@ Errors: N | Warnings: N | Info: N
 ## Errors
 
 - [E001] config.json: JSON parse error at line 5
-  Fix: Run /gsd-health --repair to reset to defaults
+ Fix: Run /gsd-health --repair to reset to defaults
 
 - [E002] PROJECT.md not found
-  Fix: Run /gsd-new-project to create
+ Fix: Run /gsd-new-project to create
 ```
 
 **If warnings exist:**
@@ -73,10 +73,10 @@ Errors: N | Warnings: N | Info: N
 ## Warnings
 
 - [W002] STATE.md references phase 5, but only phases 1-3 exist
-  Fix: Review STATE.md manually before changing it; repair will not overwrite an existing STATE.md
+ Fix: Review STATE.md manually before changing it; repair will not overwrite an existing STATE.md
 
 - [W005] Phase directory "1-setup" doesn't follow NN-name format
-  Fix: Rename to match pattern (e.g., 01-setup)
+ Fix: Rename to match pattern (e.g., 01-setup)
 ```
 
 **If info exists:**
@@ -84,7 +84,7 @@ Errors: N | Warnings: N | Info: N
 ## Info
 
 - [I001] 02-implementation/02-01-PLAN.md has no SUMMARY.md
-  Note: May be in progress
+ Note: May be in progress
 ```
 
 **Footer (if repairable issues exist and --repair was NOT used):**
@@ -168,12 +168,12 @@ When `--repair` is active, detect and clean up:
 # Check for stale task directories (older than 24 hours)
 TASKS_DIR=".agent/tasks"
 if [ -d "$TASKS_DIR" ]; then
-  STALE_COUNT=$( (find "$TASKS_DIR" -maxdepth 1 -type d -mtime +1 2>/dev/null || true) | wc -l )
-  if [ "$STALE_COUNT" -gt 0 ]; then
-    echo "⚠️  Found $STALE_COUNT stale task directories in .agent/tasks/"
-    echo "   These are leftover from crashed subagent sessions."
-    echo "   Run: rm -rf .agent/tasks/*  (safe — only affects dead sessions)"
-  fi
+ STALE_COUNT=$( (find "$TASKS_DIR" -maxdepth 1 -type d -mtime +1 2>/dev/null || true) | wc -l )
+ if [ "$STALE_COUNT" -gt 0 ]; then
+  echo "⚠️ Found $STALE_COUNT stale task directories in .agent/tasks/"
+  echo "  These are leftover from crashed subagent sessions."
+  echo "  Run: rm -rf .agent/tasks/* (safe — only affects dead sessions)"
+ fi
 fi
 ```
 

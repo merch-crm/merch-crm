@@ -83,10 +83,7 @@ export function StatusBadge({ status, className }: { status: string, className?:
     const IconComponent = item.icon;
 
     return (
-        <Root
-            className={className}
-            variant={status === 'done' ? 'success' : status === 'shipped' ? 'neutral' : status === 'new' ? 'info' : 'warning'}
-        >
+        <Root className={className} variant={status === 'done' ? 'success' : status === 'shipped' ? 'neutral' : status === 'new' ? 'info' : 'warning'}>
             <Icon as={IconComponent} />
             <span>{item.label}</span>
         </Root>

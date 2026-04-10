@@ -77,21 +77,9 @@ export function RevenueChart({
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="#f8fafc" />
-            <XAxis 
-              dataKey="name" 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fontSize: 9, fontWeight: 900, fill: '#cbd5e1' }}
-              dy={15}
-            />
-            <YAxis 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fontSize: 9, fontWeight: 900, fill: '#cbd5e1' }}
-            />
-            <Tooltip 
-               cursor={{ stroke: '#f1f5f9', strokeWidth: 2 }}
-               content={({ active, payload }) => {
+            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: '#cbd5e1' }} dy={15} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 9, fontWeight: 900, fill: '#cbd5e1' }} />
+            <Tooltip cursor={{ stroke: '#f1f5f9', strokeWidth: 2 }} content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
                       <div className="bg-slate-950 border border-slate-800 p-5 rounded-[2rem] shadow-2xl backdrop-blur-xl">
@@ -118,25 +106,8 @@ export function RevenueChart({
                   return null;
                }}
             />
-            <Area 
-               type="monotone" 
-               dataKey="revenue" 
-               stroke="#3b82f6" 
-               strokeWidth={4}
-               fillOpacity={1} 
-               fill="url(#colorRevPremium)" 
-               animationDuration={3000}
-               strokeLinecap="round"
-            />
-            <Area 
-               type="monotone" 
-               dataKey="profit" 
-               stroke="#10b981" 
-               strokeWidth={4}
-               fill="none" 
-               strokeDasharray="10 10"
-               animationDuration={3000}
-            />
+            <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorRevPremium)" animationDuration={3000} strokeLinecap="round" />
+            <Area type="monotone" dataKey="profit" stroke="#10b981" strokeWidth={4} fill="none" strokeDasharray="10 10" animationDuration={3000} />
           </AreaChart>
         </ResponsiveContainer>
       </div>

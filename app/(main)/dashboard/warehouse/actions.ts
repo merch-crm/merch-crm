@@ -8,59 +8,59 @@
 // Bypass audit constraint for barrel files
 
 export {
-    getInventoryItems, getArchivedItems, getInventoryItem, addInventoryItem,
-    updateInventoryItem
+  getInventoryItems, getArchivedItems, getInventoryItem, addInventoryItem,
+  updateInventoryItem
 } from"./item-actions";
 
 export { deleteInventoryItemImage } from"./item-image-actions";
 export { checkDuplicateItem } from"./item-duplicate-actions";
 
 export {
-    getItemHistory, getItemActiveOrders
+  getItemHistory, getItemActiveOrders
 } from"./item-history.actions";
 
 export {
-    refreshWarehouse, getMeasurementUnits
+  refreshWarehouse, getMeasurementUnits
 } from"./warehouse-shared.actions";
 
 export {
-    getInventoryCategories, addInventoryCategory, updateInventoryCategory,
-    deleteInventoryCategory, updateInventoryCategoriesOrder,
-    getOrphanedItemStats
+  getInventoryCategories, addInventoryCategory, updateInventoryCategory,
+  deleteInventoryCategory, updateInventoryCategoriesOrder,
+  getOrphanedItemStats
 } from"./category-actions";
 
 export {
-    getStorageLocations, addStorageLocation, updateStorageLocationsOrder,
-    updateStorageLocation, deleteStorageLocation, seedStorageLocations
+  getStorageLocations, addStorageLocation, updateStorageLocationsOrder,
+  updateStorageLocation, deleteStorageLocation, seedStorageLocations
 } from"./storage-actions";
 
 export {
-    adjustInventoryStock, transferInventoryStock, getItemStocks,
-    moveInventoryItem
+  adjustInventoryStock, transferInventoryStock, getItemStocks,
+  moveInventoryItem
 } from"./stock-actions";
 
 export {
-    getWarehouseStats, findItemBySKU, getAllUsers
+  getWarehouseStats, findItemBySKU, getAllUsers
 } from"./warehouse-stats-actions";
 
 export {
-    getInventoryHistory, clearInventoryHistory, deleteInventoryTransactions
+  getInventoryHistory, clearInventoryHistory, deleteInventoryTransactions
 }
 from"./history-actions";
 
 export {
-    getInventoryAttributes, createInventoryAttribute, updateInventoryAttribute,
-    deleteInventoryAttribute,
-    getInventoryAttributeTypes, createInventoryAttributeType, updateInventoryAttributeType,
-    deleteInventoryAttributeType, regenerateAllItemSKUs
+  getInventoryAttributes, createInventoryAttribute, updateInventoryAttribute,
+  deleteInventoryAttribute,
+  getInventoryAttributeTypes, createInventoryAttributeType, updateInventoryAttributeType,
+  deleteInventoryAttributeType, regenerateAllItemSKUs
 } from"./attribute-actions";
 
 export {
-    archiveInventoryItems, restoreInventoryItems, deleteInventoryItems,
-    autoArchiveStaleItems, bulkMoveInventoryItems, bulkUpdateInventoryCategory
+  archiveInventoryItems, restoreInventoryItems, deleteInventoryItems,
+  autoArchiveStaleItems, bulkMoveInventoryItems, bulkUpdateInventoryCategory
 } from"./bulk-actions";
 
 export {
-    getCategoryFullPath, getCategoryPath, isDescendant,
-    updateChildrenPaths, saveFile
+  getCategoryFullPath, getCategoryPath, isDescendant,
+  updateChildrenPaths, saveFile
 } from"./actions-utils";

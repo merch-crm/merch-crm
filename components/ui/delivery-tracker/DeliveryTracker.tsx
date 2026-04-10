@@ -171,12 +171,7 @@ export function DeliveryTracker({
 
                 <div className="space-y-0">
                     {visibleEvents.map((event, index) => (
-                        <DeliveryEventItem
-                            key={event.id}
-                            event={event}
-                            isFirst={index === 0}
-                            isLast={index === visibleEvents.length - 1}
-                        />
+                        <DeliveryEventItem key={event.id} event={event} isFirst={index === 0} isLast={index === visibleEvents.length - 1} />
                     ))}
                 </div>
 

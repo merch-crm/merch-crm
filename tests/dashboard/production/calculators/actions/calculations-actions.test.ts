@@ -4,7 +4,7 @@ vi.mock('@/lib/session', () => ({ getSession: vi.fn() }));
 vi.mock('@/lib/db', () => ({ db: {} }));
 
 describe('calculations-actions', () => {
-    it('is a pending test', () => {
-        expect(true).toBe(true);
-    });
+  it('is a pending test', () => {
+    expect(true).toBe(true);
+  });
 });

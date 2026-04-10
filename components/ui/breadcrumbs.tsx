@@ -56,10 +56,7 @@ export function Breadcrumbs({
         >
             {showHome && (
                 <>
-                    <Link
-                        href={homeHref}
-                        className="text-slate-400 hover:text-primary transition-all flex-shrink-0"
-                    >
+                    <Link href={homeHref} className="text-slate-400 hover:text-primary transition-all flex-shrink-0">
                         <Home className="w-3.5 h-3.5" />
                     </Link>
                     {(safeItems.length > 0) && (
@@ -83,10 +80,7 @@ export function Breadcrumbs({
                         ) : (
                             <>
                                 {item.href && !isLast ? (
-                                    <Link
-                                        href={item.href}
-                                        className="flex items-center gap-1.5 text-[12px] font-bold  text-slate-400 hover:text-primary transition-all truncate group"
-                                    >
+                                    <Link href={item.href} className="flex items-center gap-1.5 text-[12px] font-bold text-slate-400 hover:text-primary transition-all truncate group">
                                         {Icon && <Icon className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />}
                                         <span className="truncate">{item.label}</span>
                                     </Link>

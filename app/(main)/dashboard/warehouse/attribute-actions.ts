@@ -4,19 +4,19 @@
  */
 
 export {
-    getInventoryAttributes,
-    createInventoryAttribute,
-    updateInventoryAttribute,
-    deleteInventoryAttribute
+  getInventoryAttributes,
+  createInventoryAttribute,
+  updateInventoryAttribute,
+  deleteInventoryAttribute
 } from"./attributes/actions/attribute.actions";
 export type { InventoryAttribute } from"./attributes/actions/attribute.actions";
 
 export {
-    getInventoryAttributeTypes,
-    createInventoryAttributeType,
-    deleteInventoryAttributeType,
-    updateInventoryAttributeType,
-    reorderInventoryAttributeTypes
+  getInventoryAttributeTypes,
+  createInventoryAttributeType,
+  deleteInventoryAttributeType,
+  updateInventoryAttributeType,
+  reorderInventoryAttributeTypes
 } from"./attributes/actions/type.actions";
 export type { AttributeType } from"./attributes/actions/type.actions";
 

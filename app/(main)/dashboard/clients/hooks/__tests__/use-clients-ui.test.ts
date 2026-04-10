@@ -3,51 +3,51 @@ import { useClientsUI } from '../use-clients-ui';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 describe('useClientsUI', () => {
-    const setUiState = vi.fn();
-    const setViewState = vi.fn();
+  const setUiState = vi.fn();
+  const setViewState = vi.fn();
 
-    beforeEach(() => {
-        vi.clearAllMocks();
-        localStorage.clear();
+  beforeEach(() => {
+    vi.clearAllMocks();
+    localStorage.clear();
+  });
+
+  it('addToHistory adds valid query to history and localStorage', () => {
+    const { result } = renderHook(() => useClientsUI(setUiState, setViewState));
+
+    act(() => {
+      result.current.addToHistory('test query');
     });
 
-    it('addToHistory adds valid query to history and localStorage', () => {
-        const { result } = renderHook(() => useClientsUI(setUiState, setViewState));
+    expect(setUiState).toHaveBeenCalled();
+    const updater = setUiState.mock.calls[0][0];
+    const prevState = { searchHistory: [] };
+    const newState = updater(prevState);
 
-        act(() => {
-            result.current.addToHistory('test query');
-        });
+    expect(newState.searchHistory).toContain('test query');
+    expect(localStorage.getItem('client_search_history')).toContain('test query');
+  });
 
-        expect(setUiState).toHaveBeenCalled();
-        const updater = setUiState.mock.calls[0][0];
-        const prevState = { searchHistory: [] };
-        const newState = updater(prevState);
+  it('addToHistory ignores empty or short queries', () => {
+    const { result } = renderHook(() => useClientsUI(setUiState, setViewState));
 
-        expect(newState.searchHistory).toContain('test query');
-        expect(localStorage.getItem('client_search_history')).toContain('test query');
+    act(() => {
+      result.current.addToHistory('');
+      result.current.addToHistory('a');
     });
 
-    it('addToHistory ignores empty or short queries', () => {
-        const { result } = renderHook(() => useClientsUI(setUiState, setViewState));
+    expect(setUiState).not.toHaveBeenCalled();
+  });
 
-        act(() => {
-            result.current.addToHistory('');
-            result.current.addToHistory('a');
-        });
+  it('handleExportClick sets showExportDialog to true', () => {
+    const { result } = renderHook(() => useClientsUI(setUiState, setViewState));
 
-        expect(setUiState).not.toHaveBeenCalled();
+    act(() => {
+      result.current.handleExportClick();
     });
 
-    it('handleExportClick sets showExportDialog to true', () => {
-        const { result } = renderHook(() => useClientsUI(setUiState, setViewState));
-
-        act(() => {
-            result.current.handleExportClick();
-        });
-
-        expect(setUiState).toHaveBeenCalled();
-        const updater = setUiState.mock.calls[0][0];
-        const newState = updater({});
-        expect(newState.showExportDialog).toBe(true);
-    });
+    expect(setUiState).toHaveBeenCalled();
+    const updater = setUiState.mock.calls[0][0];
+    const newState = updater({});
+    expect(newState.showExportDialog).toBe(true);
+  });
 });

@@ -3,20 +3,15 @@
 import React, { useState, useEffect } from "react";
 import { Minus, Plus, Settings2, Activity, Zap } from "lucide-react";
 import { 
-  Select, 
-  SelectTrigger, 
-  SelectValue, 
-  SelectPopover, 
-  ListBox, 
-  ListBoxItem 
-} from "@/components/library/heroui";
+  Select
+} from "@/components/ui/select";
 import { cn } from "../utils/cn";
 
 const formatStyleOptions = [
-  { label: "Currency (USD)", value: "currency" },
-  { label: "Percentage (%)", value: "percent" },
-  { label: "Standard Decimal", value: "decimal" },
-  { label: "Unit (Miles)", value: "unit" },
+  { id: "currency", title: "Currency (USD)" },
+  { id: "percent", title: "Percentage (%)" },
+  { id: "decimal", title: "Standard Decimal" },
+  { id: "unit", title: "Unit (Miles)" },
 ];
 
 const formatOptionsMap: Record<string, Intl.NumberFormatOptions> = {
@@ -166,32 +161,17 @@ export function InteractiveProgressDemo() {
           <span className="text-[12px] font-black text-slate-950 uppercase tracking-[0.3em]">Module Config</span>
         </div>
 
-        <OptionNumberField
-          label="Operational Value"
-          value={value}
-          min={minValue}
-          max={maxValue}
-          onChange={(v) => setValue(v)}
+        <OptionNumberField label="Operational Value" value={value} min={minValue} max={maxValue} onChange={(v) => setValue(v)}
         />
 
         <div className="grid grid-cols-2 gap-4">
-          <OptionNumberField
-            label="Min Boundary"
-            value={minValue}
-            min={0}
-            max={maxValue - 1}
-            onChange={(v) => {
+          <OptionNumberField label="Min Boundary" value={minValue} min={0} max={maxValue - 1} onChange={(v) => {
               setMinValue(v);
               if (value < v) setValue(v);
             }}
           />
 
-          <OptionNumberField
-            label="Max Boundary"
-            value={maxValue}
-            min={minValue + 1}
-            max={10000}
-            onChange={(v) => {
+          <OptionNumberField label="Max Boundary" value={maxValue} min={minValue + 1} max={10000} onChange={(v) => {
               setMaxValue(v);
               if (value > v) setValue(v);
             }}
@@ -203,32 +183,11 @@ export function InteractiveProgressDemo() {
             <Zap className="size-3" /> Output Format
           </label>
           <div className="relative">
-            <Select
-              selectedKey={format}
-              onSelectionChange={(key) => key && setFormat(key.toString())}
-              className="w-full"
-            >
-              <SelectTrigger className="w-full justify-between h-14 px-6 rounded-[2rem] border border-slate-100 bg-white shadow-premium text-[11px] font-black text-slate-950 uppercase tracking-widest hover:border-primary-base/30 transition-all outline-none focus-visible:ring-4 focus-visible:ring-primary-base/10">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectPopover className="rounded-[2.5rem] border-slate-100 shadow-2xl p-2 min-w-[200px]">
-                <ListBox>
-                  {formatStyleOptions.map((opt) => (
-                    <ListBoxItem 
-                      key={opt.value} 
-                      id={opt.value} 
-                      textValue={opt.label}
-                      className="rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 hover:text-primary-base hover:bg-primary-base/5 p-3 transition-colors"
-                    >
-                      {opt.label}
-                    </ListBoxItem>
-                  ))}
-                </ListBox>
-              </SelectPopover>
-            </Select>
+            <Select options={formatStyleOptions} value={format} onChange={setFormat} className="w-full" triggerClassName="h-14 px-6 rounded-[2rem] border border-slate-100 bg-white shadow-premium text-[11px] font-black text-slate-950 uppercase tracking-widest hover:border-primary-base/30 transition-all outline-none focus-visible:ring-4 focus-visible:ring-primary-base/10" />
           </div>
         </div>
       </div>
     </div>
   );
 }
+

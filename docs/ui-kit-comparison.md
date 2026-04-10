@@ -1,6 +1,6 @@
 # MerchCRM UI Kit: Comparison Audit
 
-This document provides a comparative analysis of specialized CRM components developed for MerchCRM against industry-standard open-source components from HeroUI, Aceternity, ReactBits, and AlignUI.
+This document provides a comparative analysis of specialized CRM components developed for MerchCRM against industry-standard open-source components from ReactBits and AlignUI.
 
 ## 1. Executive Summary
 - **Custom Components**: Optimized for **Data Density** and **Business Logic**. Better for daily CRM operations where information clarity is paramount.
@@ -11,11 +11,11 @@ This document provides a comparative analysis of specialized CRM components deve
 ## 2. Head-to-Head Comparison
 
 ### Category A: Cards & Metrics
-| Feature | Custom `MetricCard` | Aceternity `3D Card` | Recommendation |
-| :--- | :--- | :--- | :--- |
-| **Visual Style** | Minimal, SaaS-standard, clean. | High-fidelity 3D parallax on hover. | **Hybrid**: Use Custom for Dashboards, Aceternity for Highlight Reports. |
-| **Interactivity** | Basic hover states. | Complex perspective shifts (WebGL/Framer Motion). | |
-| **Data Density** | High (shows sparklines, trends, subtext). | Low (focuses on appearance). | |
+| Feature | Custom `MetricCard` | Recommendation |
+| :--- | :--- | :--- |
+| **Visual Style** | Minimal, SaaS-standard, clean. | Use Custom for Dashboards. |
+| **Interactivity** | Hover states, smooth transitions. | |
+| **Data Density** | High (shows sparklines, trends, subtext). | |
 
 ### Category B: Buttons & Actions
 | Feature | Custom (Shadcn-based) | AlignUI `Fancy Button` | Recommendation |
@@ -36,10 +36,8 @@ This document provides a comparative analysis of specialized CRM components deve
 
 We have verified that the following components implemented in MerchCRM are strictly from the **Free / Open Source** tiers:
 
-1. **HeroUI**: All core components (MIT License).
-2. **Aceternity**: All individual components (Copy-paste models are free). No "Premium Templates" used.
-3. **ReactBits**: Entirety of `reactbits.dev` is free. No "Pro" content imported.
-4. **AlignUI**: Only "Base Components" (Atomic elements) included. No "Pro Blocks" or "Figma Pro" assets.
+1. **ReactBits**: Entirety of `reactbits.dev` is free. No "Pro" content imported.
+2. **AlignUI**: Only "Base Components" (Atomic elements) included. No "Pro Blocks" or "Figma Pro" assets.
 
 ## 4. Next Steps for Decision Makers
 1. **Approval of the Lab**: Review the side-by-side comparison at `/ui-kit/lab`.

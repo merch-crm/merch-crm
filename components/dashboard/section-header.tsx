@@ -30,10 +30,7 @@ export function SectionHeader({
                 )}
             </div>
             {href && (
-                <Link
-                    href={href}
-                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Link href={href} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors">
                     {linkText}
                     <ChevronRight className="h-4 w-4" />
                 </Link>

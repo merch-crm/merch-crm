@@ -17,36 +17,32 @@ export function DropdownWithDescriptions() {
     <div className="flex justify-center p-8">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="secondary" className="rounded-2xl px-6 h-12 text-sm font-black bg-slate-100 hover:bg-slate-200 text-slate-900 border-none shadow-sm transition-all active:scale-95">
+          <Button variant="solid" color="neutral" className="rounded-2xl px-6 h-12 text-sm font-black bg-slate-100 hover:bg-slate-200 text-slate-900 border-none shadow-sm transition-all active:scale-95">
             Actions
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-72 p-2 rounded-[2rem] bg-white border border-border shadow-3xl animate-in zoom-in-95 duration-200" align="start">
-          <DropdownItem 
-            icon={<Plus className="size-4" />} 
+          <DropdownItem icon={<Plus className="size-4" />} 
             label="New file" 
             description="Create a new file" 
             shortcut="⌘N" 
           />
-          <DropdownItem 
-            icon={<FolderOpen className="size-4" />} 
+          <DropdownItem icon={<FolderOpen className="size-4" />} 
             label="Open file" 
             description="Open an existing file" 
             shortcut="⌘O" 
           />
-          <DropdownItem 
-            icon={<Save className="size-4" />} 
+          <DropdownItem icon={<Save className="size-4" />} 
             label="Save file" 
             description="Save the current file" 
             shortcut="⌘S" 
           />
           <DropdownMenuSeparator className="my-2 bg-slate-100" />
-          <DropdownItem 
-            icon={<Trash2 className="size-4 text-rose-500" />} 
+          <DropdownItem icon={<Trash2 className="size-4 text-rose-500" />} 
             label="Delete file" 
             description="Move to trash" 
             shortcut="⌘⇧D" 
-            variant="danger"
+            color="danger"
           />
         </DropdownMenuContent>
       </DropdownMenu>
@@ -59,29 +55,26 @@ function DropdownItem({
   label, 
   description, 
   shortcut, 
-  variant = "default" 
+  color = "neutral" 
 }: { 
   icon: React.ReactNode, 
   label: string, 
   description: string, 
   shortcut: string,
-  variant?: "default" | "danger"
+  color?: "neutral" | "danger"
 }) {
   return (
-    <DropdownMenuItem className={cn(
-      "flex items-start gap-3 p-3 rounded-2xl cursor-pointer transition-colors focus:bg-slate-50 outline-none",
-      variant === "danger" ? "hover:bg-rose-50" : ""
-    )}>
+    <DropdownMenuItem className={cn( "flex items-start gap-3 p-3 rounded-2xl cursor-pointer transition-colors focus:bg-slate-50 outline-none", color === "danger" ? "hover:bg-rose-50" : "" )}>
       <div className={cn(
         "flex h-8 items-start justify-center pt-1 shrink-0",
-        variant === "danger" ? "text-rose-500" : "text-slate-400"
+        color === "danger" ? "text-rose-500" : "text-slate-400"
       )}>
         {icon}
       </div>
       <div className="flex flex-col flex-1 min-w-0">
         <span className={cn(
           "text-sm font-bold",
-          variant === "danger" ? "text-rose-600" : "text-slate-900"
+          color === "danger" ? "text-rose-600" : "text-slate-900"
         )}>{label}</span>
         <span className="text-xs font-medium text-slate-400 truncate">{description}</span>
       </div>

@@ -160,11 +160,7 @@ export function DevicePreview({
       </div>
 
       {/* iframe preview */}
-      <IframePortal
-        width={config.width}
-        height={config.height}
-        maxPreviewHeight={maxPreviewHeight}
-      >
+      <IframePortal width={config.width} height={config.height} maxPreviewHeight={maxPreviewHeight}>
         {children}
       </IframePortal>
     </div>

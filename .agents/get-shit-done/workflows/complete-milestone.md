@@ -156,8 +156,8 @@ Extract one-liners from SUMMARY.md files using summary-extract:
 ```bash
 # For each phase in milestone, extract one-liner
 for summary in .planning/phases/*-*/*-SUMMARY.md; do
-  [ -e "$summary" ] || continue
-  node ".agent/get-shit-done/bin/gsd-tools.cjs" summary-extract "$summary" --fields one_liner --pick one_liner
+ [ -e "$summary" ] || continue
+ node ".agent/get-shit-done/bin/gsd-tools.cjs" summary-extract "$summary" --fields one_liner --pick one_liner
 done
 ```
 
@@ -195,41 +195,41 @@ cat .planning/phases/*-*/*-SUMMARY.md
 **Full review checklist:**
 
 1. **"What This Is" accuracy:**
-   - Compare current description to what was built
-   - Update if product has meaningfully changed
+  - Compare current description to what was built
+  - Update if product has meaningfully changed
 
 2. **Core Value check:**
-   - Still the right priority? Did shipping reveal a different core value?
-   - Update if the ONE thing has shifted
+  - Still the right priority? Did shipping reveal a different core value?
+  - Update if the ONE thing has shifted
 
 3. **Requirements audit:**
 
-   **Validated section:**
-   - All Active requirements shipped this milestone → Move to Validated
-   - Format: `- ✓ [Requirement] — v[X.Y]`
+  **Validated section:**
+  - All Active requirements shipped this milestone → Move to Validated
+  - Format: `- ✓ [Requirement] — v[X.Y]`
 
-   **Active section:**
-   - Remove requirements moved to Validated
-   - Add new requirements for next milestone
-   - Keep unaddressed requirements
+  **Active section:**
+  - Remove requirements moved to Validated
+  - Add new requirements for next milestone
+  - Keep unaddressed requirements
 
-   **Out of Scope audit:**
-   - Review each item — reasoning still valid?
-   - Remove irrelevant items
-   - Add requirements invalidated during milestone
+  **Out of Scope audit:**
+  - Review each item — reasoning still valid?
+  - Remove irrelevant items
+  - Add requirements invalidated during milestone
 
 4. **Context update:**
-   - Current codebase state (LOC, tech stack)
-   - User feedback themes (if any)
-   - Known issues or technical debt
+  - Current codebase state (LOC, tech stack)
+  - User feedback themes (if any)
+  - Known issues or technical debt
 
 5. **Key Decisions audit:**
-   - Extract all decisions from milestone phase summaries
-   - Add to Key Decisions table with outcomes
-   - Mark ✓ Good, ⚠️ Revisit, or — Pending
+  - Extract all decisions from milestone phase summaries
+  - Add to Key Decisions table with outcomes
+  - Mark ✓ Good, ⚠️ Revisit, or — Pending
 
 6. **Constraints check:**
-   - Any constraints changed during development? Update as needed
+  - Any constraints changed during development? Update as needed
 
 Update PROJECT.md inline. Update "Last updated" footer:
 
@@ -353,14 +353,14 @@ Update `.planning/ROADMAP.md` — group completed milestone phases:
 
 ## Progress
 
-| Phase             | Milestone | Plans Complete | Status      | Completed  |
+| Phase       | Milestone | Plans Complete | Status   | Completed |
 | ----------------- | --------- | -------------- | ----------- | ---------- |
-| 1. Foundation     | v1.0      | 2/2            | Complete    | YYYY-MM-DD |
-| 2. Authentication | v1.0      | 2/2            | Complete    | YYYY-MM-DD |
-| 3. Core Features  | v1.0      | 3/3            | Complete    | YYYY-MM-DD |
-| 4. Polish         | v1.0      | 1/1            | Complete    | YYYY-MM-DD |
-| 5. Security Audit | v1.1      | 0/1            | Not started | -          |
-| 6. Hardening      | v1.1      | 0/2            | Not started | -          |
+| 1. Foundation   | v1.0   | 2/2      | Complete  | YYYY-MM-DD |
+| 2. Authentication | v1.0   | 2/2      | Complete  | YYYY-MM-DD |
+| 3. Core Features | v1.0   | 3/3      | Complete  | YYYY-MM-DD |
+| 4. Polish     | v1.0   | 1/1      | Complete  | YYYY-MM-DD |
+| 5. Security Audit | v1.1   | 0/1      | Not started | -     |
+| 6. Hardening   | v1.1   | 0/2      | Not started | -     |
 ```
 
 </step>
@@ -578,23 +578,23 @@ CURRENT_BRANCH=$(git branch --show-current)
 git checkout main
 
 if [ "$BRANCHING_STRATEGY" = "phase" ]; then
-  for branch in $PHASE_BRANCHES; do
-    git merge --squash "$branch"
-    # Strip .planning/ from staging if commit_docs is false
-    if [ "$COMMIT_DOCS" = "false" ]; then
-      git reset HEAD .planning/ 2>/dev/null || true
-    fi
-    git commit -m "feat: $branch for v[X.Y]"
-  done
+ for branch in $PHASE_BRANCHES; do
+  git merge --squash "$branch"
+  # Strip .planning/ from staging if commit_docs is false
+  if [ "$COMMIT_DOCS" = "false" ]; then
+   git reset HEAD .planning/ 2>/dev/null || true
+  fi
+  git commit -m "feat: $branch for v[X.Y]"
+ done
 fi
 
 if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
-  git merge --squash "$MILESTONE_BRANCH"
-  # Strip .planning/ from staging if commit_docs is false
-  if [ "$COMMIT_DOCS" = "false" ]; then
-    git reset HEAD .planning/ 2>/dev/null || true
-  fi
-  git commit -m "feat: $MILESTONE_BRANCH for v[X.Y]"
+ git merge --squash "$MILESTONE_BRANCH"
+ # Strip .planning/ from staging if commit_docs is false
+ if [ "$COMMIT_DOCS" = "false" ]; then
+  git reset HEAD .planning/ 2>/dev/null || true
+ fi
+ git commit -m "feat: $MILESTONE_BRANCH for v[X.Y]"
 fi
 
 git checkout "$CURRENT_BRANCH"
@@ -607,23 +607,23 @@ CURRENT_BRANCH=$(git branch --show-current)
 git checkout main
 
 if [ "$BRANCHING_STRATEGY" = "phase" ]; then
-  for branch in $PHASE_BRANCHES; do
-    git merge --no-ff --no-commit "$branch"
-    # Strip .planning/ from staging if commit_docs is false
-    if [ "$COMMIT_DOCS" = "false" ]; then
-      git reset HEAD .planning/ 2>/dev/null || true
-    fi
-    git commit -m "Merge branch '$branch' for v[X.Y]"
-  done
+ for branch in $PHASE_BRANCHES; do
+  git merge --no-ff --no-commit "$branch"
+  # Strip .planning/ from staging if commit_docs is false
+  if [ "$COMMIT_DOCS" = "false" ]; then
+   git reset HEAD .planning/ 2>/dev/null || true
+  fi
+  git commit -m "Merge branch '$branch' for v[X.Y]"
+ done
 fi
 
 if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
-  git merge --no-ff --no-commit "$MILESTONE_BRANCH"
-  # Strip .planning/ from staging if commit_docs is false
-  if [ "$COMMIT_DOCS" = "false" ]; then
-    git reset HEAD .planning/ 2>/dev/null || true
-  fi
-  git commit -m "Merge branch '$MILESTONE_BRANCH' for v[X.Y]"
+ git merge --no-ff --no-commit "$MILESTONE_BRANCH"
+ # Strip .planning/ from staging if commit_docs is false
+ if [ "$COMMIT_DOCS" = "false" ]; then
+  git reset HEAD .planning/ 2>/dev/null || true
+ fi
+ git commit -m "Merge branch '$MILESTONE_BRANCH' for v[X.Y]"
 fi
 
 git checkout "$CURRENT_BRANCH"
@@ -633,13 +633,13 @@ git checkout "$CURRENT_BRANCH"
 
 ```bash
 if [ "$BRANCHING_STRATEGY" = "phase" ]; then
-  for branch in $PHASE_BRANCHES; do
-    git branch -d "$branch" 2>/dev/null || git branch -D "$branch"
-  done
+ for branch in $PHASE_BRANCHES; do
+  git branch -d "$branch" 2>/dev/null || git branch -D "$branch"
+ done
 fi
 
 if [ "$BRANCHING_STRATEGY" = "milestone" ]; then
-  git branch -d "$MILESTONE_BRANCH" 2>/dev/null || git branch -D "$MILESTONE_BRANCH"
+ git branch -d "$MILESTONE_BRANCH" 2>/dev/null || git branch -D "$MILESTONE_BRANCH"
 fi
 ```
 

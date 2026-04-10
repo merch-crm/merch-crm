@@ -47,9 +47,7 @@ export function StorageFilesList({
     ];
 
     return (
-        <ResponsiveDataView
-            data={items}
-            renderTable={() => (
+        <ResponsiveDataView data={items} renderTable={() => (
                 <div className="table-container">
                     <table className="crm-table">
                         <thead className="crm-thead">
@@ -109,19 +107,13 @@ export function StorageFilesList({
                                             <div className="flex items-center justify-center gap-2">
                                                 {!isMultiMode && (
                                                     <>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={(e) => { e.stopPropagation(); onRename(path); }}
+                                                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onRename(path); }}
                                                             className="h-8 w-8 text-slate-300 hover:text-emerald-600 hover:bg-emerald-50"
                                                             title="Переименовать"
                                                         >
                                                             <Edit2 size={16} />
                                                         </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={(e) => { e.stopPropagation(); onDelete(path); }}
+                                                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); onDelete(path); }}
                                                             className="h-8 w-8 text-slate-300 hover:text-rose-600 hover:bg-rose-50"
                                                             title="Удалить"
                                                         >

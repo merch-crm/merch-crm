@@ -36,11 +36,7 @@ export function StorageBrowserHeader({
             <div className="flex items-center gap-3">
                 <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                    <Input
-                        type="text"
-                        placeholder="Поиск..."
-                        value={searchTerm}
-                        onChange={(e) => onSearchChange(e.target.value)}
+                    <Input type="text" placeholder="Поиск..." value={searchTerm} onChange={(e) => onSearchChange(e.target.value)}
                         className="pl-10 w-full sm:w-48 bg-slate-50 border-none focus-visible:ring-emerald-500"
                     />
                 </div>
@@ -55,12 +51,7 @@ export function StorageBrowserHeader({
                     <CheckSquare size={18} />
                     <span className="text-xs font-bold">Выбор</span>
                 </button>
-                <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={onCreateFolder}
-                    className="gap-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-none"
-                >
+                <Button variant="solid" color="neutral" size="sm" onClick={onCreateFolder} className="gap-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-none">
                     <FolderPlus size={18} />
                     <span className="text-xs font-bold">Папка</span>
                 </Button>

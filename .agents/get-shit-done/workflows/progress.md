@@ -73,11 +73,11 @@ Use this instead of manually reading/parsing ROADMAP.md.
 
 - Find the 2-3 most recent SUMMARY.md files
 - Use `summary-extract` for efficient parsing:
-  ```bash
-  node ".agent/get-shit-done/bin/gsd-tools.cjs" summary-extract <path> --fields one_liner
-  ```
+ ```bash
+ node ".agent/get-shit-done/bin/gsd-tools.cjs" summary-extract <path> --fields one_liner
+ ```
 - This shows "what we've been working on"
-  </step>
+ </step>
 
 <step name="position">
 **Parse current position from init context and roadmap analysis:**
@@ -86,7 +86,7 @@ Use this instead of manually reading/parsing ROADMAP.md.
 - Note `paused_at` if work was paused (from `$STATE`)
 - Count pending todos: use `init todos` or `list-todos`
 - Check for active debug sessions: `(ls .planning/debug/*.md 2>/dev/null || true) | grep -v resolved | wc -l`
-  </step>
+ </step>
 
 <step name="report">
 **Generate progress bar from gsd-tools, then present rich status report:**
@@ -492,7 +492,7 @@ Ready to plan the next milestone.
 - All work complete → offer milestone completion
 - Blockers present → highlight before offering to continue
 - Handoff file exists → mention it, offer `/gsd-resume-work ${GSD_WS}`
-  </step>
+ </step>
 
 </process>
 
@@ -504,4 +504,4 @@ Ready to plan the next milestone.
 - [ ] Smart routing: /gsd-execute-phase if plans exist, /gsd-plan-phase if not
 - [ ] User confirms before any action
 - [ ] Seamless handoff to appropriate gsd command
-      </success_criteria>
+   </success_criteria>

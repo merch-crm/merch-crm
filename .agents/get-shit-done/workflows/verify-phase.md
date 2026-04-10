@@ -51,8 +51,8 @@ Use gsd-tools to extract must_haves from each PLAN:
 
 ```bash
 for plan in "$PHASE_DIR"/*-PLAN.md; do
-  MUST_HAVES=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" frontmatter get "$plan" --field must_haves)
-  echo "=== $plan ===" && echo "$MUST_HAVES"
+ MUST_HAVES=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" frontmatter get "$plan" --field must_haves)
+ echo "=== $plan ===" && echo "$MUST_HAVES"
 done
 ```
 
@@ -101,8 +101,8 @@ Use gsd-tools for artifact verification against must_haves in each PLAN:
 
 ```bash
 for plan in "$PHASE_DIR"/*-PLAN.md; do
-  ARTIFACT_RESULT=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" verify artifacts "$plan")
-  echo "=== $plan ===" && echo "$ARTIFACT_RESULT"
+ ARTIFACT_RESULT=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" verify artifacts "$plan")
+ echo "=== $plan ===" && echo "$ARTIFACT_RESULT"
 done
 ```
 
@@ -115,8 +115,8 @@ Parse JSON result: `{ all_passed, passed, total, artifacts: [{path, exists, issu
 
 **Level 3 — Wired (manual check for artifacts that pass Levels 1-2):**
 ```bash
-grep -r "import.*$artifact_name" src/ --include="*.ts" --include="*.tsx"  # IMPORTED
-grep -r "$artifact_name" src/ --include="*.ts" --include="*.tsx" | grep -v "import"  # USED
+grep -r "import.*$artifact_name" src/ --include="*.ts" --include="*.tsx" # IMPORTED
+grep -r "$artifact_name" src/ --include="*.ts" --include="*.tsx" | grep -v "import" # USED
 ```
 WIRED = imported AND used. ORPHANED = exists but not imported/used.
 
@@ -144,8 +144,8 @@ Use gsd-tools for key link verification against must_haves in each PLAN:
 
 ```bash
 for plan in "$PHASE_DIR"/*-PLAN.md; do
-  LINKS_RESULT=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" verify key-links "$plan")
-  echo "=== $plan ===" && echo "$LINKS_RESULT"
+ LINKS_RESULT=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" verify key-links "$plan")
+ echo "=== $plan ===" && echo "$LINKS_RESULT"
 done
 ```
 

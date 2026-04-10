@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Mail, Sparkles, Send } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { BentoInput } from "../../ui/bento-primitives";
 
 export function BentoNewsletterSubscribe({ className }: { className?: string }) {
   const [subscribed, setSubscribed] = useState(false);
@@ -54,17 +55,14 @@ export function BentoNewsletterSubscribe({ className }: { className?: string }) 
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="w-full space-y-3">
-            <div className="relative group/input">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-300 dark:text-zinc-700 group-focus-within/input:text-primary-base transition-colors" />
-              <input 
-                type="email" 
-                placeholder="mail@merchcrm.ru" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-11 pr-4 py-4 bg-slate-50 dark:bg-zinc-900 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary-base/20 focus:bg-white dark:focus:bg-zinc-900 transition-all outline-none placeholder:text-slate-300 dark:placeholder:text-zinc-700"
-                required
-              />
-            </div>
+            <BentoInput 
+              icon={Mail}
+              type="email" 
+              placeholder="mail@merchcrm.ru" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
             
             <button 
               type="submit"

@@ -37,9 +37,7 @@ export function BentoRadarChart({
             {dataKey2 && (
               <Radar name={dataKey2} dataKey={dataKey2} stroke={color2} strokeWidth={2} fill={color2} fillOpacity={0.4} />
             )}
-            <Tooltip 
-              contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-            />
+            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} />
           </RadarChart>
         </ResponsiveContainer>
       </div>

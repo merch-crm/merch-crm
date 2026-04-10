@@ -110,26 +110,26 @@ Present the classification to the user for confirmation before proceeding:
 
 ```
 AskUserQuestion(
-  header: "Test Classification",
-  question: |
-    ## Files classified for testing
+ header: "Test Classification",
+ question: |
+  ## Files classified for testing
 
-    ### TDD (Unit Tests) — {N} files
-    {list of files with brief reason}
+  ### TDD (Unit Tests) — {N} files
+  {list of files with brief reason}
 
-    ### E2E (Browser Tests) — {M} files
-    {list of files with brief reason}
+  ### E2E (Browser Tests) — {M} files
+  {list of files with brief reason}
 
-    ### Skip — {K} files
-    {list of files with brief reason}
+  ### Skip — {K} files
+  {list of files with brief reason}
 
-    {if $EXTRA_INSTRUCTIONS: "Additional instructions: ${EXTRA_INSTRUCTIONS}"}
+  {if $EXTRA_INSTRUCTIONS: "Additional instructions: ${EXTRA_INSTRUCTIONS}"}
 
-    How would you like to proceed?
-  options:
-    - "Approve and generate test plan"
-    - "Adjust classification (I'll specify changes)"
-    - "Cancel"
+  How would you like to proceed?
+ options:
+  - "Approve and generate test plan"
+  - "Adjust classification (I'll specify changes)"
+  - "Cancel"
 )
 ```
 
@@ -158,9 +158,9 @@ Identify:
 If test structure is ambiguous, ask the user:
 ```
 AskUserQuestion(
-  header: "Test Structure",
-  question: "I found multiple test locations. Where should I create tests?",
-  options: [list discovered locations]
+ header: "Test Structure",
+ question: "I found multiple test locations. Where should I create tests?",
+ options: [list discovered locations]
 )
 ```
 </step>
@@ -182,25 +182,25 @@ Present the complete test plan:
 
 ```
 AskUserQuestion(
-  header: "Test Plan",
-  question: |
-    ## Test Generation Plan
+ header: "Test Plan",
+ question: |
+  ## Test Generation Plan
 
-    ### Unit Tests ({N} tests across {M} files)
-    {for each file: test file path, list of test cases}
+  ### Unit Tests ({N} tests across {M} files)
+  {for each file: test file path, list of test cases}
 
-    ### E2E Tests ({P} tests across {Q} files)
-    {for each file: test file path, list of test scenarios}
+  ### E2E Tests ({P} tests across {Q} files)
+  {for each file: test file path, list of test scenarios}
 
-    ### Test Commands
-    - Unit: {discovered test command}
-    - E2E: {discovered e2e command}
+  ### Test Commands
+  - Unit: {discovered test command}
+  - E2E: {discovered e2e command}
 
-    Ready to generate?
-  options:
-    - "Generate all"
-    - "Cherry-pick (I'll specify which)"
-    - "Adjust plan"
+  Ready to generate?
+ options:
+  - "Generate all"
+  - "Cherry-pick (I'll specify which)"
+  - "Adjust plan"
 )
 ```
 
@@ -214,58 +214,58 @@ For each approved TDD test:
 1. **Create test file** following discovered project conventions (directory, naming, imports)
 
 2. **Write test** with clear arrange/act/assert structure:
-   ```
-   // Arrange — set up inputs and expected outputs
-   // Act — call the function under test
-   // Assert — verify the output matches expectations
-   ```
+  ```
+  // Arrange — set up inputs and expected outputs
+  // Act — call the function under test
+  // Assert — verify the output matches expectations
+  ```
 
 3. **Run the test**:
-   ```bash
-   {discovered test command}
-   ```
+  ```bash
+  {discovered test command}
+  ```
 
 4. **Evaluate result:**
-   - **Test passes**: Good — the implementation satisfies the test. Verify the test checks meaningful behavior (not just that it compiles).
-   - **Test fails with assertion error**: This may be a genuine bug discovered by the test. Flag it:
-     ```
-     ⚠️ Potential bug found: {test name}
-     Expected: {expected}
-     Actual: {actual}
-     File: {implementation file}
-     ```
-     Do NOT fix the implementation — this is a test-generation command, not a fix command. Record the finding.
-   - **Test fails with error (import, syntax, etc.)**: This is a test error. Fix the test and re-run.
+  - **Test passes**: Good — the implementation satisfies the test. Verify the test checks meaningful behavior (not just that it compiles).
+  - **Test fails with assertion error**: This may be a genuine bug discovered by the test. Flag it:
+   ```
+   ⚠️ Potential bug found: {test name}
+   Expected: {expected}
+   Actual: {actual}
+   File: {implementation file}
+   ```
+   Do NOT fix the implementation — this is a test-generation command, not a fix command. Record the finding.
+  - **Test fails with error (import, syntax, etc.)**: This is a test error. Fix the test and re-run.
 </step>
 
 <step name="execute_e2e_generation">
 For each approved E2E test:
 
 1. **Check for existing tests** covering the same scenario:
-   ```bash
-   grep -r "{scenario keyword}" {e2e test directory} 2>/dev/null || true
-   ```
-   If found, extend rather than duplicate.
+  ```bash
+  grep -r "{scenario keyword}" {e2e test directory} 2>/dev/null || true
+  ```
+  If found, extend rather than duplicate.
 
 2. **Create test file** targeting the user scenario from CONTEXT.md/VERIFICATION.md
 
 3. **Run the E2E test**:
-   ```bash
-   {discovered e2e command}
-   ```
+  ```bash
+  {discovered e2e command}
+  ```
 
 4. **Evaluate result:**
-   - **GREEN (passes)**: Record success
-   - **RED (fails)**: Determine if it's a test issue or a genuine application bug. Flag bugs:
-     ```
-     ⚠️ E2E failure: {test name}
-     Scenario: {description}
-     Error: {error message}
-     ```
-   - **Cannot run**: Report blocker. Do NOT mark as complete.
-     ```
-     🛑 E2E blocker: {reason tests cannot run}
-     ```
+  - **GREEN (passes)**: Record success
+  - **RED (fails)**: Determine if it's a test issue or a genuine application bug. Flag bugs:
+   ```
+   ⚠️ E2E failure: {test name}
+   Scenario: {description}
+   Error: {error message}
+   ```
+  - **Cannot run**: Report blocker. Do NOT mark as complete.
+   ```
+   🛑 E2E blocker: {reason tests cannot run}
+   ```
 
 **No-skip rule:** If E2E tests cannot execute (missing dependencies, environment issues), report the blocker and mark the test as incomplete. Never mark success without actually running the test.
 </step>
@@ -282,8 +282,8 @@ Create a test coverage report and present to user:
 
 | Category | Generated | Passing | Failing | Blocked |
 |----------|-----------|---------|---------|---------|
-| Unit     | {N}       | {n1}    | {n2}    | {n3}    |
-| E2E      | {M}       | {m1}    | {m2}    | {m3}    |
+| Unit   | {N}    | {n1}  | {n2}  | {n3}  |
+| E2E   | {M}    | {m1}  | {m2}  | {m3}  |
 
 ## Files Created/Modified
 {list of test files with paths}

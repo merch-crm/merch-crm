@@ -4,9 +4,9 @@ FROM node:22-slim AS base
 # ─── Stage 1: Install ALL dependencies (needed for build) ──────────────────────
 FROM base AS deps
 RUN sed -i 's/deb.debian.org/mirror.yandex.ru/g' /etc/apt/sources.list.d/debian.sources && \
-    apt-get update && apt-get install -y --no-install-recommends \
-    libc6 \
-    && rm -rf /var/lib/apt/lists/*
+  apt-get update && apt-get install -y --no-install-recommends \
+  libc6 \
+  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 COPY package.json package-lock.json* ./
@@ -34,7 +34,7 @@ WORKDIR /app
 # Install deps needed for migration runner (drizzle-orm, pg, dotenv, tsx)
 COPY package.json package-lock.json* ./
 RUN npm ci --omit=dev --legacy-peer-deps --ignore-scripts \
-    && npm install tsx --legacy-peer-deps --ignore-scripts
+  && npm install tsx --legacy-peer-deps --ignore-scripts
 
 # Copy migration SQL files and runner script
 COPY --from=builder /app/drizzle ./drizzle
@@ -53,8 +53,8 @@ WORKDIR /app
 
 # wget is needed for the Docker healthcheck
 RUN sed -i 's/deb.debian.org/mirror.yandex.ru/g' /etc/apt/sources.list.d/debian.sources && \
-    apt-get update && apt-get install -y --no-install-recommends wget && \
-    rm -rf /var/lib/apt/lists/*
+  apt-get update && apt-get install -y --no-install-recommends wget && \
+  rm -rf /var/lib/apt/lists/*
 
 ENV NODE_ENV=production
 

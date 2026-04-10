@@ -9,99 +9,89 @@ import { ConfirmDialog } from"@/components/ui/confirm-dialog";
 import { Button } from"@/components/ui/button";
 
 interface OrderActionsProps {
-    orderId: string;
-    isArchived: boolean;
-    canDelete: boolean;
-    canArchive: boolean;
+  orderId: string;
+  isArchived: boolean;
+  canDelete: boolean;
+  canArchive: boolean;
 }
 
 export default function OrderActions({ orderId, isArchived, canDelete, canArchive }: OrderActionsProps) {
-    const [loading, setLoading] = useState(false);
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const { toast } = useToast();
-    const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
 
-    const handleArchive = async () => {
-        setLoading(true);
-        try {
-            const res = await archiveOrder(orderId, !isArchived);
-            if (res.success) {
-                toast(isArchived ?"Заказ восстановлен" :"Заказ архивирован","success");
-                router.refresh();
-            } else {
-                toast(res.error ||"Ошибка","error");
-            }
-        } catch {
-            toast("Ошибка соединения","error");
-        } finally {
-            setLoading(false);
-        }
-    };
+  const handleArchive = async () => {
+    setLoading(true);
+    try {
+      const res = await archiveOrder(orderId, !isArchived);
+      if (res.success) {
+        toast(isArchived ?"Заказ восстановлен" :"Заказ архивирован","success");
+        router.refresh();
+      } else {
+        toast(res.error ||"Ошибка","error");
+      }
+    } catch {
+      toast("Ошибка соединения","error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleDelete = async () => {
-        setLoading(true);
-        try {
-            const res = await deleteOrder(orderId);
-            if (res.success) {
-                toast("Заказ удален","success");
-                router.push("/dashboard/orders");
-            } else {
-                toast(res.error ||"Ошибка","error");
-            }
-        } catch {
-            toast("Ошибка соединения","error");
-        } finally {
-            setLoading(false);
-            setShowDeleteDialog(false);
-        }
-    };
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const res = await deleteOrder(orderId);
+      if (res.success) {
+        toast("Заказ удален","success");
+        router.push("/dashboard/orders");
+      } else {
+        toast(res.error ||"Ошибка","error");
+      }
+    } catch {
+      toast("Ошибка соединения","error");
+    } finally {
+      setLoading(false);
+      setShowDeleteDialog(false);
+    }
+  };
 
-    if (!canArchive && !canDelete) return null;
+  if (!canArchive && !canDelete) return null;
 
-    return (
-        <div className="flex items-center gap-2 sm:gap-3">
-            {canArchive && (
-                <Button
-                    variant="ghost"
-                    onClick={handleArchive}
-                    disabled={loading}
-                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95 p-0 sm:p-auto"
-                    title={isArchived ?"Восстановить" :"В архив"}
-                >
-                    {loading ? (
-                        <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : isArchived ? (
-                        <ArchiveRestore className="w-4 h-4" />
-                    ) : (
-                        <Archive className="w-4 h-4" />
-                    )}
-                    <span className="hidden sm:inline">{isArchived ?"Восстановить" :"В архив"}</span>
-                </Button>
-            )}
+  return (
+    <div className="flex items-center gap-2 sm:gap-3">
+      {canArchive && (
+        <Button variant="ghost" onClick={handleArchive} disabled={loading} className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-6 rounded-full sm:rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all font-bold text-xs disabled:opacity-50 active:scale-95 p-0 sm:p-auto" title={isArchived ?"Восстановить" :"В архив"}>
+          {loading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : isArchived ? (
+            <ArchiveRestore className="w-4 h-4" />
+          ) : (
+            <Archive className="w-4 h-4" />
+          )}
+          <span className="hidden sm:inline">{isArchived ?"Восстановить" :"В архив"}</span>
+        </Button>
+      )}
 
-            {canDelete && (
-                <Button
-                    variant="destructive"
-                    onClick={() => setShowDeleteDialog(true)}
-                    disabled={loading}
-                    className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-2xl group active:scale-95 transition-all p-0 sm:p-auto"
-                    title="Удалить"
-                >
-                    <Trash2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Удалить</span>
-                </Button>
-            )}
+      {canDelete && (
+        <Button variant="solid" color="danger" onClick={() => setShowDeleteDialog(true)}
+          disabled={loading}
+          className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-2xl group active:scale-95 transition-all p-0 sm:p-auto"
+          title="Удалить"
+        >
+          <Trash2 className="w-4 h-4" />
+          <span className="hidden sm:inline">Удалить</span>
+        </Button>
+      )}
 
-            <ConfirmDialog
-                isOpen={showDeleteDialog}
-                onClose={() => setShowDeleteDialog(false)}
-                onConfirm={handleDelete}
-                isLoading={loading}
-                title="Удалить заказ?"
-                description="Это действие нельзя отменить. Заказ будет полностью удален из базы данных, а зарезервированные товары будут возвращены на склад."
-                confirmText="Удалить навсегда"
-                variant="destructive"
-            />
-        </div>
-    );
+      <ConfirmDialog isOpen={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        isLoading={loading}
+        title="Удалить заказ?"
+        description="Это действие нельзя отменить. Заказ будет полностью удален из базы данных, а зарезервированные товары будут возвращены на склад."
+        confirmText="Удалить навсегда"
+        variant="destructive"
+      />
+    </div>
+  );
 }

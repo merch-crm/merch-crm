@@ -9,21 +9,21 @@ import type { Task } from "@/lib/types/tasks";
 import { z } from "zod";
 
 export async function getDepartmentTasks(departmentId: string): Promise<ActionResult<Task[]>> {
-  const validated = z.string().uuid().safeParse(departmentId);
-  if (!validated.success) return ERRORS.VALIDATION("Некорректный ID отдела");
+ const validated = z.string().uuid().safeParse(departmentId);
+ if (!validated.success) return ERRORS.VALIDATION("Некорректный ID отдела");
 
-  return withAuth(async () => {
-    const deptTasks = await db.query.tasks.findMany({
-      where: eq(tasks.departmentId, departmentId),
-      with: {
-        creator: true,
-        department: true,
-        assignees: { with: { user: true } },
-      },
-      orderBy: [desc(tasks.createdAt)],
-      limit: 100,
-    });
+ return withAuth(async () => {
+  const deptTasks = await db.query.tasks.findMany({
+   where: eq(tasks.departmentId, departmentId),
+   with: {
+    creator: true,
+    department: true,
+    assignees: { with: { user: true } },
+   },
+   orderBy: [desc(tasks.createdAt)],
+   limit: 100,
+  });
 
-    return ok(deptTasks as unknown as Task[]);
-  }, { errorPath: "getDepartmentTasks" });
+  return ok(deptTasks as unknown as Task[]);
+ }, { errorPath: "getDepartmentTasks" });
 }

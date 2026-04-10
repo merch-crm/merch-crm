@@ -115,13 +115,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             <p className="text-xs font-bold text-slate-400 mt-0.5">Наведите на QR-код</p>
                         </div>
                     </div>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={onClose}
-                        className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0 hover:text-slate-900"
-                        aria-label="Закрыть"
-                    >
+                    <Button variant="ghost" size="icon" onClick={onClose} className="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0 hover:text-slate-900" aria-label="Закрыть">
                         <X className="w-5 h-5 stroke-[2.5]" />
                     </Button>
                 </div>
@@ -146,11 +140,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                             </div>
                             <h4 className="font-black text-sm mb-2">Ошибка доступа</h4>
                             <p className="text-xs font-bold text-white/70 leading-relaxed mb-8 px-4">{error}</p>
-                            <Button
-                                variant="outline"
-                                onClick={startScanner}
-                                className="h-10 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white rounded-xl font-bold text-xs transition-all active:scale-95"
-                            >
+                            <Button variant="outline" onClick={startScanner} className="h-10 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white rounded-xl font-bold text-xs transition-all active:scale-95">
                                 Попробовать снова
                             </Button>
                         </div>
@@ -173,15 +163,7 @@ export function QRScanner({ isOpen, onClose, onResult }: QRScannerProps) {
                 </div>
 
                 <div className="p-5 flex items-center justify-between bg-slate-50/50">
-                    <Button
-                        variant="ghost"
-                        onClick={toggleTorch}
-                        className={cn("w-11 h-11 flex items-center justify-center rounded-xl transition-all active:scale-90 border shadow-sm p-0 hover:bg-white hover:text-slate-600",
-                            torchOn
-                                ?"bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/20 hover:bg-amber-100 hover:text-amber-700"
-                                :"bg-white text-slate-400 border-slate-200"
-                        )}
-                    >
+                    <Button variant="ghost" onClick={toggleTorch} className={cn("w-11 h-11 flex items-center justify-center rounded-xl transition-all active:scale-90 border shadow-sm p-0 hover:bg-white hover:text-slate-600", torchOn ?"bg-amber-100 text-amber-600 border-amber-200 shadow-amber-200/20 hover:bg-amber-100 hover:text-amber-700" :"bg-white text-slate-400 border-slate-200" )}>
                         {torchOn ? <Zap className="w-5 h-5 fill-current" /> : <ZapOff className="w-5 h-5" />}
                     </Button>
                     <div className="text-right">

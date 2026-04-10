@@ -3,77 +3,77 @@ import { ItemFormData, Category, InventoryAttribute } from "@/app/(main)/dashboa
 import { CLOTHING_COLORS } from "@/app/(main)/dashboard/warehouse/category-utils";
 
 interface UseSummaryLogicProps {
-    formData: ItemFormData;
-    updateFormData: (updates: Partial<ItemFormData>) => void;
-    subCategories: Category[];
-    dynamicAttributes: InventoryAttribute[];
+  formData: ItemFormData;
+  updateFormData: (updates: Partial<ItemFormData>) => void;
+  subCategories: Category[];
+  dynamicAttributes: InventoryAttribute[];
 }
 
 export function useSummaryLogic({
-    formData,
-    updateFormData,
-    subCategories,
-    dynamicAttributes
+  formData,
+  updateFormData,
+  subCategories,
+  dynamicAttributes
 }: UseSummaryLogicProps) {
-    const [isEditingName, setIsEditingName] = useState(false);
-    const [tempName, setTempName] = useState(formData.itemName);
-    const [prevItemName, setPrevItemName] = useState(formData.itemName);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [tempName, setTempName] = useState(formData.itemName);
+  const [prevItemName, setPrevItemName] = useState(formData.itemName);
 
-    // Сбрасываем tempName если изменилось внешнее itemName (например, автогенерация перестроилась)
-    useEffect(() => {
-        if (formData.itemName !== prevItemName) {
-            setPrevItemName(formData.itemName);
-            if (!isEditingName) {
-                setTempName(formData.itemName);
-            }
-        }
-    }, [formData.itemName, prevItemName, isEditingName]);
-
-    const activeSubcategory = subCategories.find(s => s.id === formData.subcategoryId);
-    const selectedColor = CLOTHING_COLORS.find(c => c.code === formData.attributeCode);
-    const accentColor = selectedColor?.hex;
-
-    const getAttrName = (type: string, code?: string) => {
-        if (!code) return null;
-        const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
-        return attr ? attr.name : code;
-    };
-
-    const handleSaveName = () => {
-        updateFormData({ itemName: tempName });
-        setIsEditingName(false);
-    };
-
-    const handleCancelName = () => {
+  // Сбрасываем tempName если изменилось внешнее itemName (например, автогенерация перестроилась)
+  useEffect(() => {
+    if (formData.itemName !== prevItemName) {
+      setPrevItemName(formData.itemName);
+      if (!isEditingName) {
         setTempName(formData.itemName);
-        setIsEditingName(false);
-    };
+      }
+    }
+  }, [formData.itemName, prevItemName, isEditingName]);
 
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            handleSaveName();
-        }
-        if (e.key === 'Escape') {
-            handleCancelName();
-        }
-    };
+  const activeSubcategory = subCategories.find(s => s.id === formData.subcategoryId);
+  const selectedColor = CLOTHING_COLORS.find(c => c.code === formData.attributeCode);
+  const accentColor = selectedColor?.hex;
 
-    return {
-        // State
-        isEditingName,
-        setIsEditingName,
-        tempName,
-        setTempName,
+  const getAttrName = (type: string, code?: string) => {
+    if (!code) return null;
+    const attr = dynamicAttributes.find(a => a.type === type && a.value === code);
+    return attr ? attr.name : code;
+  };
 
-        // Derived 
-        activeSubcategory,
-        selectedColor,
-        accentColor,
+  const handleSaveName = () => {
+    updateFormData({ itemName: tempName });
+    setIsEditingName(false);
+  };
 
-        // Handlers & Helpers
-        handleSaveName,
-        handleCancelName,
-        handleKeyDown,
-        getAttrName
-    };
+  const handleCancelName = () => {
+    setTempName(formData.itemName);
+    setIsEditingName(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSaveName();
+    }
+    if (e.key === 'Escape') {
+      handleCancelName();
+    }
+  };
+
+  return {
+    // State
+    isEditingName,
+    setIsEditingName,
+    tempName,
+    setTempName,
+
+    // Derived 
+    activeSubcategory,
+    selectedColor,
+    accentColor,
+
+    // Handlers & Helpers
+    handleSaveName,
+    handleCancelName,
+    handleKeyDown,
+    getAttrName
+  };
 }

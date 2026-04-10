@@ -4,14 +4,14 @@ import { ThermotransferCalculatorClient } from './thermotransfer-calculator-clie
 import { CalculatorPageSkeleton } from '../components/CalculatorPageSkeleton';
 
 export const metadata = {
-  title: 'Калькулятор термотрансфера | MerchCRM',
-  description: 'Калькулятор расчета себестоимости термотрансферного нанесения',
+ title: 'Калькулятор термотрансфера | MerchCRM',
+ description: 'Калькулятор расчета себестоимости термотрансферного нанесения',
 };
 
 export default function ThermotransferCalculatorPage() {
-  return (
-    <Suspense fallback={<CalculatorPageSkeleton />}>
-      <ThermotransferCalculatorClient />
-    </Suspense>
-  );
+ return (
+  <Suspense fallback={<CalculatorPageSkeleton />}>
+   <ThermotransferCalculatorClient />
+  </Suspense>
+ );
 }

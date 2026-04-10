@@ -27,10 +27,7 @@ export const FolderRow = ({
     const name = folderPrefix.replace(currentPrefix, "").replace("/", "");
 
     return (
-        <S3RowBase
-            isSelected={isSelected}
-            isMultiSelectMode={isMultiSelectMode}
-            onSelect={() => onSelect(folderPrefix)}
+        <S3RowBase isSelected={isSelected} isMultiSelectMode={isMultiSelectMode} onSelect={() => onSelect(folderPrefix)}
             onClick={() => !isMultiSelectMode && onNavigate(folderPrefix)}
             onRename={() => onRename(folderPrefix)}
             onDelete={() => onDelete(folderPrefix)}

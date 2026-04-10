@@ -33,15 +33,7 @@ export function BentoMiniSparkline({ label = "Active Node Performance" }: { labe
                      <stop offset="95%" stopColor="#0F172A" stopOpacity={0}/>
                   </linearGradient>
                </defs>
-               <Area 
-                 type="monotone" 
-                 dataKey="value" 
-                 stroke="#0F172A" 
-                 strokeWidth={3}
-                 fillOpacity={1} 
-                 fill="url(#colorValue)" 
-                 animationDuration={2000}
-               />
+               <Area type="monotone" dataKey="value" stroke="#0F172A" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" animationDuration={2000} />
                <Tooltip content={() => null} cursor={{ stroke: '#E2E8F0', strokeWidth: 1 }} />
             </AreaChart>
          </ResponsiveContainer>

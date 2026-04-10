@@ -6,25 +6,25 @@
  */
 
 export {
-    getOrders, getOrderById, createOrder, deleteOrder,
-    getOrderStats, updateOrderField, getClientsForSelect,
-    getInventoryForSelect, searchClients, archiveOrder,
-    archiveOrder as toggleOrderArchived
+  getOrders, getOrderById, createOrder, deleteOrder,
+  getOrderStats, updateOrderField, getClientsForSelect,
+  getInventoryForSelect, searchClients, archiveOrder,
+  archiveOrder as toggleOrderArchived
 } from"./actions/core.actions";
 
 export {
-    updateOrderStatus, updateOrderPriority
+  updateOrderStatus, updateOrderPriority
 } from"./actions/status.actions";
 
 export {
-    refundOrder, addPayment
+  refundOrder, addPayment
 } from"./actions/financials.actions";
 
 export {
-    bulkUpdateOrderStatus, bulkUpdateOrderPriority,
-    bulkArchiveOrders, bulkDeleteOrders
+  bulkUpdateOrderStatus, bulkUpdateOrderPriority,
+  bulkArchiveOrders, bulkDeleteOrders
 } from"./actions/bulk.actions";
 
 export {
-    uploadOrderFile
+  uploadOrderFile
 } from"./actions/attachments.actions";

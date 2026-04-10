@@ -1,11 +1,10 @@
-"use client";
-
 import React, { useState, useEffect } from 'react';
 import { EyeOff, ShieldCheck, Lock, Activity } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from "../../utils/cn";
+import { BentoCard, BentoGlow, BentoIconContainer } from "@/components/library/custom/ui/bento-primitives";
 
-export function BentoMaskedText() {
+export function BentoMaskedText({ className }: { className?: string }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -14,23 +13,25 @@ export function BentoMaskedText() {
 
   if (!isMounted) {
     return (
-      <div className="w-full max-w-sm h-64 rounded-[3rem] bg-slate-50 border border-slate-100 animate-pulse" />
+      <BentoCard className={cn("h-64 animate-pulse bg-slate-50 border-slate-100", className)}>
+        <div className="size-full" />
+      </BentoCard>
     );
   }
 
   return (
-    <div className="w-full max-w-sm rounded-[3rem] bg-white border border-slate-100 shadow-premium p-8 flex flex-col gap-6 group overflow-hidden relative">
+    <BentoCard className={cn("p-8", className)}>
       <div className="flex justify-between items-center px-2 relative z-10">
          <div className="flex items-center gap-3">
-            <div className="size-8 rounded-xl bg-slate-950 text-white flex items-center justify-center shadow-lg shadow-black/20">
+            <BentoIconContainer>
                <Lock className="size-4" />
-            </div>
+            </BentoIconContainer>
             <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] leading-none">Security Matrix</h3>
          </div>
          <EyeOff className="size-4 text-slate-200 group-hover:text-primary-base transition-colors duration-500" />
       </div>
 
-      <div className="relative h-32 flex items-center justify-center p-6 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-inner overflow-hidden group/mask cursor-wait active:cursor-none">
+      <div className="relative h-32 flex items-center justify-center p-6 bg-slate-50 rounded-[2.5rem] border border-slate-100 shadow-inner overflow-hidden group/mask cursor-wait active:cursor-none mt-6">
         {/* Background dots grid */}
         <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:20px_20px] opacity-40 z-0" />
         
@@ -44,7 +45,7 @@ export function BentoMaskedText() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center border-t border-slate-50 pt-6 relative z-10">
+      <div className="flex justify-between items-center border-t border-slate-50 pt-6 relative z-10 mt-auto">
          <div className="flex items-center gap-3">
             <ShieldCheck className="size-4 text-emerald-500" />
             <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Production Only</span>
@@ -58,7 +59,7 @@ export function BentoMaskedText() {
          </button>
       </div>
 
-      <div className="absolute -right-20 -bottom-20 size-64 bg-primary-base/5 rounded-full blur-[100px] -z-10 group-hover:bg-primary-base/10 transition-all duration-1000" />
-    </div>
+      <BentoGlow />
+    </BentoCard>
   );
 }

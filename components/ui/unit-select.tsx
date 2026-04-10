@@ -35,14 +35,7 @@ export function UnitSelect({ value, onChange, options = DEFAULT_OPTIONS, classNa
     return (
         <div className={className}>
             {name && <input type="hidden" name={name} value={value} />}
-            <Select
-                options={premiumOptions}
-                value={value}
-                onChange={onChange}
-                disabled={disabled}
-                placeholder="Выберите..."
-                autoLayout
-            />
+            <Select options={premiumOptions} value={value} onChange={onChange} disabled={disabled} placeholder="Выберите..." autoLayout />
         </div>
     );
 }

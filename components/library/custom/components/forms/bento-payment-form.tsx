@@ -1,8 +1,7 @@
-"use client";
-
 import React, { useState } from "react";
 import { CreditCard, ShieldCheck, Mail, Calendar, Lock, CheckCircle2 } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { BentoCard, BentoGlow, BentoInput } from "@/components/library/custom/ui/bento-primitives";
 
 export function BentoPaymentForm({ amount, className }: { amount: string; className?: string }) {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -18,10 +17,7 @@ export function BentoPaymentForm({ amount, className }: { amount: string; classN
   };
 
   return (
-    <div className={cn(
-      "bg-white dark:bg-zinc-950 text-slate-950 dark:text-zinc-50 shadow-premium border border-slate-200 dark:border-zinc-800 p-8 sm:p-10 rounded-[2.5rem] flex flex-col w-full max-w-md mx-auto relative overflow-hidden",
-      className
-    )}>
+    <BentoCard className={cn("p-8 sm:p-10", className)}>
       <div className="relative z-10 w-full">
         <h2 className="text-2xl font-black  mb-2 text-center">Complete Payment</h2>
         <p className="text-sm font-medium text-slate-400 dark:text-zinc-500 mb-8 text-center max-w-xs mx-auto">
@@ -44,36 +40,27 @@ export function BentoPaymentForm({ amount, className }: { amount: string; classN
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="space-y-3">
-              <div className="relative group">
-                <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-300 dark:text-zinc-700 group-focus-within:text-primary-base transition-colors" />
-                <input 
+              <BentoInput 
+                icon={CreditCard}
+                type="text" 
+                placeholder="Card Number"
+                required
+              />
+              
+              <div className="grid grid-cols-2 gap-3">
+                <BentoInput 
+                  icon={Calendar}
                   type="text" 
-                  placeholder="Card Number"
-                  className="w-full pl-11 pr-4 py-4 bg-slate-50 dark:bg-zinc-900 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary-base/20 transition-all outline-none"
+                  placeholder="MM/YY"
                   required
                 />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="relative group">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-300 dark:text-zinc-700 group-focus-within:text-primary-base transition-colors" />
-                  <input 
-                    type="text" 
-                    placeholder="MM/YY"
-                    className="w-full pl-11 pr-4 py-4 bg-slate-50 dark:bg-zinc-900 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary-base/20 transition-all outline-none"
-                    required
-                  />
-                </div>
-                <div className="relative group">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-300 dark:text-zinc-700 group-focus-within:text-primary-base transition-colors" />
-                  <input 
-                    type="password" 
-                    placeholder="CVC"
-                    maxLength={4}
-                    className="w-full pl-11 pr-4 py-4 bg-slate-50 dark:bg-zinc-900 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-primary-base/20 transition-all outline-none"
-                    required
-                  />
-                </div>
+                <BentoInput 
+                  icon={Lock}
+                  type="password" 
+                  placeholder="CVC"
+                  maxLength={4}
+                  required
+                />
               </div>
             </div>
 
@@ -105,8 +92,8 @@ export function BentoPaymentForm({ amount, className }: { amount: string; classN
         )}
       </div>
 
-      <div className="absolute top-0 right-0 w-32 h-32 bg-primary-base/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl" />
-    </div>
+      <BentoGlow />
+      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl -z-10" />
+    </BentoCard>
   );
 }

@@ -25,13 +25,7 @@ export const StatCard = ({
     children,
     onClick
 }: StatCardProps) => (
-    <Card
-        className={cn(
-            "border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden",
-            onClick && "cursor-pointer hover:bg-slate-50 transition-colors"
-        )}
-        onClick={onClick}
-    >
+    <Card className={cn( "border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden", onClick && "cursor-pointer hover:bg-slate-50 transition-colors" )} onClick={onClick}>
         <CardContent className={cn("p-6", onClick && "flex items-center justify-between")}>
             <div className="flex items-center gap-3">
                 <div className={cn("p-3 rounded-[18px]", iconBgClassName, iconTextClassName)}>

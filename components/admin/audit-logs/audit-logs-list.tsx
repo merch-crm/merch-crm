@@ -13,9 +13,7 @@ interface AuditLogsListProps {
 
 export function AuditLogsList({ logs, loading }: AuditLogsListProps) {
     return (
-        <ResponsiveDataView
-            data={logs}
-            renderTable={() => (
+        <ResponsiveDataView data={logs} renderTable={() => (
                 <div className="table-container">
                     <table className="crm-table">
                         <thead className="crm-thead">

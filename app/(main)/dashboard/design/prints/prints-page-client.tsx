@@ -105,10 +105,7 @@ export function PrintsPageClient({ stats, collections: initialCollections }: Pri
  <div className="space-y-3">
  {/* Header */}
  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
- <PageHeader
- title="Принты"
- description="Коллекции дизайнов для готовой продукции"
- />
+ <PageHeader title="Принты" description="Коллекции дизайнов для готовой продукции" />
  <Button onClick={() => setIsCreateOpen(true)}>
  <Plus className="h-4 w-4 mr-2"/>
  Создать коллекцию
@@ -122,18 +119,13 @@ export function PrintsPageClient({ stats, collections: initialCollections }: Pri
  <div className="flex flex-col sm:flex-row gap-3">
  <div className="relative flex-1 max-w-md">
  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
- <Input
- placeholder="Поиск коллекций..."
- value={search}
- onChange={(e) => setSearch(e.target.value)}
+ <Input placeholder="Поиск коллекций..." value={search} onChange={(e) => setSearch(e.target.value)}
  className="pl-10"
  />
  </div>
 
  {collections.length > 1 && (
- <Button
- variant={isSorting ?"default":"outline"}
- onClick={() => setIsSorting(!isSorting)}
+          <Button variant={isSorting ? "solid" : "outline"} onClick={() => setIsSorting(!isSorting)}
  className="shrink-0"
  >
  <GripVertical className="h-4 w-4 mr-2"/>
@@ -149,9 +141,7 @@ export function PrintsPageClient({ stats, collections: initialCollections }: Pri
  <p className="text-muted-foreground">
  По запросу «{search}» ничего не найдено
  </p>
- <Button
- variant="link"
- onClick={() => setSearch("")}
+ <Button variant="link" onClick={() => setSearch("")}
  className="mt-2"
  >
  Сбросить поиск
@@ -161,22 +151,13 @@ export function PrintsPageClient({ stats, collections: initialCollections }: Pri
  <PrintsEmptyState onCreateClick={() => setIsCreateOpen(true)} />
 )
 ) : isSorting ? (
- <DndContext
- sensors={sensors}
- collisionDetection={closestCenter}
- onDragEnd={handleDragEnd}
- >
- <SortableContext
- items={filteredCollections.map((c) => c.id)}
+ <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+ <SortableContext items={filteredCollections.map((c) => c.id)}
  strategy={rectSortingStrategy}
  >
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
  {filteredCollections.map((collection) => (
- <CollectionCard
- key={collection.id}
- collection={collection}
- isSorting={true}
- />
+ <CollectionCard key={collection.id} collection={collection} isSorting={true} />
 ))}
  </div>
  </SortableContext>
@@ -184,21 +165,13 @@ export function PrintsPageClient({ stats, collections: initialCollections }: Pri
 ) : (
  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
  {filteredCollections.map((collection) => (
- <CollectionCard
- key={collection.id}
- collection={collection}
- isSorting={false}
- />
+ <CollectionCard key={collection.id} collection={collection} isSorting={false} />
 ))}
  </div>
 )}
 
  {/* Create Dialog */}
- <CollectionFormDialog
- open={isCreateOpen}
- onOpenChange={setIsCreateOpen}
- onSuccess={handleCreateSuccess}
- />
+ <CollectionFormDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} onSuccess={handleCreateSuccess} />
  </div>
 );
 }

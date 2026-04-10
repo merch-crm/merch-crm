@@ -87,9 +87,9 @@ UI_SPEC_FILE=$(ls "${PHASE_DIR}"/*-UI-SPEC.md 2>/dev/null | head -1)
 - header: "Existing UI-SPEC"
 - question: "UI-SPEC.md already exists for Phase {N}. What would you like to do?"
 - options:
-  - "Update — re-run researcher with existing as baseline"
-  - "View — display current UI-SPEC and exit"
-  - "Skip — keep current UI-SPEC, proceed to verification"
+ - "Update — re-run researcher with existing as baseline"
+ - "View — display current UI-SPEC and exit"
+ - "Skip — keep current UI-SPEC, proceed to verification"
 
 If "View": display file contents, exit.
 If "Skip": proceed to step 7 (checker).
@@ -142,10 +142,10 @@ Omit null file paths from `<files_to_read>`.
 
 ```
 Task(
-  prompt=ui_research_prompt,
-  subagent_type="gsd-ui-researcher",
-  model="{UI_RESEARCHER_MODEL}",
-  description="UI Design Contract Phase {N}"
+ prompt=ui_research_prompt,
+ subagent_type="gsd-ui-researcher",
+ model="{UI_RESEARCHER_MODEL}",
+ description="UI Design Contract Phase {N}"
 )
 ```
 
@@ -193,10 +193,10 @@ ui_safety_gate: {ui_safety_gate config value}
 
 ```
 Task(
-  prompt=ui_checker_prompt,
-  subagent_type="gsd-ui-checker",
-  model="{UI_CHECKER_MODEL}",
-  description="Verify UI-SPEC Phase {N}"
+ prompt=ui_checker_prompt,
+ subagent_type="gsd-ui-checker",
+ model="{UI_CHECKER_MODEL}",
+ description="Verify UI-SPEC Phase {N}"
 )
 ```
 
@@ -280,8 +280,8 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs(${padded_phase}): UI 
 
 ```bash
 node ".agent/get-shit-done/bin/gsd-tools.cjs" state record-session \
-  --stopped-at "Phase ${PHASE} UI-SPEC approved" \
-  --resume-file "${PHASE_DIR}/${PADDED_PHASE}-UI-SPEC.md"
+ --stopped-at "Phase ${PHASE} UI-SPEC approved" \
+ --resume-file "${PHASE_DIR}/${PADDED_PHASE}-UI-SPEC.md"
 ```
 
 </process>

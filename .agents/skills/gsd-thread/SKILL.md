@@ -57,58 +57,58 @@ Update the thread's status to `IN PROGRESS` if it was `OPEN`.
 Create a new thread:
 
 1. Generate slug from description:
-   ```bash
-   SLUG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" generate-slug "$ARGUMENTS")
-   ```
+  ```bash
+  SLUG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" generate-slug "$ARGUMENTS")
+  ```
 
 2. Create the threads directory if needed:
-   ```bash
-   mkdir -p .planning/threads
-   ```
+  ```bash
+  mkdir -p .planning/threads
+  ```
 
 3. Write the thread file:
-   ```bash
-   cat > ".planning/threads/${SLUG}.md" << 'EOF'
-   # Thread: {description}
+  ```bash
+  cat > ".planning/threads/${SLUG}.md" << 'EOF'
+  # Thread: {description}
 
-   ## Status: OPEN
+  ## Status: OPEN
 
-   ## Goal
+  ## Goal
 
-   {description}
+  {description}
 
-   ## Context
+  ## Context
 
-   *Created from conversation on {today's date}.*
+  *Created from conversation on {today's date}.*
 
-   ## References
+  ## References
 
-   - *(add links, file paths, or issue numbers)*
+  - *(add links, file paths, or issue numbers)*
 
-   ## Next Steps
+  ## Next Steps
 
-   - *(what the next session should do first)*
-   EOF
-   ```
+  - *(what the next session should do first)*
+  EOF
+  ```
 
 4. If there's relevant context in the current conversation (code snippets,
-   error messages, investigation results), extract and add it to the Context
-   section.
+  error messages, investigation results), extract and add it to the Context
+  section.
 
 5. Commit:
-   ```bash
-   node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs: create thread — ${ARGUMENTS}" --files ".planning/threads/${SLUG}.md"
-   ```
+  ```bash
+  node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs: create thread — ${ARGUMENTS}" --files ".planning/threads/${SLUG}.md"
+  ```
 
 6. Report:
-   ```
-   ## 🧵 Thread Created
+  ```
+  ## 🧵 Thread Created
 
-   Thread: {slug}
-   File: .planning/threads/{slug}.md
+  Thread: {slug}
+  File: .planning/threads/{slug}.md
 
-   Resume anytime with: /gsd-thread {slug}
-   ```
+  Resume anytime with: /gsd-thread {slug}
+  ```
 </mode_create>
 
 </process>
@@ -118,6 +118,6 @@ Create a new thread:
 - Lighter weight than /gsd-pause-work — no phase state, no plan context
 - The value is in Context and Next Steps — a cold-start session can pick up immediately
 - Threads can be promoted to phases or backlog items when they mature:
-  /gsd-add-phase or /gsd-add-backlog with context from the thread
+ /gsd-add-phase or /gsd-add-backlog with context from the thread
 - Thread files live in .planning/threads/ — no collision with phases or other GSD structures
 </notes>

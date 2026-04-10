@@ -35,7 +35,7 @@ say:
 
 ```
 This looks like it needs planning. Use /gsd-quick instead:
-  /gsd-quick "{task description}"
+ /gsd-quick "{task description}"
 ```
 
 And stop.
@@ -69,8 +69,8 @@ If the table doesn't exist, skip this step silently.
 ```bash
 # Check if STATE.md has quick tasks table
 if grep -q "Quick Tasks Completed" .planning/STATE.md 2>/dev/null; then
-  # Append entry — workflow handles the format
-  echo "| $(date +%Y-%m-%d) | fast | $TASK | ✅ |" >> .planning/STATE.md
+ # Append entry — workflow handles the format
+ echo "| $(date +%Y-%m-%d) | fast | $TASK | ✅ |" >> .planning/STATE.md
 fi
 ```
 </step>
@@ -80,8 +80,8 @@ Report completion:
 
 ```
 ✅ Done: {what was changed}
-   Commit: {short hash}
-   Files: {list of changed files}
+  Commit: {short hash}
+  Files: {list of changed files}
 ```
 
 No next-step suggestions. No workflow routing. Just done.

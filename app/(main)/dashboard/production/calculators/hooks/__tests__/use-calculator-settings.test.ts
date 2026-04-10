@@ -10,72 +10,72 @@ import type { ActionResult } from '@/lib/types/common';
 vi.mock('@/lib/actions/calculators/settings');
 
 vi.mock('@/components/ui/toast', () => ({
-  useToast: () => ({
-    toast: vi.fn(),
-  }),
+ useToast: () => ({
+  toast: vi.fn(),
+ }),
 }));
 
 describe('useCalculatorSettings', () => {
-  const calculatorType = 'dtf';
-  const mockSettings: GlobalCalculatorSettings = getDefaultGlobalSettings(calculatorType);
+ const calculatorType = 'dtf';
+ const mockSettings: GlobalCalculatorSettings = getDefaultGlobalSettings(calculatorType);
 
-  beforeEach(() => {
-    vi.clearAllMocks();
+ beforeEach(() => {
+  vi.clearAllMocks();
+ });
+
+ it('should fetch settings on mount', async () => {
+  vi.mocked(configActions.getGlobalSettings).mockResolvedValue({
+   success: true,
+   data: mockSettings
+  } as unknown as ActionResult<GlobalCalculatorSettings>);
+
+  const { result } = renderHook(() => useCalculatorSettings(calculatorType));
+  
+  // Wait for useEffect
+  await act(async () => {
+   await Promise.resolve();
   });
 
-  it('should fetch settings on mount', async () => {
-    vi.mocked(configActions.getGlobalSettings).mockResolvedValue({
-      success: true,
-      data: mockSettings
-    } as unknown as ActionResult<GlobalCalculatorSettings>);
+  expect(result.current.isLoading).toBe(false);
+  expect(result.current.settings).toEqual(mockSettings);
+ });
 
-    const { result } = renderHook(() => useCalculatorSettings(calculatorType));
-    
-    // Wait for useEffect
-    await act(async () => {
-      await Promise.resolve();
-    });
+ it('should update settings locally', async () => {
+  vi.mocked(configActions.getGlobalSettings).mockResolvedValue({
+   success: true,
+   data: mockSettings
+  } as unknown as ActionResult<GlobalCalculatorSettings>);
 
-    expect(result.current.isLoading).toBe(false);
-    expect(result.current.settings).toEqual(mockSettings);
+  const { result } = renderHook(() => useCalculatorSettings(calculatorType));
+
+  act(() => {
+   result.current.updateSettings({
+    marginConfig: { defaultMargin: 50 }
+   });
   });
 
-  it('should update settings locally', async () => {
-    vi.mocked(configActions.getGlobalSettings).mockResolvedValue({
-      success: true,
-      data: mockSettings
-    } as unknown as ActionResult<GlobalCalculatorSettings>);
+  expect(result.current.settings.marginConfig.defaultMargin).toBe(50);
+ });
 
-    const { result } = renderHook(() => useCalculatorSettings(calculatorType));
+ it('should handle save correctly', async () => {
+  vi.mocked(configActions.getGlobalSettings).mockResolvedValue({
+   success: true,
+   data: mockSettings
+  } as unknown as ActionResult<GlobalCalculatorSettings>);
 
-    act(() => {
-      result.current.updateSettings({
-        marginConfig: { defaultMargin: 50 }
-      });
-    });
+  vi.mocked(configActions.saveGlobalSettings).mockResolvedValue({ 
+   success: true, 
+   data: { ...mockSettings, marginConfig: { defaultMargin: 60 } }
+  } as unknown as ActionResult<GlobalCalculatorSettings>);
 
-    expect(result.current.settings.marginConfig.defaultMargin).toBe(50);
+  const { result } = renderHook(() => useCalculatorSettings(calculatorType));
+
+  let success;
+  await act(async () => {
+   success = await result.current.saveSettings({ ...mockSettings, marginConfig: { defaultMargin: 60 } });
   });
 
-  it('should handle save correctly', async () => {
-    vi.mocked(configActions.getGlobalSettings).mockResolvedValue({
-      success: true,
-      data: mockSettings
-    } as unknown as ActionResult<GlobalCalculatorSettings>);
-
-    vi.mocked(configActions.saveGlobalSettings).mockResolvedValue({ 
-      success: true, 
-      data: { ...mockSettings, marginConfig: { defaultMargin: 60 } }
-    } as unknown as ActionResult<GlobalCalculatorSettings>);
-
-    const { result } = renderHook(() => useCalculatorSettings(calculatorType));
-
-    let success;
-    await act(async () => {
-      success = await result.current.saveSettings({ ...mockSettings, marginConfig: { defaultMargin: 60 } });
-    });
-
-    expect(success).toBe(true);
-    expect(result.current.settings.marginConfig.defaultMargin).toBe(60);
-  });
+  expect(success).toBe(true);
+  expect(result.current.settings.marginConfig.defaultMargin).toBe(60);
+ });
 });

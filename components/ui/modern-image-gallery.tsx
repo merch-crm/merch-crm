@@ -126,15 +126,7 @@ export function ModernImageGallery({
                     aria-label={zoomed ? "Уменьшить" : "Увеличить"}
                 >
                     {current.src && (
-                        <Image
-                            src={current.src}
-                            alt={current.alt || current.label || itemName || "Изображение"}
-                            fill
-                            className="object-contain select-none"
-                            unoptimized
-                            priority
-                            draggable={false}
-                        />
+                        <Image src={current.src} alt={current.alt || current.label || itemName || "Изображение"} fill className="object-contain select-none" unoptimized priority draggable={false} />
                     )}
                 </button>
             </div>
@@ -195,13 +187,7 @@ export function ModernImageGallery({
                                 aria-label={`Фото ${i + 1}`}
                             >
                                 {img.src ? (
-                                    <Image
-                                        src={img.src}
-                                        alt={img.label || `Фото ${i + 1}`}
-                                        fill
-                                        className="object-cover"
-                                        unoptimized
-                                    />
+                                    <Image src={img.src} alt={img.label || `Фото ${i + 1}`} fill className="object-cover" unoptimized />
                                 ) : (
                                     <div className="w-full h-full bg-white/10 flex items-center justify-center">
                                         <ImageIcon className="w-4 h-4 text-white/40" />

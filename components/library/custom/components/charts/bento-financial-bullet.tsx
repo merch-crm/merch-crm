@@ -52,21 +52,8 @@ export function BentoFinancialBullet() {
       </div>
 
       <div className="space-y-3 pt-2">
-        <BulletProgress 
-          label="Операции" 
-          value="$142,500 / $200k" 
-          percentage="71.25%" 
-          target="25%" 
-          colorClass="bg-slate-900" 
-        />
-        <BulletProgress 
-          label="Маркетинг" 
-          value="$85k / $120k" 
-          percentage="70.83%" 
-          target="30%" 
-          colorClass="bg-primary-base" 
-          delay={0.2} 
-        />
+        <BulletProgress label="Операции" value="$142,500 / $200k" percentage="71.25%" target="25%" colorClass="bg-slate-900" />
+        <BulletProgress label="Маркетинг" value="$85k / $120k" percentage="70.83%" target="30%" colorClass="bg-primary-base" delay={0.2} />
       </div>
 
       <div className="mt-2 text-[11px] font-black text-gray-400 flex items-center justify-center gap-2">

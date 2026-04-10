@@ -40,17 +40,8 @@ export function DiagnosticsTab({
                                 Проверка целостности и связи с сервисами
                             </CardDescription>
                         </div>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={onRunDiagnostics}
-                            disabled={diagnosing}
-                            className="bg-white border-slate-200 text-slate-600 text-xs font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 shadow-sm gap-2 h-9"
-                        >
-                            <RefreshCw
-                                size={14}
-                                className={cn(diagnosing && "animate-spin")}
-                            />
+                        <Button variant="outline" size="sm" onClick={onRunDiagnostics} disabled={diagnosing} className="bg-white border-slate-200 text-slate-600 text-xs font-bold rounded-[18px] hover:bg-slate-50 transition-all active:scale-95 disabled:opacity-50 shadow-sm gap-2 h-9">
+                            <RefreshCw size={14} className={cn(diagnosing && "animate-spin")} />
                             {diagnosing ? "Проверка..." : "Запустить тест"}
                         </Button>
                     </div>

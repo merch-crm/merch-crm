@@ -88,11 +88,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                             <div className="space-$1-3">
                                 <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-400 ml-1">Тема обращения</label>
-                                    <Input 
-                                        placeholder="Например: Не работает термопресс №2" 
-                                        className="h-12 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold"
-                                        value={formData.title}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                                    <Input placeholder="Например: Не работает термопресс №2" className="h-12 rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold" value={formData.title} onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                                         required
                                     />
                                 </div>
@@ -100,9 +96,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-400 ml-1">Категория</label>
-                                        <Select 
-                                            value={formData.category} 
-                                            onChange={(val: string) => setFormData((prev: typeof formData) => ({ ...prev, category: val as typeof formData.category }))}
+                                        <Select value={formData.category} onChange={(val: string) => setFormData((prev: typeof formData) => ({ ...prev, category: val as typeof formData.category }))}
                                             options={[
                                                 { id: "equipment", title: "Тех. поломка" },
                                                 { id: "materials", title: "Расходники" },
@@ -114,9 +108,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-black text-slate-400 ml-1">Приоритет</label>
-                                        <Select 
-                                            value={formData.priority} 
-                                            onChange={(val: string) => setFormData((prev: typeof formData) => ({ ...prev, priority: val as typeof formData.priority }))}
+                                        <Select value={formData.priority} onChange={(val: string) => setFormData((prev: typeof formData) => ({ ...prev, priority: val as typeof formData.priority }))}
                                             options={[
                                                 { id: "low", title: "Низкий" },
                                                 { id: "normal", title: "Средний" },
@@ -130,11 +122,7 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
 
                                 <div className="space-y-2">
                                     <label className="text-xs font-black text-slate-400 ml-1">Подробности</label>
-                                    <Textarea 
-                                        placeholder="Краткое описание проблемы или нужных материалов..." 
-                                        className="min-h-[120px] rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold"
-                                        value={formData.description}
-                                        onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                    <Textarea placeholder="Краткое описание проблемы или нужных материалов..." className="min-h-[120px] rounded-2xl border-slate-100 bg-slate-50/50 focus:bg-white transition-all font-bold" value={formData.description} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                                         required
                                     />
                                 </div>
@@ -149,20 +137,10 @@ export function TicketModal({ isOpen, onClose }: TicketModalProps) {
                         </div>
 
                         <DialogFooter className="p-8 bg-slate-50/50 border-t border-slate-100">
-                            <Button 
-                                type="button" 
-                                variant="ghost" 
-                                onClick={onClose}
-                                className="rounded-2xl font-bold text-slate-500"
-                                disabled={status.submitting}
-                            >
+                            <Button type="button" variant="ghost" onClick={onClose} className="rounded-2xl font-bold text-slate-500" disabled={status.submitting}>
                                 Отмена
                             </Button>
-                            <Button 
-                                type="submit" 
-                                className="btn-dark rounded-2xl font-black px-8 h-12 shadow-lg shadow-slate-900/10"
-                                disabled={status.submitting}
-                            >
+                            <Button type="submit" className="btn-dark rounded-2xl font-black px-8 h-12 shadow-lg shadow-slate-900/10" disabled={status.submitting}>
                                 {status.submitting ? (
                                     <>
                                         <Loader2 className="w-4 h-4 animate-spin mr-2" />

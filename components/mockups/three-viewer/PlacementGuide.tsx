@@ -52,15 +52,7 @@ export function PlacementGuide({
 
             {/* Текстовая метка */}
             <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-                <Text
-                    position={[0, 0.35, 0]}
-                    fontSize={0.06}
-                    color="#60a5fa"
-                    fillOpacity={0.8}
-                    anchorX="center"
-                    anchorY="middle"
-                    font="/fonts/Manrope-Bold.ttf"
-                >
+                <Text position={[0, 0.35, 0]} fontSize={0.06} color="#60a5fa" fillOpacity={0.8} anchorX="center" anchorY="middle" font="/fonts/Manrope-Bold.ttf">
                     {`ZONE: ${zoneLabel.toUpperCase()}`}
                 </Text>
             </Float>

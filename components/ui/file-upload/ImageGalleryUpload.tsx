@@ -78,13 +78,7 @@ export function ImageGalleryUpload({
         <div className={cn("grid grid-cols-3 gap-3", className)}>
             {Array.isArray(items) && items.map((item, index) => (
                 <div key={item.id} className="relative aspect-square group">
-                    <Image
-                        src={item.url}
-                        alt={`Image ${index + 1}`}
-                        className="w-full h-full object-cover rounded-xl border border-slate-100"
-                        width={200}
-                        height={200}
-                    />
+                    <Image src={item.url} alt={`Image ${index + 1}`} className="w-full h-full object-cover rounded-xl border border-slate-100" width={200} height={200} />
                     {!disabled && (
                         <button
                             type="button"

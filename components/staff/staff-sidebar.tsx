@@ -22,10 +22,7 @@ export function StaffSidebar() {
     return (
         <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:pt-16 lg:border-r lg:border-slate-200 lg:bg-white z-30">
             <nav className="flex-1 px-4 py-6 space-y-1">
-                <Link
-                    href="/dashboard"
-                    className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors"
-                >
+                <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors">
                     <Home className="w-5 h-5" />
                     Назад в CRM
                 </Link>
@@ -39,16 +36,7 @@ export function StaffSidebar() {
                             (item.href !== '/staff' && pathname.startsWith(item.href))
 
                         return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={cn(
-                                    'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-xl transition-colors',
-                                    isActive
-                                        ? 'bg-slate-900 text-white'
-                                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                                )}
-                            >
+                            <Link key={item.name} href={item.href} className={cn( 'flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-xl transition-colors', isActive ? 'bg-slate-900 text-white' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' )}>
                                 <item.icon className="w-5 h-5" />
                                 {item.name}
                             </Link>

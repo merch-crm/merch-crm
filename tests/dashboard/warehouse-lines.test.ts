@@ -5,11 +5,11 @@ import { mockSession } from '../helpers/mocks';
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
 const { mockDelete, mockSelect } = vi.hoisted(() => {
-    const mockDelete = vi.fn().mockReturnValue({
-        where: vi.fn().mockResolvedValue({ success: true })
-    });
-    const mockSelect = vi.fn();
-    return { mockDelete, mockSelect };
+  const mockDelete = vi.fn().mockReturnValue({
+    where: vi.fn().mockResolvedValue({ success: true })
+  });
+  const mockSelect = vi.fn();
+  return { mockDelete, mockSelect };
 });
 
 // ─── Module mocks ─────────────────────────────────────────────────────────────
@@ -21,10 +21,10 @@ vi.mock('@/lib/redis', () => ({ invalidateCache: vi.fn() }));
 vi.mock('next/cache', () => ({ revalidatePath: vi.fn() }));
 
 vi.mock('@/lib/db', () => ({
-    db: {
-        delete: mockDelete,
-        select: mockSelect,
-    },
+  db: {
+    delete: mockDelete,
+    select: mockSelect,
+  },
 }));
 
 import { deleteProductLine } from '@/app/(main)/dashboard/warehouse/lines/line-mutation-actions';
@@ -32,97 +32,97 @@ import { deleteProductLine } from '@/app/(main)/dashboard/warehouse/lines/line-m
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe('deleteProductLine', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-        mockSelect.mockReset();
-        mockDelete.mockClear();
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockSelect.mockReset();
+    mockDelete.mockClear();
+  });
+
+  it('возвращает ошибку если нет сессии', async () => {
+    vi.mocked(getSession).mockResolvedValueOnce(null);
+    const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+    expect(result).toEqual({ success: false, error: 'Не авторизован' });
+  });
+
+  it('администратор может удалить любую линейку', async () => {
+    vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
+
+    // 1. Permission check: select({ createdBy }).from().where().limit(1)
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          limit: vi.fn(() => Promise.resolve([{ createdBy: 'other-user-id' }]))
+        }))
+      }))
     });
 
-    it('возвращает ошибку если нет сессии', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(null);
-        const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
-        expect(result).toEqual({ success: false, error: 'Не авторизован' });
+    // 2. Dependency check: select({ count }).from().where()
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => Promise.resolve([{ count: 0 }]))
+      }))
     });
 
-    it('администратор может удалить любую линейку', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
+    const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+    expect(result.success).toBe(true);
+  });
 
-        // 1. Permission check: select({ createdBy }).from().where().limit(1)
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => ({
-                    limit: vi.fn(() => Promise.resolve([{ createdBy: 'other-user-id' }]))
-                }))
-            }))
-        });
+  it('создатель может удалить свою линейку', async () => {
+    const userId = 'user-uuid';
+    vi.mocked(getSession).mockResolvedValueOnce(mockSession({ id: userId, roleName: 'Склад' }));
 
-        // 2. Dependency check: select({ count }).from().where()
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => Promise.resolve([{ count: 0 }]))
-            }))
-        });
-
-        const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
-        expect(result.success).toBe(true);
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          limit: vi.fn(() => Promise.resolve([{ createdBy: userId }]))
+        }))
+      }))
     });
 
-    it('создатель может удалить свою линейку', async () => {
-        const userId = 'user-uuid';
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ id: userId, roleName: 'Склад' }));
-
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => ({
-                    limit: vi.fn(() => Promise.resolve([{ createdBy: userId }]))
-                }))
-            }))
-        });
-
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => Promise.resolve([{ count: 0 }]))
-            }))
-        });
-
-        const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
-        expect(result.success).toBe(true);
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => Promise.resolve([{ count: 0 }]))
+      }))
     });
 
-    it('обычный пользователь не может удалить чужую линейку (IDOR)', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ id: 'my-user-id', roleName: 'Склад' }));
+    const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+    expect(result.success).toBe(true);
+  });
 
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => ({
-                    limit: vi.fn(() => Promise.resolve([{ createdBy: 'other-user-id' }]))
-                }))
-            }))
-        });
+  it('обычный пользователь не может удалить чужую линейку (IDOR)', async () => {
+    vi.mocked(getSession).mockResolvedValueOnce(mockSession({ id: 'my-user-id', roleName: 'Склад' }));
 
-        const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
-        expect(result).toEqual({ success: false, error: 'Недостаточно прав для удаления' });
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          limit: vi.fn(() => Promise.resolve([{ createdBy: 'other-user-id' }]))
+        }))
+      }))
     });
 
-    it('нельзя удалить линейку с товарами', async () => {
-        vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
+    const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+    expect(result).toEqual({ success: false, error: 'Недостаточно прав для удаления' });
+  });
 
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => ({
-                    limit: vi.fn(() => Promise.resolve([{ createdBy: 'some-user' }]))
-                }))
-            }))
-        });
+  it('нельзя удалить линейку с товарами', async () => {
+    vi.mocked(getSession).mockResolvedValueOnce(mockSession({ roleName: 'Администратор' }));
 
-        mockSelect.mockReturnValueOnce({
-            from: vi.fn(() => ({
-                where: vi.fn(() => Promise.resolve([{ count: 5 }]))
-            }))
-        });
-
-        const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
-        expect(result.success).toBe(false);
-        expect(result.error).toContain('в ней 5 позиций');
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          limit: vi.fn(() => Promise.resolve([{ createdBy: 'some-user' }]))
+        }))
+      }))
     });
+
+    mockSelect.mockReturnValueOnce({
+      from: vi.fn(() => ({
+        where: vi.fn(() => Promise.resolve([{ count: 5 }]))
+      }))
+    });
+
+    const result = await deleteProductLine('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+    expect(result.success).toBe(false);
+    expect(result.error).toContain('в ней 5 позиций');
+  });
 });

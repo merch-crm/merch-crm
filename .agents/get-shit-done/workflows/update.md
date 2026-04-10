@@ -29,90 +29,90 @@ RUNTIME_DIRS=( "claude:.claude" "opencode:.config/opencode" "opencode:.opencode"
 # PREFERRED_RUNTIME should be set from execution_context before running this block.
 # If not set, infer from runtime env vars; fallback to claude.
 if [ -z "$PREFERRED_RUNTIME" ]; then
-  if [ -n "$CODEX_HOME" ]; then
-    PREFERRED_RUNTIME="codex"
-  elif [ -n "$GEMINI_CONFIG_DIR" ]; then
-    PREFERRED_RUNTIME="gemini"
-  elif [ -n "$OPENCODE_CONFIG_DIR" ] || [ -n "$OPENCODE_CONFIG" ]; then
-    PREFERRED_RUNTIME="opencode"
-  elif [ -n "$CLAUDE_CONFIG_DIR" ]; then
-    PREFERRED_RUNTIME="claude"
-  else
-    PREFERRED_RUNTIME="claude"
-  fi
+ if [ -n "$CODEX_HOME" ]; then
+  PREFERRED_RUNTIME="codex"
+ elif [ -n "$GEMINI_CONFIG_DIR" ]; then
+  PREFERRED_RUNTIME="gemini"
+ elif [ -n "$OPENCODE_CONFIG_DIR" ] || [ -n "$OPENCODE_CONFIG" ]; then
+  PREFERRED_RUNTIME="opencode"
+ elif [ -n "$CLAUDE_CONFIG_DIR" ]; then
+  PREFERRED_RUNTIME="claude"
+ else
+  PREFERRED_RUNTIME="claude"
+ fi
 fi
 
 # Reorder entries so preferred runtime is checked first.
 ORDERED_RUNTIME_DIRS=()
 for entry in "${RUNTIME_DIRS[@]}"; do
-  runtime="${entry%%:*}"
-  if [ "$runtime" = "$PREFERRED_RUNTIME" ]; then
-    ORDERED_RUNTIME_DIRS+=( "$entry" )
-  fi
+ runtime="${entry%%:*}"
+ if [ "$runtime" = "$PREFERRED_RUNTIME" ]; then
+  ORDERED_RUNTIME_DIRS+=( "$entry" )
+ fi
 done
 for entry in "${RUNTIME_DIRS[@]}"; do
-  runtime="${entry%%:*}"
-  if [ "$runtime" != "$PREFERRED_RUNTIME" ]; then
-    ORDERED_RUNTIME_DIRS+=( "$entry" )
-  fi
+ runtime="${entry%%:*}"
+ if [ "$runtime" != "$PREFERRED_RUNTIME" ]; then
+  ORDERED_RUNTIME_DIRS+=( "$entry" )
+ fi
 done
 
 # Check local first (takes priority only if valid and distinct from global)
 LOCAL_VERSION_FILE="" LOCAL_MARKER_FILE="" LOCAL_DIR="" LOCAL_RUNTIME=""
 for entry in "${ORDERED_RUNTIME_DIRS[@]}"; do
-  runtime="${entry%%:*}"
-  dir="${entry#*:}"
-  if [ -f "./$dir/get-shit-done/VERSION" ] || [ -f "./$dir/get-shit-done/workflows/update.md" ]; then
-    LOCAL_RUNTIME="$runtime"
-    LOCAL_VERSION_FILE="./$dir/get-shit-done/VERSION"
-    LOCAL_MARKER_FILE="./$dir/get-shit-done/workflows/update.md"
-    LOCAL_DIR="$(cd "./$dir" 2>/dev/null && pwd)"
-    break
-  fi
+ runtime="${entry%%:*}"
+ dir="${entry#*:}"
+ if [ -f "./$dir/get-shit-done/VERSION" ] || [ -f "./$dir/get-shit-done/workflows/update.md" ]; then
+  LOCAL_RUNTIME="$runtime"
+  LOCAL_VERSION_FILE="./$dir/get-shit-done/VERSION"
+  LOCAL_MARKER_FILE="./$dir/get-shit-done/workflows/update.md"
+  LOCAL_DIR="$(cd "./$dir" 2>/dev/null && pwd)"
+  break
+ fi
 done
 
 GLOBAL_VERSION_FILE="" GLOBAL_MARKER_FILE="" GLOBAL_DIR="" GLOBAL_RUNTIME=""
 for entry in "${ORDERED_RUNTIME_DIRS[@]}"; do
-  runtime="${entry%%:*}"
-  dir="${entry#*:}"
-  if [ -f "$HOME/$dir/get-shit-done/VERSION" ] || [ -f "$HOME/$dir/get-shit-done/workflows/update.md" ]; then
-    GLOBAL_RUNTIME="$runtime"
-    GLOBAL_VERSION_FILE="$HOME/$dir/get-shit-done/VERSION"
-    GLOBAL_MARKER_FILE="$HOME/$dir/get-shit-done/workflows/update.md"
-    GLOBAL_DIR="$(cd "$HOME/$dir" 2>/dev/null && pwd)"
-    break
-  fi
+ runtime="${entry%%:*}"
+ dir="${entry#*:}"
+ if [ -f "$HOME/$dir/get-shit-done/VERSION" ] || [ -f "$HOME/$dir/get-shit-done/workflows/update.md" ]; then
+  GLOBAL_RUNTIME="$runtime"
+  GLOBAL_VERSION_FILE="$HOME/$dir/get-shit-done/VERSION"
+  GLOBAL_MARKER_FILE="$HOME/$dir/get-shit-done/workflows/update.md"
+  GLOBAL_DIR="$(cd "$HOME/$dir" 2>/dev/null && pwd)"
+  break
+ fi
 done
 
 # Only treat as LOCAL if the resolved paths differ (prevents misdetection when CWD=$HOME)
 IS_LOCAL=false
 if [ -n "$LOCAL_VERSION_FILE" ] && [ -f "$LOCAL_VERSION_FILE" ] && [ -f "$LOCAL_MARKER_FILE" ] && grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+' "$LOCAL_VERSION_FILE"; then
-  if [ -z "$GLOBAL_DIR" ] || [ "$LOCAL_DIR" != "$GLOBAL_DIR" ]; then
-    IS_LOCAL=true
-  fi
+ if [ -z "$GLOBAL_DIR" ] || [ "$LOCAL_DIR" != "$GLOBAL_DIR" ]; then
+  IS_LOCAL=true
+ fi
 fi
 
 if [ "$IS_LOCAL" = true ]; then
-  INSTALLED_VERSION="$(cat "$LOCAL_VERSION_FILE")"
-  INSTALL_SCOPE="LOCAL"
-  TARGET_RUNTIME="$LOCAL_RUNTIME"
+ INSTALLED_VERSION="$(cat "$LOCAL_VERSION_FILE")"
+ INSTALL_SCOPE="LOCAL"
+ TARGET_RUNTIME="$LOCAL_RUNTIME"
 elif [ -n "$GLOBAL_VERSION_FILE" ] && [ -f "$GLOBAL_VERSION_FILE" ] && [ -f "$GLOBAL_MARKER_FILE" ] && grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+' "$GLOBAL_VERSION_FILE"; then
-  INSTALLED_VERSION="$(cat "$GLOBAL_VERSION_FILE")"
-  INSTALL_SCOPE="GLOBAL"
-  TARGET_RUNTIME="$GLOBAL_RUNTIME"
+ INSTALLED_VERSION="$(cat "$GLOBAL_VERSION_FILE")"
+ INSTALL_SCOPE="GLOBAL"
+ TARGET_RUNTIME="$GLOBAL_RUNTIME"
 elif [ -n "$LOCAL_RUNTIME" ] && [ -f "$LOCAL_MARKER_FILE" ]; then
-  # Runtime detected but VERSION missing/corrupt: treat as unknown version, keep runtime target
-  INSTALLED_VERSION="0.0.0"
-  INSTALL_SCOPE="LOCAL"
-  TARGET_RUNTIME="$LOCAL_RUNTIME"
+ # Runtime detected but VERSION missing/corrupt: treat as unknown version, keep runtime target
+ INSTALLED_VERSION="0.0.0"
+ INSTALL_SCOPE="LOCAL"
+ TARGET_RUNTIME="$LOCAL_RUNTIME"
 elif [ -n "$GLOBAL_RUNTIME" ] && [ -f "$GLOBAL_MARKER_FILE" ]; then
-  INSTALLED_VERSION="0.0.0"
-  INSTALL_SCOPE="GLOBAL"
-  TARGET_RUNTIME="$GLOBAL_RUNTIME"
+ INSTALLED_VERSION="0.0.0"
+ INSTALL_SCOPE="GLOBAL"
+ TARGET_RUNTIME="$GLOBAL_RUNTIME"
 else
-  INSTALLED_VERSION="0.0.0"
-  INSTALL_SCOPE="UNKNOWN"
-  TARGET_RUNTIME="claude"
+ INSTALLED_VERSION="0.0.0"
+ INSTALL_SCOPE="UNKNOWN"
+ TARGET_RUNTIME="claude"
 fi
 
 echo "$INSTALLED_VERSION"
@@ -215,7 +215,7 @@ Exit.
 
 ────────────────────────────────────────────────────────────
 
-⚠️  **Note:** The installer performs a clean install of GSD folders:
+⚠️ **Note:** The installer performs a clean install of GSD folders:
 - `commands/gsd/` will be wiped and replaced
 - `get-shit-done/` will be wiped and replaced
 - `agents/gsd-*` files will be replaced
@@ -236,8 +236,8 @@ If you've modified any GSD files directly, they'll be automatically backed up to
 Use AskUserQuestion:
 - Question: "Proceed with update?"
 - Options:
-  - "Yes, update now"
-  - "No, cancel"
+ - "Yes, update now"
+ - "No, cancel"
 
 **If user cancels:** Exit.
 </step>
@@ -272,8 +272,8 @@ Clear the update cache so statusline indicator disappears:
 ```bash
 # Clear update cache across all runtime directories
 for dir in .claude .config/opencode .opencode .gemini .codex; do
-  rm -f "./$dir/cache/gsd-update-check.json"
-  rm -f "$HOME/$dir/cache/gsd-update-check.json"
+ rm -f "./$dir/cache/gsd-update-check.json"
+ rm -f "$HOME/$dir/cache/gsd-update-check.json"
 done
 ```
 
@@ -285,10 +285,10 @@ Format completion message (changelog was already shown in confirmation step):
 
 ```
 ╔═══════════════════════════════════════════════════════════╗
-║  GSD Updated: v1.5.10 → v1.5.15                           ║
+║ GSD Updated: v1.5.10 → v1.5.15              ║
 ╚═══════════════════════════════════════════════════════════╝
 
-⚠️  Restart your runtime to pick up the new commands.
+⚠️ Restart your runtime to pick up the new commands.
 
 [View full changelog](https://github.com/gsd-build/get-shit-done/blob/main/CHANGELOG.md)
 ```

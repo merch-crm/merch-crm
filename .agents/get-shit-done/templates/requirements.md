@@ -123,9 +123,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 **Requirement completion criteria:**
 - Requirement is "Complete" when:
-  - Feature is implemented
-  - Feature is verified (tests pass, manual check done)
-  - Feature is committed
+ - Feature is implemented
+ - Feature is verified (tests pass, manual check done)
+ - Feature is committed
 
 </evolution>
 

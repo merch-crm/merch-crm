@@ -1,5 +1,5 @@
 export function CategoryPage({ title, description, count, children }: {
-  title: string; description: string; count: number; children: React.ReactNode;
+  title: string; description: React.ReactNode; count: number; children: React.ReactNode;
 }) {
   return (
     <div className="mx-auto max-w-6xl px-6 py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

@@ -15,8 +15,7 @@ interface StorageStatsProps {
 export const StorageStats = ({ data, loading, formatSize, fetchData }: StorageStatsProps) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <StatCard
-                icon={<Database size={24} />}
+            <StatCard icon={<Database size={24} />}
                 iconBgClassName="bg-indigo-50"
                 iconTextClassName="text-indigo-600"
                 title="Всего в S3"
@@ -24,8 +23,7 @@ export const StorageStats = ({ data, loading, formatSize, fetchData }: StorageSt
                 subtitle={`${data?.s3.fileCount || 0} объектов`}
             />
 
-            <StatCard
-                icon={<Server size={24} />}
+            <StatCard icon={<Server size={24} />}
                 iconBgClassName="bg-emerald-50"
                 iconTextClassName="text-emerald-600"
                 title="Локальный диск"
@@ -39,8 +37,7 @@ export const StorageStats = ({ data, loading, formatSize, fetchData }: StorageSt
                 </div>
             </StatCard>
 
-            <StatCard
-                icon={<RefreshCw size={24} className={loading ? "animate-spin" : ""} />}
+            <StatCard icon={<RefreshCw size={24} className={loading ? "animate-spin" : ""} />}
                 iconBgClassName="bg-slate-100"
                 iconTextClassName="text-slate-600"
                 title="Статус"

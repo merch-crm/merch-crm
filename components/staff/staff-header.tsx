@@ -22,25 +22,14 @@ export function StaffHeader({ session, branding }: StaffHeaderProps) {
 
     return (
         <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-slate-200 bg-white px-4 lg:px-6">
-            <Button
-                variant="ghost"
-                size="icon"
-                className="lg:hidden"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
                 <Menu className="h-5 w-5" />
             </Button>
 
             <div className="flex items-center gap-3">
                 {branding?.logoUrl ? (
-                    <Image
-                        src={branding.logoUrl}
-                        alt={branding.companyName || 'Logo'}
-                        width={100}
-                        height={32}
-                        className="h-8 w-auto"
-                        unoptimized
-                    />
+                    <Image src={branding.logoUrl} alt={branding.companyName || 'Logo'} width={100} height={32} className="h-8 w-auto" unoptimized />
                 ) : (
                     <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center">
                         <span className="text-white text-sm font-bold">M</span>

@@ -81,11 +81,7 @@ export function GlobalSearch() {
         <div ref={containerRef} className="relative w-full max-w-md mx-4">
             <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <Input
-                    type="text"
-                    placeholder="Быстрый поиск (cmd+k)..."
-                    value={query}
-                    onChange={(e) => {
+                <Input type="text" placeholder="Быстрый поиск (cmd+k)..." value={query} onChange={(e) => {
                         setQuery(e.target.value);
                         setIsOpen(true);
                     }}
@@ -106,10 +102,7 @@ export function GlobalSearch() {
                         {Array.isArray(results) && results.length > 0 ? (
                             <div className="p-2 space-y-1">
                                 {(results || []).map((result) => (
-                                    <Button
-                                        key={`${result.type}-${result.id}`}
-                                        variant="ghost"
-                                        onClick={() => handleSelect(result)}
+                                    <Button key={`${result.type}-${result.id}`} variant="ghost" onClick={() => handleSelect(result)}
                                         className="w-full flex items-center justify-start gap-3 p-3 hover:bg-slate-50 rounded-[18px] transition-all group text-left h-auto font-normal"
                                     >
                                         <div className={cn(

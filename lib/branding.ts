@@ -20,6 +20,7 @@ export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => 
         companyName: "MerchCRM",
         logoUrl: null,
         primaryColor: "#5d00ff",
+        color: "#5d00ff", // Алиас для совместимости
         radiusOuter: 24,
         radiusInner: 14,
         loginSlogan: "Ваша CRM для управления мерчем",
@@ -41,7 +42,7 @@ export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => 
     };
 
     try {
-        console.log("[Branding] Fetching settings from DB...");
+        console.log("[Branding] Fetching settings from DB via tunnel...");
         const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
         const settings = result[0];
 
@@ -52,10 +53,13 @@ export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => 
 
         console.log("[Branding] Found branding in DB, parsing...");
         const val = settings.value as Record<string, unknown>;
+        const primaryColor = (val.primaryColor as string) || (val.primary_color as string) || "#5d00ff";
+        
         const finalSettings = {
             ...defaultBranding,
             ...val,
-            primaryColor: (val.primaryColor as string) || (val.primary_color as string) || "#5d00ff",
+            primaryColor: primaryColor,
+            color: primaryColor, // Гарантируем наличие для клиента
             logoUrl: (val.logoUrl as string) || (val.logo_url as string) || null,
             radiusOuter: (val.radiusOuter as number) || (val.radius_outer as number) || 24,
             radiusInner: (val.radiusInner as number) || (val.radius_inner as number) || 14,
@@ -69,7 +73,8 @@ export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => 
         return finalSettings;
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);
-        console.error("❌ [Branding] Database critical error:", message);
+        console.error("❌ [Branding] Database connection/query failed:", message);
+        console.log("[Branding] Using defaultBranding as fallback...");
         return defaultBranding;
     }
 });

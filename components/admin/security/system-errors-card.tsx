@@ -42,26 +42,14 @@ export function SystemErrorsCard({
                             </p>
                         </div>
                     </div>
-                    <Button
-                        size="sm"
-                        onClick={onClearSecurityErrors}
-                        disabled={isClearingErrors || !systemErrors.length}
-                        className={cn(
-                            "gap-2 text-xs h-8 rounded-[18px]",
-                            systemErrors.length && !isClearingErrors
-                                ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200"
-                                : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 hover:bg-slate-100"
-                        )}
-                    >
+                    <Button size="sm" onClick={onClearSecurityErrors} disabled={isClearingErrors || !systemErrors.length} className={cn( "gap-2 text-xs h-8 rounded-[18px]", systemErrors.length && !isClearingErrors ? "bg-red-600 text-white hover:bg-red-700 hover:shadow-lg hover:shadow-red-200" : "bg-slate-100 text-slate-400 cursor-not-allowed opacity-60 hover:bg-slate-100" )}>
                         <Trash2 size={14} />
                         {isClearingErrors ? "Очистка..." : "Очистить ошибки"}
                     </Button>
                 </div>
             </CardHeader>
             <CardContent className="p-0">
-                <ResponsiveDataView
-                    data={systemErrors}
-                    renderCard={(error, idx) => (
+                <ResponsiveDataView data={systemErrors} renderCard={(error, idx) => (
                         <div
                             role="button"
                             tabIndex={0}

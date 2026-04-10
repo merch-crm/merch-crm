@@ -4,14 +4,14 @@ plan: YY
 subsystem: [primary category]
 tags: [searchable tech]
 provides:
-  - [bullet list of what was built/delivered]
+ - [bullet list of what was built/delivered]
 affects: [list of phase names or keywords]
 tech-stack:
-  added: [libraries/tools]
-  patterns: [architectural/code patterns]
+ added: [libraries/tools]
+ patterns: [architectural/code patterns]
 key-files:
-  created: [important files created]
-  modified: [important files modified]
+ created: [important files created]
+ modified: [important files modified]
 key-decisions: []
 duration: Xmin
 completed: YYYY-MM-DD

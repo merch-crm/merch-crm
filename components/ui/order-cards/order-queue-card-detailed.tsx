@@ -108,12 +108,7 @@ export function OrderQueueCardDetailed({
                                 !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"bg-slate-100"
                             )}
                         >
-                            <Timer className={cn("w-4 h-4",
-                                deadlineUrgency?.isOverdue &&"text-rose-600",
-                                deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"text-orange-600",
-                                deadlineUrgency?.isSoon &&"text-amber-600",
-                                !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"text-slate-600"
-                            )} />
+                            <Timer className={cn("w-4 h-4", deadlineUrgency?.isOverdue &&"text-rose-600", deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"text-orange-600", deadlineUrgency?.isSoon &&"text-amber-600", !deadlineUrgency?.isOverdue && !deadlineUrgency?.isUrgent && !deadlineUrgency?.isSoon &&"text-slate-600" )} />
                             <span className={cn("text-sm font-medium",
                                 deadlineUrgency?.isOverdue &&"text-rose-700",
                                 deadlineUrgency?.isUrgent && !deadlineUrgency.isOverdue &&"text-orange-700",
@@ -170,13 +165,7 @@ export function OrderQueueCardDetailed({
                         <div key={item.id} className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center overflow-hidden shrink-0">
                                 {item.image ? (
-                                    <Image
-                                        src={item.image}
-                                        alt={item.name}
-                                        className="w-full h-full object-cover"
-                                        width={40}
-                                        height={40}
-                                    />
+                                    <Image src={item.image} alt={item.name} className="w-full h-full object-cover" width={40} height={40} />
                                 ) : (
                                     <Package className="w-5 h-5 text-slate-400" />
                                 )}
@@ -217,13 +206,7 @@ export function OrderQueueCardDetailed({
                     <p className="text-xs font-bold text-slate-500 mb-3">Исполнитель</p>
                     <div className="flex items-center gap-3">
                         {order.assignee.avatar ? (
-                            <Image
-                                src={order.assignee.avatar}
-                                alt={order.assignee.name}
-                                className="w-8 h-8 rounded-full object-cover"
-                                width={32}
-                                height={32}
-                            />
+                            <Image src={order.assignee.avatar} alt={order.assignee.name} className="w-8 h-8 rounded-full object-cover" width={32} height={32} />
                         ) : (
                             <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                                 <User className="w-4 h-4 text-primary" />

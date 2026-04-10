@@ -75,8 +75,8 @@ AskUserQuestion:
 - header: "Confirm?"
 - question: "Does this capture what you want to build in this milestone?"
 - options:
-  - "Looks good" — Proceed to write PROJECT.md
-  - "Adjust" — Let me correct or add details
+ - "Looks good" — Proceed to write PROJECT.md
+ - "Adjust" — Let me correct or add details
 
 **If "Adjust":** Ask what needs changing (plain text, NOT AskUserQuestion). Incorporate changes, re-present the summary. Loop until "Looks good" is selected.
 
@@ -199,7 +199,7 @@ AskUserQuestion: "Research the domain ecosystem for new features before defining
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 ◆ Spawning 4 researchers in parallel...
-  → Stack, Features, Architecture, Pitfalls
+ → Stack, Features, Architecture, Pitfalls
 ```
 
 ```bash
@@ -385,8 +385,8 @@ ${AGENT_SKILLS_ROADMAPPER}
 <instructions>
 Create roadmap for milestone v[X.Y]:
 1. Respect the selected numbering mode:
-   - `--reset-phase-numbers` → start at Phase 1
-   - default behavior → continue from the previous milestone's last phase number
+  - `--reset-phase-numbers` → start at Phase 1
+  - default behavior → continue from the previous milestone's last phase number
 2. Derive phases from THIS MILESTONE's requirements only
 3. Map every requirement to exactly one phase
 4. Derive 2-5 success criteria per phase (observable user behaviors)
@@ -446,12 +446,12 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs: create milestone v[X
 
 **Milestone v[X.Y]: [Name]**
 
-| Artifact       | Location                    |
+| Artifact    | Location          |
 |----------------|-----------------------------|
-| Project        | `.planning/PROJECT.md`      |
-| Research       | `.planning/research/`       |
-| Requirements   | `.planning/REQUIREMENTS.md` |
-| Roadmap        | `.planning/ROADMAP.md`      |
+| Project    | `.planning/PROJECT.md`   |
+| Research    | `.planning/research/`    |
+| Requirements  | `.planning/REQUIREMENTS.md` |
+| Roadmap    | `.planning/ROADMAP.md`   |
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
 

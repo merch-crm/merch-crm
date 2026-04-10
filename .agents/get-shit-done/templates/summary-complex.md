@@ -4,21 +4,21 @@ plan: YY
 subsystem: [primary category]
 tags: [searchable tech]
 requires:
-  - phase: [prior phase]
-    provides: [what that phase built]
+ - phase: [prior phase]
+  provides: [what that phase built]
 provides:
-  - [bullet list of what was built/delivered]
+ - [bullet list of what was built/delivered]
 affects: [list of phase names or keywords]
 tech-stack:
-  added: [libraries/tools]
-  patterns: [architectural/code patterns]
+ added: [libraries/tools]
+ patterns: [architectural/code patterns]
 key-files:
-  created: [important files created]
-  modified: [important files modified]
+ created: [important files created]
+ modified: [important files modified]
 key-decisions:
-  - "Decision 1"
+ - "Decision 1"
 patterns-established:
-  - "Pattern 1: description"
+ - "Pattern 1: description"
 duration: Xmin
 completed: YYYY-MM-DD
 ---

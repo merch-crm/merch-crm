@@ -23,6 +23,8 @@ export function pluralize(count: number, one: string, few: string, many: string)
     return many;
 }
 
+export const pluralizeRU = pluralize;
+
 /**
  * Склонение русских слов для родительного падежа (для фразы "из 10 позиций")
  * @param count - число

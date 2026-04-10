@@ -15,23 +15,23 @@ Show current project and agent status.
 ### What It Shows
 
 1. **Project Info**
-   - Project name and path
-   - Tech stack
-   - Current features
+  - Project name and path
+  - Tech stack
+  - Current features
 
 2. **Agent Status Board**
-   - Which agents are running
-   - Which tasks are completed
-   - Pending work
+  - Which agents are running
+  - Which tasks are completed
+  - Pending work
 
 3. **File Statistics**
-   - Files created count
-   - Files modified count
+  - Files created count
+  - Files modified count
 
 4. **Preview Status**
-   - Is server running
-   - URL
-   - Health check
+  - Is server running
+  - URL
+  - Health check
 
 ---
 
@@ -46,21 +46,21 @@ Show current project and agent status.
 📊 Status: active
 
 🔧 Tech Stack:
-   Framework: next.js
-   Database: postgresql
-   Auth: clerk
-   Payment: stripe
+  Framework: next.js
+  Database: postgresql
+  Auth: clerk
+  Payment: stripe
 
 ✅ Features (5):
-   • product-listing
-   • cart
-   • checkout
-   • user-auth
-   • order-history
+  • product-listing
+  • cart
+  • checkout
+  • user-auth
+  • order-history
 
 ⏳ Pending (2):
-   • admin-panel
-   • email-notifications
+  • admin-panel
+  • email-notifications
 
 📄 Files: 73 created, 12 modified
 

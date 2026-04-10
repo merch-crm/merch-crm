@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, GripHorizontal } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { BentoOverlay } from "../../ui/bento-primitives";
 
 interface BentoDrawerProps {
   isOpen: boolean;
@@ -79,14 +80,9 @@ export function BentoDrawer({
           aria-modal="true"
           aria-labelledby="drawer-title"
         >
-          <motion.button
-            type="button"
+          <BentoOverlay 
             aria-label="Close drawer"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             onClick={onClose}
-            className="absolute inset-0 bg-slate-950/20 backdrop-blur-md transition-all duration-700 cursor-default outline-none"
           />
           
           <motion.div

@@ -262,13 +262,7 @@ function DateRangePicker({
             {isOpen && (
                 <div className="absolute top-full left-0 mt-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
-                        <DateRangePickerCalendar
-                            value={tempValue}
-                            onChange={setTempValue}
-                            minDate={minDate}
-                            maxDate={maxDate}
-                            className="shadow-none border-none"
-                        />
+                        <DateRangePickerCalendar value={tempValue} onChange={setTempValue} minDate={minDate} maxDate={maxDate} className="shadow-none border-none" />
 
                         {/* Футер с кнопками */}
                         <div className="flex items-center gap-3 p-4 pt-0">
@@ -440,13 +434,7 @@ function DateRangePickerWithPresets({
 
                         {/* Календарь */}
                         <div>
-                            <DateRangePickerCalendar
-                                value={tempValue}
-                                onChange={setTempValue}
-                                minDate={minDate}
-                                maxDate={maxDate}
-                                className="shadow-none border-none"
-                            />
+                            <DateRangePickerCalendar value={tempValue} onChange={setTempValue} minDate={minDate} maxDate={maxDate} className="shadow-none border-none" />
 
                             <div className="flex items-center gap-3 p-4 pt-0">
                                 <button type="button"

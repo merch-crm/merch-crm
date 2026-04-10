@@ -28,12 +28,7 @@ export function CrossLinkCard({
 }: CrossLinkCardProps) {
     return (
         <Link href={href}>
-            <Card
-                className={cn(
-                    "hover:shadow-md transition-all hover:border-primary/50 group",
-                    className
-                )}
-            >
+            <Card className={cn( "hover:shadow-md transition-all hover:border-primary/50 group", className )}>
                 <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                         <div className="p-2 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
@@ -46,7 +41,7 @@ export function CrossLinkCard({
                                     {title}
                                 </h4>
                                 {badge && (
-                                    <Badge variant="secondary" className="text-xs">
+                                    <Badge className="text-xs" color="neutral">
                                         {badge}
                                     </Badge>
                                 )}

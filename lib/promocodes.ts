@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { promocodes } from "@/lib/schema/promocodes";
 import { eq, sql, type InferSelectModel } from "drizzle-orm";
 
-import { getBrandingSettings } from "@/app/(main)/admin-panel/branding/actions";
+import { getBrandingSettings } from "@/lib/branding";
 
 export interface ValidationResult {
     isValid: boolean;
@@ -50,8 +50,8 @@ export async function validatePromocode(
         }
 
         // Проверка минимальной суммы заказа
-        const branding = await getBrandingSettings().catch(() => ({ currencySymbol: "₽" }));
-        const currencySymbol = branding?.currencySymbol || "₽";
+        const branding = await getBrandingSettings();
+        const currencySymbol = branding.currencySymbol;
 
         const minAmount = Number(promo.minOrderAmount || 0);
         if (totalAmount < minAmount) {

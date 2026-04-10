@@ -6,11 +6,11 @@ import { PromocodesClient, Promocode } from"./promocodes-client";
 export const dynamic ="force-dynamic";
 
 export default async function PromocodesPage() {
-    const session = await getSession();
-    if (!session) redirect("/login");
+  const session = await getSession();
+  if (!session) redirect("/login");
 
-    const res = await getPromocodes();
-    const data = res.success ? (res.data || []) : [];
+  const res = await getPromocodes();
+  const data = res.success ? (res.data || []) : [];
 
-    return <PromocodesClient initialData={data as unknown as Promocode[]} />;
+  return <PromocodesClient initialData={data as unknown as Promocode[]} />;
 }

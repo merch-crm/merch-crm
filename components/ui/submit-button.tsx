@@ -25,13 +25,7 @@ export function SubmitButton({
     const isLoadingState = isLoading || pending;
 
     return (
-        <CrmButton
-            type="submit"
-            disabled={disabled || isLoadingState}
-            variant={variant}
-            className={cn("gap-2", className)}
-            {...props}
-        >
+        <CrmButton type="submit" disabled={disabled || isLoadingState} variant={variant} className={cn("gap-2", className)} {...props}>
             {isLoadingState ? (
                 <>
                     <Loader2 className="h-4 w-4 animate-spin mr-2" />

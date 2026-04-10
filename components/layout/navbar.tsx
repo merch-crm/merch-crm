@@ -91,19 +91,10 @@ export function Navbar({
             <div className="px-4 h-full flex items-center justify-between max-w-[1480px] mx-auto w-full">
                 <div className="flex items-center gap-3">
                     {/* Logo */}
-                    <Link
-                        href="/dashboard"
-                        className="flex items-center gap-2 group shrink-0"
-                    >
+                    <Link href="/dashboard" className="flex items-center gap-2 group shrink-0">
                         {branding.logoUrl ? (
                             <div className="relative h-6 w-6">
-                                <Image
-                                    src={branding.logoUrl}
-                                    alt="Logo"
-                                    fill
-                                    className="object-contain"
-                                    unoptimized
-                                />
+                                <Image src={branding.logoUrl} alt="Logo" fill className="object-contain" unoptimized />
                             </div>
                         ) : (
                             <div className="w-6 h-6 bg-gradient-to-tr from-slate-900 to-slate-700 rounded-md border-b-2 border-slate-950 flex items-center justify-center text-white text-xs font-black shadow-inner shadow-slate-900/50">
@@ -128,28 +119,14 @@ export function Navbar({
                             // Если есть подменю
                             if (item.children && item.children.length > 0) {
                                 return (
-                                    <NavDropdown
-                                        key={item.name}
-                                        name={item.name}
-                                        href={item.href}
-                                        isActive={isActive}
-                                    >
+                                    <NavDropdown key={item.name} name={item.name} href={item.href} isActive={isActive}>
                                         {item.children}
                                     </NavDropdown>
                                 );
                             }
 
                             return (
-                                <Link
-                                    key={item.name}
-                                    href={item.href}
-                                    className={cn(
-                                        "transition-colors whitespace-nowrap",
-                                        isActive
-                                            ? "text-primary cursor-default"
-                                            : "text-slate-400 hover:text-slate-900 cursor-pointer"
-                                    )}
-                                >
+                                <Link key={item.name} href={item.href} className={cn( "transition-colors whitespace-nowrap", isActive ? "text-primary cursor-default" : "text-slate-400 hover:text-slate-900 cursor-pointer" )}>
                                     {item.name}
                                 </Link>
                             );

@@ -25,14 +25,7 @@ export function UserAvatar({ user, size = 28 }: UserAvatarProps) {
                     <span className="absolute inset-0 flex items-center justify-center">
                         {initial}
                     </span>
-                    <NextImage
-                        src={user.image}
-                        alt={user.name || "User"}
-                        className="w-full h-full object-cover relative z-10"
-                        width={size}
-                        height={size}
-                        unoptimized
-                    />
+                    <NextImage src={user.image} alt={user.name || "User"} className="w-full h-full object-cover relative z-10" width={size} height={size} unoptimized />
                 </>
             ) : (
                 initial

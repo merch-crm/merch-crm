@@ -37,10 +37,7 @@ export function UserNav({ user, branding }: {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <Button
-                variant="ghost"
-                type="button"
-                onClick={() => setIsOpen(!isOpen)}
+            <Button variant="ghost" type="button" onClick={() => setIsOpen(!isOpen)}
                 className="flex items-center gap-2 p-0 h-auto rounded-none hover:bg-transparent transition-all duration-200 group"
             >
                 <div className="relative shrink-0">
@@ -126,11 +123,7 @@ export function UserNav({ user, branding }: {
                                         <span className="text-sm md:text-[12px] text-slate-400 font-medium truncate">{user.email}</span>
                                         <RoleBadge roleName={user.roleName} className="mt-1.5 w-fit text-xs px-2 py-0" />
                                     </div>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        type="button"
-                                        onClick={() => setIsOpen(false)}
+                                    <Button variant="ghost" size="icon" type="button" onClick={() => setIsOpen(false)}
                                         className="md:hidden p-2 rounded-full"
                                     >
                                         <ChevronDown className="h-5 w-5 rotate-180" />
@@ -142,9 +135,7 @@ export function UserNav({ user, branding }: {
                             <div className="flex-1 overflow-y-auto no-scrollbar">
                                 {/* Links Group 1 */}
                                 <div className="p-4 md:p-2.5 space-y-1 md:space-y-1.5">
-                                    <Link
-                                        href="/dashboard/profile"
-                                        onClick={() => setIsOpen(false)}
+                                    <Link href="/dashboard/profile" onClick={() => setIsOpen(false)}
                                         className="dropdown-item py-3 md:py-2"
                                     >
                                         <User className="h-5 w-5 opacity-60 group-hover:opacity-100" />
@@ -153,18 +144,14 @@ export function UserNav({ user, branding }: {
 
                                     {(["Руководство", "Отдел продаж"].includes(user.departmentName) || user.roleSlug === "admin" || user.roleName === "Администратор") && (
                                         <>
-                                            <Link
-                                                href="/dashboard/warehouse/overview"
-                                                onClick={() => setIsOpen(false)}
+                                            <Link href="/dashboard/warehouse/overview" onClick={() => setIsOpen(false)}
                                                 className="dropdown-item py-3 md:py-2"
                                             >
                                                 <Package className="h-5 w-5 opacity-60 group-hover:opacity-100" />
                                                 <span className="text-base md:text-sm font-bold md:font-medium">Склад</span>
                                             </Link>
 
-                                            <Link
-                                                href="/dashboard/finance"
-                                                onClick={() => setIsOpen(false)}
+                                            <Link href="/dashboard/finance" onClick={() => setIsOpen(false)}
                                                 className="dropdown-item py-3 md:py-2 hover:bg-emerald-50 hover:text-emerald-600"
                                             >
                                                 <BarChart3 className="h-5 w-5 opacity-60 group-hover:opacity-100" />
@@ -174,9 +161,7 @@ export function UserNav({ user, branding }: {
                                     )}
 
                                     {(user.roleSlug === "admin" || user.roleName === "Администратор") && (
-                                        <Link
-                                            href="/admin-panel"
-                                            onClick={() => setIsOpen(false)}
+                                        <Link href="/admin-panel" onClick={() => setIsOpen(false)}
                                             className="dropdown-item py-3 md:py-2 hover:bg-amber-50 hover:text-amber-600"
                                         >
                                             <Shield className="h-5 w-5 opacity-60 group-hover:opacity-100" />
@@ -213,10 +198,7 @@ export function UserNav({ user, branding }: {
 
                             {/* Exit Section */}
                             <div className="p-4 md:p-2.5 bg-rose-50/30 shrink-0">
-                                <Button
-                                    type="button"
-                                    variant="ghost"
-                                    onClick={async () => {
+                                <Button type="button" variant="ghost" onClick={async () => {
                                         if (isLoggingOut) return;
                                         setIsLoggingOut(true);
                                         await logout();

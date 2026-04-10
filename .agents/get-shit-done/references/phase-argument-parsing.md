@@ -32,11 +32,11 @@ Zero-pad integer phases to 2 digits. Preserve decimal suffixes.
 ```bash
 # Normalize phase number
 if [[ "$PHASE" =~ ^[0-9]+$ ]]; then
-  # Integer: 8 → 08
-  PHASE=$(printf "%02d" "$PHASE")
+ # Integer: 8 → 08
+ PHASE=$(printf "%02d" "$PHASE")
 elif [[ "$PHASE" =~ ^([0-9]+)\.([0-9]+)$ ]]; then
-  # Decimal: 2.1 → 02.1
-  PHASE=$(printf "%02d.%s" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}")
+ # Decimal: 2.1 → 02.1
+ PHASE=$(printf "%02d.%s" "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}")
 fi
 ```
 
@@ -47,8 +47,8 @@ Use `roadmap get-phase` to validate phase exists:
 ```bash
 PHASE_CHECK=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" roadmap get-phase "${PHASE}" --pick found)
 if [ "$PHASE_CHECK" = "false" ]; then
-  echo "ERROR: Phase ${PHASE} not found in roadmap"
-  exit 1
+ echo "ERROR: Phase ${PHASE} not found in roadmap"
+ exit 1
 fi
 ```
 

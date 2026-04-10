@@ -35,7 +35,8 @@ function getOptimalLayout(options: SelectOption[]): LayoutType {
 interface SelectAppearance {
     className?: string;
     compact?: boolean;
-    variant?: "default" | "minimal";
+    variant?: "solid" | "outline" | "ghost" | "minimal" | "default";
+    color?: "primary" | "neutral" | "success" | "warning" | "danger";
     center?: boolean;
     triggerClassName?: string;
     align?: "start" | "center" | "end";
@@ -72,7 +73,8 @@ function Select({
     showSearch,
     searchPlaceholder = "Поиск...",
     compact = false,
-    variant = "default",
+    variant = "solid",
+    color = "neutral",
     gridColumns,
     autoLayout = true,
     center = false,
@@ -124,7 +126,7 @@ function Select({
     };
 
     return (
-        <div className={cn("relative", variant === "default" && "space-y-1.5", className)}>
+        <div className={cn("relative", (variant === "default" || variant === "outline") && "space-y-1.5", className)}>
             {label && (
                 <label
                     htmlFor={triggerId}
@@ -144,16 +146,28 @@ function Select({
                         disabled={disabled}
                         aria-haspopup="listbox"
                         aria-expanded={open}
-                        className={cn("w-full px-4 h-12 bg-slate-50/80 hover:bg-white border border-slate-200 hover:border-slate-300 rounded-[12px] text-left transition-colors focus:outline-none group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center",
-                            (center || variant === "minimal") ? "justify-center" : "justify-between",
-                            variant === "default" ? [
-                                compact ? "h-9 px-3 text-xs" : "h-12 text-[14px] font-semibold text-slate-900",
-                                open ? "border-slate-300 bg-white" : "",
-                                error && "border-rose-500 bg-rose-50/30 ring-4 ring-rose-500/10"
-                            ] : ["bg-slate-50/50 rounded-[12px] h-12 border border-transparent hover:border-slate-200",
-                                open && "bg-white border-slate-300",
-                                error && "border-rose-500 bg-rose-50/30"
+                        className={cn(
+                            "w-full px-4 h-12 rounded-[12px] text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/20 group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center border",
+                            // Unified Variants
+                            variant === "solid" && [
+                                color === "primary" && "bg-primary text-white border-primary hover:bg-primary/90",
+                                color === "neutral" && "bg-slate-900 text-white border-slate-900 hover:bg-slate-800",
+                                color === "success" && "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700",
+                                color === "danger" && "bg-rose-600 text-white border-rose-600 hover:bg-rose-700",
+                                color === "warning" && "bg-amber-500 text-white border-amber-500 hover:bg-amber-600",
                             ],
+                            (variant === "outline" || variant === "default") && [
+                                "bg-white text-slate-900 border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+                                color === "primary" && "text-primary border-primary/20 hover:bg-primary/[0.02] hover:border-primary/30",
+                                color === "success" && "text-emerald-700 border-emerald-200 hover:bg-emerald-50",
+                                color === "danger" && "text-rose-700 border-rose-200 hover:bg-rose-50",
+                            ],
+                            (variant === "ghost" || variant === "minimal") && [
+                                "bg-transparent border-transparent hover:bg-slate-100 text-slate-600",
+                                color === "primary" && "text-primary hover:bg-primary/5",
+                            ],
+                            center ? "justify-center" : "justify-between",
+                            error && "border-rose-500 bg-rose-50/30 ring-rose-500/10",
                             triggerClassName
                         )}
                     >
@@ -208,10 +222,7 @@ function Select({
                                     <X className="w-3.5 h-3.5" />
                                 </div>
                             )}
-                            <ChevronDown className={cn("shrink-0 transition-transform duration-300",
-                                variant === "minimal" ? "w-3 h-3" : "w-4 h-4",
-                                open ? "rotate-180" : ""
-                            )} />
+                            <ChevronDown className={cn("shrink-0 transition-transform duration-300", variant === "minimal" ? "w-3 h-3" : "w-4 h-4", open ? "rotate-180" : "" )} />
                         </div>
                     </button>
                 </Popover.Trigger>
@@ -244,10 +255,7 @@ function Select({
                                         <div className="pb-2 border-b border-slate-100/60 mb-1 block px-1.5 pt-1.5 bg-white sticky top-0 z-10">
                                             <div className="relative">
                                                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                                <Input
-                                                    autoFocus
-                                                    value={searchQuery}
-                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                <Input autoFocus value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
                                                     placeholder={searchPlaceholder}
                                                     aria-label={searchPlaceholder}
                                                     className="w-full h-11 pl-10 pr-3 rounded-[14px] bg-slate-50/50 border border-slate-200/60 shadow-none text-xs font-bold focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-slate-100 focus-visible:border-slate-300 transition-all placeholder:text-slate-400"
@@ -280,7 +288,7 @@ function Select({
                                                                     isLastOdd ? "col-span-2" : "",
                                                                     isSelected ? "bg-slate-100 border-slate-300 text-slate-900 shadow-sm" : "bg-white border border-slate-200/60 text-slate-600 hover:border-slate-300 hover:bg-slate-50"
                                                                 ] : [
-                                                                    "flex items-center justify-between px-3 py-2.5 hover:bg-slate-50 text-[14px] font-medium text-slate-700 rounded-[10px]",
+                                                                    "flex items-center justify-between px-3 py-2 min-h-[44px] hover:bg-slate-50 text-[14px] font-medium text-slate-700 rounded-[10px]",
                                                                     isSelected ? "bg-slate-100 !font-semibold text-slate-900 shadow-sm" : ""
                                                                 ]
                                                             )}
@@ -302,14 +310,14 @@ function Select({
 
                                                             {!effectiveGridColumns && (
                                                                 <>
-                                                                    <div className="flex items-center gap-3 min-w-0">
+                                                                    <div className="flex items-center gap-3 min-w-0 w-full">
                                                                         {(option.color || option.icon) ? (
-                                                                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all border",
+                                                                            <div className={cn("w-7 h-7 rounded-[8px] flex items-center justify-center shrink-0 transition-all border",
                                                                                 isSelected ? "bg-white border-slate-200 text-slate-900 shadow-[0_1px_3px_rgba(0,0,0,0.05)]" : "bg-slate-50 border-slate-200/50 text-slate-500 group-hover/item:border-slate-300 group-hover/item:bg-white",
                                                                                 option.color && "p-0 border-black/5 overflow-hidden ring-1 ring-inset ring-black/5"
                                                                             )}>
                                                                                 {option.color ? (
-                                                                                    <div className="w-full h-full rounded-xl scale-90 shadow-sm" style={{ backgroundColor: option.color }} />
+                                                                                    <div className="w-full h-full rounded-[6px] scale-90 shadow-sm" style={{ backgroundColor: option.color }} />
                                                                                 ) : (
                                                                                     <div className="flex items-center justify-center">{option.icon}</div>
                                                                                 )}

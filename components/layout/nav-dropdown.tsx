@@ -37,15 +37,7 @@ export function NavDropdown({ name, href, isActive, children }: NavDropdownProps
             onMouseLeave={handleMouseLeave}
         >
             <div className="flex items-center gap-1 group">
-                <Link
-                    href={href}
-                    className={cn(
-                        "flex items-center gap-1 transition-all whitespace-nowrap outline-none py-2 px-1 rounded-lg",
-                        isActive
-                            ? "text-primary bg-primary/5 font-bold"
-                            : "text-slate-400 hover:text-slate-900 font-semibold"
-                    )}
-                >
+                <Link href={href} className={cn( "flex items-center gap-1 transition-all whitespace-nowrap outline-none py-2 px-1 rounded-lg", isActive ? "text-primary bg-primary/5 font-bold" : "text-slate-400 hover:text-slate-900 font-semibold" )}>
                     {name}
                 </Link>
                 <div className={cn(
@@ -69,10 +61,7 @@ export function NavDropdown({ name, href, isActive, children }: NavDropdownProps
                             {children.map((child) => {
                                 const isChildActive = pathname === child.href;
                                 return (
-                                    <Link
-                                        key={child.href}
-                                        href={child.href}
-                                        onClick={() => setIsOpen(false)}
+                                    <Link key={child.href} href={child.href} onClick={() => setIsOpen(false)}
                                         className={cn(
                                             "flex items-center px-3 py-2.5 text-sm rounded-[var(--radius-inner)] transition-all",
                                             isChildActive

@@ -37,12 +37,12 @@ Re-run init with the provided name.
 ```
 Cannot remove workspace "$WORKSPACE_NAME" — the following repos have uncommitted changes:
 
-  - repo1
-  - repo2
+ - repo1
+ - repo2
 
 Commit or stash changes in these repos before removing the workspace:
-  cd $WORKSPACE_PATH/repo1
-  git stash   # or git commit
+ cd $WORKSPACE_PATH/repo1
+ git stash  # or git commit
 ```
 
 Exit. Do NOT proceed.
@@ -83,8 +83,8 @@ rm -rf "$WORKSPACE_PATH"
 ```
 Workspace "$WORKSPACE_NAME" removed.
 
-  Path: $WORKSPACE_PATH (deleted)
-  Repos: $REPO_COUNT worktrees cleaned up
+ Path: $WORKSPACE_PATH (deleted)
+ Repos: $REPO_COUNT worktrees cleaned up
 ```
 
 </process>

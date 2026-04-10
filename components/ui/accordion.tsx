@@ -79,12 +79,7 @@ function Accordion({
     className,
 }: AccordionProps) {
     return (
-        <AccordionRoot
-            type={type as"single"}
-            defaultValue={defaultValue as string}
-            collapsible={collapsible}
-            className={cn("w-full", className)}
-        >
+        <AccordionRoot type={type as"single"} defaultValue={defaultValue as string} collapsible={collapsible} className={cn("w-full", className)}>
             {(items || []).map((item) => (
                 <AccordionItem key={item.id} value={item.id} disabled={item.disabled}>
                     <AccordionTrigger>
@@ -120,12 +115,7 @@ function AccordionCards({
     };
 
     return (
-        <AccordionRoot
-            type={type as"single"}
-            defaultValue={defaultValue as string}
-            collapsible={collapsible}
-            className={cn(gapClasses[gap], className)}
-        >
+        <AccordionRoot type={type as"single"} defaultValue={defaultValue as string} collapsible={collapsible} className={cn(gapClasses[gap], className)}>
             {(items || []).map((item) => (
                 <AccordionPrimitive.Item
                     key={item.id}
@@ -160,12 +150,7 @@ function AccordionFAQ({
     className,
 }: AccordionProps) {
     return (
-        <AccordionRoot
-            type={type as"single"}
-            defaultValue={defaultValue as string}
-            collapsible={collapsible}
-            className={cn("w-full divide-y divide-slate-200", className)}
-        >
+        <AccordionRoot type={type as"single"} defaultValue={defaultValue as string} collapsible={collapsible} className={cn("w-full divide-y divide-slate-200", className)}>
             {(items || []).map((item) => (
                 <AccordionPrimitive.Item
                     key={item.id}
@@ -210,11 +195,7 @@ function AccordionSettings({
     className,
 }: AccordionSettingsProps) {
     return (
-        <AccordionRoot
-            type={type as"multiple"}
-            defaultValue={defaultValue as string[]}
-            className={cn("space-y-3", className)}
-        >
+        <AccordionRoot type={type as"multiple"} defaultValue={defaultValue as string[]} className={cn("space-y-3", className)}>
             {(items || []).map((item) => (
                 <AccordionPrimitive.Item
                     key={item.id}
@@ -260,12 +241,7 @@ function AccordionBordered({
     className,
 }: AccordionProps) {
     return (
-        <AccordionRoot
-            type={type as"single"}
-            defaultValue={defaultValue as string}
-            collapsible={collapsible}
-            className={cn("space-y-2", className)}
-        >
+        <AccordionRoot type={type as"single"} defaultValue={defaultValue as string} collapsible={collapsible} className={cn("space-y-2", className)}>
             {(items || []).map((item) => (
                 <AccordionPrimitive.Item
                     key={item.id}
@@ -306,12 +282,7 @@ function AccordionSteps({
     className,
 }: AccordionStepsProps) {
     return (
-        <AccordionRoot
-            type={type as"single"}
-            defaultValue={defaultValue as string}
-            collapsible
-            className={cn("space-y-3", className)}
-        >
+        <AccordionRoot type={type as"single"} defaultValue={defaultValue as string} collapsible className={cn("space-y-3", className)}>
             {(items || []).map((item, index) => (
                 <AccordionPrimitive.Item
                     key={item.id}
@@ -354,14 +325,7 @@ const AccordionArrow = React.forwardRef<
   SVGSVGElement,
   React.ComponentPropsWithoutRef<typeof ChevronDown>
 >(({ className, ...props }, ref) => (
-  <ChevronDown
-    ref={ref}
-    className={cn(
-      'size-4 text-slate-400 shrink-0 transition-transform duration-300',
-      className
-    )}
-    {...props}
-  />
+  <ChevronDown ref={ref} className={cn( 'size-4 text-slate-400 shrink-0 transition-transform duration-300', className )} {...props} />
 ));
 AccordionArrow.displayName = 'AccordionArrow';
 

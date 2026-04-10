@@ -6,7 +6,7 @@ import { cn } from"@/lib/utils";
 
 interface SliderProps
     extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
-    variant?:"default" |"primary";
+    variant?: "md" |"primary";
 }
 
 const Slider = React.forwardRef<
@@ -83,9 +83,7 @@ function SliderWithValue({
                 {label && <span className="text-sm font-bold text-slate-700">{label}</span>}
                 <span className="text-sm font-medium text-slate-900">{formatValue(value)}</span>
             </div>
-            <Slider
-                value={[value]}
-                onValueChange={([v]) => onValueChange(v)}
+            <Slider value={[value]} onValueChange={([v]) => onValueChange(v)}
                 min={min}
                 max={max}
                 step={step}
@@ -121,9 +119,7 @@ function RangeSlider({
                     {formatValue(value[0])} — {formatValue(value[1])}
                 </span>
             </div>
-            <Slider
-                value={value}
-                onValueChange={(v) => onValueChange(v as [number, number])}
+            <Slider value={value} onValueChange={(v) => onValueChange(v as [number, number])}
                 min={min}
                 max={max}
                 step={step}
@@ -164,9 +160,7 @@ function PriceRangeSlider({
             <div className="flex items-center justify-between">
                 <span className="text-sm font-bold text-slate-700">{label}</span>
             </div>
-            <Slider
-                value={value}
-                onValueChange={(v) => onValueChange(v as [number, number])}
+            <Slider value={value} onValueChange={(v) => onValueChange(v as [number, number])}
                 min={min}
                 max={max}
                 step={step}
@@ -254,9 +248,7 @@ function QuantitySlider({
                     </button>
                 </div>
             </div>
-            <Slider
-                value={[value]}
-                onValueChange={([v]) => onValueChange(v)}
+            <Slider value={[value]} onValueChange={([v]) => onValueChange(v)}
                 min={min}
                 max={max}
                 step={step}
@@ -302,9 +294,7 @@ function SliderWithMarks({
                 </div>
             )}
             <div className="pt-2 pb-6 px-1">
-                <Slider
-                    value={[value]}
-                    onValueChange={([v]) => onValueChange(v)}
+                <Slider value={[value]} onValueChange={([v]) => onValueChange(v)}
                     min={minVal}
                     max={maxVal}
                     step={1}

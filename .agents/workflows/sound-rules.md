@@ -34,23 +34,23 @@ Always use this pattern in action handlers:
 import { playSound } from "@/lib/sounds";
 
 async function handleAction() {
-    const res = await serverAction(data);
-    
-    if (res.success) {
-        toast("Done!", "success");
-        playSound("notification_success"); // Match action type
-    } else {
-        toast(res.error, "error");
-        playSound("notification_error");
-    }
+  const res = await serverAction(data);
+  
+  if (res.success) {
+    toast("Done!", "success");
+    playSound("notification_success"); // Match action type
+  } else {
+    toast(res.error, "error");
+    playSound("notification_error");
+  }
 }
 ```
 
 ## 📜 Checklist for new Blocks/Pages:
-1.  **Identify User Actions**: List all buttons that perform `POST`, `PATCH`, or `DELETE`.
-2.  **Add playSound**: Ensure every `toast()` or `showModal("success" | "error", ...)` is accompanied by a `playSound` call.
-3.  **Haptics**: No manual `navigator.vibrate` calls (except for special custom patterns). `playSound` handles the standard vibrations.
-4.  **Bulk Actions**: For bulk operations, play the sound **once** after the entire operation completes, not for every single item.
+1. **Identify User Actions**: List all buttons that perform `POST`, `PATCH`, or `DELETE`.
+2. **Add playSound**: Ensure every `toast()` or `showModal("success" | "error", ...)` is accompanied by a `playSound` call.
+3. **Haptics**: No manual `navigator.vibrate` calls (except for special custom patterns). `playSound` handles the standard vibrations.
+4. **Bulk Actions**: For bulk operations, play the sound **once** after the entire operation completes, not for every single item.
 
 ---
 *Reference this document to ensure MerchCRM feels "alive" and responsive.*

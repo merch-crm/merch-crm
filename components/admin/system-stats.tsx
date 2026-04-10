@@ -315,11 +315,7 @@ export function SystemStats() {
 
         <div className="flex items-center gap-2 relative z-10">
           {uiState.activeTab === "backups" && (
-            <Button
-              onClick={handleCreateBackup}
-              disabled={backups.creating}
-              className="rounded-[18px] bg-[var(--primary)] hover:bg-[#4b00cc] text-white shadow-lg shadow-indigo-200 font-bold transition-all active:scale-95"
-            >
+            <Button onClick={handleCreateBackup} disabled={backups.creating} className="rounded-[18px] bg-[var(--primary)] hover:bg-[#4b00cc] text-white shadow-lg shadow-indigo-200 font-bold transition-all active:scale-95">
               <Download size={16} className={cn("mr-2", backups.creating && "animate-bounce")} />
               {backups.creating ? "Создание..." : "Создать бэкап"}
             </Button>
@@ -330,9 +326,7 @@ export function SystemStats() {
       {/* Tabs Navigation */}
       <div className="flex overflow-x-auto pb-2 no-scrollbar">
         <div className="flex p-1 bg-slate-100/80 backdrop-blur-sm rounded-[24px] border border-slate-200">
-          <Button
-            variant="ghost"
-            onClick={() => setUiState(prev => ({ ...prev, activeTab: "monitoring" }))}
+          <Button variant="ghost" onClick={() => setUiState(prev => ({ ...prev, activeTab: "monitoring" }))}
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "monitoring"
@@ -342,9 +336,7 @@ export function SystemStats() {
           >
             Мониторинг
           </Button>
-          <Button
-            variant="ghost"
-            onClick={() => setUiState(prev => ({ ...prev, activeTab: "diagnostics" }))}
+          <Button variant="ghost" onClick={() => setUiState(prev => ({ ...prev, activeTab: "diagnostics" }))}
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "diagnostics"
@@ -354,9 +346,7 @@ export function SystemStats() {
           >
             Диагностика
           </Button>
-          <Button
-            variant="ghost"
-            onClick={() => setUiState(prev => ({ ...prev, activeTab: "backups" }))}
+          <Button variant="ghost" onClick={() => setUiState(prev => ({ ...prev, activeTab: "backups" }))}
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "backups"
@@ -366,9 +356,7 @@ export function SystemStats() {
           >
             Бэкапы
           </Button>
-          <Button
-            variant="ghost"
-            onClick={() => setUiState(prev => ({ ...prev, activeTab: "security" }))}
+          <Button variant="ghost" onClick={() => setUiState(prev => ({ ...prev, activeTab: "security" }))}
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "security"
@@ -378,9 +366,7 @@ export function SystemStats() {
           >
             Безопасность
           </Button>
-          <Button
-            variant="ghost"
-            onClick={() => setUiState(prev => ({ ...prev, activeTab: "action_log" }))}
+          <Button variant="ghost" onClick={() => setUiState(prev => ({ ...prev, activeTab: "action_log" }))}
             className={cn(
               "px-4 py-2 text-xs font-bold rounded-[18px] transition-all h-8",
               uiState.activeTab === "action_log"
@@ -394,47 +380,21 @@ export function SystemStats() {
       </div>
 
       {uiState.activeTab === "monitoring" && (
-        <MonitoringTab
-          stats={monitoring.stats}
-          monitoringData={monitoring.data}
-          loading={uiState.loading}
-          error={uiState.error}
-          lastUpdated={uiState.lastUpdated}
-          onRefresh={fetchStats}
-          onClearRam={handleClearRam}
-          isClearingRam={monitoring.clearingRam}
-          onRestartRequest={() => setUiState(prev => ({ ...prev, showRestartConfirm: true }))}
+        <MonitoringTab stats={monitoring.stats} monitoringData={monitoring.data} loading={uiState.loading} error={uiState.error} lastUpdated={uiState.lastUpdated} onRefresh={fetchStats} onClearRam={handleClearRam} isClearingRam={monitoring.clearingRam} onRestartRequest={() => setUiState(prev => ({ ...prev, showRestartConfirm: true }))}
           isRestartingAction={monitoring.restarting}
         />
       )}
 
       {uiState.activeTab === "security" && (
-        <SecurityTab
-          securityData={security.data}
-          onRefresh={fetchStats}
-          onToggleMaintenance={handleToggleMaintenance}
-          isTogglingMaintenance={security.togglingMaintenance}
-          onClearFailedLogins={handleClearFailedLogins}
-          isClearingLogins={security.clearingLogins}
-          onClearSecurityErrors={handleClearSecurityErrors}
-          isClearingErrors={security.clearingErrors}
-        />
+        <SecurityTab securityData={security.data} onRefresh={fetchStats} onToggleMaintenance={handleToggleMaintenance} isTogglingMaintenance={security.togglingMaintenance} onClearFailedLogins={handleClearFailedLogins} isClearingLogins={security.clearingLogins} onClearSecurityErrors={handleClearSecurityErrors} isClearingErrors={security.clearingErrors} />
       )}
 
       {uiState.activeTab === "diagnostics" && (
-        <DiagnosticsTab
-          healthData={diagnostics.healthData}
-          diagnosing={diagnostics.diagnosing}
-          onRunDiagnostics={runDiagnostics}
-        />
+        <DiagnosticsTab healthData={diagnostics.healthData} diagnosing={diagnostics.diagnosing} onRunDiagnostics={runDiagnostics} />
       )}
 
       {uiState.activeTab === "backups" && (
-        <BackupsTab
-          backups={backups.list}
-          onDeleteBackup={handleDeleteBackup}
-          isDeleting={false}
-        />
+        <BackupsTab backups={backups.list} onDeleteBackup={handleDeleteBackup} isDeleting={false} />
       )}
 
       {uiState.activeTab === "action_log" && (
@@ -481,9 +441,7 @@ export function SystemStats() {
         </div>
       )}
 
-      <ConfirmDialog
-        isOpen={uiState.showRestartConfirm}
-        onClose={() => setUiState(prev => ({ ...prev, showRestartConfirm: false }))}
+      <ConfirmDialog isOpen={uiState.showRestartConfirm} onClose={() => setUiState(prev => ({ ...prev, showRestartConfirm: false }))}
         onConfirm={handleRestart}
         title="Перезагрузить сервер приложений?"
         description="Это действие прервет все активные сессии и сделает CRM недоступной на 10-30 секунд. Вы точно уверены?"

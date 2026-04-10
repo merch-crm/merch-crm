@@ -8,263 +8,254 @@ import { vi, describe, it, expect, beforeEach, Mock } from 'vitest'
 // Mock Select to simplify
 // Mock Select to simplify
 vi.mock('@/components/ui/select', () => ({
-    Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: string) => void; value: string }) => (
-        <select
-            data-testid="select"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-        >
-            {options.map((o) => (
-                <option key={o.id} value={o.id} role="option">
-                    {o.title}
-                </option>
-            ))}
-        </select>
-    ),
-    SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    SelectTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-    SelectValue: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  Select: ({ options, onChange, value }: { options: Array<{ id: string; title: string }>; onChange: (val: string) => void; value: string }) => (
+    <select
+      data-testid="select"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    >
+      {options.map((o) => (
+        <option key={o.id} value={o.id} role="option">
+          {o.title}
+        </option>
+      ))}
+    </select>
+  ),
+  SelectContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  SelectValue: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
 describe('ClientFilterPanel', () => {
-    const defaultFilters: ClientFilters = {
-        page: 1,
-        limit: 50,
-        search: '',
-        sortBy: 'alphabet',
-        period: 'all',
-        orderCount: 'any',
-        region: 'all',
-        status: 'all',
-        showArchived: false,
-        clientType: 'all',
-        activityStatus: 'all',
-    }
+  const defaultFilters: ClientFilters = {
+    page: 1,
+    limit: 50,
+    search: '',
+    sortBy: 'alphabet',
+    period: 'all',
+    orderCount: 'any',
+    region: 'all',
+    status: 'all',
+    showArchived: false,
+    clientType: 'all',
+    activityStatus: 'all',
+  }
 
-    const defaultUiState: ClientUiState = {
-        showFilters: false,
-        showHistory: false,
-        showManagerSelect: false,
-        showDeleteConfirm: false,
-        isBulkUpdating: false,
-        showExportDialog: false,
-        searchHistory: [],
-    }
+  const defaultUiState: ClientUiState = {
+    showFilters: false,
+    showHistory: false,
+    showManagerSelect: false,
+    showDeleteConfirm: false,
+    isBulkUpdating: false,
+    showExportDialog: false,
+    searchHistory: [],
+  }
 
-    let setFiltersMock: Mock<(filters: ClientFilters | ((prev: ClientFilters) => ClientFilters)) => void>
-    let setUiStateMock: Mock<(uiState: ClientUiState | ((prev: ClientUiState) => ClientUiState)) => void>
-    let onAddToHistoryMock: Mock<(query: string) => void>
+  let setFiltersMock: Mock<(filters: ClientFilters | ((prev: ClientFilters) => ClientFilters)) => void>
+  let setUiStateMock: Mock<(uiState: ClientUiState | ((prev: ClientUiState) => ClientUiState)) => void>
+  let onAddToHistoryMock: Mock<(query: string) => void>
 
-    beforeEach(() => {
-        setFiltersMock = vi.fn()
-        setUiStateMock = vi.fn()
-        onAddToHistoryMock = vi.fn()
+  beforeEach(() => {
+    setFiltersMock = vi.fn()
+    setUiStateMock = vi.fn()
+    onAddToHistoryMock = vi.fn()
+  })
+
+  const renderPanel = (overrides: {
+    filters?: Partial<ClientFilters>;
+    uiState?: Partial<ClientUiState>;
+    setFilters?: typeof setFiltersMock;
+    setUiState?: typeof setUiStateMock;
+    regions?: string[];
+    managers?: { id: string; name: string }[];
+    sources?: string[];
+    onAddToHistory?: typeof onAddToHistoryMock;
+  } = {}) => {
+    return render(
+      <ClientFilterPanel filters={{ ...defaultFilters, ...overrides.filters }} setFilters={overrides.setFilters ?? setFiltersMock} uiState={{ ...defaultUiState, ...overrides.uiState }} setUiState={overrides.setUiState ?? setUiStateMock} regions={overrides.regions ?? []} managers={overrides.managers ?? []} sources={overrides.sources ?? []} onAddToHistory={overrides.onAddToHistory ?? onAddToHistoryMock} />
+    )
+  }
+
+  // ─── Поиск ─────────────────────────────────────────────
+
+  it('поиск клиента: ввод текста вызывает setFilters на каждую букву', async () => {
+    const user = userEvent.setup()
+    renderPanel()
+
+    const input = screen.getByPlaceholderText('Поиск клиентов...')
+    await user.type(input, 'Иванов')
+
+    expect(setFiltersMock).toHaveBeenCalledTimes(6)
+  })
+
+  it('поиск клиента: Enter добавляет запрос в историю', async () => {
+    const user = userEvent.setup()
+    renderPanel({ filters: { search: 'Тест' } })
+
+    const input = screen.getByPlaceholderText('Поиск клиентов...')
+    await user.type(input, '{Enter}')
+
+    expect(onAddToHistoryMock).toHaveBeenCalledWith('Тест')
+  })
+
+  it('поиск клиента: фокус на поле открывает историю', async () => {
+    const user = userEvent.setup()
+    renderPanel()
+
+    const input = screen.getByPlaceholderText('Поиск клиентов...')
+    await user.click(input)
+
+    expect(setUiStateMock).toHaveBeenCalled()
+  })
+
+  // ─── Кнопка «Фильтры» ─────────────────────────────────
+
+  it('кнопка «Фильтры» переключает панель', async () => {
+    const user = userEvent.setup()
+    renderPanel()
+
+    const btn = screen.getByRole('button', { name: /фильтры/i })
+    await user.click(btn)
+
+    expect(setUiStateMock).toHaveBeenCalled()
+  })
+
+  // ─── Фильтры (selects) ────────────────────────────────
+
+  it('выбор фильтра «Статус» вызывает setFilters', async () => {
+    const _user = userEvent.setup()
+    renderPanel({ uiState: { showFilters: true } })
+
+    const selects = screen.getAllByTestId('select')
+    // Порядок: Период, Кол-во заказов, Регион, Статус
+    const statusSelect = selects[3]
+
+    fireEvent.change(statusSelect, { target: { value: 'lost' } })
+
+    expect(setFiltersMock).toHaveBeenCalled()
+  })
+
+  it('выбор фильтра «Период» вызывает setFilters', async () => {
+    const _user = userEvent.setup()
+    renderPanel({ uiState: { showFilters: true } })
+
+    const selects = screen.getAllByTestId('select')
+    const periodSelect = selects[0]
+
+    fireEvent.change(periodSelect, { target: { value: 'month' } })
+
+    expect(setFiltersMock).toHaveBeenCalled()
+  })
+
+  it('выбор фильтра «Регион» с доступными городами', async () => {
+    const _user = userEvent.setup()
+    renderPanel({
+      uiState: { showFilters: true },
+      regions: ['Москва', 'Санкт-Петербург'],
     })
 
-    const renderPanel = (overrides: {
-        filters?: Partial<ClientFilters>;
-        uiState?: Partial<ClientUiState>;
-        setFilters?: typeof setFiltersMock;
-        setUiState?: typeof setUiStateMock;
-        regions?: string[];
-        managers?: { id: string; name: string }[];
-        sources?: string[];
-        onAddToHistory?: typeof onAddToHistoryMock;
-    } = {}) => {
-        return render(
-            <ClientFilterPanel
-                filters={{ ...defaultFilters, ...overrides.filters }}
-                setFilters={overrides.setFilters ?? setFiltersMock}
-                uiState={{ ...defaultUiState, ...overrides.uiState }}
-                setUiState={overrides.setUiState ?? setUiStateMock}
-                regions={overrides.regions ?? []}
-                managers={overrides.managers ?? []}
-                sources={overrides.sources ?? []}
-                onAddToHistory={overrides.onAddToHistory ?? onAddToHistoryMock}
-            />
-        )
-    }
+    const selects = screen.getAllByTestId('select')
+    const regionSelect = selects[2]
 
-    // ─── Поиск ─────────────────────────────────────────────
+    // Проверяем что города отрендерились
+    const options = within(regionSelect).getAllByRole('option')
+    expect(options.length).toBe(3) // «Все города» + 2 региона
 
-    it('поиск клиента: ввод текста вызывает setFilters на каждую букву', async () => {
-        const user = userEvent.setup()
-        renderPanel()
+    fireEvent.change(regionSelect, { target: { value: 'Москва' } })
+    expect(setFiltersMock).toHaveBeenCalled()
+  })
 
-        const input = screen.getByPlaceholderText('Поиск клиентов...')
-        await user.type(input, 'Иванов')
+  // ─── Сброс фильтров ──────────────────────────────────
 
-        expect(setFiltersMock).toHaveBeenCalledTimes(6)
+  it('кнопка «Сбросить фильтры» вызывает setFilters с начальными значениями', async () => {
+    const user = userEvent.setup()
+    renderPanel({
+      uiState: { showFilters: true },
+      filters: { period: 'month', status: 'lost' },
     })
 
-    it('поиск клиента: Enter добавляет запрос в историю', async () => {
-        const user = userEvent.setup()
-        renderPanel({ filters: { search: 'Тест' } })
+    const resetBtn = screen.getByRole('button', { name: /сбросить фильтры/i })
+    await user.click(resetBtn)
 
-        const input = screen.getByPlaceholderText('Поиск клиентов...')
-        await user.type(input, '{Enter}')
+    expect(setFiltersMock).toHaveBeenCalledWith({
+      page: 1,
+      limit: 50,
+      search: "",
+      sortBy: "alphabet",
+      period: "all",
+      orderCount: "any",
+      region: "all",
+      status: "all",
+      showArchived: false,
+      clientType: 'all',
+      managerId: 'all',
+      acquisitionSource: 'all',
+      activityStatus: 'all',
+      rfmSegment: 'all',
+      loyaltyLevelId: 'all',
+    })
+  })
 
-        expect(onAddToHistoryMock).toHaveBeenCalledWith('Тест')
+  // ─── Чипы активных фильтров ──────────────────────────
+
+  it('активный фильтр «Период» показывает чип с кнопкой удаления', async () => {
+    const user = userEvent.setup()
+    renderPanel({ filters: { period: 'month' } })
+
+    const chip = screen.getByText(/период/i)
+    expect(chip).toBeInTheDocument()
+
+    // Нажимаем X на чипе
+    const chipContainer = chip.closest('div')!
+    const removeBtn = within(chipContainer).getByRole('button')
+    await user.click(removeBtn)
+
+    expect(setFiltersMock).toHaveBeenCalled()
+  })
+
+  it('чип «Архив» отображается при showArchived: true', () => {
+    renderPanel({ filters: { showArchived: true } })
+
+    expect(screen.getByText('Архив')).toBeInTheDocument()
+  })
+
+  // ─── Переключатель «Показать архив» ──────────────────
+
+  it('переключатель «Показать архив» вызывает setFilters', async () => {
+    const user = userEvent.setup()
+    renderPanel({ uiState: { showFilters: true } })
+
+    const toggle = screen.getByText('Показать архив')
+    await user.click(toggle)
+
+    expect(setFiltersMock).toHaveBeenCalled()
+  })
+
+  // ─── История поиска ──────────────────────────────────
+
+  it('история поиска: клик по элементу истории заполняет поиск', async () => {
+    const user = userEvent.setup()
+    renderPanel({
+      uiState: { showHistory: true, searchHistory: ['Петров', 'Сидоров'] },
     })
 
-    it('поиск клиента: фокус на поле открывает историю', async () => {
-        const user = userEvent.setup()
-        renderPanel()
+    const historyItem = screen.getByText('Петров')
+    await user.click(historyItem)
 
-        const input = screen.getByPlaceholderText('Поиск клиентов...')
-        await user.click(input)
+    expect(setFiltersMock).toHaveBeenCalled()
+    expect(setUiStateMock).toHaveBeenCalled()
+  })
 
-        expect(setUiStateMock).toHaveBeenCalled()
+  it('история поиска: кнопка «Очистить» очищает историю', async () => {
+    const user = userEvent.setup()
+    renderPanel({
+      uiState: { showHistory: true, searchHistory: ['Петров'] },
     })
 
-    // ─── Кнопка «Фильтры» ─────────────────────────────────
+    const clearBtn = screen.getByRole('button', { name: /очистить/i })
+    await user.click(clearBtn)
 
-    it('кнопка «Фильтры» переключает панель', async () => {
-        const user = userEvent.setup()
-        renderPanel()
-
-        const btn = screen.getByRole('button', { name: /фильтры/i })
-        await user.click(btn)
-
-        expect(setUiStateMock).toHaveBeenCalled()
-    })
-
-    // ─── Фильтры (selects) ────────────────────────────────
-
-    it('выбор фильтра «Статус» вызывает setFilters', async () => {
-        const _user = userEvent.setup()
-        renderPanel({ uiState: { showFilters: true } })
-
-        const selects = screen.getAllByTestId('select')
-        // Порядок: Период, Кол-во заказов, Регион, Статус
-        const statusSelect = selects[3]
-
-        fireEvent.change(statusSelect, { target: { value: 'lost' } })
-
-        expect(setFiltersMock).toHaveBeenCalled()
-    })
-
-    it('выбор фильтра «Период» вызывает setFilters', async () => {
-        const _user = userEvent.setup()
-        renderPanel({ uiState: { showFilters: true } })
-
-        const selects = screen.getAllByTestId('select')
-        const periodSelect = selects[0]
-
-        fireEvent.change(periodSelect, { target: { value: 'month' } })
-
-        expect(setFiltersMock).toHaveBeenCalled()
-    })
-
-    it('выбор фильтра «Регион» с доступными городами', async () => {
-        const _user = userEvent.setup()
-        renderPanel({
-            uiState: { showFilters: true },
-            regions: ['Москва', 'Санкт-Петербург'],
-        })
-
-        const selects = screen.getAllByTestId('select')
-        const regionSelect = selects[2]
-
-        // Проверяем что города отрендерились
-        const options = within(regionSelect).getAllByRole('option')
-        expect(options.length).toBe(3) // «Все города» + 2 региона
-
-        fireEvent.change(regionSelect, { target: { value: 'Москва' } })
-        expect(setFiltersMock).toHaveBeenCalled()
-    })
-
-    // ─── Сброс фильтров ──────────────────────────────────
-
-    it('кнопка «Сбросить фильтры» вызывает setFilters с начальными значениями', async () => {
-        const user = userEvent.setup()
-        renderPanel({
-            uiState: { showFilters: true },
-            filters: { period: 'month', status: 'lost' },
-        })
-
-        const resetBtn = screen.getByRole('button', { name: /сбросить фильтры/i })
-        await user.click(resetBtn)
-
-        expect(setFiltersMock).toHaveBeenCalledWith({
-            page: 1,
-            limit: 50,
-            search: "",
-            sortBy: "alphabet",
-            period: "all",
-            orderCount: "any",
-            region: "all",
-            status: "all",
-            showArchived: false,
-            clientType: 'all',
-            managerId: 'all',
-            acquisitionSource: 'all',
-            activityStatus: 'all',
-            rfmSegment: 'all',
-            loyaltyLevelId: 'all',
-        })
-    })
-
-    // ─── Чипы активных фильтров ──────────────────────────
-
-    it('активный фильтр «Период» показывает чип с кнопкой удаления', async () => {
-        const user = userEvent.setup()
-        renderPanel({ filters: { period: 'month' } })
-
-        const chip = screen.getByText(/период/i)
-        expect(chip).toBeInTheDocument()
-
-        // Нажимаем X на чипе
-        const chipContainer = chip.closest('div')!
-        const removeBtn = within(chipContainer).getByRole('button')
-        await user.click(removeBtn)
-
-        expect(setFiltersMock).toHaveBeenCalled()
-    })
-
-    it('чип «Архив» отображается при showArchived: true', () => {
-        renderPanel({ filters: { showArchived: true } })
-
-        expect(screen.getByText('Архив')).toBeInTheDocument()
-    })
-
-    // ─── Переключатель «Показать архив» ──────────────────
-
-    it('переключатель «Показать архив» вызывает setFilters', async () => {
-        const user = userEvent.setup()
-        renderPanel({ uiState: { showFilters: true } })
-
-        const toggle = screen.getByText('Показать архив')
-        await user.click(toggle)
-
-        expect(setFiltersMock).toHaveBeenCalled()
-    })
-
-    // ─── История поиска ──────────────────────────────────
-
-    it('история поиска: клик по элементу истории заполняет поиск', async () => {
-        const user = userEvent.setup()
-        renderPanel({
-            uiState: { showHistory: true, searchHistory: ['Петров', 'Сидоров'] },
-        })
-
-        const historyItem = screen.getByText('Петров')
-        await user.click(historyItem)
-
-        expect(setFiltersMock).toHaveBeenCalled()
-        expect(setUiStateMock).toHaveBeenCalled()
-    })
-
-    it('история поиска: кнопка «Очистить» очищает историю', async () => {
-        const user = userEvent.setup()
-        renderPanel({
-            uiState: { showHistory: true, searchHistory: ['Петров'] },
-        })
-
-        const clearBtn = screen.getByRole('button', { name: /очистить/i })
-        await user.click(clearBtn)
-
-        expect(setUiStateMock).toHaveBeenCalled()
-    })
+    expect(setUiStateMock).toHaveBeenCalled()
+  })
 })

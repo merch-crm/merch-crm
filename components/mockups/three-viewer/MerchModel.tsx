@@ -120,23 +120,14 @@ export function MerchModel({
                     {textureUrl ? (
                         <Suspense fallback={null}>
                             {createPortal(
-                                <LogoDecal 
-                                    url={textureUrl} 
-                                    position={decalParams.position as [number, number, number]}
-                                    rotation={decalParams.rotation as [number, number, number]}
-                                    scale={decalParams.scale as [number, number, number]}
-                                />,
+                                <LogoDecal url={textureUrl} position={decalParams.position as [number, number, number]} rotation={decalParams.rotation as [number, number, number]} scale={decalParams.scale as [number, number, number]} />,
                                 mainMesh
                             )}
                         </Suspense>
                     ) : (
                         <Suspense fallback={null}>
                             {createPortal(
-                                <PlacementGuide 
-                                    position={decalParams.position as [number, number, number]} 
-                                    rotation={decalParams.rotation as [number, number, number]} 
-                                    zoneLabel={zone}
-                                />,
+                                <PlacementGuide position={decalParams.position as [number, number, number]} rotation={decalParams.rotation as [number, number, number]} zoneLabel={zone} />,
                                 mainMesh
                             )}
                         </Suspense>

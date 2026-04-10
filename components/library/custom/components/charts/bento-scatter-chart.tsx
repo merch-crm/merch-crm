@@ -31,10 +31,7 @@ export function BentoScatterChart({
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-10 dark:opacity-20" />
             <XAxis dataKey={xKey} type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} className="text-muted-foreground" />
             <YAxis dataKey={yKey} type="number" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} className="text-muted-foreground" />
-            <Tooltip 
-              cursor={{ strokeDasharray: '3 3' }} 
-              contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} 
-            />
+            <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} />
             <Scatter name="Data" data={data} fill={color}>
               {data?.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={(entry["color"] as string) || color} />

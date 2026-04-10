@@ -54,10 +54,10 @@ Gap: Integration Phase 1→3 (Auth not passed to API calls)
 Gap: Flow "View dashboard" broken at data fetch
 
 → Phase 6: "Wire Dashboard to API"
-  - Add fetch to Dashboard.tsx
-  - Include auth header in fetch
-  - Handle response, update state
-  - Render user data
+ - Add fetch to Dashboard.tsx
+ - Include auth header in fetch
+ - Handle response, update state
+ - Render user data
 ```
 
 ## 4. Determine Phase Numbers
@@ -190,65 +190,65 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs(roadmap): add gap clo
 **Requirement gap → Tasks:**
 ```yaml
 gap:
-  id: DASH-01
-  description: "User sees their data"
-  reason: "Dashboard exists but doesn't fetch from API"
-  missing:
-    - "useEffect with fetch to /api/user/data"
-    - "State for user data"
-    - "Render user data in JSX"
+ id: DASH-01
+ description: "User sees their data"
+ reason: "Dashboard exists but doesn't fetch from API"
+ missing:
+  - "useEffect with fetch to /api/user/data"
+  - "State for user data"
+  - "Render user data in JSX"
 
 becomes:
 
 phase: "Wire Dashboard Data"
 tasks:
-  - name: "Add data fetching"
-    files: [src/components/Dashboard.tsx]
-    action: "Add useEffect that fetches /api/user/data on mount"
+ - name: "Add data fetching"
+  files: [src/components/Dashboard.tsx]
+  action: "Add useEffect that fetches /api/user/data on mount"
 
-  - name: "Add state management"
-    files: [src/components/Dashboard.tsx]
-    action: "Add useState for userData, loading, error states"
+ - name: "Add state management"
+  files: [src/components/Dashboard.tsx]
+  action: "Add useState for userData, loading, error states"
 
-  - name: "Render user data"
-    files: [src/components/Dashboard.tsx]
-    action: "Replace placeholder with userData.map rendering"
+ - name: "Render user data"
+  files: [src/components/Dashboard.tsx]
+  action: "Replace placeholder with userData.map rendering"
 ```
 
 **Integration gap → Tasks:**
 ```yaml
 gap:
-  from_phase: 1
-  to_phase: 3
-  connection: "Auth token → API calls"
-  reason: "Dashboard API calls don't include auth header"
-  missing:
-    - "Auth header in fetch calls"
-    - "Token refresh on 401"
+ from_phase: 1
+ to_phase: 3
+ connection: "Auth token → API calls"
+ reason: "Dashboard API calls don't include auth header"
+ missing:
+  - "Auth header in fetch calls"
+  - "Token refresh on 401"
 
 becomes:
 
 phase: "Add Auth to Dashboard API Calls"
 tasks:
-  - name: "Add auth header to fetches"
-    files: [src/components/Dashboard.tsx, src/lib/api.ts]
-    action: "Include Authorization header with token in all API calls"
+ - name: "Add auth header to fetches"
+  files: [src/components/Dashboard.tsx, src/lib/api.ts]
+  action: "Include Authorization header with token in all API calls"
 
-  - name: "Handle 401 responses"
-    files: [src/lib/api.ts]
-    action: "Add interceptor to refresh token or redirect to login on 401"
+ - name: "Handle 401 responses"
+  files: [src/lib/api.ts]
+  action: "Add interceptor to refresh token or redirect to login on 401"
 ```
 
 **Flow gap → Tasks:**
 ```yaml
 gap:
-  name: "User views dashboard after login"
-  broken_at: "Dashboard data load"
-  reason: "No fetch call"
-  missing:
-    - "Fetch user data on mount"
-    - "Display loading state"
-    - "Render user data"
+ name: "User views dashboard after login"
+ broken_at: "Dashboard data load"
+ reason: "No fetch call"
+ missing:
+  - "Fetch user data on mount"
+  - "Display loading state"
+  - "Render user data"
 
 becomes:
 

@@ -44,11 +44,7 @@ export function BentoCreateProjectForm({ className }: { className?: string }) {
                </div>
                <div>
                   <label className="text-[11px] font-black   text-slate-400 ml-1 px-1">Display Name</label>
-                  <BentoInput 
-                    icon={Type} 
-                    placeholder="Project Name" 
-                    value={projectName} 
-                    onChange={(e) => setProjectName(e.target.value)} 
+                  <BentoInput icon={Type} placeholder="Project Name" value={projectName} onChange={(e) => setProjectName(e.target.value)} 
                     wrapperClassName="mt-2"
                   />
                </div>

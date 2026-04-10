@@ -77,11 +77,7 @@ function TooltipRich({
         <TooltipProvider delayDuration={delayDuration}>
             <TooltipRoot>
                 <TooltipTrigger asChild>{children}</TooltipTrigger>
-                <TooltipContent
-                    side={side}
-                    align={align}
-                    className="max-w-[280px] px-4 py-3 flex flex-col gap-1"
-                >
+                <TooltipContent side={side} align={align} className="max-w-[280px] px-4 py-3 flex flex-col gap-1">
                     <p className="font-bold text-sm text-white">{title}</p>
                     {description && (
                         <p className="text-slate-300 font-normal leading-relaxed">{description}</p>
@@ -119,11 +115,7 @@ function TooltipList({
         <TooltipProvider delayDuration={delayDuration}>
             <TooltipRoot>
                 <TooltipTrigger asChild>{children}</TooltipTrigger>
-                <TooltipContent
-                    side={side}
-                    align={align}
-                    className="px-3 py-2.5 min-w-[180px]"
-                >
+                <TooltipContent side={side} align={align} className="px-3 py-2.5 min-w-[180px]">
                     {title && (
                         <p className="font-bold text-sm mb-2 pb-2 border-b border-slate-700">{title}</p>
                     )}

@@ -99,21 +99,21 @@ None — all verifiable items checked programmatically.
 ### Critical Gaps (Block Progress)
 
 1. **{Gap name}**
-   - Missing: {what's missing}
-   - Impact: {why this blocks the goal}
-   - Fix: {what needs to happen}
+  - Missing: {what's missing}
+  - Impact: {why this blocks the goal}
+  - Fix: {what needs to happen}
 
 2. **{Gap name}**
-   - Missing: {what's missing}
-   - Impact: {why this blocks the goal}
-   - Fix: {what needs to happen}
+  - Missing: {what's missing}
+  - Impact: {why this blocks the goal}
+  - Fix: {what needs to happen}
 
 ### Non-Critical Gaps (Can Defer)
 
 1. **{Gap name}**
-   - Issue: {what's wrong}
-   - Impact: {limited impact because...}
-   - Recommendation: {fix now or defer}
+  - Issue: {what's wrong}
+  - Impact: {limited impact because...}
+  - Recommendation: {fix now or defer}
 
 ## Recommended Fix Plans
 
@@ -266,19 +266,19 @@ None needed until automated gaps are fixed.
 ### Critical Gaps (Block Progress)
 
 1. **Chat component is placeholder**
-   - Missing: Actual message list rendering
-   - Impact: Users see "Chat will be here" instead of messages
-   - Fix: Implement Chat.tsx to fetch and render messages
+  - Missing: Actual message list rendering
+  - Impact: Users see "Chat will be here" instead of messages
+  - Fix: Implement Chat.tsx to fetch and render messages
 
 2. **API routes are stubs**
-   - Missing: Database integration in GET and POST
-   - Impact: No data persistence, no real functionality
-   - Fix: Wire prisma calls in route handlers
+  - Missing: Database integration in GET and POST
+  - Impact: No data persistence, no real functionality
+  - Fix: Wire prisma calls in route handlers
 
 3. **No wiring between frontend and backend**
-   - Missing: fetch calls in components
-   - Impact: Even if API worked, UI wouldn't call it
-   - Fix: Add useEffect fetch in Chat, onSubmit fetch in ChatInput
+  - Missing: fetch calls in components
+  - Impact: Even if API worked, UI wouldn't call it
+  - Fix: Add useEffect fetch in Chat, onSubmit fetch in ChatInput
 
 ## Recommended Fix Plans
 

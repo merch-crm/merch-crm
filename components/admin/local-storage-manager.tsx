@@ -52,21 +52,14 @@ export function LocalStorageManager() {
     return (
         <div className="space-y-3">
             {/* Header Stats */}
-            <StorageStats
-                fileCount={data?.stats.fileCount || 0}
-                folderCount={data?.stats.folderCount || 0}
-                totalSize={formatSize(data?.stats.size || 0)}
-                loading={uiState.loading}
-                onRefresh={() => fetchData(true)}
+            <StorageStats fileCount={data?.stats.fileCount || 0} folderCount={data?.stats.folderCount || 0} totalSize={formatSize(data?.stats.size || 0)} loading={uiState.loading} onRefresh={() => fetchData(true)}
             />
 
             {/* File Browser */}
             <Card className="border-slate-200 shadow-xl shadow-slate-200/40 bg-white rounded-[40px] border overflow-hidden">
                 <CardHeader className="p-6 pb-4">
                     <div className="flex flex-col gap-3">
-                        <StorageBrowserHeader
-                            searchTerm={uiState.searchTerm}
-                            onSearchChange={(val) => setUiState(prev => ({ ...prev, searchTerm: val }))}
+                        <StorageBrowserHeader searchTerm={uiState.searchTerm} onSearchChange={(val) => setUiState(prev => ({ ...prev, searchTerm: val }))}
                             isMultiMode={selection.isMultiMode}
                             onToggleMultiMode={() => setSelection(prev => ({
                                 isMultiMode: !prev.isMultiMode,
@@ -85,26 +78,17 @@ export function LocalStorageManager() {
                                     <span className="text-sm font-bold text-slate-700">выбрано</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={() => selectAll(filteredFolders, filteredFiles)}
+                                    <Button variant="solid" color="neutral" size="sm" onClick={() => selectAll(filteredFolders, filteredFiles)}
                                         className="bg-white text-emerald-600 hover:bg-emerald-50 text-xs h-8"
                                     >
                                         Выбрать все
                                     </Button>
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={() => setSelection(prev => ({ ...prev, paths: new Set() }))}
+                                    <Button variant="solid" color="neutral" size="sm" onClick={() => setSelection(prev => ({ ...prev, paths: new Set() }))}
                                         className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8"
                                     >
                                         Снять выбор
                                     </Button>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
-                                        onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
+                                    <Button variant="solid" color="danger" size="sm" onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
                                         className="gap-2 text-xs h-8"
                                     >
                                         <Trash2 size={14} />
@@ -114,11 +98,7 @@ export function LocalStorageManager() {
                             </div>
                         )}
 
-                        <StorageBreadcrumbs
-                            currentPrefix={uiState.currentPrefix}
-                            breadcrumbs={breadcrumbs}
-                            onNavigate={navigateTo}
-                        />
+                        <StorageBreadcrumbs currentPrefix={uiState.currentPrefix} breadcrumbs={breadcrumbs} onNavigate={navigateTo} />
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
@@ -136,22 +116,7 @@ export function LocalStorageManager() {
                                 <p className="text-xs font-bold">Здесь пока пусто</p>
                             </div>
                         ) : (
-                            <StorageFilesList
-                                data={{
-                                    folders: filteredFolders,
-                                    files: filteredFiles,
-                                    currentPrefix: uiState.currentPrefix
-                                }}
-                                selection={{
-                                    isMultiMode: selection.isMultiMode,
-                                    selectedPaths: selection.paths,
-                                    onToggle: toggleSelection
-                                }}
-                                actions={{
-                                    onNavigate: navigateTo,
-                                    onFileClick: handleFileClick,
-                                    onRename: openRenameModal,
-                                    onDelete: (path) => setModals(prev => ({ ...prev, delete: { path, processing: false } }))
+                            <StorageFilesList data={{ folders: filteredFolders, files: filteredFiles, currentPrefix: uiState.currentPrefix }} selection={{ isMultiMode: selection.isMultiMode, selectedPaths: selection.paths, onToggle: toggleSelection }} actions={{ onNavigate: navigateTo, onFileClick: handleFileClick, onRename: openRenameModal, onDelete: (path) => setModals(prev => ({ ...prev, delete: { path, processing: false } }))
                                 }}
                                 utils={{
                                     formatSize: formatSize
@@ -163,9 +128,7 @@ export function LocalStorageManager() {
             </Card>
 
             {/* Modals */}
-            <CreateFolderModal
-                isOpen={modals.create.open}
-                onClose={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: false } }))}
+            <CreateFolderModal isOpen={modals.create.open} onClose={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: false } }))}
                 currentPrefix={uiState.currentPrefix}
                 name={modals.create.name}
                 onNameChange={(name) => setModals(prev => ({ ...prev, create: { ...prev.create, name } }))}
@@ -173,9 +136,7 @@ export function LocalStorageManager() {
                 processing={modals.create.processing}
             />
 
-            <RenameModal
-                isOpen={modals.rename.open}
-                onClose={() => setModals(prev => ({ ...prev, rename: { ...prev.rename, open: false } }))}
+            <RenameModal isOpen={modals.rename.open} onClose={() => setModals(prev => ({ ...prev, rename: { ...prev.rename, open: false } }))}
                 path={modals.rename.path}
                 name={modals.rename.name}
                 onNameChange={(name) => setModals(prev => ({ ...prev, rename: { ...prev.rename, name } }))}
@@ -183,9 +144,7 @@ export function LocalStorageManager() {
                 processing={modals.rename.processing}
             />
 
-            <ConfirmDialog
-                isOpen={!!modals.delete.path}
-                onClose={() => setModals(prev => ({ ...prev, delete: { path: null, processing: false } }))}
+            <ConfirmDialog isOpen={!!modals.delete.path} onClose={() => setModals(prev => ({ ...prev, delete: { path: null, processing: false } }))}
                 onConfirm={handleDelete}
                 title="Удалить с диска?"
                 description={`Вы собираетесь удалить "${modals.delete.path?.split('/').pop()}". Это действие необратимо и файл будет удален с сервера.`}
@@ -194,9 +153,7 @@ export function LocalStorageManager() {
                 isLoading={modals.delete.processing}
             />
 
-            <ConfirmDialog
-                isOpen={modals.multiDelete.open}
-                onClose={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: false } }))}
+            <ConfirmDialog isOpen={modals.multiDelete.open} onClose={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: false } }))}
                 onConfirm={handleDeleteMultiple}
                 title="Массовое удаление"
                 description={`Вы собираетесь удалить ${formatCount(selection.paths.size, 'объект', 'объекта', 'объектов')} с диска сервера. Это действие необратимо.`}
@@ -205,9 +162,7 @@ export function LocalStorageManager() {
                 isLoading={modals.multiDelete.processing}
             />
 
-            <PreviewModal
-                file={preview.file}
-                onClose={() => setPreview({ file: null })}
+            <PreviewModal file={preview.file} onClose={() => setPreview({ file: null })}
                 onExternalOpen={handleExternalOpen}
             />
         </div>

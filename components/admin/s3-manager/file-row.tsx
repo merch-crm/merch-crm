@@ -44,10 +44,7 @@ export const FileRow = ({
     const isImage = isImageFile(name);
 
     return (
-        <S3RowBase
-            isSelected={isSelected}
-            isMultiSelectMode={isMultiSelectMode}
-            onSelect={() => onSelect(file.key)}
+        <S3RowBase isSelected={isSelected} isMultiSelectMode={isMultiSelectMode} onSelect={() => onSelect(file.key)}
             onClick={() => onClick(file)}
             onRename={() => onRename(file.key)}
             onDelete={() => onDelete(file.key)}
@@ -57,10 +54,7 @@ export const FileRow = ({
             subtitle={formatDate(file.lastModified)}
             rightText={formatSize(file.size)}
             extraActions={
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => {
+                <Button variant="ghost" size="icon" onClick={(e) => {
                         e.stopPropagation();
                         onClick(file);
                     }}

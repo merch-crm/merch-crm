@@ -143,16 +143,8 @@ export function SalaryClient({ salaryData }: SalaryClientProps) {
  <BarChart data={deptsData} layout="vertical" margin={{ left: -20, right: 20 }}>
  <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
  <XAxis type="number" hide />
- <YAxis 
- dataKey="name" 
- type="category" 
- axisLine={false} 
- tickLine={false}
- tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 800 }}
- />
- <Tooltip 
- cursor={{ fill: 'transparent' }}
- content={({ active, payload }: { active?: boolean; payload?: { payload?: { name: string }, value?: number }[] }) => {
+ <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 800 }} />
+ <Tooltip cursor={{ fill: 'transparent' }} content={({ active, payload }: { active?: boolean; payload?: { payload?: { name: string }, value?: number }[] }) => {
  if (active && payload && payload.length) {
  return (
  <div className="bg-white/90 backdrop-blur-md p-3 border border-slate-200 rounded-xl shadow-xl">

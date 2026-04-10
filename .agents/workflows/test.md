@@ -17,10 +17,10 @@ This command generates tests, runs existing tests, or checks test coverage.
 ## Sub-commands
 
 ```
-/test                - Run all tests
+/test        - Run all tests
 /test [file/feature] - Generate tests for specific target
-/test coverage       - Show test coverage report
-/test watch          - Run tests in watch mode
+/test coverage    - Show test coverage report
+/test watch     - Run tests in watch mode
 ```
 
 ---
@@ -32,20 +32,20 @@ This command generates tests, runs existing tests, or checks test coverage.
 When asked to test a file or feature:
 
 1. **Analyze the code**
-   - Identify functions and methods
-   - Find edge cases
-   - Detect dependencies to mock
+  - Identify functions and methods
+  - Find edge cases
+  - Detect dependencies to mock
 
 2. **Generate test cases**
-   - Happy path tests
-   - Error cases
-   - Edge cases
-   - Integration tests (if needed)
+  - Happy path tests
+  - Error cases
+  - Edge cases
+  - Integration tests (if needed)
 
 3. **Write tests**
-   - Use project's test framework (Jest, Vitest, etc.)
-   - Follow existing test patterns
-   - Mock external dependencies
+  - Use project's test framework (Jest, Vitest, etc.)
+  - Follow existing test patterns
+  - Mock external dependencies
 
 ---
 
@@ -84,9 +84,9 @@ Run with: `npm test`
 ❌ order.test.ts (2 passed, 1 failed)
 
 Failed:
-  ✗ should calculate total with discount
-    Expected: 90
-    Received: 100
+ ✗ should calculate total with discount
+  Expected: 90
+  Received: 100
 
 Total: 15 tests (14 passed, 1 failed)
 ```
@@ -110,26 +110,26 @@ Total: 15 tests (14 passed, 1 failed)
 
 ```typescript
 describe('AuthService', () => {
-  describe('login', () => {
-    it('should return token for valid credentials', async () => {
-      // Arrange
-      const credentials = { email: 'test@test.com', password: 'pass123' };
-      
-      // Act
-      const result = await authService.login(credentials);
-      
-      // Assert
-      expect(result.token).toBeDefined();
-    });
-
-    it('should throw for invalid password', async () => {
-      // Arrange
-      const credentials = { email: 'test@test.com', password: 'wrong' };
-      
-      // Act & Assert
-      await expect(authService.login(credentials)).rejects.toThrow('Invalid credentials');
-    });
+ describe('login', () => {
+  it('should return token for valid credentials', async () => {
+   // Arrange
+   const credentials = { email: 'test@test.com', password: 'pass123' };
+   
+   // Act
+   const result = await authService.login(credentials);
+   
+   // Assert
+   expect(result.token).toBeDefined();
   });
+
+  it('should throw for invalid password', async () => {
+   // Arrange
+   const credentials = { email: 'test@test.com', password: 'wrong' };
+   
+   // Act & Assert
+   await expect(authService.login(credentials)).rejects.toThrow('Invalid credentials');
+  });
+ });
 });
 ```
 

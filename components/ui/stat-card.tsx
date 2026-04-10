@@ -63,10 +63,7 @@ export function ModernStatCard({
     const Component = onClick ?"button" :"div";
 
     return (
-        <Component
-            onClick={onClick}
-            type={onClick ?"button" : undefined}
-            onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
+        <Component onClick={onClick} type={onClick ?"button" : undefined} onKeyDown={onClick ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } } : undefined}
             className={cn("crm-card relative group transition-all duration-300 w-full text-left border-none outline-none focus-visible:ring-2 focus-visible:ring-primary/20 bg-transparent",
                 onClick &&"cursor-pointer hover:scale-[1.02] active:scale-[0.98]",
                 className
@@ -153,14 +150,7 @@ export function StatCard({
     const Component = onClick ?"button" :"div";
 
     return (
-        <Component
-            className={cn("border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden transition-all w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
-                onClick &&"cursor-pointer hover:bg-slate-50 active:scale-[0.99]",
-                className
-            )}
-            onClick={onClick}
-            type={onClick ?"button" : undefined}
-        >
+        <Component className={cn("border-slate-200 shadow-sm bg-white rounded-[32px] border overflow-hidden transition-all w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-primary/20", onClick &&"cursor-pointer hover:bg-slate-50 active:scale-[0.99]", className )} onClick={onClick} type={onClick ?"button" : undefined}>
             <CardContent className="p-6">
                 <div className="flex items-center gap-3">
                     <div className={cn("p-3 rounded-[18px]", oldColorMap[colorScheme])}>

@@ -128,8 +128,8 @@ Write to `.planning/reports/MILESTONE_SUMMARY-v${VERSION}.md`:
 
 Present as a bulleted list of decisions with brief rationale:
 - **Decision:** {what was chosen}
-  - **Why:** {rationale from CONTEXT.md}
-  - **Phase:** {which phase made this decision}
+ - **Why:** {rationale from CONTEXT.md}
+ - **Phase:** {which phase made this decision}
 
 ## 3. Phases Delivered
 
@@ -190,7 +190,7 @@ mkdir -p .planning/reports
 Write the summary, then commit:
 ```bash
 gsd-tools.cjs commit "docs(v${VERSION}): generate milestone summary for onboarding" \
-  --files ".planning/reports/MILESTONE_SUMMARY-v${VERSION}.md"
+ --files ".planning/reports/MILESTONE_SUMMARY-v${VERSION}.md"
 ```
 
 ## Step 7: Present Summary
@@ -218,6 +218,6 @@ If the user is done:
 
 ```bash
 gsd-tools.cjs state record-session \
-  --stopped-at "Milestone v${VERSION} summary generated" \
-  --resume-file ".planning/reports/MILESTONE_SUMMARY-v${VERSION}.md"
+ --stopped-at "Milestone v${VERSION} summary generated" \
+ --resume-file ".planning/reports/MILESTONE_SUMMARY-v${VERSION}.md"
 ```

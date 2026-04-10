@@ -64,22 +64,22 @@ Like `inventory_transactions`, system logging tables are heavily partitioned to 
 ## 🔗 Core Architecture Pattern (Mermaid)
 ```mermaid
 graph TD
-    UI[inventory_items] -- belongs to --- IC[inventory_categories]
-    UI -- has many --- TR[inventory_transactions_*]
-    UI -- has many --- ST[inventory_stocks]
-    SL[storage_locations] -- contains --- ST
-    SL -- involved in --- TR
-    
-    C[clients] -- has many --- O[orders]
-    O -- has many --- OI[order_items]
-    OI -- links to --- UI
-    
-    O -- has many --- T[tasks]
-    
-    U[users] -- assigned to --- T
-    U -- created --- TR
-    U -- belongs to --- R[roles]
-    R -- belongs to --- D[departments]
+  UI[inventory_items] -- belongs to --- IC[inventory_categories]
+  UI -- has many --- TR[inventory_transactions_*]
+  UI -- has many --- ST[inventory_stocks]
+  SL[storage_locations] -- contains --- ST
+  SL -- involved in --- TR
+  
+  C[clients] -- has many --- O[orders]
+  O -- has many --- OI[order_items]
+  OI -- links to --- UI
+  
+  O -- has many --- T[tasks]
+  
+  U[users] -- assigned to --- T
+  U -- created --- TR
+  U -- belongs to --- R[roles]
+  R -- belongs to --- D[departments]
 ```
 
 ## ⚠️ Critical Sync Points

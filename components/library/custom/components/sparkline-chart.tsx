@@ -36,19 +36,10 @@ export function SparklineChart({ data: propData, color = "var(--primary-base)", 
               <stop offset="95%" stopColor={color} stopOpacity={0}/>
             </linearGradient>
           </defs>
-          <Tooltip 
-             content={() => null}
+          <Tooltip content={() => null}
              cursor={{ stroke: color, strokeWidth: 1 }}
           />
-          <Area 
-            type="monotone" 
-            dataKey="value" 
-            stroke={color} 
-            strokeWidth={2} 
-            fillOpacity={1} 
-            fill={`url(#sparkline-${color.replace(/[^a-zA-Z0-9]/g, '')})`} 
-            animationDuration={1500}
-          />
+          <Area type="monotone" dataKey="value" stroke={color} strokeWidth={2} fillOpacity={1} fill={`url(#sparkline-${color.replace(/[^a-zA-Z0-9]/g, '')})`} animationDuration={1500} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

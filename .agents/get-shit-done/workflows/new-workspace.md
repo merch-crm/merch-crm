@@ -61,8 +61,8 @@ Use AskUserQuestion:
 - header: "Current Repo"
 - question: "No child repos found. Create a workspace with the current repo?"
 - options:
-  - "Yes — create workspace with current repo" → use current repo
-  - "Cancel" → exit
+ - "Yes — create workspace with current repo" → use current repo
+ - "Cancel" → exit
 
 **If `child_repo_count` is 0 and `is_git_repo` is false:**
 
@@ -71,7 +71,7 @@ Error:
 No git repos found in the current directory and this is not a git repo.
 
 Run this command from a directory containing git repos, or specify repos explicitly:
-  /gsd-new-workspace --name my-workspace --repos /path/to/repo1,/path/to/repo2
+ /gsd-new-workspace --name my-workspace --repos /path/to/repo1,/path/to/repo2
 ```
 Exit.
 
@@ -82,7 +82,7 @@ Error:
 Error: --auto requires --repos to specify which repos to include.
 
 Usage:
-  /gsd-new-workspace --name my-workspace --repos repo1,repo2 --auto
+ /gsd-new-workspace --name my-workspace --repos repo1,repo2 --auto
 ```
 Exit.
 
@@ -96,8 +96,8 @@ Use AskUserQuestion:
 - header: "Strategy"
 - question: "How should repos be copied into the workspace?"
 - options:
-  - "Worktree (recommended) — lightweight, shares .git objects with source repo" → `worktree`
-  - "Clone — fully independent copy, no connection to source repo" → `clone`
+ - "Worktree (recommended) — lightweight, shares .git objects with source repo" → `worktree`
+ - "Clone — fully independent copy, no connection to source repo" → `clone`
 
 **If `--auto`:** Default to `worktree`.
 
@@ -108,17 +108,17 @@ Before creating anything, validate:
 1. **Target path** — must not exist or must be empty:
 ```bash
 if [ -d "$TARGET_PATH" ] && [ "$(ls -A "$TARGET_PATH" 2>/dev/null)" ]; then
-  echo "Error: Target path already exists and is not empty: $TARGET_PATH"
-  echo "Choose a different --name or --path."
-  exit 1
+ echo "Error: Target path already exists and is not empty: $TARGET_PATH"
+ echo "Choose a different --name or --path."
+ exit 1
 fi
 ```
 
 2. **Source repos exist and are git repos** — for each repo path:
 ```bash
 if [ ! -d "$REPO_PATH/.git" ]; then
-  echo "Error: Not a git repo: $REPO_PATH"
-  exit 1
+ echo "Error: Not a git repo: $REPO_PATH"
+ exit 1
 fi
 ```
 
@@ -195,13 +195,13 @@ mkdir -p "$TARGET_PATH/.planning"
 ```
 Workspace created: $TARGET_PATH
 
-  Repos: $REPO_COUNT
-  Strategy: $STRATEGY
-  Branch: $BRANCH_NAME
+ Repos: $REPO_COUNT
+ Strategy: $STRATEGY
+ Branch: $BRANCH_NAME
 
 Next steps:
-  cd $TARGET_PATH
-  /gsd-new-project    # Initialize GSD in the workspace
+ cd $TARGET_PATH
+ /gsd-new-project  # Initialize GSD in the workspace
 ```
 
 **If some repos failed:**
@@ -209,12 +209,12 @@ Next steps:
 ```
 Workspace created with $SUCCESS_COUNT of $TOTAL_COUNT repos: $TARGET_PATH
 
-  Succeeded: repo1, repo2
-  Failed: repo3 (branch already exists), repo4 (not a git repo)
+ Succeeded: repo1, repo2
+ Failed: repo3 (branch already exists), repo4 (not a git repo)
 
 Next steps:
-  cd $TARGET_PATH
-  /gsd-new-project    # Initialize GSD in the workspace
+ cd $TARGET_PATH
+ /gsd-new-project  # Initialize GSD in the workspace
 ```
 
 **Offer to initialize GSD (if not `--auto`):**
@@ -223,8 +223,8 @@ Use AskUserQuestion:
 - header: "Initialize GSD"
 - question: "Would you like to initialize a GSD project in the new workspace?"
 - options:
-  - "Yes — run /gsd-new-project" → tell user to `cd $TARGET_PATH` first, then run `/gsd-new-project`
-  - "No — I'll set it up later" → done
+ - "Yes — run /gsd-new-project" → tell user to `cd $TARGET_PATH` first, then run `/gsd-new-project`
+ - "No — I'll set it up later" → done
 
 </process>
 

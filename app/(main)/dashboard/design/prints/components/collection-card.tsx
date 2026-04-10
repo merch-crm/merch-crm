@@ -44,28 +44,14 @@ export function CollectionCard({ collection, isSorting }: CollectionCardProps) {
  };
 
  return (
- <Card
- ref={setNodeRef}
- style={style}
- className={cn(
+ <Card ref={setNodeRef} style={style} className={cn(
 "group cursor-pointer transition-all duration-200 overflow-hidden",
-"hover:shadow-lg hover:scale-[1.02]",
- isDragging &&"opacity-50 shadow-2xl scale-105 z-50",
- isSorting &&"cursor-grab active:cursor-grabbing"
-)}
- onClick={handleClick}
- {...(isSorting ? { ...attributes, ...listeners } : {})}
- >
+"hover:shadow-lg hover:scale-[1.02]", isDragging &&"opacity-50 shadow-2xl scale-105 z-50", isSorting &&"cursor-grab active:cursor-grabbing"
+)} onClick={handleClick} {...(isSorting ? { ...attributes, ...listeners } : {})}>
  {/* Cover Image */}
  <div className="relative h-40 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
  {collection.coverImage ? (
- <Image
- src={collection.coverImage}
- alt={collection.name}
- width={400}
- height={200}
- className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
- />
+ <Image src={collection.coverImage} alt={collection.name} width={400} height={200} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
 ) : (
  <div className="w-full h-full flex items-center justify-center">
  <div className="w-20 h-20 rounded-2xl bg-white/80 flex items-center justify-center shadow-sm">

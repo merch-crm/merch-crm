@@ -25,22 +25,22 @@ This ensures workstream scope chains automatically through the workflow:
 
 ```
 .planning/
-├── PROJECT.md          # Shared
-├── config.json         # Shared
-├── milestones/         # Shared
-├── codebase/           # Shared
-├── active-workstream   # Points to current ws
+├── PROJECT.md     # Shared
+├── config.json     # Shared
+├── milestones/     # Shared
+├── codebase/      # Shared
+├── active-workstream  # Points to current ws
 └── workstreams/
-    ├── feature-a/      # Workstream A
-    │   ├── STATE.md
-    │   ├── ROADMAP.md
-    │   ├── REQUIREMENTS.md
-    │   └── phases/
-    └── feature-b/      # Workstream B
-        ├── STATE.md
-        ├── ROADMAP.md
-        ├── REQUIREMENTS.md
-        └── phases/
+  ├── feature-a/   # Workstream A
+  │  ├── STATE.md
+  │  ├── ROADMAP.md
+  │  ├── REQUIREMENTS.md
+  │  └── phases/
+  └── feature-b/   # Workstream B
+    ├── STATE.md
+    ├── ROADMAP.md
+    ├── REQUIREMENTS.md
+    └── phases/
 ```
 
 ## CLI Usage

@@ -63,9 +63,9 @@ Update STATE.md to reflect the new phase:
 
 1. Read `.planning/STATE.md`
 2. Under "## Accumulated Context" → "### Roadmap Evolution" add entry:
-   ```
-   - Phase {N} added: {description}
-   ```
+  ```
+  - Phase {N} added: {description}
+  ```
 
 If "Roadmap Evolution" section doesn't exist, create it.
 </step>

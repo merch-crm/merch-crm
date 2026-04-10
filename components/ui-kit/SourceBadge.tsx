@@ -1,20 +1,8 @@
 import { cn } from "@/components/library/custom/utils/cn";
 
-export type Source = "aceternity" | "reactbits" | "heroui" | "alignui" | "custom" | "gravity" | "base" | "radix";
+export type Source = "alignui" | "custom" | "gravity" | "base" | "radix";
 
 const sourceConfig: Record<Source, { label: string; color: string }> = {
-  aceternity: {
-    label: "Aceternity",
-    color: "bg-violet-100 text-violet-700 border-violet-200",
-  },
-  reactbits: {
-    label: "React Bits",
-    color: "bg-blue-100 text-blue-700 border-blue-200",
-  },
-  heroui: {
-    label: "HeroUI",
-    color: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  },
   alignui: {
     label: "AlignUI",
     color: "bg-amber-100 text-amber-700 border-amber-200",
@@ -44,7 +32,7 @@ export function SourceBadge({
   source: Source;
   className?: string;
 }) {
-  const config = sourceConfig[source];
+  const config = sourceConfig[source] ?? sourceConfig.base;
 
   return (
     <span
