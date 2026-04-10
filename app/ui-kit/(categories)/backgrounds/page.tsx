@@ -21,7 +21,6 @@ export default function BackgroundsPage() {
    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
     <ComponentShowcase title="Структурная сетка" source="custom">
       <div className="relative w-full h-[300px] rounded-[40px] bg-white border border-gray-100 shadow-xl overflow-hidden">
-       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
        <div className="relative z-10 size-full flex flex-col items-center justify-center">
          <Grid className="size-12 text-primary-base mb-4" />
          <h4 className="text-xl font-black text-gray-950 font-heading">Чертежи</h4>

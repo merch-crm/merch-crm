@@ -12,7 +12,7 @@ import { BentoNewsletterSubscribe } from '@/components/library/custom/components
 // Утилита для фона, чтобы белые модалки контрастировали
 const BgSolid = ({ children }: { children: React.ReactNode }) => (
  <div className="relative w-full min-h-[400px] bg-[#f1f3f5] bg-cover bg-center flex flex-col items-center justify-center p-4">
-  <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+
   {children}
  </div>
 );

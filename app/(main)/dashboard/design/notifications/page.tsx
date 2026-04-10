@@ -70,7 +70,7 @@ export default function ErrorModalVariantsLightAnim() {
   <div className="min-h-screen bg-[#FDFDFD] text-gray-900 p-6 lg:p-12 font-sans overflow-x-hidden selection:bg-red-200/50">
    <div className="fixed inset-0 pointer-events-none z-0">
     <div className="absolute top-[10%] left-[5%] w-[600px] h-[600px] bg-red-500/5 blur-[150px] rounded-full" />
-    <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+
    </div>
 
    <div className="max-w-[1400px] mx-auto relative z-10">
