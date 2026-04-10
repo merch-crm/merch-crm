@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
  Palette, Type, RectangleHorizontal, TextCursorInput, 
  FoldVertical, MessageCircle, BarChart3, Calculator, CalendarDays, 
- UserCircle, Compass, AlertTriangle, Image, Wand2, Database, UploadCloud, 
+ UserCircle, Compass, AlertTriangle, Image, Wand2, UploadCloud, 
  QrCode, Activity, CreditCard, Table2, Briefcase, SlidersHorizontal
 } from 'lucide-react';
 import { cn } from '@/components/library/custom/utils/cn';
@@ -26,8 +26,8 @@ const categoryGroups = [
   title: "Базовые UI",
   description: "Строительные блоки интерфейса",
   items: [
-   { slug: 'inputs', label: 'Поля ввода', icon: TextCursorInput, count: 11, color: 'text-orange-600', bg: 'bg-orange-50' },
-   { slug: 'cards', label: 'Карточки', icon: CreditCard, count: 2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+   { slug: 'inputs', label: 'Поля ввода', icon: TextCursorInput, count: 12, color: 'text-orange-600', bg: 'bg-orange-50' },
+   { slug: 'cards', label: 'Карточки', icon: CreditCard, count: 1, color: 'text-emerald-600', bg: 'bg-emerald-50' },
    { slug: 'controls', label: 'Переключатели', icon: SlidersHorizontal, count: 4, color: 'text-indigo-600', bg: 'bg-indigo-50' },
    { slug: 'accordions', label: 'Раскрытие', icon: FoldVertical, count: 3, color: 'text-violet-600', bg: 'bg-violet-50' },
    { slug: 'tooltips', label: 'Подсказки', icon: MessageCircle, count: 3, color: 'text-rose-600', bg: 'bg-rose-50' },
@@ -45,10 +45,9 @@ const categoryGroups = [
   title: "Аналитика и CRM",
   description: "Специфичные модули управления",
   items: [
-   { slug: 'data-management', label: 'Управление данными', icon: Database, count: 4, color: 'text-teal-600', bg: 'bg-teal-50' },
    { slug: 'charts', label: 'Графики и визуализация', icon: BarChart3, count: 9, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-   { slug: 'pricing', label: 'Тарифы и Монетизация', icon: Calculator, count: 2, color: 'text-amber-600', bg: 'bg-amber-50' },
-   { slug: 'dates', label: 'Даты и время', icon: CalendarDays, count: 13, color: 'text-rose-600', bg: 'bg-rose-50' },
+   { slug: 'pricing', label: 'Оплата', icon: Calculator, count: 2, color: 'text-amber-600', bg: 'bg-amber-50' },
+   { slug: 'dates', label: 'Даты и время', icon: CalendarDays, count: 11, color: 'text-rose-600', bg: 'bg-rose-50' },
    { slug: 'qr', label: 'QR Коды', icon: QrCode, count: 7, color: 'text-slate-600', bg: 'bg-slate-50' },
    { slug: 'merch', label: 'Производство', icon: Briefcase, count: 2, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   ]
@@ -57,7 +56,7 @@ const categoryGroups = [
   title: "Оформление",
   description: "Базовая стилистика",
   items: [
-   { slug: 'avatars', label: 'Аватары', icon: UserCircle, count: 3, color: 'text-teal-600', bg: 'bg-teal-50' },
+   { slug: 'avatars', label: 'Пользователи', icon: UserCircle, count: 4, color: 'text-teal-600', bg: 'bg-teal-50' },
    { slug: 'navigation', label: 'Навигация', icon: Compass, count: 7, color: 'text-cyan-600', bg: 'bg-cyan-50' },
    { slug: 'errors', label: 'Системные уведомления', icon: AlertTriangle, count: 15, color: 'text-red-500', bg: 'bg-red-50' },
   ]

@@ -20,8 +20,8 @@ export interface SelectOption {
 type LayoutType = "list" | "grid-2" | "grid-3" | "list-with-search";
 
 function getOptimalLayout(options: SelectOption[]): LayoutType {
+    if (!options || options.length === 0) return "list";
     const count = options.length;
-    if (count === 0) return "list";
 
     const avgLength = options.reduce((sum, o) => sum + o.title.length, 0) / count;
 

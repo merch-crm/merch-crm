@@ -22,7 +22,7 @@ function BulletProgress({ label, value, percentage, target, colorClass = "bg-pri
         <span className="text-gray-400">{label}</span>
         <span className="text-gray-900">{value}</span>
       </div>
-      <div className="h-4 bg-gray-50 rounded-full relative overflow-hidden border border-gray-100 p-0.5">
+      <div className="h-4 bg-slate-50 rounded-full relative overflow-hidden border border-slate-100 p-0.5">
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: percentage }}
@@ -44,19 +44,19 @@ export function BentoFinancialBullet() {
             <Wallet className="size-5" />
           </BentoIconContainer>
           <div className="flex flex-col">
-            <h3 className="text-sm font-black text-gray-900 tracking-normal leading-none">Бюджет Отдела</h3>
-            <p className="text-[11px] font-black text-gray-400 mt-1">Финансовый Год 2025</p>
+            <h3 className="text-sm font-bold text-slate-900 tracking-normal leading-none">Бюджет Отдела</h3>
+            <p className="text-[11px] font-bold text-slate-400 mt-1">Финансовый Год 2025</p>
           </div>
         </div>
-        <Info className="size-4 text-gray-300 hover:text-gray-950 transition-colors cursor-pointer" />
+        <Info className="size-4 text-slate-300 hover:text-slate-950 transition-colors cursor-pointer" />
       </div>
 
       <div className="space-y-3 pt-2">
-        <BulletProgress label="Операции" value="$142,500 / $200k" percentage="71.25%" target="25%" colorClass="bg-slate-900" />
+        <BulletProgress label="Операции" value="$142,500 / $200k" percentage="71.25%" target="25%" colorClass="bg-slate-700" />
         <BulletProgress label="Маркетинг" value="$85k / $120k" percentage="70.83%" target="30%" colorClass="bg-primary-base" delay={0.2} />
       </div>
 
-      <div className="mt-2 text-[11px] font-black text-gray-400 flex items-center justify-center gap-2">
+      <div className="mt-2 text-[11px] font-bold text-gray-400 flex items-center justify-center gap-2">
         <div className="size-1.5 rounded-full bg-rose-500" />
         Порог превышения бюджета: 90%
       </div>

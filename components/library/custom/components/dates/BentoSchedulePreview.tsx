@@ -32,7 +32,7 @@ export function BentoSchedulePreview() {
   if (!isMounted) return <div className="w-full max-w-sm h-96 bg-white rounded-[3rem] border border-gray-100 shadow-sm animate-pulse" />;
 
   return (
-    <div className="w-full max-w-sm bg-white rounded-[3rem] border border-gray-100 shadow-sm p-8 relative group">
+    <div className="w-full max-w-sm bg-white rounded-[3rem] border border-gray-100 p-8 relative group">
       <div className="flex items-center justify-between mb-8">
          <div className="flex items-center gap-3">
             <div className="size-10 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center">
@@ -57,23 +57,30 @@ export function BentoSchedulePreview() {
          />
       </div>
 
-      <div className="space-y-3 relative z-10">
+      <div className="space-y-1 relative z-10">
          {tasks.map((task) => (
             <motion.div 
                key={task.id}
                onClick={() => toggleTask(task.id)}
                className={cn(
                   "group/item flex items-center gap-3 p-4 rounded-3xl border transition-all cursor-pointer",
-                  task.completed ? "bg-gray-50 border-gray-100" : "bg-white border-transparent hover:border-gray-100 hover:shadow-lg"
+                  task.completed ? "bg-gray-50 border-gray-100" : "bg-white border-transparent hover:border-gray-100 hover:bg-slate-50"
                )}
             >
                <div className="text-[11px] font-black text-gray-400 w-10 ">{task.time}</div>
                <div className="flex-1">
                   <h5 className={cn(
-                    "text-sm font-black transition-all",
-                    task.completed ? "text-gray-400 line-through" : "text-gray-900"
+                    "text-sm font-black transition-all relative w-fit",
+                    task.completed ? "text-gray-400" : "text-gray-900"
                   )}>
                     {task.title}
+                    {task.completed && (
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: "calc(100% + 8px)" }}
+                        className="absolute top-[55%] left-[-4px] h-[1px] bg-black" 
+                      />
+                    )}
                   </h5>
                </div>
                <div className={cn(

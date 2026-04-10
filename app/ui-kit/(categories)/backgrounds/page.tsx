@@ -19,14 +19,20 @@ export default function BackgroundsPage() {
    </div>
    
    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
-    <ComponentShowcase title="Структурная сетка" source="custom">
-      <div className="relative w-full h-[300px] rounded-[40px] bg-white border border-gray-100 shadow-xl overflow-hidden">
-       <div className="relative z-10 size-full flex flex-col items-center justify-center">
-         <Grid className="size-12 text-primary-base mb-4" />
-         <h4 className="text-xl font-black text-gray-950 font-heading">Чертежи</h4>
+     <ComponentShowcase title="Структурная сетка" source="custom">
+       <div className="relative w-full h-[300px] rounded-[40px] bg-slate-50 border border-gray-100 shadow-xl overflow-hidden">
+        {/* Grid Layer */}
+        <div className="absolute inset-0 bg-grid-pattern [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_90%)]" />
+        
+        {/* Content Layer */}
+        <div className="relative z-10 size-full flex flex-col items-center justify-center">
+          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-[32px] border border-white shadow-2xl flex flex-col items-center">
+            <Grid className="size-12 text-primary-base mb-4" />
+            <h4 className="text-xl font-black text-gray-950 font-heading">Чертежи</h4>
+          </div>
+        </div>
        </div>
-      </div>
-    </ComponentShowcase>
+     </ComponentShowcase>
 
     <ComponentShowcase title="Минимальные точки" source="custom">
       <div className="relative w-full h-[300px] rounded-[40px] bg-white border border-gray-100 shadow-xl overflow-hidden">
@@ -43,7 +49,13 @@ export default function BackgroundsPage() {
 
 
    <style jsx>{`
-    @keyframes slide-down {
+     .bg-grid-pattern {
+      background-image: 
+        linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+     }
+     @keyframes slide-down {
      0% { transform: translateY(-100%); opacity: 0; }
      50% { opacity: 1; }
      100% { transform: translateY(100%); opacity: 0; }

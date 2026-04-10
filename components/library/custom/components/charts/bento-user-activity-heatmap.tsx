@@ -28,12 +28,12 @@ export function BentoUserActivityHeatmap({ className }: { className?: string }) 
   }
 
   const colorMap = [
-    'bg-slate-100',
-    'bg-primary-base/20',
-    'bg-primary-base/40',
-    'bg-primary-base/60',
-    'bg-primary-base/80',
-    'bg-primary-base shadow-lg shadow-primary-base/20'
+    'bg-slate-50',
+    'bg-primary-base/10',
+    'bg-primary-base/30',
+    'bg-primary-base/50',
+    'bg-primary-base/70',
+    'bg-primary-base shadow-sm shadow-primary-base/10'
   ];
 
   return (
@@ -43,9 +43,9 @@ export function BentoUserActivityHeatmap({ className }: { className?: string }) 
             <BentoIconContainer>
                <Activity className="size-4" />
             </BentoIconContainer>
-            <h3 className="text-[11px] font-black text-slate-900 uppercase tracking-[0.3em] leading-none">Activity Velocity</h3>
+            <h3 className="text-[11px] font-bold text-slate-900 uppercase tracking-widest leading-none">Activity Velocity</h3>
          </div>
-         <span className="text-[9px] font-black text-emerald-500 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 uppercase tracking-widest flex items-center gap-1.5">
+         <span className="text-[9px] font-bold text-emerald-500 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 uppercase tracking-widest flex items-center gap-1.5">
             <Zap className="size-2.5 fill-emerald-500" /> Peak Performance
          </span>
       </div>
@@ -76,11 +76,11 @@ export function BentoUserActivityHeatmap({ className }: { className?: string }) 
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
-            className="absolute z-50 bottom-24 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-slate-950 text-white rounded-2xl shadow-2xl border border-white/10 pointer-events-none flex flex-col items-center gap-1"
+            className="absolute z-50 -top-16 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-gray-950 text-white rounded-2xl shadow-2xl pointer-events-none flex flex-col items-center gap-1 min-w-[200px]"
           >
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">NODE DENSITY // {hoverDay + 1}</span>
-            <span className="text-[11px] font-black uppercase tracking-widest flex items-center gap-2">
-              Velocity Index: <span className="text-primary-base tabular-nums">{Math.floor((hoverDay * 1.5 + 42) % 100)}%</span>
+            <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest leading-none mb-1">Activity Node // 0{hoverDay + 1}</span>
+            <span className="text-[11px] font-bold uppercase tracking-tight leading-none">
+              День {hoverDay + 1}: Активность <span className="text-primary-base">максимальная</span>
             </span>
           </motion.div>
         )}

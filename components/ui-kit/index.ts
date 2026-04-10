@@ -1,7 +1,5 @@
 export * from './CategoryPage';
 export * from './ComponentShowcase';
-export * from './SourceBadge';
-export * from './CodePreview';
 export * from './DevicePreview';
 export * from './ComponentFilter';
 export * from './CategoryCard';

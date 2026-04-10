@@ -32,7 +32,7 @@ export default function EffectsPage() {
 
         {/* 1. Lanyard 3D */}
         <ComponentShowcase title="Интерактивный Бейдж 3D" source="custom" desc="Полноценная 3D физика (Three.js + Rapier). Тяните за бейдж, чтобы увидеть инерцию и столкновения.">
-          <div className="w-full max-w-sm bg-slate-950/50 mx-auto rounded-3xl h-[500px] border border-white/5 overflow-hidden shadow-2xl relative">
+          <div className="w-full max-w-sm bg-slate-50 mx-auto rounded-3xl h-[500px] border border-slate-100 overflow-hidden shadow-inner relative">
             <Lanyard3D />
           </div>
         </ComponentShowcase>
@@ -40,10 +40,10 @@ export default function EffectsPage() {
         {/* 2. BorderGlow */}
         <ComponentShowcase title="Светящаяся кромка" source="custom" desc="Интерактивное свечение по краям, реагирующее на мышь">
           <BorderGlow className="w-full h-[500px] max-w-sm mx-auto rounded-[24px]">
-            <div className="flex flex-col items-center justify-center p-8 w-full h-full text-white">
-              <Zap className="size-8 mb-4 text-indigo-400" />
+            <div className="flex flex-col items-center justify-center p-8 w-full h-full text-slate-900 bg-white rounded-[24px]">
+              <Zap className="size-8 mb-4 text-primary-base" />
               <h4 className="text-xl font-bold">Border Glow</h4>
-              <p className="text-sm text-indigo-200/60 mt-2 text-center">Двигайте мышью, чтобы увидеть эффект</p>
+              <p className="text-sm text-slate-500 mt-2 text-center">Двигайте мышью, чтобы увидеть эффект</p>
             </div>
           </BorderGlow>
         </ComponentShowcase>
@@ -79,26 +79,26 @@ export default function EffectsPage() {
 
         {/* 5. Spotlight Card */}
         <ComponentShowcase title="Интерактивный Spotlight" source="custom" desc="Эффект фонарика, следующего за курсором.">
-          <SpotlightCard className="w-full max-w-md mx-auto bg-slate-900 border-slate-800 rounded-3xl h-[200px] p-8 cursor-crosshair group flex flex-col justify-center">
+          <SpotlightCard className="w-full max-w-md mx-auto bg-white border border-slate-100 rounded-3xl h-[200px] p-8 cursor-crosshair group flex flex-col justify-center shadow-crm-sm">
             <div className="size-12 rounded-2xl bg-primary-base flex items-center justify-center text-white mb-6 group-hover:rotate-12 transition-transform">
               <MousePointer2 className="size-6" />
             </div>
-            <h4 className="text-white text-xl font-black font-heading">Адаптивный свет</h4>
+            <h4 className="text-slate-900 text-xl font-black font-heading">Адаптивный свет</h4>
             <p className="text-slate-400 text-xs font-bold mt-2">Свет следует за вами, открывая детали интерфейса.</p>
           </SpotlightCard>
         </ComponentShowcase>
 
         {/* 6. Typewriter Effect */}
         <ComponentShowcase title="Эффект печати" source="custom" desc="Интерактивный текст с поддержкой выделения.">
-          <div className="flex flex-col items-center justify-center h-[200px] bg-slate-950 rounded-[2.5rem] p-8 border border-white/5">
+          <div className="flex flex-col items-center justify-center h-[200px] bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 shadow-inner">
             <TypewriterEffect 
               words={[
-                { text: "Создавайте", className: "text-white" },
-                { text: "лучший", className: "text-white" },
+                { text: "Создавайте", className: "text-slate-900" },
+                { text: "лучший", className: "text-slate-900" },
                 { text: "мерч", className: "text-primary-base font-black" },
-                { text: "вместе", className: "text-white" },
-                { text: "с", className: "text-white" },
-                { text: "нами.", className: "text-emerald-400" },
+                { text: "вместе", className: "text-slate-900" },
+                { text: "с", className: "text-slate-900" },
+                { text: "нами.", className: "text-emerald-500" },
               ]}
             />
           </div>

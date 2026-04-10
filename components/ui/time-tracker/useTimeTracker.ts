@@ -10,17 +10,25 @@ import { differenceInSeconds } from"date-fns";
  * @param isActive - Флаг активности таймера (отсчет идет только если true)
  * @returns elapsed - Количество секунд с момента startTime
  */
-export function useTimeTracker(startTime?: Date | null, isActive: boolean = true) {
-    const [elapsed, setElapsed] = React.useState(0);
+export function useTimeTracker(startTime?: Date | null, isActive: boolean = true, initialElapsed: number = 0) {
+    const [elapsed, setElapsed] = React.useState(initialElapsed);
 
     React.useEffect(() => {
-        if (!startTime || !isActive) {
+        // Если нет даты начала - таймер полностью сброшен
+        if (!startTime) {
             setElapsed(0);
             return;
         }
 
+        // Если таймер не активен (пауза) - показываем накопленное время
+        if (!isActive) {
+            setElapsed(initialElapsed);
+            return;
+        }
+
         const updateElapsed = () => {
-            setElapsed(differenceInSeconds(new Date(), new Date(startTime)));
+            const currentSeconds = differenceInSeconds(new Date(), new Date(startTime));
+            setElapsed(initialElapsed + currentSeconds);
         };
 
         // Запуск сразу
@@ -30,7 +38,7 @@ export function useTimeTracker(startTime?: Date | null, isActive: boolean = true
         const interval = setInterval(updateElapsed, 1000);
 
         return () => clearInterval(interval);
-    }, [startTime, isActive]);
+    }, [startTime, isActive, initialElapsed]);
 
     return elapsed;
 }

@@ -10,6 +10,7 @@ import { useTimeTracker } from"./useTimeTracker";
 export function TimeTracker({
     status,
     startTime,
+    initialElapsed = 0,
     totalToday = 0,
     onStart,
     onStop,
@@ -18,9 +19,9 @@ export function TimeTracker({
     onBreak,
     className,
 }: TimeTrackerProps) {
-    const isWorking = status !=="idle";
-    const isActive = status ==="working";
-    const elapsed = useTimeTracker(startTime, isActive);
+    const isWorking = status !== "idle";
+    const isActive = status === "working";
+    const elapsed = useTimeTracker(startTime, isActive, initialElapsed);
 
     return (
         <div className={cn("crm-card bg-white border-2 rounded-3xl p-6 transition-all duration-300",
@@ -30,16 +31,21 @@ export function TimeTracker({
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-8">
                 <div className="flex items-center gap-3">
                     <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500",
-                        isWorking ?"bg-emerald-500 text-white shadow-lg shadow-emerald-200" :"bg-slate-100 text-slate-400"
+                        status === "working" ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200" :
+                        status === "paused" ? "bg-amber-500 text-white shadow-lg shadow-amber-200" :
+                        isWorking ? "bg-emerald-500 text-white shadow-lg shadow-emerald-200" :
+                        "bg-slate-100 text-slate-400"
                     )}>
-                        <Clock className={cn("w-7 h-7", isActive &&"animate-pulse-slow")} />
+                        <Clock className={cn("w-7 h-7", isActive && "animate-pulse-slow")} />
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
                             <h2 className="text-lg font-black text-slate-900">Трекер смены</h2>
                             {isWorking && (
-                                <span className="px-2 py-0.5 rounded-lg bg-emerald-100 text-xs font-black text-emerald-600 animate-pulse">
-                                    Активен
+                                <span className={cn("px-2 py-0.5 rounded-lg text-xs font-black animate-pulse",
+                                    status === "working" ? "bg-emerald-100 text-emerald-600" : "bg-amber-100 text-amber-600"
+                                )}>
+                                    {status === "working" ? "Активен" : "На паузе"}
                                 </span>
                             )}
                         </div>
@@ -59,10 +65,12 @@ export function TimeTracker({
             </div>
 
             <div className="bg-slate-50/50 rounded-2xl border border-slate-100 p-6 mb-8 flex flex-col items-center">
-                <div className={cn("text-6xl font-black tabular-nums  mb-4 transition-all duration-500",
-                    isWorking ?"text-emerald-600 scale-110" :"text-slate-200"
+                <div className={cn("text-6xl font-black tabular-nums mb-4 transition-all duration-500",
+                    status === "working" ? "text-emerald-600 scale-110" :
+                    status === "paused" ? "text-amber-600 scale-110" :
+                    "text-slate-200"
                 )}>
-                    {isActive ? formatDuration(elapsed) :"00:00:00"}
+                    {isWorking ? formatDuration(elapsed) : "00:00:00"}
                 </div>
                 {isWorking ? (
                     <div className="flex items-center gap-2">

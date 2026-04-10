@@ -11,7 +11,7 @@ export function BentoGestureCheckbox() {
 
   return (
     <BentoCard>
-      <h3 className="text-sm font-black text-gray-900">Шаг Рабочего Процесса</h3>
+      <h3 className="text-sm font-bold text-gray-900">Шаг Рабочего Процесса</h3>
       
       <div 
         role="button"
@@ -49,7 +49,7 @@ export function BentoGestureCheckbox() {
         </div>
 
         <div className="flex-1">
-           <p className={cn("text-xs font-black transition-colors", checked ? "text-emerald-900" : "text-gray-900")}>
+           <p className={cn("text-xs font-bold transition-colors", checked ? "text-emerald-900" : "text-gray-900")}>
               Отметить завершение
            </p>
            <p className="text-[11px] font-bold text-gray-400 mt-0.5">Сохранение состояния локально</p>

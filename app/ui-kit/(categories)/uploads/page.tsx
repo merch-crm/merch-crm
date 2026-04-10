@@ -148,7 +148,7 @@ export default function UploadsPage() {
         </p>
        </div>
        
-       <button className="relative z-10 px-10 py-4 bg-slate-900 text-white rounded-2xl text-[11px] font-black tracking-[0.2em] shadow-2xl shadow-slate-900/20 hover:bg-primary-base hover:shadow-primary-base/30 transition-all active:scale-95">
+       <button className="relative z-10 px-10 py-4 bg-primary-base text-white rounded-2xl text-[11px] font-black tracking-[0.2em] shadow-2xl shadow-primary-base/20 hover:bg-primary-hover transition-all active:scale-95">
         Выбрать файлы
        </button>
      </div>
@@ -236,16 +236,16 @@ export default function UploadsPage() {
 
     {/* 10. Cloud Storage Link */}
     <ComponentShowcase title="Облачное хранилище (UI)" source="custom">
-      <div className="w-full max-w-sm mx-auto p-5 bg-indigo-600 rounded-[30px] text-white flex items-center gap-3 shadow-xl shadow-indigo-500/20 group cursor-pointer overflow-hidden relative">
-       <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-       <div className="size-12 bg-white/20 rounded-2xl flex items-center justify-center shrink-0">
+      <div className="w-full max-w-sm mx-auto p-5 bg-blue-50 border border-blue-100 rounded-[30px] flex items-center gap-3 shadow-sm group cursor-pointer overflow-hidden relative hover:shadow-md transition-shadow">
+       <div className="absolute inset-0 bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+       <div className="size-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shrink-0 relative z-10">
          <HardDrive className="animate-pulse" />
        </div>
-       <div className="flex-1">
-         <h4 className="text-sm font-black">Google Drive</h4>
-         <p className="text-[11px] font-bold opacity-70">Подключено: merch-pro-docs</p>
+       <div className="flex-1 relative z-10">
+         <h4 className="text-sm font-black text-slate-900">Google Drive</h4>
+         <p className="text-[11px] font-bold text-slate-500">Подключено: merch-pro-docs</p>
        </div>
-       <div className="size-8 rounded-full bg-white/20 flex items-center justify-center">
+       <div className="size-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center relative z-10">
          <CheckCircle size={14} />
        </div>
       </div>

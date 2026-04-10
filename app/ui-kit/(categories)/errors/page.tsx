@@ -197,7 +197,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <button type="button" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Работать оффлайн</button>
-        <button type="button" className="flex-1 py-4 bg-zinc-900 text-white font-bold rounded-[24px] hover:bg-zinc-800 text-[15px] shadow-sm transition-colors flex items-center justify-center gap-2">
+        <button type="button" className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-colors flex items-center justify-center gap-2">
          <RefreshCw className="size-4 animate-spin" />
          Повторить
         </button>
@@ -228,7 +228,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <button type="button" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border border-slate-100/50">Назад</button>
-        <button type="button" className="flex-1 py-4 bg-zinc-900 text-white font-bold rounded-[24px] hover:bg-zinc-800 text-[15px] shadow-sm transition-all font-bold">На главную</button>
+        <button type="button" className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-all font-bold">На главную</button>
        </div>
       </motion.div>
     </BgSolid>
@@ -351,7 +351,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Отмена</button>
-        <button type="button" className={`flex-1 py-4 rounded-[24px] font-bold text-[15px] shadow-sm transition-all ${pin.every(d => d !== '') ? "bg-zinc-900 text-white hover:bg-black" : "bg-zinc-100 text-zinc-400 cursor-not-allowed"}`}>
+        <button type="button" className={`flex-1 py-4 rounded-[24px] font-bold text-[15px] shadow-sm transition-all ${pin.every(d => d !== '') ? "bg-primary-base text-white hover:bg-primary-dark" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}>
          Подтвердить
         </button>
        </div>
@@ -385,7 +385,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">На главную</button>
-        <button className="flex-1 py-4 bg-zinc-900 text-white font-bold rounded-[24px] hover:bg-zinc-800 text-[15px] shadow-sm transition-all">Войти снова</button>
+        <button className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-all">Войти снова</button>
        </div>
       </motion.div>
     </BgSolid>
@@ -441,7 +441,7 @@ export default function ErrorsPage() {
         
         <div className="w-full space-y-3">
          <div className="h-2 w-full bg-slate-200 rounded-full overflow-hidden">
-          <motion.div initial={{ width: "0%" }} whileInView={{ width: "65%" }} transition={{ duration: 1.5, ease: "easeOut" }} className="h-full bg-zinc-900" />
+          <motion.div initial={{ width: "0%" }} whileInView={{ width: "65%" }} transition={{ duration: 1.5, ease: "easeOut" }} className="h-full bg-primary-base" />
          </div>
          <p className="text-[13px] text-zinc-500 font-bold tracking-normal">Шаг 2 из 3</p>
         </div>
@@ -513,7 +513,7 @@ export default function ErrorsPage() {
          <p className="text-zinc-500 text-[14px] leading-tight font-medium">Мы также улучшили производительность при работе с большими наборами данных и добавили поддержку новых форматов экспорта.</p>
         </div>
 
-        <button className="w-full py-4 rounded-[20px] bg-zinc-900 text-white text-[15px] font-bold shadow-md hover:bg-black transition-all">Принять условия</button>
+        <button className="w-full py-4 rounded-[20px] bg-primary-base text-white text-[15px] font-bold shadow-md hover:bg-primary-dark transition-all">Принять условия</button>
        </div>
       </motion.div>
     </BgSolid>

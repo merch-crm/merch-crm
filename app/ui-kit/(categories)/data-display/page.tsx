@@ -9,13 +9,10 @@ import {
  TableHead, 
  TableHeader, 
  TableRow 
-} from "@/components/ui/table";
+ } from "@/components/ui/table";
 import { 
- ChevronDown, 
- ChevronUp, 
- ChevronsUpDown, 
  MoreVertical 
-} from 'lucide-react';
+ } from 'lucide-react';
 import {
  flexRender,
  getCoreRowModel,
@@ -31,7 +28,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { FileFormatIcon } from '@/components/ui/file-format-icon';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Magnetic } from '@/components/ui/magnetic';
+
 
 
 type Data = {
@@ -152,21 +149,7 @@ function AdvancedTableDemo() {
    },
    {
     accessorKey: 'member',
-    header: ({ column }) => (
-     <Magnetic>
-      <Button variant='ghost' size='sm' className='-ml-3 font-black text-[11px] text-slate-400 group/sort hover:bg-slate-50/50 rounded-xl' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-      >
-       Участник
-       {column.getIsSorted() === 'asc' ? (
-        <ChevronUp className="w-4 h-4 transition-transform group-hover/sort:-translate-y-0.5" />
-       ) : column.getIsSorted() === 'desc' ? (
-        <ChevronDown className="w-4 h-4 transition-transform group-hover/sort:translate-y-0.5" />
-       ) : (
-        <ChevronsUpDown className="w-4 h-4 opacity-0 group-hover/sort:opacity-100 transition-all scale-75" />
-       )}
-      </Button>
-     </Magnetic>
-    ),
+    header: () => <span className="font-black text-[11px] text-slate-400">Участник</span>,
     cell: ({ row }) => {
      const { name, email, image } = row.original.member;
 
@@ -242,11 +225,9 @@ function AdvancedTableDemo() {
     id: 'actions',
     cell: () => (
      <div className='flex justify-end'>
-      <Magnetic>
-        <Button variant='ghost' size='xs' className="rounded-full hover:bg-white shadow-sm ring-1 ring-black/[0.03]">
-         <MoreVertical className="w-4 h-4 text-slate-400" />
-        </Button>
-      </Magnetic>
+       <Button variant='ghost' size='xs' className="rounded-full hover:bg-white shadow-sm ring-1 ring-black/[0.03]">
+        <MoreVertical className="w-4 h-4 text-slate-400" />
+       </Button>
      </div>
     ),
    },

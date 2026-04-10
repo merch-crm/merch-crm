@@ -68,9 +68,9 @@ export default function StatusesPage() {
     {/* 5. Interactive Status Chip */}
     <ComponentShowcase title="Статус-чип (Удаляемый)" source="custom">
       <div className="flex gap-2 justify-center">
-       <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-900 text-white rounded-xl text-[11px] font-black shadow-lg shadow-slate-900/10">
+       <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-950 text-white rounded-xl text-[11px] font-black border border-gray-900">
          <span>Стадия: Договор</span>
-         <button type="button" className="p-0.5 hover:bg-white/20 rounded transition-colors"><X size={12} /></button>
+         <button type="button" className="p-0.5 hover:bg-gray-800 rounded transition-colors"><X size={12} /></button>
        </div>
        <div className="inline-flex items-center gap-2 px-3 py-1.5 border-2 border-primary-base/20 text-primary-base rounded-xl text-[11px] font-black">
          <span>Тег: Оптовик</span>

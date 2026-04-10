@@ -57,17 +57,17 @@ export default function QRPage() {
 
     {/* 4. Scanning Interface Concept */}
     <ComponentShowcase title="Интерфейс сканера" source="custom">
-      <div className="w-full max-w-[280px] mx-auto aspect-[9/16] bg-slate-900 rounded-[40px] border-8 border-slate-800 relative overflow-hidden flex flex-col">
-       <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,var(--primary-base)_0,transparent_100%)]" />
+      <div className="w-full max-w-[280px] mx-auto aspect-[9/16] bg-slate-50 rounded-[40px] border-8 border-slate-200 relative overflow-hidden flex flex-col shadow-inner">
+       <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary-base)_0,transparent_100%)]" />
        <div className="mt-auto p-10 flex flex-col items-center gap-3 relative z-10">
-         <div className="size-48 border-2 border-primary-base rounded-3xl relative">
+         <div className="size-48 border-2 border-primary-base rounded-3xl relative bg-white/50 backdrop-blur-sm shadow-sm">
           <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary-base rounded-tl-xl" />
           <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary-base rounded-tr-xl" />
           <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary-base rounded-bl-xl" />
           <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary-base rounded-br-xl" />
           <div className="absolute inset-x-4 top-1/2 h-0.5 bg-primary-base shadow-[0_0_15px_var(--primary-base)] animate-scan-y" />
          </div>
-         <p className="text-xs font-bold text-white ">Наведите на код</p>
+         <p className="text-xs font-black text-slate-900 ">Наведите на код</p>
        </div>
       </div>
     </ComponentShowcase>

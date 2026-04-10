@@ -43,7 +43,7 @@ export function RevenueChart({
       <div className="flex items-start justify-between px-2 relative z-10">
          <div className="flex flex-col gap-2">
             <div className="flex items-center gap-3">
-               <BentoIconContainer className="size-8 bg-slate-950 text-white shadow-lg shadow-black/20">
+               <BentoIconContainer className="size-8 bg-slate-50 text-slate-900 border border-slate-100 shadow-sm">
                   <Activity className="size-4" />
                </BentoIconContainer>
                <h3 className="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em] leading-none">Net Revenue Matrix</h3>
@@ -82,13 +82,13 @@ export function RevenueChart({
             <Tooltip cursor={{ stroke: '#f1f5f9', strokeWidth: 2 }} content={({ active, payload }) => {
                   if (active && payload && payload.length) {
                     return (
-                      <div className="bg-slate-950 border border-slate-800 p-5 rounded-[2rem] shadow-2xl backdrop-blur-xl">
-                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 border-b border-white/5 pb-2">DATA // {payload[0].payload.name}</p>
+                      <div className="bg-white border border-slate-100 p-5 rounded-[2rem] shadow-2xl backdrop-blur-xl">
+                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 border-b border-slate-50 pb-2">DATA // {payload[0].payload.name}</p>
                         <div className="flex flex-col gap-3">
                            <div className="flex items-center justify-between gap-8 focus:outline-none">
                               <div className="flex items-center gap-3">
-                                 <div className="size-2 rounded-full bg-primary-base animate-pulse shadow-[0_0_8px_#3b82f6]" />
-                                 <span className="text-[11px] font-black text-white uppercase tracking-widest">Revenue</span>
+                                 <div className="size-2 rounded-full bg-primary-base animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.3)]" />
+                                 <span className="text-[11px] font-black text-slate-900 uppercase tracking-widest">Revenue</span>
                               </div>
                               <span className="text-[11px] font-black text-primary-base tabular-nums">${payload[0].value}</span>
                            </div>

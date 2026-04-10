@@ -9,18 +9,32 @@ import {
  AlertCircle,
  CreditCard,
  Plus,
- Settings
+ Settings,
+ Command,
+ ChevronRight,
+ Users
 } from 'lucide-react';
-import { Input } from "@/components/ui/input";
 import { Select } from '@/components/ui/select';
-import { BentoSettingsToggles } from '@/components/library/custom/components/forms/bento-settings-toggles';
+import { DateRangePicker, DateRangePickerWithPresets, type DateRange } from "@/components/ui/date-range-picker";
+import { subDays, startOfToday } from "date-fns";
 
 export default function InputsPage() {
+ const today = startOfToday();
+ const [range, setRange] = useState<DateRange>({ from: subDays(today, 7), to: today });
+ const [rangeWithPresets, setRangeWithPresets] = useState<DateRange>({ from: today, to: today });
+ 
+ const selectOptions = [
+  { id: '1', title: 'Активен', color: '#10b981' },
+  { id: '2', title: 'Черновик', color: '#64748b' },
+  { id: '3', title: 'Архив', color: '#f43f5e' },
+ ];
+ const [selectValue, setSelectValue] = useState('1');
+
  return (
   <CategoryPage 
    title="Инпуты и Селекты" 
    description="Текстовые поля, поиск, специализированные селекторы и командные меню в едином Midnight интерфейсе." 
-   count={11}
+   count={12}
   >
    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
     
@@ -34,13 +48,42 @@ export default function InputsPage() {
      </div>
     </ComponentShowcase>
 
+    {/* New Date Range Input */}
+    <ComponentShowcase title="Выбор диапазона (Input)" source="custom" className="overflow-visible">
+     <div className="w-full max-w-md mx-auto">
+      <DateRangePicker 
+       label="Даты проведения акции"
+       value={range}
+       onChange={setRange}
+      />
+     </div>
+    </ComponentShowcase>
+
     {/* 2. Standard Select (Moved from Selects) */}
     <ComponentShowcase 
      title="Стандартный Select" 
-     source="custom" 
-     desc="Базовый селектор с кастомной стилизацией и анимациями." 
+     source="ui"
+     desc="Базовый селект из библиотеки UI компонентов."
     >
-     <SelectDemo />
+      <div className="max-w-md w-full mx-auto">
+        <Select 
+          options={selectOptions}
+          value={selectValue}
+          onChange={setSelectValue}
+          label="Статус заказа"
+        />
+      </div>
+    </ComponentShowcase>
+
+    {/* New Date Range Input with Presets */}
+    <ComponentShowcase title="Диапазон с пресетами" source="custom" className="overflow-visible">
+     <div className="w-full max-w-md mx-auto">
+      <DateRangePickerWithPresets 
+       label="Период отчета"
+       value={rangeWithPresets}
+       onChange={setRangeWithPresets}
+      />
+     </div>
     </ComponentShowcase>
 
     {/* 3. Number Stepper */}
@@ -63,7 +106,7 @@ export default function InputsPage() {
     <ComponentShowcase title="Поле с кнопкой" source="custom">
       <div className="max-w-md w-full mx-auto relative group">
        <input placeholder="Промокод" className="w-full rounded-2xl bg-slate-50 border border-slate-200 px-5 py-3 text-sm font-medium outline-none pr-24" />
-       <button className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-[#1A2233] text-white text-[11px] font-black rounded-xl  shadow-sm hover:bg-[#252E44] active:scale-95 transition-all">Применить</button>
+       <button className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-primary-base text-white text-[11px] font-black rounded-xl  shadow-sm hover:bg-primary-dark active:scale-95 transition-all">Применить</button>
       </div>
     </ComponentShowcase>
 
@@ -120,37 +163,37 @@ export default function InputsPage() {
       </div>
     </ComponentShowcase>
 
-    {/* 10. Search & Input (Merged) */}
-     <ComponentShowcase title="Инпуты и Поиск" source="custom">
-      <div className="max-w-md w-full mx-auto space-y-3">
-       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-        <Input className="pl-10 h-11" placeholder="Поиск данных..." />
+    {/* 10. Command Palette (Mock) */}
+    <ComponentShowcase 
+     title="Командная палитра" 
+     source="custom" 
+     description="Быстрый поиск и управление командами через горячие клавиши." 
+    >
+     <div className="w-full max-w-sm mx-auto border border-border rounded-xl bg-card shadow-lg p-2 overflow-hidden">
+       <div className="flex items-center gap-3 px-3 py-2 border-b border-border mb-2">
+        <Command className="size-4 text-muted-foreground" />
+        <span className="text-sm text-muted-foreground">Введите команду или поиск...</span>
+        <span className="ml-auto text-[11px] font-mono bg-muted px-1.5 py-0.5 rounded border border-border">⌘K</span>
        </div>
-       <Input type="email" placeholder="Email адрес" className="h-11 border-dashed" />
-      </div>
-     </ComponentShowcase>
+       <div className="space-y-1">
+        {[
+         { label: 'Поиск сделок...', icon: Search },
+         { label: 'Создать контакт', icon: Users },
+         { label: 'Настройки', icon: Settings }
+        ].map((item, i) => (
+         <div key={i} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted cursor-pointer transition-colors">
+           <item.icon className="size-4 text-muted-foreground" />
+           <span className="text-xs font-medium">{item.label}</span>
+           <ChevronRight className="ml-auto size-3 text-muted-foreground/50" />
+         </div>
+        ))}
+       </div>
+     </div>
+    </ComponentShowcase>
 
-     {/* 11. Profile Toggles (Merged from Forms) */}
-     <ComponentShowcase title="Настройки (iOS)" source="custom" desc="Переключатели системных настроек в стиле мобильных ОС.">
-       <BentoSettingsToggles />
-     </ComponentShowcase>
+
 
     </div>
   </CategoryPage>
- );
-}
-
-function SelectDemo() {
- const [value, setValue] = useState("active");
- const options = [
-  { id: "new", title: "Новый лид" },
-  { id: "active", title: "В работе" },
-  { id: "closed", title: "Успешно закрыт" }
- ];
- return (
-  <div className="max-w-xs w-full mx-auto py-8">
-   <Select options={options} value={value} onChange={setValue} placeholder="Выберите статус" />
-  </div>
  );
 }
