@@ -29,7 +29,7 @@ export function BentoPremiumRevenueChart({
         </div>
       </div>
       <div className="flex items-end gap-2 h-20 group-hover:gap-3 transition-all duration-300">
-        {data.map((h, i) => (
+        {data?.map((h, i) => (
           <div key={i} className="flex-1 bg-blue-100 rounded-t-sm hover:bg-blue-500 transition-colors duration-300 cursor-cell relative group/bar" style={{ height: `${h}%` }}>
             <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-slate-900 shadow-sm border border-slate-100 text-[11px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap">
             {h}k
