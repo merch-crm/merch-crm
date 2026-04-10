@@ -18,7 +18,7 @@ export function BentoLiquidSwitch() {
         role="button"
         tabIndex={0}
         aria-pressed={isOn}
-        aria-label="Toggle system mode"
+        aria-label="Переключить системный режим"
         onClick={() => setIsOn(!isOn)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

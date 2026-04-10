@@ -57,12 +57,11 @@ export default function UploadsPage() {
   <CategoryPage
    title="Медиа и Загрузки"
    description="Компоненты для работы с медиа-контентом и файлами: от простых инпутов и галерей до продвинутых загрузчиков и интерактивных ассетов."
-   count={14}
   >
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 gap-y-16 pb-32">
 
     {/* 1. New Image Uploader */}
-    <ComponentShowcase title="Загрузчик изображений" source="custom" desc="Загрузчик изображений с предпросмотром и поддержкой Drag&Drop.">
+    <ComponentShowcase title="Загрузчик изображений" source="custom" desc="Загрузчик изображений с предпросмотром и поддержкой Drag&Drop." className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="w-full max-w-sm mx-auto">
        <ImageUploaderDemo />
       </div>
@@ -73,6 +72,7 @@ export default function UploadsPage() {
      title="Карточка медиа-актива" 
      source="custom" 
      desc="Информационная карточка медиа-актива с детальной мета-информацией." 
+     className="col-span-1 md:col-span-1 lg:col-span-2"
     >
      <div className="max-w-xs w-full bg-white rounded-[3rem] border border-gray-100 p-6 shadow-sm group hover:shadow-2xl transition-all">
        <div className="aspect-[4/3] bg-slate-100 rounded-[2rem] border border-gray-50 flex items-center justify-center group-hover:scale-[1.02] transition-transform overflow-hidden relative">
@@ -99,6 +99,7 @@ export default function UploadsPage() {
      title="Интерактивные точки на медиа" 
      source="custom" 
      desc="Изображение с интерактивными точками интереса и всплывающими подсказками." 
+     className="col-span-1 md:col-span-1 lg:col-span-2"
     >
      <div className="w-full max-w-lg h-64 bg-slate-100 rounded-2xl border border-gray-200 relative overflow-hidden cursor-crosshair">
        <div className="absolute inset-0 flex items-center justify-center opacity-10"><LucideImage className="size-32" /></div>
@@ -127,30 +128,31 @@ export default function UploadsPage() {
     <ComponentShowcase 
      title="Интерактивная зона загрузки" 
      source="custom" 
-     className="lg:col-span-2"
+     className="col-span-1 md:col-span-2 lg:col-span-2"
      desc="Продвинутый загрузчик с поддержкой drag-and-drop, очередью файлов и анимациями." 
     >
-     <div className="w-full px-10 py-16 bg-white rounded-[40px] border-2 border-dashed border-slate-200/60 shadow-xl shadow-slate-200/20 flex flex-col items-center gap-3 group hover:border-primary-base/40 transition-all duration-500 hover:bg-slate-50/50 relative overflow-hidden">
-       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-base/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-       
-       <div className="relative">
-        <div className="absolute inset-0 bg-primary-base/20 blur-2xl rounded-full scale-0 group-hover:scale-150 transition-transform duration-700 opacity-0 group-hover:opacity-30" />
-        <div className="size-20 rounded-[28px] bg-white shadow-2xl shadow-slate-200 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:scale-110 group-hover:bg-primary-base group-hover:text-white transition-all duration-700 relative z-10">
-          <Upload className="size-8 group-hover:-translate-y-1 transition-transform" />
-        </div>
-       </div>
+     <div className="w-full bg-[#f1f5f9] rounded-3xl p-2 sm:p-5 border border-slate-200">
+       <div className="w-full px-6 py-14 bg-white/40 hover:bg-white rounded-[1.5rem] border-2 border-dashed border-primary-base/30 hover:border-primary-base/50 flex flex-col items-center gap-4 transition-all duration-300 cursor-pointer group relative">
+         
+         <div className="relative">
+          <div className="absolute inset-0 bg-primary-base/20 blur-xl rounded-full scale-0 group-hover:scale-125 transition-transform duration-500 opacity-0 group-hover:opacity-100" />
+          <div className="size-16 rounded-2xl bg-primary-base shadow-lg shadow-primary-base/20 flex items-center justify-center text-white group-hover:-translate-y-1 transition-all duration-300 relative z-10">
+            <Upload className="size-6" />
+          </div>
+         </div>
 
-       <div className="text-center space-y-2 relative z-10">
-        <h5 className="text-xl font-black font-heading text-slate-900 group-hover:text-primary-base transition-colors">Перетащите файлы сюда</h5>
-        <p className="text-[11px] font-bold text-slate-400  max-w-[300px] mx-auto leading-relaxed">
-          Максимальный размер: 24МБ <br /> 
-          <span className="text-slate-300 group-hover:text-slate-400 transition-colors">Поддерживаем: PNG, JPG, FIG, MP4</span>
-        </p>
+         <div className="text-center space-y-1 relative z-10">
+          <h5 className="text-lg font-semibold text-primary-base">Перетащите файлы сюда</h5>
+          <p className="text-xs font-medium text-slate-500 leading-relaxed">
+            Максимальный размер: 24МБ <br /> 
+            <span className="text-slate-400">Поддерживаем: PNG, JPG, FIG, MP4</span>
+          </p>
+         </div>
+         
+         <button className="relative z-10 mt-2 px-8 py-3 bg-primary-base text-white rounded-xl text-sm font-semibold shadow-md shadow-primary-base/20 hover:bg-primary-hover transition-all active:scale-95">
+          Выбрать файлы
+         </button>
        </div>
-       
-       <button className="relative z-10 px-10 py-4 bg-primary-base text-white rounded-2xl text-[11px] font-black tracking-[0.2em] shadow-2xl shadow-primary-base/20 hover:bg-primary-hover transition-all active:scale-95">
-        Выбрать файлы
-       </button>
      </div>
     </ComponentShowcase>
 
@@ -158,7 +160,7 @@ export default function UploadsPage() {
     <ComponentShowcase 
      title="Обозреватель медиа-библиотеки" 
      source="custom" 
-     className="lg:col-span-2"
+     className="col-span-1 md:col-span-2 lg:col-span-4"
      desc="Полноценный интерфейс поиска и фильтрации медиа-библиотеки." 
     >
       <div className="w-full max-w-2xl space-y-3 mx-auto">
@@ -181,7 +183,7 @@ export default function UploadsPage() {
     </ComponentShowcase>
 
     {/* 6. File Item States (Success) */}
-    <ComponentShowcase title="Состояние файла (Успех)" source="custom">
+    <ComponentShowcase title="Состояние файла (Успех)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1">
      <div className="w-full max-w-sm mx-auto bg-white/50 p-4 rounded-3xl border border-slate-100 shadow-sm">
        {mockUploadedFile ? (
         <FileItem uploadedFile={mockUploadedFile} onRemove={() => removeFile("1")} />
@@ -192,7 +194,7 @@ export default function UploadsPage() {
     </ComponentShowcase>
 
     {/* 7. File Item States (Error) */}
-    <ComponentShowcase title="Состояние файла (Ошибка)" source="custom">
+    <ComponentShowcase title="Состояние файла (Ошибка)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1">
      <div className="w-full max-w-sm mx-auto bg-white/50 p-4 rounded-3xl border border-slate-100 shadow-sm">
        {mockErrorFile ? (
         <FileItem uploadedFile={mockErrorFile} onRemove={() => removeFile("2")} />
@@ -203,7 +205,7 @@ export default function UploadsPage() {
     </ComponentShowcase>
 
     {/* 8. File Item States (Uploading) */}
-    <ComponentShowcase title="Состояние файла (Процесс)" source="custom">
+    <ComponentShowcase title="Состояние файла (Процесс)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1">
      <div className="w-full max-w-sm mx-auto bg-white/50 p-4 rounded-3xl border border-slate-100 shadow-sm">
        {mockUploadingFile ? (
         <FileItem uploadedFile={mockUploadingFile} onRemove={() => removeFile("3")} />
@@ -214,7 +216,7 @@ export default function UploadsPage() {
     </ComponentShowcase>
 
     {/* 9. Upload Constraints Detail */}
-    <ComponentShowcase title="Инфо о лимитах" source="custom">
+    <ComponentShowcase title="Инфо о лимитах" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1">
      <div className="w-full max-w-[280px] mx-auto p-4 bg-white border border-gray-100 rounded-2xl shadow-sm flex flex-col gap-3">
        <h4 className="text-[11px] font-black text-gray-400 ">Требования к файлам</h4>
        <div className="space-y-2">
@@ -235,7 +237,7 @@ export default function UploadsPage() {
     </ComponentShowcase>
 
     {/* 10. Cloud Storage Link */}
-    <ComponentShowcase title="Облачное хранилище (UI)" source="custom">
+    <ComponentShowcase title="Облачное хранилище (UI)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="w-full max-w-sm mx-auto p-5 bg-blue-50 border border-blue-100 rounded-[30px] flex items-center gap-3 shadow-sm group cursor-pointer overflow-hidden relative hover:shadow-md transition-shadow">
        <div className="absolute inset-0 bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity" />
        <div className="size-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shrink-0 relative z-10">
@@ -252,7 +254,7 @@ export default function UploadsPage() {
     </ComponentShowcase>
 
     {/* 11. File History/Audit UI */}
-    <ComponentShowcase title="История загрузок" source="custom">
+    <ComponentShowcase title="История загрузок" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="w-full max-w-sm mx-auto flex flex-col gap-2 bg-gray-50 p-4 rounded-2xl">
        {[
         { name: "invoice_88.pdf", date: "Сегодня, 12:44", size: "124 KB", user: "Иван П." },
@@ -274,7 +276,7 @@ export default function UploadsPage() {
 
 
     {/* 12. Animated Folders & Archives */}
-    <div className="lg:col-span-2 space-y-3 mt-12">
+    <div className="col-span-1 md:col-span-2 lg:col-span-4 space-y-3 mt-12">
      <div className="flex items-center gap-3">
        <div className="size-10 rounded-xl bg-primary-base/10 text-primary-base flex items-center justify-center">
         <Archive size={24} />

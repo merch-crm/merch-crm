@@ -17,7 +17,7 @@ export function BentoGestureCheckbox() {
         role="button"
         tabIndex={0}
         aria-pressed={checked}
-        aria-label="Toggle step completion"
+        aria-label="Отметить завершение"
         onClick={() => setChecked(!checked)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

@@ -26,19 +26,18 @@ export default function EffectsPage() {
     <CategoryPage
       title="Визуальные Эффекты"
       description="Премиальные анимации, 3D физика, световые эффекты и динамическая типографика для создания 'WOW-эффекта'."
-      count={6}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-10">
 
         {/* 1. Lanyard 3D */}
-        <ComponentShowcase title="Интерактивный Бейдж 3D" source="custom" desc="Полноценная 3D физика (Three.js + Rapier). Тяните за бейдж, чтобы увидеть инерцию и столкновения.">
+        <ComponentShowcase title="Интерактивный Бейдж 3D" source="custom" desc="Полноценная 3D физика (Three.js + Rapier). Тяните за бейдж, чтобы увидеть инерцию и столкновения." className="col-span-1 md:col-span-1 lg:col-span-2">
           <div className="w-full max-w-sm bg-slate-50 mx-auto rounded-3xl h-[500px] border border-slate-100 overflow-hidden shadow-inner relative">
             <Lanyard3D />
           </div>
         </ComponentShowcase>
 
         {/* 2. BorderGlow */}
-        <ComponentShowcase title="Светящаяся кромка" source="custom" desc="Интерактивное свечение по краям, реагирующее на мышь">
+        <ComponentShowcase title="Светящаяся кромка" source="custom" desc="Интерактивное свечение по краям, реагирующее на мышь" className="col-span-1 md:col-span-1 lg:col-span-2">
           <BorderGlow className="w-full h-[500px] max-w-sm mx-auto rounded-[24px]">
             <div className="flex flex-col items-center justify-center p-8 w-full h-full text-slate-900 bg-white rounded-[24px]">
               <Zap className="size-8 mb-4 text-primary-base" />
@@ -49,7 +48,7 @@ export default function EffectsPage() {
         </ComponentShowcase>
 
         {/* 3. Rotating Text */}
-        <ComponentShowcase title="Вращающийся текст" source="custom" desc="Плавная смена ключевых слов с эффектом пружины.">
+        <ComponentShowcase title="Вращающийся текст" source="custom" desc="Плавная смена ключевых слов с эффектом пружины." className="col-span-1 md:col-span-2 lg:col-span-4">
           <div className="h-[200px] flex items-center justify-center bg-white rounded-[2.5rem] border border-gray-100 shadow-xl overflow-hidden text-3xl font-black text-gray-900 font-heading ">
             Анимация: 
             <RotatingText
@@ -68,7 +67,7 @@ export default function EffectsPage() {
         </ComponentShowcase>
 
         {/* 4. Flip Words */}
-        <ComponentShowcase title="Переворот слов" source="custom" desc="Динамическая смена ключевых слов в предложений.">
+        <ComponentShowcase title="Переворот слов" source="custom" desc="Динамическая смена ключевых слов в предложений." className="col-span-1 md:col-span-1 lg:col-span-2">
           <div className="h-[200px] flex items-center justify-center bg-white rounded-[2.5rem] border border-gray-100 shadow-xl overflow-hidden">
             <div className="text-3xl font-black text-gray-900 font-heading text-center">
               Ваш офис станет <br/>
@@ -78,7 +77,7 @@ export default function EffectsPage() {
         </ComponentShowcase>
 
         {/* 5. Spotlight Card */}
-        <ComponentShowcase title="Интерактивный Spotlight" source="custom" desc="Эффект фонарика, следующего за курсором.">
+        <ComponentShowcase title="Интерактивный Spotlight" source="custom" desc="Эффект фонарика, следующего за курсором." className="col-span-1 md:col-span-1 lg:col-span-2">
           <SpotlightCard className="w-full max-w-md mx-auto bg-white border border-slate-100 rounded-3xl h-[200px] p-8 cursor-crosshair group flex flex-col justify-center shadow-crm-sm">
             <div className="size-12 rounded-2xl bg-primary-base flex items-center justify-center text-white mb-6 group-hover:rotate-12 transition-transform">
               <MousePointer2 className="size-6" />
@@ -89,7 +88,7 @@ export default function EffectsPage() {
         </ComponentShowcase>
 
         {/* 6. Typewriter Effect */}
-        <ComponentShowcase title="Эффект печати" source="custom" desc="Интерактивный текст с поддержкой выделения.">
+        <ComponentShowcase title="Эффект печати" source="custom" desc="Интерактивный текст с поддержкой выделения." className="col-span-1 md:col-span-2 lg:col-span-4">
           <div className="flex flex-col items-center justify-center h-[200px] bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100 shadow-inner">
             <TypewriterEffect 
               words={[

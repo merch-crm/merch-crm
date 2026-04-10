@@ -3,20 +3,38 @@
 import React from 'react';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
 
-const data = [
+export interface BentoMiniSparklineProps {
+  label?: string;
+  value?: string | number;
+  percentChange?: string;
+  isPositiveChange?: boolean;
+  data?: Array<{ value: number }>;
+}
+
+const DEFAULT_DATA = [
   { value: 400 }, { value: 600 }, { value: 550 }, { value: 900 },
   { value: 800 }, { value: 1100 }, { value: 950 }, { value: 1300 }
 ];
 
-export function BentoMiniSparkline({ label = "Active Node Performance" }: { label?: string }) {
+export function BentoMiniSparkline({ 
+  label = "Active Node Performance",
+  value = "1.4k",
+  percentChange = "+18%",
+  isPositiveChange = true,
+  data = DEFAULT_DATA
+}: BentoMiniSparklineProps) {
   return (
     <div className="w-full max-w-sm rounded-[32px] bg-white border border-gray-100 shadow-crm-md p-6 flex flex-col gap-3 group">
       <div className="flex justify-between items-start px-2">
          <div className="flex flex-col">
-            <span className="text-[11px] font-black text-gray-400 normal-case leading-none">{label === "Active Node Performance" ? "Производительность Узла" : label}</span>
+            <span className="text-[11px] font-black text-gray-400 normal-case leading-none">
+              {label === "Active Node Performance" ? "Производительность Узла" : label}
+            </span>
             <div className="flex items-baseline gap-2 mt-1">
-               <span className="text-2xl font-black text-gray-900 tracking-normal">1.4k</span>
-               <span className="text-[11px] font-black text-emerald-500">+18%</span>
+               <span className="text-2xl font-black text-gray-900 tracking-normal">{value}</span>
+               <span className={`text-[11px] font-black ${isPositiveChange ? 'text-emerald-500' : 'text-rose-500'}`}>
+                 {percentChange}
+               </span>
             </div>
          </div>
          <div className="size-8 rounded-xl bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-primary-base transition-colors">

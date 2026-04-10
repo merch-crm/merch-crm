@@ -1,7 +1,8 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useContext, useEffect, useId } from "react";
 import { cn } from "@/components/library/custom/utils/cn";
+import { CategoryContext } from "./CategoryPage";
 
 interface ComponentShowcaseProps {
   title: ReactNode;
@@ -22,6 +23,14 @@ export function ComponentShowcase({
   className,
 }: ComponentShowcaseProps) {
   const finalDescription = description || desc;
+
+  const id = useId();
+  const context = useContext(CategoryContext);
+  
+  useEffect(() => {
+    context.registerComponent(id);
+    return () => context.unregisterComponent(id);
+  }, [id, context]);
 
   return (
     <div

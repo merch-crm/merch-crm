@@ -17,12 +17,11 @@ export default function QRPage() {
   <CategoryPage
    title="QR-коды и сканеры"
    description="Генерация и сканирование QR-кодов для складского учета, авторизации и платежей."
-   count={7}
   >
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-16">
     
     {/* 1. Standard QR Code */}
-    <ComponentShowcase title="Стандартный QR (Order ID)" source="custom">
+    <ComponentShowcase title="Стандартный QR (Order ID)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
      <div className="flex flex-col items-center gap-3 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
       <QRCode value={qrValue} size={160} />
       <p className="text-[11px] font-black text-gray-400 ">ID: #12456</p>
@@ -30,7 +29,7 @@ export default function QRPage() {
     </ComponentShowcase>
 
     {/* 2. QR with Interaction */}
-    <ComponentShowcase title="QR с вводом данных" source="custom">
+    <ComponentShowcase title="QR с вводом данных" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="w-full max-w-sm mx-auto flex flex-col gap-3 bg-gray-50 p-6 rounded-3xl">
        <input 
         value={qrValue}
@@ -45,7 +44,7 @@ export default function QRPage() {
     </ComponentShowcase>
 
     {/* 3. Small QR (Badge style) */}
-    <ComponentShowcase title="Мини-QR (Label)" source="custom">
+    <ComponentShowcase title="Мини-QR (Label)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
      <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center gap-3 w-fit mx-auto">
        <QRCode value="SKU-9921" size={60} />
        <div>
@@ -56,7 +55,7 @@ export default function QRPage() {
     </ComponentShowcase>
 
     {/* 4. Scanning Interface Concept */}
-    <ComponentShowcase title="Интерфейс сканера" source="custom">
+    <ComponentShowcase title="Интерфейс сканера" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="w-full max-w-[280px] mx-auto aspect-[9/16] bg-slate-50 rounded-[40px] border-8 border-slate-200 relative overflow-hidden flex flex-col shadow-inner">
        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary-base)_0,transparent_100%)]" />
        <div className="mt-auto p-10 flex flex-col items-center gap-3 relative z-10">
@@ -73,7 +72,7 @@ export default function QRPage() {
     </ComponentShowcase>
 
     {/* 5. Inventory QR List */}
-    <ComponentShowcase title="Групповая генерация" source="custom" className="lg:col-span-2">
+    <ComponentShowcase title="Групповая генерация" source="custom" className="col-span-1 md:col-span-2 lg:col-span-4">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full max-w-4xl mx-auto">
        {[1, 2, 3, 4].map(i => (
         <div key={i} className="bg-white p-4 rounded-2xl border border-gray-100 flex flex-col items-center gap-3">
@@ -90,7 +89,7 @@ export default function QRPage() {
 
 
     {/* 8. QR Actions (Print/Share) */}
-    <ComponentShowcase title="Действия с кодом" source="custom">
+    <ComponentShowcase title="Действия с кодом" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
      <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center gap-3 w-full max-w-xs mx-auto">
        <QRCode value="SHARE-LINK" size={140} />
        <div className="flex gap-2 w-full">
@@ -110,7 +109,7 @@ export default function QRPage() {
 
 
     {/* 11. SKU Label Mockup */}
-    <ComponentShowcase title="Этикетка со штрих-кодом" source="custom" className="lg:col-span-2">
+    <ComponentShowcase title="Этикетка со штрих-кодом" source="custom" className="col-span-1 md:col-span-2 lg:col-span-4">
       <div className="w-full max-w-2xl mx-auto p-10 bg-[#f8f8f8] border-2 border-dashed border-gray-300 rounded-xl flex items-center gap-3">
        <div className="bg-white p-6 border border-gray-200 shadow-md flex-1 rounded-sm flex items-center gap-3">
          <QRCode value="PROD-AX-99" size={100} />

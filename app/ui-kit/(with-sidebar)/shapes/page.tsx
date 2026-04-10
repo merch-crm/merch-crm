@@ -33,7 +33,7 @@ const tokenData = [
 
 export default function ShapesPage() {
  return (
- <CategoryPage count={1} title="Скругления и Формы"
+ <CategoryPage title="Скругления и Формы"
  description={<Typo>Семантические токены border-radius и структурные CSS-классы проекта. Все скругления задаются явно через Tailwind-утилиты в JSX — глобальных CSS-правил нет.</Typo>}
  >
  {/* ==========================================

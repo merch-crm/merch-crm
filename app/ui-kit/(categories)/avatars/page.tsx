@@ -12,16 +12,15 @@ export default function AvatarsPage() {
   <CategoryPage
    title="Пользователи"
    description="20+ премиальных компонентов идентификации: от «жидких» групп до 3D-карточек профилей и анимированных статусов."
-   count={4}
   >
 
-   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-12 pb-32">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 gap-y-12 pb-32">
     
 
 
 
 
-    <ComponentShowcase title="Статус пользователя (Online)" source="custom">
+    <ComponentShowcase title="Статус пользователя (Online)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="flex flex-col gap-3 p-6 bg-white rounded-[32px] border border-gray-100 shadow-crm-md max-w-sm mx-auto w-full h-full justify-between">
        <div className="flex items-center gap-3">
          <div className="relative group/avatar">
@@ -56,13 +55,13 @@ export default function AvatarsPage() {
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Сетка коллабораторов" source="custom">
+    <ComponentShowcase title="Сетка коллабораторов" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="h-full flex items-center justify-center w-full">
        <BentoCollaboratorGrid />
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Стеки аватаров" source="custom">
+    <ComponentShowcase title="Стеки аватаров" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="flex flex-col items-center gap-3 py-12 bg-gray-50 rounded-[40px] border border-gray-100 shadow-sm mx-auto w-full max-w-sm">
        <div className="flex flex-col items-center gap-2">
          <div className="flex -space-x-4">
@@ -96,7 +95,7 @@ export default function AvatarsPage() {
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Профиль клиента" source="custom">
+    <ComponentShowcase title="Профиль клиента" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="w-full max-w-md p-5 bg-white border border-slate-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow flex items-center gap-3 group cursor-pointer h-full">
        <div className="size-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 overflow-hidden relative">
          <Users className="size-6" />

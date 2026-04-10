@@ -51,7 +51,7 @@ export default function ErrorsPage() {
  };
 
  return (
-  <CategoryPage title="Системные уведомления" description="Реестр системных уведомлений и модальных окон в стиле Modern Industrial Craft." count={15}>
+  <CategoryPage title="Системные уведомления" description="Реестр системных уведомлений и модальных окон в стиле Modern Industrial Craft.">
 
    
    

@@ -10,13 +10,14 @@ import { Tooltip } from '@/components/ui/tooltip';
 
 export default function TooltipsPage() {
  return (
-  <CategoryPage title="Подсказки и контекстные хинты" description="3 эталонных компонента: от статусных до продвинутой визуализации данных." count={3}>
-   
+  <CategoryPage title="Подсказки и контекстные хинты" description="3 эталонных компонента: от статусных до продвинутой визуализации данных.">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-16">
    {/* 2. Status Variant Tooltips (Top/Bottom) */}
    <ComponentShowcase 
     title="Статусные подсказки" 
     source="custom" 
     desc="Тематические подсказки для отображения статусов выполнения. Поддерживают размещение сверху и снизу через стандартный проп side." 
+    className="col-span-1 md:col-span-1 lg:col-span-2"
    >
     <div className="flex flex-col items-center gap-3 py-12">
       <div className="flex items-center gap-3 group/all">
@@ -58,6 +59,7 @@ export default function TooltipsPage() {
     title="Визуализация данных" 
     source="custom" 
     desc="Визуальная подсказка для графиков и дашбордов." 
+    className="col-span-1 md:col-span-1 lg:col-span-2"
    >
     <div className="flex items-center justify-center py-12 bg-slate-50 rounded-[3rem] border border-slate-100 mx-4 shadow-inner">
       <div className="relative group/chart">
@@ -82,6 +84,7 @@ export default function TooltipsPage() {
     title="Многонаправленные подсказки" 
     source="custom" 
     desc="Демонстрация позиционирования подсказок во всех четырех направлениях." 
+    className="col-span-1 md:col-span-2 lg:col-span-4"
    >
     <div className="grid grid-cols-2 gap-3 py-12 max-w-sm mx-auto">
       {[
@@ -104,7 +107,7 @@ export default function TooltipsPage() {
       ))}
     </div>
    </ComponentShowcase>
-
+   </div>
   </CategoryPage>
  );
 }

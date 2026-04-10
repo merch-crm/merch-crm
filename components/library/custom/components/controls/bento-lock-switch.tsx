@@ -19,7 +19,7 @@ export function BentoLockSwitch() {
         role="button"
         tabIndex={0}
         aria-pressed={!isLocked}
-        aria-label="Toggle main lock"
+        aria-label="Заблокировать/разблокировать"
         onClick={() => setIsLocked(!isLocked)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {

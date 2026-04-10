@@ -6,10 +6,10 @@ import { Users, MoreHorizontal, UserPlus } from 'lucide-react';
 import { cn } from '@/components/library/custom/utils/cn';
 
 const COLLABORATORS = [
-  { name: 'Alex K.', color: 'bg-indigo-500' },
-  { name: 'Sarah J.', color: 'bg-emerald-500' },
-  { name: 'Mike R.', color: 'bg-amber-500' },
-  { name: 'Elena Z.', color: 'bg-rose-500' }
+  { name: 'Алекс К.', color: 'bg-indigo-500' },
+  { name: 'Сара Д.', color: 'bg-emerald-500' },
+  { name: 'Майк Р.', color: 'bg-amber-500' },
+  { name: 'Елена З.', color: 'bg-rose-500' }
 ];
 
 export function BentoCollaboratorGrid() {

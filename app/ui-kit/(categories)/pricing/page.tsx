@@ -47,11 +47,10 @@ export default function PricingPage() {
     <CategoryPage
       title="Оплата"
       description="Премиум-подписки, сводки по биллингу и способы оплаты для Enterprise SaaS."
-      count={2}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-16">
         {/* 3. Pricing Grid (Compact Section) */}
-        <ComponentShowcase title="Сетка тарифов (Группа)" source="custom" className="lg:col-span-2">
+        <ComponentShowcase title="Сетка тарифов (Группа)" source="custom" className="col-span-1 md:col-span-2 lg:col-span-4">
            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-5xl mx-auto px-4">
               {plans.map(plan => (
                 <div key={plan.name} className={cn("p-6 rounded-3xl border flex flex-col", plan.featured ? "border-primary-base/30 shadow-xl shadow-primary-base/5 ring-1 ring-primary-base/20 bg-primary-base/[0.02]" : "border-slate-100 bg-white shadow-sm")}>
@@ -95,7 +94,7 @@ export default function PricingPage() {
 
 
         {/* 10. Billing Method Card */}
-        <ComponentShowcase title="Платежный метод" source="custom">
+        <ComponentShowcase title="Платежный метод" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
           <div className="w-full max-w-sm mx-auto p-4 bg-white border border-gray-100 rounded-2xl flex items-center justify-between">
              <div className="flex items-center gap-3">
                 <div className="w-10 h-7 bg-primary-base/10 rounded flex items-center justify-center text-[11px] text-primary-base font-black">VISA</div>

@@ -4,8 +4,8 @@ import React from 'react';
 import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
 
 
-import { StatusChipsGroup } from "@/components/ui/premium/status-chips";
-import { ChipStatuses } from "@/components/library/custom/components/status-chips";
+
+
 import { StatusBadge } from "@/components/ui/status-timeline";
 import { 
  ShieldAlert, 
@@ -21,34 +21,15 @@ export default function StatusesPage() {
   <CategoryPage
    title="Бейджи и статусы"
    description="Визуальные индикаторы статусов, приоритетов, а также компактные теги и чипсеты для фильтрации."
-   count={6}
   >
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-16">
 
-    <ComponentShowcase 
-     title="Премиум-статусы" 
-     source="custom" 
-     desc="Люксовые индикаторы состояния с мягкими цветами и Apple-эстетикой." 
-     code={`<StatusChipsGroup />`}
-    >
-     <div className="flex justify-center w-full py-4">
-       <StatusChipsGroup />
-     </div>
-    </ComponentShowcase>
 
-    <ComponentShowcase 
-     title="Чипсы статуса" 
-     source="gravity" 
-     desc="Компактные статусы в стиле Gravity UI с иконками." 
-     code={`<ChipStatuses />`}
-    >
-     <div className="flex justify-center w-full py-4">
-       <ChipStatuses />
-     </div>
-    </ComponentShowcase>
+
+
 
     {/* 4. Priority Flags */}
-    <ComponentShowcase title="Флаги приоритетов" source="custom">
+    <ComponentShowcase title="Флаги приоритетов" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="flex flex-col gap-2 w-full max-w-[140px] mx-auto">
        <div className="flex items-center gap-2 px-3 py-1 bg-rose-50 text-rose-600 rounded-lg border border-rose-100">
          <ShieldAlert size={12} />
@@ -66,7 +47,7 @@ export default function StatusesPage() {
     </ComponentShowcase>
 
     {/* 5. Interactive Status Chip */}
-    <ComponentShowcase title="Статус-чип (Удаляемый)" source="custom">
+    <ComponentShowcase title="Статус-чип (Удаляемый)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="flex gap-2 justify-center">
        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-950 text-white rounded-xl text-[11px] font-black border border-gray-900">
          <span>Стадия: Договор</span>
@@ -82,7 +63,7 @@ export default function StatusesPage() {
 
 
     {/* 7. Data Freshness/Cloud Sync */}
-    <ComponentShowcase title="Синхронизация данных" source="custom">
+    <ComponentShowcase title="Синхронизация данных" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="flex items-center gap-3 justify-center bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
        <div className="flex items-center gap-2 text-primary-base">
          <RefreshCw size={14} className="animate-spin" />
@@ -97,7 +78,7 @@ export default function StatusesPage() {
     </ComponentShowcase>
 
     {/* 8. Status Badges (from dates) */}
-    <ComponentShowcase title="Индикаторы статуса" source="custom">
+    <ComponentShowcase title="Индикаторы статуса" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
      <div className="flex flex-wrap gap-3 justify-center">
       <StatusBadge status="processing" label="В работе" />
       <StatusBadge status="completed" label="Завершено" />

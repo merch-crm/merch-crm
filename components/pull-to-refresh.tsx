@@ -23,7 +23,9 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
                 if (pull > 0) {
                     setPullChange(pull);
                     // Prevent default only if we are pulling down significantly to avoid interfering with normal scroll too much
-                    if (pull > 50) e.preventDefault();
+                    if (pull > 50 && e.cancelable) {
+                        e.preventDefault();
+                    }
                 }
             }
         };
@@ -44,28 +46,35 @@ export function PullToRefresh({ children }: { children: React.ReactNode }) {
             }
         };
 
+        const handleTouchCancel = () => {
+            setPullChange(0);
+            setStartPoint(0);
+        };
+
         document.addEventListener("touchstart", handleTouchStart);
         document.addEventListener("touchmove", handleTouchMove, { passive: false });
         document.addEventListener("touchend", handleTouchEnd);
+        document.addEventListener("touchcancel", handleTouchCancel);
 
         return () => {
             document.removeEventListener("touchstart", handleTouchStart);
             document.removeEventListener("touchmove", handleTouchMove);
             document.removeEventListener("touchend", handleTouchEnd);
+            document.removeEventListener("touchcancel", handleTouchCancel);
         };
     }, [startPoint, pullChange, router]);
 
     return (
         <>
             <div
-                className="fixed top-0 left-0 right-0 z-[100] flex justify-center pointer-events-none transition-transform duration-200"
+                className="fixed top-0 left-0 right-0 z-[100] flex justify-center pointer-events-none transition-transform duration-200 md:hidden"
                 style={{
                     transform: `translateY(${refreshing ? 20 : pullChange > 0 ? pullChange * 0.4 : -50}px)`,
                     opacity: pullChange > 0 || refreshing ? 1 : 0
                 }}
             >
                 <div className="bg-white rounded-full p-2 shadow-xl border border-slate-200 flex items-center justify-center">
-                    <Loader2 className={`w-5 h-5 text-var(--primary) ${refreshing || pullChange> 100 ? 'animate-spin' : ''}`} style={{ transform: `rotate(${pullChange * 2}deg)` }} />
+                    <Loader2 className={`w-5 h-5 text-slate-800 ${refreshing || pullChange > 100 ? 'animate-spin' : ''}`} style={{ transform: `rotate(${pullChange * 2}deg)` }} />
                 </div>
             </div>
             {children}

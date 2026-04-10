@@ -29,12 +29,11 @@ export default function TypographyPage() {
   <CategoryPage
    title="Типографика"
    description="Полный набор текстовых стилей: от базовых шрифтов до сложных анимированных заголовков и интерактивных эффектов."
-   count={17}
   >
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-12">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-12">
 
     {/* Section: Standard Elements */}
-    <ComponentShowcase title="Стандартные заголовки" source="base">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Стандартные заголовки" source="base">
      <div className="flex flex-col gap-4 p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
       <h1 className="text-4xl font-black text-gray-950 border-b pb-4">Заголовок H1</h1>
       <h2 className="text-2xl font-bold text-gray-900 leading-tight">Заголовок H2: Основные секции</h2>
@@ -43,7 +42,7 @@ export default function TypographyPage() {
      </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Стили основного текста" source="base">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Стили основного текста" source="base">
      <div className="flex flex-col gap-5 p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
       <div>
        <span className="text-[10px] font-black text-primary-base uppercase tracking-widest mb-1 block">Lead Text</span>
@@ -70,7 +69,7 @@ export default function TypographyPage() {
      </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Списки и цитаты" source="base">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Списки и цитаты" source="base">
      <div className="flex flex-col gap-6 p-8 bg-white rounded-3xl border border-gray-100 shadow-sm">
       <ul className="space-y-2">
        {['Современная эстетика', 'Высокая производительность', 'Типографика 2025'].map((item, i) => (
@@ -87,23 +86,23 @@ export default function TypographyPage() {
     </ComponentShowcase>
 
     {/* Section: Bento Specialized */}
-    <ComponentShowcase title="Брендовый блок Hero" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Брендовый блок Hero" source="custom">
       <BentoHeroText />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Стеклянная цитата" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Стеклянная цитата" source="custom">
       <BentoGlassBlockquote />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Многослойный заголовок" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Многослойный заголовок" source="custom">
       <BentoLayeredHeading title="MERCH" />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Интерактивный сплит" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Интерактивный сплит" source="custom">
       <BentoSplitHeading text="CREATIVE" />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Размытый текст (Blur)" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Размытый текст (Blur)" source="custom">
       <div className="p-6 bg-slate-50 rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
         <BentoBlurText 
           text="Плавное появление элементов интерфейса с эффектом блюра"
@@ -113,7 +112,7 @@ export default function TypographyPage() {
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Переворачивание (Flip)" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Переворачивание (Flip)" source="custom">
       <div className="p-10 bg-white rounded-[32px] border border-gray-100 shadow-crm-md flex flex-col items-center justify-center gap-2">
         <span className="text-xs font-black text-primary-base tracking-widest">МЫ СОЗДАЕМ</span>
         <BentoFlipWords 
@@ -123,7 +122,7 @@ export default function TypographyPage() {
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Бегущая строка (Rotating)" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Бегущая строка (Rotating)" source="custom">
       <div className="p-10 bg-indigo-600 rounded-[28px] flex flex-col gap-1 items-start">
         <span className="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Статус системы</span>
         <div className="text-2xl font-black text-white flex items-center gap-2">
@@ -135,19 +134,19 @@ export default function TypographyPage() {
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Мерцающий градиент" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Мерцающий градиент" source="custom">
       <BentoGradientText />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Поток в перспективе" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Поток в перспективе" source="custom">
       <BentoPerspectiveScrollText />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Безопасная маскировка" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Безопасная маскировка" source="custom">
       <BentoMaskedText />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Печатная машинка (Full)" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Печатная машинка (Full)" source="custom">
       <div className="p-8 bg-slate-50 rounded-[32px] min-h-[160px] flex items-center justify-center border border-slate-100 shadow-sm">
         <BentoTypewriter 
           words={[
@@ -160,15 +159,15 @@ export default function TypographyPage() {
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Типизация (Hint)" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Типизация (Hint)" source="custom">
       <BentoTypewriterHint text="Загрузка метаданных CRM..." />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Просмотр диффов кода" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Просмотр диффов кода" source="custom">
       <BentoCodeDiff />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Анимированные фразы" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Анимированные фразы" source="custom">
        <BentoAnimatedQuote />
     </ComponentShowcase>
 

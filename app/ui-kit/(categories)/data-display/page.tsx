@@ -108,7 +108,6 @@ export default function TablesPage() {
   <CategoryPage 
    title="Таблицы и Списки" 
    description="Основные элементы организации данных в стиле Midnight: строгие сетки, интерактивные состояния и глубокий контраст." 
-   count={1}
   >
    <div className="grid grid-cols-1 gap-3 mb-20">
     

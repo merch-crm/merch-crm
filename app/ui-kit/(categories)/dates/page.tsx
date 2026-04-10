@@ -85,7 +85,6 @@ export default function DatesPage() {
   <CategoryPage
    title="Даты и Календари"
    description="Компоненты для выбора дат, диапазонов, отслеживания времени и визуализации истории событий."
-   count={10}
   >
    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
     
