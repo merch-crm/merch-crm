@@ -35,7 +35,24 @@ function BulletProgress({ label, value, percentage, target, colorClass = "bg-pri
   );
 }
 
-export function BentoFinancialBullet() {
+export interface BentoFinancialBulletProps {
+  title?: string;
+  subtitle?: string;
+  bottomNote?: string;
+  bullets?: Omit<BulletProgressProps, 'delay'>[];
+}
+
+const DEFAULT_BULLETS = [
+  { label: "Операции", value: "$142,500 / $200k", percentage: "71.25%", target: "25%", colorClass: "bg-slate-700" },
+  { label: "Маркетинг", value: "$85k / $120k", percentage: "70.83%", target: "30%", colorClass: "bg-primary-base" }
+];
+
+export function BentoFinancialBullet({
+  title = "Бюджет Отдела",
+  subtitle = "Финансовый Год 2025",
+  bottomNote = "Порог превышения бюджета: 90%",
+  bullets = DEFAULT_BULLETS
+}: BentoFinancialBulletProps) {
   return (
     <BentoCard className="w-full max-w-sm p-8 flex flex-col gap-3 group overflow-hidden">
       <div className="flex justify-between items-start">
@@ -44,22 +61,29 @@ export function BentoFinancialBullet() {
             <Wallet className="size-5" />
           </BentoIconContainer>
           <div className="flex flex-col">
-            <h3 className="text-sm font-bold text-slate-900 tracking-normal leading-none">Бюджет Отдела</h3>
-            <p className="text-[11px] font-bold text-slate-400 mt-1">Финансовый Год 2025</p>
+            <h3 className="text-sm font-bold text-slate-900 tracking-normal leading-none">{title}</h3>
+            <p className="text-[11px] font-bold text-slate-400 mt-1">{subtitle}</p>
           </div>
         </div>
         <Info className="size-4 text-slate-300 hover:text-slate-950 transition-colors cursor-pointer" />
       </div>
 
       <div className="space-y-3 pt-2">
-        <BulletProgress label="Операции" value="$142,500 / $200k" percentage="71.25%" target="25%" colorClass="bg-slate-700" />
-        <BulletProgress label="Маркетинг" value="$85k / $120k" percentage="70.83%" target="30%" colorClass="bg-primary-base" delay={0.2} />
+        {bullets.map((bullet, index) => (
+          <BulletProgress 
+            key={index} 
+            {...bullet} 
+            delay={index * 0.2} 
+          />
+        ))}
       </div>
 
-      <div className="mt-2 text-[11px] font-bold text-gray-400 flex items-center justify-center gap-2">
-        <div className="size-1.5 rounded-full bg-rose-500" />
-        Порог превышения бюджета: 90%
-      </div>
+      {bottomNote && (
+        <div className="mt-2 text-[11px] font-bold text-gray-400 flex items-center justify-center gap-2">
+          <div className="size-1.5 rounded-full bg-rose-500" />
+          {bottomNote}
+        </div>
+      )}
     </BentoCard>
   );
 }

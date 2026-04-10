@@ -20,9 +20,8 @@ export default function NavigationPage() {
   <CategoryPage
    title="Навигация и Меню"
    description="8 премиальных элементов навигации: от мобильных доков до командных палитр и Apple-стиля."
-   count={6}
   >
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 gap-y-16 pb-32">
     
 
     {/* 4. Tabs Shadcn Custom */}
@@ -30,6 +29,7 @@ export default function NavigationPage() {
      title="Вкладки (Shadcn Custom)" 
      source="custom"
      description="Табы на базе Radix UI для переключения между разделами."
+     className="col-span-1 md:col-span-1 lg:col-span-2"
     >
      <div className="flex justify-center w-full py-4">
        <Tabs defaultValue="details">
@@ -48,6 +48,7 @@ export default function NavigationPage() {
      title="Хлебные крошки (Breadcrumbs)" 
      source="custom" 
      description="Путь пользователя с поддержкой вложенности и иконок." 
+     className="col-span-1 md:col-span-1 lg:col-span-2"
     >
      <div className="flex items-center gap-2 text-xs font-bold py-4">
        <Breadcrumbs 
@@ -66,6 +67,7 @@ export default function NavigationPage() {
      title="Боковая панель (Sidebar)" 
      source="custom" 
      description="Вертикальная панель управления с поддержкой иконок и бейджей." 
+     className="col-span-1 md:col-span-1 lg:col-span-2"
     >
      <div className="h-[300px] w-60 rounded-2xl border border-border bg-card p-3 shadow-sm flex flex-col mx-auto overflow-hidden">
        <div className="p-3 flex items-center gap-3 border-b border-border mb-3">
@@ -97,6 +99,7 @@ export default function NavigationPage() {
      title="Переключатель (Segmented)" 
      source="custom" 
      description="Компактный переключатель для выбора одного значения из списка." 
+     className="col-span-1 md:col-span-1 lg:col-span-2"
     >
      <div className="flex flex-col gap-3 py-4">
        <div className="flex justify-center w-full">
@@ -126,6 +129,7 @@ export default function NavigationPage() {
      title="Колокольчик уведомлений" 
      source="custom" 
      description="Индикатор уведомлений с пульсирующим состоянием." 
+     className="col-span-1 md:col-span-1 lg:col-span-1"
     >
      <div className="flex justify-center items-center gap-3 py-8">
        <div className="relative group cursor-pointer">

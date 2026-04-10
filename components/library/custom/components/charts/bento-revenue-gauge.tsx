@@ -41,7 +41,29 @@ function AnimatedCounter({ value, duration = 2, prefix = "", suffix = "", decima
   return <span className="tabular-nums">{displayValue}</span>;
 }
 
-export function BentoRevenueGauge() {
+export interface BentoRevenueGaugeProps {
+  percentage?: number;
+  revenueValue?: number;
+  revenueDecimals?: number;
+  revenueSuffix?: string;
+  globalGoal?: string;
+  globalStatus?: string;
+  planValue?: string;
+  daysLeft?: string;
+  archiveStatus?: string;
+}
+
+export function BentoRevenueGauge({
+  percentage = 75.4,
+  revenueValue = 2.4,
+  revenueDecimals = 1,
+  revenueSuffix = "M",
+  globalGoal = "Глобальная цель",
+  globalStatus = "В ГРАФИКЕ",
+  planValue = "$3.0M",
+  daysLeft = "12 ДНЕЙ",
+  archiveStatus = "ГЛУБОКИЙ АРХИВ"
+}: BentoRevenueGaugeProps = {}) {
   const [isHovered, setIsHovered] = useState(false);
   const [activeTab, setActiveTab] = useState<'revenue' | 'percent'>('revenue');
   const [hoveredCard, setHoveredCard] = useState<'quota' | 'term' | null>(null);
@@ -51,7 +73,6 @@ export function BentoRevenueGauge() {
     setIsMounted(true);
   }, []);
 
-  const percentage = 75.4;
   const radius = 70;
   const strokeWidth = 18;
   const circumference = 2 * Math.PI * radius;
@@ -75,16 +96,16 @@ export function BentoRevenueGauge() {
       <div className="flex justify-between items-center w-full relative z-10">
         <div className="bg-slate-50/50 px-4 py-2 rounded-full flex items-center gap-3 border border-slate-100/50 shadow-inner">
           <TrendingUp className="size-3 text-slate-900" />
-          <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Global Objective</span>
+          <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">{globalGoal}</span>
         </div>
         <div className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100 flex items-center gap-1.5 shadow-sm">
-          <Zap className="size-2.5 fill-emerald-500" /> ON TRACK
+          <Zap className="size-2.5 fill-emerald-500" /> {globalStatus}
         </div>
       </div>
 
       <button 
         type="button"
-        aria-label={`Toggle revenue and percentage view. Current view: ${activeTab}`}
+        aria-label={`Переключить вид выручки и процентов. Текущий вид: ${activeTab === 'revenue' ? 'выручка' : 'проценты'}`}
         className="relative size-60 flex items-center justify-center cursor-pointer select-none outline-none focus-visible:ring-4 focus-visible:ring-primary-base/10 rounded-full group/gauge active:scale-95 transition-all duration-500"
         onClick={() => setActiveTab(activeTab === 'revenue' ? 'percent' : 'revenue')}
       >
@@ -140,11 +161,11 @@ export function BentoRevenueGauge() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                    <Activity className="size-3 text-primary-base animate-bounce" />
-                   <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Revenue Trace</span>
+                   <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Динамика выручки</span>
                 </div>
                 <div className="text-4xl font-black text-slate-950 flex items-baseline tracking-tighter">
                   <span className="text-2xl mr-1 text-slate-400">$</span>
-                  <AnimatedCounter value={2.4} decimals={1} suffix="M" duration={2} />
+                  <AnimatedCounter value={revenueValue} decimals={revenueDecimals} suffix={revenueSuffix} duration={2} />
                 </div>
               </motion.div>
             ) : (
@@ -157,10 +178,10 @@ export function BentoRevenueGauge() {
               >
                 <div className="flex items-center gap-2 mb-1.5">
                    <Activity className="size-3 text-emerald-500 animate-bounce" />
-                   <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Execution Index</span>
+                   <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Индекс выполнения</span>
                 </div>
                 <div className="text-5xl font-black text-slate-950 tracking-tighter">
-                  <AnimatedCounter value={75.4} decimals={1} suffix="%" duration={2} />
+                  <AnimatedCounter value={percentage} decimals={1} suffix="%" duration={2} />
                 </div>
               </motion.div>
             )}
@@ -170,7 +191,7 @@ export function BentoRevenueGauge() {
             animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 5 }}
             className="mt-4 text-[9px] font-black text-primary-base uppercase tracking-widest flex items-center gap-2 bg-primary-base/5 px-3 py-1 rounded-full border border-primary-base/10"
           >
-            <span>TAP TO SWITCH MATRIX</span>
+            <span>НАЖМИТЕ ДЛЯ СМЕНЫ МЕТРИКИ</span>
             <ChevronRight className="size-2.5" />
           </motion.div>
         </div>
@@ -179,7 +200,7 @@ export function BentoRevenueGauge() {
       <div className="flex gap-4 w-full relative z-10">
         <button 
           type="button"
-          aria-label="View quota details"
+          aria-label="Просмотр деталей плана"
           className={cn(
             "flex-1 p-5 rounded-[2rem] bg-slate-50 border border-slate-100 transition-all duration-500 cursor-pointer overflow-hidden relative text-left outline-none focus-visible:ring-4 focus-visible:ring-slate-950/10",
             hoveredCard === 'quota' ? "bg-white border-slate-950 shadow-2xl -translate-y-2 scale-[1.05]" : "hover:border-slate-300"
@@ -189,9 +210,9 @@ export function BentoRevenueGauge() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Target className={cn("size-4 transition-colors", hoveredCard === 'quota' ? "text-slate-950" : "text-slate-400")} />
-            <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Quota</span>
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">План</span>
           </div>
-          <div className="text-2xl font-black text-slate-950 tracking-tighter tabular-nums">$3.0M</div>
+          <div className="text-2xl font-black text-slate-950 tracking-tighter tabular-nums">{planValue}</div>
           <div className="mt-3 h-1.5 w-full bg-slate-200/50 rounded-full overflow-hidden shadow-inner border border-black/5">
             <motion.div 
               initial={{ width: 0 }}
@@ -203,7 +224,7 @@ export function BentoRevenueGauge() {
 
         <button 
           type="button"
-          aria-label="View term countdown"
+          aria-label="Просмотр обратного отсчета срока"
           className={cn(
             "flex-1 p-5 rounded-[2rem] bg-slate-950 border border-transparent transition-all duration-500 cursor-pointer overflow-hidden relative text-left shadow-2xl outline-none focus-visible:ring-4 focus-visible:ring-primary-base/20",
             hoveredCard === 'term' ? "bg-primary-base text-white shadow-primary-base/40 -translate-y-2 scale-[1.05]" : "hover:bg-slate-900"
@@ -213,10 +234,10 @@ export function BentoRevenueGauge() {
         >
           <div className="flex items-center gap-2 mb-3">
             <Clock className={cn("size-4 transition-colors", hoveredCard === 'term' ? "text-white" : "text-primary-base")} />
-            <span className={cn("text-[11px] font-black uppercase tracking-widest", hoveredCard === 'term' ? "text-white/70" : "text-primary-base/60")}>Archive</span>
+            <span className={cn("text-[11px] font-black uppercase tracking-widest", hoveredCard === 'term' ? "text-white/70" : "text-primary-base/60")}>Архив</span>
           </div>
-          <div className={cn("text-2xl font-black tracking-tighter tabular-nums", hoveredCard === 'term' ? "text-white" : "text-white")}>12 DAYS</div>
-          <div className={cn("mt-3 text-[10px] font-black uppercase tracking-widest", hoveredCard === 'term' ? "text-white/60" : "text-slate-500")}>REL DEEP ARCHIVE</div>
+          <div className={cn("text-2xl font-black tracking-tighter tabular-nums", hoveredCard === 'term' ? "text-white" : "text-white")}>{daysLeft}</div>
+          <div className={cn("mt-3 text-[10px] font-black uppercase tracking-widest", hoveredCard === 'term' ? "text-white/60" : "text-slate-500")}>{archiveStatus}</div>
         </button>
       </div>
 

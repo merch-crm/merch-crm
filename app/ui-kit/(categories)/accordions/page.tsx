@@ -52,26 +52,25 @@ export default function AccordionsPage() {
   <CategoryPage
    title="Аккордеоны"
    description="Раскрывающиеся списки для организации контента, FAQ, настроек и пошаговых сценариев."
-   count={3}
   >
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-16">
     
     {/* 1. Accordion Cards */}
-    <ComponentShowcase title="Аккордеон-карточки (Gap)" source="custom">
+    <ComponentShowcase title="Аккордеон-карточки (Gap)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
      <div className="w-full max-w-sm mx-auto p-4 bg-gray-50 rounded-3xl">
       <AccordionCards items={basicItems} gap="md" />
      </div>
     </ComponentShowcase>
 
     {/* 2. Accordion FAQ (Plus/Minus) */}
-    <ComponentShowcase title="FAQ Стиль (Плюс/Минус)" source="custom">
+    <ComponentShowcase title="FAQ Стиль (Плюс/Минус)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
      <div className="w-full max-w-md mx-auto bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
       <AccordionFAQ items={faqItems} />
      </div>
     </ComponentShowcase>
 
     {/* 3. Accordion Settings */}
-    <ComponentShowcase title="Настройки (Иконки + Описание)" source="custom" className="lg:col-span-2">
+    <ComponentShowcase title="Настройки (Иконки + Описание)" source="custom" className="col-span-1 md:col-span-2 lg:col-span-4">
      <div className="w-full max-w-2xl mx-auto">
       <AccordionSettings items={settingsItems} />
      </div>

@@ -10,6 +10,7 @@ export * from './bento-mini-sparkline';
 export * from './bento-progress-ring-3d';
 export * from './bento-radar-chart';
 export * from './bento-radial-bar-chart';
+export * from './bento-premium-revenue-chart';
 export * from './bento-revenue-gauge';
 export * from './bento-scatter-chart';
 export * from './bento-user-activity-heatmap';

@@ -10,7 +10,6 @@ export default function BackgroundsPage() {
   <CategoryPage 
    title="Системные Фоны и Паттерны" 
    description="Создание глубины и структуры: от математических сеток до динамических 3D-фонов и атмосферных сияний Aurora." 
-   count={2}
   >
    
    {/* --- Section 1: Структурные сетки (Classic) --- */}
@@ -18,8 +17,8 @@ export default function BackgroundsPage() {
     <h2 className="text-3xl font-black font-heading mb-4 text-slate-400">Структурные сетки</h2>
    </div>
    
-   <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
-     <ComponentShowcase title="Структурная сетка" source="custom">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-16">
+     <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Структурная сетка" source="custom">
        <div className="relative w-full h-[300px] rounded-[40px] bg-slate-50 border border-gray-100 shadow-xl overflow-hidden">
         {/* Grid Layer */}
         <div className="absolute inset-0 bg-grid-pattern [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_90%)]" />
@@ -34,7 +33,7 @@ export default function BackgroundsPage() {
        </div>
      </ComponentShowcase>
 
-    <ComponentShowcase title="Минимальные точки" source="custom">
+    <ComponentShowcase className="col-span-1 md:col-span-1 lg:col-span-2" title="Минимальные точки" source="custom">
       <div className="relative w-full h-[300px] rounded-[40px] bg-white border border-gray-100 shadow-xl overflow-hidden">
        <div className="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]" />
        <div className="relative z-10 size-full flex flex-col items-center justify-center p-8">

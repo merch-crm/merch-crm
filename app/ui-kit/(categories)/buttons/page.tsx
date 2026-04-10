@@ -15,7 +15,6 @@ export default function ButtonsPage() {
   <CategoryPage 
    title="Кнопки" 
    description="Стандартизированные системные кнопки CRM, разделенные на 7 основных функциональных типов." 
-   count={7}
   >
    <div className="flex flex-col gap-3">
     <ActionButtons />

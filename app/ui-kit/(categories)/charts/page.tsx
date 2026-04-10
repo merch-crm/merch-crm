@@ -5,7 +5,6 @@ import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
 import { 
  TrendingUp, 
  Users,
- LineChart,
  BarChart3,
  Target,
  Package
@@ -17,10 +16,9 @@ import {
  RevenueChart, 
  ConversionFunnel, 
  BentoMiniSparkline,
- BentoRevenueGauge,
- BentoUserActivityHeatmap,
  BentoProgressRing3D,
  BentoFinancialBullet,
+ BentoPremiumRevenueChart,
 } from '@/components/library/custom';
 import { PipelineBar } from '@/components/ui/pipeline-bar';
 import { StatusTimeline, type StatusEvent } from '@/components/ui/status-timeline';
@@ -74,7 +72,6 @@ export default function ChartsPage() {
   <CategoryPage
    title="Графики и Визуализация"
    description="Премиальные bento-виджеты для аналитики: от тепловых карт активности до 3D-колец прогресса и финансовых «пуль-графиков»."
-   count={9}
   >
    {/* Section 1: Dashboard & Metrics */}
    <section className="flex flex-col gap-3 mt-12">
@@ -166,41 +163,15 @@ export default function ChartsPage() {
     <h2 className="text-4xl font-black font-heading tracking-normal mb-4">Визуализация Данных</h2>
     <p className="text-xl text-muted-foreground font-medium tracking-normal max-w-2xl">Инновационные способы визуализации данных в MerchCRM. Интерактивные чарты, тепловые карты и премиальная инфографика.</p>
    </div>
-   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-32">
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3 pb-32">
     <ComponentShowcase title="Мини-график (Sparkline)" source="custom">
      <BentoMiniSparkline />
     </ComponentShowcase>
     <ComponentShowcase title="График выручки (Premium)" source="custom" desc="Микро-график для анализа трендов.">
-     <div className="w-full max-w-md mx-auto">
-       <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 hover:shadow-xl transition-all cursor-pointer group overflow-hidden">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-           <h4 className="text-xs font-black text-gray-400  mb-1">Выручка за месяц</h4>
-           <p className="text-2xl font-black text-gray-900 ">8.45М ₽</p>
-          </div>
-          <div className="bg-emerald-50 text-emerald-600 p-2 rounded-xl">
-           <LineChart className="size-5" />
-          </div>
-        </div>
-        <div className="flex items-end gap-2 h-20 group-hover:gap-3 transition-all duration-300">
-          {[40, 60, 45, 80, 55, 90, 75].map((h, i) => (
-           <div key={i} className="flex-1 bg-blue-100 rounded-t-sm hover:bg-blue-500 transition-colors duration-300 cursor-cell relative group/bar" style={{ height: `${h}%` }}>
-             <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-slate-900 shadow-sm border border-slate-100 text-[11px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap">
-              {h}k
-             </div>
-           </div>
-          ))}
-        </div>
-       </div>
-     </div>
-    </ComponentShowcase>
-    <ComponentShowcase title="Индикатор выручки" source="custom">
-     <BentoRevenueGauge />
+     <BentoPremiumRevenueChart />
     </ComponentShowcase>
 
-    <ComponentShowcase title="Скорость активности" source="custom">
-     <BentoUserActivityHeatmap />
-    </ComponentShowcase>
+
 
 
 

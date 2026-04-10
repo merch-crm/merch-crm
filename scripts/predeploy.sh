@@ -1,7 +1,19 @@
+#!/bin/bash
 set -e
 export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin
 
 echo "🚀 Запуск стабильности перед деплоем (Pre-push check)..."
+
+# 0. Проверка портов туннеля (DB & Redis)
+echo "📌 Шаг 0: Проверка SSH-туннелей..."
+if ! nc -zv 127.0.0.1 5432 >/dev/null 2>&1; then
+  echo "❌ Ошибка: Порт БД (5432) недоступен. Пожалуйста, запустите туннель: npm run dev:quiet"
+  exit 1
+fi
+if ! nc -zv 127.0.0.1 6379 >/dev/null 2>&1; then
+  echo "❌ Ошибка: Порт Redis (6379) недоступен. Пожалуйста, запустите туннель: npm run dev:quiet"
+  exit 1
+fi
 
 # 1. Проверка типов
 echo "📌 Шаг 1: Проверка типов TypeScript..."
@@ -21,7 +33,8 @@ npm run test:integration
 # 4. Проверка билда
 echo "📌 Шаг 4: Тестовая сборка Next.js..."
 rm -rf .next
-npm run build
+sleep 1
+NEXT_TELEMETRY_DISABLED=1 NODE_ENV=production npm run build
 
 # 5. Проверка схемы БД
 echo "📌 Шаг 5: Проверка несинхронизированных изменений схемы БД (Drizzle)..."
