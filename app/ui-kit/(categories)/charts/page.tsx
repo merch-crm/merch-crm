@@ -10,7 +10,6 @@ import {
  Target,
  Package
 } from 'lucide-react';
-import { cn } from '@/components/library/custom/utils/cn';
 import { 
  StatsGrid, 
  MetricCard, 
@@ -186,7 +185,7 @@ export default function ChartsPage() {
         <div className="flex items-end gap-2 h-20 group-hover:gap-3 transition-all duration-300">
           {[40, 60, 45, 80, 55, 90, 75].map((h, i) => (
            <div key={i} className="flex-1 bg-blue-100 rounded-t-sm hover:bg-blue-500 transition-colors duration-300 cursor-cell relative group/bar" style={{ height: `${h}%` }}>
-             <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[11px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap">
+             <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white text-slate-900 shadow-sm border border-slate-100 text-[11px] px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 transition-opacity whitespace-nowrap">
               {h}k
              </div>
            </div>
@@ -226,29 +225,7 @@ export default function ChartsPage() {
     </ComponentShowcase>
 
 
-    <ComponentShowcase title="Источники лидов" source="custom" desc="Сетка анализа каналов привлечения.">
-     <div className="w-full max-w-sm mx-auto py-4">
-       <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all cursor-pointer">
-        <h4 className="text-xs font-black text-gray-400  mb-6">Каналы привлечения</h4>
-        <div className="grid grid-cols-2 gap-3">
-          {[
-           { label: 'LinkedIn', val: '45%', color: 'bg-blue-500' },
-           { label: 'Реферал', val: '30%', color: 'bg-emerald-500' },
-           { label: 'Органика', val: '15%', color: 'bg-amber-500' },
-           { label: 'Прочее', val: '10%', color: 'bg-gray-400' }
-          ].map((s, i) => (
-           <div key={i} className="p-3 rounded-2xl bg-gray-50 flex flex-col gap-1 border border-gray-100">
-             <span className="text-[11px] font-black text-gray-400 ">{s.label}</span>
-             <span className="text-lg font-black text-gray-900">{s.val}</span>
-             <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1">
-              <div className={cn("h-full rounded-full", s.color)} style={{ width: s.val }}></div>
-             </div>
-           </div>
-          ))}
-        </div>
-       </div>
-     </div>
-    </ComponentShowcase>
+
 
     <ComponentShowcase 
      title="Трекер доставки (Custom)" 

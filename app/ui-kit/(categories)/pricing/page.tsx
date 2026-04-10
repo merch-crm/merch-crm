@@ -45,8 +45,8 @@ export default function PricingPage() {
 
   return (
     <CategoryPage
-      title="Тарифы и монетизация"
-      description="Премиум-подписки, сводки по биллингу и управление лимитами для Enterprise SaaS."
+      title="Оплата"
+      description="Премиум-подписки, сводки по биллингу и способы оплаты для Enterprise SaaS."
       count={2}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
@@ -98,7 +98,7 @@ export default function PricingPage() {
         <ComponentShowcase title="Платежный метод" source="custom">
           <div className="w-full max-w-sm mx-auto p-4 bg-white border border-gray-100 rounded-2xl flex items-center justify-between">
              <div className="flex items-center gap-3">
-                <div className="w-10 h-7 bg-slate-900 rounded flex items-center justify-center text-[11px] text-white font-black">VISA</div>
+                <div className="w-10 h-7 bg-primary-base/10 rounded flex items-center justify-center text-[11px] text-primary-base font-black">VISA</div>
                 <div className="flex flex-col">
                    <span className="text-xs font-bold text-slate-800">•••• 4412</span>
                    <span className="text-[11px] text-slate-400 font-bold ">Exp 12/26</span>

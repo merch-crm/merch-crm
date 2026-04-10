@@ -22,7 +22,7 @@ const skipRedis = process.env.SKIP_REDIS === "true";
 
 /** Singleton Redis instance */
 declare global {
-  // eslint-disable-next-line no-var
+   
   var redis: Redis | RedisMock | undefined;
 }
 

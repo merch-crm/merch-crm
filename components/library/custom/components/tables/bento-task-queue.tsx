@@ -55,8 +55,8 @@ export function BentoTaskQueue({ title = "Active Task Queue", tasks: initialTask
         </div>
         <div className="flex items-center gap-2">
            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-3 py-1.5 rounded-full border border-slate-100 tabular-nums">{tasks.filter(t => !t.isDone).length.toString().padStart(2, '0')} PENDING</span>
-           <button type="button" aria-label="Task queue options" className="size-8 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all duration-500 outline-none focus-visible:ring-4 focus-visible:ring-slate-950/10">
-              <MoreHorizontal className="size-4" />
+           <button type="button" aria-label="Task queue options" className="size-8 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-100 hover:text-slate-900 transition-all duration-500 outline-none focus-visible:ring-4 focus-visible:ring-primary-base/10">
+              < MoreHorizontal className="size-4" />
            </button>
         </div>
       </div>
@@ -90,7 +90,7 @@ export function BentoTaskQueue({ title = "Active Task Queue", tasks: initialTask
                 className={cn(
                   "size-8 rounded-xl border-2 flex items-center justify-center transition-all duration-500 shrink-0 outline-none focus-visible:ring-4 focus-visible:ring-primary-base/10",
                   task.isDone 
-                    ? "bg-slate-950 border-slate-950 text-white shadow-lg shadow-black/20" 
+                    ? "bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-200" 
                     : "bg-white border-slate-100 hover:border-primary-base group-hover/item:scale-105"
                 )}
               >

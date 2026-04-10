@@ -59,15 +59,15 @@ export default function TooltipsPage() {
     source="custom" 
     desc="Визуальная подсказка для графиков и дашбордов." 
    >
-    <div className="flex items-center justify-center py-12 bg-slate-900 rounded-[3rem] border border-white/5 mx-4">
+    <div className="flex items-center justify-center py-12 bg-slate-50 rounded-[3rem] border border-slate-100 mx-4 shadow-inner">
       <div className="relative group/chart">
        <div className="flex gap-2 items-end h-32 px-12">
          {[40, 70, 45, 90, 65].map((h, i) => (
-          <div key={i} className={cn("w-8 bg-white/10 rounded-t-xl transition-all duration-500", i === 3 ? "bg-primary-base rounded-b-xl" : "")} style={{ height: `${h}%` }} />
+          <div key={i} className={cn("w-8 bg-slate-200 rounded-t-xl transition-all duration-500", i === 3 ? "bg-primary-base rounded-b-xl" : "")} style={{ height: `${h}%` }} />
          ))}
        </div>
        <div className="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/chart:opacity-100 transition-opacity duration-300 pointer-events-none">
-         <div className="bg-white rounded-[1.5rem] p-4 shadow-2xl flex flex-col items-center min-w-[120px]">
+         <div className="bg-white rounded-[1.5rem] p-4 shadow-2xl flex flex-col items-center min-w-[120px] border border-slate-50">
           <span className="text-[11px] font-black text-gray-400 ">Выручка</span>
           <span className="text-lg font-black text-gray-950 font-heading">₽1,420,000</span>
           <span className="text-[11px] font-bold text-emerald-500">+12.4% к прошлой неделе</span>
@@ -95,9 +95,9 @@ export default function TooltipsPage() {
           {d.pos}
         </button>
         <div className={cn("absolute scale-75 opacity-0 group-hover/dir:scale-100 group-hover/dir:opacity-100 transition-all pointer-events-none z-10", d.cls)}>
-          <div className="relative bg-gray-900 text-white text-[11px] font-black px-3 py-1.5 rounded-lg whitespace-nowrap">
+          <div className="relative bg-white border border-slate-100 text-slate-900 text-[11px] font-black px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl">
            Ориентация: {d.label}
-           <div className={cn("absolute size-2 bg-gray-900 rotate-45", d.arrow)} />
+           <div className={cn("absolute size-2 bg-white border-r border-b border-slate-100 rotate-45", d.arrow)} />
           </div>
         </div>
        </div>

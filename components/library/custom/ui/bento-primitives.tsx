@@ -12,7 +12,7 @@ export const BentoCard = React.forwardRef<HTMLDivElement, React.HTMLAttributes<H
     <div 
       ref={ref}
       className={cn(
-        "w-full max-w-sm rounded-[32px] bg-white dark:bg-zinc-950 border border-slate-100 dark:border-zinc-800 shadow-crm-md p-6 flex flex-col gap-3 group relative overflow-hidden transition-all duration-700 hover:shadow-2xl",
+        "w-full max-w-sm rounded-[32px] bg-white border border-slate-100 shadow-crm-md p-6 flex flex-col gap-3 group relative overflow-hidden transition-all duration-700 hover:shadow-2xl",
         className
       )}
       {...props}
@@ -28,7 +28,7 @@ BentoCard.displayName = "BentoCard";
  */
 export const BentoIconContainer = ({ children, className }: { children: React.ReactNode, className?: string }) => (
   <div className={cn(
-    "size-8 rounded-xl bg-slate-950 text-white flex items-center justify-center shadow-lg shadow-black/20",
+    "size-8 rounded-xl bg-slate-50 text-slate-900 border border-slate-100 flex items-center justify-center shadow-sm",
     className
   )}>
     {children}

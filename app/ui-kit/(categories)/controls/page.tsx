@@ -17,7 +17,7 @@ export default function ControlsPage() {
   >
    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pb-32">
     <ComponentShowcase title="Стандартные Переключатели" source="custom">
-     <div className="flex items-center gap-3 p-8 bg-gray-50 rounded-3xl border border-gray-100 h-full justify-center">
+     <div className="flex items-center gap-4 p-8 h-full justify-center">
       <Switch color="success" defaultChecked />
       <Switch color="dark" defaultChecked />
       <Switch color="primary" defaultChecked />

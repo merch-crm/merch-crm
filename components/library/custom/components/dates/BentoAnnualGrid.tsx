@@ -86,9 +86,7 @@ export function BentoAnnualGrid() {
          </p>
       </div>
 
-      <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-         <Apple className="size-24 text-gray-900 rotate-12" />
-      </div>
+
     </div>
   );
 }

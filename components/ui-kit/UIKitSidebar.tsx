@@ -9,7 +9,6 @@ import {
   X,
   Search,
   RectangleHorizontal,
-  CreditCard,
   TextCursorInput,
   Compass,
   Table2,
@@ -22,7 +21,7 @@ import {
   Palette,
   CalendarDays,
   Box,
-  Database,
+
   SlidersHorizontal,
   Briefcase,
   Wand2,
@@ -52,7 +51,7 @@ const sidebarSections: SidebarSection[] = [
     title: "Основы",
     items: [
       { name: "Обзор", href: "/ui-kit", icon: Home, count: null },
-      { name: "Цвета и Палетки", href: "/ui-kit/colors", icon: Palette, count: 5 },
+      { name: "Выбор цвета", href: "/ui-kit/colors", icon: Palette, count: 5 },
       { name: "Типографика", href: "/ui-kit/typography", icon: Type, count: 17 },
       { name: "Кнопки", href: "/ui-kit/buttons", icon: RectangleHorizontal, count: 7 },
       { name: "Статусы и Бейджи", href: "/ui-kit/statuses", icon: Activity, count: 6 },
@@ -62,7 +61,6 @@ const sidebarSections: SidebarSection[] = [
     title: "Базовые UI",
     items: [
       { name: "Инпуты и Поиск", href: "/ui-kit/inputs", icon: TextCursorInput, count: 11 },
-      { name: "Карточки", href: "/ui-kit/cards", icon: CreditCard, count: 2 },
       { name: "Контролы", href: "/ui-kit/controls", icon: SlidersHorizontal, count: 4 },
       { name: "Аккордеоны", href: "/ui-kit/accordions", icon: FoldVertical, count: 3 },
       { name: "Тултипы", href: "/ui-kit/tooltips", icon: MessageCircle, count: 3 },
@@ -78,10 +76,10 @@ const sidebarSections: SidebarSection[] = [
   {
     title: "Аналитика и CRM",
     items: [
-      { name: "Управление данными", href: "/ui-kit/data-management", icon: Database, count: 4 },
+
       { name: "Графики и диаграммы", href: "/ui-kit/charts", icon: BarChart3, count: 9 },
-      { name: "Тарифы и Монетизация", href: "/ui-kit/pricing", icon: Calculator, count: 2 },
-      { name: "Даты и время", href: "/ui-kit/dates", icon: CalendarDays, count: 13 },
+      { name: "Оплата", href: "/ui-kit/pricing", icon: Calculator, count: 2 },
+      { name: "Даты и время", href: "/ui-kit/dates", icon: CalendarDays, count: 12 },
       { name: "QR Коды", href: "/ui-kit/qr", icon: QrCode, count: 7 },
       { name: "Производство", href: "/ui-kit/merch", icon: Briefcase, count: 2 },
     ]
@@ -89,8 +87,8 @@ const sidebarSections: SidebarSection[] = [
   {
     title: "Оформление",
     items: [
-      { name: "Аватары", href: "/ui-kit/avatars", icon: UserCircle, count: 3 },
-      { name: "Навигация", href: "/ui-kit/navigation", icon: Compass, count: 7 },
+      { name: "Пользователи", href: "/ui-kit/avatars", icon: UserCircle, count: 4 },
+      { name: "Навигация", href: "/ui-kit/navigation", icon: Compass, count: 6 },
       { name: "Системные уведомления", href: "/ui-kit/errors", icon: AlertTriangle, count: 15 },
     ]
   },

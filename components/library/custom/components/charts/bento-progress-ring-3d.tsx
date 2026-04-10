@@ -10,21 +10,21 @@ export function BentoProgressRing3D({ percentage = 82 }: { percentage?: number }
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="w-full max-w-sm rounded-[32px] bg-slate-950 p-8 flex flex-col items-center gap-3 group relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-base to-transparent opacity-50" />
+    <div className="w-full max-w-sm rounded-[32px] bg-white border border-gray-100 shadow-sm p-8 flex flex-col items-center gap-3 group relative overflow-hidden transition-all hover:shadow-xl">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-base to-transparent opacity-20" />
       
       <div className="flex justify-between w-full px-2">
-         <h3 className="text-[11px] font-black text-primary-base tracking-normal">Рейтинг Безопасности</h3>
+         <h3 className="text-[11px] font-bold text-primary-base tracking-normal uppercase">Рейтинг Безопасности</h3>
          <ShieldCheck className="size-4 text-primary-base" />
       </div>
 
       <div className="relative size-44 flex items-center justify-center">
          {/* Glow effect */}
-         <div className="absolute inset-0 bg-primary-base blur-[60px] opacity-10 rounded-full" />
+         <div className="absolute inset-0 bg-primary-base blur-[60px] opacity-[0.03] rounded-full" />
          
          <svg className="size-full -rotate-90 transform" viewBox="0 0 100 100">
             <circle
-               className="text-white/5"
+               className="text-slate-100"
                strokeWidth="10"
                stroke="currentColor"
                fill="transparent"
@@ -48,17 +48,17 @@ export function BentoProgressRing3D({ percentage = 82 }: { percentage?: number }
             />
          </svg>
          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-4xl font-black text-white tracking-normal">{percentage}%</span>
-            <span className="text-[11px] font-black text-white/30 tracking-normal mt-1">Оптимизировано</span>
+            <span className="text-4xl font-bold text-slate-900 tracking-normal">{percentage}%</span>
+            <span className="text-[11px] font-bold text-slate-400 tracking-normal mt-1">Оптимизировано</span>
          </div>
       </div>
 
-      <div className="bg-white/5 rounded-2xl p-4 w-full flex items-center justify-between border border-white/5">
+      <div className="bg-gray-50 rounded-2xl p-4 w-full flex items-center justify-between border border-gray-100/50">
          <div className="flex items-center gap-3">
-            <Target className="size-4 text-emerald-400" />
-            <span className="text-xs font-bold text-white/80">Цель достигнута</span>
+            <Target className="size-4 text-emerald-500" />
+            <span className="text-xs font-semibold text-slate-600">Цель достигнута</span>
          </div>
-         <span className="text-[11px] font-black text-emerald-400 ">Проверено</span>
+         <span className="text-[11px] font-bold text-emerald-600 ">Проверено</span>
       </div>
     </div>
   );

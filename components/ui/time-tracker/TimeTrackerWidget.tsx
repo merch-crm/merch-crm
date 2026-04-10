@@ -13,19 +13,23 @@ import { useTimeTracker } from"./useTimeTracker";
 export function TimeTrackerWidget({
     status,
     startTime,
+    initialElapsed = 0,
     entries,
     onStart,
     onStop,
+    onPause,
+    onResume,
     className,
 }: TimeTrackerWidgetProps) {
-    const isWorking = status ==="working";
+    const isActive = status ==="working";
+    const isWorking = status !=="idle";
     const [currentDateLabel, setCurrentDateLabel] = React.useState("...");
 
     React.useEffect(() => {
         setCurrentDateLabel(format(new Date(), "d MMMM, EEEE", { locale: ru })); // suppressHydrationWarning
     }, []);
 
-    const elapsed = useTimeTracker(startTime, isWorking);
+    const elapsed = useTimeTracker(startTime, isActive, initialElapsed);
 
     return (
         <div className={cn("space-y-3", className)}>
@@ -57,12 +61,22 @@ export function TimeTrackerWidget({
                             isWorking ?"bg-emerald-500 animate-pulse" :"bg-slate-300"
                         )} />
                         <span className="text-xs font-black text-slate-400">
-                            {isWorking ?"Идет учет времени" :"Таймер остановлен"}
+                            {status ==="working" ?"Идет учет времени" : status ==="paused" ?"На паузе" :"Таймер остановлен"}
                         </span>
                     </div>
                 </div>
 
-                <TimeTrackerToggle isWorking={isWorking} startTime={startTime} onToggle={isWorking ? onStop : onStart} size="lg" className="w-full" />
+                <TimeTrackerToggle 
+                    status={status} 
+                    startTime={startTime} 
+                    initialElapsed={initialElapsed}
+                    onStart={onStart} 
+                    onStop={onStop} 
+                    onPause={onPause}
+                    onResume={onResume}
+                    size="lg" 
+                    className="w-full" 
+                />
             </div>
 
             {/* История за сегодня */}

@@ -2,20 +2,19 @@
 
 import React, { useState } from 'react';
 import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
-import { DateRangePicker, DateRangePickerWithPresets, type DateRange } from "@/components/ui/date-range-picker";
 import { 
  StatusTimeline, 
  StatusTimelineHorizontal, 
  type StatusEvent
 } from "@/components/ui/status-timeline";
-import { TimeTrackerToggle } from "@/components/ui/time-tracker";
-import { subDays, startOfToday } from "date-fns";
+import { TimeTrackerToggle, type TrackerStatus } from "@/components/ui/time-tracker";
+import { subDays, startOfToday, differenceInSeconds } from "date-fns";
 
 // Bento Imports
 import { BentoCalendar } from "@/components/library/custom/components/dates/bento-calendar";
 import { BentoDateRange } from "@/components/library/custom/components/dates/bento-date-range";
 import { BentoTimePicker } from "@/components/library/custom/components/dates/BentoTimePicker";
-import { BentoRelativeTime } from "@/components/library/custom/components/dates/BentoRelativeTime";
+
 import { BentoSchedulePreview } from "@/components/library/custom/components/dates/BentoSchedulePreview";
 import { BentoAnnualGrid } from "@/components/library/custom/components/dates/BentoAnnualGrid";
 import { BentoCountdown } from "@/components/library/custom/components/dates/BentoCountdown";
@@ -24,9 +23,36 @@ import { BentoMonthSlider } from "@/components/library/custom/components/dates/B
 
 export default function DatesPage() {
  const today = startOfToday();
- const [range, setRange] = useState<DateRange>({ from: subDays(today, 7), to: today });
- const [rangeWithPresets, setRangeWithPresets] = useState<DateRange>({ from: today, to: today });
- const [isTracking, setIsTracking] = useState(false);
+ 
+ // State for Time Tracker Demo
+ const [trackerStatus, setTrackerStatus] = useState<TrackerStatus>("idle");
+ const [startTime, setStartTime] = useState<Date | null>(null);
+ const [accumulatedTime, setAccumulatedTime] = useState(0);
+
+ const handleStart = () => {
+  setTrackerStatus("working");
+  setStartTime(new Date());
+  setAccumulatedTime(0);
+ };
+
+ const handlePause = () => {
+  if (startTime) {
+   setAccumulatedTime(prev => prev + differenceInSeconds(new Date(), startTime));
+  }
+  setTrackerStatus("paused");
+  setStartTime(null);
+ };
+
+ const handleResume = () => {
+  setTrackerStatus("working");
+  setStartTime(new Date());
+ };
+
+ const handleStop = () => {
+  setTrackerStatus("idle");
+  setStartTime(null);
+  setAccumulatedTime(0);
+ };
 
  const timelineData: StatusEvent[] = [
   {
@@ -59,19 +85,11 @@ export default function DatesPage() {
   <CategoryPage
    title="Даты и Календари"
    description="Компоненты для выбора дат, диапазонов, отслеживания времени и визуализации истории событий."
-   count={13}
+   count={10}
   >
    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-3 gap-y-16">
     
-    <ComponentShowcase title="Выбор диапазона (Input)" source="custom" className="overflow-visible">
-     <div className="w-full">
-      <DateRangePicker 
-       label="Даты проведения акции"
-       value={range}
-       onChange={setRange}
-      />
-     </div>
-    </ComponentShowcase>
+
 
     <div className="lg:col-span-2 mt-16 mb-8 w-full border-t border-border pt-16">
      <h2 className="text-3xl font-black font-heading mb-2">Bento-виджеты дат и расписания</h2>
@@ -95,10 +113,7 @@ export default function DatesPage() {
       <BentoTimePicker />
     </ComponentShowcase>
 
-    {/* 4. Bento Relative Time */}
-    <ComponentShowcase title="Относительное время" source="custom" desc="Живые индикаторы относительного времени с пульсацией.">
-      <BentoRelativeTime />
-    </ComponentShowcase>
+
 
     {/* 5. Bento Schedule Preview */}
     <ComponentShowcase title="Мини-расписание" source="custom" desc="Мини-таймлайн будущих событий и встреч.">
@@ -126,16 +141,7 @@ export default function DatesPage() {
      <p className="text-muted-foreground font-medium">Базовые элементы для работы с историей событий.</p>
     </div>
 
-    {/* 3. Range Picker with Presets */}
-    <ComponentShowcase title="Диапазон с пресетами" source="custom">
-     <div className="w-full max-w-sm mx-auto">
-      <DateRangePickerWithPresets 
-       label="Период отчета"
-       value={rangeWithPresets}
-       onChange={setRangeWithPresets}
-      />
-     </div>
-    </ComponentShowcase>
+
 
 
     {/* 5. Status Timeline (Vertical) */}
@@ -153,12 +159,16 @@ export default function DatesPage() {
     </ComponentShowcase>
 
     {/* 9. Time Tracker Toggle */}
-    <ComponentShowcase title="Трекер времени (Toggle)" source="custom">
-     <div className="w-full max-w-[200px] mx-auto flex items-center justify-center p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+    <ComponentShowcase title="Трекер времени (Toggle)" source="custom" desc="Компактный переключатель с поддержкой паузы и накопления времени.">
+     <div className="w-full max-w-[280px] mx-auto flex items-center justify-center p-6 bg-white rounded-3xl border border-gray-100 shadow-sm">
       <TimeTrackerToggle 
-       isWorking={isTracking} 
-       onToggle={() => setIsTracking(!isTracking)} 
-       startTime={isTracking ? subDays(new Date(), 0) : null}
+       status={trackerStatus}
+       startTime={startTime}
+       initialElapsed={accumulatedTime}
+       onStart={handleStart}
+       onStop={handleStop}
+       onPause={handlePause}
+       onResume={handleResume}
       />
      </div>
     </ComponentShowcase>

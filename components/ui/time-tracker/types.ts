@@ -12,6 +12,7 @@ export interface TimeEntry {
 export interface TimeTrackerProps {
     status: TrackerStatus;
     startTime?: Date | null;
+    initialElapsed?: number;
     totalToday?: number;
     onStart: () => void;
     onStop: () => void;
@@ -24,15 +25,22 @@ export interface TimeTrackerProps {
 export interface TimeTrackerCompactProps {
     status: TrackerStatus;
     startTime?: Date | null;
+    initialElapsed?: number;
     onStart: () => void;
     onStop: () => void;
+    onPause?: () => void;
+    onResume?: () => void;
     className?: string;
 }
 
 export interface TimeTrackerToggleProps {
-    isWorking: boolean;
+    status: TrackerStatus;
     startTime?: Date | null;
-    onToggle: () => void;
+    initialElapsed?: number;
+    onStart: () => void;
+    onStop: () => void;
+    onPause?: () => void;
+    onResume?: () => void;
     size?:"sm" |"md" |"lg";
     className?: string;
 }
@@ -40,15 +48,19 @@ export interface TimeTrackerToggleProps {
 export interface TimeTrackerWidgetProps {
     status: TrackerStatus;
     startTime?: Date | null;
+    initialElapsed?: number;
     entries: TimeEntry[];
     onStart: () => void;
     onStop: () => void;
+    onPause?: () => void;
+    onResume?: () => void;
     className?: string;
 }
 
 export interface TimeTrackerBadgeProps {
     status: TrackerStatus;
     startTime?: Date | null;
+    initialElapsed?: number;
     className?: string;
 }
 

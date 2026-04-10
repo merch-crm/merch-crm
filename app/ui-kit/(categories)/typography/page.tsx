@@ -104,10 +104,10 @@ export default function TypographyPage() {
     </ComponentShowcase>
 
     <ComponentShowcase title="Размытый текст (Blur)" source="custom">
-      <div className="p-6 bg-slate-950 rounded-[32px] overflow-hidden">
+      <div className="p-6 bg-slate-50 rounded-[32px] overflow-hidden border border-slate-100 shadow-sm">
         <BentoBlurText 
           text="Плавное появление элементов интерфейса с эффектом блюра"
-          className="text-white text-xl font-bold"
+          className="text-slate-900 text-xl font-bold"
           animateBy="words"
         />
       </div>
@@ -148,14 +148,14 @@ export default function TypographyPage() {
     </ComponentShowcase>
 
     <ComponentShowcase title="Печатная машинка (Full)" source="custom">
-      <div className="p-8 bg-zinc-950 rounded-[32px] min-h-[160px] flex items-center justify-center">
+      <div className="p-8 bg-slate-50 rounded-[32px] min-h-[160px] flex items-center justify-center border border-slate-100 shadow-sm">
         <BentoTypewriter 
           words={[
             { text: "Автоматизация" },
-            { text: "бизнес-процессов", className: "text-blue-500" },
+            { text: "бизнес-процессов", className: "text-blue-600" },
             { text: "MerchCRM." }
           ]}
-          className="text-2xl text-white"
+          className="text-2xl text-slate-900"
         />
       </div>
     </ComponentShowcase>

@@ -6,21 +6,22 @@ import { formatDuration } from"./utils";
 import { TimeTrackerBadgeProps } from"./types";
 import { useTimeTracker } from"./useTimeTracker";
 
-export function TimeTrackerBadge({ status, startTime, className }: TimeTrackerBadgeProps) {
-    const elapsed = useTimeTracker(startTime, status ==="working");
+export function TimeTrackerBadge({ status, startTime, initialElapsed = 0, className }: TimeTrackerBadgeProps) {
+    const isActive = status === "working";
+    const elapsed = useTimeTracker(startTime, isActive, initialElapsed);
 
     const statusColors = {
-        idle:"bg-slate-100 text-slate-500",
-        working:"bg-emerald-100 text-emerald-600",
-        break:"bg-amber-100 text-amber-600",
-        paused:"bg-blue-100 text-blue-600",
+        idle: "bg-slate-100 text-slate-500",
+        working: "bg-emerald-100 text-emerald-600",
+        break: "bg-amber-100 text-amber-600",
+        paused: "bg-amber-100 text-amber-600",
     };
 
     const statusLabels = {
-        idle:"Оффлайн",
-        working:"В работе",
-        break:"Перерыв",
-        paused:"На паузе",
+        idle: "Оффлайн",
+        working: "В работе",
+        break: "Перерыв",
+        paused: "На паузе",
     };
 
     return (
@@ -29,10 +30,11 @@ export function TimeTrackerBadge({ status, startTime, className }: TimeTrackerBa
             className
         )}>
             <div className={cn("w-1.5 h-1.5 rounded-full",
-                status ==="working" ?"bg-emerald-500 animate-pulse" :"bg-current opacity-40"
+                status === "working" ? "bg-emerald-500 animate-pulse" : 
+                status === "paused" ? "bg-amber-500" : "bg-current opacity-40"
             )} />
             <span>{statusLabels[status]}</span>
-            {status ==="working" && elapsed > 0 && (
+            {(status === "working" || status === "paused") && elapsed > 0 && (
                 <span className="font-mono tabular-nums opacity-60">
                     {formatDuration(elapsed)}
                 </span>

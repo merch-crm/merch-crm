@@ -44,7 +44,7 @@ export function MerchStatusStepper({ currentStatus, className }: MerchStatusStep
           <div key={step.status} className="relative flex gap-3 group">
             {/* Line connector */}
             {index !== STEPS.length - 1 && (
-              <div className="absolute left-[19px] top-[40px] w-[2px] h-[calc(100%-40px)] bg-gray-100 overflow-hidden">
+              <div className="absolute left-[19px] top-[48px] w-[2px] h-[calc(100%-48px)] bg-gray-100 overflow-hidden">
                 <motion.div 
                   initial={{ height: 0 }}
                   animate={{ height: isCompleted ? '100%' : '0%' }}
@@ -54,11 +54,11 @@ export function MerchStatusStepper({ currentStatus, className }: MerchStatusStep
             )}
 
             {/* Icon Node */}
-            <div className="relative z-10 py-2">
+            <div className="relative z-10 py-1">
               <motion.div
                 initial={false}
                 animate={{
-                  scale: isActive ? 1.1 : 1,
+                  scale: isActive ? 1.05 : 1,
                   backgroundColor: isCompleted ? 'var(--primary-base)' : isActive ? 'white' : '#f3f4f6',
                   borderColor: isCompleted ? 'var(--primary-base)' : isActive ? 'var(--primary-base)' : '#e5e7eb',
                 }}
