@@ -20,17 +20,15 @@ const redisOptions = {
 const isTest = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 const skipRedis = process.env.SKIP_REDIS === "true";
 
-/** Singleton Redis instance */
-declare global {
-   
-  var redis: Redis | RedisMock | undefined;
-}
+const globalForRedis = global as unknown as {
+  redis: Redis | RedisMock | undefined;
+};
 
 // Загрузка инстанса (TLA - Top Level Await безопасен для сервера Next.js)
 let redisInstance: Redis | RedisMock;
 
-if (global.redis) {
-  redisInstance = global.redis;
+if (globalForRedis.redis) {
+  redisInstance = globalForRedis.redis;
 } else if (isTest || skipRedis) {
   // Динамический импорт: Webpack вынесет этот код в отдельный файл (Chunk),
   // что гарантирует чистоту Production bundle от тестовых моков.
@@ -43,7 +41,7 @@ if (global.redis) {
 export const redis = redisInstance;
 
 if (process.env.NODE_ENV !== "production") {
-  global.redis = redis;
+  globalForRedis.redis = redisInstance;
 }
 
 /** Invalidate cache pattern helper using SCAN (non-blocking) */
