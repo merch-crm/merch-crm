@@ -42,6 +42,7 @@ export function TimeTrackerToggle({
                 <>
                     {/* Main Interaction Side: Pause/Resume + Timer */}
                     <button
+                        type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             if (status === "working") {
@@ -66,6 +67,7 @@ export function TimeTrackerToggle({
                     {/* Side Action: Stop */}
                     <div className="h-full py-1 pr-1">
                         <button
+                            type="button"
                             onClick={(e) => { e.stopPropagation(); onStop(); }}
                             className="h-full px-4 rounded-[16px] flex items-center justify-center transition-all bg-[#FE2C55] hover:bg-[#E11D48] text-white"
                             title="Остановить рабочую смену"
@@ -78,6 +80,7 @@ export function TimeTrackerToggle({
 
             {status === "idle" && (
                 <button
+                    type="button"
                     onClick={(e) => { e.stopPropagation(); onStart(); }}
                     className="flex-1 px-5 flex items-center justify-center gap-2.5 hover:bg-slate-50 transition-colors h-full"
                 >
