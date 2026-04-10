@@ -1,220 +1,220 @@
 {
-  "main": {
-    "id": "3e1411e578aa546e",
-    "type": "split",
+ "main": {
+  "id": "3e1411e578aa546e",
+  "type": "split",
+  "children": [
+   {
+    "id": "2c48a55692504a98",
+    "type": "tabs",
     "children": [
-      {
-        "id": "2c48a55692504a98",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "6a724c3d296cb92b",
-            "type": "leaf",
-            "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Граф"
-            }
-          }
-        ]
+     {
+      "id": "6a724c3d296cb92b",
+      "type": "leaf",
+      "state": {
+       "type": "graph",
+       "state": {},
+       "icon": "lucide-git-fork",
+       "title": "Граф"
       }
-    ],
-    "direction": "vertical"
-  },
-  "left": {
-    "id": "8b881728e0ebee0c",
-    "type": "split",
+     }
+    ]
+   }
+  ],
+  "direction": "vertical"
+ },
+ "left": {
+  "id": "8b881728e0ebee0c",
+  "type": "split",
+  "children": [
+   {
+    "id": "88b975e5a35efb17",
+    "type": "tabs",
     "children": [
-      {
-        "id": "88b975e5a35efb17",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "9cde9d316ade0ef5",
-            "type": "leaf",
-            "state": {
-              "type": "file-explorer",
-              "state": {
-                "sortOrder": "alphabetical",
-                "autoReveal": false
-              },
-              "icon": "lucide-folder-closed",
-              "title": "Файловый менеджер"
-            }
-          },
-          {
-            "id": "1715f6a2dc72c25e",
-            "type": "leaf",
-            "state": {
-              "type": "search",
-              "state": {
-                "query": "",
-                "matchingCase": false,
-                "explainSearch": false,
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical"
-              },
-              "icon": "lucide-search",
-              "title": "Поиск"
-            }
-          },
-          {
-            "id": "b53ffcba1b8daed7",
-            "type": "leaf",
-            "state": {
-              "type": "bookmarks",
-              "state": {},
-              "icon": "lucide-bookmark",
-              "title": "Закладки"
-            }
-          }
-        ]
+     {
+      "id": "9cde9d316ade0ef5",
+      "type": "leaf",
+      "state": {
+       "type": "file-explorer",
+       "state": {
+        "sortOrder": "alphabetical",
+        "autoReveal": false
+       },
+       "icon": "lucide-folder-closed",
+       "title": "Файловый менеджер"
       }
-    ],
-    "direction": "horizontal",
-    "width": 300
-  },
-  "right": {
-    "id": "bb2d9967717b21a2",
-    "type": "split",
+     },
+     {
+      "id": "1715f6a2dc72c25e",
+      "type": "leaf",
+      "state": {
+       "type": "search",
+       "state": {
+        "query": "",
+        "matchingCase": false,
+        "explainSearch": false,
+        "collapseAll": false,
+        "extraContext": false,
+        "sortOrder": "alphabetical"
+       },
+       "icon": "lucide-search",
+       "title": "Поиск"
+      }
+     },
+     {
+      "id": "b53ffcba1b8daed7",
+      "type": "leaf",
+      "state": {
+       "type": "bookmarks",
+       "state": {},
+       "icon": "lucide-bookmark",
+       "title": "Закладки"
+      }
+     }
+    ]
+   }
+  ],
+  "direction": "horizontal",
+  "width": 300
+ },
+ "right": {
+  "id": "bb2d9967717b21a2",
+  "type": "split",
+  "children": [
+   {
+    "id": "804ce3652f4fc223",
+    "type": "tabs",
     "children": [
-      {
-        "id": "804ce3652f4fc223",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "4a00c85574ab58c3",
-            "type": "leaf",
-            "state": {
-              "type": "backlink",
-              "state": {
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical",
-                "showSearch": false,
-                "searchQuery": "",
-                "backlinkCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-coming-in",
-              "title": "Обратные ссылки"
-            }
-          },
-          {
-            "id": "4ff4c92f9b4d6164",
-            "type": "leaf",
-            "state": {
-              "type": "outgoing-link",
-              "state": {
-                "linksCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-going-out",
-              "title": "Исходящие ссылки"
-            }
-          },
-          {
-            "id": "2b34eaa2a7622d7c",
-            "type": "leaf",
-            "state": {
-              "type": "tag",
-              "state": {
-                "sortOrder": "frequency",
-                "useHierarchy": true,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-tags",
-              "title": "Теги"
-            }
-          },
-          {
-            "id": "7cb5565072b2f6d4",
-            "type": "leaf",
-            "state": {
-              "type": "all-properties",
-              "state": {
-                "sortOrder": "frequency",
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-archive",
-              "title": "Все свойства"
-            }
-          },
-          {
-            "id": "e9dda51ee702f6ef",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "Структура"
-            }
-          }
-        ]
+     {
+      "id": "4a00c85574ab58c3",
+      "type": "leaf",
+      "state": {
+       "type": "backlink",
+       "state": {
+        "collapseAll": false,
+        "extraContext": false,
+        "sortOrder": "alphabetical",
+        "showSearch": false,
+        "searchQuery": "",
+        "backlinkCollapsed": false,
+        "unlinkedCollapsed": true
+       },
+       "icon": "links-coming-in",
+       "title": "Обратные ссылки"
       }
-    ],
-    "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
-  },
-  "left-ribbon": {
-    "hiddenItems": {
-      "switcher:Меню быстрого перехода": false,
-      "graph:Граф": false,
-      "canvas:Создать новый холст": false,
-      "daily-notes:Сегодняшняя заметка": false,
-      "templates:Вставить шаблон": false,
-      "command-palette:Открыть палитру команд": false,
-      "bases:Создать новую базу": false
-    }
-  },
-  "active": "9cde9d316ade0ef5",
-  "lastOpenFiles": [
-    "node_modules/type-fest/readme.md",
-    "vault/030-Модули/04-Система-и-Финансы/Ядро-Системы.md",
-    "vault/030-Модули/04-Система-и-Финансы/Финансы.md",
-    "vault/030-Модули/03-Персонал-и-HR/Геймификация.md",
-    "vault/030-Модули/03-Персонал-и-HR/Присутствие.md",
-    "vault/030-Модули/03-Персонал-и-HR/Персонал.md",
-    "vault/030-Модули/02-Производство-и-Склад/Производство.md",
-    "vault/030-Модули/02-Производство-и-Склад/Склад.md",
-    "vault/030-Модули/02-Производство-и-Склад/Дизайн.md",
-    "vault/030-Модули/01-Продажи-и-Клиенты/Поддержка.md",
-    "vault/030-Модули/01-Продажи-и-Клиенты/Промокоды.md",
-    "vault/030-Модули/01-Продажи-и-Клиенты/Калькулятор.md",
-    "node_modules/eslint-plugin-react/README.md",
-    "vault/020-Архитектура/Схема-Связей.md",
-    "vault/000-Навигация/Состояние-Проекта.md",
-    "vault/010-Стандарты/Работа-с-Обсидианом.md",
-    "vault/000-Навигация/Оглавление.md",
-    "vault/020-Архитектура/Стек-технологий.md",
-    "vault/020-Архитектура/Бизнес-логика.md",
-    "vault/050-Сессии/Журнал-Сессий.base",
-    "vault/000-Навигация/Локальная-разработка.md",
-    "vault/000-Навигация/ОГЛАВЛЕНИЕ.md",
-    "vault/000-Навигация/Известные-Проблемы.md",
-    "vault/000-Навигация/Дашборд-Модули.base",
-    "vault/030-Модули/Дизайн.md",
-    "vault/010-Стандарты/Безопасность.md",
-    "audit-report.md",
-    "CLAUDE.md",
-    "mv",
-    "vault/030-Модули/04-Система-и-Финансы",
-    "vault/030-Модули/03-Персонал-и-HR",
-    "vault/030-Модули/02-Производство-и-Склад",
-    "-p",
-    "mkdir",
-    "vault/030-Модули/01-Продажи-и-Клиенты",
-    "backup_v0036.sql",
-    "vault/Система.canvas",
-    "vault/Без названия.canvas"
-  ]
+     },
+     {
+      "id": "4ff4c92f9b4d6164",
+      "type": "leaf",
+      "state": {
+       "type": "outgoing-link",
+       "state": {
+        "linksCollapsed": false,
+        "unlinkedCollapsed": true
+       },
+       "icon": "links-going-out",
+       "title": "Исходящие ссылки"
+      }
+     },
+     {
+      "id": "2b34eaa2a7622d7c",
+      "type": "leaf",
+      "state": {
+       "type": "tag",
+       "state": {
+        "sortOrder": "frequency",
+        "useHierarchy": true,
+        "showSearch": false,
+        "searchQuery": ""
+       },
+       "icon": "lucide-tags",
+       "title": "Теги"
+      }
+     },
+     {
+      "id": "7cb5565072b2f6d4",
+      "type": "leaf",
+      "state": {
+       "type": "all-properties",
+       "state": {
+        "sortOrder": "frequency",
+        "showSearch": false,
+        "searchQuery": ""
+       },
+       "icon": "lucide-archive",
+       "title": "Все свойства"
+      }
+     },
+     {
+      "id": "e9dda51ee702f6ef",
+      "type": "leaf",
+      "state": {
+       "type": "outline",
+       "state": {
+        "followCursor": false,
+        "showSearch": false,
+        "searchQuery": ""
+       },
+       "icon": "lucide-list",
+       "title": "Структура"
+      }
+     }
+    ]
+   }
+  ],
+  "direction": "horizontal",
+  "width": 300,
+  "collapsed": true
+ },
+ "left-ribbon": {
+  "hiddenItems": {
+   "switcher:Меню быстрого перехода": false,
+   "graph:Граф": false,
+   "canvas:Создать новый холст": false,
+   "daily-notes:Сегодняшняя заметка": false,
+   "templates:Вставить шаблон": false,
+   "command-palette:Открыть палитру команд": false,
+   "bases:Создать новую базу": false
+  }
+ },
+ "active": "9cde9d316ade0ef5",
+ "lastOpenFiles": [
+  "node_modules/type-fest/readme.md",
+  "vault/030-Модули/04-Система-и-Финансы/Ядро-Системы.md",
+  "vault/030-Модули/04-Система-и-Финансы/Финансы.md",
+  "vault/030-Модули/03-Персонал-и-HR/Геймификация.md",
+  "vault/030-Модули/03-Персонал-и-HR/Присутствие.md",
+  "vault/030-Модули/03-Персонал-и-HR/Персонал.md",
+  "vault/030-Модули/02-Производство-и-Склад/Производство.md",
+  "vault/030-Модули/02-Производство-и-Склад/Склад.md",
+  "vault/030-Модули/02-Производство-и-Склад/Дизайн.md",
+  "vault/030-Модули/01-Продажи-и-Клиенты/Поддержка.md",
+  "vault/030-Модули/01-Продажи-и-Клиенты/Промокоды.md",
+  "vault/030-Модули/01-Продажи-и-Клиенты/Калькулятор.md",
+  "node_modules/eslint-plugin-react/README.md",
+  "vault/020-Архитектура/Схема-Связей.md",
+  "vault/000-Навигация/Состояние-Проекта.md",
+  "vault/010-Стандарты/Работа-с-Обсидианом.md",
+  "vault/000-Навигация/Оглавление.md",
+  "vault/020-Архитектура/Стек-технологий.md",
+  "vault/020-Архитектура/Бизнес-логика.md",
+  "vault/050-Сессии/Журнал-Сессий.base",
+  "vault/000-Навигация/Локальная-разработка.md",
+  "vault/000-Навигация/ОГЛАВЛЕНИЕ.md",
+  "vault/000-Навигация/Известные-Проблемы.md",
+  "vault/000-Навигация/Дашборд-Модули.base",
+  "vault/030-Модули/Дизайн.md",
+  "vault/010-Стандарты/Безопасность.md",
+  "audit-report.md",
+  "CLAUDE.md",
+  "mv",
+  "vault/030-Модули/04-Система-и-Финансы",
+  "vault/030-Модули/03-Персонал-и-HR",
+  "vault/030-Модули/02-Производство-и-Склад",
+  "-p",
+  "mkdir",
+  "vault/030-Модули/01-Продажи-и-Клиенты",
+  "backup_v0036.sql",
+  "vault/Система.canvas",
+  "vault/Без названия.canvas"
+ ]
 }

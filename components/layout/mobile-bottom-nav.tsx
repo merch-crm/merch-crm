@@ -43,14 +43,7 @@ export function MobileBottomNav({ user }: { user: UserProp }) {
                             : pathname.startsWith(item.href);
 
                         return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={cn(
-                                    "relative flex flex-col items-center justify-center gap-1 transition-all duration-300 flex-1 h-full",
-                                    isActive ? "text-primary" : "text-slate-400"
-                                )}
-                            >
+                            <Link key={item.name} href={item.href} className={cn( "relative flex flex-col items-center justify-center gap-1 transition-all duration-300 flex-1 h-full", isActive ? "text-primary" : "text-slate-400" )}>
                                 <div className="relative z-10 flex flex-col items-center gap-0.5">
                                     <div className={cn(
                                         "p-1 rounded-xl transition-transform duration-300",

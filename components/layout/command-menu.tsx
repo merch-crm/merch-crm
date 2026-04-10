@@ -116,10 +116,7 @@ export function CommandMenu() {
                                 />
                                 <div className="flex items-center gap-2">
 
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => setOpen(false)}
+                                    <Button variant="ghost" size="icon" onClick={() => setOpen(false)}
                                         className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600 h-9 w-9"
                                     >
                                         <X className="w-5 h-5" />
@@ -146,10 +143,7 @@ export function CommandMenu() {
                                                 { label: 'Склад', href: '/dashboard/warehouse/overview', icon: icons.item },
                                                 { label: 'База знаний', href: '/dashboard/knowledge-base', icon: icons.wiki },
                                             ].map(item => (
-                                                <Button
-                                                    key={item.href}
-                                                    variant="ghost"
-                                                    onClick={() => onSelect(item.href)}
+                                                <Button key={item.href} variant="ghost" onClick={() => onSelect(item.href)}
                                                     className="flex items-center justify-start gap-3 px-5 py-4 h-auto rounded-[20px] bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all text-sm font-bold text-slate-700 hover:shadow-md hover:scale-[1.02] active:scale-95 group"
                                                 >
                                                     <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform">
@@ -164,10 +158,7 @@ export function CommandMenu() {
 
                                 <div className="space-y-1.5 pt-1">
                                     {(results || []).map((res) => (
-                                        <Button
-                                            key={`${res.type}-${res.id}`}
-                                            variant="ghost"
-                                            onClick={() => onSelect(res.href)}
+                                        <Button key={`${res.type}-${res.id}`} variant="ghost" onClick={() => onSelect(res.href)}
                                             className="w-full flex items-center justify-between px-4 py-3.5 h-auto rounded-[22px] hover:bg-slate-50 transition-all group border border-transparent hover:border-slate-100"
                                         >
                                             <div className="flex items-center gap-3">

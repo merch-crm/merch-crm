@@ -30,36 +30,36 @@ Extract: `branching_strategy`, `branch_name`.
 Verify the work is ready to ship:
 
 1. **Verification passed?**
-   ```bash
-   VERIFICATION=$(cat ${PHASE_DIR}/*-VERIFICATION.md 2>/dev/null)
-   ```
-   Check for `status: passed` or `status: human_needed` (with human approval).
-   If no VERIFICATION.md or status is `gaps_found`: warn and ask user to confirm.
+  ```bash
+  VERIFICATION=$(cat ${PHASE_DIR}/*-VERIFICATION.md 2>/dev/null)
+  ```
+  Check for `status: passed` or `status: human_needed` (with human approval).
+  If no VERIFICATION.md or status is `gaps_found`: warn and ask user to confirm.
 
 2. **Clean working tree?**
-   ```bash
-   git status --short
-   ```
-   If uncommitted changes exist: ask user to commit or stash first.
+  ```bash
+  git status --short
+  ```
+  If uncommitted changes exist: ask user to commit or stash first.
 
 3. **On correct branch?**
-   ```bash
-   CURRENT_BRANCH=$(git branch --show-current)
-   ```
-   If on `main`/`master`: warn — should be on a feature branch.
-   If branching_strategy is `none`: offer to create a branch now.
+  ```bash
+  CURRENT_BRANCH=$(git branch --show-current)
+  ```
+  If on `main`/`master`: warn — should be on a feature branch.
+  If branching_strategy is `none`: offer to create a branch now.
 
 4. **Remote configured?**
-   ```bash
-   git remote -v | head -2
-   ```
-   Detect `origin` remote. If no remote: error — can't create PR.
+  ```bash
+  git remote -v | head -2
+  ```
+  Detect `origin` remote. If no remote: error — can't create PR.
 
 5. **`gh` CLI available?**
-   ```bash
-   which gh && gh auth status 2>&1
-   ```
-   If `gh` not found or not authenticated: provide setup instructions and exit.
+  ```bash
+  which gh && gh auth status 2>&1
+  ```
+  If `gh` not found or not authenticated: provide setup instructions and exit.
 </step>
 
 <step name="push_branch">
@@ -139,9 +139,9 @@ Create the PR using the generated body:
 
 ```bash
 gh pr create \
-  --title "Phase ${PHASE_NUMBER}: ${PHASE_NAME}" \
-  --body "${PR_BODY}" \
-  --base main
+ --title "Phase ${PHASE_NUMBER}: ${PHASE_NAME}" \
+ --body "${PR_BODY}" \
+ --base main
 ```
 
 If `--draft` flag was passed: add `--draft`.
@@ -154,14 +154,14 @@ Ask if user wants to trigger a code review:
 
 ```
 AskUserQuestion:
-  question: "PR created. Run a code review before merge?"
-  options:
-    - label: "Skip review"
-      description: "PR is ready — merge when CI passes"
-    - label: "Self-review"
-      description: "I'll review the diff in the PR myself"
-    - label: "Request review"
-      description: "Request review from a teammate"
+ question: "PR created. Run a code review before merge?"
+ options:
+  - label: "Skip review"
+   description: "PR is ready — merge when CI passes"
+  - label: "Self-review"
+   description: "I'll review the diff in the PR myself"
+  - label: "Request review"
+   description: "Request review from a teammate"
 ```
 
 **If "Request review":**

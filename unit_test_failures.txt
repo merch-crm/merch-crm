@@ -1,0 +1,515 @@
+
+> merch-crm@0.1.0 test:unit
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm
+
+stdout | app/(main)/dashboard/clients/actions/__tests__/export.actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+stdout | app/(main)/dashboard/clients/hooks/__tests__/use-duplicate-check.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/clients/actions/__tests__/contacts.actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+stdout | lib/__tests__/rate-limit-config.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+stdout | lib/__tests__/rate-limit.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(auth)/forgot-password/__tests__/actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+stdout | app/(main)/dashboard/orders/__tests__/core.actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+
+stdout | app/(main)/dashboard/orders/__tests__/orders-table.test.tsx
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+
+stdout | __tests__/unit/services/calculators/calculation-engine.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+stdout | __tests__/actions/order.actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+ ✓ lib/__tests__/rate-limit-config.test.ts (50 tests) 7ms
+ ✓ lib/__tests__/rate-limit.test.ts (40 tests) 11ms
+ ✓ app/(main)/dashboard/clients/hooks/__tests__/use-duplicate-check.test.ts (8 tests) 26ms
+ ✓ __tests__/unit/services/calculators/calculation-engine.test.ts (10 tests) 4ms
+ ✓ app/(auth)/forgot-password/__tests__/actions.test.ts (24 tests) 12ms
+ ✓ app/(main)/dashboard/clients/actions/__tests__/contacts.actions.test.ts (15 tests) 8ms
+ ✓ app/(main)/dashboard/clients/actions/__tests__/export.actions.test.ts (8 tests) 8ms
+ ✓ __tests__/actions/order.actions.test.ts (5 tests) 10ms
+objc[45098]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x12da944c8) and /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x14ad35978). One of the two will be used. Which one is undefined.
+stdout | app/(main)/dashboard/clients/hooks/__tests__/use-client-form.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+
+stdout | __tests__/lib/promocodes.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+ ✓ app/(main)/dashboard/clients/hooks/__tests__/use-client-form.test.ts (5 tests) 16ms
+stdout | __tests__/actions/time-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+stdout | app/(main)/dashboard/production/actions/__tests__/production-dashboard-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stdout | __tests__/unit/services/calculators/consumables-service.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+ ✓ __tests__/unit/services/calculators/consumables-service.test.ts (4 tests) 6ms
+stdout | __tests__/lib/promocodes.test.ts > validatePromocode > возвращает успех для валидного промокода
+[Branding] Fetching settings from DB via tunnel...
+[Branding] Using defaultBranding as fallback...
+
+stderr | __tests__/lib/promocodes.test.ts > validatePromocode > возвращает успех для валидного промокода
+❌ [Branding] Database connection/query failed: __vite_ssr_import_0__.db.select is not a function
+
+stdout | __tests__/lib/promocodes.test.ts > validatePromocode > возвращает ошибку при нехватке суммы заказа
+[Branding] Fetching settings from DB via tunnel...
+[Branding] Using defaultBranding as fallback...
+
+stderr | __tests__/lib/promocodes.test.ts > validatePromocode > возвращает ошибку при нехватке суммы заказа
+❌ [Branding] Database connection/query failed: __vite_ssr_import_0__.db.select is not a function
+
+stdout | __tests__/lib/promocodes.test.ts > validatePromocode > ограничивает скидку максимумом
+[Branding] Fetching settings from DB via tunnel...
+[Branding] Using defaultBranding as fallback...
+
+stderr | __tests__/lib/promocodes.test.ts > validatePromocode > ограничивает скидку максимумом
+❌ [Branding] Database connection/query failed: __vite_ssr_import_0__.db.select is not a function
+
+stdout | __tests__/lib/promocodes.test.ts > validatePromocode > рассчитывает фиксированную скидку
+[Branding] Fetching settings from DB via tunnel...
+[Branding] Using defaultBranding as fallback...
+
+stderr | __tests__/lib/promocodes.test.ts > validatePromocode > рассчитывает фиксированную скидку
+❌ [Branding] Database connection/query failed: __vite_ssr_import_0__.db.select is not a function
+
+ ✓ __tests__/lib/promocodes.test.ts (6 tests) 9ms
+objc[45093]: Class GNotificationCenterDelegate is implemented in both /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/canvas/build/Release/libgio-2.0.0.dylib (0x14385c4c8) and /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@img/sharp-libvips-darwin-arm64/lib/libvips-cpp.8.17.3.dylib (0x145f41978). One of the two will be used. Which one is undefined.
+stdout | app/(main)/dashboard/production/actions/__tests__/task-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+stdout | app/(main)/dashboard/production/actions/__tests__/staff-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+
+stdout | app/(main)/dashboard/hooks/__tests__/use-dashboard-data.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+ ✓ __tests__/actions/time-actions.test.ts (4 tests) 10ms
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator.test.ts (5 tests) 36ms
+ ✓ app/(main)/dashboard/hooks/__tests__/use-dashboard-data.test.ts (5 tests) 68ms
+stdout | __tests__/lib/formatters.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+stdout | app/(main)/dashboard/design/actions/__tests__/order-design-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+ ✓ app/(main)/dashboard/production/actions/__tests__/task-actions.test.ts (2 tests) 6ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/staff-actions.test.ts (3 tests) 7ms
+stdout | app/(main)/dashboard/design/editor/actions/__tests__/project-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+ ✓ app/(main)/dashboard/production/actions/__tests__/production-dashboard-actions.test.ts (3 tests) 11ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-design-files.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/orders/hooks/__tests__/use-order-operations.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+
+stderr | app/(main)/dashboard/design/actions/__tests__/order-design-actions.test.ts > getDesignQueueStats > should return an error if database query fails
+Error fetching stats: Error: DB Error
+    at Object.<anonymous> (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/__tests__/order-design-actions.test.ts:79:13)
+    at Object.mockCall (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/spy/dist/index.js:61:17)
+    at Object.spy [as select] (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/tinyspy/dist/index.js:45:80)
+    at Module.getDesignQueueStats (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/sub-actions/stats-actions.ts:23:8)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/__tests__/order-design-actions.test.ts:82:20
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:5
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:11)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+
+ ✓ app/(main)/dashboard/design/actions/__tests__/order-design-actions.test.ts (3 tests) 5ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator-settings.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-design-files.test.ts (4 tests) 41ms
+ ✓ app/(main)/dashboard/orders/hooks/__tests__/use-order-operations.test.ts (3 tests) 32ms
+stderr | app/(main)/dashboard/design/editor/actions/__tests__/project-actions.test.ts > project-actions > getEditorProjects > should return error when database call fails
+Error fetching projects: Error: DB Error
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/editor/actions/__tests__/project-actions.test.ts:61:129
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:146:14
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:11
+    at runWithTimeout (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:39:7)
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runFiles (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1262:5)
+
+ ✓ app/(main)/dashboard/design/editor/actions/__tests__/project-actions.test.ts (4 tests) 9ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-placements.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/design/editor/hooks/__tests__/use-project.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+ ✓ app/(main)/dashboard/design/editor/hooks/__tests__/use-project.test.ts (3 tests) 71ms
+stdout | app/(main)/dashboard/production/calculators/actions/__tests__/consumables-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/actions/__tests__/line-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/department-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/filter-preset-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stderr | app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator-settings.test.ts > useCalculatorSettings > should update settings locally
+An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculator-settings.test.ts (3 tests) 25ms
+stdout | __tests__/unit/lib/formatters.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
+
+ ✓ app/(main)/dashboard/production/calculators/actions/__tests__/consumables-actions.test.ts (2 tests) 5ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/line-actions.test.ts (2 tests) 9ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/department-actions.test.ts (2 tests) 4ms
+ ✓ __tests__/lib/formatters.test.ts (16 tests) 19ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/filter-preset-actions.test.ts (2 tests) 4ms
+stdout | app/(main)/dashboard/tasks/actions/__tests__/attachment-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-placements.test.ts (3 tests) 27ms
+ ✓ app/(main)/dashboard/orders/__tests__/orders-table.test.tsx (7 tests) 397ms
+stdout | app/(main)/dashboard/tasks/actions/__tests__/dependency-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/attachment-actions.test.ts (2 tests) 4ms
+stdout | app/(main)/dashboard/tasks/actions/__tests__/checklist-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/department-tasks-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/assignee-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/comment-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/watcher-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+stdout | app/(main)/dashboard/tasks/actions/__tests__/task-history-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/dependency-actions.test.ts (2 tests) 4ms
+ ✓ app/(main)/dashboard/orders/__tests__/core.actions.test.ts (3 tests) 4199ms
+   ✓ Order Actions (Integration) > getOrders > возвращает список заказов с клиентами 1419ms
+   ✓ Order Actions (Integration) > createOrder > создаёт заказ с минимальными данными 1559ms
+   ✓ Order Actions (Integration) > updateOrderField > обновляет приоритет заказа 1219ms
+stdout | app/(main)/dashboard/tasks/actions/__tests__/delegate-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/department-tasks-actions.test.ts (2 tests) 5ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/checklist-actions.test.ts (2 tests) 7ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/assignee-actions.test.ts (2 tests) 3ms
+stdout | app/(main)/dashboard/tasks/actions/__tests__/user-tasks-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/task-history-actions.test.ts (2 tests) 3ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/comment-actions.test.ts (2 tests) 4ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/watcher-actions.test.ts (2 tests) 3ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/delegate-actions.test.ts (2 tests) 4ms
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/user-tasks-actions.test.ts (2 tests) 6ms
+ ✓ __tests__/unit/lib/formatters.test.ts (8 tests) 24ms
+stdout | app/(main)/dashboard/tasks/actions/__tests__/auto-task-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  override existing env vars with { override: true }
+
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-placements-management.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+stdout | components/ui/__tests__/pagination.test.tsx
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/actions/__tests__/bento-resource-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+stdout | app/(main)/dashboard/production/actions/__tests__/reports-export-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/actions/__tests__/reports-data-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+ ✓ app/(main)/dashboard/production/actions/__tests__/reports-export-actions.test.ts (2 tests) 3ms
+stdout | app/(main)/dashboard/production/actions/__tests__/reports-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/actions/__tests__/bento-stats-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+ ✓ app/(main)/dashboard/tasks/actions/__tests__/auto-task-actions.test.ts (2 tests) 7ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-pdf-generator.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+
+stdout | __tests__/hooks/use-debounce.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+stderr | app/(main)/dashboard/production/calculators/hooks/__tests__/use-pdf-generator.test.ts > usePDFGenerator > should handle successful PDF generation
+[MSW] Warning: intercepted a request without a matching request handler:
+
+  • POST /api/pdf/generate
+
+  • Request body: {"calculationData":{"number":"CALC-001","name":"Test Calc","calculatorType":"dtf","date":"2026-04-09T13:16:34.377Z","parameters":{"quantity":10},"consumables":[],"placements":[],"designFiles":[],"totals":{"costPrice":100,"marginPercent":30,"sellingPrice":130,"pricePerItem":13,"consumablesCost":50,"placementsCost":50,"urgencySurcharge":0}}}
+
+If you still wish to intercept this unhandled request, please create a request handler for it.
+Read more: https://mswjs.io/docs/http/intercepting-requests
+
+stderr | app/(main)/dashboard/production/calculators/hooks/__tests__/use-pdf-generator.test.ts > usePDFGenerator > should handle generation error
+[MSW] Warning: intercepted a request without a matching request handler:
+
+  • POST /api/pdf/generate
+
+  • Request body: {"calculationData":{"number":"CALC-001","name":"Test Calc","calculatorType":"dtf","date":"2026-04-09T13:16:34.377Z","parameters":{"quantity":10},"consumables":[],"placements":[],"designFiles":[],"totals":{"costPrice":100,"marginPercent":30,"sellingPrice":130,"pricePerItem":13,"consumablesCost":50,"placementsCost":50,"urgencySurcharge":0}}}
+
+If you still wish to intercept this unhandled request, please create a request handler for it.
+Read more: https://mswjs.io/docs/http/intercepting-requests
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-pdf-generator.test.ts (3 tests) 86ms
+stdout | app/(main)/dashboard/production/calculators/actions/__tests__/calculation-logic.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+
+ ✓ app/(main)/dashboard/production/calculators/actions/__tests__/calculation-logic.test.ts (2 tests) 4ms
+ ✓ __tests__/hooks/use-debounce.test.ts (4 tests) 60ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/reports-data-actions.test.ts (2 tests) 5ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/reports-actions.test.ts (2 tests) 2ms
+stdout | app/(main)/dashboard/orders/hooks/__tests__/use-order-selection.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-placements-management.test.ts (3 tests) 32ms
+ ✓ app/(main)/dashboard/orders/hooks/__tests__/use-order-selection.test.ts (5 tests) 62ms
+stdout | app/(main)/dashboard/production/actions/__tests__/application-type-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+stderr | components/ui/__tests__/pagination.test.tsx > Pagination > отображает правильное количество страниц
+Received `true` for a non-boolean attribute `jsx`.
+
+If you want to write it to the DOM, pass a string instead: jsx="true" or jsx={value.toString()}.
+Received `true` for a non-boolean attribute `global`.
+
+If you want to write it to the DOM, pass a string instead: global="true" or global={value.toString()}.
+
+stdout | app/(main)/dashboard/production/actions/__tests__/equipment-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/design/editor/hooks/__tests__/use-fonts.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-consumables-draft.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+
+ ✓ components/ui/__tests__/pagination.test.tsx (4 tests) 291ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/bento-resource-actions.test.ts (2 tests) 3ms
+stdout | app/(main)/dashboard/design/actions/__tests__/design-dashboard-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-consumables-draft.test.ts (5 tests) 23ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-consumables-config.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+ ✓ app/(main)/dashboard/design/editor/hooks/__tests__/use-fonts.test.ts (2 tests) 116ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/application-type-actions.test.ts (2 tests) 4ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/bento-stats-actions.test.ts (2 tests) 3ms
+stdout | __tests__/unit/lib/pluralize.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  enable debug logging with { debug: true }
+
+ ✓ __tests__/unit/lib/pluralize.test.ts (4 tests) 5ms
+ ✓ app/(main)/dashboard/production/actions/__tests__/equipment-actions.test.ts (2 tests) 6ms
+stdout | __tests__/unit/lib/csrf.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+ ✓ __tests__/unit/lib/csrf.test.ts (6 tests) 4ms
+stdout | __tests__/unit/services/calculators/placements-service.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+
+ ✓ __tests__/unit/services/calculators/placements-service.test.ts (3 tests) 4ms
+stdout | app/(main)/dashboard/design/editor/actions/__tests__/export-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-urgency-settings.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-urgency-settings.test.ts (4 tests) 36ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-layout-optimizer.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ⚙️  suppress all logs with { quiet: true }
+
+stdout | app/(main)/dashboard/clients/hooks/__tests__/use-clients-ui.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/orders/actions/__tests__/orders-dashboard-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-layout-optimizer.test.ts (3 tests) 13ms
+ ✓ app/(main)/dashboard/clients/hooks/__tests__/use-clients-ui.test.ts (3 tests) 14ms
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-consumables-config.test.ts (2 tests) 53ms
+stdout | app/(main)/dashboard/design/editor/actions/__tests__/font-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/design/actions/__tests__/task-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculation-history.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+stderr | app/(main)/dashboard/design/editor/actions/__tests__/export-actions.test.ts > export-actions > getProjectExports > should return exports for a valid UUID
+Failed to log action: TypeError: d.insert is not a function
+    at Module.logAction (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/lib/audit.ts:34:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at Module.getProjectExports (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/editor/actions/export-actions.ts:118:5)
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/editor/actions/__tests__/export-actions.test.ts:33:22
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:5
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:11)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runFiles (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1262:5)
+
+stderr | app/(main)/dashboard/design/editor/actions/__tests__/export-actions.test.ts > export-actions > getProjectExports > should return error on DB failure
+Error fetching exports: Error: DB Error
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/editor/actions/__tests__/export-actions.test.ts:48:67
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:146:14
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:11
+    at runWithTimeout (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:39:7)
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runFiles (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1262:5)
+
+ ✓ app/(main)/dashboard/design/editor/actions/__tests__/export-actions.test.ts (3 tests) 4ms
+stderr | app/(main)/dashboard/design/actions/__tests__/design-dashboard-actions.test.ts > design-dashboard-actions > getDesignStats > should return error when database call fails
+Error getting design stats: Error: DB Error
+    at Object.<anonymous> (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/__tests__/design-dashboard-actions.test.ts:54:15)
+    at Object.mockCall (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/spy/dist/index.js:61:17)
+    at Object.spy [as select] (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/tinyspy/dist/index.js:45:80)
+    at Module.getDesignStats (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/design-dashboard-actions.ts:71:8)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/__tests__/design-dashboard-actions.test.ts:57:22
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:5
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:11)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+
+ ✓ app/(main)/dashboard/design/actions/__tests__/design-dashboard-actions.test.ts (2 tests) 5ms
+stderr | app/(main)/dashboard/design/editor/actions/__tests__/font-actions.test.ts > font-actions > getSystemFonts > should return error on failure
+Error fetching fonts: Error: DB Error
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/editor/actions/__tests__/font-actions.test.ts:39:65
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:146:14
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:11
+    at runWithTimeout (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:39:7)
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runFiles (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1262:5)
+
+ ✓ app/(main)/dashboard/design/editor/actions/__tests__/font-actions.test.ts (2 tests) 5ms
+stdout | app/(main)/dashboard/production/calculators/hooks/__tests__/use-warehouse-items.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+
+stderr | app/(main)/dashboard/design/actions/__tests__/task-actions.test.ts > task-actions > getDesignQueue > should return error when database call fails
+Error fetching design queue: Error: DB Error
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/design/actions/__tests__/task-actions.test.ts:40:131
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:146:14
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:11
+    at runWithTimeout (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:39:7)
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runFiles (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1262:5)
+
+ ✓ app/(main)/dashboard/design/actions/__tests__/task-actions.test.ts (2 tests) 5ms
+stdout | scripts/__tests__/test-actions.test.ts
+[dotenv@17.2.3] injecting env (16) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+
+ ✓ scripts/__tests__/test-actions.test.ts (1 test) 2ms
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-calculation-history.test.ts (2 tests) 10ms
+stderr | app/(main)/dashboard/production/calculators/hooks/__tests__/use-warehouse-items.test.ts > useWarehouseItems > should fetch items on mount
+An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+An update to TestComponent inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+
+ ✓ app/(main)/dashboard/production/calculators/hooks/__tests__/use-warehouse-items.test.ts (1 test) 8ms
+ ✓ app/(main)/dashboard/orders/actions/__tests__/orders-dashboard-actions.test.ts (2 tests) 4ms
+stderr | app/(main)/dashboard/orders/actions/__tests__/orders-dashboard-actions.test.ts > orders-dashboard-actions > getOrdersStats > should return error when database call fails
+Error getting orders stats: Error: DB Error
+    at Object.<anonymous> (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/orders/actions/__tests__/orders-dashboard-actions.test.ts:45:15)
+    at Object.mockCall (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/spy/dist/index.js:61:17)
+    at Object.spy [as select] (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/tinyspy/dist/index.js:45:80)
+    at Module.getOrdersStats (/Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/orders/actions/orders-dashboard-actions.ts:73:8)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/app/(main)/dashboard/orders/actions/__tests__/orders-dashboard-actions.test.ts:48:22
+    at file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:533:5
+    at runTest (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1056:11)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+    at runSuite (file:///Users/leonidmolchanov/Desktop/WORK/Project/Merch-CRM/merch-crm/node_modules/@vitest/runner/dist/index.js:1205:15)
+
+
+ Test Files  73 passed (73)
+      Tests  366 passed (366)
+   Start at  16:16:25
+   Duration  11.95s (transform 3.07s, setup 18.95s, collect 44.08s, tests 6.04s, environment 43.01s, prepare 3.77s)
+

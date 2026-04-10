@@ -16,18 +16,18 @@ Template for `.planning/phases/XX-name/{phase}-{plan}-PLAN.md` - executable phas
 phase: XX-name
 plan: NN
 type: execute
-wave: N                     # Execution wave (1, 2, 3...). Pre-computed at plan time.
-depends_on: []              # Plan IDs this plan requires (e.g., ["01-01"]).
-files_modified: []          # Files this plan modifies.
-autonomous: true            # false if plan has checkpoints requiring user interaction
-requirements: []            # REQUIRED — Requirement IDs from ROADMAP this plan addresses. MUST NOT be empty.
-user_setup: []              # Human-required setup the agent cannot automate (see below)
+wave: N           # Execution wave (1, 2, 3...). Pre-computed at plan time.
+depends_on: []       # Plan IDs this plan requires (e.g., ["01-01"]).
+files_modified: []     # Files this plan modifies.
+autonomous: true      # false if plan has checkpoints requiring user interaction
+requirements: []      # REQUIRED — Requirement IDs from ROADMAP this plan addresses. MUST NOT be empty.
+user_setup: []       # Human-required setup the agent cannot automate (see below)
 
 # Goal-backward verification (derived during planning, verified after execution)
 must_haves:
-  truths: []                # Observable behaviors that must be true for goal achievement
-  artifacts: []             # Files that must exist with real implementation
-  key_links: []             # Critical connections between artifacts
+ truths: []        # Observable behaviors that must be true for goal achievement
+ artifacts: []       # Files that must exist with real implementation
+ key_links: []       # Critical connections between artifacts
 ---
 
 <objective>
@@ -61,46 +61,46 @@ Output: [What artifacts will be created]
 <tasks>
 
 <task type="auto">
-  <name>Task 1: [Action-oriented name]</name>
-  <files>path/to/file.ext, another/file.ext</files>
-  <read_first>path/to/reference.ext, path/to/source-of-truth.ext</read_first>
-  <action>[Specific implementation - what to do, how to do it, what to avoid and WHY. Include CONCRETE values: exact identifiers, parameters, expected outputs, file paths, command arguments. Never say "align X with Y" without specifying the exact target state.]</action>
-  <verify>[Command or check to prove it worked]</verify>
-  <acceptance_criteria>
-    - [Grep-verifiable condition: "file.ext contains 'exact string'"]
-    - [Measurable condition: "output.ext uses 'expected-value', NOT 'wrong-value'"]
-  </acceptance_criteria>
-  <done>[Measurable acceptance criteria]</done>
+ <name>Task 1: [Action-oriented name]</name>
+ <files>path/to/file.ext, another/file.ext</files>
+ <read_first>path/to/reference.ext, path/to/source-of-truth.ext</read_first>
+ <action>[Specific implementation - what to do, how to do it, what to avoid and WHY. Include CONCRETE values: exact identifiers, parameters, expected outputs, file paths, command arguments. Never say "align X with Y" without specifying the exact target state.]</action>
+ <verify>[Command or check to prove it worked]</verify>
+ <acceptance_criteria>
+  - [Grep-verifiable condition: "file.ext contains 'exact string'"]
+  - [Measurable condition: "output.ext uses 'expected-value', NOT 'wrong-value'"]
+ </acceptance_criteria>
+ <done>[Measurable acceptance criteria]</done>
 </task>
 
 <task type="auto">
-  <name>Task 2: [Action-oriented name]</name>
-  <files>path/to/file.ext</files>
-  <read_first>path/to/reference.ext</read_first>
-  <action>[Specific implementation with concrete values]</action>
-  <verify>[Command or check]</verify>
-  <acceptance_criteria>
-    - [Grep-verifiable condition]
-  </acceptance_criteria>
-  <done>[Acceptance criteria]</done>
+ <name>Task 2: [Action-oriented name]</name>
+ <files>path/to/file.ext</files>
+ <read_first>path/to/reference.ext</read_first>
+ <action>[Specific implementation with concrete values]</action>
+ <verify>[Command or check]</verify>
+ <acceptance_criteria>
+  - [Grep-verifiable condition]
+ </acceptance_criteria>
+ <done>[Acceptance criteria]</done>
 </task>
 
 <!-- For checkpoint task examples and patterns, see @.agent/get-shit-done/references/checkpoints.md -->
 
 <task type="checkpoint:decision" gate="blocking">
-  <decision>[What needs deciding]</decision>
-  <context>[Why this decision matters]</context>
-  <options>
-    <option id="option-a"><name>[Name]</name><pros>[Benefits]</pros><cons>[Tradeoffs]</cons></option>
-    <option id="option-b"><name>[Name]</name><pros>[Benefits]</pros><cons>[Tradeoffs]</cons></option>
-  </options>
-  <resume-signal>Select: option-a or option-b</resume-signal>
+ <decision>[What needs deciding]</decision>
+ <context>[Why this decision matters]</context>
+ <options>
+  <option id="option-a"><name>[Name]</name><pros>[Benefits]</pros><cons>[Tradeoffs]</cons></option>
+  <option id="option-b"><name>[Name]</name><pros>[Benefits]</pros><cons>[Tradeoffs]</cons></option>
+ </options>
+ <resume-signal>Select: option-a or option-b</resume-signal>
 </task>
 
 <task type="checkpoint:human-verify" gate="blocking">
-  <what-built>[What the agent built] - server running at [URL]</what-built>
-  <how-to-verify>Visit [URL] and verify: [visual checks only, NO CLI commands]</how-to-verify>
-  <resume-signal>Type "approved" or describe issues</resume-signal>
+ <what-built>[What the agent built] - server running at [URL]</what-built>
+ <how-to-verify>Visit [URL] and verify: [visual checks only, NO CLI commands]</how-to-verify>
+ <resume-signal>Type "approved" or describe issues</resume-signal>
 </task>
 
 </tasks>
@@ -118,7 +118,7 @@ Before declaring plan complete:
 - All verification checks pass
 - No errors or warnings introduced
 - [Plan-specific criteria]
-  </success_criteria>
+ </success_criteria>
 
 <output>
 After completion, create `.planning/phases/XX-name/{phase}-{plan}-SUMMARY.md`
@@ -201,7 +201,7 @@ Plan 02 in Wave 2 waits for Plan 01 in Wave 1 - genuine dependency on auth types
 wave: 3
 depends_on: ["01", "02"]
 files_modified: [src/components/Dashboard.tsx]
-autonomous: false  # Has checkpoint:human-verify
+autonomous: false # Has checkpoint:human-verify
 ```
 
 Wave 3 runs after Waves 1 and 2. Pauses at checkpoint, orchestrator presents to user, resumes on approval.
@@ -235,8 +235,8 @@ Wave 3 runs after Waves 1 and 2. Pauses at checkpoint, orchestrator presents to 
 **Bad pattern (creates false dependencies):**
 ```markdown
 <context>
-@.planning/phases/03-features/03-01-SUMMARY.md  # Just because it's earlier
-@.planning/phases/03-features/03-02-SUMMARY.md  # Reflexive chaining
+@.planning/phases/03-features/03-01-SUMMARY.md # Just because it's earlier
+@.planning/phases/03-features/03-02-SUMMARY.md # Reflexive chaining
 </context>
 ```
 
@@ -261,11 +261,11 @@ Wave 3 runs after Waves 1 and 2. Pauses at checkpoint, orchestrator presents to 
 
 ```
 PREFER: Plan 01 = User (model + API + UI)
-        Plan 02 = Product (model + API + UI)
+    Plan 02 = Product (model + API + UI)
 
-AVOID:  Plan 01 = All models
-        Plan 02 = All APIs
-        Plan 03 = All UIs
+AVOID: Plan 01 = All models
+    Plan 02 = All APIs
+    Plan 03 = All UIs
 ```
 
 ---
@@ -330,19 +330,19 @@ Output: User model, API endpoints, and UI components.
 
 <tasks>
 <task type="auto">
-  <name>Task 1: Create User model</name>
-  <files>src/features/user/model.ts</files>
-  <action>Define User type with id, email, name, createdAt. Export TypeScript interface.</action>
-  <verify>tsc --noEmit passes</verify>
-  <done>User type exported and usable</done>
+ <name>Task 1: Create User model</name>
+ <files>src/features/user/model.ts</files>
+ <action>Define User type with id, email, name, createdAt. Export TypeScript interface.</action>
+ <verify>tsc --noEmit passes</verify>
+ <done>User type exported and usable</done>
 </task>
 
 <task type="auto">
-  <name>Task 2: Create User API endpoints</name>
-  <files>src/features/user/api.ts</files>
-  <action>GET /users (list), GET /users/:id (single), POST /users (create). Use User type from model.</action>
-  <verify>fetch tests pass for all endpoints</verify>
-  <done>All CRUD operations work</done>
+ <name>Task 2: Create User API endpoints</name>
+ <files>src/features/user/api.ts</files>
+ <action>GET /users (list), GET /users/:id (single), POST /users (create). Use User type from model.</action>
+ <verify>fetch tests pass for all endpoints</verify>
+ <done>All CRUD operations work</done>
 </task>
 </tasks>
 
@@ -396,24 +396,24 @@ Output: Working dashboard component.
 
 <tasks>
 <task type="auto">
-  <name>Task 1: Build Dashboard layout</name>
-  <files>src/components/Dashboard.tsx</files>
-  <action>Create responsive grid with UserList and ProductList components. Use Tailwind for styling.</action>
-  <verify>npm run build succeeds</verify>
-  <done>Dashboard renders without errors</done>
+ <name>Task 1: Build Dashboard layout</name>
+ <files>src/components/Dashboard.tsx</files>
+ <action>Create responsive grid with UserList and ProductList components. Use Tailwind for styling.</action>
+ <verify>npm run build succeeds</verify>
+ <done>Dashboard renders without errors</done>
 </task>
 
 <!-- Checkpoint pattern: the agent starts server, user visits URL. See checkpoints.md for full patterns. -->
 <task type="auto">
-  <name>Start dev server</name>
-  <action>Run `npm run dev` in background, wait for ready</action>
-  <verify>fetch http://localhost:3000 returns 200</verify>
+ <name>Start dev server</name>
+ <action>Run `npm run dev` in background, wait for ready</action>
+ <verify>fetch http://localhost:3000 returns 200</verify>
 </task>
 
 <task type="checkpoint:human-verify" gate="blocking">
-  <what-built>Dashboard - server at http://localhost:3000</what-built>
-  <how-to-verify>Visit localhost:3000/dashboard. Check: desktop grid, mobile stack, no scroll issues.</how-to-verify>
-  <resume-signal>Type "approved" or describe issues</resume-signal>
+ <what-built>Dashboard - server at http://localhost:3000</what-built>
+ <how-to-verify>Visit localhost:3000/dashboard. Check: desktop grid, mobile stack, no scroll issues.</how-to-verify>
+ <resume-signal>Type "approved" or describe issues</resume-signal>
 </task>
 </tasks>
 
@@ -438,7 +438,7 @@ After completion, create `.planning/phases/03-features/03-03-SUMMARY.md`
 
 **Bad: Reflexive dependency chaining**
 ```yaml
-depends_on: ["03-01"]  # Just because 01 comes before 02
+depends_on: ["03-01"] # Just because 01 comes before 02
 ```
 
 **Bad: Horizontal layer grouping**
@@ -453,47 +453,47 @@ Plan 03: All UIs (depends on 02)
 # Has checkpoint but no autonomous: false
 depends_on: []
 files_modified: [...]
-# autonomous: ???  <- Missing!
+# autonomous: ??? <- Missing!
 ```
 
 **Bad: Vague tasks**
 ```xml
 <task type="auto">
-  <name>Set up authentication</name>
-  <action>Add auth to the app</action>
+ <name>Set up authentication</name>
+ <action>Add auth to the app</action>
 </task>
 ```
 
 **Bad: Missing read_first (executor modifies files it hasn't read)**
 ```xml
 <task type="auto">
-  <name>Update database config</name>
-  <files>src/config/database.ts</files>
-  <!-- No read_first! Executor doesn't know current state or conventions -->
-  <action>Update the database config to match production settings</action>
+ <name>Update database config</name>
+ <files>src/config/database.ts</files>
+ <!-- No read_first! Executor doesn't know current state or conventions -->
+ <action>Update the database config to match production settings</action>
 </task>
 ```
 
 **Bad: Vague acceptance criteria (not verifiable)**
 ```xml
 <acceptance_criteria>
-  - Config is properly set up
-  - Database connection works correctly
+ - Config is properly set up
+ - Database connection works correctly
 </acceptance_criteria>
 ```
 
 **Good: Concrete with read_first + verifiable criteria**
 ```xml
 <task type="auto">
-  <name>Update database config for connection pooling</name>
-  <files>src/config/database.ts</files>
-  <read_first>src/config/database.ts, .env.example, docker-compose.yml</read_first>
-  <action>Add pool configuration: min=2, max=20, idleTimeoutMs=30000. Add SSL config: rejectUnauthorized=true when NODE_ENV=production. Add .env.example entry: DATABASE_POOL_MAX=20.</action>
-  <acceptance_criteria>
-    - database.ts contains "max: 20" and "idleTimeoutMillis: 30000"
-    - database.ts contains SSL conditional on NODE_ENV
-    - .env.example contains DATABASE_POOL_MAX
-  </acceptance_criteria>
+ <name>Update database config for connection pooling</name>
+ <files>src/config/database.ts</files>
+ <read_first>src/config/database.ts, .env.example, docker-compose.yml</read_first>
+ <action>Add pool configuration: min=2, max=20, idleTimeoutMs=30000. Add SSL config: rejectUnauthorized=true when NODE_ENV=production. Add .env.example entry: DATABASE_POOL_MAX=20.</action>
+ <acceptance_criteria>
+  - database.ts contains "max: 20" and "idleTimeoutMillis: 30000"
+  - database.ts contains SSL conditional on NODE_ENV
+  - .env.example contains DATABASE_POOL_MAX
+ </acceptance_criteria>
 </task>
 ```
 
@@ -516,19 +516,19 @@ When a plan introduces external services requiring human configuration, declare 
 
 ```yaml
 user_setup:
-  - service: stripe
-    why: "Payment processing requires API keys"
-    env_vars:
-      - name: STRIPE_SECRET_KEY
-        source: "Stripe Dashboard → Developers → API keys → Secret key"
-      - name: STRIPE_WEBHOOK_SECRET
-        source: "Stripe Dashboard → Developers → Webhooks → Signing secret"
-    dashboard_config:
-      - task: "Create webhook endpoint"
-        location: "Stripe Dashboard → Developers → Webhooks → Add endpoint"
-        details: "URL: https://[your-domain]/api/webhooks/stripe"
-    local_dev:
-      - "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
+ - service: stripe
+  why: "Payment processing requires API keys"
+  env_vars:
+   - name: STRIPE_SECRET_KEY
+    source: "Stripe Dashboard → Developers → API keys → Secret key"
+   - name: STRIPE_WEBHOOK_SECRET
+    source: "Stripe Dashboard → Developers → Webhooks → Signing secret"
+  dashboard_config:
+   - task: "Create webhook endpoint"
+    location: "Stripe Dashboard → Developers → Webhooks → Add endpoint"
+    details: "URL: https://[your-domain]/api/webhooks/stripe"
+  local_dev:
+   - "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
 ```
 
 **The automation-first rule:** `user_setup` contains ONLY what the agent literally cannot do:
@@ -552,29 +552,29 @@ The `must_haves` field defines what must be TRUE for the phase goal to be achiev
 
 ```yaml
 must_haves:
-  truths:
-    - "User can see existing messages"
-    - "User can send a message"
-    - "Messages persist across refresh"
-  artifacts:
-    - path: "src/components/Chat.tsx"
-      provides: "Message list rendering"
-      min_lines: 30
-    - path: "src/app/api/chat/route.ts"
-      provides: "Message CRUD operations"
-      exports: ["GET", "POST"]
-    - path: "prisma/schema.prisma"
-      provides: "Message model"
-      contains: "model Message"
-  key_links:
-    - from: "src/components/Chat.tsx"
-      to: "/api/chat"
-      via: "fetch in useEffect"
-      pattern: "fetch.*api/chat"
-    - from: "src/app/api/chat/route.ts"
-      to: "prisma.message"
-      via: "database query"
-      pattern: "prisma\\.message\\.(find|create)"
+ truths:
+  - "User can see existing messages"
+  - "User can send a message"
+  - "Messages persist across refresh"
+ artifacts:
+  - path: "src/components/Chat.tsx"
+   provides: "Message list rendering"
+   min_lines: 30
+  - path: "src/app/api/chat/route.ts"
+   provides: "Message CRUD operations"
+   exports: ["GET", "POST"]
+  - path: "prisma/schema.prisma"
+   provides: "Message model"
+   contains: "model Message"
+ key_links:
+  - from: "src/components/Chat.tsx"
+   to: "/api/chat"
+   via: "fetch in useEffect"
+   pattern: "fetch.*api/chat"
+  - from: "src/app/api/chat/route.ts"
+   to: "prisma.message"
+   via: "database query"
+   pattern: "prisma\\.message\\.(find|create)"
 ```
 
 **Field descriptions:**

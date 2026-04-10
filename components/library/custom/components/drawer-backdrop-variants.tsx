@@ -19,10 +19,7 @@ export function DrawerBackdropVariants() {
     <div className="flex flex-wrap gap-3 justify-center">
       {variants.map((variant) => (
         <React.Fragment key={variant}>
-          <Button 
-            variant="secondary" 
-            className="rounded-full px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold capitalize transition-all active:scale-95"
-            onClick={() => setOpenVariant(variant)}
+          <Button variant="solid" color="neutral" className="rounded-full px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold capitalize transition-all active:scale-95" onClick={() => setOpenVariant(variant)}
           >
             {variant}
           </Button>
@@ -68,9 +65,7 @@ export function DrawerBackdropVariants() {
                            </div>
                         </div>
                      </div>
-                     <Button 
-                       className="w-full mt-10 rounded-2xl h-14 text-lg font-black bg-slate-900 text-white shadow-xl hover:bg-slate-800 transition-all hover:scale-[1.02] active:scale-[0.98]" 
-                       onClick={() => setOpenVariant(null)}
+                     <Button className="w-full mt-10 rounded-2xl h-14 text-lg font-black bg-slate-900 text-white shadow-xl hover:bg-slate-800 transition-all hover:scale-[1.02] active:scale-[0.98]" onClick={() => setOpenVariant(null)}
                      >
                        Close
                      </Button>

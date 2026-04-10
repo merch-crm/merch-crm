@@ -7,7 +7,7 @@ interface InfoRowProps {
     value: React.ReactNode;
     className?: string;
     iconClassName?: string;
-    variant?:"default" |"minimal";
+    variant?: "md" | "minimal";
 }
 
 /**
@@ -20,7 +20,7 @@ export function InfoRow({
     value,
     className,
     iconClassName,
-    variant ="default"
+    variant = "md"
 }: InfoRowProps) {
     if (variant ==="minimal") {
         return (

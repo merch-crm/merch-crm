@@ -198,11 +198,7 @@ export function SalesClient({ salesData }: SalesClientProps) {
  
  <div className="flex-1 w-full h-full min-h-[280px]">
  <ResponsiveContainer width="100%" height="100%">
- <AreaChart 
- data={salesData.chartData} 
- margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
- style={{ cursor: 'pointer' }}
- onClick={(data) => {
+ <AreaChart data={salesData.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} style={{ cursor: 'pointer' }} onClick={(data) => {
  if (data && data.activeLabel) {
  router.push(`/dashboard/finance/transactions?from=${data.activeLabel}&to=${data.activeLabel}`);
  }
@@ -215,32 +211,14 @@ export function SalesClient({ salesData }: SalesClientProps) {
  </linearGradient>
  </defs>
  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
- <XAxis 
- dataKey="date" 
- axisLine={false}
- tickLine={false}
- tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
- dy={10}
- tickFormatter={(str) => {
+ <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }} dy={10} tickFormatter={(str) => {
  const date = new Date(str);
  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
  }}
  />
- <YAxis 
- axisLine={false}
- tickLine={false}
- tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
- />
+ <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }} />
  <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--primary)', strokeWidth: 1, strokeDasharray: '4 4' }} />
- <Area
- type="monotone"
- dataKey="revenue"
- stroke="var(--primary)"
- strokeWidth={4}
- fillOpacity={1}
- fill="url(#colorRevenue)"
- animationDuration={2000}
- />
+ <Area type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" animationDuration={2000} />
  </AreaChart>
  </ResponsiveContainer>
  </div>

@@ -1,13 +1,13 @@
 /* v1.0.1 */
 @utility wrap-break-word {
-  word-wrap: break-word;
+ word-wrap: break-word;
 }
 @import "tailwindcss" source(none);
 @source "../app";
 @source "../components";
 @source "../styles";
 @import "tw-animate-css";
-@import "@heroui/styles";
+
 
 @import "../styles/variables.css";
 @import "../styles/base.css";
@@ -22,67 +22,77 @@
 @import "../styles/tables.css";
 
 @utility dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #475569;
-    border-radius: 12px;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-    &:hover {
-        background-color: #f8fafc;
-        color: var(--primary);
-    }
+  &:hover {
+    background-color: #f8fafc;
+    color: var(--primary);
+  }
 
-    &:active {
-        transform: scale(0.98);
-    }
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 @utility px-container {
-    padding-left: var(--radius-padding);
-    padding-right: var(--radius-padding);
+  padding-left: var(--radius-padding);
+  padding-right: var(--radius-padding);
 
-    @media (max-width: 640px) {
-        padding-left: 16px;
-        padding-right: 16px;
-    }
+  @media (max-width: 640px) {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 /* React Bits — required animations (rb- prefixed) */
 @keyframes rb-shine {
-  from { background-position: 200% center; }
-  to { background-position: -200% center; }
+ from { background-position: 200% center; }
+ to { background-position: -200% center; }
 }
 .animate-rb-shine {
-  animation: rb-shine 5s linear infinite;
+ animation: rb-shine 5s linear infinite;
 }
 
 @keyframes rb-gradient {
-  0% { background-position: 0% center; }
-  50% { background-position: 100% center; }
-  100% { background-position: 0% center; }
+ 0% { background-position: 0% center; }
+ 50% { background-position: 100% center; }
+ 100% { background-position: 0% center; }
 }
 .animate-rb-gradient {
-  animation: rb-gradient 8s linear infinite;
+ animation: rb-gradient 8s linear infinite;
 }
 
 @keyframes rb-glitch-1 {
-  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-  20% { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 3px); }
-  40% { clip-path: inset(40% 0 40% 0); transform: translate(3px, -3px); }
-  60% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, 0); }
-  80% { clip-path: inset(80% 0 0 0); transform: translate(3px, 3px); }
+ 0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+ 20% { clip-path: inset(20% 0 60% 0); transform: translate(-3px, 3px); }
+ 40% { clip-path: inset(40% 0 40% 0); transform: translate(3px, -3px); }
+ 60% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, 0); }
+ 80% { clip-path: inset(80% 0 0 0); transform: translate(3px, 3px); }
 }
 @keyframes rb-glitch-2 {
-  0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
-  20% { clip-path: inset(10% 0 70% 0); transform: translate(3px, -3px); }
-  40% { clip-path: inset(30% 0 50% 0); transform: translate(-3px, 3px); }
-  60% { clip-path: inset(50% 0 30% 0); transform: translate(3px, 0); }
-  80% { clip-path: inset(70% 0 10% 0); transform: translate(-3px, -3px); }
+ 0%, 100% { clip-path: inset(0 0 0 0); transform: translate(0); }
+ 20% { clip-path: inset(10% 0 70% 0); transform: translate(3px, -3px); }
+ 40% { clip-path: inset(30% 0 50% 0); transform: translate(-3px, 3px); }
+ 60% { clip-path: inset(50% 0 30% 0); transform: translate(3px, 0); }
+ 80% { clip-path: inset(70% 0 10% 0); transform: translate(-3px, -3px); }
 }
 .animate-rb-glitch-1 { animation: rb-glitch-1 2s infinite; }
 .animate-rb-glitch-2 { animation: rb-glitch-2 3s infinite; }
+
+/* Typography effects — independent implementations */
+@keyframes flipLetterIn {
+  from { opacity: 0; transform: translateY(6px); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

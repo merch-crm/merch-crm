@@ -4,9 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Zap, Calendar } from 'lucide-react';
 import { cn } from '@/components/library/custom/utils/cn';
-import { BentoIconContainer } from "@/components/library/custom/ui/bento-primitives";
+import { BentoIconContainer, BentoCard, BentoGlow } from "@/components/library/custom/ui/bento-primitives";
 
-export function BentoUserActivityHeatmap() {
+export function BentoUserActivityHeatmap({ className }: { className?: string }) {
   const [hoverDay, setHoverDay] = useState<number | null>(null);
   const [grid, setGrid] = useState<{ intensity: number }[]>([]);
   const [isMounted, setIsMounted] = useState(false);
@@ -21,7 +21,9 @@ export function BentoUserActivityHeatmap() {
 
   if (!isMounted) {
     return (
-      <div className="w-full max-w-sm h-80 rounded-[3rem] bg-slate-50 border border-slate-100 animate-pulse" />
+      <BentoCard className={cn("h-96 animate-pulse bg-slate-50 border-slate-100", className)}>
+        <div className="size-full" />
+      </BentoCard>
     );
   }
 
@@ -35,7 +37,7 @@ export function BentoUserActivityHeatmap() {
   ];
 
   return (
-    <div className="w-full max-w-sm rounded-[3rem] bg-white border border-slate-100 shadow-premium p-8 flex flex-col gap-6 group relative overflow-hidden transition-all duration-700 hover:shadow-2xl">
+    <BentoCard className={cn("p-8 sm:p-10", className)}>
       <div className="flex items-center justify-between px-2 relative z-10">
          <div className="flex items-center gap-3">
             <BentoIconContainer>
@@ -48,7 +50,7 @@ export function BentoUserActivityHeatmap() {
          </span>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 relative z-10" role="grid" aria-label="User activity heatmap Matrix">
+      <div className="grid grid-cols-7 gap-2 relative z-10 mt-8" role="grid" aria-label="User activity heatmap Matrix">
          {grid.map((cell, i) => (
            <motion.button
              key={i}
@@ -97,7 +99,7 @@ export function BentoUserActivityHeatmap() {
          </div>
       </div>
 
-      <div className="absolute -right-20 -bottom-20 size-64 bg-primary-base/5 rounded-full blur-[100px] -z-10 group-hover:bg-primary-base/10 transition-all duration-1000" />
-    </div>
+      <BentoGlow />
+    </BentoCard>
   );
 }

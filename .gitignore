@@ -132,4 +132,22 @@ logs/
 /tmp-any-issues.json
 /audit-report.json
 /audit-report.md
-/calculators-lint.json/vault/.obsidian/plugins/obsidian-excalidraw-plugin/
+/calculators-lint.json
+
+# Obsidian plugin data
+vault/.obsidian/plugins/obsidian-excalidraw-plugin/
+
+# Debug artifacts (never commit)
+*_tsc_errors*.txt
+tsc_errors*.txt
+tsc-errors*.txt
+ts_errors.txt
+ts_out.txt
+ts_status.txt
+build_output*.txt
+build_full_output*.txt
+*_debug.log
+*.tmp
+fresh_tsc_errors.txt
+final_tsc_errors.txt
+current_tsc.log

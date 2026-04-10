@@ -53,11 +53,7 @@ export function FloatingSearch() {
     if (isModalOpen || pathname === "/dashboard/warehouse/items/new") return null;
 
     return (
-        <Button
-            asChild
-            variant="ghost"
-            className="hidden md:flex fixed bottom-8 right-8 z-[40] h-14 bg-white/95 backdrop-blur-xl border border-primary/20 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/20 hover:border-primary/40 transition-all duration-300 group items-center overflow-hidden p-0"
-        >
+        <Button asChild variant="ghost" className="hidden md:flex fixed bottom-8 right-8 z-[40] h-14 bg-white/95 backdrop-blur-xl border border-primary/20 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] hover:shadow-primary/20 hover:border-primary/40 transition-all duration-300 group items-center overflow-hidden p-0">
             <motion.button
                 initial={{ opacity: 0, scale: 0.8, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}

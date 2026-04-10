@@ -107,15 +107,7 @@ export function Sidebar({ className, user }: SidebarProps) {
 
                     return (
                         <div key={item.name}>
-                            <Link
-                                href={item.href}
-                                className={cn(
-                                    "flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-inner)] text-[14px] font-medium transition-all duration-200",
-                                    isActive
-                                        ? "bg-primary/5 text-primary shadow-sm"
-                                        : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:scale-[1.02] hover:shadow-sm"
-                                )}
-                            >
+                            <Link href={item.href} className={cn( "flex items-center gap-3 px-3 py-2.5 rounded-[var(--radius-inner)] text-[14px] font-medium transition-all duration-200", isActive ? "bg-primary/5 text-primary shadow-sm" : "text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:scale-[1.02] hover:shadow-sm" )}>
                                 <item.icon
                                     className={cn(
                                         "h-5 w-5",
@@ -133,25 +125,9 @@ export function Sidebar({ className, user }: SidebarProps) {
                                         const ChildIcon = child.icon;
 
                                         return (
-                                            <Link
-                                                key={child.href}
-                                                href={child.href}
-                                                className={cn(
-                                                    "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-accent",
-                                                    isChildActive
-                                                        ? "text-primary bg-primary/5"
-                                                        : "text-slate-400 hover:text-slate-700 hover:bg-slate-50"
-                                                )}
-                                            >
+                                            <Link key={child.href} href={child.href} className={cn( "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-accent", isChildActive ? "text-primary bg-primary/5" : "text-slate-400 hover:text-slate-700 hover:bg-slate-50" )}>
                                                 {ChildIcon && (
-                                                    <ChildIcon
-                                                        className={cn(
-                                                            "h-4 w-4",
-                                                            isChildActive
-                                                                ? "text-primary"
-                                                                : "text-slate-400"
-                                                        )}
-                                                    />
+                                                    <ChildIcon className={cn( "h-4 w-4", isChildActive ? "text-primary" : "text-slate-400" )} />
                                                 )}
                                                 {child.name}
                                             </Link>

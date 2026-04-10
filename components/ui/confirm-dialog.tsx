@@ -14,7 +14,7 @@ interface ConfirmDialogProps {
     description: string;
     confirmText?: string;
     cancelText?: string;
-    variant?:"default" |"destructive";
+    variant?: "neutral" | "destructive";
     isLoading?: boolean;
     isConfirmDisabled?: boolean;
     children?: React.ReactNode;
@@ -28,7 +28,7 @@ export function ConfirmDialog({
     description,
     confirmText ="Подтвердить",
     cancelText ="Отмена",
-    variant ="default",
+    variant = "neutral",
     isLoading = false,
     isConfirmDisabled = false,
     children
@@ -95,28 +95,10 @@ export function ConfirmDialog({
                 <div className={cn("p-6 md:p-6 pt-2 flex gap-3 shrink-0",
                     isDestructive ?"flex-col md:flex-row items-center" :"flex-row"
                 )}>
-                    <Button
-                        variant="ghost"
-                        type="button"
-                        onClick={onClose}
-                        disabled={isLoading}
-                        className={cn("h-11 rounded-[var(--radius-inner)] font-bold text-sm transition-all w-full",
-                            isDestructive
-                                ?"text-slate-400 hover:text-slate-600 border-none hover:bg-transparent md:flex-1 md:order-1 md:border md:border-slate-200 md:hover:bg-slate-50 md:text-slate-400"
-                                :"flex-1 text-slate-400 hover:text-slate-900 border border-slate-200"
-                        )}
-                    >
+                    <Button variant="ghost" type="button" onClick={onClose} disabled={isLoading} className={cn("h-11 rounded-[var(--radius-inner)] font-bold text-sm transition-all w-full", isDestructive ?"text-slate-400 hover:text-slate-600 border-none hover:bg-transparent md:flex-1 md:order-1 md:border md:border-slate-200 md:hover:bg-slate-50 md:text-slate-400" :"flex-1 text-slate-400 hover:text-slate-900 border border-slate-200" )}>
                         {cancelText}
                     </Button>
-                    <Button
-                        variant={isDestructive ?"destructive" :"btn-dark"}
-                        type="button"
-                        onClick={onConfirm}
-                        disabled={isLoading || isConfirmDisabled}
-                        className={cn("h-11 rounded-[var(--radius-inner)] font-bold text-sm text-white transition-all active:scale-[0.98] border-none shadow-lg w-full",
-                            isDestructive ?"bg-[#ff463c] hover:bg-[#ff463c]/90 shadow-red-500/20 md:flex-[1.5] order-first md:order-2" :"flex-[1.5] shadow-black/10"
-                        )}
-                    >
+                    <Button variant={isDestructive ? "solid" : "solid"} color={isDestructive ? "danger" : "primary"} type="button" onClick={onConfirm} disabled={isLoading || isConfirmDisabled} className={cn("h-11 rounded-[var(--radius-inner)] font-bold text-sm text-white transition-all active:scale-[0.98] border-none shadow-lg w-full", isDestructive ? "bg-[#ff463c] hover:bg-[#ff463c]/90 shadow-red-500/20 md:flex-[1.5] order-first md:order-2" : "flex-[1.5] shadow-black/10")}>
                         {isLoading ? (
                             <div className="flex items-center gap-2 justify-center w-full">
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

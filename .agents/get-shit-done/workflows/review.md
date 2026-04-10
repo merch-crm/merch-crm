@@ -211,7 +211,7 @@ Consensus concerns:
 Full review: {padded_phase}-REVIEWS.md
 
 To incorporate feedback into planning:
-  /gsd-plan-phase {N} --reviews
+ /gsd-plan-phase {N} --reviews
 ```
 
 Clean up temp files.

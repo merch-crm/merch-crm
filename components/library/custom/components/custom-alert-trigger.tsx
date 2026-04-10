@@ -60,16 +60,10 @@ export function CustomAlertTrigger() {
         </AlertDialogHeader>
         
         <AlertDialogFooter className="mt-12 gap-3 relative z-10 sm:flex-row flex-col">
-          <AlertDialogCancel 
-            type="button"
-            className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] py-5 outline-none focus:ring-4 focus:ring-white/10 transition-all"
-          >
+          <AlertDialogCancel type="button" className="flex-1 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] py-5 outline-none focus:ring-4 focus:ring-white/10 transition-all">
             Abort
           </AlertDialogCancel>
-          <AlertDialogAction 
-            type="button"
-            className="flex-1 bg-rose-500 hover:bg-rose-600 text-white border-0 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] py-5 shadow-2xl shadow-rose-500/40 active:scale-95 outline-none focus:ring-4 focus:ring-rose-500/30 transition-all"
-          >
+          <AlertDialogAction type="button" className="flex-1 bg-rose-500 hover:bg-rose-600 text-white border-0 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] py-5 shadow-2xl shadow-rose-500/40 active:scale-95 outline-none focus:ring-4 focus:ring-rose-500/30 transition-all">
             Confirm
           </AlertDialogAction>
         </AlertDialogFooter>

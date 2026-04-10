@@ -5,70 +5,70 @@ import { getDepartments } from"../../actions/departments.actions";
 import { useRouter } from"next/navigation";
 
 export function useAddUser(onSuccess?: () => void) {
-    const router = useRouter();
-    const [state, setState] = useState({
-        isOpen: false,
-        loading: false,
-        roles: [] as { id: string, name: string, departmentId: string | null }[],
-        departments: [] as { id: string, name: string }[],
-        error: null as string | null,
-        selectedRoleId:"",
-        selectedDeptId:""
+  const router = useRouter();
+  const [state, setState] = useState({
+    isOpen: false,
+    loading: false,
+    roles: [] as { id: string, name: string, departmentId: string | null }[],
+    departments: [] as { id: string, name: string }[],
+    error: null as string | null,
+    selectedRoleId:"",
+    selectedDeptId:""
+  });
+
+  const updateState = useCallback((updates: Partial<typeof state>) => {
+    setState((prev) => ({ ...prev, ...updates }));
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (state.isOpen) {
+      Promise.all([getRoles(), getDepartments()]).then(([rolesRes, deptsRes]) => {
+        if (isMounted) {
+          updateState({
+            roles: (rolesRes.success ? rolesRes.data : []) as { id: string, name: string, departmentId: string | null }[],
+            departments: (deptsRes.success ? deptsRes.data : []) as { id: string, name: string }[]
+          });
+        }
+      });
+    }
+    return () => { isMounted = false; };
+  }, [state.isOpen, updateState]);
+
+  const handleRoleChange = useCallback((roleId: string) => {
+    updateState({ selectedRoleId: roleId });
+    setState(prev => {
+      const role = prev.roles.find(r => r.id === roleId);
+      if (role && role.departmentId) {
+        return { ...prev, selectedDeptId: role.departmentId };
+      }
+      return prev;
     });
+  }, [updateState]);
 
-    const updateState = useCallback((updates: Partial<typeof state>) => {
-        setState((prev) => ({ ...prev, ...updates }));
-    }, []);
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateState({ loading: true, error: null });
 
-    useEffect(() => {
-        let isMounted = true;
-        if (state.isOpen) {
-            Promise.all([getRoles(), getDepartments()]).then(([rolesRes, deptsRes]) => {
-                if (isMounted) {
-                    updateState({
-                        roles: (rolesRes.success ? rolesRes.data : []) as { id: string, name: string, departmentId: string | null }[],
-                        departments: (deptsRes.success ? deptsRes.data : []) as { id: string, name: string }[]
-                    });
-                }
-            });
-        }
-        return () => { isMounted = false; };
-    }, [state.isOpen, updateState]);
-
-    const handleRoleChange = useCallback((roleId: string) => {
-        updateState({ selectedRoleId: roleId });
-        setState(prev => {
-            const role = prev.roles.find(r => r.id === roleId);
-            if (role && role.departmentId) {
-                return { ...prev, selectedDeptId: role.departmentId };
-            }
-            return prev;
-        });
-    }, [updateState]);
-
-    const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        updateState({ loading: true, error: null });
-
-        const formData = new FormData(e.currentTarget);
-        const res = await createUser(formData);
+    const formData = new FormData(e.currentTarget);
+    const res = await createUser(formData);
  
-        if (!res.success) {
-            updateState({ loading: false, error: res.error });
-        } else {
-            updateState({ loading: false, isOpen: false });
-            if (onSuccess) {
-                onSuccess();
-            } else {
-                router.refresh();
-            }
-        }
-    }, [onSuccess, router, updateState]);
+    if (!res.success) {
+      updateState({ loading: false, error: res.error });
+    } else {
+      updateState({ loading: false, isOpen: false });
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        router.refresh();
+      }
+    }
+  }, [onSuccess, router, updateState]);
 
-    return {
-        state,
-        updateState,
-        handleRoleChange,
-        handleSubmit
-    };
+  return {
+    state,
+    updateState,
+    handleRoleChange,
+    handleSubmit
+  };
 }

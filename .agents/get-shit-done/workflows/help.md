@@ -467,37 +467,37 @@ Usage: `/gsd-join-discord`
 
 ```
 .planning/
-├── PROJECT.md            # Project vision
-├── ROADMAP.md            # Current phase breakdown
-├── STATE.md              # Project memory & context
-├── RETROSPECTIVE.md      # Living retrospective (updated per milestone)
-├── config.json           # Workflow mode & gates
-├── todos/                # Captured ideas and tasks
-│   ├── pending/          # Todos waiting to be worked on
-│   └── done/             # Completed todos
-├── debug/                # Active debug sessions
-│   └── resolved/         # Archived resolved issues
+├── PROJECT.md      # Project vision
+├── ROADMAP.md      # Current phase breakdown
+├── STATE.md       # Project memory & context
+├── RETROSPECTIVE.md   # Living retrospective (updated per milestone)
+├── config.json      # Workflow mode & gates
+├── todos/        # Captured ideas and tasks
+│  ├── pending/     # Todos waiting to be worked on
+│  └── done/       # Completed todos
+├── debug/        # Active debug sessions
+│  └── resolved/     # Archived resolved issues
 ├── milestones/
-│   ├── v1.0-ROADMAP.md       # Archived roadmap snapshot
-│   ├── v1.0-REQUIREMENTS.md  # Archived requirements
-│   └── v1.0-phases/          # Archived phase dirs (via /gsd-cleanup or --archive-phases)
-│       ├── 01-foundation/
-│       └── 02-core-features/
-├── codebase/             # Codebase map (brownfield projects)
-│   ├── STACK.md          # Languages, frameworks, dependencies
-│   ├── ARCHITECTURE.md   # Patterns, layers, data flow
-│   ├── STRUCTURE.md      # Directory layout, key files
-│   ├── CONVENTIONS.md    # Coding standards, naming
-│   ├── TESTING.md        # Test setup, patterns
-│   ├── INTEGRATIONS.md   # External services, APIs
-│   └── CONCERNS.md       # Tech debt, known issues
+│  ├── v1.0-ROADMAP.md    # Archived roadmap snapshot
+│  ├── v1.0-REQUIREMENTS.md # Archived requirements
+│  └── v1.0-phases/     # Archived phase dirs (via /gsd-cleanup or --archive-phases)
+│    ├── 01-foundation/
+│    └── 02-core-features/
+├── codebase/       # Codebase map (brownfield projects)
+│  ├── STACK.md     # Languages, frameworks, dependencies
+│  ├── ARCHITECTURE.md  # Patterns, layers, data flow
+│  ├── STRUCTURE.md   # Directory layout, key files
+│  ├── CONVENTIONS.md  # Coding standards, naming
+│  ├── TESTING.md    # Test setup, patterns
+│  ├── INTEGRATIONS.md  # External services, APIs
+│  └── CONCERNS.md    # Tech debt, known issues
 └── phases/
-    ├── 01-foundation/
-    │   ├── 01-01-PLAN.md
-    │   └── 01-01-SUMMARY.md
-    └── 02-core-features/
-        ├── 02-01-PLAN.md
-        └── 02-01-SUMMARY.md
+  ├── 01-foundation/
+  │  ├── 01-01-PLAN.md
+  │  └── 01-01-SUMMARY.md
+  └── 02-core-features/
+    ├── 02-01-PLAN.md
+    └── 02-01-SUMMARY.md
 ```
 
 ## Workflow Modes
@@ -538,10 +538,10 @@ When `commit_docs: false`:
 Example config:
 ```json
 {
-  "planning": {
-    "commit_docs": false,
-    "search_gitignored": true
-  }
+ "planning": {
+  "commit_docs": false,
+  "search_gitignored": true
+ }
 }
 ```
 
@@ -550,17 +550,17 @@ Example config:
 **Starting a new project:**
 
 ```
-/gsd-new-project        # Unified flow: questioning → research → requirements → roadmap
+/gsd-new-project    # Unified flow: questioning → research → requirements → roadmap
 /clear
-/gsd-plan-phase 1       # Create plans for first phase
+/gsd-plan-phase 1    # Create plans for first phase
 /clear
-/gsd-execute-phase 1    # Execute all plans in phase
+/gsd-execute-phase 1  # Execute all plans in phase
 ```
 
 **Resuming work after a break:**
 
 ```
-/gsd-progress  # See where you left off and continue
+/gsd-progress # See where you left off and continue
 ```
 
 **Adding urgent mid-milestone work:**
@@ -576,25 +576,25 @@ Example config:
 ```
 /gsd-complete-milestone 1.0.0
 /clear
-/gsd-new-milestone  # Start next milestone (questioning → research → requirements → roadmap)
+/gsd-new-milestone # Start next milestone (questioning → research → requirements → roadmap)
 ```
 
 **Capturing ideas during work:**
 
 ```
-/gsd-add-todo                    # Capture from conversation context
-/gsd-add-todo Fix modal z-index  # Capture with explicit description
-/gsd-check-todos                 # Review and work on todos
-/gsd-check-todos api             # Filter by area
+/gsd-add-todo          # Capture from conversation context
+/gsd-add-todo Fix modal z-index # Capture with explicit description
+/gsd-check-todos         # Review and work on todos
+/gsd-check-todos api       # Filter by area
 ```
 
 **Debugging an issue:**
 
 ```
-/gsd-debug "form submission fails silently"  # Start debug session
+/gsd-debug "form submission fails silently" # Start debug session
 # ... investigation happens, context fills up ...
 /clear
-/gsd-debug                                    # Resume from where you left off
+/gsd-debug                  # Resume from where you left off
 ```
 
 ## Getting Help

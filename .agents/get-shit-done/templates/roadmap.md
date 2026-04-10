@@ -29,11 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### Phase 1: [Name]
 **Goal**: [What this phase delivers]
 **Depends on**: Nothing (first phase)
-**Requirements**: [REQ-01, REQ-02, REQ-03]  <!-- brackets optional, parser handles both formats -->
+**Requirements**: [REQ-01, REQ-02, REQ-03] <!-- brackets optional, parser handles both formats -->
 **Success Criteria** (what must be TRUE):
-  1. [Observable behavior from user perspective]
-  2. [Observable behavior from user perspective]
-  3. [Observable behavior from user perspective]
+ 1. [Observable behavior from user perspective]
+ 2. [Observable behavior from user perspective]
+ 3. [Observable behavior from user perspective]
 **Plans**: [Number of plans, e.g., "3 plans" or "TBD"]
 
 Plans:
@@ -46,8 +46,8 @@ Plans:
 **Depends on**: Phase 1
 **Requirements**: [REQ-04, REQ-05]
 **Success Criteria** (what must be TRUE):
-  1. [Observable behavior from user perspective]
-  2. [Observable behavior from user perspective]
+ 1. [Observable behavior from user perspective]
+ 2. [Observable behavior from user perspective]
 **Plans**: [Number of plans]
 
 Plans:
@@ -58,7 +58,7 @@ Plans:
 **Goal**: [Urgent work inserted between phases]
 **Depends on**: Phase 2
 **Success Criteria** (what must be TRUE):
-  1. [What the fix achieves]
+ 1. [What the fix achieves]
 **Plans**: 1 plan
 
 Plans:
@@ -69,9 +69,9 @@ Plans:
 **Depends on**: Phase 2
 **Requirements**: [REQ-06, REQ-07, REQ-08]
 **Success Criteria** (what must be TRUE):
-  1. [Observable behavior from user perspective]
-  2. [Observable behavior from user perspective]
-  3. [Observable behavior from user perspective]
+ 1. [Observable behavior from user perspective]
+ 2. [Observable behavior from user perspective]
+ 3. [Observable behavior from user perspective]
 **Plans**: [Number of plans]
 
 Plans:
@@ -83,8 +83,8 @@ Plans:
 **Depends on**: Phase 3
 **Requirements**: [REQ-09, REQ-10]
 **Success Criteria** (what must be TRUE):
-  1. [Observable behavior from user perspective]
-  2. [Observable behavior from user perspective]
+ 1. [Observable behavior from user perspective]
+ 2. [Observable behavior from user perspective]
 **Plans**: [Number of plans]
 
 Plans:

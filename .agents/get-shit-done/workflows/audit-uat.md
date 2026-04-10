@@ -94,12 +94,12 @@ Group by what can be tested together (same screen, same feature, same prerequisi
 Prerequisites: {what needs to be running/configured}
 
 1. **{Test name}** (Phase {N})
-   - Navigate to: {where}
-   - Do: {action}
-   - Expected: {expected behavior}
+  - Navigate to: {where}
+  - Do: {action}
+  - Expected: {expected behavior}
 
 2. **{Test name}** (Phase {N})
-   ...
+  ...
 
 ### Group 2: {category}
 ...

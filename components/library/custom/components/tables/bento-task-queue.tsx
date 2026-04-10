@@ -1,9 +1,8 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { Check, GripVertical, ListTodo, MoreHorizontal, Zap, Target, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "../../utils/cn";
+import { BentoCard, BentoGlow, BentoIconContainer } from "@/components/library/custom/ui/bento-primitives";
 
 export interface TaskItem {
   id: string;
@@ -39,17 +38,19 @@ export function BentoTaskQueue({ title = "Active Task Queue", tasks: initialTask
 
   if (!isMounted) {
     return (
-       <div className="bg-white border border-slate-100 p-8 rounded-[3rem] animate-pulse h-96 w-full" />
+       <BentoCard className={cn("h-96 animate-pulse bg-slate-50 border-slate-100", className)}>
+         <div className="size-full" />
+       </BentoCard>
     );
   }
 
   return (
-    <div className={cn("bg-white text-slate-900 shadow-premium border border-slate-100 p-8 rounded-[3rem] flex flex-col gap-8 group/card transition-all duration-700 hover:shadow-2xl overflow-hidden relative", className)}>
+    <BentoCard className={cn("p-8", className)}>
       <div className="flex justify-between items-center relative z-10">
         <div className="flex items-center gap-3">
-          <div className="size-8 rounded-xl bg-slate-950 text-white flex items-center justify-center shadow-lg shadow-black/20">
+          <BentoIconContainer>
             <ListTodo className="size-4" />
-          </div>
+          </BentoIconContainer>
           <h3 className="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em] leading-none">{title}</h3>
         </div>
         <div className="flex items-center gap-2">
@@ -60,7 +61,7 @@ export function BentoTaskQueue({ title = "Active Task Queue", tasks: initialTask
         </div>
       </div>
       
-      <div className="flex-1 space-y-3 relative z-10">
+      <div className="flex-1 space-y-3 relative z-10 mt-8">
         <AnimatePresence mode="popLayout">
           {tasks.map((task, idx) => (
             <motion.div 
@@ -127,7 +128,7 @@ export function BentoTaskQueue({ title = "Active Task Queue", tasks: initialTask
         </AnimatePresence>
       </div>
 
-      <div className="absolute -left-32 -bottom-32 size-96 bg-primary-base/5 rounded-full blur-[120px] -z-10 group-hover/card:bg-primary-base/10 transition-all duration-1000" />
-    </div>
+      <BentoGlow className="-left-32 -bottom-32 size-96" />
+    </BentoCard>
   );
 }

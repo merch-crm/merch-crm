@@ -14,7 +14,7 @@ Routes to the resume-project workflow which handles:
 - Incomplete work detection (PLAN without SUMMARY)
 - Status presentation
 - Context-aware next action routing
-  </objective>
+ </objective>
 
 <execution_context>
 @.agent/get-shit-done/workflows/resume-project.md
@@ -32,4 +32,4 @@ The workflow handles all resumption logic including:
 5. Context-aware option offering (checks CONTEXT.md before suggesting plan vs discuss)
 6. Routing to appropriate next command
 7. Session continuity updates
-   </process>
+  </process>

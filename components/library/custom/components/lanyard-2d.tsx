@@ -90,12 +90,7 @@ export const Lanyard2D = ({ className, badgeContent }: Lanyard2DProps) => {
 
         {/* Content of the badge */}
         <div className="w-24 h-24 rounded-full bg-indigo-100 border-4 border-indigo-50 mt-4 overflow-hidden relative">
-          <Image 
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d" 
-            alt="avatar" 
-            fill
-            className="object-cover" 
-          />
+          <Image src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="avatar" fill className="object-cover" />
         </div>
         
         <div className="text-center mt-2 flex flex-col gap-1 w-full">

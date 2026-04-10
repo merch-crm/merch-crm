@@ -74,9 +74,9 @@ If overlapping, use AskUserQuestion:
 - header: "Duplicate?"
 - question: "Similar todo exists: [title]. What would you like to do?"
 - options:
-  - "Skip" — keep existing todo
-  - "Replace" — update existing with new context
-  - "Add anyway" — create as separate todo
+ - "Skip" — keep existing todo
+ - "Replace" — update existing with new context
+ - "Add anyway" — create as separate todo
 </step>
 
 <step name="create_file">
@@ -95,7 +95,7 @@ created: [timestamp]
 title: [title]
 area: [area]
 files:
-  - [file:lines]
+ - [file:lines]
 ---
 
 ## Problem
@@ -131,9 +131,9 @@ Confirm: "Committed: docs: capture todo - [title]"
 ```
 Todo saved: .planning/todos/pending/[filename]
 
-  [title]
-  Area: [area]
-  Files: [count] referenced
+ [title]
+ Area: [area]
+ Files: [count] referenced
 
 ---
 

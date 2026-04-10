@@ -23,6 +23,7 @@ export interface BrandingSettings {
     updatedAt?: Date;
     
     // UI/Legacy fields
+    color?: string;
     loginSlogan?: string | null;
     loginBackgroundUrl?: string | null;
     dashboardWelcome?: string | null;

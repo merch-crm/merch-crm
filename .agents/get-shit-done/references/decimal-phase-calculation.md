@@ -12,20 +12,20 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" phase next-decimal 6
 Output:
 ```json
 {
-  "found": true,
-  "base_phase": "06",
-  "next": "06.1",
-  "existing": []
+ "found": true,
+ "base_phase": "06",
+ "next": "06.1",
+ "existing": []
 }
 ```
 
 With existing decimals:
 ```json
 {
-  "found": true,
-  "base_phase": "06",
-  "next": "06.3",
-  "existing": ["06.1", "06.2"]
+ "found": true,
+ "base_phase": "06",
+ "next": "06.3",
+ "existing": ["06.1", "06.2"]
 }
 ```
 

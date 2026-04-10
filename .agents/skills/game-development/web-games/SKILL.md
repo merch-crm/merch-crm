@@ -18,15 +18,15 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 What type of game?
 │
 ├── 2D Game
-│   ├── Full game engine features? → Phaser
-│   └── Raw rendering power? → PixiJS
+│  ├── Full game engine features? → Phaser
+│  └── Raw rendering power? → PixiJS
 │
 ├── 3D Game
-│   ├── Full engine (physics, XR)? → Babylon.js
-│   └── Rendering focused? → Three.js
+│  ├── Full engine (physics, XR)? → Babylon.js
+│  └── Rendering focused? → Three.js
 │
 └── Hybrid / Canvas
-    └── Custom → Raw Canvas/WebGL
+  └── Custom → Raw Canvas/WebGL
 ```
 
 ### Comparison (2025)

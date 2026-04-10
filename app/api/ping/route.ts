@@ -7,22 +7,22 @@
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-    try {
-        return new Response("ok", {
-            status: 200,
-            headers: {
-                "Cache-Control": "no-store",
-                "Content-Type": "text/plain",
-            },
-        });
-    } catch (error) {
-        console.error("Ping endpoint error:", error);
-        return new Response("error", {
-            status: 500,
-            headers: {
-                "Cache-Control": "no-store",
-                "Content-Type": "text/plain",
-            },
-        });
-    }
+  try {
+    return new Response("ok", {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain",
+      },
+    });
+  } catch (error) {
+    console.error("Ping endpoint error:", error);
+    return new Response("error", {
+      status: 500,
+      headers: {
+        "Cache-Control": "no-store",
+        "Content-Type": "text/plain",
+      },
+    });
+  }
 }

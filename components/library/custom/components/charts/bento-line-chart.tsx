@@ -37,33 +37,11 @@ export function BentoLineChart({
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="opacity-10 dark:opacity-20" />
-            <XAxis 
-              dataKey={categoryKey} 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fontSize: 12 }} 
-              dy={10} 
-              className="text-muted-foreground"
-            />
-            <YAxis 
-              axisLine={false} 
-              tickLine={false} 
-              tick={{ fontSize: 12 }} 
-              className="text-muted-foreground"
-            />
-            <Tooltip 
-              contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }}
-            />
+            <XAxis dataKey={categoryKey} axisLine={false} tickLine={false} tick={{ fontSize: 12 }} dy={10} className="text-muted-foreground" />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} className="text-muted-foreground" />
+            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} />
             {lines.map((line, i) => (
-              <Line 
-                key={i}
-                type="monotone" 
-                dataKey={line.key} 
-                stroke={line.color} 
-                strokeWidth={3}
-                dot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }}
-                activeDot={{ r: 6, strokeWidth: 0 }}
-              />
+              <Line key={i} type="monotone" dataKey={line.key} stroke={line.color} strokeWidth={3} dot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }} activeDot={{ r: 6, strokeWidth: 0 }} />
             ))}
           </LineChart>
         </ResponsiveContainer>

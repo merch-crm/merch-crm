@@ -67,13 +67,7 @@ export function PriceBreakdown({
             {(!collapsible || isExpanded) && (
                 <div className="divide-y divide-slate-100">
                     {otherLines.map((line) => (
-                        <PriceLineItem
-                            key={line.id}
-                            line={line}
-                            currency={currency}
-                            showQuantity={showQuantity}
-                            showUnitPrice={showUnitPrice}
-                        />
+                        <PriceLineItem key={line.id} line={line} currency={currency} showQuantity={showQuantity} showUnitPrice={showUnitPrice} />
                     ))}
 
                     {/* Итого */}

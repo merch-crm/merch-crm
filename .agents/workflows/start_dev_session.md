@@ -86,4 +86,4 @@ sed -i '' "s/обновлено: .*/обновлено: $DATE/" vault/000-Нав
 2. Проверить IP Docker-контейнеров на сервере: `ssh -i ~/.ssh/antigravity_key root@89.104.69.25 "docker inspect merch-crm-db | grep IPAddress"`
 3. Перезапустить туннель: `killall autossh; lsof -ti:5432 | xargs kill -9; node scripts/setup-ssh-tunnel.mjs`
 4. **Если autossh не помогает** — использовать plain ssh напрямую к IP контейнера:
-   `ssh -i ~/.ssh/antigravity_key -f -N -L 127.0.0.1:5432:<DB_CONTAINER_IP>:5432 root@89.104.69.25`
+  `ssh -i ~/.ssh/antigravity_key -f -N -L 127.0.0.1:5432:<DB_CONTAINER_IP>:5432 root@89.104.69.25`

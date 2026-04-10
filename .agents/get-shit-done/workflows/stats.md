@@ -34,7 +34,7 @@ X/Y plans complete (Z%)
 ## Phases
 | Phase | Name | Plans | Completed | Status |
 |-------|------|-------|-----------|--------|
-| ...   | ...  | ...   | ...       | ...    |
+| ...  | ... | ...  | ...    | ...  |
 
 ## Requirements
 ✅ X/Y requirements complete

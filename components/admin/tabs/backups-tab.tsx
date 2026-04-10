@@ -81,10 +81,7 @@ export function BackupsTab({
                                                     >
                                                         <Download size={16} />
                                                     </a>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => setBackupToDelete(backup.name)}
+                                                    <Button variant="ghost" size="icon" onClick={() => setBackupToDelete(backup.name)}
                                                         disabled={isDeleting}
                                                         className="hover:text-rose-600 hover:bg-red-50 rounded-[18px] h-8 w-8"
                                                         title="Удалить"
@@ -122,9 +119,7 @@ export function BackupsTab({
                 </div>
             </div>
 
-            <ConfirmDialog
-                isOpen={!!backupToDelete}
-                onClose={() => setBackupToDelete(null)}
+            <ConfirmDialog isOpen={!!backupToDelete} onClose={() => setBackupToDelete(null)}
                 onConfirm={handleConfirmDelete}
                 title="Удалить резервную копию?"
                 description={`Вы собираетесь навсегда удалить файл ${backupToDelete}. Это действие нельзя отменить.`}

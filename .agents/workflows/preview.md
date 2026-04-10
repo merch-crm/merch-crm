@@ -15,11 +15,11 @@ Manage preview server: start, stop, status check.
 ### Commands
 
 ```
-/preview           - Show current status
-/preview start     - Start server
-/preview stop      - Stop server
-/preview restart   - Restart
-/preview check     - Health check
+/preview      - Show current status
+/preview start   - Start server
+/preview stop   - Stop server
+/preview restart  - Restart
+/preview check   - Health check
 ```
 
 ---
@@ -32,11 +32,11 @@ Manage preview server: start, stop, status check.
 
 Response:
 🚀 Starting preview...
-   Port: 3000
-   Type: Next.js
+  Port: 3000
+  Type: Next.js
 
 ✅ Preview ready!
-   URL: http://localhost:3000
+  URL: http://localhost:3000
 ```
 
 ### Status Check

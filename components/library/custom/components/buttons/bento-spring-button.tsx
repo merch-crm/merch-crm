@@ -6,7 +6,7 @@ import { cn } from "../../utils/cn";
 
 interface BentoSpringButtonProps extends Omit<HTMLMotionProps<"button">, "onDrag"> {
   children: React.ReactNode;
-  variant?: "primary" | "secondary" | "accent";
+  variant?: "primary" | "solid" | "accent";
 }
 
 export function BentoSpringButton({ 

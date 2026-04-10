@@ -31,7 +31,7 @@ User action required. 62-character width.
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║  CHECKPOINT: {Type}                                          ║
+║ CHECKPOINT: {Type}                     ║
 ╚══════════════════════════════════════════════════════════════╝
 
 {Content}
@@ -51,12 +51,12 @@ User action required. 62-character width.
 ## Status Symbols
 
 ```
-✓  Complete / Passed / Verified
-✗  Failed / Missing / Blocked
-◆  In Progress
-○  Pending
+✓ Complete / Passed / Verified
+✗ Failed / Missing / Blocked
+◆ In Progress
+○ Pending
 ⚡ Auto-approved
-⚠  Warning
+⚠ Warning
 🎉 Milestone complete (only in banner)
 ```
 
@@ -87,10 +87,10 @@ Plans: 3/5 complete
 ◆ Spawning researcher...
 
 ◆ Spawning 4 researchers in parallel...
-  → Stack research
-  → Features research
-  → Architecture research
-  → Pitfalls research
+ → Stack research
+ → Features research
+ → Architecture research
+ → Pitfalls research
 
 ✓ Researcher complete: STACK.md written
 ```
@@ -127,7 +127,7 @@ Always at end of major completions.
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║  ERROR                                                       ║
+║ ERROR                            ║
 ╚══════════════════════════════════════════════════════════════╝
 
 {Error description}
@@ -142,9 +142,9 @@ Always at end of major completions.
 ```
 | Phase | Status | Plans | Progress |
 |-------|--------|-------|----------|
-| 1     | ✓      | 3/3   | 100%     |
-| 2     | ◆      | 1/4   | 25%      |
-| 3     | ○      | 0/2   | 0%       |
+| 1   | ✓   | 3/3  | 100%   |
+| 2   | ◆   | 1/4  | 25%   |
+| 3   | ○   | 0/2  | 0%    |
 ```
 
 ---

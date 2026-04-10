@@ -48,8 +48,8 @@ UI_REVIEW_FILE=$(ls "${PHASE_DIR}"/*-UI-REVIEW.md 2>/dev/null | head -1)
 - header: "Existing UI Review"
 - question: "UI-REVIEW.md already exists for Phase {N}."
 - options:
-  - "Re-audit — run fresh audit"
-  - "View — display current review and exit"
+ - "Re-audit — run fresh audit"
+ - "View — display current review and exit"
 
 If "View": display file, exit.
 If "Re-audit": continue.
@@ -98,10 +98,10 @@ Omit null file paths.
 
 ```
 Task(
-  prompt=ui_audit_prompt,
-  subagent_type="gsd-ui-auditor",
-  model="{UI_AUDITOR_MODEL}",
-  description="UI Audit Phase {N}"
+ prompt=ui_audit_prompt,
+ subagent_type="gsd-ui-auditor",
+ model="{UI_AUDITOR_MODEL}",
+ description="UI Audit Phase {N}"
 )
 ```
 

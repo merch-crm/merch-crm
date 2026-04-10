@@ -26,38 +26,21 @@ export function RenameModal({
     processing
 }: RenameModalProps) {
     return (
-        <ResponsiveModal
-            isOpen={isOpen}
-            onClose={onClose}
-            title="Переименование"
-            description={`Введите новое имя для ${path?.endsWith("/") ? "папки" : "файла"}`}
-        >
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Переименование" description={`Введите новое имя для ${path?.endsWith("/") ? "папки" : "файла"}`}>
             <div className="space-y-3">
                 <div className="space-y-2">
                     <label className="text-xs font-bold text-slate-400">Новое имя</label>
-                    <Input
-                        type="text"
-                        placeholder="Новое имя..."
-                        value={name}
-                        onChange={(e) => onNameChange(e.target.value)}
+                    <Input type="text" placeholder="Новое имя..." value={name} onChange={(e) => onNameChange(e.target.value)}
                         onKeyDown={(e) => e.key === "Enter" && onConfirm()}
                         autoFocus
                         className="w-full text-lg font-bold"
                     />
                 </div>
                 <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-                    <Button
-                        variant="ghost"
-                        onClick={onClose}
-                        className="px-8 rounded-[18px] font-bold text-xs text-slate-400 py-6"
-                    >
+                    <Button variant="ghost" onClick={onClose} className="px-8 rounded-[18px] font-bold text-xs text-slate-400 py-6">
                         Отмена
                     </Button>
-                    <Button
-                        onClick={onConfirm}
-                        disabled={processing || !name.trim()}
-                        className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold text-xs py-6 shadow-lg shadow-amber-200"
-                    >
+                    <Button onClick={onConfirm} disabled={processing || !name.trim()} className="bg-amber-600 hover:bg-amber-700 text-white px-10 rounded-[18px] font-bold text-xs py-6 shadow-lg shadow-amber-200">
                         {processing ? <RefreshCw className="animate-spin mr-2 h-4 w-4" /> : "Переименовать"}
                     </Button>
                 </div>

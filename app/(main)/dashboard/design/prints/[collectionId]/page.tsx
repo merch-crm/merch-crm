@@ -7,47 +7,44 @@ import { CollectionPageSkeleton } from "./loading";
 import { BreadcrumbLabelSync } from "@/components/layout/breadcrumb-label-sync";
 
 interface PageProps {
-    params: Promise<{ collectionId: string }>;
+  params: Promise<{ collectionId: string }>;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-    const { collectionId } = await params;
-    const result = await getCollectionById(collectionId);
+  const { collectionId } = await params;
+  const result = await getCollectionById(collectionId);
 
-    if (!result.success || !result.data) {
-        return { title: "Коллекция не найдена" };
-    }
+  if (!result.success || !result.data) {
+    return { title: "Коллекция не найдена" };
+  }
 
-    const collection = result.data;
+  const collection = result.data;
 
-    return {
-        title: `${collection.name} — Коллекции принтов`,
-        description: collection.description || `Коллекция принтов"${collection.name}"`,
-    };
+  return {
+    title: `${collection.name} — Коллекции принтов`,
+    description: collection.description || `Коллекция принтов"${collection.name}"`,
+  };
 }
 
 export const dynamic = "force-dynamic";
 
 export default async function CollectionPage({ params }: PageProps) {
-    const { collectionId } = await params;
-    const [collectionResult, designsResult] = await Promise.all([
-        getCollectionById(collectionId),
-        getDesignsByCollection(collectionId),
-    ]);
+  const { collectionId } = await params;
+  const [collectionResult, designsResult] = await Promise.all([
+    getCollectionById(collectionId),
+    getDesignsByCollection(collectionId),
+  ]);
 
-    if (!collectionResult.success || !collectionResult.data) {
-        notFound();
-    }
+  if (!collectionResult.success || !collectionResult.data) {
+    notFound();
+  }
 
-    return (
-        <div className="flex flex-col gap-3">
-            <BreadcrumbLabelSync id={collectionId} label={collectionResult.data.name} />
-            <Suspense fallback={<CollectionPageSkeleton />}>
-            <CollectionPageClient
-                collection={collectionResult.data}
-                initialDesigns={(designsResult.success && designsResult.data) ? designsResult.data : []}
-            />
-        </Suspense>
-    </div>
-    );
+  return (
+    <div className="flex flex-col gap-3">
+      <BreadcrumbLabelSync id={collectionId} label={collectionResult.data.name} />
+      <Suspense fallback={<CollectionPageSkeleton />}>
+      <CollectionPageClient collection={collectionResult.data} initialDesigns={(designsResult.success && designsResult.data) ? designsResult.data : []} />
+    </Suspense>
+  </div>
+  );
 }

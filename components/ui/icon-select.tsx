@@ -17,14 +17,7 @@ export function IconSelect({ startIcon: StartIcon, options, className, container
                     <StartIcon className="h-4 w-4" />
                 </div>
             )}
-            <Select
-                className={cn(
-                    StartIcon &&"pl-10",
-                    className
-                )}
-                options={options}
-                {...props}
-            />
+            <Select className={cn( StartIcon &&"pl-10", className )} options={options} {...props} />
         </div>
     );
 }

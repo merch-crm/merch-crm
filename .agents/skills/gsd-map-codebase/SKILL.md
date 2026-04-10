@@ -45,10 +45,10 @@ Check for .planning/STATE.md - loads context if project already initialized
 1. Check if .planning/codebase/ already exists (offer to refresh or skip)
 2. Create .planning/codebase/ directory structure
 3. Spawn 4 parallel gsd-codebase-mapper agents:
-   - Agent 1: tech focus → writes STACK.md, INTEGRATIONS.md
-   - Agent 2: arch focus → writes ARCHITECTURE.md, STRUCTURE.md
-   - Agent 3: quality focus → writes CONVENTIONS.md, TESTING.md
-   - Agent 4: concerns focus → writes CONCERNS.md
+  - Agent 1: tech focus → writes STACK.md, INTEGRATIONS.md
+  - Agent 2: arch focus → writes ARCHITECTURE.md, STRUCTURE.md
+  - Agent 3: quality focus → writes CONVENTIONS.md, TESTING.md
+  - Agent 4: concerns focus → writes CONCERNS.md
 4. Wait for agents to complete, collect confirmations (NOT document contents)
 5. Verify all 7 documents exist with line counts
 6. Commit codebase map

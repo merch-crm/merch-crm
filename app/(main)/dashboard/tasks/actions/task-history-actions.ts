@@ -12,29 +12,29 @@ import { taskIdSchema } from "../validation";
  * Получение истории задачи
  */
 export async function getTaskHistory(
-  taskId: string
+ taskId: string
 ): Promise<TaskActionResult<TaskHistoryEntry[]>> {
-  try {
-    const session = await getSession();
-    if (!session?.id) {
-      return { success: false, error: "Не авторизован" }
-    taskIdSchema.parse(taskId);;
-    }
-
-    const history = await db.query.taskHistory.findMany({
-      where: eq(taskHistory.taskId, taskId),
-      with: {
-        user: {
-          columns: { id: true, name: true, image: true },
-        },
-      },
-      orderBy: [desc(taskHistory.createdAt)],
-      limit: 100,
-    });
-
-    return { success: true, data: history as unknown as TaskHistoryEntry[] };
-  } catch (error) {
-    logError({ error, method: "getTaskHistory" });
-    return { success: false, error: "Не удалось загрузить историю" };
+ try {
+  const session = await getSession();
+  if (!session?.id) {
+   return { success: false, error: "Не авторизован" }
+  taskIdSchema.parse(taskId);;
   }
+
+  const history = await db.query.taskHistory.findMany({
+   where: eq(taskHistory.taskId, taskId),
+   with: {
+    user: {
+     columns: { id: true, name: true, image: true },
+    },
+   },
+   orderBy: [desc(taskHistory.createdAt)],
+   limit: 100,
+  });
+
+  return { success: true, data: history as unknown as TaskHistoryEntry[] };
+ } catch (error) {
+  logError({ error, method: "getTaskHistory" });
+  return { success: false, error: "Не удалось загрузить историю" };
+ }
 }

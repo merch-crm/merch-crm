@@ -49,7 +49,7 @@ AGENT_SKILLS_RESEARCHER=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" agent-sk
 
 ```
 Task(
-  prompt="<objective>
+ prompt="<objective>
 Research implementation approach for Phase {phase}: {name}
 </objective>
 
@@ -68,8 +68,8 @@ Phase description: {description}
 <output>
 Write to: .planning/phases/${PHASE}-{slug}/${PHASE}-RESEARCH.md
 </output>",
-  subagent_type="gsd-phase-researcher",
-  model="{researcher_model}"
+ subagent_type="gsd-phase-researcher",
+ model="{researcher_model}"
 )
 ```
 

@@ -116,15 +116,7 @@ export function ApplicationTypesChart({
                 <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
-                            <Pie
-                                data={chartData}
-                                cx="50%"
-                                cy="45%"
-                                innerRadius={50}
-                                outerRadius={70}
-                                paddingAngle={3}
-                                dataKey="value"
-                            >
+                            <Pie data={chartData} cx="50%" cy="45%" innerRadius={50} outerRadius={70} paddingAngle={3} dataKey="value">
                                 {chartData.map((entry, index) => (
                                     <Cell key={index} fill={entry.color} />
                                 ))}

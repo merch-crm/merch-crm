@@ -104,13 +104,7 @@ export function ImageUpload({
                 )}
             >
                 {preview ? (
-                    <Image
-                        src={preview}
-                        alt="Preview"
-                        className="w-full h-full object-cover"
-                        width={200}
-                        height={200}
-                    />
+                    <Image src={preview} alt="Preview" className="w-full h-full object-cover" width={200} height={200} />
                 ) : (
                     <div className="text-center p-2">
                         <Upload className="w-6 h-6 text-slate-400 mx-auto" />

@@ -70,14 +70,7 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
                 <Link href="/dashboard" className="transition-transform active:scale-95">
                     <div className="bg-primary rounded-[10px] w-9 h-9 p-1 flex items-center justify-center shadow-sm">
                         {branding.logoUrl ? (
-                            <Image
-                                src={branding.logoUrl}
-                                alt="Logo"
-                                width={28}
-                                height={28}
-                                className="object-contain"
-                                unoptimized
-                            />
+                            <Image src={branding.logoUrl} alt="Logo" width={28} height={28} className="object-contain" unoptimized />
                         ) : (
                             <Printer className="h-7 w-7 text-white" />
                         )}
@@ -89,10 +82,7 @@ export function MobileHeader({ user, branding, notifications, unreadCount }: {
             </div>
 
             <div className="flex items-center gap-1">
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
+                <Button variant="ghost" size="icon" onClick={() => {
                         window.dispatchEvent(new CustomEvent("open-global-search"));
                     }}
                     className="p-2 text-slate-500 hover:text-slate-900 transition-colors active:scale-90"

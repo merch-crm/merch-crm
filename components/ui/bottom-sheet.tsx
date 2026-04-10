@@ -139,13 +139,7 @@ export function BottomSheet({ isOpen, onClose, children, title, showVisualTitle 
                                 </div>
 
                                 {!hideClose ? (
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={onClose}
-                                        className="w-10 h-10 rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0 hover:text-slate-900"
-                                        aria-label="Закрыть"
-                                    >
+                                    <Button variant="ghost" size="icon" onClick={onClose} className="w-10 h-10 rounded-full bg-slate-100/80 text-slate-500 hover:bg-slate-200 transition-all active:scale-95 backdrop-blur-sm border border-white/50 shadow-sm shrink-0 hover:text-slate-900" aria-label="Закрыть">
                                         <X className="w-5 h-5 stroke-[2.5]" />
                                     </Button>
                                 ) : (

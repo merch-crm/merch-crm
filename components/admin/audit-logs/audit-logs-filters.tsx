@@ -49,65 +49,31 @@ export function AuditLogsFilters({
                     <label className="text-xs font-bold text-slate-400 ml-1">Поиск</label>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                        <Input
-                            type="text"
-                            placeholder="Действие..."
-                            value={searchTerm}
-                            onChange={(e) => onSearchChange(e.target.value)}
+                        <Input type="text" placeholder="Действие..." value={searchTerm} onChange={(e) => onSearchChange(e.target.value)}
                             className="pl-10"
                         />
                     </div>
                 </div>
 
                 <div className="w-full xl:w-48 space-y-2">
-                    <Select
-                        label="Сотрудник"
-                        placeholder="Все сотрудники"
-                        value={selectedUserId}
-                        onChange={onUserChange}
-                        options={[
-                            { title: "Все сотрудники", id: "" },
-                            ...(users || []).map(u => ({ title: u.name, id: u.id }))
+                    <Select label="Сотрудник" placeholder="Все сотрудники" value={selectedUserId} onChange={onUserChange} options={[ { title: "Все сотрудники", id: "" }, ...(users || []).map(u => ({ title: u.name, id: u.id }))
                         ]}
                         compact
                     />
                 </div>
 
                 <div className="w-full xl:w-48 space-y-2">
-                    <Select
-                        label="Тип объекта"
-                        placeholder="Все типы"
-                        value={selectedEntityType}
-                        onChange={onEntityTypeChange}
-                        options={[
-                            { title: "Все типы", id: "" },
-                            { title: "Пользователи", id: "user" },
-                            { title: "Заказы", id: "order" },
-                            { title: "Клиенты", id: "client" },
-                            { title: "Склад", id: "inventory" },
-                            { title: "Роли", id: "role" },
-                            { title: "Отделы", id: "department" },
-                            { title: "Система", id: "system_settings" },
-                            { title: "Авторизация", id: "auth" },
-                        ]}
-                        compact
-                    />
+                    <Select label="Тип объекта" placeholder="Все типы" value={selectedEntityType} onChange={onEntityTypeChange} options={[ { title: "Все типы", id: "" }, { title: "Пользователи", id: "user" }, { title: "Заказы", id: "order" }, { title: "Клиенты", id: "client" }, { title: "Склад", id: "inventory" }, { title: "Роли", id: "role" }, { title: "Отделы", id: "department" }, { title: "Система", id: "system_settings" }, { title: "Авторизация", id: "auth" }, ]} compact />
                 </div>
 
                 <div className="w-full xl:w-80 space-y-2">
                     <label className="text-xs font-bold text-slate-400 ml-1">Период</label>
                     <div className="flex items-center gap-2">
-                        <Input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => onStartDateChange(e.target.value)}
+                        <Input type="date" value={startDate} onChange={(e) => onStartDateChange(e.target.value)}
                             className="text-xs font-bold"
                         />
                         <span className="text-slate-300">—</span>
-                        <Input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => onEndDateChange(e.target.value)}
+                        <Input type="date" value={endDate} onChange={(e) => onEndDateChange(e.target.value)}
                             className="text-xs font-bold"
                         />
                     </div>
@@ -115,23 +81,12 @@ export function AuditLogsFilters({
 
                 <div className="flex gap-2 shrink-0">
                     {hasFilters && (
-                        <Button
-                            variant="secondary"
-                            onClick={onReset}
-                            className="h-10 px-4 text-xs"
-                        >
+                        <Button variant="solid" color="neutral" onClick={onReset} className="h-10 px-4 text-xs">
                             Сбросить
                         </Button>
                     )}
                     {isAdmin && (
-                        <Button
-                            variant="destructive"
-                            size="icon"
-                            onClick={onClearLogs}
-                            disabled={isClearing}
-                            className="h-10 w-10 bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-100"
-                            aria-label="Очистить логи аудита"
-                        >
+                        <Button variant="solid" color="danger" size="icon" onClick={onClearLogs} disabled={isClearing} className="h-10 w-10 bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-100" aria-label="Очистить логи аудита">
                             <Trash2 size={16} />
                         </Button>
                     )}

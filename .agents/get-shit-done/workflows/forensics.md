@@ -247,19 +247,19 @@ If confirmed:
 BUG_LABEL=$(gh label list --search "bug" --json name -q '.[0].name' 2>/dev/null)
 LABEL_FLAG=""
 if [ -n "$BUG_LABEL" ]; then
-  LABEL_FLAG="--label bug"
+ LABEL_FLAG="--label bug"
 fi
 
 gh issue create \
-  --title "bug: {concise description from anomaly}" \
-  $LABEL_FLAG \
-  --body "{formatted findings from report}"
+ --title "bug: {concise description from anomaly}" \
+ $LABEL_FLAG \
+ --body "{formatted findings from report}"
 ```
 
 ## Step 8: Update STATE.md
 
 ```bash
 gsd-tools.cjs state record-session \
-  --stopped-at "Forensic investigation complete" \
-  --resume-file ".planning/forensics/report-{timestamp}.md"
+ --stopped-at "Forensic investigation complete" \
+ --resume-file ".planning/forensics/report-{timestamp}.md"
 ```

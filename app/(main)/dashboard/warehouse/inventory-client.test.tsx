@@ -6,90 +6,90 @@ import type { Category } from './types';
 // Mocks
 const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
-    useRouter: () => ({
-        push: mockPush,
-    }),
+  useRouter: () => ({
+    push: mockPush,
+  }),
 }));
 
 vi.mock('./category-utils', () => ({
-    getCategoryIcon: () => () => <div data-testid="category-icon" />,
-    getGradientStyles: () => 'bg-blue-500',
-    getCategoryCardStyles: () => ({
-        glow: { backgroundColor: '#000', opacity: 0.1 },
-        gradient: { backgroundImage: 'none' },
-        icon: { background: 'none', boxShadow: 'none' }
-    }),
-    getHexColor: () => '#000000',
-    sortCategories: (cats: Category[]) => cats,
+  getCategoryIcon: () => () => <div data-testid="category-icon" />,
+  getGradientStyles: () => 'bg-blue-500',
+  getCategoryCardStyles: () => ({
+    glow: { backgroundColor: '#000', opacity: 0.1 },
+    gradient: { backgroundImage: 'none' },
+    icon: { background: 'none', boxShadow: 'none' }
+  }),
+  getHexColor: () => '#000000',
+  sortCategories: (cats: Category[]) => cats,
 }));
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-    observe = vi.fn();
-    unobserve = vi.fn();
-    disconnect = vi.fn();
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
 };
 
 vi.mock('./edit-category-dialog', () => ({
-    // Use an identifiable component name for the mock
-    EditCategoryDialog: ({ isOpen, category }: { isOpen: boolean; category: { name: string } }) => {
-        if (!isOpen) return null;
-        return <div data-testid="edit-dialog">Editing {category?.name}</div>;
-    },
+  // Use an identifiable component name for the mock
+  EditCategoryDialog: ({ isOpen, category }: { isOpen: boolean; category: { name: string } }) => {
+    if (!isOpen) return null;
+    return <div data-testid="edit-dialog">Editing {category?.name}</div>;
+  },
 }));
 
 const mockCategories = [
-    { id: '1', name: 'Одежда', totalQuantity: 100, color: 'blue', parentId: null, sortOrder: 1, itemCount: 10, icon: null, description: null },
-    { id: '2', name: 'Футболки', totalQuantity: 60, color: null, parentId: '1', sortOrder: 1, itemCount: 5, icon: null, description: null },
-    { id: '3', name: 'Худи', totalQuantity: 40, color: null, parentId: '1', sortOrder: 2, itemCount: 5, icon: null, description: null },
-    { id: '4', name: 'Сувениры', totalQuantity: 20, color: null, parentId: null, sortOrder: 2, itemCount: 0, icon: null, description: 'Разные сувениры' },
+  { id: '1', name: 'Одежда', totalQuantity: 100, color: 'blue', parentId: null, sortOrder: 1, itemCount: 10, icon: null, description: null },
+  { id: '2', name: 'Футболки', totalQuantity: 60, color: null, parentId: '1', sortOrder: 1, itemCount: 5, icon: null, description: null },
+  { id: '3', name: 'Худи', totalQuantity: 40, color: null, parentId: '1', sortOrder: 2, itemCount: 5, icon: null, description: null },
+  { id: '4', name: 'Сувениры', totalQuantity: 20, color: null, parentId: null, sortOrder: 2, itemCount: 0, icon: null, description: 'Разные сувениры' },
 ] as Category[];
 
 describe('InventoryClient', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-    });
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    it('renders top-level categories correctly', () => {
-        render(<InventoryClient categories={mockCategories} user={null} />);
-        expect(screen.getByText('Одежда')).toBeInTheDocument();
-        expect(screen.getByText('Сувениры')).toBeInTheDocument();
-    });
+  it('renders top-level categories correctly', () => {
+    render(<InventoryClient categories={mockCategories} user={null} />);
+    expect(screen.getByText('Одежда')).toBeInTheDocument();
+    expect(screen.getByText('Сувениры')).toBeInTheDocument();
+  });
 
-    it('navigates to category detail on click', async () => {
-        render(<InventoryClient categories={mockCategories} user={null} />);
-        fireEvent.click(screen.getByText('Одежда'));
-        expect(mockPush).toHaveBeenCalledWith('/dashboard/warehouse/categories/1');
-    });
+  it('navigates to category detail on click', async () => {
+    render(<InventoryClient categories={mockCategories} user={null} />);
+    fireEvent.click(screen.getByText('Одежда'));
+    expect(mockPush).toHaveBeenCalledWith('/dashboard/warehouse/categories/1');
+  });
 
-    it('shows subcategories for a category', () => {
-        render(<InventoryClient categories={mockCategories} user={null} />);
-        expect(screen.getByText('Футболки')).toBeInTheDocument();
-        expect(screen.getByText('Худи')).toBeInTheDocument();
-    });
+  it('shows subcategories for a category', () => {
+    render(<InventoryClient categories={mockCategories} user={null} />);
+    expect(screen.getByText('Футболки')).toBeInTheDocument();
+    expect(screen.getByText('Худи')).toBeInTheDocument();
+  });
 
-    it('opens edit dialog when clicking pencil icon', async () => {
-        const { container } = render(<InventoryClient categories={mockCategories} user={null} />);
+  it('opens edit dialog when clicking pencil icon', async () => {
+    const { container } = render(<InventoryClient categories={mockCategories} user={null} />);
 
-        // Find the pencil icon and its parent button
-        const pencilIcon = container.querySelector('.lucide-pencil');
-        if (!pencilIcon) throw new Error('Pencil icon not found');
+    // Find the pencil icon and its parent button
+    const pencilIcon = container.querySelector('.lucide-pencil');
+    if (!pencilIcon) throw new Error('Pencil icon not found');
 
-        const editButton = pencilIcon.closest('button');
-        if (!editButton) throw new Error('Edit button not found');
+    const editButton = pencilIcon.closest('button');
+    if (!editButton) throw new Error('Edit button not found');
 
-        fireEvent.click(editButton);
+    fireEvent.click(editButton);
 
-        // Wait for the dialog to appear in the DOM
-        await waitFor(() => {
-            expect(screen.getByTestId('edit-dialog')).toBeInTheDocument();
-        }, { timeout: 5000 });
+    // Wait for the dialog to appear in the DOM
+    await waitFor(() => {
+      expect(screen.getByTestId('edit-dialog')).toBeInTheDocument();
+    }, { timeout: 5000 });
 
-        expect(screen.getByText(/Editing Одежда/)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/Editing Одежда/)).toBeInTheDocument();
+  });
 
-    it('shows description if no subcategories', () => {
-        render(<InventoryClient categories={mockCategories} user={null} />);
-        expect(screen.getByText('Разные сувениры')).toBeInTheDocument();
-    });
+  it('shows description if no subcategories', () => {
+    render(<InventoryClient categories={mockCategories} user={null} />);
+    expect(screen.getByText('Разные сувениры')).toBeInTheDocument();
+  });
 });

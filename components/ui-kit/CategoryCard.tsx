@@ -22,13 +22,7 @@ export function CategoryCard({
   className,
 }: CategoryCardProps) {
   return (
-    <Link
-      href={href}
-      className={cn(
-        "crm-card group flex flex-col justify-between transition-all hover:shadow-[var(--shadow-crm-lg)] hover:-translate-y-0.5",
-        className
-      )}
-    >
+    <Link href={href} className={cn( "crm-card group flex flex-col justify-between transition-all hover:shadow-[var(--shadow-crm-lg)] hover:-translate-y-0.5", className )}>
       <div>
         <div className="mb-3 flex items-center justify-between">
           <div className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-inner)] bg-primary/10">

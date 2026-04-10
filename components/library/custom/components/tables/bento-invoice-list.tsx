@@ -3,7 +3,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CreditCard, Download, ExternalLink } from 'lucide-react';
-import { cn } from '@/components/library/custom/utils/cn';
+import { cn } from '@/lib/utils';
+import { BentoCard, BentoGlow, BentoIconContainer } from "@/components/library/custom/ui/bento-primitives";
 
 const invoices = [
   { id: 'INV-021', date: 'May 12, 2025', amount: '$1,400', status: 'Paid' },
@@ -11,14 +12,14 @@ const invoices = [
   { id: 'INV-019', date: 'Mar 12, 2025', amount: '$850', status: 'Due' },
 ];
 
-export function BentoInvoiceList() {
+export function BentoInvoiceList({ className }: { className?: string }) {
   return (
-    <div className="w-full max-w-sm rounded-[32px] bg-white border border-gray-100 shadow-crm-md p-8 flex flex-col gap-3 group overflow-hidden">
+    <BentoCard className={cn("p-8", className)}>
       <div className="flex justify-between items-center">
          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-primary-base/5 text-primary-base flex items-center justify-center">
+            <BentoIconContainer className="bg-primary-base/5 text-primary-base">
                <CreditCard className="size-5" />
-            </div>
+            </BentoIconContainer>
             <h3 className="text-sm font-black text-gray-900  leading-none">Billing History</h3>
          </div>
          <button type="button" aria-label="Download billing history" className="text-gray-300 hover:text-gray-900 transition-colors">
@@ -59,6 +60,7 @@ export function BentoInvoiceList() {
          Manage Subscription
       </button>
 
-    </div>
+      <BentoGlow />
+    </BentoCard>
   );
 }

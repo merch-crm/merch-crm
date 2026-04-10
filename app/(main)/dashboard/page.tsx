@@ -8,39 +8,34 @@ import { Suspense } from "react";
 import Loading from "./loading";
 
 export default async function DashboardPage({
-    searchParams,
+  searchParams,
 }: {
-    searchParams: Promise<{ period?: string }>;
+  searchParams: Promise<{ period?: string }>;
 }) {
-    const session = await getSession();
-    if (!session) {
-        redirect("/login");
-    }
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
 
-    if (!session.roleSlug) {
-        redirect("/login");
-    }
+  if (!session.roleSlug) {
+    redirect("/login");
+  }
 
-    const { period ="month" } = await searchParams;
+  const { period ="month" } = await searchParams;
 
-    const [statsData, branding] = await Promise.all([
-        getDashboardStatsByPeriod(period),
-        getBrandingSettings()
-    ]);
+  const [statsData, branding] = await Promise.all([
+    getDashboardStatsByPeriod(period),
+    getBrandingSettings()
+  ]);
 
-    // Use session name directly or refactor to raw SQL if needed
-    // const userData = null; // Removed failing query
+  // Use session name directly or refactor to raw SQL if needed
+  // const userData = null; // Removed failing query
 
-    return (
-        <ErrorBoundary moduleName="Главная">
-            <Suspense fallback={<Loading />}>
-                <DashboardClient
-                    initialStats={statsData}
-                    period={period}
-                    userName={session.name || "Пользователь"}
-                    branding={branding}
-                />
-            </Suspense>
-        </ErrorBoundary>
-    );
+  return (
+    <ErrorBoundary moduleName="Главная">
+      <Suspense fallback={<Loading />}>
+        <DashboardClient initialStats={statsData} period={period} userName={session.name || "Пользователь"} branding={branding} />
+      </Suspense>
+    </ErrorBoundary>
+  );
 }

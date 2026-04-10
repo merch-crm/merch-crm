@@ -24,14 +24,8 @@ export function BentoFunnelChart({ title, data, dataKey, nameKey, className }: B
       <div className="flex-1 w-full min-h-[250px]">
         <ResponsiveContainer width="100%" height="100%">
           <FunnelChart>
-            <Tooltip 
-              contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} 
-            />
-            <Funnel
-              dataKey={dataKey}
-              data={data}
-              isAnimationActive
-            >
+            <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)' }} />
+            <Funnel dataKey={dataKey} data={data} isAnimationActive>
               <LabelList position="right" fill="currentColor" opacity={0.7} stroke="none" dataKey={nameKey} />
             </Funnel>
           </FunnelChart>

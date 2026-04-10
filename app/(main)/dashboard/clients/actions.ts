@@ -11,78 +11,78 @@ export type ClientFilters = z.infer<typeof ClientFiltersSchema>;
  */
 
 export {
-    getManagers, getRegions, getClients, checkClientDuplicates,
-    addClient, updateClient, updateClientComments, getClientDetails,
-    getClientStats, deleteClient, updateClientField, toggleClientArchived,
-    getClientTypeCounts, getAcquisitionSources, getClientsInitialData
+  getManagers, getRegions, getClients, checkClientDuplicates,
+  addClient, updateClient, updateClientComments, getClientDetails,
+  getClientStats, deleteClient, updateClientField, toggleClientArchived,
+  getClientTypeCounts, getAcquisitionSources, getClientsInitialData
 } from "./actions/core.actions";
 
 export {
-    bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients
+  bulkDeleteClients, bulkUpdateClientManager, bulkArchiveClients
 } from "./actions/bulk.actions";
 
 export {
-    getClientContacts,
-    addClientContact,
-    updateClientContact,
-    deleteClientContact,
-    setPrimaryContact,
+  getClientContacts,
+  addClientContact,
+  updateClientContact,
+  deleteClientContact,
+  setPrimaryContact,
 } from "./actions/contacts.actions";
 
 export {
-    getFunnelStats,
-    getClientsForFunnel,
-    updateClientFunnelStage,
-    markClientAsLost,
+  getFunnelStats,
+  getClientsForFunnel,
+  updateClientFunnelStage,
+  markClientAsLost,
 } from "./actions/funnel.actions";
 
 export {
-    getLoyaltyLevels,
-    createLoyaltyLevel,
-    updateLoyaltyLevel,
-    deleteLoyaltyLevel,
-    reorderLoyaltyLevels,
-    setClientLoyaltyLevel,
-    recalculateAllClientsLoyalty,
+  getLoyaltyLevels,
+  createLoyaltyLevel,
+  updateLoyaltyLevel,
+  deleteLoyaltyLevel,
+  reorderLoyaltyLevels,
+  setClientLoyaltyLevel,
+  recalculateAllClientsLoyalty,
 } from "./actions/loyalty.actions";
 export {
-    recalculateClientStats,
-    recalculateAllClientsStats,
-    updateDaysSinceLastOrder,
-    getClientsAtRisk,
-    getClientsStatsOverview,
-    getOrdersDistribution,
-    getActivityStats,
+  recalculateClientStats,
+  recalculateAllClientsStats,
+  updateDaysSinceLastOrder,
+  getClientsAtRisk,
+  getClientsStatsOverview,
+  getOrdersDistribution,
+  getActivityStats,
 } from "./actions/stats.actions";
 
 export {
-    calculateClientRFM,
-    calculateAllClientsRFM,
-    getRFMStats,
-    getClientsByRFMSegment,
+  calculateClientRFM,
+  calculateAllClientsRFM,
+  getRFMStats,
+  getClientsByRFMSegment,
 } from "./actions/rfm.actions";
 
 export {
-    rfmSegments,
-    rfmSegmentLabels,
-    rfmSegmentColors,
+  rfmSegments,
+  rfmSegmentLabels,
+  rfmSegmentColors,
 } from "./actions/rfm.types";
 
 export {
-    getClientAnalyticsOverview,
-    getFunnelAnalytics,
-    getClientGrowthData,
-    getRevenueByRFMSegment,
-    getManagerPerformance,
-    getTopClients,
-    getAcquisitionSourceStats,
-    getLoyaltyDistribution,
-    getRFMDistribution,
+  getClientAnalyticsOverview,
+  getFunnelAnalytics,
+  getClientGrowthData,
+  getRevenueByRFMSegment,
+  getManagerPerformance,
+  getTopClients,
+  getAcquisitionSourceStats,
+  getLoyaltyDistribution,
+  getRFMDistribution,
 } from "./actions/analytics.actions";
 
 export {
-    getExportData,
-    getExportPresets,
+  getExportData,
+  getExportPresets,
 } from "./actions/export.actions";
 
 export { EXPORT_COLUMNS } from "./actions/export.types";

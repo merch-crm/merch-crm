@@ -84,10 +84,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
     return (
         <div className="relative" ref={containerRef}>
             {/* Bell Button */}
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsOpen(!isOpen)}
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}
                 className={cn(
                     "relative transition-all duration-300 group rounded-xl h-9 w-9",
                     isOpen ? "bg-slate-100 text-slate-900" : "text-slate-400 hover:text-slate-700 hover:bg-slate-50 border border-transparent hover:border-slate-200"
@@ -160,20 +157,11 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {unreadCount > 0 && (
-                                        <Button
-                                            variant="secondary"
-                                            size="sm"
-                                            onClick={handleMarkAllAsRead}
-                                            disabled={loading === "all"}
-                                            className="h-9 px-4 text-xs font-bold"
-                                        >
+                                        <Button variant="solid" color="neutral" size="sm" onClick={handleMarkAllAsRead} disabled={loading === "all"} className="h-9 px-4 text-xs font-bold">
                                             {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
                                         </Button>
                                     )}
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => setIsOpen(false)}
+                                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}
                                         className="md:hidden p-2 rounded-full"
                                     >
                                         <ArrowRightLeft className="h-5 w-5 rotate-90" />
@@ -239,10 +227,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                                             </p>
 
                                                             {!notification.isRead && (
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="sm"
-                                                                    onClick={(e) => {
+                                                                <Button variant="outline" size="sm" onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleMarkAsRead(notification.id);
                                                                     }}

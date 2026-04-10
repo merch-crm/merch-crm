@@ -9,30 +9,30 @@ import type { ActionResult } from '@/lib/types/common';
 vi.mock('@/lib/actions/calculators/warehouse');
 
 describe('useWarehouseItems', () => {
-  const mockItems: WarehouseItemForCalculator[] = [
-    { 
-      id: 'item-1', 
-      name: 'Paper', 
-      price: 100,
-      unit: 'm2',
-      category: 'Paper',
-      stock: 100
-    },
-  ];
+ const mockItems: WarehouseItemForCalculator[] = [
+  { 
+   id: 'item-1', 
+   name: 'Paper', 
+   price: 100,
+   unit: 'm2',
+   category: 'Paper',
+   stock: 100
+  },
+ ];
 
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
+ beforeEach(() => {
+  vi.clearAllMocks();
+ });
 
-  it('should fetch items on mount', async () => {
-    // vi.mocked provides the type safety for the mock methods
-    vi.mocked(warehouseActions.getWarehouseItemsForCalculator).mockResolvedValue({
-      success: true,
-      data: mockItems
-    } as unknown as ActionResult<WarehouseItemForCalculator[]>);
+ it('should fetch items on mount', async () => {
+  // vi.mocked provides the type safety for the mock methods
+  vi.mocked(warehouseActions.getWarehouseItemsForCalculator).mockResolvedValue({
+   success: true,
+   data: mockItems
+  } as unknown as ActionResult<WarehouseItemForCalculator[]>);
 
-    const { result } = renderHook(() => useWarehouseItems('dtf'));
+  const { result } = renderHook(() => useWarehouseItems('dtf'));
 
-    expect(result.current.isLoading).toBe(true);
-  });
+  expect(result.current.isLoading).toBe(true);
+ });
 });

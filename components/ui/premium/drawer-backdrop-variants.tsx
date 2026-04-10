@@ -85,10 +85,7 @@ export function DrawerBackdropVariants() {
         ))}
       </div>
 
-      <DrawerBackdrop 
-        variant={activeVariant || "blur"} 
-        isOpen={!!activeVariant} 
-        onClose={() => setActiveVariant(null)}
+      <DrawerBackdrop variant={activeVariant || "blur"} isOpen={!!activeVariant} onClose={() => setActiveVariant(null)}
       >
         <div className="p-8 space-y-3">
           <div className="flex items-center justify-between">
@@ -121,7 +118,7 @@ export function DrawerBackdropVariants() {
           </div>
 
           <div className="pt-4 flex gap-3">
-             <Button className="flex-1 h-14 rounded-[1.5rem] font-black  shadow-xl shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700">
+             <Button className="flex-1 h-14 rounded-[1.5rem] font-black shadow-xl shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700">
                 Proceed Securely
              </Button>
           </div>

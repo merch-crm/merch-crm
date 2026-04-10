@@ -57,11 +57,7 @@ export function MaintenanceModeCard({
                             администраторам.
                         </p>
                     </div>
-                    <Switch
-                        checked={maintenanceMode}
-                        onCheckedChange={onToggleMaintenance}
-                        disabled={isTogglingMaintenance}
-                    />
+                    <Switch checked={maintenanceMode} onCheckedChange={onToggleMaintenance} disabled={isTogglingMaintenance} />
                 </div>
             </CardContent>
         </Card>

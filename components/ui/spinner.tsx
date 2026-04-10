@@ -2,8 +2,9 @@ import { cn } from"@/lib/utils";
 
 // Базовый спиннер
 interface SpinnerProps {
-    size?:"xs" |"sm" |"md" |"lg";
-    variant?:"default" |"primary" |"white";
+    size?: "xs" | "sm" | "md" | "lg";
+    variant?: "md" | "primary" | "white";
+    color?: string;
     className?: string;
 }
 
@@ -14,18 +15,19 @@ const sizeClasses = {
     lg:"w-8 h-8 border-[3px]",
 };
 
-const variantClasses = {
-    default:"border-slate-300 border-t-slate-600",
-    primary:"border-primary/30 border-t-primary",
-    white:"border-white/30 border-t-white",
+const variantClasses: Record<string, string> = {
+    md: "border-slate-300 border-t-slate-600",
+    primary: "border-primary/30 border-t-primary",
+    white: "border-white/30 border-t-white",
 };
 
-function Spinner({ size ="sm", variant ="default", className }: SpinnerProps) {
+function Spinner({ size = "sm", variant = "md", color, className }: SpinnerProps) {
     return (
         <div
             className={cn("animate-spin rounded-full border-solid",
                 sizeClasses[size],
                 variantClasses[variant],
+                color,
                 className
             )}
             role="status"
@@ -39,7 +41,7 @@ interface SpinnerWithTextProps extends SpinnerProps {
     text?: string;
 }
 
-function SpinnerWithText({ text ="Загрузка...", size ="sm", variant ="default", className }: SpinnerWithTextProps) {
+function SpinnerWithText({ text = "Загрузка...", size = "sm", variant = "md", className }: SpinnerWithTextProps) {
     return (
         <div className={cn("flex items-center gap-2", className)}>
             <Spinner size={size} variant={variant} />
@@ -61,7 +63,7 @@ function LoadingOverlay({ text ="Загрузка...", blur = true }: LoadingOve
                 blur &&"backdrop-blur-sm"
             )}
         >
-            <Spinner size="lg" variant="primary" />
+            <Spinner size="lg" color="primary" />
             <span className="text-sm font-medium text-slate-600">{text}</span>
         </div>
     );
@@ -71,7 +73,7 @@ function LoadingOverlay({ text ="Загрузка...", blur = true }: LoadingOve
 function LoadingBlock({ text, className }: { text?: string; className?: string }) {
     return (
         <div className={cn("flex flex-col items-center justify-center py-12 gap-3", className)}>
-            <Spinner size="md" variant="primary" />
+            <Spinner size="md" color="primary" />
             {text && <span className="text-sm text-slate-500">{text}</span>}
         </div>
     );

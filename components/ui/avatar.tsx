@@ -7,18 +7,9 @@ import { cn } from"@/lib/utils"
 
 const Root = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Root>,
-    React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> & { size?: 'small' | 'medium' | 'large' }
->(({ className, size = 'medium', ...props }, ref) => (
-    <AvatarPrimitive.Root
-        ref={ref}
-        className={cn("relative flex shrink-0 overflow-hidden rounded-full",
-            size === 'small' && "h-8 w-8",
-            size === 'medium' && "h-10 w-10",
-            size === 'large' && "h-12 w-12",
-            className
-        )}
-        {...props}
-    />
+    React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> & { size?: 'sm' | 'md' | 'lg' | 'xl', shape?: 'circle' | 'square' }
+>(({ className, size = 'md', shape = 'circle', ...props }, ref) => (
+    <AvatarPrimitive.Root ref={ref} className={cn("relative flex shrink-0 overflow-hidden", shape === 'circle' ? "rounded-full" : "rounded-[var(--radius-element)]", size === 'sm' && "h-8 w-8", size === 'md' && "h-10 w-10", size === 'lg' && "h-12 w-12", size === 'xl' && "h-16 w-16", className )} {...props} />
 ))
 Root.displayName = AvatarPrimitive.Root.displayName
 
@@ -26,11 +17,7 @@ const Image = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Image>,
     React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
 >(({ className, ...props }, ref) => (
-    <AvatarPrimitive.Image
-        ref={ref}
-        className={cn("aspect-square h-full w-full", className)}
-        {...props}
-    />
+    <AvatarPrimitive.Image ref={ref} className={cn("aspect-square h-full w-full", className)} {...props} />
 ))
 Image.displayName = AvatarPrimitive.Image.displayName
 
@@ -38,13 +25,7 @@ const Fallback = React.forwardRef<
     React.ElementRef<typeof AvatarPrimitive.Fallback>,
     React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
 >(({ className, ...props }, ref) => (
-    <AvatarPrimitive.Fallback
-        ref={ref}
-        className={cn("flex h-full w-full items-center justify-center rounded-full bg-slate-100",
-            className
-        )}
-        {...props}
-    />
+    <AvatarPrimitive.Fallback ref={ref} className={cn("flex h-full w-full items-center justify-center bg-slate-100 font-bold text-slate-400", className )} {...props} />
 ))
 Fallback.displayName = AvatarPrimitive.Fallback.displayName
 

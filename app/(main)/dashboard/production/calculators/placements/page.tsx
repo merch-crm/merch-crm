@@ -5,19 +5,19 @@ import { PlacementsPageSkeleton } from './components/PlacementsPageSkeleton';
 import { getPlacementProducts } from '@/lib/actions/calculators/placements';
 
 export const metadata: Metadata = {
-  title: 'Нанесение | MerchCRM',
-  description: 'Управление изделиями и зонами нанесения',
+ title: 'Нанесение | MerchCRM',
+ description: 'Управление изделиями и зонами нанесения',
 };
 
 /**
  * Страница управления нанесением
  */
 export default async function PlacementsPage() {
-  const initialProducts = await getPlacementProducts();
+ const initialProducts = await getPlacementProducts();
 
-  return (
-    <Suspense fallback={<PlacementsPageSkeleton />}>
-      <PlacementsPageClient initialProducts={initialProducts} />
-    </Suspense>
-  );
+ return (
+  <Suspense fallback={<PlacementsPageSkeleton />}>
+   <PlacementsPageClient initialProducts={initialProducts} />
+  </Suspense>
+ );
 }

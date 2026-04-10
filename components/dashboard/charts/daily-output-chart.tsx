@@ -87,23 +87,10 @@ export function DailyOutputChart({
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                            <XAxis
-                                dataKey="dateFormatted"
-                                tick={{ fontSize: 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                            />
-                            <YAxis
-                                tick={{ fontSize: 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                            />
+                            <XAxis dataKey="dateFormatted" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                            <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                             <Tooltip content={<CustomTooltip />} />
-                            <Bar
-                                dataKey="completed"
-                                fill="rgb(59, 130, 246)"
-                                radius={[4, 4, 0, 0]}
-                            />
+                            <Bar dataKey="completed" fill="rgb(59, 130, 246)" radius={[4, 4, 0, 0]} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>

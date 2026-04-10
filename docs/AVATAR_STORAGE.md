@@ -33,9 +33,9 @@ import { saveAvatarFile } from "@/lib/avatar-storage";
 
 // Автоматически удалит старый и сохранит новый
 const avatarPath = await saveAvatarFile(
-    buffer,           // Buffer с изображением
-    userId,           // ID пользователя
-    oldAvatarPath     // Путь к старому аватару (опционально)
+  buffer,      // Buffer с изображением
+  userId,      // ID пользователя
+  oldAvatarPath   // Путь к старому аватару (опционально)
 );
 ```
 
@@ -110,14 +110,14 @@ npx tsx scripts/cleanup-avatars.ts
 // app/dashboard/profile/actions.ts
 const buffer = Buffer.from(await avatarFile.arrayBuffer());
 const currentUser = await db.query.users.findFirst({
-    where: eq(users.id, session.id),
-    columns: { avatar: true }
+  where: eq(users.id, session.id),
+  columns: { avatar: true }
 });
 
 updateData.avatar = await saveAvatarFile(
-    buffer,
-    session.id,
-    currentUser?.avatar || null
+  buffer,
+  session.id,
+  currentUser?.avatar || null
 );
 ```
 
@@ -126,12 +126,12 @@ updateData.avatar = await saveAvatarFile(
 import { deleteAvatarFile } from "@/lib/avatar-storage";
 
 const user = await db.query.users.findFirst({
-    where: eq(users.id, userId)
+  where: eq(users.id, userId)
 });
 
 // Удаляем аватар перед удалением пользователя
 if (user?.avatar) {
-    deleteAvatarFile(user.avatar);
+  deleteAvatarFile(user.avatar);
 }
 
 await db.delete(users).where(eq(users.id, userId));

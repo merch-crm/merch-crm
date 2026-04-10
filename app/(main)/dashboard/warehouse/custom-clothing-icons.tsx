@@ -3,9 +3,9 @@
 import { LucideProps } from "lucide-react";
 import { ComponentType } from "react";
 import {
-    Shirt, ShoppingBag, Watch, Glasses, Umbrella, Wallet, Tag, Baby,
-    Crown, Sparkles, Percent, Heart, Star, Flame, Package, Scissors,
-    Coffee, Notebook, Truck, Warehouse
+  Shirt, ShoppingBag, Watch, Glasses, Umbrella, Wallet, Tag, Baby,
+  Crown, Sparkles, Percent, Heart, Star, Flame, Package, Scissors,
+  Coffee, Notebook, Truck, Warehouse
 } from "lucide-react";
 
 /**
@@ -57,23 +57,23 @@ export const VanIcon = Truck;
 
 // Экспорт всех иконок в объекте
 export const CUSTOM_CLOTHING_ICONS = {
-    "tshirt": TshirtIcon, "hoodie": HoodieIcon, "pants": PantsIcon, "jacket": JacketIcon,
-    "dress": DressIcon, "sneakers": SneakersIcon, "boots": BootsIcon, "cap": CapIcon,
-    "glasses": GlassesIcon, "watch": WatchIcon, "handbag": HandbagIcon, "backpack": BackpackIcon,
-    "totebag": ToteBagIcon, "tag": TagIcon, "baby": BabyIcon, "crown": CrownIcon,
-    "sparkles": SparklesIcon, "discount": DiscountIcon, "heart": HeartIcon, "star": StarIcon,
-    "flame": FlameIcon, "belt": BeltIcon, "wallet": WalletIcon, "umbrella": UmbrellaIcon,
-    "package": PackageIcon, "supplies": SuppliesIcon, "mug": MugIcon, "notebook": NotebookIcon,
+  "tshirt": TshirtIcon, "hoodie": HoodieIcon, "pants": PantsIcon, "jacket": JacketIcon,
+  "dress": DressIcon, "sneakers": SneakersIcon, "boots": BootsIcon, "cap": CapIcon,
+  "glasses": GlassesIcon, "watch": WatchIcon, "handbag": HandbagIcon, "backpack": BackpackIcon,
+  "totebag": ToteBagIcon, "tag": TagIcon, "baby": BabyIcon, "crown": CrownIcon,
+  "sparkles": SparklesIcon, "discount": DiscountIcon, "heart": HeartIcon, "star": StarIcon,
+  "flame": FlameIcon, "belt": BeltIcon, "wallet": WalletIcon, "umbrella": UmbrellaIcon,
+  "package": PackageIcon, "supplies": SuppliesIcon, "mug": MugIcon, "notebook": NotebookIcon,
 };
 
 // Маппинг названий категорий на иконки
 export const CATEGORY_ICON_MAP: Record<string, ComponentType<LucideProps>> = {
-    "Футболки": TshirtIcon, "Худи": HoodieIcon, "Штаны": PantsIcon, "Куртка": JacketIcon,
-    "Платье": DressIcon, "Кроссовки": SneakersIcon, "Ботинки": BootsIcon, "Кепка": CapIcon,
-    "Очки": GlassesIcon, "Часы": WatchIcon, "Сумка": HandbagIcon, "Рюкзак": BackpackIcon,
-    "Шоппер": ToteBagIcon, "Бирка": TagIcon, "Детское": BabyIcon, "Премиум": CrownIcon,
-    "Блеск": SparklesIcon, "Скидка": DiscountIcon, "Любимое": HeartIcon, "Хит": StarIcon,
-    "Горячее": FlameIcon, "Ремень": BeltIcon, "Кошелек": WalletIcon, "Зонт": UmbrellaIcon,
+  "Футболки": TshirtIcon, "Худи": HoodieIcon, "Штаны": PantsIcon, "Куртка": JacketIcon,
+  "Платье": DressIcon, "Кроссовки": SneakersIcon, "Ботинки": BootsIcon, "Кепка": CapIcon,
+  "Очки": GlassesIcon, "Часы": WatchIcon, "Сумка": HandbagIcon, "Рюкзак": BackpackIcon,
+  "Шоппер": ToteBagIcon, "Бирка": TagIcon, "Детское": BabyIcon, "Премиум": CrownIcon,
+  "Блеск": SparklesIcon, "Скидка": DiscountIcon, "Любимое": HeartIcon, "Хит": StarIcon,
+  "Горячее": FlameIcon, "Ремень": BeltIcon, "Кошелек": WalletIcon, "Зонт": UmbrellaIcon,
 };
 
 // Реэкспорты для обратной совместимости

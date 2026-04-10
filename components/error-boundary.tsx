@@ -35,10 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <ErrorView 
-          title={`Ошибка в модуле ${this.props.moduleName || ''}`}
-          message={this.state.error?.message || "Произошла непредвиденная ошибка"}
-          onReset={() => this.setState({ hasError: false, error: null })}
+        <ErrorView title={`Ошибка в модуле ${this.props.moduleName || ''}`} message={this.state.error?.message || "Произошла непредвиденная ошибка"} onReset={() => this.setState({ hasError: false, error: null })}
         />
       );
     }

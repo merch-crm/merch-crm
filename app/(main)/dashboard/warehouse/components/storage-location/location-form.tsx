@@ -6,162 +6,130 @@ import { StorageLocation } from "../../storage-locations-tab";
 import { SwitchRow } from "@/components/ui/switch-row";
 
 interface LocationFormProps {
-    form: {
-        name: string;
-        description: string;
-        address: string;
-        responsibleUserId: string;
-        isDefault: boolean;
-        isActive: boolean;
-        type: "warehouse" | "production" | "office";
-    };
-    fieldErrors: Record<string, string>;
-    isSaving: boolean;
-    users: { id: string; name: string }[];
-    location: StorageLocation;
-    setFormValue: (key: "name" | "description" | "address" | "responsibleUserId" | "isDefault" | "isActive" | "type", value: string | boolean) => void;
-    clearFieldError: (key: string) => void;
-    handleAutoSave: (updates: Partial<StorageLocation>) => void;
+  form: {
+    name: string;
+    description: string;
+    address: string;
+    responsibleUserId: string;
+    isDefault: boolean;
+    isActive: boolean;
+    type: "warehouse" | "production" | "office";
+  };
+  fieldErrors: Record<string, string>;
+  isSaving: boolean;
+  users: { id: string; name: string }[];
+  location: StorageLocation;
+  setFormValue: (key: "name" | "description" | "address" | "responsibleUserId" | "isDefault" | "isActive" | "type", value: string | boolean) => void;
+  clearFieldError: (key: string) => void;
+  handleAutoSave: (updates: Partial<StorageLocation>) => void;
 }
 
 export function LocationForm({
-    form,
-    fieldErrors,
-    isSaving,
-    users,
-    location,
-    setFormValue,
-    clearFieldError,
-    handleAutoSave
+  form,
+  fieldErrors,
+  isSaving,
+  users,
+  location,
+  setFormValue,
+  clearFieldError,
+  handleAutoSave
 }: LocationFormProps) {
-    return (
-        <div className="space-y-3">
-            <div className="space-y-3">
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название склада <span className="text-rose-500">*</span></label>
-                    <Input
-                        name="name"
-                        value={form.name}
-                        placeholder="Напр. Склад А"
-                        className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm",
-                            fieldErrors.name
-                                ? "border-rose-200 bg-rose-50/50 text-rose-900"
-                                : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5"
-                        )}
-                        onChange={(e) => {
-                            setFormValue("name", e.target.value);
-                            clearFieldError("name");
-                        }}
-                        onBlur={() => form.name !== location.name && handleAutoSave({ name: form.name })}
-                        disabled={isSaving}
-                    />
-                    {fieldErrors.name && <p className="text-xs font-bold text-rose-500 ml-1">{fieldErrors.name}</p>}
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Тип локации</label>
-                    <Select
-                        options={[
-                            { id: "warehouse", title: "Склад", icon: <Warehouse className="w-4 h-4" /> },
-                            { id: "production", title: "Производство", icon: <Printer className="w-4 h-4" /> },
-                            { id: "office", title: "Офис", icon: <Briefcase className="w-4 h-4" /> }
-                        ]}
-                        value={form.type}
-                        disabled={isSaving}
-                        onChange={(val) => {
-                            const typeVal = val as "warehouse" | "production" | "office";
-                            setFormValue("type", typeVal);
-                            handleAutoSave({ type: typeVal });
-                        }}
-                        variant="default"
-                        triggerClassName="bg-slate-50 focus:bg-slate-50"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Адрес объекта <span className="text-rose-500">*</span></label>
-                    <div className="relative group">
-                        <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors z-10" />
-                        <Input
-                            name="address"
-                            value={form.address}
-                            placeholder="Ул. Примерная, 10"
-                            className={cn("w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm",
-                                fieldErrors.address
-                                    ? "border-rose-200 bg-rose-50/50 text-rose-900"
-                                    : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5"
-                            )}
-                            onChange={(e) => {
-                                setFormValue("address", e.target.value);
-                                clearFieldError("address");
-                            }}
-                            onBlur={() => form.address !== (location.address || "") && handleAutoSave({ address: form.address })}
-                            disabled={isSaving}
-                        />
-                    </div>
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Ответственное лицо</label>
-                    <Select
-                        options={[
-                            { id: "", title: "Не назначен", icon: <User className="w-4 h-4 opacity-50" /> },
-                            ... (users || []).map(u => ({ id: u.id, title: u.name, icon: <User className="w-4 h-4" /> }))
-                        ]}
-                        value={form.responsibleUserId}
-                        disabled={isSaving}
-                        onChange={(val) => {
-                            setFormValue("responsibleUserId", val);
-                            handleAutoSave({ responsibleUserId: val });
-                        }}
-                        showSearch
-                        placeholder="Поиск сотрудника..."
-                        triggerClassName="bg-slate-50 focus:bg-slate-50"
-                    />
-                </div>
-
-                <div className="pt-2 space-y-3">
-                    <SwitchRow
-                        icon={Plus}
-                        title="Основной склад"
-                        description=""
-                        checked={form.isDefault}
-                        onCheckedChange={(val) => {
-                            setFormValue("isDefault", val);
-                            handleAutoSave({ isDefault: val });
-                        }}
-                        onClick={() => {
-                            const isNewValue = !form.isDefault;
-                            setFormValue("isDefault", isNewValue);
-                            handleAutoSave({ isDefault: isNewValue });
-                        }}
-                        variant="primary"
-                        iconClassName={cn("transition-all",
-                            form.isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400"
-                        )}
-                    />
-
-                    <SwitchRow
-                        icon={RefreshCw}
-                        title="Склад активен"
-                        description=""
-                        checked={form.isActive}
-                        onCheckedChange={(val) => {
-                            setFormValue("isActive", val);
-                            handleAutoSave({ isActive: val });
-                        }}
-                        onClick={() => {
-                            const isNewValue = !form.isActive;
-                            setFormValue("isActive", isNewValue);
-                            handleAutoSave({ isActive: isNewValue });
-                        }}
-                        variant="success"
-                        iconClassName={cn("transition-all",
-                            form.isActive ? "bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20" : "bg-white text-slate-400"
-                        )}
-                    />
-                </div>
-            </div>
+  return (
+    <div className="space-y-3">
+      <div className="space-y-3">
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название склада <span className="text-rose-500">*</span></label>
+          <Input name="name" value={form.name} placeholder="Напр. Склад А" className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm", fieldErrors.name ? "border-rose-200 bg-rose-50/50 text-rose-900" : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5" )} onChange={(e) => {
+              setFormValue("name", e.target.value);
+              clearFieldError("name");
+            }}
+            onBlur={() => form.name !== location.name && handleAutoSave({ name: form.name })}
+            disabled={isSaving}
+          />
+          {fieldErrors.name && <p className="text-xs font-bold text-rose-500 ml-1">{fieldErrors.name}</p>}
         </div>
-    );
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Тип локации</label>
+          <Select options={[ { id: "warehouse", title: "Склад", icon: <Warehouse className="w-4 h-4" /> },
+              { id: "production", title: "Производство", icon: <Printer className="w-4 h-4" /> },
+              { id: "office", title: "Офис", icon: <Briefcase className="w-4 h-4" /> }
+            ]}
+            value={form.type}
+            disabled={isSaving}
+            onChange={(val) => {
+              const typeVal = val as "warehouse" | "production" | "office";
+              setFormValue("type", typeVal);
+              handleAutoSave({ type: typeVal });
+            }}
+            variant="solid" color="primary"
+            triggerClassName="bg-slate-50 focus:bg-slate-50"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Адрес объекта <span className="text-rose-500">*</span></label>
+          <div className="relative group">
+            <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors z-10" />
+            <Input name="address" value={form.address} placeholder="Ул. Примерная, 10" className={cn("w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm", fieldErrors.address ? "border-rose-200 bg-rose-50/50 text-rose-900" : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5" )} onChange={(e) => {
+                setFormValue("address", e.target.value);
+                clearFieldError("address");
+              }}
+              onBlur={() => form.address !== (location.address || "") && handleAutoSave({ address: form.address })}
+              disabled={isSaving}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Ответственное лицо</label>
+          <Select options={[ { id: "", title: "Не назначен", icon: <User className="w-4 h-4 opacity-50" /> },
+              ... (users || []).map(u => ({ id: u.id, title: u.name, icon: <User className="w-4 h-4" /> }))
+            ]}
+            value={form.responsibleUserId}
+            disabled={isSaving}
+            onChange={(val) => {
+              setFormValue("responsibleUserId", val);
+              handleAutoSave({ responsibleUserId: val });
+            }}
+            showSearch
+            placeholder="Поиск сотрудника..."
+            triggerClassName="bg-slate-50 focus:bg-slate-50"
+          />
+        </div>
+
+        <div className="pt-2 space-y-3">
+          <SwitchRow icon={Plus} title="Основной склад" description="" checked={form.isDefault} onCheckedChange={(val) => {
+              setFormValue("isDefault", val);
+              handleAutoSave({ isDefault: val });
+            }}
+            onClick={() => {
+              const isNewValue = !form.isDefault;
+              setFormValue("isDefault", isNewValue);
+              handleAutoSave({ isDefault: isNewValue });
+            }}
+            color="primary"
+            iconClassName={cn("transition-all",
+              form.isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400"
+            )}
+          />
+
+          <SwitchRow icon={RefreshCw} title="Склад активен" description="" checked={form.isActive} onCheckedChange={(val) => {
+              setFormValue("isActive", val);
+              handleAutoSave({ isActive: val });
+            }}
+            onClick={() => {
+              const isNewValue = !form.isActive;
+              setFormValue("isActive", isNewValue);
+              handleAutoSave({ isActive: isNewValue });
+            }}
+            color="success"
+            iconClassName={cn("transition-all",
+              form.isActive ? "bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20" : "bg-white text-slate-400"
+            )}
+          />
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -87,9 +87,7 @@ export const StorageList = ({
                     <p className="text-xs font-bold ">Здесь пока пусто</p>
                 </div>
             ) : (
-                <ResponsiveDataView
-                    data={[...filteredFolders, ...filteredFiles]}
-                    renderTable={() => (
+                <ResponsiveDataView data={[...filteredFolders, ...filteredFiles]} renderTable={() => (
                         <div className="table-container">
                             <table className="crm-table">
                                 <thead className="crm-thead">
@@ -124,29 +122,11 @@ export const StorageList = ({
                                 </thead>
                                 <tbody className="crm-tbody">
                                     {filteredFolders.map((folderPrefix) => (
-                                        <FolderRow
-                                            key={folderPrefix}
-                                            folderPrefix={folderPrefix}
-                                            currentPrefix={currentPrefix}
-                                            isSelected={selection.keys.has(folderPrefix)}
-                                            isMultiSelectMode={selection.isMultiMode}
-                                            onSelect={toggleSelection}
-                                            onNavigate={navigateTo}
-                                            onRename={openRenameModal}
-                                            onDelete={(key) => setModals((prev) => ({ ...prev, rename: { ...prev.rename, key, open: true } }))}
+                                        <FolderRow key={folderPrefix} folderPrefix={folderPrefix} currentPrefix={currentPrefix} isSelected={selection.keys.has(folderPrefix)} isMultiSelectMode={selection.isMultiMode} onSelect={toggleSelection} onNavigate={navigateTo} onRename={openRenameModal} onDelete={(key) => setModals((prev) => ({ ...prev, rename: { ...prev.rename, key, open: true } }))}
                                         />
                                     ))}
                                     {filteredFiles.map((file) => (
-                                        <FileRow
-                                            key={file.key}
-                                            file={file}
-                                            currentPrefix={currentPrefix}
-                                            isSelected={selection.keys.has(file.key)}
-                                            isMultiSelectMode={selection.isMultiMode}
-                                            onSelect={toggleSelection}
-                                            onClick={handleFileClick}
-                                            onRename={openRenameModal}
-                                            onDelete={(key) => setModals((prev) => ({ ...prev, rename: { ...prev.rename, key, open: true } }))}
+                                        <FileRow key={file.key} file={file} currentPrefix={currentPrefix} isSelected={selection.keys.has(file.key)} isMultiSelectMode={selection.isMultiMode} onSelect={toggleSelection} onClick={handleFileClick} onRename={openRenameModal} onDelete={(key) => setModals((prev) => ({ ...prev, rename: { ...prev.rename, key, open: true } }))}
                                             formatSize={formatSize}
                                         />
                                     ))}

@@ -24,152 +24,152 @@ import { Footer } from "@/components/layout/footer";
 
 
 export default async function DashboardLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const session = await getSession();
-    if (!session) {
-        redirect("/login");
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  let userData = null;
+  try {
+    const { pool } = await import('@/lib/db');
+    const sql = `
+      SELECT u.name, u.email, u.image, r.name as role_name, r.slug as role_slug, d.name as department_name
+      FROM users u
+      LEFT JOIN roles r ON u.role_id = r.id
+      LEFT JOIN departments d ON u.department_id = d.id
+      WHERE u.id = $1
+      LIMIT 1
+    `;
+    const result = await pool.query(sql, [session.id]);
+
+    if (result?.rows && Array.isArray(result.rows) && result.rows.length > 0) {
+      const row = result.rows[0];
+      userData = {
+        name: row.name,
+        email: row.email,
+        image: row.image,
+        role: { name: row.role_name, slug: row.role_slug },
+        department: { name: row.department_name }
+      };
     }
+  } catch (error) {
+    console.error("Error loading user in layout:", error);
+  }
 
-    let userData = null;
-    try {
-        const { pool } = await import('@/lib/db');
-        const sql = `
-            SELECT u.name, u.email, u.image, r.name as role_name, r.slug as role_slug, d.name as department_name
-            FROM users u
-            LEFT JOIN roles r ON u.role_id = r.id
-            LEFT JOIN departments d ON u.department_id = d.id
-            WHERE u.id = $1
-            LIMIT 1
-        `;
-        const result = await pool.query(sql, [session.id]);
+  if (!userData) {
+    redirect("/login");
+  }
 
-        if (result?.rows && Array.isArray(result.rows) && result.rows.length > 0) {
-            const row = result.rows[0];
-            userData = {
-                name: row.name,
-                email: row.email,
-                image: row.image,
-                role: { name: row.role_name, slug: row.role_slug },
-                department: { name: row.department_name }
-            };
-        }
-    } catch (error) {
-        console.error("Error loading user in layout:", error);
+  const user = {
+    name: userData.name,
+    email: userData.email,
+    image: userData.image,
+    roleName: userData.role?.name || "Пользователь",
+    roleSlug: userData.role?.slug || "user",
+    departmentName: userData.department?.name || ""
+  };
+
+  // Fetch notifications
+  await checkAndRunNotifications(); // Run daily checks if needed
+  const { notifications, unreadCount } = await getNotifications();
+
+  // Fetch branding settings
+  const branding = await getBrandingSettings();
+
+  // Maintenance Mode Check
+  try {
+    const isMaintenance = await getMaintenanceMode();
+
+    if (isMaintenance && user.roleSlug !== "admin") {
+      return (
+        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
+          <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-[--padding-xl] space-y-3 animate-in zoom-in-95 duration-700">
+            <div className="w-[100px] h-[100px] bg-primary/5 rounded-[var(--radius-outer)] flex items-center justify-center text-primary mx-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>
+            </div>
+            <div className="space-y-3">
+              <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight">Технические работы</h1>
+              <p className="text-[#64748B] text-lg font-medium leading-relaxed">
+                Система временно недоступна для проведения планового обслуживания. Пожалуйста, зайдите позже.
+              </p>
+            </div>
+            <div className="pt-8 border-t border-slate-200">
+              <p className="text-sm font-bold text-[#CBD5E1]">
+                CRM Maintenance Mode
+              </p>
+            </div>
+          </div>
+        </div>
+      );
     }
+  } catch (e) {
+    console.error("Maintenance check failed:", e);
+  }
 
-    if (!userData) {
-        redirect("/login");
-    }
+  return (
+    <BreadcrumbsProvider>
+      {branding.crmBackgroundUrl && (
+        <style>
+          {`
+            .crm-background {
+              position: fixed;
+              top: 0;
+              left: 0;
+              right: 0;
+              bottom: 0;
+              z-index: -1;
+              background-image: url('${branding.crmBackgroundUrl}');
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
+              filter: blur(${branding.crmBackgroundBlur || 0}px) brightness(${branding.crmBackgroundBrightness || 100}%);
+              transform: scale(1.1); /* To avoid white edges when blurred */
+            }
+          `}
+        </style>
+      )}
 
-    const user = {
-        name: userData.name,
-        email: userData.email,
-        image: userData.image,
-        roleName: userData.role?.name || "Пользователь",
-        roleSlug: userData.role?.slug || "user",
-        departmentName: userData.department?.name || ""
-    };
+      <PullToRefresh>
+        <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
+          {(session?.betterAuthSession as { impersonatedBy?: string })?.impersonatedBy && (
+            <ImpersonationBanner
+              impersonatorName={"Admin"}
+              targetName={user.name}
+            />
+          )}
+          <GlobalUndo />
+          <CommandMenu />
+          <ActivityTracker />
+          <NotificationManager
+            initialUnreadCount={unreadCount}
+            customSoundUrl={branding.notificationSound as string}
+          />
 
-    // Fetch notifications
-    await checkAndRunNotifications(); // Run daily checks if needed
-    const { notifications, unreadCount } = await getNotifications();
+          {/* Desktop Header - Floating Glass */}
+          <DesktopHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
 
-    // Fetch branding settings
-    const branding = await getBrandingSettings();
+          {/* Mobile Header - Top Fixed */}
+          <MobileHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
 
-    // Maintenance Mode Check
-    try {
-        const isMaintenance = await getMaintenanceMode();
+          {/* Mobile Bottom Nav - Bottom Fixed */}
+          <MobileBottomNav user={user} />
 
-        if (isMaintenance && user.roleSlug !== "admin") {
-            return (
-                <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
-                    <div className="max-w-[480px] w-full bg-white rounded-[40px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-slate-200 overflow-hidden text-center p-[--padding-xl] space-y-3 animate-in zoom-in-95 duration-700">
-                        <div className="w-[100px] h-[100px] bg-primary/5 rounded-[var(--radius-outer)] flex items-center justify-center text-primary mx-auto">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>
-                        </div>
-                        <div className="space-y-3">
-                            <h1 className="text-[32px] font-bold text-[#0F172A] leading-tight">Технические работы</h1>
-                            <p className="text-[#64748B] text-lg font-medium leading-relaxed">
-                                Система временно недоступна для проведения планового обслуживания. Пожалуйста, зайдите позже.
-                            </p>
-                        </div>
-                        <div className="pt-8 border-t border-slate-200">
-                            <p className="text-sm font-bold text-[#CBD5E1]">
-                                CRM Maintenance Mode
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-    } catch (e) {
-        console.error("Maintenance check failed:", e);
-    }
+          <FloatingSearch />
+          <MobileSearchSheet />
 
-    return (
-        <BreadcrumbsProvider>
-            {branding.crmBackgroundUrl && (
-                <style>
-                    {`
-                        .crm-background {
-                            position: fixed;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            bottom: 0;
-                            z-index: -1;
-                            background-image: url('${branding.crmBackgroundUrl}');
-                            background-size: cover;
-                            background-position: center;
-                            background-repeat: no-repeat;
-                            filter: blur(${branding.crmBackgroundBlur || 0}px) brightness(${branding.crmBackgroundBrightness || 100}%);
-                            transform: scale(1.1); /* To avoid white edges when blurred */
-                        }
-                    `}
-                </style>
-            )}
+          <ClientSideMain>
+            <Breadcrumbs />
+            {children}
+          </ClientSideMain>
 
-            <PullToRefresh>
-                <LayoutShell crmBackgroundUrl={branding.crmBackgroundUrl}>
-                    {(session?.betterAuthSession as { impersonatedBy?: string })?.impersonatedBy && (
-                        <ImpersonationBanner
-                            impersonatorName={"Admin"}
-                            targetName={user.name}
-                        />
-                    )}
-                    <GlobalUndo />
-                    <CommandMenu />
-                    <ActivityTracker />
-                    <NotificationManager
-                        initialUnreadCount={unreadCount}
-                        customSoundUrl={branding.notificationSound as string}
-                    />
-
-                    {/* Desktop Header - Floating Glass */}
-                    <DesktopHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
-
-                    {/* Mobile Header - Top Fixed */}
-                    <MobileHeader user={user} branding={branding} notifications={notifications} unreadCount={unreadCount} />
-
-                    {/* Mobile Bottom Nav - Bottom Fixed */}
-                    <MobileBottomNav user={user} />
-
-                    <FloatingSearch />
-                    <MobileSearchSheet />
-
-                    <ClientSideMain>
-                        <Breadcrumbs />
-                        {children}
-                    </ClientSideMain>
-
-                    {/* Global Footer */}
-                    <Footer branding={branding} />
-                </LayoutShell>
-            </PullToRefresh>
-        </BreadcrumbsProvider>
-    );
+          {/* Global Footer */}
+          <Footer branding={branding} />
+        </LayoutShell>
+      </PullToRefresh>
+    </BreadcrumbsProvider>
+  );
 }

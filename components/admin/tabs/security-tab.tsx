@@ -45,10 +45,7 @@ export function SecurityTab({
                             Режим обслуживания и фильтрация входа
                         </p>
                     </div>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => onRefresh(true)}
+                    <Button variant="outline" size="icon" onClick={() => onRefresh(true)}
                         className="bg-white border-slate-200 text-slate-400 hover:text-[var(--primary)] hover:bg-indigo-50/50 rounded-[18px] h-9 w-9"
                         title="Обновить данные"
                     >
@@ -58,33 +55,18 @@ export function SecurityTab({
 
                 <div className="flex flex-col gap-3 pb-4">
                     {/* Maintenance Mode */}
-                    <MaintenanceModeCard
-                        maintenanceMode={securityData?.maintenanceMode || false}
-                        onToggleMaintenance={onToggleMaintenance}
-                        isTogglingMaintenance={isTogglingMaintenance}
-                    />
+                    <MaintenanceModeCard maintenanceMode={securityData?.maintenanceMode || false} onToggleMaintenance={onToggleMaintenance} isTogglingMaintenance={isTogglingMaintenance} />
 
                     {/* Failed Logins Table */}
-                    <FailedLoginsCard
-                        failedLogins={securityData?.failedLogins || []}
-                        onClearFailedLogins={onClearFailedLogins}
-                        isClearingLogins={isClearingLogins}
-                    />
+                    <FailedLoginsCard failedLogins={securityData?.failedLogins || []} onClearFailedLogins={onClearFailedLogins} isClearingLogins={isClearingLogins} />
                 </div>
             </div>
 
             {/* System Errors Table */}
-            <SystemErrorsCard
-                systemErrors={securityData?.systemErrors || []}
-                onClearSecurityErrors={onClearSecurityErrors}
-                isClearingErrors={isClearingErrors}
-                onViewDetails={setSelectedError}
-            />
+            <SystemErrorsCard systemErrors={securityData?.systemErrors || []} onClearSecurityErrors={onClearSecurityErrors} isClearingErrors={isClearingErrors} onViewDetails={setSelectedError} />
 
             {/* Error Details Dialog */}
-            <ErrorDetailsDialog
-                error={selectedError}
-                onClose={() => setSelectedError(null)}
+            <ErrorDetailsDialog error={selectedError} onClose={() => setSelectedError(null)}
             />
         </div>
     );

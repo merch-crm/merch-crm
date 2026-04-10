@@ -273,10 +273,7 @@ export function FileUpload({
             {files.length > 0 && (
                 <div className="space-y-2">
                     {files.map((uploadedFile) => (
-                        <FileItem
-                            key={uploadedFile.id}
-                            uploadedFile={uploadedFile}
-                            onRemove={() => removeFile(uploadedFile.id)}
+                        <FileItem key={uploadedFile.id} uploadedFile={uploadedFile} onRemove={() => removeFile(uploadedFile.id)}
                         />
                     ))}
                 </div>

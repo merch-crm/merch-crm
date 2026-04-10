@@ -13,54 +13,54 @@ the normal phase sequence and accumulate context over time.
 <process>
 
 1. **Read ROADMAP.md** to find existing backlog entries:
-   ```bash
-   cat .planning/ROADMAP.md
-   ```
+  ```bash
+  cat .planning/ROADMAP.md
+  ```
 
 2. **Find next backlog number:**
-   ```bash
-   NEXT=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" phase next-decimal 999 --raw)
-   ```
-   If no 999.x phases exist, start at 999.1.
+  ```bash
+  NEXT=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" phase next-decimal 999 --raw)
+  ```
+  If no 999.x phases exist, start at 999.1.
 
 3. **Create the phase directory:**
-   ```bash
-   SLUG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" generate-slug "$ARGUMENTS")
-   mkdir -p ".planning/phases/${NEXT}-${SLUG}"
-   touch ".planning/phases/${NEXT}-${SLUG}/.gitkeep"
-   ```
+  ```bash
+  SLUG=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" generate-slug "$ARGUMENTS")
+  mkdir -p ".planning/phases/${NEXT}-${SLUG}"
+  touch ".planning/phases/${NEXT}-${SLUG}/.gitkeep"
+  ```
 
 4. **Add to ROADMAP.md** under a `## Backlog` section. If the section doesn't exist, create it at the end:
 
-   ```markdown
-   ## Backlog
+  ```markdown
+  ## Backlog
 
-   ### Phase {NEXT}: {description} (BACKLOG)
+  ### Phase {NEXT}: {description} (BACKLOG)
 
-   **Goal:** [Captured for future planning]
-   **Requirements:** TBD
-   **Plans:** 0 plans
+  **Goal:** [Captured for future planning]
+  **Requirements:** TBD
+  **Plans:** 0 plans
 
-   Plans:
-   - [ ] TBD (promote with /gsd-review-backlog when ready)
-   ```
+  Plans:
+  - [ ] TBD (promote with /gsd-review-backlog when ready)
+  ```
 
 5. **Commit:**
-   ```bash
-   node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs: add backlog item ${NEXT} — ${ARGUMENTS}" --files .planning/ROADMAP.md ".planning/phases/${NEXT}-${SLUG}/.gitkeep"
-   ```
+  ```bash
+  node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs: add backlog item ${NEXT} — ${ARGUMENTS}" --files .planning/ROADMAP.md ".planning/phases/${NEXT}-${SLUG}/.gitkeep"
+  ```
 
 6. **Report:**
-   ```
-   ## 📋 Backlog Item Added
+  ```
+  ## 📋 Backlog Item Added
 
-   Phase {NEXT}: {description}
-   Directory: .planning/phases/{NEXT}-{slug}/
+  Phase {NEXT}: {description}
+  Directory: .planning/phases/{NEXT}-{slug}/
 
-   This item lives in the backlog parking lot.
-   Use /gsd-discuss-phase {NEXT} to explore it further.
-   Use /gsd-review-backlog to promote items to active milestone.
-   ```
+  This item lives in the backlog parking lot.
+  Use /gsd-discuss-phase {NEXT} to explore it further.
+  Use /gsd-review-backlog to promote items to active milestone.
+  ```
 
 </process>
 

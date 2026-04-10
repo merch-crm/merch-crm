@@ -43,9 +43,7 @@ export function StorageManager() {
             <div className="flex items-center justify-between">
                 {/* Tab Navigation */}
                 <div className="flex items-center gap-2 p-1.5 bg-slate-50/50 rounded-[24px] border border-slate-200 w-fit overflow-x-auto no-scrollbar max-w-full">
-                    <Button
-                        variant="ghost"
-                        onClick={() => setActiveTab("s3")}
+                    <Button variant="ghost" onClick={() => setActiveTab("s3")}
                         className={cn(
                             "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold transition-all h-auto",
                             activeTab === "s3"
@@ -56,9 +54,7 @@ export function StorageManager() {
                         <Cloud size={18} />
                         Облачное S3
                     </Button>
-                    <Button
-                        variant="ghost"
-                        onClick={() => setActiveTab("local")}
+                    <Button variant="ghost" onClick={() => setActiveTab("local")}
                         className={cn(
                             "flex items-center gap-2 px-6 py-6 rounded-[20px] text-sm font-bold transition-all h-auto",
                             activeTab === "local"
@@ -71,10 +67,7 @@ export function StorageManager() {
                     </Button>
                 </div>
 
-                <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setIsSettingsOpen(true)}
+                <Button variant="outline" size="icon" onClick={() => setIsSettingsOpen(true)}
                     className="bg-white text-slate-500 hover:text-[var(--primary)] hover:bg-slate-50 rounded-[18px] border-slate-200 shadow-sm h-11 w-11"
                     title="Настройки лимитов"
                 >
@@ -137,11 +130,7 @@ export function StorageManager() {
                 {activeTab === "local" && <LocalStorageManager />}
             </div>
 
-            <StorageQuotaDialog
-                open={isSettingsOpen}
-                onOpenChange={setIsSettingsOpen}
-                onSaved={refreshQuotas}
-            />
+            <StorageQuotaDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} onSaved={refreshQuotas} />
         </div>
     );
 }

@@ -1,100 +1,100 @@
 {
-  "collapse-filter": false,
-  "search": "",
-  "showTags": true,
-  "showAttachments": true,
-  "hideUnresolved": false,
-  "showOrphans": false,
-  "collapse-color-groups": true,
-  "colorGroups": [
-    {
-      "query": "path:01-Менеджмент",
-      "color": {
-        "a": 1,
-        "rgb": 16736086
-      }
-    },
-    {
-      "query": "path:02-Разработка",
-      "color": {
-        "a": 1,
-        "rgb": 2607423
-      }
-    },
-    {
-      "query": "path:03-Качество",
-      "color": {
-        "a": 1,
-        "rgb": 16760110
-      }
-    },
-    {
-      "query": "path:04-GSD",
-      "color": {
-        "a": 1,
-        "rgb": 53759
-      }
-    },
-    {
-      "query": "path:05-Дизайн",
-      "color": {
-        "a": 1,
-        "rgb": 16711802
-      }
-    },
-    {
-      "query": "tag:#агенты",
-      "color": {
-        "a": 1,
-        "rgb": 16777215
-      }
-    },
-    {
-      "query": "tag:#менеджмент",
-      "color": {
-        "a": 1,
-        "rgb": 16736086
-      }
-    },
-    {
-      "query": "tag:#разработка",
-      "color": {
-        "a": 1,
-        "rgb": 2607423
-      }
-    },
-    {
-      "query": "tag:#качество",
-      "color": {
-        "a": 1,
-        "rgb": 16760110
-      }
-    },
-    {
-      "query": "tag:#gsd",
-      "color": {
-        "a": 1,
-        "rgb": 53759
-      }
-    },
-    {
-      "query": "tag:#дизайн",
-      "color": {
-        "a": 1,
-        "rgb": 16711802
-      }
-    }
-  ],
-  "collapse-display": false,
-  "showArrow": true,
-  "textFadeMultiplier": 0.3,
-  "nodeSizeMultiplier": 1.52002170138889,
-  "lineSizeMultiplier": 1,
-  "collapse-forces": true,
-  "centerStrength": 0.615668402777778,
-  "repelStrength": 10.3463541666667,
-  "linkStrength": 1,
-  "linkDistance": 207,
-  "scale": 0.2341204563412878,
-  "close": false
+ "collapse-filter": false,
+ "search": "",
+ "showTags": true,
+ "showAttachments": true,
+ "hideUnresolved": false,
+ "showOrphans": false,
+ "collapse-color-groups": true,
+ "colorGroups": [
+  {
+   "query": "path:01-Менеджмент",
+   "color": {
+    "a": 1,
+    "rgb": 16736086
+   }
+  },
+  {
+   "query": "path:02-Разработка",
+   "color": {
+    "a": 1,
+    "rgb": 2607423
+   }
+  },
+  {
+   "query": "path:03-Качество",
+   "color": {
+    "a": 1,
+    "rgb": 16760110
+   }
+  },
+  {
+   "query": "path:04-GSD",
+   "color": {
+    "a": 1,
+    "rgb": 53759
+   }
+  },
+  {
+   "query": "path:05-Дизайн",
+   "color": {
+    "a": 1,
+    "rgb": 16711802
+   }
+  },
+  {
+   "query": "tag:#агенты",
+   "color": {
+    "a": 1,
+    "rgb": 16777215
+   }
+  },
+  {
+   "query": "tag:#менеджмент",
+   "color": {
+    "a": 1,
+    "rgb": 16736086
+   }
+  },
+  {
+   "query": "tag:#разработка",
+   "color": {
+    "a": 1,
+    "rgb": 2607423
+   }
+  },
+  {
+   "query": "tag:#качество",
+   "color": {
+    "a": 1,
+    "rgb": 16760110
+   }
+  },
+  {
+   "query": "tag:#gsd",
+   "color": {
+    "a": 1,
+    "rgb": 53759
+   }
+  },
+  {
+   "query": "tag:#дизайн",
+   "color": {
+    "a": 1,
+    "rgb": 16711802
+   }
+  }
+ ],
+ "collapse-display": false,
+ "showArrow": true,
+ "textFadeMultiplier": 0.3,
+ "nodeSizeMultiplier": 1.52002170138889,
+ "lineSizeMultiplier": 1,
+ "collapse-forces": true,
+ "centerStrength": 0.615668402777778,
+ "repelStrength": 10.3463541666667,
+ "linkStrength": 1,
+ "linkDistance": 207,
+ "scale": 0.2341204563412878,
+ "close": false
 }

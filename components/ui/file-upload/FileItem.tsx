@@ -23,13 +23,7 @@ export function FileItem({ uploadedFile, onRemove }: FileItemProps) {
             {/* Preview or Icon */}
             <div className="relative size-12 rounded-xl overflow-hidden bg-slate-100/80 border border-slate-200/50 flex items-center justify-center shrink-0 shadow-inner">
                 {preview ? (
-                    <Image
-                        src={preview}
-                        alt={file.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        width={80}
-                        height={80}
-                    />
+                    <Image src={preview} alt={file.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" width={80} height={80} />
                 ) : (
                     <div className="text-slate-400 group-hover:text-primary-base transition-colors duration-300">
                         {getFileIcon(file)}

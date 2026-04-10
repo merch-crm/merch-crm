@@ -92,10 +92,10 @@ Create: .planning/debug/{slug}.md
 
 ```
 Task(
-  prompt=filled_prompt,
-  subagent_type="gsd-debugger",
-  model="{debugger_model}",
-  description="Debug {slug}"
+ prompt=filled_prompt,
+ subagent_type="gsd-debugger",
+ model="{debugger_model}",
+ description="Debug {slug}"
 )
 ```
 
@@ -104,24 +104,24 @@ Task(
 **If `## ROOT CAUSE FOUND`:**
 - Display root cause and evidence summary
 - Offer options:
-  - "Fix now" - spawn fix subagent
-  - "Plan fix" - suggest /gsd-plan-phase --gaps
-  - "Manual fix" - done
+ - "Fix now" - spawn fix subagent
+ - "Plan fix" - suggest /gsd-plan-phase --gaps
+ - "Manual fix" - done
 
 **If `## CHECKPOINT REACHED`:**
 - Present checkpoint details to user
 - Get user response
 - If checkpoint type is `human-verify`:
-  - If user confirms fixed: continue so agent can finalize/resolve/archive
-  - If user reports issues: continue so agent returns to investigation/fixing
+ - If user confirms fixed: continue so agent can finalize/resolve/archive
+ - If user reports issues: continue so agent returns to investigation/fixing
 - Spawn continuation agent (see step 5)
 
 **If `## INVESTIGATION INCONCLUSIVE`:**
 - Show what was checked and eliminated
 - Offer options:
-  - "Continue investigating" - spawn new agent with additional context
-  - "Manual investigation" - done
-  - "Add more context" - gather more symptoms, spawn again
+ - "Continue investigating" - spawn new agent with additional context
+ - "Manual investigation" - done
+ - "Add more context" - gather more symptoms, spawn again
 
 ## 5. Spawn Continuation Agent (After Checkpoint)
 
@@ -150,10 +150,10 @@ goal: find_and_fix
 
 ```
 Task(
-  prompt=continuation_prompt,
-  subagent_type="gsd-debugger",
-  model="{debugger_model}",
-  description="Continue debug {slug}"
+ prompt=continuation_prompt,
+ subagent_type="gsd-debugger",
+ model="{debugger_model}",
+ description="Continue debug {slug}"
 )
 ```
 

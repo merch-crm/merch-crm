@@ -110,23 +110,12 @@ export function PLClient({ plReport }: PLClientProps) {
  <div className="h-[280px] w-full relative">
  <ResponsiveContainer width="100%" height="100%">
  <PieChart>
- <Pie
- data={expenseData}
- cx="50%"
- cy="50%"
- innerRadius={60}
- outerRadius={90}
- paddingAngle={5}
- dataKey="value"
- animationDuration={1500}
- >
+ <Pie data={expenseData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={5} dataKey="value" animationDuration={1500}>
  {expenseData.map((entry, index) => (
  <Cell key={`cell-${index}`} fill={entry.color} />
  ))}
  </Pie>
- <ReChartsTooltip 
- contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
- formatter={(val: number) => [`${val.toLocaleString()} ${currencySymbol}`,"Сумма"]}
+ <ReChartsTooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} formatter={(val: number) => [`${val.toLocaleString()} ${currencySymbol}`,"Сумма"]}
  />
  <Legend verticalAlign="bottom" height={36}/>
  </PieChart>

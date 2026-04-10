@@ -62,13 +62,7 @@ export function TimeTrackerWidget({
                     </div>
                 </div>
 
-                <TimeTrackerToggle
-                    isWorking={isWorking}
-                    startTime={startTime}
-                    onToggle={isWorking ? onStop : onStart}
-                    size="lg"
-                    className="w-full"
-                />
+                <TimeTrackerToggle isWorking={isWorking} startTime={startTime} onToggle={isWorking ? onStop : onStart} size="lg" className="w-full" />
             </div>
 
             {/* История за сегодня */}

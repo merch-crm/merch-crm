@@ -17,11 +17,11 @@ This command handles production deployment with pre-flight checks, deployment ex
 ## Sub-commands
 
 ```
-/deploy            - Interactive deployment wizard
-/deploy check      - Run pre-deployment checks only
-/deploy preview    - Deploy to preview/staging
+/deploy      - Interactive deployment wizard
+/deploy check   - Run pre-deployment checks only
+/deploy preview  - Deploy to preview/staging
 /deploy production - Deploy to production
-/deploy rollback   - Rollback to previous version
+/deploy rollback  - Rollback to previous version
 ```
 
 ---
@@ -62,40 +62,40 @@ Before any deployment:
 
 ```
 ┌─────────────────┐
-│  /deploy        │
+│ /deploy    │
 └────────┬────────┘
-         │
-         ▼
+     │
+     ▼
 ┌─────────────────┐
-│  Pre-flight     │
-│  checks         │
+│ Pre-flight   │
+│ checks     │
 └────────┬────────┘
-         │
-    Pass? ──No──► Fix issues
-         │
-        Yes
-         │
-         ▼
+     │
+  Pass? ──No──► Fix issues
+     │
+    Yes
+     │
+     ▼
 ┌─────────────────┐
-│  Build          │
-│  application    │
+│ Build     │
+│ application  │
 └────────┬────────┘
-         │
-         ▼
+     │
+     ▼
 ┌─────────────────┐
-│  Deploy to      │
-│  platform       │
+│ Deploy to   │
+│ platform    │
 └────────┬────────┘
-         │
-         ▼
+     │
+     ▼
 ┌─────────────────┐
-│  Health check   │
-│  & verify       │
+│ Health check  │
+│ & verify    │
 └────────┬────────┘
-         │
-         ▼
+     │
+     ▼
 ┌─────────────────┐
-│  ✅ Complete    │
+│ ✅ Complete  │
 └─────────────────┘
 ```
 

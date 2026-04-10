@@ -17,22 +17,22 @@ Check for local patches directory:
 ```bash
 # Global install — detect runtime config directory
 if [ -d "$HOME/.config/opencode/gsd-local-patches" ]; then
-  PATCHES_DIR="$HOME/.config/opencode/gsd-local-patches"
+ PATCHES_DIR="$HOME/.config/opencode/gsd-local-patches"
 elif [ -d "$HOME/.opencode/gsd-local-patches" ]; then
-  PATCHES_DIR="$HOME/.opencode/gsd-local-patches"
+ PATCHES_DIR="$HOME/.opencode/gsd-local-patches"
 elif [ -d "$HOME/.gemini/gsd-local-patches" ]; then
-  PATCHES_DIR="$HOME/.gemini/gsd-local-patches"
+ PATCHES_DIR="$HOME/.gemini/gsd-local-patches"
 else
-  PATCHES_DIR=".agent/gsd-local-patches"
+ PATCHES_DIR=".agent/gsd-local-patches"
 fi
 # Local install fallback — check all runtime directories
 if [ ! -d "$PATCHES_DIR" ]; then
-  for dir in .config/opencode .opencode .gemini .claude; do
-    if [ -d "./$dir/gsd-local-patches" ]; then
-      PATCHES_DIR="./$dir/gsd-local-patches"
-      break
-    fi
-  done
+ for dir in .config/opencode .opencode .gemini .claude; do
+  if [ -d "./$dir/gsd-local-patches" ]; then
+   PATCHES_DIR="./$dir/gsd-local-patches"
+   break
+  fi
+ done
 fi
 ```
 
@@ -70,20 +70,20 @@ For each file in `backup-meta.json`:
 2. **Read the newly installed version** (current file after update)
 3. **Compare and merge:**
 
-   - If the new file is identical to the backed-up file: skip (modification was incorporated upstream)
-   - If the new file differs: identify the user's modifications and apply them to the new version
+  - If the new file is identical to the backed-up file: skip (modification was incorporated upstream)
+  - If the new file differs: identify the user's modifications and apply them to the new version
 
-   **Merge strategy:**
-   - Read both versions fully
-   - Identify sections the user added or modified (look for additions, not just differences from path replacement)
-   - Apply user's additions/modifications to the new version
-   - If a section the user modified was also changed upstream: flag as conflict, show both versions, ask user which to keep
+  **Merge strategy:**
+  - Read both versions fully
+  - Identify sections the user added or modified (look for additions, not just differences from path replacement)
+  - Apply user's additions/modifications to the new version
+  - If a section the user modified was also changed upstream: flag as conflict, show both versions, ask user which to keep
 
 4. **Write merged result** to the installed location
 5. **Report status:**
-   - `Merged` — user modifications applied cleanly
-   - `Skipped` — modification already in upstream
-   - `Conflict` — user chose resolution
+  - `Merged` — user modifications applied cleanly
+  - `Skipped` — modification already in upstream
+  - `Conflict` — user chose resolution
 
 ## Step 4: Update manifest
 

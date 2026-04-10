@@ -20,11 +20,7 @@ describe('Pagination', () => {
 
   it('отображает правильное количество страниц', () => {
     render(
-      <Pagination 
-        totalItems={100} 
-        pageSize={10} 
-        currentPage={1} 
-      />
+      <Pagination totalItems={100} pageSize={10} currentPage={1} />
     )
     
     // Component renders page buttons: 1, 2, ..., 10
@@ -35,11 +31,7 @@ describe('Pagination', () => {
 
   it('выделяет текущую страницу', () => {
     render(
-      <Pagination 
-        totalItems={100} 
-        pageSize={10} 
-        currentPage={1} 
-      />
+      <Pagination totalItems={100} pageSize={10} currentPage={1} />
     )
     
     // Find the active pagination button
@@ -50,11 +42,7 @@ describe('Pagination', () => {
 
   it('переходит на следующую страницу', async () => {
     render(
-      <Pagination 
-        totalItems={100} 
-        pageSize={10} 
-        currentPage={1} 
-      />
+      <Pagination totalItems={100} pageSize={10} currentPage={1} />
     )
     
     const nextButton = screen.getByText(/След/i)
@@ -65,23 +53,13 @@ describe('Pagination', () => {
 
   it('склоняет названия элементов', () => {
     const { rerender } = render(
-      <Pagination 
-        totalItems={1} 
-        pageSize={10} 
-        currentPage={1} 
-        itemNames={['клиент', 'клиента', 'клиентов']}
-      />
+      <Pagination totalItems={1} pageSize={10} currentPage={1} itemNames={['клиент', 'клиента', 'клиентов']} />
     )
     // Component renders "из 1 клиента" (genitive case for "из X")
     expect(screen.getByText(/клиента/i)).toBeInTheDocument()
 
     rerender(
-      <Pagination 
-        totalItems={5} 
-        pageSize={10} 
-        currentPage={1} 
-        itemNames={['клиент', 'клиента', 'клиентов']}
-      />
+      <Pagination totalItems={5} pageSize={10} currentPage={1} itemNames={['клиент', 'клиента', 'клиентов']} />
     )
     expect(screen.getByText(/клиентов/i)).toBeInTheDocument()
   })

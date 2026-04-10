@@ -64,10 +64,7 @@ export function Toast({ message, type ="info", duration = 4000, action, onClose 
 
             {
                 action && (
-                    <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => {
+                    <Button size="sm" variant="ghost" onClick={() => {
                             action.onClick();
                             setIsVisible(false);
                             setTimeout(onClose, 300);
@@ -80,10 +77,7 @@ export function Toast({ message, type ="info", duration = 4000, action, onClose 
                 )
             }
 
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => {
+            <Button variant="ghost" size="icon" onClick={() => {
                     setIsVisible(false);
                     setTimeout(onClose, 300);
                 }}
@@ -144,12 +138,6 @@ export function ToastContainer() {
     const handleClose = () => setActiveToast(null);
 
     return (
-        <Toast
-            key={activeToast.id}
-            message={activeToast.message}
-            type={activeToast.type}
-            action={activeToast.action}
-            onClose={handleClose}
-        />
+        <Toast key={activeToast.id} message={activeToast.message} type={activeToast.type} action={activeToast.action} onClose={handleClose} />
     );
 }

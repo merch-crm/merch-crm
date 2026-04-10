@@ -89,14 +89,18 @@ async function setup() {
     // - Локальный Redis порт -> RedisContainerIp:6379 (прямой доступ в контейнер)
     // - Локальный 1984 -> 127.0.0.1:1984 (go2rtc обычно проброшен)
     
+    const autosshPath = '/opt/homebrew/bin/autossh';
     const sshCmd = [
-        'autossh',
-        '-M', '0', // Используем встроенные механизмы SSH (ServerAliveInterval) вместо монитор-порта autossh
+        autosshPath,
+        '-M', '0', 
         '-i', SSH_KEY,
         '-o', 'ServerAliveInterval=30',
         '-o', 'ServerAliveCountMax=3',
         '-o', 'ExitOnForwardFailure=yes',
-        '-N', // Не выполнять команду, только туннель
+        '-o', 'StrictHostKeyChecking=no',
+        '-o', 'UserKnownHostsFile=/dev/null',
+        '-o', 'ConnectTimeout=10',
+        '-N', 
         '-L', `${localDbPort}:${dbContainerIp}:5432`,
         '-L', `${localRedisPort}:${redisContainerIp}:6379`,
         '-L', `${localGo2rtcPort}:127.0.0.1:1984`,
@@ -111,6 +115,25 @@ async function setup() {
         detached: true,
         stdio: 'ignore',
         env
+    });
+
+    tunnel.on('error', (err) => {
+        if (err.code === 'ENOENT' && sshCmd[0] === 'autossh') {
+            warn('autossh не найден, использую обычный ssh...');
+            // Для обычного ssh добавляем флаг -f для корректного ухода в фон
+            const plainSshArgs = ['-f', ...sshCmd.slice(2)]; 
+            try {
+                spawnSync('ssh', plainSshArgs, {
+                    env,
+                    stdio: 'ignore'
+                });
+                log('✅ Тоннель запущен через обычный ssh (-f)');
+            } catch (sshErr) {
+                error(`Ошибка при запуске обычного ssh: ${sshErr.message}`);
+            }
+        } else {
+            error(`Ошибка туннеля: ${err.message}`);
+        }
     });
 
     tunnel.unref();

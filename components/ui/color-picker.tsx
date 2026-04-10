@@ -32,13 +32,7 @@ const Control = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) 
  * The interactive area for selecting color (saturation/brightness).
  */
 const Area = ({ className, ...props }: ColorAreaProps) => (
-  <ColorArea
-    className={cn(
-      "relative h-[192px] w-full cursor-crosshair rounded-xl",
-      className
-    )}
-    {...props}
-  >
+  <ColorArea className={cn( "relative h-[192px] w-full cursor-crosshair rounded-xl", className )} {...props}>
     <ColorThumb className="z-10 h-5 w-5 rounded-full border-2 border-white bg-transparent shadow-[0_2px_4px_rgba(0,0,0,0.2)] transition-transform hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none" />
   </ColorArea>
 );
@@ -47,10 +41,7 @@ const Area = ({ className, ...props }: ColorAreaProps) => (
  * A slider for specific color channels (Hue, Alpha, etc.).
  */
 const Slider = ({ className, ...props }: ColorSliderProps) => (
-  <ColorSlider
-    className={cn("flex flex-col gap-2", className)}
-    {...props}
-  >
+  <ColorSlider className={cn("flex flex-col gap-2", className)} {...props}>
     <SliderTrack className="relative h-3 w-full rounded-full border border-black/5">
       <ColorThumb className="z-10 h-5 w-5 rounded-full border-2 border-white bg-transparent shadow-[0_2px_4px_rgba(0,0,0,0.2)] transition-transform hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:outline-none" />
     </SliderTrack>
@@ -80,14 +71,7 @@ const Input = ({ className, ...props }: ColorFieldProps) => (
  * A color swatch (preset).
  */
 const Swatch = ({ className, color, ...props }: ColorSwatchProps) => (
-  <ColorSwatch
-    className={cn(
-      "h-8 w-8 rounded-lg border border-black/5 transition-transform hover:scale-110 active:scale-95 cursor-pointer",
-      className
-    )}
-    color={color}
-    {...props}
-  />
+  <ColorSwatch className={cn( "h-8 w-8 rounded-lg border border-black/5 transition-transform hover:scale-110 active:scale-95 cursor-pointer", className )} color={color} {...props} />
 );
 
 /**

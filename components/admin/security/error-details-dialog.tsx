@@ -14,13 +14,7 @@ export function ErrorDetailsDialog({
     onClose,
 }: ErrorDetailsDialogProps) {
     return (
-        <ResponsiveModal
-            isOpen={!!error}
-            onClose={onClose}
-            title="Детали ошибки"
-            description="Техническая информация о сбое"
-            className="max-w-2xl"
-        >
+        <ResponsiveModal isOpen={!!error} onClose={onClose} title="Детали ошибки" description="Техническая информация о сбое" className="max-w-2xl">
             <div className="space-y-3">
                 <div className="space-y-2 px-6">
                     <label className="text-xs font-bold text-slate-400">

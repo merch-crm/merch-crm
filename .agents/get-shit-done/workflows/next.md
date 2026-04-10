@@ -80,7 +80,7 @@ Display the determination:
 **Status:** [status description]
 
 ▶ **Next step:** `/gsd-[command] [args]`
-  [One-line explanation of why this is the next step]
+ [One-line explanation of why this is the next step]
 ```
 
 Then immediately invoke the determined command via SlashCommand.

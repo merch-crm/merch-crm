@@ -11,15 +11,15 @@ The git log should read like a changelog of what shipped, not a diary of plannin
 
 <commit_points>
 
-| Event                   | Commit? | Why                                              |
+| Event          | Commit? | Why                       |
 | ----------------------- | ------- | ------------------------------------------------ |
-| BRIEF + ROADMAP created | YES     | Project initialization                           |
-| PLAN.md created         | NO      | Intermediate - commit with plan completion       |
-| RESEARCH.md created     | NO      | Intermediate                                     |
-| DISCOVERY.md created    | NO      | Intermediate                                     |
-| **Task completed**      | YES     | Atomic unit of work (1 commit per task)         |
-| **Plan completed**      | YES     | Metadata commit (SUMMARY + STATE + ROADMAP)     |
-| Handoff created         | YES     | WIP state preserved                              |
+| BRIEF + ROADMAP created | YES   | Project initialization              |
+| PLAN.md created     | NO   | Intermediate - commit with plan completion    |
+| RESEARCH.md created   | NO   | Intermediate                   |
+| DISCOVERY.md created  | NO   | Intermediate                   |
+| **Task completed**   | YES   | Atomic unit of work (1 commit per task)     |
+| **Plan completed**   | YES   | Metadata commit (SUMMARY + STATE + ROADMAP)   |
+| Handoff created     | YES   | WIP state preserved               |
 
 </commit_points>
 
@@ -263,10 +263,10 @@ In `.planning/config.json`, list sub-repo directories under `planning.sub_repos`
 
 ```json
 {
-  "planning": {
-    "commit_docs": false,
-    "sub_repos": ["backend", "frontend", "shared"]
-  }
+ "planning": {
+  "commit_docs": false,
+  "sub_repos": ["backend", "frontend", "shared"]
+ }
 }
 ```
 
@@ -285,7 +285,7 @@ Instead of the standard `commit` command, use `commit-to-subrepo` when `sub_repo
 
 ```bash
 node .agent/get-shit-done/bin/gsd-tools.cjs commit-to-subrepo "feat(02-01): add user API" \
-  --files backend/src/api/users.ts backend/src/types/user.ts frontend/src/components/UserForm.tsx
+ --files backend/src/api/users.ts backend/src/types/user.ts frontend/src/components/UserForm.tsx
 ```
 
 This stages `src/api/users.ts` and `src/types/user.ts` in the `backend/` repo, and `src/components/UserForm.tsx` in the `frontend/` repo, then commits each independently with the same message.

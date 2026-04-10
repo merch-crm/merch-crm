@@ -137,12 +137,7 @@ export function MobileSearchSheet() {
                         <div className="px-6 pb-4 shrink-0">
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-xl font-black text-slate-900 ">Поиск</h2>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={handleClose}
-                                    className="p-2 rounded-full h-9 w-9"
-                                >
+                                <Button variant="ghost" size="icon" onClick={handleClose} className="p-2 rounded-full h-9 w-9">
                                     <X className="h-5 w-5" />
                                 </Button>
                             </div>
@@ -159,10 +154,7 @@ export function MobileSearchSheet() {
                                     className="w-full h-14 pl-12 pr-4 bg-slate-100/50 border border-slate-200/50 rounded-2xl text-base font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:bg-white transition-all"
                                 />
                                 {query && (
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => setQuery("")}
+                                    <Button variant="ghost" size="icon" onClick={() => setQuery("")}
                                         className="absolute right-4 top-1/2 -translate-y-1/2 p-1 rounded-full h-8 w-8"
                                     >
                                         <X className="w-4 h-4" />
@@ -206,10 +198,7 @@ export function MobileSearchSheet() {
                             {!loading && Array.isArray(results) && results.length > 0 && (
                                 <div className="space-y-2">
                                     {(results || []).map((result) => (
-                                        <Button
-                                            key={`${result.type}-${result.id}`}
-                                            variant="ghost"
-                                            onClick={() => handleSelect(result)}
+                                        <Button key={`${result.type}-${result.id}`} variant="ghost" onClick={() => handleSelect(result)}
                                             className="w-full flex items-center justify-start gap-3 p-4 h-auto bg-slate-50/50 hover:bg-slate-100/50 active:scale-[0.98] rounded-2xl transition-all text-left"
                                         >
                                             <div className={cn(

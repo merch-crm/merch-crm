@@ -34,9 +34,9 @@ Ask focused questions to build a complete seed:
 
 ```
 AskUserQuestion(
-  header: "Trigger",
-  question: "When should this idea surface? (e.g., 'when we add user accounts', 'next major version', 'when performance becomes a priority')",
-  options: []  // freeform
+ header: "Trigger",
+ question: "When should this idea surface? (e.g., 'when we add user accounts', 'next major version', 'when performance becomes a priority')",
+ options: [] // freeform
 )
 ```
 
@@ -44,9 +44,9 @@ Store as `$TRIGGER`.
 
 ```
 AskUserQuestion(
-  header: "Why",
-  question: "Why does this matter? What problem does it solve or what opportunity does it create?",
-  options: []
+ header: "Why",
+ question: "Why does this matter? What problem does it solve or what opportunity does it create?",
+ options: []
 )
 ```
 
@@ -54,13 +54,13 @@ Store as `$WHY`.
 
 ```
 AskUserQuestion(
-  header: "Scope",
-  question: "How big is this? (rough estimate)",
-  options: [
-    { label: "Small", description: "A few hours — could be a quick task" },
-    { label: "Medium", description: "A phase or two — needs planning" },
-    { label: "Large", description: "A full milestone — significant effort" }
-  ]
+ header: "Scope",
+ question: "How big is this? (rough estimate)",
+ options: [
+  { label: "Small", description: "A few hours — could be a quick task" },
+  { label: "Medium", description: "A phase or two — needs planning" },
+  { label: "Large", description: "A full milestone — significant effort" }
+ ]
 )
 ```
 

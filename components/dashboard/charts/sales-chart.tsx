@@ -99,26 +99,10 @@ export function SalesChart({ data, title = "Динамика продаж", clas
                                 </linearGradient>
                             </defs>
                             <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                            <XAxis
-                                dataKey="dateFormatted"
-                                tick={{ fontSize: 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                            />
-                            <YAxis
-                                tick={{ fontSize: 12 }}
-                                tickLine={false}
-                                axisLine={false}
-                                tickFormatter={formatCurrency}
-                            />
+                            <XAxis dataKey="dateFormatted" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
+                            <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={formatCurrency} />
                             <Tooltip content={<CustomTooltip />} />
-                            <Area
-                                type="monotone"
-                                dataKey="sales"
-                                stroke="rgb(34, 197, 94)"
-                                strokeWidth={2}
-                                fill="url(#salesGradient)"
-                            />
+                            <Area type="monotone" dataKey="sales" stroke="rgb(34, 197, 94)" strokeWidth={2} fill="url(#salesGradient)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>

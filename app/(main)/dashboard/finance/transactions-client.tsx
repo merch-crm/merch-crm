@@ -141,19 +141,11 @@ export function TransactionsClient({
  {/* Search Box */}
  <div className="relative flex-1 min-w-[200px]">
  <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
- <Input
- type="text"
- placeholder="Поиск..."
- value={searchQuery}
- onChange={(e) => setSearchQuery(e.target.value)}
+ <Input type="text" placeholder="Поиск..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
  className="crm-filter-tray-search w-full pl-12 pr-10 focus:outline-none h-12 bg-transparent border-none"
  />
  {searchQuery && (
- <Button
- type="button"
- variant="ghost"
- size="icon"
- onClick={() => setSearchQuery("")}
+ <Button type="button" variant="ghost" size="icon" onClick={() => setSearchQuery("")}
  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-900 h-8 w-8"
  >
  <X className="w-4 h-4" />
@@ -199,10 +191,7 @@ export function TransactionsClient({
  const isActive = view === t.id;
  const TabIcon = t.icon;
  return (
- <Button
- key={t.id}
- variant="ghost"
- onClick={() => setView(t.id as"all" |"payments" |"expenses")}
+ <Button key={t.id} variant="ghost" onClick={() => setView(t.id as"all" |"payments" |"expenses")}
  className={cn("crm-filter-tab shrink-0 px-3 sm:px-6 h-10",
  isActive &&"active"
  )}
@@ -218,9 +207,7 @@ export function TransactionsClient({
  />
  )}
  <div className="relative z-10 flex items-center justify-center gap-2">
- <TabIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors",
- isActive ?"text-white" : (t.id === 'payments' ?"text-emerald-500" : (t.id === 'expenses' ?"text-rose-500" :"text-slate-400"))
- )} />
+ <TabIcon className={cn("w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors", isActive ?"text-white" : (t.id === 'payments' ?"text-emerald-500" : (t.id === 'expenses' ?"text-rose-500" :"text-slate-400")) )} />
  <span className="hidden sm:inline relative z-10">{t.label}</span>
  </div>
  </Button>
@@ -232,9 +219,7 @@ export function TransactionsClient({
 
  {/* Add Button */}
  <div className="shrink-0">
- <Button
- type="button"
- onClick={() => setIsAddingExpense(true)}
+ <Button type="button" onClick={() => setIsAddingExpense(true)}
  className="h-11 px-6 !bg-primary text-white gap-2 border-none rounded-2xl flex items-center justify-center"
  >
  <Plus className="w-4 h-4" />
@@ -253,12 +238,7 @@ export function TransactionsClient({
  {toParam && toParam !== fromParam ? ` — ${format(new Date(toParam),"d MMMM yyyy", { locale: ru })}` : ''}
  </span>
  </div>
- <Button 
- variant="ghost" 
- size="sm" 
- onClick={clearFilters}
- className="h-8 px-3 text-xs font-black text-primary hover:bg-primary/10 rounded-xl"
- >
+ <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 px-3 text-xs font-black text-primary hover:bg-primary/10 rounded-xl">
  <X className="w-3 h-3 mr-1" /> Сбросить
  </Button>
  </div>
@@ -367,8 +347,7 @@ export function TransactionsClient({
  </div>
 
  {isAddingExpense && (
- <AddExpenseDialog
- onClose={() => setIsAddingExpense(false)}
+ <AddExpenseDialog onClose={() => setIsAddingExpense(false)}
  onSuccess={() => {
  setIsAddingExpense(false);
  router.refresh();
@@ -425,27 +404,12 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
  };
 
  return (
- <ResponsiveModal
- isOpen={true}
- onClose={onClose}
- title="Новый расход"
- >
+ <ResponsiveModal isOpen={true} onClose={onClose} title="Новый расход">
  <form onSubmit={handleSubmit} className="p-6 pt-2">
  <div className="space-y-3">
  <div className="space-y-1.5">
  <label className="text-xs font-bold text-slate-400 ml-1">Категория</label>
- <Select
- name="category"
- options={[
- { id:"purchase", title:"Закупки" },
- { id:"salary", title:"Зарплаты" },
- { id:"rent", title:"Аренда" },
- { id:"tax", title:"Налоги" },
- { id:"other", title:"Прочее" }
- ]}
- value={category}
- onChange={setCategory}
- />
+ <Select name="category" options={[ { id:"purchase", title:"Закупки" }, { id:"salary", title:"Зарплаты" }, { id:"rent", title:"Аренда" }, { id:"tax", title:"Налоги" }, { id:"other", title:"Прочее" } ]} value={category} onChange={setCategory} />
  </div>
 
  <div className="space-y-1.5">
@@ -470,12 +434,7 @@ function AddExpenseDialog({ onClose, onSuccess }: { onClose: () => void, onSucce
  </div>
 
  <div className="sticky bottom-0 z-10 p-6 pt-3 flex items-center justify-end gap-3 shrink-0 bg-white border-t border-slate-100 mt-auto">
- <Button
- type="button"
- variant="ghost"
- onClick={onClose}
- className="hidden md:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-full sm:rounded-[var(--radius-inner)]"
- >
+ <Button type="button" variant="ghost" onClick={onClose} className="hidden md:flex h-11 px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-full sm:rounded-[var(--radius-inner)]">
  Отмена
  </Button>
  <SubmitButton variant="action" isLoading={isLoading} className="h-11 w-full md:w-auto md:px-10 rounded-full sm:rounded-[var(--radius-inner)] font-bold shadow-sm shadow-slate-900/10 border-none transition-all active:scale-95">Сохранить</SubmitButton>

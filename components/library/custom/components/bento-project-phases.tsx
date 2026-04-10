@@ -88,14 +88,7 @@ export function BentoProjectPhases({
                     phase.status === "completed" ? "bg-emerald-500/10" : "bg-secondary"
                   )}
                 >
-                  <Icon
-                    size={16}
-                    className={cn(
-                      config.color,
-                      phase.status === "active" && "animate-spin"
-                    )}
-                    style={phase.status === "active" ? { animationDuration: "3s" } : undefined}
-                  />
+                  <Icon size={16} className={cn( config.color, phase.status === "active" && "animate-spin" )} style={phase.status === "active" ? { animationDuration: "3s" } : undefined} />
                 </motion.div>
                 {/* Connecting line */}
                 {!isLast && (

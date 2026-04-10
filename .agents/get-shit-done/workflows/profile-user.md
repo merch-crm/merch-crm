@@ -34,9 +34,9 @@ Use AskUserQuestion:
 - header: "Existing Profile"
 - question: "You already have a profile. What would you like to do?"
 - options:
-  - "View it" -- Display summary card from existing profile data, then exit
-  - "Refresh it" -- Continue with --refresh behavior
-  - "Cancel" -- Exit workflow
+ - "View it" -- Display summary card from existing profile data, then exit
+ - "Refresh it" -- Continue with --refresh behavior
+ - "Cancel" -- Exit workflow
 
 If "View it": Read USER-PROFILE.md, display its content formatted as a summary card, then exit.
 If "Refresh it": Set --refresh behavior and continue.
@@ -75,16 +75,16 @@ how YOU actually work -- not how you think you work.
 Your recent Claude Code sessions, looking for patterns in these
 8 behavioral dimensions:
 
-| Dimension            | What It Measures                            |
+| Dimension      | What It Measures              |
 |----------------------|---------------------------------------------|
-| Communication Style  | How you phrase requests (terse vs. detailed) |
-| Decision Speed       | How you choose between options               |
-| Explanation Depth    | How much explanation you want with code      |
-| Debugging Approach   | How you tackle errors and bugs               |
-| UX Philosophy        | How much you care about design vs. function  |
-| Vendor Philosophy    | How you evaluate libraries and tools         |
-| Frustration Triggers | What makes you correct the agent                |
-| Learning Style       | How you prefer to learn new things           |
+| Communication Style | How you phrase requests (terse vs. detailed) |
+| Decision Speed    | How you choose between options        |
+| Explanation Depth  | How much explanation you want with code   |
+| Debugging Approach  | How you tackle errors and bugs        |
+| UX Philosophy    | How much you care about design vs. function |
+| Vendor Philosophy  | How you evaluate libraries and tools     |
+| Frustration Triggers | What makes you correct the agent        |
+| Learning Style    | How you prefer to learn new things      |
 
 ## Data Handling
 
@@ -107,8 +107,8 @@ Use AskUserQuestion:
 - header: "Refresh"
 - question: "Continue with profile refresh?"
 - options:
-  - "Continue" -- Proceed to step 3
-  - "Cancel" -- Exit workflow
+ - "Continue" -- Proceed to step 3
+ - "Cancel" -- Exit workflow
 
 **If default (no --refresh) path:**
 
@@ -116,9 +116,9 @@ Use AskUserQuestion:
 - header: "Ready?"
 - question: "Ready to analyze your sessions?"
 - options:
-  - "Let's go" -- Proceed to step 3 (session analysis)
-  - "Use questionnaire instead" -- Jump to step 4b (questionnaire path)
-  - "Not now" -- Display "No worries. Run /gsd-profile-user when ready." and exit
+ - "Let's go" -- Proceed to step 3 (session analysis)
+ - "Use questionnaire instead" -- Jump to step 4b (questionnaire path)
+ - "Not now" -- Display "No worries. Run /gsd-profile-user when ready." and exit
 
 ---
 
@@ -252,9 +252,9 @@ Use AskUserQuestion:
 - header: The dimension name (e.g., "Communication Style")
 - question: "Your sessions show different patterns:" followed by the split context (e.g., "CLI/backend projects -> terse-direct, Frontend/UI projects -> detailed-structured")
 - options:
-  - Rating option A (e.g., "terse-direct")
-  - Rating option B (e.g., "detailed-structured")
-  - "Context-dependent (keep both)"
+ - Rating option A (e.g., "terse-direct")
+ - Rating option B (e.g., "detailed-structured")
+ - "Context-dependent (keep both)"
 
 **If user picks a specific rating:** Update the dimension's `rating` field in the analysis JSON to the selected value.
 
@@ -285,16 +285,16 @@ Read the analysis JSON from `$ANALYSIS_PATH` to build the display.
 ```
 ## Your Profile
 
-| Dimension            | Rating               | Confidence |
+| Dimension      | Rating        | Confidence |
 |----------------------|----------------------|------------|
-| Communication Style  | detailed-structured  | HIGH       |
-| Decision Speed       | deliberate-informed  | MEDIUM     |
-| Explanation Depth    | concise              | HIGH       |
-| Debugging Approach   | hypothesis-driven    | MEDIUM     |
-| UX Philosophy        | pragmatic            | LOW        |
-| Vendor Philosophy    | thorough-evaluator   | HIGH       |
-| Frustration Triggers | scope-creep          | MEDIUM     |
-| Learning Style       | self-directed        | HIGH       |
+| Communication Style | detailed-structured | HIGH    |
+| Decision Speed    | deliberate-informed | MEDIUM   |
+| Explanation Depth  | concise       | HIGH    |
+| Debugging Approach  | hypothesis-driven  | MEDIUM   |
+| UX Philosophy    | pragmatic      | LOW    |
+| Vendor Philosophy  | thorough-evaluator  | HIGH    |
+| Frustration Triggers | scope-creep     | MEDIUM   |
+| Learning Style    | self-directed    | HIGH    |
 ```
 
 (Populate with actual values from the analysis JSON.)
@@ -307,11 +307,11 @@ Pick 3-4 dimensions with the highest confidence and most evidence signals. Forma
 ## Highlights
 
 - **Communication (HIGH):** You consistently provide structured context with
-  headers and problem statements before making requests
+ headers and problem statements before making requests
 - **Vendor Choices (HIGH):** You research alternatives thoroughly -- comparing
-  docs, GitHub activity, and bundle sizes before committing
+ docs, GitHub activity, and bundle sizes before committing
 - **Frustrations (MEDIUM):** You correct the agent most often for doing things
-  you didn't ask for -- scope creep is your primary trigger
+ you didn't ask for -- scope creep is your primary trigger
 ```
 
 Build highlights from the `evidence` array and `summary` fields in the analysis JSON. Use the most compelling evidence quotes. Format each as "You tend to..." or "You consistently..." with evidence attribution.
@@ -322,8 +322,8 @@ Use AskUserQuestion:
 - header: "Profile"
 - question: "Want to see the full profile?"
 - options:
-  - "Yes" -- Read and display the full USER-PROFILE.md content, then continue to step 8
-  - "Continue to artifacts" -- Proceed directly to step 8
+ - "Yes" -- Read and display the full USER-PROFILE.md content, then continue to step 8
+ - "Continue to artifacts" -- Proceed directly to step 8
 
 ---
 
@@ -333,9 +333,9 @@ Use AskUserQuestion with multiSelect:
 - header: "Artifacts"
 - question: "Which artifacts should I generate?"
 - options (ALL pre-selected by default):
-  - "/gsd-dev-preferences command file" -- "Load your preferences in any session"
-  - "GEMINI.md profile section" -- "Add profile to this project's GEMINI.md"
-  - "Global GEMINI.md" -- "Add profile to .agent/GEMINI.md for all projects"
+ - "/gsd-dev-preferences command file" -- "Load your preferences in any session"
+ - "GEMINI.md profile section" -- "Add profile to this project's GEMINI.md"
+ - "Global GEMINI.md" -- "Add profile to .agent/GEMINI.md for all projects"
 
 **If no artifacts selected:** Display "No artifacts generated. Your profile is saved at .agent/get-shit-done/USER-PROFILE.md" and jump to step 10.
 
@@ -389,10 +389,10 @@ Compare each dimension's rating and confidence between old and new. Display diff
 ```
 ## Changes
 
-| Dimension       | Before                      | After                        |
+| Dimension    | Before           | After            |
 |-----------------|-----------------------------|-----------------------------|
-| Communication   | terse-direct (LOW)          | detailed-structured (HIGH)  |
-| Debugging       | fix-first (MEDIUM)          | hypothesis-driven (MEDIUM)  |
+| Communication  | terse-direct (LOW)     | detailed-structured (HIGH) |
+| Debugging    | fix-first (MEDIUM)     | hypothesis-driven (MEDIUM) |
 ```
 
 If nothing changed: Display "No changes detected -- your profile is already up to date."
@@ -404,15 +404,15 @@ If nothing changed: Display "No changes detected -- your profile is already up t
  GSD > PROFILE COMPLETE ✓
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Your profile:    .agent/get-shit-done/USER-PROFILE.md
+Your profile:  .agent/get-shit-done/USER-PROFILE.md
 ```
 
 Then list paths for each generated artifact:
 ```
 Artifacts:
-  ✓ /gsd-dev-preferences   .agent/commands/gsd/dev-preferences.md
-  ✓ GEMINI.md section       ./GEMINI.md
-  ✓ Global GEMINI.md        .agent/GEMINI.md
+ ✓ /gsd-dev-preferences  .agent/commands/gsd/dev-preferences.md
+ ✓ GEMINI.md section    ./GEMINI.md
+ ✓ Global GEMINI.md    .agent/GEMINI.md
 ```
 
 (Only show artifacts that were actually generated.)

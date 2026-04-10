@@ -5,7 +5,7 @@ tags:
   - ui
   - компоненты
   - фронтенд
-обновлено: 2026-03-30
+обновлено: 2026-04-09
 related:
   - "[[UX-дизайн]]"
   - "[[Звуковая-обратная-связь]]"
@@ -30,13 +30,14 @@ related:
 | Кнопка отправки формы         | `SubmitButton`             | `@/components/ui/submit-button`              |
 | Уведомление                   | `toast` / `useToast`       | `@/components/ui/toast`                      |
 | Подтверждение действия        | `ConfirmDialog`            | `@/components/ui/confirm-dialog`             |
+| Брендинг (цвета, CSS-vars)    | `BrandingProvider`         | `@/components/branding-provider`             |
 
 ## Правила состояний
 - Загрузка → `Skeleton` или `Spinner`
 - Пусто → `EmptyState` или `GlassEmptyState`
 - Ошибка → `ErrorView`
 - Отправка → `SubmitButton` с `loading`
-- Статус → `Badge` (из `heroui`) или кастомные `Badges` для CRM
+- Статус → Кастомные `Badges` для CRM из `@/components/ui/badges`
 
 ---
 [[Merch-CRM|Назад к оглавлению]]

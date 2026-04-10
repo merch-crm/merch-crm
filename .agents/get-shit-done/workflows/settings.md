@@ -41,119 +41,119 @@ Use AskUserQuestion with current values pre-selected:
 
 ```
 AskUserQuestion([
-  {
-    question: "Which model profile for agents?",
-    header: "Model",
-    multiSelect: false,
-    options: [
-      { label: "Quality", description: "Opus everywhere except verification (highest cost)" },
-      { label: "Balanced (Recommended)", description: "Opus for planning, Sonnet for research/execution/verification" },
-      { label: "Budget", description: "Sonnet for writing, Haiku for research/verification (lowest cost)" },
-      { label: "Inherit", description: "Use current session model for all agents (best for OpenRouter, local models, or runtime model switching)" }
-    ]
-  },
-  {
-    question: "Spawn Plan Researcher? (researches domain before planning)",
-    header: "Research",
-    multiSelect: false,
-    options: [
-      { label: "Yes", description: "Research phase goals before planning" },
-      { label: "No", description: "Skip research, plan directly" }
-    ]
-  },
-  {
-    question: "Spawn Plan Checker? (verifies plans before execution)",
-    header: "Plan Check",
-    multiSelect: false,
-    options: [
-      { label: "Yes", description: "Verify plans meet phase goals" },
-      { label: "No", description: "Skip plan verification" }
-    ]
-  },
-  {
-    question: "Spawn Execution Verifier? (verifies phase completion)",
-    header: "Verifier",
-    multiSelect: false,
-    options: [
-      { label: "Yes", description: "Verify must-haves after execution" },
-      { label: "No", description: "Skip post-execution verification" }
-    ]
-  },
-  {
-    question: "Auto-advance pipeline? (discuss → plan → execute automatically)",
-    header: "Auto",
-    multiSelect: false,
-    options: [
-      { label: "No (Recommended)", description: "Manual /clear + paste between stages" },
-      { label: "Yes", description: "Chain stages via Task() subagents (same isolation)" }
-    ]
-  },
-  {
-    question: "Enable Nyquist Validation? (researches test coverage during planning)",
-    header: "Nyquist",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Research automated test coverage during plan-phase. Adds validation requirements to plans. Blocks approval if tasks lack automated verify." },
-      { label: "No", description: "Skip validation research. Good for rapid prototyping or no-test phases." }
-    ]
-  },
-  // Note: Nyquist validation depends on research output. If research is disabled,
-  // plan-phase automatically skips Nyquist steps (no RESEARCH.md to extract from).
-  {
-    question: "Enable UI Phase? (generates UI-SPEC.md design contracts for frontend phases)",
-    header: "UI Phase",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Generate UI design contracts before planning frontend phases. Locks spacing, typography, color, and copywriting." },
-      { label: "No", description: "Skip UI-SPEC generation. Good for backend-only projects or API phases." }
-    ]
-  },
-  {
-    question: "Enable UI Safety Gate? (prompts to run /gsd-ui-phase before planning frontend phases)",
-    header: "UI Gate",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "plan-phase asks to run /gsd-ui-phase first when frontend indicators detected." },
-      { label: "No", description: "No prompt — plan-phase proceeds without UI-SPEC check." }
-    ]
-  },
-  {
-    question: "Git branching strategy?",
-    header: "Branching",
-    multiSelect: false,
-    options: [
-      { label: "None (Recommended)", description: "Commit directly to current branch" },
-      { label: "Per Phase", description: "Create branch for each phase (gsd/phase-{N}-{name})" },
-      { label: "Per Milestone", description: "Create branch for entire milestone (gsd/{version}-{name})" }
-    ]
-  },
-  {
-    question: "Enable context window warnings? (injects advisory messages when context is getting full)",
-    header: "Ctx Warnings",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Warn when context usage exceeds 65%. Helps avoid losing work." },
-      { label: "No", description: "Disable warnings. Allows the agent to reach auto-compact naturally. Good for long unattended runs." }
-    ]
-  },
-  {
-    question: "Research best practices before asking questions? (web search during new-project and discuss-phase)",
-    header: "Research Qs",
-    multiSelect: false,
-    options: [
-      { label: "No (Recommended)", description: "Ask questions directly. Faster, uses fewer tokens." },
-      { label: "Yes", description: "Search web for best practices before each question group. More informed questions but uses more tokens." }
-    ]
-  },
-  {
-    question: "Skip discuss-phase in autonomous mode? (use ROADMAP phase goals as spec)",
-    header: "Skip Discuss",
-    multiSelect: false,
-    options: [
-      { label: "No (Recommended)", description: "Run smart discuss before each phase — surfaces gray areas and captures decisions." },
-      { label: "Yes", description: "Skip discuss in /gsd-autonomous — chain directly to plan. Best for backend/pipeline work where phase descriptions are the spec." }
-    ]
-  }
+ {
+  question: "Which model profile for agents?",
+  header: "Model",
+  multiSelect: false,
+  options: [
+   { label: "Quality", description: "Opus everywhere except verification (highest cost)" },
+   { label: "Balanced (Recommended)", description: "Opus for planning, Sonnet for research/execution/verification" },
+   { label: "Budget", description: "Sonnet for writing, Haiku for research/verification (lowest cost)" },
+   { label: "Inherit", description: "Use current session model for all agents (best for OpenRouter, local models, or runtime model switching)" }
+  ]
+ },
+ {
+  question: "Spawn Plan Researcher? (researches domain before planning)",
+  header: "Research",
+  multiSelect: false,
+  options: [
+   { label: "Yes", description: "Research phase goals before planning" },
+   { label: "No", description: "Skip research, plan directly" }
+  ]
+ },
+ {
+  question: "Spawn Plan Checker? (verifies plans before execution)",
+  header: "Plan Check",
+  multiSelect: false,
+  options: [
+   { label: "Yes", description: "Verify plans meet phase goals" },
+   { label: "No", description: "Skip plan verification" }
+  ]
+ },
+ {
+  question: "Spawn Execution Verifier? (verifies phase completion)",
+  header: "Verifier",
+  multiSelect: false,
+  options: [
+   { label: "Yes", description: "Verify must-haves after execution" },
+   { label: "No", description: "Skip post-execution verification" }
+  ]
+ },
+ {
+  question: "Auto-advance pipeline? (discuss → plan → execute automatically)",
+  header: "Auto",
+  multiSelect: false,
+  options: [
+   { label: "No (Recommended)", description: "Manual /clear + paste between stages" },
+   { label: "Yes", description: "Chain stages via Task() subagents (same isolation)" }
+  ]
+ },
+ {
+  question: "Enable Nyquist Validation? (researches test coverage during planning)",
+  header: "Nyquist",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Research automated test coverage during plan-phase. Adds validation requirements to plans. Blocks approval if tasks lack automated verify." },
+   { label: "No", description: "Skip validation research. Good for rapid prototyping or no-test phases." }
+  ]
+ },
+ // Note: Nyquist validation depends on research output. If research is disabled,
+ // plan-phase automatically skips Nyquist steps (no RESEARCH.md to extract from).
+ {
+  question: "Enable UI Phase? (generates UI-SPEC.md design contracts for frontend phases)",
+  header: "UI Phase",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Generate UI design contracts before planning frontend phases. Locks spacing, typography, color, and copywriting." },
+   { label: "No", description: "Skip UI-SPEC generation. Good for backend-only projects or API phases." }
+  ]
+ },
+ {
+  question: "Enable UI Safety Gate? (prompts to run /gsd-ui-phase before planning frontend phases)",
+  header: "UI Gate",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "plan-phase asks to run /gsd-ui-phase first when frontend indicators detected." },
+   { label: "No", description: "No prompt — plan-phase proceeds without UI-SPEC check." }
+  ]
+ },
+ {
+  question: "Git branching strategy?",
+  header: "Branching",
+  multiSelect: false,
+  options: [
+   { label: "None (Recommended)", description: "Commit directly to current branch" },
+   { label: "Per Phase", description: "Create branch for each phase (gsd/phase-{N}-{name})" },
+   { label: "Per Milestone", description: "Create branch for entire milestone (gsd/{version}-{name})" }
+  ]
+ },
+ {
+  question: "Enable context window warnings? (injects advisory messages when context is getting full)",
+  header: "Ctx Warnings",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Warn when context usage exceeds 65%. Helps avoid losing work." },
+   { label: "No", description: "Disable warnings. Allows the agent to reach auto-compact naturally. Good for long unattended runs." }
+  ]
+ },
+ {
+  question: "Research best practices before asking questions? (web search during new-project and discuss-phase)",
+  header: "Research Qs",
+  multiSelect: false,
+  options: [
+   { label: "No (Recommended)", description: "Ask questions directly. Faster, uses fewer tokens." },
+   { label: "Yes", description: "Search web for best practices before each question group. More informed questions but uses more tokens." }
+  ]
+ },
+ {
+  question: "Skip discuss-phase in autonomous mode? (use ROADMAP phase goals as spec)",
+  header: "Skip Discuss",
+  multiSelect: false,
+  options: [
+   { label: "No (Recommended)", description: "Run smart discuss before each phase — surfaces gray areas and captures decisions." },
+   { label: "Yes", description: "Skip discuss in /gsd-autonomous — chain directly to plan. Best for backend/pipeline work where phase descriptions are the spec." }
+  ]
+ }
 ])
 ```
 </step>
@@ -163,29 +163,29 @@ Merge new settings into existing config.json:
 
 ```json
 {
-  ...existing_config,
-  "model_profile": "quality" | "balanced" | "budget" | "inherit",
-  "workflow": {
-    "research": true/false,
-    "plan_check": true/false,
-    "verifier": true/false,
-    "auto_advance": true/false,
-    "nyquist_validation": true/false,
-    "ui_phase": true/false,
-    "ui_safety_gate": true/false,
-    "text_mode": true/false,
-    "research_before_questions": true/false,
-    "discuss_mode": "discuss" | "assumptions",
-    "skip_discuss": true/false
-  },
-  "git": {
-    "branching_strategy": "none" | "phase" | "milestone",
-    "quick_branch_template": <string|null>
-  },
-  "hooks": {
-    "context_warnings": true/false,
-    "workflow_guard": true/false
-  }
+ ...existing_config,
+ "model_profile": "quality" | "balanced" | "budget" | "inherit",
+ "workflow": {
+  "research": true/false,
+  "plan_check": true/false,
+  "verifier": true/false,
+  "auto_advance": true/false,
+  "nyquist_validation": true/false,
+  "ui_phase": true/false,
+  "ui_safety_gate": true/false,
+  "text_mode": true/false,
+  "research_before_questions": true/false,
+  "discuss_mode": "discuss" | "assumptions",
+  "skip_discuss": true/false
+ },
+ "git": {
+  "branching_strategy": "none" | "phase" | "milestone",
+  "quick_branch_template": <string|null>
+ },
+ "hooks": {
+  "context_warnings": true/false,
+  "workflow_guard": true/false
+ }
 }
 ```
 
@@ -197,15 +197,15 @@ Ask whether to save these settings as global defaults for future projects:
 
 ```
 AskUserQuestion([
-  {
-    question: "Save these as default settings for all new projects?",
-    header: "Defaults",
-    multiSelect: false,
-    options: [
-      { label: "Yes", description: "New projects start with these settings (saved to ~/.gsd/defaults.json)" },
-      { label: "No", description: "Only apply to this project" }
-    ]
-  }
+ {
+  question: "Save these as default settings for all new projects?",
+  header: "Defaults",
+  multiSelect: false,
+  options: [
+   { label: "Yes", description: "New projects start with these settings (saved to ~/.gsd/defaults.json)" },
+   { label: "No", description: "Only apply to this project" }
+  ]
+ }
 ])
 ```
 
@@ -218,23 +218,23 @@ mkdir -p ~/.gsd
 Write `~/.gsd/defaults.json` with:
 ```json
 {
-  "mode": <current>,
-  "granularity": <current>,
-  "model_profile": <current>,
-  "commit_docs": <current>,
-  "parallelization": <current>,
-  "branching_strategy": <current>,
-  "quick_branch_template": <current>,
-  "workflow": {
-    "research": <current>,
-    "plan_check": <current>,
-    "verifier": <current>,
-    "auto_advance": <current>,
-    "nyquist_validation": <current>,
-    "ui_phase": <current>,
-    "ui_safety_gate": <current>,
-    "skip_discuss": <current>
-  }
+ "mode": <current>,
+ "granularity": <current>,
+ "model_profile": <current>,
+ "commit_docs": <current>,
+ "parallelization": <current>,
+ "branching_strategy": <current>,
+ "quick_branch_template": <current>,
+ "workflow": {
+  "research": <current>,
+  "plan_check": <current>,
+  "verifier": <current>,
+  "auto_advance": <current>,
+  "nyquist_validation": <current>,
+  "ui_phase": <current>,
+  "ui_safety_gate": <current>,
+  "skip_discuss": <current>
+ }
 }
 ```
 </step>
@@ -247,20 +247,20 @@ Display:
  GSD ► SETTINGS UPDATED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-| Setting              | Value |
+| Setting       | Value |
 |----------------------|-------|
-| Model Profile        | {quality/balanced/budget/inherit} |
-| Plan Researcher      | {On/Off} |
-| Plan Checker         | {On/Off} |
-| Execution Verifier   | {On/Off} |
-| Auto-Advance         | {On/Off} |
-| Nyquist Validation   | {On/Off} |
-| UI Phase             | {On/Off} |
-| UI Safety Gate       | {On/Off} |
-| Git Branching        | {None/Per Phase/Per Milestone} |
-| Skip Discuss         | {On/Off} |
-| Context Warnings     | {On/Off} |
-| Saved as Defaults    | {Yes/No} |
+| Model Profile    | {quality/balanced/budget/inherit} |
+| Plan Researcher   | {On/Off} |
+| Plan Checker     | {On/Off} |
+| Execution Verifier  | {On/Off} |
+| Auto-Advance     | {On/Off} |
+| Nyquist Validation  | {On/Off} |
+| UI Phase       | {On/Off} |
+| UI Safety Gate    | {On/Off} |
+| Git Branching    | {None/Per Phase/Per Milestone} |
+| Skip Discuss     | {On/Off} |
+| Context Warnings   | {On/Off} |
+| Saved as Defaults  | {Yes/No} |
 
 These settings apply to future /gsd-plan-phase and /gsd-execute-phase runs.
 

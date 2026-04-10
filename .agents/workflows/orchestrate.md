@@ -110,16 +110,16 @@ Do you approve? (Y/N)
 ### Step 1: Analyze Task Domains
 Identify ALL domains this task touches:
 ```
-□ Security     → security-auditor, penetration-tester
-□ Backend/API  → backend-specialist
-□ Frontend/UI  → frontend-specialist
-□ Database     → database-architect
-□ Testing      → test-engineer
-□ DevOps       → devops-engineer
-□ Mobile       → mobile-developer
-□ Performance  → performance-optimizer
-□ SEO          → seo-specialist
-□ Planning     → project-planner
+□ Security   → security-auditor, penetration-tester
+□ Backend/API → backend-specialist
+□ Frontend/UI → frontend-specialist
+□ Database   → database-architect
+□ Testing   → test-engineer
+□ DevOps    → devops-engineer
+□ Mobile    → mobile-developer
+□ Performance → performance-optimizer
+□ SEO     → seo-specialist
+□ Planning   → project-planner
 ```
 
 ### Step 2: Phase Detection

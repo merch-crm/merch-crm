@@ -53,10 +53,10 @@ promoted: false
 2. Ensure the notes directory exists (`.planning/notes/` or `.agent/notes/`)
 3. Generate slug: first ~4 meaningful words of the note text, lowercase, hyphen-separated (strip articles/prepositions from the start)
 4. Generate filename: `{YYYY-MM-DD}-{slug}.md`
-   - If a file with that name already exists, append `-2`, `-3`, etc.
+  - If a file with that name already exists, append `-2`, `-3`, etc.
 5. Write the file with frontmatter and note text (see storage format)
 6. Confirm with exactly one line: `Noted ({scope}): {note text}`
-   - Where `{scope}` is "project" or "global"
+  - Where `{scope}` is "project" or "global"
 
 **Constraints:**
 - **Never modify the note text** — capture verbatim, including typos
@@ -80,12 +80,12 @@ promoted: false
 Notes:
 
 Project (.planning/notes/):
-  1. [2026-02-08 14:32] refactor the hook system to support async validators
-  2. [promoted] [2026-02-08 14:40] add rate limiting to the API endpoints
-  3. [2026-02-08 15:10] consider adding a --dry-run flag to build
+ 1. [2026-02-08 14:32] refactor the hook system to support async validators
+ 2. [promoted] [2026-02-08 14:40] add rate limiting to the API endpoints
+ 3. [2026-02-08 15:10] consider adding a --dry-run flag to build
 
 Global (.agent/notes/):
-  4. [2026-02-08 10:00] cross-project idea about shared config
+ 4. [2026-02-08 10:00] cross-project idea about shared config
 
 {count} active note(s). Use `/gsd-note promote <N>` to convert to a todo.
 ```

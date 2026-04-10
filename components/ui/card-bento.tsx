@@ -148,10 +148,7 @@ export function CardTitle({
     ...props
 }: CardTitleProps) {
     return (
-        <Component
-            className={cn('text-lg font-semibold text-slate-900', className)}
-            {...props}
-        >
+        <Component className={cn('text-lg font-semibold text-slate-900', className)} {...props}>
             {children}
         </Component>
     );

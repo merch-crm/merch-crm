@@ -1,39 +1,39 @@
 import { getSession, type Session } from "@/lib/session";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
-    getClientsForFunnel,
-    getFunnelStats,
-    updateClientFunnelStage,
-    markClientAsLost
+  getClientsForFunnel,
+  getFunnelStats,
+  updateClientFunnelStage,
+  markClientAsLost
 } from '@/app/(main)/dashboard/clients/actions/funnel.actions';
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 
 const { mockDb, chainable } = vi.hoisted(() => {
-    const chainable = {
-        where: vi.fn().mockReturnThis(),
-        set: vi.fn().mockReturnThis(),
-        from: vi.fn().mockReturnThis(),
-        groupBy: vi.fn().mockReturnThis(),
-        orderBy: vi.fn().mockReturnThis(),
-        limit: vi.fn().mockReturnThis(),
-        leftJoin: vi.fn().mockReturnThis(),
-        returning: vi.fn().mockResolvedValue([]),
-        then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
-    };
+  const chainable = {
+    where: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
+    from: vi.fn().mockReturnThis(),
+    groupBy: vi.fn().mockReturnThis(),
+    orderBy: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    leftJoin: vi.fn().mockReturnThis(),
+    returning: vi.fn().mockResolvedValue([]),
+    then: vi.fn().mockImplementation((cb: (arg: unknown[]) => void) => cb([])),
+  };
 
-    const queryMock = {
-        clients: { findFirst: vi.fn().mockResolvedValue(null) },
-        users: { findFirst: vi.fn().mockResolvedValue(null) },
-    };
+  const queryMock = {
+    clients: { findFirst: vi.fn().mockResolvedValue(null) },
+    users: { findFirst: vi.fn().mockResolvedValue(null) },
+  };
 
-    const mockDb = {
-        query: queryMock,
-        select: vi.fn().mockReturnValue(chainable),
-        update: vi.fn().mockReturnValue(chainable),
-    };
+  const mockDb = {
+    query: queryMock,
+    select: vi.fn().mockReturnValue(chainable),
+    update: vi.fn().mockReturnValue(chainable),
+  };
 
-    return { mockDb, chainable };
+  return { mockDb, chainable };
 });
 
 vi.mock('@/lib/db', () => ({ db: mockDb }));
@@ -48,91 +48,91 @@ import { logAction } from '@/lib/audit';
 import { mockSession } from '../helpers/mocks';
 
 describe('Funnel Actions', () => {
-    beforeEach(() => {
-        vi.clearAllMocks();
-        vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
-        
-        // Mock users.findFirst for withAuth
-        (mockDb.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
-            id: 'user-id',
-            name: 'Test User',
-            email: 'test@example.com',
-            role: { name: 'Администратор', permissions: {} },
-        });
-
-        chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(getSession).mockResolvedValue(mockSession() as Session);
+    
+    // Mock users.findFirst for withAuth
+    (mockDb.query.users.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'user-id',
+      name: 'Test User',
+      email: 'test@example.com',
+      role: { name: 'Администратор', permissions: {} },
     });
 
-    describe('getClientsForFunnel', () => {
-        it('should return non-archived, non-lost clients', async () => {
-            const mockClients = [{ id: '1', lastName: 'Ivanov', funnelStage: 'lead' }];
-            chainable.then.mockImplementationOnce((cb: (arg: typeof mockClients) => void) => cb(mockClients));
+    chainable.then.mockImplementation((cb: (arg: unknown[]) => void) => cb([]));
+  });
 
-            const result = await getClientsForFunnel();
-            expect(Array.isArray(result)).toBe(false); // It's an ActionResult
-            expect(result.success).toBe(true);
-            if (result.success) {
-                expect(result.data).toEqual(mockClients);
-            }
-            expect(mockDb.select).toHaveBeenCalled();
-        });
+  describe('getClientsForFunnel', () => {
+    it('should return non-archived, non-lost clients', async () => {
+      const mockClients = [{ id: '1', lastName: 'Ivanov', funnelStage: 'lead' }];
+      chainable.then.mockImplementationOnce((cb: (arg: typeof mockClients) => void) => cb(mockClients));
 
-        it('should return error result on DB failure', async () => {
-            chainable.then.mockImplementationOnce(() => { throw new Error('DB error'); });
-            const result = await getClientsForFunnel();
-            expect(result.success).toBe(false);
-        });
+      const result = await getClientsForFunnel();
+      expect(Array.isArray(result)).toBe(false); // It's an ActionResult
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data).toEqual(mockClients);
+      }
+      expect(mockDb.select).toHaveBeenCalled();
     });
 
-    describe('getFunnelStats', () => {
-        it('should return aggregated stats by stage', async () => {
-            const mockStats = [
-                { stage: 'lead', count: 5, amount: '5000' },
-                { stage: 'negotiation', count: 2, amount: '2000' }
-            ];
-            chainable.then.mockImplementationOnce((cb: (arg: typeof mockStats) => void) => cb(mockStats));
+    it('should return error result on DB failure', async () => {
+      chainable.then.mockImplementationOnce(() => { throw new Error('DB error'); });
+      const result = await getClientsForFunnel();
+      expect(result.success).toBe(false);
+    });
+  });
 
-            const result = await getFunnelStats();
+  describe('getFunnelStats', () => {
+    it('should return aggregated stats by stage', async () => {
+      const mockStats = [
+        { stage: 'lead', count: 5, amount: '5000' },
+        { stage: 'negotiation', count: 2, amount: '2000' }
+      ];
+      chainable.then.mockImplementationOnce((cb: (arg: typeof mockStats) => void) => cb(mockStats));
 
-            expect(result.success).toBe(true);
-            if (result.success) {
-                const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
-                expect(data.lead).toEqual({ count: 5, amount: 5000 });
-                expect(data.negotiation).toEqual({ count: 2, amount: 2000 });
-            }
-        });
+      const result = await getFunnelStats();
+
+      expect(result.success).toBe(true);
+      if (result.success) {
+        const data = result.data as unknown as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+        expect(data.lead).toEqual({ count: 5, amount: 5000 });
+        expect(data.negotiation).toEqual({ count: 2, amount: 2000 });
+      }
+    });
+  });
+
+  describe('updateClientFunnelStage', () => {
+    it('should update stage and log action', async () => {
+      const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
+      const stage = 'negotiation';
+
+      await updateClientFunnelStage(clientId, stage);
+
+      expect(mockDb.update).toHaveBeenCalled();
+      expect(logAction).toHaveBeenCalledWith('update_funnel_stage', 'client', clientId, { stage });
     });
 
-    describe('updateClientFunnelStage', () => {
-        it('should update stage and log action', async () => {
-            const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
-            const stage = 'negotiation';
-
-            await updateClientFunnelStage(clientId, stage);
-
-            expect(mockDb.update).toHaveBeenCalled();
-            expect(logAction).toHaveBeenCalledWith('update_funnel_stage', 'client', clientId, { stage });
-        });
-
-        it('should return unauthorized error on missing session', async () => {
-            vi.mocked(getSession).mockResolvedValueOnce(null);
-            const result = await updateClientFunnelStage('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'stage');
-            expect(result.success).toBe(false);
-            if (!result.success) {
-                expect(result.error).toBe("Не авторизован");
-            }
-        });
+    it('should return unauthorized error on missing session', async () => {
+      vi.mocked(getSession).mockResolvedValueOnce(null);
+      const result = await updateClientFunnelStage('4242XXXX-XXXX-4242-4242-XXXXXXXX4242', 'stage');
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toBe("Не авторизован");
+      }
     });
+  });
 
-    describe('markClientAsLost', () => {
-        it('should archive client and set lost reason', async () => {
-            const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
-            const reason = 'High price';
+  describe('markClientAsLost', () => {
+    it('should archive client and set lost reason', async () => {
+      const clientId = '4242XXXX-XXXX-4242-4242-XXXXXXXX4242';
+      const reason = 'High price';
 
-            await markClientAsLost(clientId, reason, 'Too expensive for them');
+      await markClientAsLost(clientId, reason, 'Too expensive for them');
 
-            expect(mockDb.update).toHaveBeenCalled();
-            expect(logAction).toHaveBeenCalledWith('mark_as_lost', 'client', clientId, { reason, comment: 'Too expensive for them' });
-        });
+      expect(mockDb.update).toHaveBeenCalled();
+      expect(logAction).toHaveBeenCalledWith('mark_as_lost', 'client', clientId, { reason, comment: 'Too expensive for them' });
     });
+  });
 });

@@ -63,15 +63,7 @@ export function ResponsiveModal({
     }
 
     return (
-        <BottomSheet
-            isOpen={isOpen}
-            onClose={onClose}
-            title={title}
-            showVisualTitle={showVisualTitle}
-            className={className}
-            footer={footer}
-            hideClose={shouldHideClose}
-        >
+        <BottomSheet isOpen={isOpen} onClose={onClose} title={title} showVisualTitle={showVisualTitle} className={className} footer={footer} hideClose={shouldHideClose}>
             {children}
         </BottomSheet>
     );

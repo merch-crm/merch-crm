@@ -5,7 +5,7 @@ import { Undo2, X } from "lucide-react";
 import { undoLastAction } from "@/app/(main)/dashboard/undo-actions";
 import { useToast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import { Root as Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function GlobalUndo() {
@@ -47,33 +47,27 @@ export function GlobalUndo() {
 
     return (
         <div className={cn(
-            "fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-slate-900 text-white rounded-[24px] shadow-2xl z-50 animate-in slide-in-from-bottom-5 duration-500",
+            "fixed bottom-24 md:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-3 px-6 py-4 bg-white/80 backdrop-blur-xl border border-slate-200/60 text-slate-900 rounded-[24px] shadow-xl shadow-slate-200/40 z-50 animate-in slide-in-from-bottom-5 duration-500",
             isUndoing && "opacity-50 pointer-events-none"
         )}>
             <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center">
-                    <Undo2 className="w-4 h-4 text-slate-400" />
+                <div className="w-8 h-8 rounded-full bg-[#5d00ff]/10 flex items-center justify-center">
+                    <Undo2 className="w-4 h-4 text-[#5d00ff]" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="text-xs font-bold  text-slate-500">Последнее действие</span>
-                    <span className="text-xs font-bold">Выполнено успешно</span>
+                    <span className="text-[10px] font-black tracking-wider text-slate-400">Последнее действие</span>
+                    <span className="text-xs font-bold text-slate-700">Выполнено успешно</span>
                 </div>
             </div>
 
-            <div className="w-[1px] h-8 bg-slate-800" />
+            <div className="w-[1px] h-8 bg-slate-100" />
 
-            <Button
-                onClick={handleUndo}
-                className="bg-white text-slate-900 hover:bg-slate-100 h-10 px-6 rounded-[18px] text-xs font-bold"
-            >
+            <Button onClick={handleUndo} className="bg-slate-900 text-white hover:bg-slate-800 h-10 px-6 rounded-[18px] text-xs font-bold shadow-lg shadow-slate-900/10">
                 {isUndoing ? "Отмена..." : "Отменить"}
             </Button>
 
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsVisible(false)}
-                className="text-slate-500 hover:text-white hover:bg-white/10 h-8 w-8 rounded-full"
+            <Button variant="ghost" size="icon" onClick={() => setIsVisible(false)}
+                className="text-slate-400 hover:text-slate-900 hover:bg-slate-100 h-8 w-8 rounded-full"
             >
                 <X className="w-4 h-4" />
             </Button>

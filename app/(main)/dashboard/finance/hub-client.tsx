@@ -137,11 +137,7 @@ export function HubClient({ stats, plReport }: HubClientProps) {
  
  <div className="h-[300px] w-full mt-4">
  <ResponsiveContainer width="100%" height="100%">
- <AreaChart 
- data={stats.chartData} 
- margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
- style={{ cursor: 'pointer' }}
- onClick={(data) => {
+ <AreaChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }} style={{ cursor: 'pointer' }} onClick={(data) => {
  if (data && data.activeLabel) {
  router.push(`/dashboard/finance/transactions?from=${data.activeLabel}&to=${data.activeLabel}`);
  }
@@ -154,35 +150,16 @@ export function HubClient({ stats, plReport }: HubClientProps) {
  </linearGradient>
  </defs>
  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
- <XAxis 
- dataKey="date" 
- axisLine={false} 
- tickLine={false} 
- tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}}
- tickFormatter={(str) => {
+ <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}} tickFormatter={(str) => {
  const date = new Date(str);
  return date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
  }}
  />
- <YAxis 
- axisLine={false} 
- tickLine={false} 
- tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}}
- tickFormatter={(val) => `${(val / 1000).toFixed(0)}k`}
+ <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8', fontWeight: 600}} tickFormatter={(val) => `${(val / 1000).toFixed(0)}k`}
  />
- <Tooltip 
- contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px' }}
- formatter={(value: number) => [value.toLocaleString() + ' ' + currencySymbol,"Выручка"]}
+ <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px' }} formatter={(value: number) => [value.toLocaleString() + ' ' + currencySymbol,"Выручка"]}
  />
- <Area 
- type="monotone" 
- dataKey="revenue" 
- stroke="#6366f1" 
- strokeWidth={4}
- fillOpacity={1} 
- fill="url(#colorRev)" 
- animationDuration={2000}
- />
+ <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" animationDuration={2000} />
  </AreaChart>
  </ResponsiveContainer>
  </div>
@@ -200,11 +177,7 @@ export function HubClient({ stats, plReport }: HubClientProps) {
  <h4 className="text-lg font-black mb-4 relative z-10">Быстрый доступ</h4>
  <div className="grid grid-cols-1 gap-2 relative z-10">
  {quickLinks.map((link, i) => (
- <Link 
- key={i} 
- href={link.href}
- className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group"
- >
+ <Link key={i} href={link.href} className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group">
  <div className="flex items-center gap-3">
  <div className={cn("p-2 rounded-xl bg-white/10", link.color)}>
  <link.icon className="w-4 h-4" />

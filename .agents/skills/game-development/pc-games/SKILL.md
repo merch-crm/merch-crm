@@ -18,18 +18,18 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 What are you building?
 │
 ├── 2D Game
-│   ├── Open source important? → Godot
-│   └── Large team/assets? → Unity
+│  ├── Open source important? → Godot
+│  └── Large team/assets? → Unity
 │
 ├── 3D Game
-│   ├── AAA visual quality? → Unreal
-│   ├── Cross-platform priority? → Unity
-│   └── Indie/open source? → Godot 4
+│  ├── AAA visual quality? → Unreal
+│  ├── Cross-platform priority? → Unity
+│  └── Indie/open source? → Godot 4
 │
 └── Specific Needs
-    ├── DOTS performance? → Unity
-    ├── Nanite/Lumen? → Unreal
-    └── Lightweight? → Godot
+  ├── DOTS performance? → Unity
+  ├── Nanite/Lumen? → Unreal
+  └── Lightweight? → Godot
 ```
 
 ### Comparison

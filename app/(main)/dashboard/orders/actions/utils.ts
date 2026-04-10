@@ -12,22 +12,22 @@ export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
  * This is used when an order is cancelled or deleted.
  */
 export async function releaseOrderReservation(orderId: string, tx?: Transaction) {
-    const d = tx || db;
+  const d = tx || db;
 
-    const items = await d.query.orderItems.findMany({
-        where: eq(orderItems.orderId, orderId),
-        with: { inventory: true },
-        limit: 100 // Safety limit
-    });
+  const items = await d.query.orderItems.findMany({
+    where: eq(orderItems.orderId, orderId),
+    with: { inventory: true },
+    limit: 100 // Safety limit
+  });
 
-    for (const item of items) {
-        if (item.inventoryId) {
-            // Atomic decrement to avoid race conditions
-            await d.update(inventoryItems)
-                .set({
-                    reservedQuantity: sql`GREATEST(0, ${inventoryItems.reservedQuantity} - ${item.quantity})`
-                })
-                .where(eq(inventoryItems.id, item.inventoryId));
-        }
+  for (const item of items) {
+    if (item.inventoryId) {
+      // Atomic decrement to avoid race conditions
+      await d.update(inventoryItems)
+        .set({
+          reservedQuantity: sql`GREATEST(0, ${inventoryItems.reservedQuantity} - ${item.quantity})`
+        })
+        .where(eq(inventoryItems.id, item.inventoryId));
     }
+  }
 }

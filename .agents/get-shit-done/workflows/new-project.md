@@ -25,10 +25,10 @@ Check if `--auto` flag is present in $ARGUMENTS.
 - Skip deep questioning (extract context from provided document)
 - Config: YOLO mode is implicit (skip that question), but ask granularity/git/agents FIRST (Step 2a)
 - After config: run Steps 6-9 automatically with smart defaults:
-  - Research: Always yes
-  - Requirements: Include all table stakes + features from provided document
-  - Requirements approval: Auto-approve
-  - Roadmap approval: Auto-approve
+ - Research: Always yes
+ - Requirements: Include all table stakes + features from provided document
+ - Requirements approval: Auto-approve
+ - Roadmap approval: Auto-approve
 
 **Document requirement:**
 Auto mode requires an idea document — either:
@@ -42,8 +42,8 @@ If no document content provided, error:
 Error: --auto requires an idea document.
 
 Usage:
-  /gsd-new-project --auto @your-idea.md
-  /gsd-new-project --auto [paste or write your idea here]
+ /gsd-new-project --auto @your-idea.md
+ /gsd-new-project --auto [paste or write your idea here]
 
 The document should describe what you want to build.
 ```
@@ -85,8 +85,8 @@ Use AskUserQuestion:
 - header: "Codebase"
 - question: "I detected existing code in this directory. Would you like to map the codebase first?"
 - options:
-  - "Map codebase first" — Run /gsd-map-codebase to understand existing architecture (Recommended)
-  - "Skip mapping" — Proceed with project initialization
+ - "Map codebase first" — Run /gsd-map-codebase to understand existing architecture (Recommended)
+ - "Skip mapping" — Proceed with project initialization
 
 **If "Map codebase first":**
 
@@ -108,34 +108,34 @@ YOLO mode is implicit (auto = YOLO). Ask remaining config questions:
 
 ```
 AskUserQuestion([
-  {
-    header: "Granularity",
-    question: "How finely should scope be sliced into phases?",
-    multiSelect: false,
-    options: [
-      { label: "Coarse (Recommended)", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
-      { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
-      { label: "Fine", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
-    ]
-  },
-  {
-    header: "Execution",
-    question: "Run plans in parallel?",
-    multiSelect: false,
-    options: [
-      { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
-      { label: "Sequential", description: "One plan at a time" }
-    ]
-  },
-  {
-    header: "Git Tracking",
-    question: "Commit planning docs to git?",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
-      { label: "No", description: "Keep .planning/ local-only (add to .gitignore)" }
-    ]
-  }
+ {
+  header: "Granularity",
+  question: "How finely should scope be sliced into phases?",
+  multiSelect: false,
+  options: [
+   { label: "Coarse (Recommended)", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
+   { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
+   { label: "Fine", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
+  ]
+ },
+ {
+  header: "Execution",
+  question: "Run plans in parallel?",
+  multiSelect: false,
+  options: [
+   { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
+   { label: "Sequential", description: "One plan at a time" }
+  ]
+ },
+ {
+  header: "Git Tracking",
+  question: "Commit planning docs to git?",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
+   { label: "No", description: "Keep .planning/ local-only (add to .gitignore)" }
+  ]
+ }
 ])
 ```
 
@@ -143,44 +143,44 @@ AskUserQuestion([
 
 ```
 AskUserQuestion([
-  {
-    header: "Research",
-    question: "Research before planning each phase? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Investigate domain, find patterns, surface gotchas" },
-      { label: "No", description: "Plan directly from requirements" }
-    ]
-  },
-  {
-    header: "Plan Check",
-    question: "Verify plans will achieve their goals? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Catch gaps before execution starts" },
-      { label: "No", description: "Execute plans without verification" }
-    ]
-  },
-  {
-    header: "Verifier",
-    question: "Verify work satisfies requirements after each phase? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Confirm deliverables match phase goals" },
-      { label: "No", description: "Trust execution, skip verification" }
-    ]
-  },
-  {
-    header: "AI Models",
-    question: "Which AI models for planning agents?",
-    multiSelect: false,
-    options: [
-      { label: "Balanced (Recommended)", description: "Sonnet for most agents — good quality/cost ratio" },
-      { label: "Quality", description: "Opus for research/roadmap — higher cost, deeper analysis" },
-      { label: "Budget", description: "Haiku where possible — fastest, lowest cost" },
-      { label: "Inherit", description: "Use the current session model for all agents (OpenCode /model)" }
-    ]
-  }
+ {
+  header: "Research",
+  question: "Research before planning each phase? (adds tokens/time)",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Investigate domain, find patterns, surface gotchas" },
+   { label: "No", description: "Plan directly from requirements" }
+  ]
+ },
+ {
+  header: "Plan Check",
+  question: "Verify plans will achieve their goals? (adds tokens/time)",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Catch gaps before execution starts" },
+   { label: "No", description: "Execute plans without verification" }
+  ]
+ },
+ {
+  header: "Verifier",
+  question: "Verify work satisfies requirements after each phase? (adds tokens/time)",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Confirm deliverables match phase goals" },
+   { label: "No", description: "Trust execution, skip verification" }
+  ]
+ },
+ {
+  header: "AI Models",
+  question: "Which AI models for planning agents?",
+  multiSelect: false,
+  options: [
+   { label: "Balanced (Recommended)", description: "Sonnet for most agents — good quality/cost ratio" },
+   { label: "Quality", description: "Opus for research/roadmap — higher cost, deeper analysis" },
+   { label: "Budget", description: "Haiku where possible — fastest, lowest cost" },
+   { label: "Inherit", description: "Use the current session model for all agents (OpenCode /model)" }
+  ]
+ }
 ])
 ```
 
@@ -267,8 +267,8 @@ When you could write a clear PROJECT.md, use AskUserQuestion:
 - header: "Ready?"
 - question: "I think I understand what you're after. Ready to create PROJECT.md?"
 - options:
-  - "Create PROJECT.md" — Let's move forward
-  - "Keep exploring" — I want to share more / ask me more
+ - "Create PROJECT.md" — Let's move forward
+ - "Keep exploring" — I want to share more / ask me more
 
 If "Keep exploring" — ask what they want to add, or identify gaps and probe naturally.
 
@@ -389,15 +389,15 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "docs: initialize project" 
 
 ```
 AskUserQuestion([
-  {
-    question: "Use your saved default settings? (from ~/.gsd/defaults.json)",
-    header: "Defaults",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Use saved defaults, skip settings questions" },
-      { label: "No", description: "Configure settings manually" }
-    ]
-  }
+ {
+  question: "Use your saved default settings? (from ~/.gsd/defaults.json)",
+  header: "Defaults",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Use saved defaults, skip settings questions" },
+   { label: "No", description: "Configure settings manually" }
+  ]
+ }
 ])
 ```
 
@@ -409,43 +409,43 @@ If "No" or `~/.gsd/defaults.json` doesn't exist: proceed with the questions belo
 
 ```
 questions: [
-  {
-    header: "Mode",
-    question: "How do you want to work?",
-    multiSelect: false,
-    options: [
-      { label: "YOLO (Recommended)", description: "Auto-approve, just execute" },
-      { label: "Interactive", description: "Confirm at each step" }
-    ]
-  },
-  {
-    header: "Granularity",
-    question: "How finely should scope be sliced into phases?",
-    multiSelect: false,
-    options: [
-      { label: "Coarse", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
-      { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
-      { label: "Fine", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
-    ]
-  },
-  {
-    header: "Execution",
-    question: "Run plans in parallel?",
-    multiSelect: false,
-    options: [
-      { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
-      { label: "Sequential", description: "One plan at a time" }
-    ]
-  },
-  {
-    header: "Git Tracking",
-    question: "Commit planning docs to git?",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
-      { label: "No", description: "Keep .planning/ local-only (add to .gitignore)" }
-    ]
-  }
+ {
+  header: "Mode",
+  question: "How do you want to work?",
+  multiSelect: false,
+  options: [
+   { label: "YOLO (Recommended)", description: "Auto-approve, just execute" },
+   { label: "Interactive", description: "Confirm at each step" }
+  ]
+ },
+ {
+  header: "Granularity",
+  question: "How finely should scope be sliced into phases?",
+  multiSelect: false,
+  options: [
+   { label: "Coarse", description: "Fewer, broader phases (3-5 phases, 1-3 plans each)" },
+   { label: "Standard", description: "Balanced phase size (5-8 phases, 3-5 plans each)" },
+   { label: "Fine", description: "Many focused phases (8-12 phases, 5-10 plans each)" }
+  ]
+ },
+ {
+  header: "Execution",
+  question: "Run plans in parallel?",
+  multiSelect: false,
+  options: [
+   { label: "Parallel (Recommended)", description: "Independent plans run simultaneously" },
+   { label: "Sequential", description: "One plan at a time" }
+  ]
+ },
+ {
+  header: "Git Tracking",
+  question: "Commit planning docs to git?",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Planning docs tracked in version control" },
+   { label: "No", description: "Keep .planning/ local-only (add to .gitignore)" }
+  ]
+ }
 ]
 ```
 
@@ -463,44 +463,44 @@ All recommended for important projects. Skip for quick experiments.
 
 ```
 questions: [
-  {
-    header: "Research",
-    question: "Research before planning each phase? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Investigate domain, find patterns, surface gotchas" },
-      { label: "No", description: "Plan directly from requirements" }
-    ]
-  },
-  {
-    header: "Plan Check",
-    question: "Verify plans will achieve their goals? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Catch gaps before execution starts" },
-      { label: "No", description: "Execute plans without verification" }
-    ]
-  },
-  {
-    header: "Verifier",
-    question: "Verify work satisfies requirements after each phase? (adds tokens/time)",
-    multiSelect: false,
-    options: [
-      { label: "Yes (Recommended)", description: "Confirm deliverables match phase goals" },
-      { label: "No", description: "Trust execution, skip verification" }
-    ]
-  },
-  {
-    header: "AI Models",
-    question: "Which AI models for planning agents?",
-    multiSelect: false,
-    options: [
-      { label: "Balanced (Recommended)", description: "Sonnet for most agents — good quality/cost ratio" },
-      { label: "Quality", description: "Opus for research/roadmap — higher cost, deeper analysis" },
-      { label: "Budget", description: "Haiku where possible — fastest, lowest cost" },
-      { label: "Inherit", description: "Use the current session model for all agents (OpenCode /model)" }
-    ]
-  }
+ {
+  header: "Research",
+  question: "Research before planning each phase? (adds tokens/time)",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Investigate domain, find patterns, surface gotchas" },
+   { label: "No", description: "Plan directly from requirements" }
+  ]
+ },
+ {
+  header: "Plan Check",
+  question: "Verify plans will achieve their goals? (adds tokens/time)",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Catch gaps before execution starts" },
+   { label: "No", description: "Execute plans without verification" }
+  ]
+ },
+ {
+  header: "Verifier",
+  question: "Verify work satisfies requirements after each phase? (adds tokens/time)",
+  multiSelect: false,
+  options: [
+   { label: "Yes (Recommended)", description: "Confirm deliverables match phase goals" },
+   { label: "No", description: "Trust execution, skip verification" }
+  ]
+ },
+ {
+  header: "AI Models",
+  question: "Which AI models for planning agents?",
+  multiSelect: false,
+  options: [
+   { label: "Balanced (Recommended)", description: "Sonnet for most agents — good quality/cost ratio" },
+   { label: "Quality", description: "Opus for research/roadmap — higher cost, deeper analysis" },
+   { label: "Budget", description: "Haiku where possible — fastest, lowest cost" },
+   { label: "Inherit", description: "Use the current session model for all agents (OpenCode /model)" }
+  ]
+ }
 ]
 ```
 
@@ -548,7 +548,7 @@ Use AskUserQuestion:
 - question: "I detected separate git repos in this workspace. Which directories contain code that GSD should commit to?"
 - multiSelect: true
 - options: one option per detected directory
-  - "[directory name]" — Separate git repo
+ - "[directory name]" — Separate git repo
 
 **If user selects one or more directories:**
 
@@ -573,8 +573,8 @@ Use AskUserQuestion:
 - header: "Research"
 - question: "Research the domain ecosystem before defining requirements?"
 - options:
-  - "Research first (Recommended)" — Discover standard stacks, expected features, architecture patterns
-  - "Skip research" — I know this domain well, go straight to requirements
+ - "Research first (Recommended)" — Discover standard stacks, expected features, architecture patterns
+ - "Skip research" — I know this domain well, go straight to requirements
 
 **If "Research first":**
 
@@ -605,10 +605,10 @@ Display spawning indicator:
 
 ```
 ◆ Spawning 4 researchers in parallel...
-  → Stack research
-  → Features research
-  → Architecture research
-  → Pitfalls research
+ → Stack research
+ → Features research
+ → Architecture research
+ → Pitfalls research
 ```
 
 Spawn 4 parallel gsd-project-researcher agents with path references:
@@ -891,10 +891,10 @@ For each category, use AskUserQuestion:
 - question: "Which [category] features are in v1?"
 - multiSelect: true
 - options:
-  - "[Feature 1]" — [brief description]
-  - "[Feature 2]" — [brief description]
-  - "[Feature 3]" — [brief description]
-  - "None for v1" — Defer entire category
+ - "[Feature 1]" — [brief description]
+ - "[Feature 2]" — [brief description]
+ - "[Feature 3]" — [brief description]
+ - "None for v1" — Defer entire category
 
 Track responses:
 
@@ -909,8 +909,8 @@ Use AskUserQuestion:
 - header: "Additions"
 - question: "Any requirements research missed? (Features specific to your vision)"
 - options:
-  - "No, research covered it" — Proceed
-  - "Yes, let me add some" — Capture additions
+ - "No, research covered it" — Proceed
+ - "Yes, let me add some" — Capture additions
 
 **Validate core value:**
 
@@ -1072,9 +1072,9 @@ Use AskUserQuestion:
 - header: "Roadmap"
 - question: "Does this roadmap structure work for you?"
 - options:
-  - "Approve" — Commit and continue
-  - "Adjust phases" — Tell me what to change
-  - "Review full file" — Show raw ROADMAP.md
+ - "Approve" — Commit and continue
+ - "Adjust phases" — Tell me what to change
+ - "Review full file" — Show raw ROADMAP.md
 
 **If "Approve":** Continue to commit.
 
@@ -1083,23 +1083,23 @@ Use AskUserQuestion:
 - Get user's adjustment notes
 - Re-spawn roadmapper with revision context:
 
-  ```
-  Task(prompt="
-  <revision>
-  User feedback on roadmap:
-  [user's notes]
+ ```
+ Task(prompt="
+ <revision>
+ User feedback on roadmap:
+ [user's notes]
 
-  <files_to_read>
-  - .planning/ROADMAP.md (Current roadmap to revise)
-  </files_to_read>
+ <files_to_read>
+ - .planning/ROADMAP.md (Current roadmap to revise)
+ </files_to_read>
 
-  ${AGENT_SKILLS_ROADMAPPER}
+ ${AGENT_SKILLS_ROADMAPPER}
 
-  Update the roadmap based on feedback. Edit files in place.
-  Return ROADMAP REVISED with changes made.
-  </revision>
-  ", subagent_type="gsd-roadmapper", model="{roadmapper_model}", description="Revise roadmap")
-  ```
+ Update the roadmap based on feedback. Edit files in place.
+ Return ROADMAP REVISED with changes made.
+ </revision>
+ ", subagent_type="gsd-roadmapper", model="{roadmapper_model}", description="Revise roadmap")
+ ```
 
 - Present revised roadmap
 - Loop until user approves
@@ -1131,14 +1131,14 @@ Present completion summary:
 
 **[Project Name]**
 
-| Artifact       | Location                    |
+| Artifact    | Location          |
 |----------------|-----------------------------|
-| Project        | `.planning/PROJECT.md`      |
-| Config         | `.planning/config.json`     |
-| Research       | `.planning/research/`       |
-| Requirements   | `.planning/REQUIREMENTS.md` |
-| Roadmap        | `.planning/ROADMAP.md`      |
-| Project guide  | `GEMINI.md`                 |
+| Project    | `.planning/PROJECT.md`   |
+| Config     | `.planning/config.json`   |
+| Research    | `.planning/research/`    |
+| Requirements  | `.planning/REQUIREMENTS.md` |
+| Roadmap    | `.planning/ROADMAP.md`   |
+| Project guide | `GEMINI.md`         |
 
 **[N] phases** | **[X] requirements** | Ready to build ✓
 ```
@@ -1147,7 +1147,7 @@ Present completion summary:
 
 ```
 ╔══════════════════════════════════════════╗
-║  AUTO-ADVANCING → DISCUSS PHASE 1        ║
+║ AUTO-ADVANCING → DISCUSS PHASE 1    ║
 ╚══════════════════════════════════════════╝
 ```
 
@@ -1212,11 +1212,11 @@ PHASE1_HAS_UI=$(echo "$PHASE1_SECTION" | grep -qi "UI hint.*yes" && echo "true" 
 - `.planning/PROJECT.md`
 - `.planning/config.json`
 - `.planning/research/` (if research selected)
-  - `STACK.md`
-  - `FEATURES.md`
-  - `ARCHITECTURE.md`
-  - `PITFALLS.md`
-  - `SUMMARY.md`
+ - `STACK.md`
+ - `FEATURES.md`
+ - `ARCHITECTURE.md`
+ - `PITFALLS.md`
+ - `SUMMARY.md`
 - `.planning/REQUIREMENTS.md`
 - `.planning/ROADMAP.md`
 - `.planning/STATE.md`

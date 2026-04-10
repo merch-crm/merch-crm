@@ -65,13 +65,7 @@ export function FileTable({ files, onDelete, onSetAsPreview }: FileTableProps) {
  <TableCell>
  <div className="w-10 h-10 rounded bg-muted flex items-center justify-center overflow-hidden">
  {file.fileType ==="preview"? (
- <Image
- src={file.path}
- alt={file.originalName}
- width={40}
- height={40}
- className="w-full h-full object-cover"
- />
+ <Image src={file.path} alt={file.originalName} width={40} height={40} className="w-full h-full object-cover" />
 ) : (
  <FileCode className="h-5 w-5 text-muted-foreground"/>
 )}
@@ -92,10 +86,7 @@ export function FileTable({ files, onDelete, onSetAsPreview }: FileTableProps) {
 
  {/* Type badge */}
  <TableCell>
- <Badge
- variant={file.fileType ==="preview"?"default":"outline"}
- className="text-xs"
- >
+  <Badge color={file.fileType === "preview" ? "primary" : "primary"} className="text-xs">
  {file.fileType ==="preview"? (
  <>
  <ImageIcon className="h-3 w-3 mr-1"/>
@@ -124,7 +115,7 @@ export function FileTable({ files, onDelete, onSetAsPreview }: FileTableProps) {
  <TableCell>
  <DropdownMenu>
  <DropdownMenuTrigger asChild>
- <Button variant="ghost"size="icon"className="h-8 w-8">
+ <Button variant="ghost" size="icon" className="h-8 w-8">
  <MoreHorizontal className="h-4 w-4"/>
  </Button>
  </DropdownMenuTrigger>
@@ -142,8 +133,7 @@ export function FileTable({ files, onDelete, onSetAsPreview }: FileTableProps) {
  </DropdownMenuItem>
 )}
  <DropdownMenuSeparator />
- <DropdownMenuItem
- onClick={() => onDelete(file.id)}
+ <DropdownMenuItem onClick={() => onDelete(file.id)}
  className="text-destructive focus:text-destructive"
  >
  <Trash2 className="h-4 w-4 mr-2"/>

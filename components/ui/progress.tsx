@@ -4,7 +4,7 @@ interface ProgressProps {
     value: number;
     max?: number;
     size?:"sm" |"md" |"lg";
-    variant?:"default" |"primary" |"success" |"warning" |"error";
+    variant?: "md" |"primary" |"success" |"warning" |"error";
     showValue?: boolean;
     animated?: boolean;
     className?: string;
@@ -16,20 +16,20 @@ const sizeClasses = {
     lg:"h-4",
 };
 
-const variantClasses = {
-    default:"bg-slate-600",
-    primary:"bg-primary",
-    success:"bg-emerald-500",
-    warning:"bg-amber-500",
-    error:"bg-rose-500",
+const variantClasses: Record<string, string> = {
+    md: "bg-slate-600",
+    primary: "bg-primary",
+    success: "bg-emerald-500",
+    warning: "bg-amber-500",
+    error: "bg-rose-500",
 };
 
-const variantBgClasses = {
-    default:"bg-slate-200",
-    primary:"bg-primary/20",
-    success:"bg-emerald-100",
-    warning:"bg-amber-100",
-    error:"bg-rose-100",
+const variantBgClasses: Record<string, string> = {
+    md: "bg-slate-200",
+    primary: "bg-primary/20",
+    success: "bg-emerald-100",
+    warning: "bg-amber-100",
+    error: "bg-rose-100",
 };
 
 function Progress({
@@ -187,7 +187,7 @@ interface Step {
 interface StepsProgressProps {
     steps: Step[];
     currentStep: number;
-    variant?:"default" |"primary";
+    variant?: "md" |"primary";
     className?: string;
 }
 

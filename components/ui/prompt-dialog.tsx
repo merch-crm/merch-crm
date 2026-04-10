@@ -50,13 +50,7 @@ export function PromptDialog({
     };
 
     return (
-        <ResponsiveModal
-            isOpen={isOpen}
-            onClose={onClose}
-            title={title}
-            showVisualTitle={false}
-            className="md:max-w-md"
-        >
+        <ResponsiveModal isOpen={isOpen} onClose={onClose} title={title} showVisualTitle={false} className="md:max-w-md">
             <div className="flex flex-col">
                 {/* Header */}
                 <div className="p-6 md:p-6 pb-4 flex items-center justify-between">
@@ -111,20 +105,10 @@ export function PromptDialog({
                     </div>
 
                     <div className="flex flex-col-reverse md:flex-row gap-3 pt-2">
-                        <Button
-                            variant="ghost"
-                            type="button"
-                            onClick={onClose}
-                            className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all"
-                        >
+                        <Button variant="ghost" type="button" onClick={onClose} className="flex-1 h-11 rounded-[var(--radius-inner)] font-bold text-sm text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all">
                             {cancelText}
                         </Button>
-                        <Button
-                            type="button"
-                            onClick={handleConfirm}
-                            disabled={isLoading || !value.trim()}
-                            className="flex-[2] h-11 rounded-[var(--radius-inner)] bg-primary shadow-xl shadow-primary/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-50 border-none"
-                        >
+                        <Button type="button" onClick={handleConfirm} disabled={isLoading || !value.trim()} className="flex-[2] h-11 rounded-[var(--radius-inner)] bg-primary shadow-xl shadow-primary/20 text-white font-bold text-sm transition-all active:scale-95 disabled:opacity-50 border-none">
                             {isLoading ?"Сохранение..." : confirmText}
                         </Button>
                     </div>

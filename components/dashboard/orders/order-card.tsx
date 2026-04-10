@@ -42,18 +42,13 @@ interface OrderCardProps {
  *
  * @example
  * ```tsx
- * <OrderCard
- *   order={order}
- * />
+ * <OrderCard * order={order} * />
  * ```
  *
  * @example
  * ```tsx
  * // В ResponsiveDataView
- * <ResponsiveDataView
- *   data={orders}
- *   columns={columns}
- *   renderCard={(order) => (
+ * <ResponsiveDataView * data={orders} * columns={columns} * renderCard={(order) => (
  *     <OrderCard key={order.id} order={order} />
  *   )}
  * />
@@ -86,10 +81,7 @@ export const OrderCard = memo(function OrderCard({
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <Link
-            href={`/dashboard/orders/${order.id}`}
-            className="font-medium hover:text-primary transition-colors"
-          >
+          <Link href={`/dashboard/orders/${order.id}`} className="font-medium hover:text-primary transition-colors">
             {order.orderNumber}
           </Link>
           <div className="flex items-center gap-2">

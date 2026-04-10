@@ -5,17 +5,17 @@ import { PageContainer } from "@/components/ui/page-container";
 export const dynamic = "force-dynamic";
 
 export default async function BrandingPage() {
-    const [settings, iconGroupsRes] = await Promise.all([
-        getBrandingSettings(),
-        getIconGroups()
-    ]);
+  const [settings, iconGroupsRes] = await Promise.all([
+    getBrandingSettings(),
+    getIconGroups()
+  ]);
 
-    const iconGroups = iconGroupsRes.success ? (iconGroupsRes.data || []) : [];
+  const iconGroups = iconGroupsRes.success ? (iconGroupsRes.data || []) : [];
 
-    return (
-        <PageContainer>
-            {/* Form */}
-            <BrandingForm initialSettings={settings} initialIconGroups={iconGroups} />
-        </PageContainer>
-    );
+  return (
+    <PageContainer>
+      {/* Form */}
+      <BrandingForm initialSettings={settings} initialIconGroups={iconGroups} />
+    </PageContainer>
+  );
 }

@@ -8,44 +8,39 @@ import { BrandingSettings } from"@/lib/types";
 import { AdminLayoutClient } from"./admin-layout-client";
 
 export default async function AdminLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-    const res = await getCurrentUserAction();
-    const currentUser = res.success ? res.data : null;
+  const res = await getCurrentUserAction();
+  const currentUser = res.success ? res.data : null;
 
-    // Fetch notifications and branding
-    const notifications = await getNotifications();
-    const brandingRes = await getBrandingAction();
-    const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
-        companyName:"",
-        logoUrl: null,
-        primaryColor:"var(--primary)",
-        faviconUrl: null,
-        backgroundColor:"#f2f2f2",
-        currencySymbol:"₽"
-    } as BrandingSettings;
+  // Fetch notifications and branding
+  const notifications = await getNotifications();
+  const brandingRes = await getBrandingAction();
+  const branding: BrandingSettings = (brandingRes.success && brandingRes.data) ? brandingRes.data : {
+    companyName:"",
+    logoUrl: null,
+    primaryColor:"var(--primary)",
+    faviconUrl: null,
+    backgroundColor:"#f2f2f2",
+    currencySymbol:"₽"
+  } as BrandingSettings;
 
-    const user = currentUser ? {
-        name: currentUser.name,
-        email: currentUser.email,
-        image: currentUser.image,
-        roleName: currentUser.role?.name || "Администратор",
-        roleSlug: currentUser.role?.slug || "admin",
-        departmentName: currentUser.department?.name || "Руководство"
-    } : null;
+  const user = currentUser ? {
+    name: currentUser.name,
+    email: currentUser.email,
+    image: currentUser.image,
+    roleName: currentUser.role?.name || "Администратор",
+    roleSlug: currentUser.role?.slug || "admin",
+    departmentName: currentUser.department?.name || "Руководство"
+  } : null;
 
-    if (!currentUser || !user) return null;
+  if (!currentUser || !user) return null;
 
-    return (
-        <AdminLayoutClient
-            currentUser={currentUser}
-            user={user}
-            notifications={notifications.notifications}
-            branding={branding}
-        >
-            {children}
-        </AdminLayoutClient>
-    );
+  return (
+    <AdminLayoutClient currentUser={currentUser} user={user} notifications={notifications.notifications} branding={branding}>
+      {children}
+    </AdminLayoutClient>
+  );
 }

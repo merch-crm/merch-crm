@@ -27,93 +27,93 @@ import FileUploadShowcaseCRM from "./file-upload-showcase-crm";
 import IconsShowcaseCRM from "./icons-showcase-crm";
 
 export default function DesignShowcasePage() {
-    return (
-        <div className="min-h-screen bg-background p-4 md:p-6 font-sans text-foreground overflow-x-hidden">
-            <div className="max-w-[1480px] mx-auto space-y-3">
+  return (
+    <div className="min-h-screen bg-background p-4 md:p-6 font-sans text-foreground overflow-x-hidden">
+      <div className="max-w-[1480px] mx-auto space-y-3">
 
-                {/* Page Header */}
-                <header className="glass-panel p-6 mb-8">
-                    <h1 className="text-4xl font-bold text-slate-900 mb-2">Референсы</h1>
-                    <p className="text-slate-400 text-sm font-medium">
-                        Премиальная коллекция дизайнов на основе Lumin-Apple стиля
-                    </p>
-                </header>
+        {/* Page Header */}
+        <header className="glass-panel p-6 mb-8">
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">Референсы</h1>
+          <p className="text-slate-400 text-sm font-medium">
+            Премиальная коллекция дизайнов на основе Lumin-Apple стиля
+          </p>
+        </header>
 
-                <div className="flex flex-col gap-3">
-                    {/* --- NEW REFERENCES (IMAGES FROM USER) --- */}
-                    <NewReferencesCRM />
+        <div className="flex flex-col gap-3">
+          {/* --- NEW REFERENCES (IMAGES FROM USER) --- */}
+          <NewReferencesCRM />
 
-                    {/* --- ICONS SHOWCASE --- */}
-                    <IconsShowcaseCRM />
+          {/* --- ICONS SHOWCASE --- */}
+          <IconsShowcaseCRM />
 
-                    {/* --- FILE MANAGER DESIGNS --- */}
-                    <FileManagerCRM />
+          {/* --- FILE MANAGER DESIGNS --- */}
+          <FileManagerCRM />
 
-                    {/* --- CHARGING WIDGET (NEW REQUEST) --- */}
-                    <ChargingWidgetCRM />
+          {/* --- CHARGING WIDGET (NEW REQUEST) --- */}
+          <ChargingWidgetCRM />
 
-                    {/* --- BATTERY WIDGET (REFERENCE MATCH) --- */}
-                    <BatteryWidgetCRM />
+          {/* --- BATTERY WIDGET (REFERENCE MATCH) --- */}
+          <BatteryWidgetCRM />
 
-                    {/* --- DASHBOARD WIDGETS COLLECTION --- */}
-                    <DashboardWidgetsCRM />
+          {/* --- DASHBOARD WIDGETS COLLECTION --- */}
+          <DashboardWidgetsCRM />
 
-                    {/* --- FLOATING PANELS UI (SOFT SHADOWS) --- */}
-                    <FloatingPanelsCRM />
+          {/* --- FLOATING PANELS UI (SOFT SHADOWS) --- */}
+          <FloatingPanelsCRM />
 
-                    {/* --- CHARGING NOTIFICATIONS (DARK PILLS) --- */}
-                    <ChargingNotificationPanelsCRM />
+          {/* --- CHARGING NOTIFICATIONS (DARK PILLS) --- */}
+          <ChargingNotificationPanelsCRM />
 
-                    {/* --- BIKE HEALTH CARD (GLASSMORPHISM) --- */}
-                    <BikeHealthCard />
+          {/* --- BIKE HEALTH CARD (GLASSMORPHISM) --- */}
+          <BikeHealthCard />
 
-                    {/* --- PROJECT TABS (DARK MODE) --- */}
-                    <ProjectTabsCRM />
+          {/* --- PROJECT TABS (DARK MODE) --- */}
+          <ProjectTabsCRM />
 
-                    {/* --- TOOLTIP SHOWCASE (LIGHT/DARK) --- */}
-                    <TooltipShowcaseCRM />
+          {/* --- TOOLTIP SHOWCASE (LIGHT/DARK) --- */}
+          <TooltipShowcaseCRM />
 
-                    {/* --- SIDEBAR NAVIGATION (TREE & FLOATING) --- */}
-                    <SidebarNavigationCRM />
+          {/* --- SIDEBAR NAVIGATION (TREE & FLOATING) --- */}
+          <SidebarNavigationCRM />
 
-                    {/* --- FILE UPLOAD (MINIMALIST) --- */}
-                    <FileUploadShowcaseCRM />
+          {/* --- FILE UPLOAD (MINIMALIST) --- */}
+          <FileUploadShowcaseCRM />
 
-                    {/* --- SOFT UI CONTROLS (BUTTONS) --- */}
-                    <SoftUiPanelsCRM />
+          {/* --- SOFT UI CONTROLS (BUTTONS) --- */}
+          <SoftUiPanelsCRM />
 
-                    {/* --- CUSTOM COMPONENT: STEPS MENU (PHOTO 1 + 2) --- */}
-                    <StepsMenuCRM />
+          {/* --- CUSTOM COMPONENT: STEPS MENU (PHOTO 1 + 2) --- */}
+          <StepsMenuCRM />
 
-                    {/* --- SECTION 1: CARDS (CRM STYLE) --- */}
-                    <CardsCRM />
+          {/* --- SECTION 1: CARDS (CRM STYLE) --- */}
+          <CardsCRM />
 
-                    {/* --- SECTION 2: ANALYTICS (CRM STYLE) --- */}
-                    <AnalyticsCRM />
+          {/* --- SECTION 2: ANALYTICS (CRM STYLE) --- */}
+          <AnalyticsCRM />
 
-                    {/* --- SECTION 3: TWISTY (CRM STYLE) --- */}
-                    <TwistyCRM />
+          {/* --- SECTION 3: TWISTY (CRM STYLE) --- */}
+          <TwistyCRM />
 
-                    {/* --- SECTION 4: INVOICE (CRM STYLE) --- */}
-                    <InvoiceDashboardCRM />
+          {/* --- SECTION 4: INVOICE (CRM STYLE) --- */}
+          <InvoiceDashboardCRM />
 
-                    {/* --- SECTION 5: SMART HOME (CRM STYLE) --- */}
-                    <SmartHomeDashboardCRM />
+          {/* --- SECTION 5: SMART HOME (CRM STYLE) --- */}
+          <SmartHomeDashboardCRM />
 
-                    {/* --- SECTION 6: AQUAFLOW (CRM STYLE) --- */}
-                    <AquaflowLandingCRM />
+          {/* --- SECTION 6: AQUAFLOW (CRM STYLE) --- */}
+          <AquaflowLandingCRM />
 
-                    {/* --- SECTION 7: UI COMPONENTS (CRM STYLE) --- */}
-                    <UiComponentsShowcaseCRM />
+          {/* --- SECTION 7: UI COMPONENTS (CRM STYLE) --- */}
+          <UiComponentsShowcaseCRM />
 
-                    {/* --- SECTION 8: EDUPLEX (CRM STYLE) --- */}
-                    <EduplexDashboardCRM />
+          {/* --- SECTION 8: EDUPLEX (CRM STYLE) --- */}
+          <EduplexDashboardCRM />
 
-                    {/* --- SECTION 9: FOCUSFLOW (CRM STYLE) --- */}
-                    <FocusFlowDashboardCRM />
+          {/* --- SECTION 9: FOCUSFLOW (CRM STYLE) --- */}
+          <FocusFlowDashboardCRM />
 
-                </div>
-            </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

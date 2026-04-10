@@ -41,11 +41,11 @@ export { NotificationsCard } from './notifications-card';
 
 // Скелетоны
 export {
-  ProductionDashboardSkeleton,
-  HeroSkeleton,
-  AttentionSkeleton,
-  StatCardSkeleton,
-  QuickAccessSkeleton,
-  ChartSkeleton,
-  CardSkeleton,
+ ProductionDashboardSkeleton,
+ HeroSkeleton,
+ AttentionSkeleton,
+ StatCardSkeleton,
+ QuickAccessSkeleton,
+ ChartSkeleton,
+ CardSkeleton,
 } from './bento-skeleton';

@@ -21,31 +21,11 @@ export function StorageStats({
 }: StorageStatsProps) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <StatCard
-                title="Всего файлов"
-                value={fileCount}
-                subtitle={totalSize}
-                icon={HardDrive}
-                colorScheme="emerald"
-            />
+            <StatCard title="Всего файлов" value={fileCount} subtitle={totalSize} icon={HardDrive} colorScheme="emerald" />
 
-            <StatCard
-                title="Папок"
-                value={folderCount}
-                subtitle="в структуре"
-                icon={Folder}
-                colorScheme="amber"
-            />
+            <StatCard title="Папок" value={folderCount} subtitle="в структуре" icon={Folder} colorScheme="amber" />
 
-            <StatCard
-                title="Статус"
-                value={loading ? "Обновление..." : "Данные актуальны"}
-                subtitle="Нажмите для обновления"
-                icon={RefreshCw}
-                colorScheme="slate"
-                onClick={onRefresh}
-                className={loading ? "opacity-70" : ""}
-            />
+            <StatCard title="Статус" value={loading ? "Обновление..." : "Данные актуальны"} subtitle="Нажмите для обновления" icon={RefreshCw} colorScheme="slate" onClick={onRefresh} className={loading ? "opacity-70" : ""} />
         </div>
     );
 }

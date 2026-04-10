@@ -50,36 +50,36 @@ timestamp=$(node ".agent/get-shit-done/bin/gsd-tools.cjs" current-timestamp full
 
 ```json
 {
-  "version": "1.0",
-  "timestamp": "{timestamp}",
-  "phase": "{phase_number}",
-  "phase_name": "{phase_name}",
-  "phase_dir": "{phase_dir}",
-  "plan": {current_plan_number},
-  "task": {current_task_number},
-  "total_tasks": {total_task_count},
-  "status": "paused",
-  "completed_tasks": [
-    {"id": 1, "name": "{task_name}", "status": "done", "commit": "{short_hash}"},
-    {"id": 2, "name": "{task_name}", "status": "done", "commit": "{short_hash}"},
-    {"id": 3, "name": "{task_name}", "status": "in_progress", "progress": "{what_done}"}
-  ],
-  "remaining_tasks": [
-    {"id": 4, "name": "{task_name}", "status": "not_started"},
-    {"id": 5, "name": "{task_name}", "status": "not_started"}
-  ],
-  "blockers": [
-    {"description": "{blocker}", "type": "technical|human_action|external", "workaround": "{if any}"}
-  ],
-  "human_actions_pending": [
-    {"action": "{what needs to be done}", "context": "{why}", "blocking": true}
-  ],
-  "decisions": [
-    {"decision": "{what}", "rationale": "{why}", "phase": "{phase_number}"}
-  ],
-  "uncommitted_files": [],
-  "next_action": "{specific first action when resuming}",
-  "context_notes": "{mental state, approach, what you were thinking}"
+ "version": "1.0",
+ "timestamp": "{timestamp}",
+ "phase": "{phase_number}",
+ "phase_name": "{phase_name}",
+ "phase_dir": "{phase_dir}",
+ "plan": {current_plan_number},
+ "task": {current_task_number},
+ "total_tasks": {total_task_count},
+ "status": "paused",
+ "completed_tasks": [
+  {"id": 1, "name": "{task_name}", "status": "done", "commit": "{short_hash}"},
+  {"id": 2, "name": "{task_name}", "status": "done", "commit": "{short_hash}"},
+  {"id": 3, "name": "{task_name}", "status": "in_progress", "progress": "{what_done}"}
+ ],
+ "remaining_tasks": [
+  {"id": 4, "name": "{task_name}", "status": "not_started"},
+  {"id": 5, "name": "{task_name}", "status": "not_started"}
+ ],
+ "blockers": [
+  {"description": "{blocker}", "type": "technical|human_action|external", "workaround": "{if any}"}
+ ],
+ "human_actions_pending": [
+  {"action": "{what needs to be done}", "context": "{why}", "blocking": true}
+ ],
+ "decisions": [
+  {"decision": "{what}", "rationale": "{why}", "phase": "{phase_number}"}
+ ],
+ "uncommitted_files": [],
+ "next_action": "{specific first action when resuming}",
+ "context_notes": "{mental state, approach, what you were thinking}"
 }
 ```
 </step>
@@ -150,8 +150,8 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" commit "wip: [phase-name] paused a
 <step name="confirm">
 ```
 ✓ Handoff created:
-  - .planning/HANDOFF.json (structured, machine-readable)
-  - .planning/phases/[XX-name]/.continue-here.md (human-readable)
+ - .planning/HANDOFF.json (structured, machine-readable)
+ - .planning/phases/[XX-name]/.continue-here.md (human-readable)
 
 Current state:
 

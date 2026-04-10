@@ -18,6 +18,7 @@ export default defineConfig({
       "**/dist/**",
       "**/e2e/**",     
       "**/.next/**",
+      "**/integration/**",
     ],
     include: [
       "**/__tests__/**/*.test.ts",
@@ -40,11 +41,6 @@ export default defineConfig({
         lines: 60,
       },
     },
-    pool: "threads",
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
-    },
+    isolate: true,
   },
 });

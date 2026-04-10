@@ -113,8 +113,8 @@ For each deliverable, create a test:
 
 Examples:
 - Accomplishment: "Added comment threading with infinite nesting"
-  → Test: "Reply to a Comment"
-  → Expected: "Clicking Reply opens inline composer below comment. Submitting shows reply nested under parent with visual indentation."
+ → Test: "Reply to a Comment"
+ → Expected: "Clicking Reply opens inline composer below comment. Submitting shows reply nested under parent with visual indentation."
 
 Skip internal/non-observable items (refactors, type changes, etc.).
 
@@ -158,7 +158,7 @@ updated: [ISO timestamp]
 number: 1
 name: [first test name]
 expected: |
-  [what user should observe]
+ [what user should observe]
 awaiting: user response
 
 ## Tests
@@ -284,12 +284,12 @@ severity: {inferred}
 Append to Gaps section (structured YAML for plan-phase --gaps):
 ```yaml
 - truth: "{expected behavior from test}"
-  status: failed
-  reason: "User reported: {verbatim user response}"
-  severity: {inferred}
-  test: {N}
-  artifacts: []  # Filled by diagnosis
-  missing: []    # Filled by diagnosis
+ status: failed
+ reason: "User reported: {verbatim user response}"
+ severity: {inferred}
+ test: {N}
+ artifacts: [] # Filled by diagnosis
+ missing: []  # Filled by diagnosis
 ```
 
 **After any response:**
@@ -333,11 +333,11 @@ Count results:
 
 ```
 if pending_count > 0 OR blocked_count > 0 OR skipped_no_reason > 0:
-  status: partial
-  # Session ended but not all tests resolved
+ status: partial
+ # Session ended but not all tests resolved
 else:
-  status: complete
-  # All tests have a definitive result (pass, issue, or skipped-with-reason)
+ status: complete
+ # All tests have a definitive result (pass, issue, or skipped-with-reason)
 ```
 
 Update frontmatter:
@@ -362,9 +362,9 @@ Present summary:
 
 | Result | Count |
 |--------|-------|
-| Passed | {N}   |
-| Issues | {N}   |
-| Skipped| {N}   |
+| Passed | {N}  |
+| Issues | {N}  |
+| Skipped| {N}  |
 
 [If issues > 0:]
 ### Issues Found
@@ -421,7 +421,7 @@ Spawn gsd-planner in --gaps mode:
 
 ```
 Task(
-  prompt="""
+ prompt="""
 <planning_context>
 
 **Phase:** {phase_number}
@@ -442,9 +442,9 @@ Output consumed by /gsd-execute-phase
 Plans must be executable prompts.
 </downstream_consumer>
 """,
-  subagent_type="gsd-planner",
-  model="{planner_model}",
-  description="Plan gap fixes for Phase {phase}"
+ subagent_type="gsd-planner",
+ model="{planner_model}",
+ description="Plan gap fixes for Phase {phase}"
 )
 ```
 
@@ -471,7 +471,7 @@ Spawn gsd-plan-checker:
 
 ```
 Task(
-  prompt="""
+ prompt="""
 <verification_context>
 
 **Phase:** {phase_number}
@@ -491,9 +491,9 @@ Return one of:
 - ## ISSUES FOUND — structured issue list
 </expected_output>
 """,
-  subagent_type="gsd-plan-checker",
-  model="{checker_model}",
-  description="Verify Phase {phase} fix plans"
+ subagent_type="gsd-plan-checker",
+ model="{checker_model}",
+ description="Verify Phase {phase} fix plans"
 )
 ```
 
@@ -513,7 +513,7 @@ Spawn gsd-planner with revision context:
 
 ```
 Task(
-  prompt="""
+ prompt="""
 <revision_context>
 
 **Phase:** {phase_number}
@@ -535,9 +535,9 @@ Read existing PLAN.md files. Make targeted updates to address checker issues.
 Do NOT replan from scratch unless issues are fundamental.
 </instructions>
 """,
-  subagent_type="gsd-planner",
-  model="{planner_model}",
-  description="Revise Phase {phase} plans"
+ subagent_type="gsd-planner",
+ model="{planner_model}",
+ description="Revise Phase {phase} plans"
 )
 ```
 

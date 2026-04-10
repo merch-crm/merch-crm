@@ -23,8 +23,8 @@ Check preconditions:
 ```bash
 AHEAD=$(git rev-list --count "$TARGET".."$CURRENT_BRANCH" 2>/dev/null)
 if [ "$AHEAD" = "0" ]; then
-  echo "No commits ahead of $TARGET — nothing to filter."
-  exit 0
+ echo "No commits ahead of $TARGET — nothing to filter."
+ exit 0
 fi
 ```
 
@@ -81,10 +81,10 @@ Cherry-pick only code commits (in order):
 
 ```bash
 for HASH in $CODE_COMMITS; do
-  git cherry-pick "$HASH" --no-commit
-  # Remove any .planning/ files that came along in mixed commits
-  git rm -r --cached .planning/ 2>/dev/null || true
-  git commit -C "$HASH"
+ git cherry-pick "$HASH" --no-commit
+ # Remove any .planning/ files that came along in mixed commits
+ git rm -r --cached .planning/ 2>/dev/null || true
+ git commit -C "$HASH"
 done
 ```
 
@@ -111,8 +111,8 @@ PR branch: {PR_COMMITS} commits, {TOTAL_FILES} files
 Planning files: {PLANNING_FILES} (should be 0)
 
 Next steps:
-  git push origin {PR_BRANCH}
-  gh pr create --base {TARGET} --head {PR_BRANCH}
+ git push origin {PR_BRANCH}
+ gh pr create --base {TARGET} --head {PR_BRANCH}
 
 Or use /gsd-ship to create the PR automatically.
 ```

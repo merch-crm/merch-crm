@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Github, Mail, Chrome, Lock, ArrowRight, ShieldCheck, Key } from "lucide-react";
 import { cn } from "../../utils/cn";
+import { BentoFormField, BentoInput } from "../../ui/bento-primitives";
 
 export function BentoLoginForm({ className }: { className?: string }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -63,46 +64,37 @@ export function BentoLoginForm({ className }: { className?: string }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-        <div className="space-y-3">
-          <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] px-1 flex items-center gap-2" htmlFor="email">
-            <Mail className="size-3" /> Root Access
-          </label>
-          <div className="relative group/input">
-            <input 
-              id="email"
-              type="email" 
-              autoComplete="email"
-              placeholder="NAME@ALPHA.SYSTEM"
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black uppercase tracking-widest focus:ring-4 focus:ring-primary-base/10 focus:border-primary-base focus:bg-white transition-all outline-none shadow-inner placeholder:text-slate-200" 
-              required
-            />
-          </div>
-        </div>
+        <BentoFormField label="Root Access">
+          <BentoInput 
+            id="email"
+            type="email" 
+            autoComplete="email"
+            placeholder="NAME@ALPHA.SYSTEM"
+            required
+          />
+        </BentoFormField>
 
-        <div className="space-y-3">
-          <div className="flex justify-between items-center px-1">
-             <label className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2" htmlFor="password">
-               <Key className="size-3" /> Cipher Key
-             </label>
-             <button 
-               type="button" 
-               aria-label="Recover forgotten password"
-               className="text-[10px] font-black text-primary-base uppercase tracking-widest hover:text-slate-950 transition-colors outline-none focus-visible:underline underline-offset-4"
-             >
-               Recover?
-             </button>
+        <BentoFormField 
+          label="Cipher Key"
+          className="relative"
+        >
+          <div className="absolute top-0 right-2">
+            <button 
+              type="button" 
+              aria-label="Recover forgotten password"
+              className="text-[10px] font-black text-primary-base uppercase tracking-widest hover:text-slate-950 transition-colors outline-none focus-visible:underline underline-offset-4"
+            >
+              Recover?
+            </button>
           </div>
-          <div className="relative group/input">
-            <input 
-              id="password"
-              type="password" 
-              autoComplete="current-password"
-              placeholder="••••••••"
-              className="w-full px-6 py-5 bg-slate-50 border border-slate-100 rounded-2xl text-[11px] font-black uppercase tracking-widest focus:ring-4 focus:ring-primary-base/10 focus:border-primary-base focus:bg-white transition-all outline-none shadow-inner placeholder:text-slate-200" 
-              required
-            />
-          </div>
-        </div>
+          <BentoInput 
+            id="password"
+            type="password" 
+            autoComplete="current-password"
+            placeholder="••••••••"
+            required
+          />
+        </BentoFormField>
 
         <button 
           type="submit"

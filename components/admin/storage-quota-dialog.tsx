@@ -66,9 +66,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
     const fromGB = (gb: string) => Math.round(parseFloat(gb) * 1024 * 1024 * 1024);
 
     return (
-        <ResponsiveModal
-            isOpen={open}
-            onClose={() => onOpenChange(false)}
+        <ResponsiveModal isOpen={open} onClose={() => onOpenChange(false)}
             title="Лимиты хранилища"
             description="Настройте максимальный размер хранилища для уведомлений."
         >
@@ -78,21 +76,13 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                 <div className="space-y-3">
                     <div className="space-y-2">
                         <label className="font-bold text-slate-700 text-sm block mb-2">Лимит S3 (GB)</label>
-                        <Input
-                            type="number"
-                            step="0.1"
-                            value={toGB(settings.maxS3Size)}
-                            onChange={e => setSettings({ ...settings, maxS3Size: fromGB(e.target.value) })}
+                        <Input type="number" step="0.1" value={toGB(settings.maxS3Size)} onChange={e => setSettings({ ...settings, maxS3Size: fromGB(e.target.value) })}
                             className="bg-slate-50 border-none rounded-[18px] font-bold text-slate-900 h-12 px-4 shadow-sm"
                         />
                     </div>
                     <div className="space-y-2">
                         <label className="font-bold text-slate-700 text-sm block mb-2">Лимит локального диска (GB)</label>
-                        <Input
-                            type="number"
-                            step="0.1"
-                            value={toGB(settings.maxLocalSize)}
-                            onChange={e => setSettings({ ...settings, maxLocalSize: fromGB(e.target.value) })}
+                        <Input type="number" step="0.1" value={toGB(settings.maxLocalSize)} onChange={e => setSettings({ ...settings, maxLocalSize: fromGB(e.target.value) })}
                             className="bg-slate-50 border-none rounded-[18px] font-bold text-slate-900 h-12 px-4 shadow-sm"
                         />
                     </div>
@@ -114,11 +104,7 @@ export function StorageQuotaDialog({ open, onOpenChange, onSaved }: Props) {
                         </div>
                     </div>
                     <div className="pt-4 border-t border-slate-100">
-                        <Button
-                            onClick={handleSave}
-                            disabled={saving || loading}
-                            className="w-full bg-var(--primary) hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold text-xs shadow-lg shadow-indigo-200"
-                        >
+                        <Button onClick={handleSave} disabled={saving || loading} className="w-full bg-var(--primary) hover:bg-indigo-700 text-white rounded-[18px] py-6 font-bold text-xs shadow-lg shadow-indigo-200">
                             {saving ? "Сохранение..." : "Сохранить настройки"}
                         </Button>
                     </div>

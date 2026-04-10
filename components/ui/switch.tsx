@@ -9,14 +9,14 @@ import { cn } from"@/lib/utils"
 const switchVariants = cva("peer inline-flex h-[24px] w-[44px] shrink-0 cursor-pointer items-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 group relative overflow-hidden",
     {
         variants: {
-            variant: {
+            color: {
                 primary: "data-[state=checked]:bg-primary data-[state=checked]:shadow-[0_4px_12px_rgba(79,70,229,0.3)] data-[state=unchecked]:bg-slate-200",
                 success: "data-[state=checked]:bg-emerald-500 data-[state=checked]:shadow-[0_4px_12px_rgba(16,185,129,0.3)] data-[state=unchecked]:bg-slate-200",
                 dark: "data-[state=checked]:bg-zinc-900 data-[state=checked]:shadow-[0_4px_12px_rgba(0,0,0,0.2)] data-[state=unchecked]:bg-slate-200",
             },
         },
         defaultVariants: {
-            variant: "primary",
+            color: "primary",
         },
     }
 )
@@ -24,9 +24,9 @@ const switchVariants = cva("peer inline-flex h-[24px] w-[44px] shrink-0 cursor-p
 const Switch = React.forwardRef<
     React.ElementRef<typeof SwitchPrimitives.Root>,
     React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root> & VariantProps<typeof switchVariants>
->(({ className, variant, ...props }, ref) => (
+>(({ className, color, ...props }, ref) => (
     <SwitchPrimitives.Root
-        className={cn(switchVariants({ variant, className }))}
+        className={cn(switchVariants({ color, className }))}
         {...props}
         ref={ref}
     >

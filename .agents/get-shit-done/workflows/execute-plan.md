@@ -84,12 +84,12 @@ Fresh context per subagent preserves peak quality. Main context stays lean.
 <step name="init_agent_tracking">
 ```bash
 if [ ! -f .planning/agent-history.json ]; then
-  echo '{"version":"1.0","max_entries":50,"entries":[]}' > .planning/agent-history.json
+ echo '{"version":"1.0","max_entries":50,"entries":[]}' > .planning/agent-history.json
 fi
 rm -f .planning/current-agent-id.txt
 if [ -f .planning/current-agent-id.txt ]; then
-  INTERRUPTED_ID=$(cat .planning/current-agent-id.txt)
-  echo "Found interrupted agent: $INTERRUPTED_ID"
+ INTERRUPTED_ID=$(cat .planning/current-agent-id.txt)
+ echo "Found interrupted agent: $INTERRUPTED_ID"
 fi
 ```
 
@@ -105,14 +105,14 @@ Pattern B only (verify-only checkpoints). Skip for A/C.
 
 1. Parse segment map: checkpoint locations and types
 2. Per segment:
-   - Subagent route: spawn gsd-executor for assigned tasks only. Prompt: task range, plan path, read full plan for context, execute assigned tasks, track deviations, NO SUMMARY/commit. Track via agent protocol.
-   - Main route: execute tasks using standard flow (step name="execute")
+  - Subagent route: spawn gsd-executor for assigned tasks only. Prompt: task range, plan path, read full plan for context, execute assigned tasks, track deviations, NO SUMMARY/commit. Track via agent protocol.
+  - Main route: execute tasks using standard flow (step name="execute")
 3. After ALL segments: aggregate files/deviations/decisions → create SUMMARY.md → commit → self-check:
-   - Verify key-files.created exist on disk with `[ -f ]`
-   - Check `git log --oneline --all --grep="{phase}-{plan}"` returns ≥1 commit
-   - Append `## Self-Check: PASSED` or `## Self-Check: FAILED` to SUMMARY
+  - Verify key-files.created exist on disk with `[ -f ]`
+  - Check `git log --oneline --all --grep="{phase}-{plan}"` returns ≥1 commit
+  - Append `## Self-Check: PASSED` or `## Self-Check: FAILED` to SUMMARY
 
-   **Known Claude Code bug (classifyHandoffIfNeeded):** If any segment agent reports "failed" with `classifyHandoffIfNeeded is not defined`, this is a Claude Code runtime bug — not a real failure. Run spot-checks; if they pass, treat as successful.
+  **Known Claude Code bug (classifyHandoffIfNeeded):** If any segment agent reports "failed" with `classifyHandoffIfNeeded is not defined`, this is a Claude Code runtime bug — not a real failure. Run spot-checks; if they pass, treat as successful.
 
 
 
@@ -142,10 +142,10 @@ Deviations are normal — handle via rules below.
 1. Read @context files from prompt
 2. **MCP tools:** If GEMINI.md or project instructions reference MCP tools (e.g. jCodeMunch for code navigation), prefer them over Grep/Glob when available. Fall back to Grep/Glob if MCP tools are not accessible.
 3. Per task:
-   - **MANDATORY read_first gate:** If the task has a `<read_first>` field, you MUST read every listed file BEFORE making any edits. This is not optional. Do not skip files because you "already know" what's in them — read them. The read_first files establish ground truth for the task.
-   - `type="auto"`: if `tdd="true"` → TDD execution. Implement with deviation rules + auth gates. Verify done criteria. Commit (see task_commit). Track hash for Summary.
-   - `type="checkpoint:*"`: STOP → checkpoint_protocol → wait for user → continue only after confirmation.
-   - **MANDATORY acceptance_criteria check:** After completing each task, if it has `<acceptance_criteria>`, verify EVERY criterion before moving to the next task. Use grep, file reads, or CLI commands to confirm each criterion. If any criterion fails, fix the implementation before proceeding. Do not skip criteria or mark them as "will verify later".
+  - **MANDATORY read_first gate:** If the task has a `<read_first>` field, you MUST read every listed file BEFORE making any edits. This is not optional. Do not skip files because you "already know" what's in them — read them. The read_first files establish ground truth for the task.
+  - `type="auto"`: if `tdd="true"` → TDD execution. Implement with deviation rules + auth gates. Verify done criteria. Commit (see task_commit). Track hash for Summary.
+  - `type="checkpoint:*"`: STOP → checkpoint_protocol → wait for user → continue only after confirmation.
+  - **MANDATORY acceptance_criteria check:** After completing each task, if it has `<acceptance_criteria>`, verify EVERY criterion before moving to the next task. Use grep, file reads, or CLI commands to confirm each criterion. If any criterion fails, fix the implementation before proceeding. Do not skip criteria or mark them as "will verify later".
 3. Run `<verification>` checks
 4. Confirm `<success_criteria>` met
 5. Document deviations in Summary
@@ -364,11 +364,11 @@ DURATION_SEC=$(( PLAN_END_EPOCH - PLAN_START_EPOCH ))
 DURATION_MIN=$(( DURATION_SEC / 60 ))
 
 if [[ $DURATION_MIN -ge 60 ]]; then
-  HRS=$(( DURATION_MIN / 60 ))
-  MIN=$(( DURATION_MIN % 60 ))
-  DURATION="${HRS}h ${MIN}m"
+ HRS=$(( DURATION_MIN / 60 ))
+ MIN=$(( DURATION_MIN % 60 ))
+ DURATION="${HRS}h ${MIN}m"
 else
-  DURATION="${DURATION_MIN} min"
+ DURATION="${DURATION_MIN} min"
 fi
 ```
 </step>
@@ -407,8 +407,8 @@ node ".agent/get-shit-done/bin/gsd-tools.cjs" state update-progress
 
 # Record execution metrics
 node ".agent/get-shit-done/bin/gsd-tools.cjs" state record-metric \
-  --phase "${PHASE}" --plan "${PLAN}" --duration "${DURATION}" \
-  --tasks "${TASK_COUNT}" --files "${FILE_COUNT}"
+ --phase "${PHASE}" --plan "${PLAN}" --duration "${DURATION}" \
+ --tasks "${TASK_COUNT}" --files "${FILE_COUNT}"
 ```
 </step>
 
@@ -419,7 +419,7 @@ From SUMMARY: Extract decisions and add to STATE.md:
 # Add each decision from SUMMARY key-decisions
 # Prefer file inputs for shell-safe text (preserves `$`, `*`, etc. exactly)
 node ".agent/get-shit-done/bin/gsd-tools.cjs" state add-decision \
-  --phase "${PHASE}" --summary-file "${DECISION_TEXT_FILE}" --rationale-file "${RATIONALE_FILE}"
+ --phase "${PHASE}" --summary-file "${DECISION_TEXT_FILE}" --rationale-file "${RATIONALE_FILE}"
 
 # Add blockers if any found
 node ".agent/get-shit-done/bin/gsd-tools.cjs" state add-blocker --text-file "${BLOCKER_TEXT_FILE}"
@@ -431,8 +431,8 @@ Update session info using gsd-tools:
 
 ```bash
 node ".agent/get-shit-done/bin/gsd-tools.cjs" state record-session \
-  --stopped-at "Completed ${PHASE}-${PLAN}-PLAN.md" \
-  --resume-file "None"
+ --stopped-at "Completed ${PHASE}-${PLAN}-PLAN.md" \
+ --resume-file "None"
 ```
 
 Keep STATE.md under 150 lines.

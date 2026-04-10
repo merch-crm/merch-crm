@@ -19,187 +19,187 @@ import { getBrandingSettings as getBrandingSettingsLib } from"@/lib/branding";
 export const getBrandingSettings = getBrandingSettingsLib;
 
 export async function updateBrandingSettings(data: BrandingSettings): Promise<ActionResult<void>> {
-    return withAuth(async () => {
-        const validatedData = BrandingSettingsSchema.safeParse(data);
-        if (!validatedData.success) {
-            return ERRORS.VALIDATION(validatedData.error.issues[0].message);
-        }
+  return withAuth(async () => {
+    const validatedData = BrandingSettingsSchema.safeParse(data);
+    if (!validatedData.success) {
+      return ERRORS.VALIDATION(validatedData.error.issues[0].message);
+    }
 
-        const validData = validatedData.data;
+    const validData = validatedData.data;
 
-        // Check if settings exist
-        const saveData: Record<string, unknown> = { ...data };
+    // Check if settings exist
+    const saveData: Record<string, unknown> = { ...data };
 
-        // Sync camelCase and snake_case properties for DB compatibility (legacy support)
-        if (data.primaryColor) saveData['primary_color'] = data.primaryColor;
-        if (data.logoUrl !== undefined) saveData['logo_url'] = data.logoUrl;
-        if (data.radiusOuter !== undefined) saveData['radius_outer'] = data.radiusOuter;
-        if (data.radiusInner !== undefined) saveData['radius_inner'] = data.radiusInner;
+    // Sync camelCase and snake_case properties for DB compatibility (legacy support)
+    if (data.primaryColor) saveData['primary_color'] = data.primaryColor;
+    if (data.logoUrl !== undefined) saveData['logo_url'] = data.logoUrl;
+    if (data.radiusOuter !== undefined) saveData['radius_outer'] = data.radiusOuter;
+    if (data.radiusInner !== undefined) saveData['radius_inner'] = data.radiusInner;
 
-        await db.transaction(async (tx) => {
-            await tx.insert(systemSettings)
-                .values({
-                    key:"branding",
-                    value: validData,
-                    updatedAt: new Date()
-                })
-                .onConflictDoUpdate({
-                    target: systemSettings.key,
-                    set: { value: validData, updatedAt: new Date() }
-                });
-
-            await logAction("Обновление настроек брендинга","system","branding", saveData, tx);
+    await db.transaction(async (tx) => {
+      await tx.insert(systemSettings)
+        .values({
+          key:"branding",
+          value: validData,
+          updatedAt: new Date()
+        })
+        .onConflictDoUpdate({
+          target: systemSettings.key,
+          set: { value: validData, updatedAt: new Date() }
         });
 
-        revalidatePath("/dashboard");
-        revalidatePath("/admin-panel/branding");
-        revalidatePath("/","layout");
+      await logAction("Обновление настроек брендинга","system","branding", saveData, tx);
+    });
 
-        return okVoid();
-    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateBrandingSettings" });
+    revalidatePath("/dashboard");
+    revalidatePath("/admin-panel/branding");
+    revalidatePath("/","layout");
+
+    return okVoid();
+  }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateBrandingSettings" });
 }
 
 export async function uploadBrandingFile(formData: FormData): Promise<ActionResult<{ url: string }>> {
-    return withAuth(async () => {
-        const file = formData.get("file") as File;
-        const type = formData.get("type") as"logo" |"background" |"sound" |"print_logo" |"crm_background" |"email_logo";
-        const soundKey = formData.get("soundKey") as string | null;
+  return withAuth(async () => {
+    const file = formData.get("file") as File;
+    const type = formData.get("type") as"logo" |"background" |"sound" |"print_logo" |"crm_background" |"email_logo";
+    const soundKey = formData.get("soundKey") as string | null;
 
-        if (!file || !type) {
-            return ERRORS.VALIDATION("Отсутствуют необходимые данные");
-        }
+    if (!file || !type) {
+      return ERRORS.VALIDATION("Отсутствуют необходимые данные");
+    }
 
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const sharp = (await import("sharp")).default;
-        let processedBuffer: Buffer;
-        let fileName: string;
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const sharp = (await import("sharp")).default;
+    let processedBuffer: Buffer;
+    let fileName: string;
 
-        if (type ==="logo") {
-            processedBuffer = await sharp(buffer)
-                .resize({ width: 500, withoutEnlargement: true })
-                .webp({ quality: 80 })
-                .toBuffer();
-            fileName = `branding/logo_brand_crm.webp`;
-        } else if (type ==="background") {
-            processedBuffer = await sharp(buffer)
-                .resize({ width: 1920, withoutEnlargement: true })
-                .webp({ quality: 70 })
-                .toBuffer();
-            fileName = `branding/bg_${Date.now()}.webp`;
-        } else if (type ==="print_logo") {
-            processedBuffer = await sharp(buffer)
-                .resize({ width: 1000, withoutEnlargement: true })
-                .png({ quality: 90 })
-                .toBuffer();
-            fileName = `branding/print_logo_${Date.now()}.png`;
-        } else if (type ==="crm_background") {
-            processedBuffer = await sharp(buffer)
-                .resize({ width: 1920, withoutEnlargement: true })
-                .webp({ quality: 70 })
-                .toBuffer();
-            fileName = `branding/crm_bg_${Date.now()}.webp`;
-        } else if (type ==="email_logo") {
-            processedBuffer = await sharp(buffer)
-                .resize({ width: 600, withoutEnlargement: true })
-                .png({ quality: 90 })
-                .toBuffer();
-            fileName = `branding/email_logo_${Date.now()}.png`;
-        } else if (type ==="sound") {
-            processedBuffer = buffer;
-            const extension = file.name.split('.').pop() || 'mp3';
-            if (soundKey) {
-                fileName = `sounds/${soundKey}.${extension}`;
-            } else {
-                fileName = `sounds/sound_${Date.now()}.${extension}`;
-            }
-        } else {
-            return ERRORS.VALIDATION("Некорректный тип");
-        }
+    if (type ==="logo") {
+      processedBuffer = await sharp(buffer)
+        .resize({ width: 500, withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toBuffer();
+      fileName = `branding/logo_brand_crm.webp`;
+    } else if (type ==="background") {
+      processedBuffer = await sharp(buffer)
+        .resize({ width: 1920, withoutEnlargement: true })
+        .webp({ quality: 70 })
+        .toBuffer();
+      fileName = `branding/bg_${Date.now()}.webp`;
+    } else if (type ==="print_logo") {
+      processedBuffer = await sharp(buffer)
+        .resize({ width: 1000, withoutEnlargement: true })
+        .png({ quality: 90 })
+        .toBuffer();
+      fileName = `branding/print_logo_${Date.now()}.png`;
+    } else if (type ==="crm_background") {
+      processedBuffer = await sharp(buffer)
+        .resize({ width: 1920, withoutEnlargement: true })
+        .webp({ quality: 70 })
+        .toBuffer();
+      fileName = `branding/crm_bg_${Date.now()}.webp`;
+    } else if (type ==="email_logo") {
+      processedBuffer = await sharp(buffer)
+        .resize({ width: 600, withoutEnlargement: true })
+        .png({ quality: 90 })
+        .toBuffer();
+      fileName = `branding/email_logo_${Date.now()}.png`;
+    } else if (type ==="sound") {
+      processedBuffer = buffer;
+      const extension = file.name.split('.').pop() || 'mp3';
+      if (soundKey) {
+        fileName = `sounds/${soundKey}.${extension}`;
+      } else {
+        fileName = `sounds/sound_${Date.now()}.${extension}`;
+      }
+    } else {
+      return ERRORS.VALIDATION("Некорректный тип");
+    }
 
-        const result = await saveLocalFile(fileName, processedBuffer);
+    const result = await saveLocalFile(fileName, processedBuffer);
 
-        if (result.success) {
-            return ok({
-                url: `/api/storage/local/${fileName}`
-            });
-        } else {
-            return err(result.error ||"Failed to save file", "INTERNAL_ERROR");
-        }
-    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "uploadBrandingFile" });
+    if (result.success) {
+      return ok({
+        url: `/api/storage/local/${fileName}`
+      });
+    } else {
+      return err(result.error ||"Failed to save file", "INTERNAL_ERROR");
+    }
+  }, { roles: ROLE_GROUPS.ADMINS, errorPath: "uploadBrandingFile" });
 }
 
 export async function exportDatabaseBackup(): Promise<ActionResult<Record<string, unknown>>> {
-    return withAuth(async () => {
-        const data = {
-            users: await db.query.users.findMany(),
-            roles: await db.query.roles.findMany(),
-            departments: await db.query.departments.findMany(),
-            clients: await db.query.clients.findMany(),
-            orders: await db.query.orders.findMany(),
-            orderItems: await db.query.orderItems.findMany(),
-            inventoryItems: await db.query.inventoryItems.findMany(),
-            inventoryCategories: await db.query.inventoryCategories.findMany(),
-            storageLocations: await db.query.storageLocations.findMany(),
-            payments: await db.query.payments.findMany(),
-            expenses: await db.query.expenses.findMany(),
-            promocodes: await db.query.promocodes.findMany(),
-            wikiPages: await db.query.wikiPages.findMany(),
-            wikiFolders: await db.query.wikiFolders.findMany(),
-            tasks: await db.query.tasks.findMany(),
-            auditLogs: await db.query.auditLogs.findMany(),
-            timestamp: new Date().toISOString(),
-        };
+  return withAuth(async () => {
+    const data = {
+      users: await db.query.users.findMany(),
+      roles: await db.query.roles.findMany(),
+      departments: await db.query.departments.findMany(),
+      clients: await db.query.clients.findMany(),
+      orders: await db.query.orders.findMany(),
+      orderItems: await db.query.orderItems.findMany(),
+      inventoryItems: await db.query.inventoryItems.findMany(),
+      inventoryCategories: await db.query.inventoryCategories.findMany(),
+      storageLocations: await db.query.storageLocations.findMany(),
+      payments: await db.query.payments.findMany(),
+      expenses: await db.query.expenses.findMany(),
+      promocodes: await db.query.promocodes.findMany(),
+      wikiPages: await db.query.wikiPages.findMany(),
+      wikiFolders: await db.query.wikiFolders.findMany(),
+      tasks: await db.query.tasks.findMany(),
+      auditLogs: await db.query.auditLogs.findMany(),
+      timestamp: new Date().toISOString(),
+    };
 
-        return ok(data);
-    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "exportDatabaseBackup" });
+    return ok(data);
+  }, { roles: ROLE_GROUPS.ADMINS, errorPath: "exportDatabaseBackup" });
 }
 
 export async function getIconGroups(): Promise<SerializedIconGroup[]> {
-    try {
-        const result = await db.select().from(systemSettings).where(eq(systemSettings.key,"icon_groups")).limit(1);
-        const settings = result[0];
+  try {
+    const result = await db.select().from(systemSettings).where(eq(systemSettings.key,"icon_groups")).limit(1);
+    const settings = result[0];
 
-        if (!settings) {
-            return serializeIconGroups(ICON_GROUPS);
-        }
-
-        const val = settings.value as unknown as SerializedIconGroup[];
-        return val;
-    } catch (error) {
-        await logError({
-            error,
-            path:"/admin-panel/branding",
-            method:"getIconGroups"
-        });
-        return serializeIconGroups(ICON_GROUPS);
+    if (!settings) {
+      return serializeIconGroups(ICON_GROUPS);
     }
+
+    const val = settings.value as unknown as SerializedIconGroup[];
+    return val;
+  } catch (error) {
+    await logError({
+      error,
+      path:"/admin-panel/branding",
+      method:"getIconGroups"
+    });
+    return serializeIconGroups(ICON_GROUPS);
+  }
 }
 
 export async function updateIconGroups(groups: SerializedIconGroup[]): Promise<ActionResult<void>> {
-    return withAuth(async () => {
-        const validated = IconGroupsSchema.safeParse(groups);
-        if (!validated.success) {
-            return ERRORS.VALIDATION(validated.error.issues[0].message);
-        }
-        const serialized = validated.data;
-        await db.transaction(async (tx) => {
-            await tx.insert(systemSettings)
-                .values({
-                    key:"icon_groups",
-                    value: serialized,
-                    updatedAt: new Date()
-                })
-                .onConflictDoUpdate({
-                    target: systemSettings.key,
-                    set: { value: serialized, updatedAt: new Date() }
-                });
-
-            await logAction("Обновление категорий иконок","system","icon_groups", {}, tx);
+  return withAuth(async () => {
+    const validated = IconGroupsSchema.safeParse(groups);
+    if (!validated.success) {
+      return ERRORS.VALIDATION(validated.error.issues[0].message);
+    }
+    const serialized = validated.data;
+    await db.transaction(async (tx) => {
+      await tx.insert(systemSettings)
+        .values({
+          key:"icon_groups",
+          value: serialized,
+          updatedAt: new Date()
+        })
+        .onConflictDoUpdate({
+          target: systemSettings.key,
+          set: { value: serialized, updatedAt: new Date() }
         });
 
-        revalidatePath("/dashboard");
-        revalidatePath("/admin-panel/branding");
+      await logAction("Обновление категорий иконок","system","icon_groups", {}, tx);
+    });
 
-        return okVoid();
-    }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateIconGroups" });
+    revalidatePath("/dashboard");
+    revalidatePath("/admin-panel/branding");
+
+    return okVoid();
+  }, { roles: ROLE_GROUPS.ADMINS, errorPath: "updateIconGroups" });
 }
