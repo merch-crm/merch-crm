@@ -45,14 +45,13 @@ export async function cleanupTestDb() {
  const db = await getTestDb()
  
  // Очищаем таблицы в правильном порядке
- const tables = [
-  'order_items', 'order_attachments', 'payments', 'orders',
-  'inventory_transactions', 'inventory_stocks', 'inventory_items',
-  'clients', 'sessions', 'users', 'roles', 'departments'
- ]
- 
- const tableNames = tables.map(t => `"${t}"`).join(', ')
- await db.execute(sql.raw(`TRUNCATE TABLE ${tableNames} CASCADE`))
+  const tables = [
+   'order_items', 'order_attachments', 'payments', 'orders',
+   'inventory_transactions', 'inventory_stocks', 'inventory_items',
+   'clients', 'sessions', 'users', 'roles', 'departments'
+  ]
+  
+  await db.execute(sql`TRUNCATE TABLE ${sql.join(tables.map(t => sql.identifier(t)), sql`, `)} CASCADE`)
  
  logToFile(`✅ cleanupTestDb finished in ${Date.now() - start}ms`)
 }

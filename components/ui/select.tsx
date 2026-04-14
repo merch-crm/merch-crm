@@ -147,11 +147,11 @@ function Select({
                         aria-haspopup="listbox"
                         aria-expanded={open}
                         className={cn(
-                            "w-full px-4 h-12 rounded-[12px] text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/20 group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center border",
+                            "w-full px-4 h-[60px] rounded-2xl text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/20 group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center border",
                             // Unified Variants
                             variant === "solid" && [
                                 color === "primary" && "bg-primary text-white border-primary hover:bg-primary/90",
-                                color === "neutral" && "bg-slate-900 text-white border-slate-900 hover:bg-slate-800",
+                                color === "neutral" && "bg-slate-50 text-slate-900 border-slate-200 hover:bg-slate-100 hover:border-slate-300",
                                 color === "success" && "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700",
                                 color === "danger" && "bg-rose-600 text-white border-rose-600 hover:bg-rose-700",
                                 color === "warning" && "bg-amber-500 text-white border-amber-500 hover:bg-amber-600",
@@ -188,7 +188,7 @@ function Select({
                                         <span
                                             suppressHydrationWarning
                                             className={cn("transition-colors truncate",
-                                                compact ? "text-xs font-bold" : "text-[14px] font-semibold text-slate-900"
+                                                compact ? "text-xs font-bold" : "text-base font-bold text-slate-900"
                                             )}
                                         >{selectedOption.title}</span>
                                         {selectedOption?.badge && !compact && variant !== "minimal" && (
@@ -207,7 +207,7 @@ function Select({
                                 <span 
                                     suppressHydrationWarning 
                                     className={cn("transition-colors truncate",
-                                        compact ? "text-xs" : "text-[14px] text-slate-400 font-semibold"
+                                        compact ? "text-xs" : "text-base text-slate-400 font-bold"
                                     )}
                                 >{placeholder}</span>
                             )}
@@ -376,7 +376,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-12 w-full items-center justify-between rounded-[12px] border border-slate-200 bg-slate-50/80 px-4 py-2 text-sm font-semibold text-slate-900 ring-offset-background placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex h-[60px] w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-2 text-base font-bold text-slate-900 ring-offset-background placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
       className
     )}
     {...props}

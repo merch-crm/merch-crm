@@ -5,7 +5,7 @@ import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerSquare } from "@/components/ui/color-picker-variants";
 import { cn } from "@/lib/utils";
 import type { AttributeType } from "./types";
 import { Plus, Trash2, Shapes, Ruler, Palette, Box, Hash, Layers, Shirt, Maximize, Tag, Globe, Weight, Droplets, Package, Waves, Wrench, type LucideIcon } from "lucide-react";
@@ -326,12 +326,7 @@ export function AttributeCustomModal({
                 </div>
 
                 {isColorType && (
-                  <div className="space-y-1.5 w-full col-span-2 mt-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1">Выбор цвета</label>
-                    <div className="p-4 bg-white border border-slate-200 rounded-[var(--radius-inner)] shadow-sm">
-                      <ColorPicker color={customForm.hex} onChange={(hex: string) => setCustomForm(prev => ({ ...prev, hex }))} isInline={true} />
-                    </div>
-                  </div>
+                   <ColorPickerSquare label="Выбор цвета" className="w-full col-span-2 mt-2" value={customForm.hex || "#3B82F6"} onChange={(hex: string) => setCustomForm(prev => ({ ...prev, hex }))} />
                 )}
               </>
             )}

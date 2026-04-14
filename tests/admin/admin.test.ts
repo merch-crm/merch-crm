@@ -158,7 +158,7 @@ function setupMocks() {
   mockQuery.auditLogs.findMany.mockResolvedValue([]);
   
   if (mockQuery.accounts) {
-    mockQuery.accounts.findFirst = vi.fn().mockResolvedValue({ userId: '1', providerId: 'credential', password: 'hashed-password' });
+    mockQuery.accounts.findFirst = vi.fn().mockResolvedValue({ userId: '1', providerId: 'credential', password: '$argon2id$v=19$m=65536,t=3,p=4$6F+...test-hash' });
   }
   vi.mocked(performDatabaseBackup).mockResolvedValue({ success: true, fileName: 'backup.json' });
 }

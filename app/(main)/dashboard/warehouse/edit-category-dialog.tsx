@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, createElement } from"react";
-import { Check, Trash2, AlertCircle } from"lucide-react";
+import { Trash2, AlertCircle } from "lucide-react";
 import { SubmitButton } from"@/components/ui/submit-button";
 import { Input } from"@/components/ui/input";
 import { Button } from"@/components/ui/button";
@@ -18,6 +18,7 @@ import { getCategoryIcon, COLORS, generateCategoryPrefix, ALL_ICONS_MAP, getDyna
 import { ResponsiveModal } from"@/components/ui/responsive-modal";
 import { SwitchRow } from"@/components/ui/switch-row";
 import { CategoryIconPicker } from"./category-icon-picker";
+import { ColorPickerSwatchesGroup } from "@/components/ui/color-picker-variants";
 
 
 
@@ -209,32 +210,12 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-slate-700 block ml-1">Цвет</label>
-                <div className="p-3 sm:p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm">
-                  <div className="grid grid-cols-10 gap-2 sm:gap-3 px-0.5">
-                    {COLORS.map((color) => {
-                      const colorHex = getHexColor(color.name);
-                      const normalizedFormColor = (formState.color ||"").toLowerCase();
-                      const isSelected = normalizedFormColor === color.name.toLowerCase() || normalizedFormColor === colorHex.toLowerCase();
-                      return (
-                        <button
-                          key={color.name}
-                          type="button"
-                          onClick={() => setFormState(prev => ({ ...prev, color: colorHex }))}
-                          className={cn("w-full aspect-square rounded-full flex items-center justify-center transition-all duration-300 relative active:scale-95 p-0 outline-none",
-                            !isSelected &&"opacity-90 hover:opacity-100 hover:scale-105"
-                          )}
-                          style={{
-                            backgroundColor: colorHex,
-                            boxShadow: isSelected
-                              ? `0 0 0 2px white, 0 0 0 2.5px ${colorHex}`
-                              : `0 1px 2px rgba(0,0,0,0.05)`
-                          }}
-                        >
-                          {isSelected && <Check className="w-3 h-3 sm:w-4 sm:h-4 text-white stroke-[3.5]" />}
-                        </button>
-                      );
-                    })}
-                  </div>
+                <div className="p-3 sm:p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
+                  <ColorPickerSwatchesGroup 
+                    value={formState.color} 
+                    onChange={(color) => setFormState(prev => ({ ...prev, color }))} 
+                    colors={COLORS.map((c) => getHexColor(c.name))}
+                  />
                 </div>
               </div>
             </div>
