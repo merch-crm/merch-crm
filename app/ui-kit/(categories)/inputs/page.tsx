@@ -38,11 +38,11 @@ export default function InputsPage() {
    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 gap-y-12 pb-32">
     
     {/* 1. Basic Input */}
-    <ComponentShowcase title="Базовое поле" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
+    <ComponentShowcase title="Базовое поле" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2" code='import { Input } from "@/components/ui/input";'>
      <div className="max-w-md w-full mx-auto space-y-3">
        <div className="group">
-        <label className="text-[11px] font-black text-slate-400  ml-1 mb-1.5 block">Электронная почта</label>
-        <input placeholder="hello@merchcrm.ru" className="w-full rounded-2xl bg-slate-50 border border-slate-200 px-5 py-3 text-sm font-medium focus:ring-4 focus:ring-slate-900/5 focus:border-slate-900 transition-all outline-none" />
+         <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Электронная почта</label>
+         <input placeholder="hello@merchcrm.ru" className="w-full h-[60px] rounded-2xl bg-slate-50 border border-slate-200 px-6 text-base font-bold text-slate-900 focus:ring-4 focus:ring-slate-900/5 focus:border-slate-900 transition-all outline-none placeholder:text-slate-400 placeholder:font-medium tracking-normal" />
        </div>
      </div>
     </ComponentShowcase>
@@ -53,35 +53,44 @@ export default function InputsPage() {
      source="ui"
      description="Базовый селект из библиотеки UI компонентов."
      className="col-span-1 md:col-span-1 lg:col-span-2"
+     code='import { Select } from "@/components/ui/select";'
     >
       <div className="max-w-md w-full mx-auto">
-        <Select 
-          options={selectOptions}
-          value={selectValue}
-          onChange={setSelectValue}
-          label="Статус заказа"
-        />
+        <div className="group">
+          <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Статус заказа</label>
+          <Select 
+            options={selectOptions}
+            value={selectValue}
+            onChange={setSelectValue}
+          />
+        </div>
       </div>
     </ComponentShowcase>
 
     {/* 7. Success State */}
-    <ComponentShowcase title="Успешная валидация" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
+    <ComponentShowcase title="Успешная валидация" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2" code='import { Input } from "@/components/ui/input";'>
       <div className="max-w-md w-full mx-auto relative group">
-       <input value="ivan@example.com" readOnly className="w-full rounded-2xl bg-emerald-50 border-2 border-emerald-100 px-5 py-3 text-sm font-medium text-emerald-700 outline-none" />
-       <CheckCircle className="absolute right-4 top-1/2 -translate-y-1/2 size-4 text-emerald-500" />
+       <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Подтвержденный Email</label>
+        <div className="relative">
+         <input value="ivan@example.com" readOnly className="w-full h-[60px] rounded-2xl bg-emerald-50 border-2 border-emerald-100 px-6 text-base font-bold text-emerald-700 outline-none tracking-normal" />
+         <CheckCircle className="absolute right-5 top-1/2 -translate-y-1/2 size-5 text-emerald-500" />
+        </div>
       </div>
     </ComponentShowcase>
 
     {/* 8. Error State */}
-    <ComponentShowcase title="Ошибка ввода" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
+    <ComponentShowcase title="Ошибка ввода" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2" code='import { Input } from "@/components/ui/input";'>
       <div className="max-w-md w-full mx-auto relative group">
-       <input value="неверный-формат" readOnly className="w-full rounded-2xl bg-red-50 border-2 border-red-100 px-5 py-3 text-sm font-medium text-red-700 outline-none" />
-       <AlertCircle className="absolute right-4 top-1/2 -translate-y-1/2 size-4 text-red-500 animate-pulse" />
+       <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Некорректные данные</label>
+        <div className="relative">
+         <input value="неверный-формат" readOnly className="w-full h-[60px] rounded-2xl bg-red-50 border-2 border-red-100 px-6 text-base font-bold text-red-700 outline-none tracking-normal" />
+         <AlertCircle className="absolute right-5 top-1/2 -translate-y-1/2 size-5 text-red-500 animate-pulse" />
+        </div>
       </div>
     </ComponentShowcase>
 
     {/* New Date Range Input */}
-    <ComponentShowcase title="Выбор диапазона" source="custom" className="overflow-visible col-span-1 md:col-span-2 lg:col-span-2">
+    <ComponentShowcase title="Выбор диапазона" source="custom" className="overflow-visible col-span-1 md:col-span-2 lg:col-span-2" code='import { DateRangePicker } from "@/components/ui/date-range-picker";'>
      <div className="w-full max-w-md mx-auto">
       <DateRangePicker 
        label="Даты проведения акции"
@@ -92,45 +101,58 @@ export default function InputsPage() {
     </ComponentShowcase>
 
     {/* New Date Range Input with Presets */}
-    <ComponentShowcase title="Диапазон с пресетами" source="custom" className="overflow-visible col-span-1 md:col-span-2 lg:col-span-2">
+    <ComponentShowcase title="Диапазон с пресетами" source="custom" className="overflow-visible col-span-1 md:col-span-2 lg:col-span-2" code='import { DateRangePickerWithPresets } from "@/components/ui/date-range-picker";'>
      <div className="w-full max-w-md mx-auto">
-      <DateRangePickerWithPresets 
-       label="Период отчета"
-       value={rangeWithPresets}
-       onChange={setRangeWithPresets}
-      />
+      <div className="group">
+       <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Период отчета</label>
+       <DateRangePickerWithPresets 
+        value={rangeWithPresets}
+        onChange={setRangeWithPresets}
+       />
+      </div>
      </div>
     </ComponentShowcase>
 
     {/* 3. Number Stepper */}
-    <ComponentShowcase title="Числовой селектор" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1">
-      <div className="flex items-center gap-3 w-fit mx-auto bg-slate-50 p-1.5 rounded-2xl border border-slate-200">
-       <button className="size-10 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center font-bold text-slate-400 hover:text-slate-950 active:scale-95 transition-all">−</button>
-       <span className="w-12 text-center text-sm font-black">12</span>
-       <button className="size-10 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center font-bold text-slate-400 hover:text-slate-950 active:scale-95 transition-all">+</button>
+    <ComponentShowcase title="Числовой селектор" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1" code='import { NumberInput } from "@/components/ui/number-input";'>
+      <div className="flex items-center gap-3 w-fit mx-auto bg-slate-50 p-2 rounded-2xl border border-slate-200 h-[60px]">
+       <button className="h-[42px] px-4 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center font-bold text-slate-400 hover:text-slate-950 active:scale-95 transition-all text-xl">−</button>
+       <span className="w-12 text-center text-base font-bold text-slate-900 tracking-normal">12</span>
+       <button className="h-[42px] px-4 rounded-xl bg-white shadow-sm border border-slate-100 flex items-center justify-center font-bold text-slate-400 hover:text-slate-950 active:scale-95 transition-all text-xl">+</button>
       </div>
     </ComponentShowcase>
 
     {/* 9. Credit Card Input */}
-    <ComponentShowcase title="Маска (Карта)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1">
+    <ComponentShowcase title="Маска (Карта)" source="custom" className="col-span-1 md:col-span-1 lg:col-span-1" code='import { Input } from "@/components/ui/input";'>
       <div className="max-w-xs w-full mx-auto relative">
-       <CreditCard className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-       <input placeholder="0000 0000 0000 0000" className="w-full rounded-2xl bg-slate-50 border border-slate-200 px-11 py-3 text-sm font-medium outline-none" />
+       <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Верхняя метка карты</label>
+       <div className="relative">
+        <CreditCard className="absolute left-5 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
+        <input placeholder="0000 0000 0000 0000" className="w-full h-[60px] rounded-2xl bg-slate-50 border border-slate-200 px-14 text-base font-bold text-slate-900 outline-none placeholder:text-slate-400 placeholder:font-medium tracking-normal" />
+       </div>
       </div>
     </ComponentShowcase>
 
     {/* 5. Action Button Input */}
-    <ComponentShowcase title="Поле с кнопкой" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
-      <div className="max-w-md w-full mx-auto relative group">
-       <input placeholder="Введите промокод" className="w-full rounded-2xl bg-slate-50 border border-slate-200 px-5 py-3 text-sm font-medium outline-none pr-28" />
-       <button className="absolute right-1.5 top-1.5 bottom-1.5 px-4 bg-primary-base text-white text-[11px] font-black rounded-xl  shadow-sm hover:bg-primary-dark active:scale-95 transition-all">Применить</button>
+    <ComponentShowcase title="Поле с кнопкой" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2" code='import { Input } from "@/components/ui/input";'>
+      <div className="max-w-md w-full mx-auto">
+       <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Промокод</label>
+       <div className="relative group">
+        <input placeholder="Введите промокод" className="w-full h-[60px] rounded-2xl bg-slate-50 border border-slate-200 px-6 text-base font-bold text-slate-900 outline-none pr-32 placeholder:text-slate-400 placeholder:font-medium tracking-normal" />
+        <button className="absolute right-2 top-2 bottom-2 px-6 bg-primary-base text-white text-[12px] font-black rounded-xl shadow-sm hover:bg-primary-dark active:scale-95 transition-all">Применить</button>
+       </div>
       </div>
     </ComponentShowcase>
 
     {/* 4. Textarea */}
-    <ComponentShowcase title="Многострочный ввод" source="custom" className="col-span-1 md:col-span-2 lg:col-span-2">
+    <ComponentShowcase title="Многострочный ввод" source="custom" className="col-span-1 md:col-span-2 lg:col-span-2" code='import { Textarea } from "@/components/ui/textarea";'>
       <div className="max-w-md w-full mx-auto">
-       <textarea placeholder="Опишите детали заказа..." rows={4} className="w-full rounded-2xl bg-slate-50 border border-slate-200 p-4 text-sm font-medium focus:ring-4 focus:ring-slate-900/5 focus:border-slate-900 transition-all outline-none resize-none" />
+       <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">Комментарий к заказу</label>
+       <textarea 
+        placeholder="Опишите детали заказа..." 
+        rows={4} 
+        className="w-full rounded-2xl bg-slate-50 border border-slate-200 p-5 text-base font-bold text-slate-900 focus:ring-4 focus:ring-slate-900/5 focus:border-slate-900 transition-[box-shadow,border-color] duration-200 outline-none resize-y min-h-[140px] tracking-normal placeholder:text-slate-400 placeholder:font-medium" 
+       />
       </div>
     </ComponentShowcase>
 
@@ -140,11 +162,12 @@ export default function InputsPage() {
      source="custom" 
      description="CMD+K интерфейс для быстрой навигации." 
      className="col-span-1 md:col-span-2 lg:col-span-2"
+     code='import { Command, CommandInput, CommandList, CommandItem } from "@/components/ui/command";'
     >
      <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white shadow-2xl overflow-hidden mx-auto">
        <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4">
         <Search className="size-5 text-slate-400" />
-        <input placeholder="Найти..." className="flex-1 bg-transparent text-sm font-bold text-slate-900 outline-none" />
+        <input placeholder="Найти..." className="flex-1 bg-transparent text-base font-bold text-slate-900 outline-none tracking-normal" />
         <kbd className="h-6 px-1.5 rounded-md bg-slate-50 border border-slate-200 text-[11px] font-black text-slate-400">Esc</kbd>
        </div>
        <div className="p-4 space-y-1">
@@ -170,6 +193,7 @@ export default function InputsPage() {
      source="custom" 
      description="Быстрый поиск и управление командами через горячие клавиши." 
      className="col-span-1 md:col-span-2 lg:col-span-2"
+     code='import { CommandDialog, CommandInput, CommandList, CommandItem } from "@/components/ui/command";'
     >
      <div className="w-full max-w-sm mx-auto border border-border rounded-xl bg-card shadow-lg p-2 overflow-hidden">
        <div className="flex items-center gap-3 px-3 py-2 border-b border-border mb-2">

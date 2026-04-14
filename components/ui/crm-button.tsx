@@ -11,11 +11,11 @@ const crmButtonVariants = cva(
     variants: {
       variant: {
         action:
-          "bg-[#1A2233] text-white shadow-sm hover:bg-[#252E44] border border-white/5",
+          "bg-[#F59E0B] text-white shadow-md hover:bg-[#D97706] border border-orange-400/20",
         actionOutline:
-          "bg-[#1A2233]/5 text-[#1A2233] border border-[#1A2233]/20 hover:bg-[#1A2233]/10 shadow-none",
+          "bg-[#F59E0B]/5 text-[#D97706] border border-[#F59E0B]/20 hover:bg-[#F59E0B]/10 shadow-none",
         actionGhost:
-          "bg-transparent text-[#1A2233] border-transparent hover:bg-[#1A2233]/10 shadow-none",
+          "bg-transparent text-[#D97706] border-transparent hover:bg-[#F59E0B]/10 shadow-none",
         danger:
           "bg-[#E11D48] text-white shadow-sm hover:bg-[#F43F5E] border border-white/5",
         dangerOutline:
@@ -70,11 +70,14 @@ export interface CrmButtonProps
 }
 
 const CrmButton = React.forwardRef<HTMLButtonElement, CrmButtonProps>(
-  ({ className, variant, size, asChild = false, isLoading, loadingText, children, ...props }, ref) => {
+  ({ className, variant, color, size, asChild = false, isLoading, loadingText, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     
+    // Resolve variant from color if variant is not provided
+    const resolvedVariant = variant || (color as VariantProps<typeof crmButtonVariants>["variant"]) || "action";
+    
     return (
-      <Comp className={cn( crmButtonVariants({ variant, size, className }), isLoading && ( variant?.startsWith("danger") ? "bg-[#E11D48] text-white border-transparent cursor-wait hover:bg-[#E11D48]" : variant?.startsWith("success") ? "bg-[#10B981] text-white border-transparent cursor-wait hover:bg-[#10B981]" : variant?.startsWith("warning") ? "bg-[#F59E0B] text-white border-transparent cursor-wait hover:bg-[#F59E0B]" : variant?.startsWith("brand") ? "bg-[#4F46E5] text-white border-transparent cursor-wait hover:bg-[#4F46E5]" : "bg-[#949BAB] text-white border-transparent cursor-wait hover:bg-[#949BAB]" ) )} ref={ref} disabled={isLoading || props.disabled} {...props}>
+      <Comp className={cn( crmButtonVariants({ variant: resolvedVariant, size, className }), isLoading && ( resolvedVariant?.startsWith("danger") ? "bg-[#E11D48] text-white border-transparent cursor-wait hover:bg-[#E11D48]" : resolvedVariant?.startsWith("success") ? "bg-[#10B981] text-white border-transparent cursor-wait hover:bg-[#10B981]" : resolvedVariant?.startsWith("warning") ? "bg-[#F59E0B] text-white border-transparent cursor-wait hover:bg-[#F59E0B]" : resolvedVariant?.startsWith("brand") ? "bg-[#4F46E5] text-white border-transparent cursor-wait hover:bg-[#4F46E5]" : "bg-[#949BAB] text-white border-transparent cursor-wait hover:bg-[#949BAB]" ) )} ref={ref} disabled={isLoading || props.disabled} {...props}>
         {isLoading ? (
           <>
             <Loader2 className="size-4 animate-spin mr-2" />

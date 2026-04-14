@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerSquare } from "@/components/ui/color-picker-variants";
 import { Loader2, Upload, Mail, Printer } from "lucide-react";
 import { BrandingSettings, BrandingUiState } from "../hooks/useBrandingForm";
 
@@ -54,10 +54,8 @@ export function CommunicationSettings({ formData, setFormData, handleFileUpload,
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <ColorPicker label="Цвет кнопок и ссылок" color={formData.emailPrimaryColor || "var(--primary)"} onChange={(c: string) => setFormData(prev => ({ ...prev, emailPrimaryColor: c }))}
-              />
-              <ColorPicker label="Цвет текста на кнопках" color={formData.emailContrastColor || "#ffffff"} onChange={(c: string) => setFormData(prev => ({ ...prev, emailContrastColor: c }))}
-              />
+              <ColorPickerSquare label="Цвет кнопок и ссылок" value={formData.emailPrimaryColor || "var(--primary)"} onChange={(c: string) => setFormData(prev => ({ ...prev, emailPrimaryColor: c }))} />
+              <ColorPickerSquare label="Цвет текста на кнопках" value={formData.emailContrastColor || "#ffffff"} onChange={(c: string) => setFormData(prev => ({ ...prev, emailContrastColor: c }))} />
             </div>
 
             <div>

@@ -8,7 +8,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         return (
             <input
                 type={type}
-                className={cn("flex h-12 w-full rounded-[var(--radius)] border border-slate-200 bg-slate-50/80 px-4 py-2 text-sm font-medium ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
+                className={cn("flex h-[60px] w-full rounded-2xl border border-slate-200 bg-slate-50/80 px-4 text-base font-bold tracking-normal ring-offset-background file:border-0 file:bg-transparent file:text-base file:font-bold placeholder:text-slate-400 placeholder:font-medium focus-visible:outline-none focus-visible:border-slate-400 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
                     className
                 )}
                 ref={ref}

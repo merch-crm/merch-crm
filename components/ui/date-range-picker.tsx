@@ -239,7 +239,7 @@ function DateRangePicker({
     return (
         <div ref={containerRef} className={cn("relative", className)}>
             {label && (
-                <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">{label}</label>
+                <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">{label}</label>
             )}
 
             {/* Триггер */}
@@ -248,7 +248,7 @@ function DateRangePicker({
                     setTempValue(value);
                     setIsOpen(!isOpen);
                 }}
-                className={cn("w-full h-11 px-4 bg-white border border-slate-200 rounded-md text-sm font-medium text-left flex items-center gap-3 transition-all","hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                className={cn("w-full h-[60px] px-6 bg-white border border-slate-200 rounded-2xl text-base font-bold text-left flex items-center gap-3 transition-all","hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
                     isOpen &&"ring-2 ring-primary/20 border-primary"
                 )}
             >
@@ -398,7 +398,7 @@ function DateRangePickerWithPresets({
     return (
         <div ref={containerRef} className={cn("relative", className)}>
             {label && (
-                <label className="text-sm font-bold text-slate-700 ml-1 mb-2 block">{label}</label>
+                <label className="text-[13.5px] font-bold text-slate-700 mb-2 block tracking-normal">{label}</label>
             )}
 
             <button type="button"
@@ -406,7 +406,7 @@ function DateRangePickerWithPresets({
                     setTempValue(value);
                     setIsOpen(!isOpen);
                 }}
-                className={cn("w-full h-11 px-4 bg-white border border-slate-200 rounded-md text-sm font-medium text-left flex items-center gap-3 transition-all","hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
+                className={cn("w-full h-[60px] px-6 bg-white border border-slate-200 rounded-2xl text-base font-bold text-left flex items-center gap-3 transition-all","hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary",
                     isOpen &&"ring-2 ring-primary/20 border-primary"
                 )}
             >

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerSquare } from "@/components/ui/color-picker-variants";
 import { Loader2, Upload, X, MousePointer2, Eye, EyeOff, Moon, Sun, Image as LucideImage } from "lucide-react";
 import { BrandingSettings, BrandingUiState } from "../hooks/useBrandingForm";
 import { IconManager } from "../icon-manager";
@@ -26,8 +26,7 @@ export function AppearanceSettings({ formData, setFormData, handleFileUpload, ca
         <div className="crm-card p-6 space-y-3">
           <div className="space-y-3">
               <div>
-                <ColorPicker label="Фоновый цвет CRM" color={formData.backgroundColor || "#f2f2f2"} onChange={(newColor: string) => setFormData(prev => ({ ...prev, backgroundColor: newColor }))}
-                />
+              <ColorPickerSquare label="Фоновый цвет CRM" value={formData.backgroundColor || "#f2f2f2"} onChange={(newColor: string) => setFormData(prev => ({ ...prev, backgroundColor: newColor }))} />
                 <p className="text-xs text-slate-400 mt-2">Основной фон страниц</p>
               </div>
 

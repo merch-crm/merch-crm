@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
-import { CompactColorPicker } from '@/components/library/custom/components/colors/custom-colors-demo';
-import { CustomRenderFunction } from '@/components/library/custom/components/colors/custom-colors-demo';
-import { LuminColorPicker } from "@/components/ui/lumin-color-picker";
+import { ColorPickerCompact, ColorPickerSwatchesGroup, ColorPickerSquare, ColorPickerCircle } from '@/components/ui/color-picker-variants';
+import { ColorPicker } from "@/components/ui/color-picker";
 
 export default function ColorsPage() {
  return (
@@ -19,20 +18,33 @@ export default function ColorsPage() {
      source="custom" 
      desc="Компактный инструмент для точного выбора цвета с поддержкой системного EyeDropper." 
      className="col-span-1 md:col-span-1 lg:col-span-2 !overflow-visible relative z-50 [&>div:last-child]:!overflow-visible"
+     code='import { ColorPickerCompact } from "@/components/ui/color-picker-variants";'
     >
-      <CompactColorPicker />
+      <ColorPickerCompact />
     </ComponentShowcase>
 
 
-    <ComponentShowcase title="Полный пикер цвета" source="custom" desc="Расширенный интерфейс выбора цвета с палитрой, слайдерами и полем ввода." className="col-span-1 md:col-span-1 lg:col-span-2">
+    <ComponentShowcase title="Полный пикер цвета" source="custom" desc="Расширенный интерфейс выбора цвета с палитрой, слайдерами и полем ввода." code='import { ColorPicker } from "@/components/ui/color-picker";' className="col-span-1 md:col-span-1 lg:col-span-2">
       <div className="flex flex-col items-center justify-center py-8">
-       <LuminColorPicker />
+       <ColorPicker />
       </div>
     </ComponentShowcase>
 
-    <ComponentShowcase title="Группы образцов" source="custom" desc="Пользовательский рендер с индикаторами выбора." className="col-span-1 md:col-span-2 lg:col-span-4">
+    <ComponentShowcase title="Группы образцов" source="custom" desc="Пользовательский рендер с индикаторами выбора и кастомным цветом." code='import { ColorPickerSwatchesGroup } from "@/components/ui/color-picker-variants";' className="col-span-1 md:col-span-2 lg:col-span-4">
       <div className="flex items-center justify-center py-4">
-       <CustomRenderFunction />
+       <ColorPickerSwatchesGroup />
+      </div>
+    </ComponentShowcase>
+
+    <ComponentShowcase title="Квадрат" source="custom" desc="Компактный триггер выбора цвета в форме квадрата с попапом." code='import { ColorPickerSquare } from "@/components/ui/color-picker-variants";' className="col-span-1 md:col-span-1 lg:col-span-2 !overflow-visible relative z-40 [&>div:last-child]:!overflow-visible">
+      <div className="flex items-center justify-center py-8">
+       <ColorPickerSquare />
+      </div>
+    </ComponentShowcase>
+
+    <ComponentShowcase title="Круг" source="custom" desc="Компактный триггер выбора цвета в форме круга с попапом." code='import { ColorPickerCircle } from "@/components/ui/color-picker-variants";' className="col-span-1 md:col-span-1 lg:col-span-2 !overflow-visible relative z-40 [&>div:last-child]:!overflow-visible">
+      <div className="flex items-center justify-center py-8">
+       <ColorPickerCircle />
       </div>
     </ComponentShowcase>
 

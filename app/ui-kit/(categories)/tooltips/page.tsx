@@ -68,11 +68,11 @@ export default function TooltipsPage() {
           <div key={i} className={cn("w-8 bg-slate-200 rounded-t-xl transition-all duration-500", i === 3 ? "bg-primary-base rounded-b-xl" : "")} style={{ height: `${h}%` }} />
          ))}
        </div>
-       <div className="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/chart:opacity-100 transition-opacity duration-300 pointer-events-none">
-         <div className="bg-white rounded-[1.5rem] p-4 shadow-2xl flex flex-col items-center min-w-[120px] border border-slate-50">
-          <span className="text-[11px] font-black text-gray-400 ">Выручка</span>
-          <span className="text-lg font-black text-gray-950 font-heading">₽1,420,000</span>
-          <span className="text-[11px] font-bold text-emerald-500">+12.4% к прошлой неделе</span>
+       <div className="absolute top-2 left-1/2 -translate-x-1/2 opacity-0 group-hover/chart:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+         <div className="bg-slate-900 rounded-[1.5rem] p-4 shadow-2xl flex flex-col items-center min-w-[120px] border border-slate-800">
+          <span className="text-[11px] font-bold text-slate-400">Выручка</span>
+          <span className="text-lg font-black text-white font-heading">₽1,420,000</span>
+          <span className="text-[11px] font-bold text-emerald-400">+12.4% к прошлой неделе</span>
          </div>
        </div>
       </div>
@@ -98,9 +98,9 @@ export default function TooltipsPage() {
           {d.pos}
         </button>
         <div className={cn("absolute scale-75 opacity-0 group-hover/dir:scale-100 group-hover/dir:opacity-100 transition-all pointer-events-none z-10", d.cls)}>
-          <div className="relative bg-white border border-slate-100 text-slate-900 text-[11px] font-black px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl">
+          <div className="relative bg-slate-900 border border-slate-800 text-white text-[11px] font-medium px-3 py-1.5 rounded-lg whitespace-nowrap shadow-xl">
            Ориентация: {d.label}
-           <div className={cn("absolute size-2 bg-white border-r border-b border-slate-100 rotate-45", d.arrow)} />
+           <div className={cn("absolute size-2 bg-slate-900 border-r border-b border-slate-800 rotate-45", d.arrow)} />
           </div>
         </div>
        </div>

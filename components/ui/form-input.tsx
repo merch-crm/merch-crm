@@ -18,7 +18,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
             <div className={cn("space-y-2", containerClassName)}>
                 <label
                     htmlFor={inputId}
-                    className="text-sm font-bold text-slate-700 ml-1"
+                    className="text-[13.5px] font-bold text-slate-700 ml-1 tracking-normal"
                 >
                     {label} {required && "*"}
                 </label>
@@ -28,7 +28,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
                             {icon}
                         </div>
                     )}
-                    <Input id={inputId} ref={ref} className={cn("w-full h-12 rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-sm focus:border-slate-900 focus:bg-white transition-all shadow-none", icon ? "pl-11" : "px-4", error && "border-rose-500 focus:border-rose-500", className )} {...props} />
+                    <Input id={inputId} ref={ref} className={cn("w-full h-[60px] rounded-2xl border-slate-200 bg-slate-50 text-slate-900 font-bold text-base tracking-normal focus:border-slate-900 focus:bg-white transition-all shadow-none", icon ? "pl-11" : "px-4", error && "border-rose-500 focus:border-rose-500", className )} {...props} />
                 </div>
                 {error && (
                     <p className="text-xs font-bold text-rose-500 ml-1">{error}</p>

@@ -166,13 +166,13 @@ describe('updatePassword', () => {
 
   it('возвращает ошибку если нет сессии', async () => {
     mockGetSession.mockResolvedValueOnce(null);
-    const result = await updatePassword(createFormData({ currentPassword: 'p-old', newPassword: 'p-new-123', confirmPassword: 'p-new-123' })); // Safe
+    const result = await updatePassword(createFormData({ currentPassword: 'OLD_PASSWORD_PLACEHOLDER', newPassword: 'NEW_PASSWORD_PLACEHOLDER', confirmPassword: 'NEW_PASSWORD_PLACEHOLDER' })); // Safe
     expect(result).toEqual({ success: false, error: 'Не авторизован' });
   });
 
   it('возвращает ошибку если пароли не совпадают', async () => {
     mockGetSession.mockResolvedValueOnce(mockSession());
-    const result = await updatePassword(createFormData({ currentPassword: 'p-old', newPassword: 'p-new-123', confirmPassword: 'different' })); // Safe
+    const result = await updatePassword(createFormData({ currentPassword: 'OLD_PASSWORD_PLACEHOLDER', newPassword: 'NEW_PASSWORD_PLACEHOLDER', confirmPassword: 'DIFFERENT_PASSWORD_PLACEHOLDER' })); // Safe
     expect(result.success).toBe(false);
     expect((result as { error: string }).error).toContain('совпадают');
   });
@@ -181,7 +181,7 @@ describe('updatePassword', () => {
     mockGetSession.mockResolvedValueOnce(mockSession());
     mockFindFirst.mockResolvedValueOnce(createMockUser());
     mockChangePassword.mockRejectedValueOnce({ code: 'INVALID_PASSWORD' });
-    const result = await updatePassword(createFormData({ currentPassword: 'wrongold1', newPassword: 'newpass123', confirmPassword: 'newpass123' })); // Safe
+    const result = await updatePassword(createFormData({ currentPassword: 'WRONG_OLD_PASSWORD_PLACEHOLDER', newPassword: 'NEW_PASSWORD_PLACEHOLDER', confirmPassword: 'NEW_PASSWORD_PLACEHOLDER' })); // Safe
     if (!result.success && result.error !== 'Текущий пароль указан неверно') console.error('Password error mismatch:', result.error);
     expect(result.success).toBe(false);
     expect(['Текущий пароль указан неверно', 'Не удалось обновить пароль']).toContain((result as { error: string }).error);
@@ -194,8 +194,8 @@ describe('updatePassword', () => {
       token: 'test-token', 
       user: createMockUser() as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>['user']
     } as unknown as Awaited<ReturnType<typeof auth.api.changePassword>>);
-    const result = await updatePassword(createFormData({ currentPassword: 'p-correct-old', newPassword: 'p-new-123456', confirmPassword: 'p-new-123456' })); // Safe
-    if (!result.success) console.error('Password update failed:', (result as { error?: string }).error);
+    const result = await updatePassword(createFormData({ currentPassword: 'CORRECT_OLD_PASSWORD_PLACEHOLDER', newPassword: 'NEW_SECURE_PASSWORD_PLACEHOLDER', confirmPassword: 'NEW_SECURE_PASSWORD_PLACEHOLDER' })); // Safe
+    if (!result.success) console.error('Password update check failed');
     expect(result.success).toBe(true);
   });
 });

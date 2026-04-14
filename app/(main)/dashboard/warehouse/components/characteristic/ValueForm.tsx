@@ -3,7 +3,7 @@ import React, { type Dispatch, type SetStateAction } from "react";
 import { Trash2, Loader2, AlertCircle, Check, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ColorPicker } from "@/components/ui/color-picker";
+import { ColorPickerSquare } from "@/components/ui/color-picker-variants";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { AttributeType } from "../../types";
@@ -160,9 +160,7 @@ export function ValueForm({
                     )}
                   </div>
                   {showColorPicker && (
-                    <ColorPicker color={valueForm.colorHex} onChange={(val: string) => setValueForm((prev: ValueFormState) => ({ ...prev, colorHex: val }))}
-                      isInline={true}
-                    />
+                    <ColorPickerSquare value={valueForm.colorHex || "#3B82F6"} onChange={(val: string) => setValueForm((prev: ValueFormState) => ({ ...prev, colorHex: val }))} />
                   )}
                 </div>
               )}
