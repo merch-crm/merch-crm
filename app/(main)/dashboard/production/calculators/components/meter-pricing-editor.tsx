@@ -262,7 +262,7 @@ export const MeterPricingEditor = memo(function MeterPricingEditor({
     {existingWidths.length > 1 && (
      <div className="flex gap-1.5 ml-auto">
       {existingWidths.map(width => (
-       <Badge key={width} color={width === selectedRollWidth ? 'primary' : 'neutral'} className="cursor-pointer" onClick={() => setSelectedRollWidth(width)}
+       <Badge key={width} color={width === selectedRollWidth ? 'purple' : 'gray'} className="cursor-pointer" onClick={() => setSelectedRollWidth(width)}
        >
         {width} мм
        </Badge>

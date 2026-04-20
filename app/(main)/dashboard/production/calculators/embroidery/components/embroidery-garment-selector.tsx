@@ -94,7 +94,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
      
      <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar no-scrollbar scrollbar-hide">
       {categories.map(cat => (
-       <Button key={cat.id} color={activeCategory === cat.id ? 'system' : 'neutral'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
+       <Button key={cat.id} color={activeCategory === cat.id ? 'purple' : 'gray'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
         className={cn(
          "rounded-full px-4 h-9 font-bold text-xs transition-all whitespace-nowrap",
          activeCategory === cat.id ? "bg-slate-900 text-white shadow-md" : "border-slate-200 text-slate-500 hover:bg-slate-100"

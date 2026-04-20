@@ -8,17 +8,16 @@ const quantityIconBadgeVariants = cva(
   {
     variants: {
       color: {
-        default: "bg-primary shadow-md shadow-primary/20",
-        success: "bg-emerald-500 shadow-md shadow-emerald-500/20",
-        warning: "bg-amber-500 shadow-md shadow-amber-500/20",
-        danger: "bg-rose-500 shadow-md shadow-rose-500/20",
-        dark: "bg-slate-950 shadow-md shadow-slate-950/20",
-        light: "bg-gray-200 text-gray-700 shadow-md shadow-gray-200/20",
-        primary: "bg-indigo-600 shadow-md shadow-indigo-600/20",
+        purple: "bg-primary shadow-md shadow-primary/20",
+        green: "bg-emerald-500 shadow-md shadow-emerald-500/20",
+        yellow: "bg-amber-500 shadow-md shadow-amber-500/20",
+        red: "bg-rose-500 shadow-md shadow-rose-500/20",
+        black: "bg-slate-950 shadow-md shadow-slate-950/20",
+        gray: "bg-gray-200 text-gray-700 shadow-md shadow-gray-200/20",
       },
     },
     defaultVariants: {
-      color: "default",
+      color: "purple",
     },
   }
 );

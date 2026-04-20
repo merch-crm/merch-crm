@@ -147,19 +147,19 @@ interface StockStatusBadgeProps {
 }
 
 function StockStatusBadge({ status, available }: StockStatusBadgeProps) {
-  const config: Record<string, { color: "success" | "warning" | "danger", icon: IconType, text: string }> = {
+  const config: Record<string, { color: "green" | "yellow" | "red", icon: IconType, text: string }> = {
     ok: {
-      color: "success",
+      color: "green",
       icon: Check as IconType,
       text: "В наличии",
     },
     low: {
-      color: "warning",
+      color: "yellow",
       icon: AlertTriangle as IconType,
       text: "Мало",
     },
     none: {
-      color: "danger",
+      color: "red",
       icon: AlertTriangle as IconType,
       text: "Нет",
     },

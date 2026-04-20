@@ -41,7 +41,7 @@ export interface BadgeProps
     icon?: React.ComponentType<{ className?: string }>;
 }
 
-function Badge({ className, variant = "solid", color = "primary", icon: Icon, children, ...props }: BadgeProps) {
+function Badge({ className, variant = "solid", color = "purple", icon: Icon, children, ...props }: BadgeProps) {
   return (
     <div 
       className={cn(badgeVariants({ variant, color }), "inline-flex items-center gap-1.5", className)} 

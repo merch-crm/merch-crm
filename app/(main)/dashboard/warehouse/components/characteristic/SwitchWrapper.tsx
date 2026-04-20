@@ -17,7 +17,7 @@ export function SwitchWrapper({
   label?: ReactNode,
   icon?: ComponentType<{ className?: string }>,
   description?: string,
-  color?: "primary" | "success" | "dark"
+  color?: "purple" | "green" | "black"
 }) {
   return (
     <div className={cn("flex items-center justify-between group",

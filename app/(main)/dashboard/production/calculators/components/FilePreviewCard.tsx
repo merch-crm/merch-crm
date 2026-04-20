@@ -149,7 +149,7 @@ export function FilePreviewCard({
          
          {dpi && file.calculatorType !== 'embroidery' && (
           <Tooltip content={ isLowDpi ? `Низкое разрешение для печати. Рекомендуется минимум 300 DPI для качественного результата.` : `Хорошее разрешение для печати.` }>
-           <Badge color={isLowDpi ? "danger" : "neutral"} className={cn( "text-xs h-4 font-bold px-1.5 gap-1 cursor-default", !isLowDpi && "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" )}>
+           <Badge color={isLowDpi ? "red" : "gray"} className={cn( "text-xs h-4 font-bold px-1.5 gap-1 cursor-default", !isLowDpi && "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" )}>
             {isLowDpi && <AlertTriangle className="h-2.5 w-2.5" />}
             {dpi} DPI
            </Badge>

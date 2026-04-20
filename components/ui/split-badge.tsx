@@ -7,7 +7,6 @@ const splitBadgeVariants = cva(
   {
     variants: {
       color: {
-      color: {
         gray: "border-slate-200",
         green: "border-emerald-200",
         yellow: "border-amber-200",
@@ -23,7 +22,6 @@ const splitBadgeVariants = cva(
 );
 
 const labelStyles: Record<string, string> = {
-const labelStyles: Record<string, string> = {
   gray: "bg-slate-50 text-slate-500",
   green: "bg-emerald-50 text-emerald-600",
   yellow: "bg-amber-50 text-amber-600",
@@ -32,7 +30,6 @@ const labelStyles: Record<string, string> = {
   purple: "bg-primary/5 text-primary",
 };
 
-const valueStyles: Record<string, string> = {
 const valueStyles: Record<string, string> = {
   gray: "bg-slate-800 text-white",
   green: "bg-emerald-500 text-white",

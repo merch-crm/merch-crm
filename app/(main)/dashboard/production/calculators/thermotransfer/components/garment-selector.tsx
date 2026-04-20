@@ -48,12 +48,12 @@ export function GarmentSelector({ onSelect }: GarmentSelectorProps) {
 
     {/* Категории */}
     <div className="flex flex-wrap gap-2">
-     <Badge color={selectedCategory === null ? 'primary' : 'neutral'} variant={selectedCategory === null ? 'solid' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory(null)}
+     <Badge color={selectedCategory === null ? 'purple' : 'gray'} variant={selectedCategory === null ? 'solid' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory(null)}
      >
       Все
      </Badge>
      {APPLICATION_GARMENT_CATEGORIES.map((category: string) => (
-      <Badge key={category} color={selectedCategory === category ? 'primary' : 'neutral'} variant={selectedCategory === category ? 'solid' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory(category)}
+      <Badge key={category} color={selectedCategory === category ? 'purple' : 'gray'} variant={selectedCategory === category ? 'solid' : 'outline'} className="cursor-pointer" onClick={() => setSelectedCategory(category)}
       >
        {category}
       </Badge>

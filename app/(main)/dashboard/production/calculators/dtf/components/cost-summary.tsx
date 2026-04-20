@@ -48,7 +48,7 @@ export const CostSummary = memo(function CostSummary({
             <Badge className="px-3 py-1.5 text-sm" color="gray">
               {result.totalLengthM.toFixed(2)} м
             </Badge>
-            <Badge variant={result.efficiencyPercent >= 75 ? "solid" : "outline"} color={result.efficiencyPercent >= 75 ? "success" : "warning"}
+            <Badge variant={result.efficiencyPercent >= 75 ? "solid" : "outline"} color={result.efficiencyPercent >= 75 ? "green" : "yellow"}
               className="px-3 py-1.5 text-sm"
             >
               КПД {result.efficiencyPercent.toFixed(1)}%

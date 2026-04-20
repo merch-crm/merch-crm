@@ -86,7 +86,7 @@ export function FileTable({ files, onDelete, onSetAsPreview }: FileTableProps) {
 
  {/* Type badge */}
  <TableCell>
-  <Badge color={file.fileType === "preview" ? "primary" : "primary"} className="text-xs">
+  <Badge color="purple" className="text-xs">
  {file.fileType ==="preview"? (
  <>
  <ImageIcon className="h-3 w-3 mr-1"/>

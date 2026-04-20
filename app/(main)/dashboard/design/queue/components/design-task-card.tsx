@@ -98,7 +98,7 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
                 {task.number}
               </Badge>
               {(task.priority ?? 0) > 0 && (
-                <Badge color={(task.priority ?? 0) === 2 ? "danger" : "neutral"} className="text-xs py-0 px-1">
+                <Badge color={(task.priority ?? 0) === 2 ? "red" : "gray"} className="text-xs py-0 px-1">
                   {priorityConfig[task.priority ?? 0]?.label}
                 </Badge>
               )}

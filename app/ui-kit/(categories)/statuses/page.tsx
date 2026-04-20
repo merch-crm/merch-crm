@@ -179,7 +179,7 @@ export default function StatusesPage() {
           <QuantityIconBadge value={250} unit="шт." icon={Archive} color="green" />
           <QuantityIconBadge value={12} unit="уп." icon={Archive} color="yellow" />
           <QuantityIconBadge value={0} unit="шт." icon={Archive} color="red" />
-          <QuantityIconBadge value={100} unit="уп." icon={Archive} color="default" />
+          <QuantityIconBadge value={100} unit="уп." icon={Archive} color="gray" />
           <QuantityIconBadge value={44} unit="кг." icon={Archive} color="black" />
           <QuantityIconBadge value={5} unit="шт." icon={Archive} color="gray" />
         </div>

@@ -55,26 +55,26 @@ function DropdownItem({
   label, 
   description, 
   shortcut, 
-  color = "neutral" 
+  color = "gray" 
 }: { 
   icon: React.ReactNode, 
   label: string, 
   description: string, 
   shortcut: string,
-  color?: "neutral" | "danger"
+  color?: "gray" | "red"
 }) {
   return (
-    <DropdownMenuItem className={cn( "flex items-start gap-3 p-3 rounded-2xl cursor-pointer transition-colors focus:bg-slate-50 outline-none", color === "danger" ? "hover:bg-rose-50" : "" )}>
+    <DropdownMenuItem className={cn( "flex items-start gap-3 p-3 rounded-2xl cursor-pointer transition-colors focus:bg-slate-50 outline-none", color === "red" ? "hover:bg-rose-50" : "" )}>
       <div className={cn(
         "flex h-8 items-start justify-center pt-1 shrink-0",
-        color === "danger" ? "text-rose-500" : "text-slate-400"
+        color === "red" ? "text-rose-500" : "text-slate-400"
       )}>
         {icon}
       </div>
       <div className="flex flex-col flex-1 min-w-0">
         <span className={cn(
           "text-sm font-bold",
-          color === "danger" ? "text-rose-600" : "text-slate-900"
+          color === "red" ? "text-rose-600" : "text-slate-900"
         )}>{label}</span>
         <span className="text-xs font-medium text-slate-400 truncate">{description}</span>
       </div>

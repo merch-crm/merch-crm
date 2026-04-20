@@ -108,7 +108,7 @@ export function HeatmapView() {
           <p className="text-sm font-bold text-slate-500">{stage.estimatedTime}м</p>
          </div>
          <div className="text-right">
-          <Badge color={isBottleneck ? "danger" : isEfficient ? "success" : "neutral"} className="h-5 text-xs px-1.5 rounded-md font-bold">
+          <Badge color={isBottleneck ? "red" : isEfficient ? "green" : "gray"} className="h-5 text-xs px-1.5 rounded-md font-bold">
            {isBottleneck ? "УЗКОЕ МЕСТО" : isEfficient ? "ОПТИМАЛЬНО" : "НОРМА"}
           </Badge>
          </div>

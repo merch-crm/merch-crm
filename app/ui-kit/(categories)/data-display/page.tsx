@@ -210,7 +210,7 @@ function AdvancedTableDemo() {
      return (
       <div className='flex items-center gap-2'>
        <Badge
-        color={status === 'active' ? 'success' : 'neutral'}
+        color={status === 'active' ? 'green' : 'gray'}
         variant="solid"
         className="rounded-full px-3 py-1 font-black text-[11px]"
        >

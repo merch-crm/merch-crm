@@ -5,7 +5,7 @@ export default function PriorityBadge({ priority }: { priority: string }) {
   const isHigh = priority ==="high";
 
   return (
-    <Badge color={isHigh ?"danger" :"neutral"} className={` rounded-md font-medium text-xs gap-1.5 px-2.5 py-1 ${isHigh ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100' : 'bg-slate-50 text-slate-500 border-slate-200'} `}>
+    <Badge color={isHigh ?"red" :"gray"} className={` rounded-md font-medium text-xs gap-1.5 px-2.5 py-1 ${isHigh ? 'bg-rose-50 text-rose-600 border-rose-100 hover:bg-rose-100' : 'bg-slate-50 text-slate-500 border-slate-200'} `}>
       {isHigh ? (
         <>
           <Zap className="w-3 h-3 fill-rose-600" />

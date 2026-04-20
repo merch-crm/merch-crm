@@ -2,15 +2,15 @@ const fs = require('fs');
 const path = require('path');
 
 const mapping = {
-    default: 'color="neutral"',
-    secondary: 'color="neutral" color="outline"',
-    destructive: 'color="danger" color="solid"',
-    outline: 'color="neutral" color="outline"',
-    success: 'color="success"',
-    warning: 'color="warning"',
+    default: 'color="gray"',
+    secondary: 'color="gray" color="outline"',
+    destructive: 'color="red" color="solid"',
+    outline: 'color="gray" color="outline"',
+    success: 'color="green"',
+    warning: 'color="yellow"',
     info: 'color="info"',
-    purple: 'color="primary"',
-    gray: 'color="neutral"',
+    purple: 'color="purple"',
+    gray: 'color="gray"',
 };
 
 function processFile(filePath) {

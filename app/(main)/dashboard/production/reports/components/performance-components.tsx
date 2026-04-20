@@ -57,7 +57,7 @@ export function TopPerformersTable({ data = [] }: { data: TopPerformer[] }) {
             </p>
             <p className="text-xs text-slate-400">эффективность</p>
           </div>
-          <Badge color={performer.defectRate < 2 ? "neutral" : "danger"} className="ml-2">
+          <Badge color={performer.defectRate < 2 ? "gray" : "red"} className="ml-2">
             {performer.defectRate.toFixed(1)}% брака
           </Badge>
         </div>

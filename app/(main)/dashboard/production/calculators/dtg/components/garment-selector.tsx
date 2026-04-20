@@ -164,7 +164,7 @@ export const GarmentSelector = memo(function GarmentSelector({
     {/* Категории */}
     <div className="flex flex-wrap gap-2">
      {DTG_GARMENT_CATEGORIES.map(cat => (
-      <Button key={cat.id} color={activeCategory === cat.id ? 'system' : 'neutral'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
+      <Button key={cat.id} color={activeCategory === cat.id ? 'purple' : 'gray'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
        className={cn(
         "rounded-full px-4 font-bold transition-all",
         activeCategory === cat.id ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100"

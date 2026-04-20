@@ -124,7 +124,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
                 {statusConfig[task.status]?.label}
               </Badge>
               {(task.priority ?? 0) > 0 && (
-                <Badge color={task.priority === 2 ? "danger" : "neutral"} className="text-xs">
+                <Badge color={task.priority === 2 ? "red" : "gray"} className="text-xs">
                   {priorityConfig[task.priority ?? 0]?.label}
                 </Badge>
               )}
