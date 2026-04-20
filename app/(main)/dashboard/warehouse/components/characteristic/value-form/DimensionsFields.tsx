@@ -1,8 +1,9 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from"react";
-import { Input } from"@/components/ui/input";
-import { cn } from"@/lib/utils";
-import { type ValueFormState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import { type SetStateAction, type Dispatch } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { type ValueFormState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
 
 interface DimensionsFieldsProps {
   valueForm: ValueFormState;
@@ -59,19 +60,18 @@ export function DimensionsFields({
       <div className="space-y-1.5">
         <label className="text-sm font-bold text-slate-700 block ml-1">Единица измерения</label>
         <div className="grid grid-cols-3 gap-2">
-          {["мм","см","м"].map(u => (
-            <button
+          {["мм", "см", "м"].map(u => (
+            <Button
               key={u}
-              type="button"
+              variant="outline"
+              color={valueForm.dimensionUnit === u ? "system" : "neutral"}
               onClick={() => updateDimensionStrings(valueForm.length, valueForm.width, valueForm.height, u)}
-              className={cn("h-10 rounded-xl border-2 font-bold text-xs transition-all shadow-sm",
-                valueForm.dimensionUnit === u
-                  ?"bg-primary/5 border-primary text-primary"
-                  :"bg-white border-slate-100 text-slate-400 hover:border-slate-200"
+              className={cn("h-10 rounded-xl border-2 font-bold text-xs shadow-sm",
+                valueForm.dimensionUnit === u && "bg-indigo-50/50"
               )}
             >
               {u}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

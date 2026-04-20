@@ -42,16 +42,13 @@ export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => 
     };
 
     try {
-        console.log("[Branding] Fetching settings from DB via tunnel...");
         const result = await db.select().from(systemSettings).where(eq(systemSettings.key, "branding")).limit(1);
         const settings = result[0];
 
         if (!settings) {
-            console.log("[Branding] No branding found in DB, using defaults.");
             return defaultBranding;
         }
 
-        console.log("[Branding] Found branding in DB, parsing...");
         const val = settings.value as Record<string, unknown>;
         const primaryColor = (val.primaryColor as string) || (val.primary_color as string) || "#5d00ff";
         
@@ -69,7 +66,6 @@ export const getBrandingSettings = cache(async (): Promise<BrandingSettings> => 
 
         globalForBranding.cachedBranding = finalSettings;
         globalForBranding.lastCacheUpdate = Date.now();
-        console.log("[Branding] Successfully loaded branding.");
         return finalSettings;
     } catch (error: unknown) {
         const message = error instanceof Error ? error.message : String(error);

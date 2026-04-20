@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Check, CheckCircle2, ShieldCheck } from "lucide-react";
-import { CrmButton } from "@/components/ui/crm-button";
+import { Button } from "@/components/ui/button";
 import { ComponentShowcase } from "@/components/ui-kit";
 
 export function SuccessButtons() {
@@ -14,18 +14,18 @@ export function SuccessButtons() {
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton color="success"><Check className="size-4 mr-2" />Принято</CrmButton>
-     <CrmButton color="success"><CheckCircle2 className="size-4 mr-2" />Готово</CrmButton>
-     <CrmButton color="success" size="icon"><ShieldCheck className="size-5" /></CrmButton>
+     <Button color="success"><Check className="size-4 mr-2" />Принято</Button>
+     <Button color="success"><CheckCircle2 className="size-4 mr-2" />Готово</Button>
+     <Button color="success" size="icon"><ShieldCheck className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="successOutline"><Check className="size-4 mr-2" />Принято</CrmButton>
-     <CrmButton variant="successOutline"><CheckCircle2 className="size-4 mr-2" />Готово</CrmButton>
-     <CrmButton variant="successOutline" size="icon"><Check className="size-5" /></CrmButton>
+     <Button variant="outline" color="success"><Check className="size-4 mr-2" />Принято</Button>
+     <Button variant="outline" color="success"><CheckCircle2 className="size-4 mr-2" />Готово</Button>
+     <Button variant="outline" color="success" size="icon"><Check className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="successGhost"><Check className="size-4 mr-2" />Принято</CrmButton>
-     <CrmButton variant="successGhost" size="icon"><CheckCircle2 className="size-5" /></CrmButton>
+     <Button variant="ghost" color="success"><Check className="size-4 mr-2" />Принято</Button>
+     <Button variant="ghost" color="success" size="icon"><CheckCircle2 className="size-5" /></Button>
     </div>
    </div>
   </ComponentShowcase>

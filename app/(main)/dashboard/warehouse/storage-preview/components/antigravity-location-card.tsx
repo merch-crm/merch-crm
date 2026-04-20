@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 interface StorageLocation {
   id: string;
@@ -125,20 +126,23 @@ export const AntigravityLocationCard = memo(({
             </div>
 
             <div className="flex gap-2">
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={(e) => { e.stopPropagation(); onEdit?.(); }}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-white/40 transition-all hover:bg-white/10 hover:text-white ring-1 ring-white/10"
+                className="h-10 w-10 rounded-xl bg-white/5 text-white/40 hover:bg-white/10 hover:text-white ring-1 ring-white/10"
               >
                 <Pencil className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
+                color="danger"
+                size="icon"
                 onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-500/10 text-rose-400 transition-all hover:bg-rose-500/20 hover:text-rose-300 ring-1 ring-rose-500/20"
+                className="h-10 w-10 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 ring-1 ring-rose-500/20"
               >
                 <Trash2 className="h-4 w-4" />
-              </button>
+              </Button>
             </div>
           </div>
         </div>

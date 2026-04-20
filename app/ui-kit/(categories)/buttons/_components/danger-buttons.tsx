@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Trash2, X } from "lucide-react";
-import { CrmButton } from "@/components/ui/crm-button";
+import { Button } from "@/components/ui/button";
 import { ComponentShowcase } from "@/components/ui-kit";
 
 export function DangerButtons() {
@@ -14,21 +14,21 @@ export function DangerButtons() {
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton color="danger"><Trash2 className="size-4 mr-2" />Удалить</CrmButton>
-     <CrmButton color="danger"><X className="size-4 mr-2" />Отмена</CrmButton>
-     <CrmButton color="danger" size="icon"><Trash2 className="size-5" /></CrmButton>
+     <Button color="danger"><Trash2 className="size-4 mr-2" />Удалить</Button>
+     <Button color="danger"><X className="size-4 mr-2" />Отмена</Button>
+     <Button color="danger" size="icon"><Trash2 className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="dangerOutline"><Trash2 className="size-4 mr-2" />Удалить</CrmButton>
-     <CrmButton variant="dangerOutline"><X className="size-4 mr-2" />Отмена</CrmButton>
-     <CrmButton variant="dangerOutline" size="icon"><X className="size-5" /></CrmButton>
+     <Button variant="outline" color="danger"><Trash2 className="size-4 mr-2" />Удалить</Button>
+     <Button variant="outline" color="danger"><X className="size-4 mr-2" />Отмена</Button>
+     <Button variant="outline" color="danger" size="icon"><X className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="dangerGhost"><Trash2 className="size-4 mr-2" />Удалить</CrmButton>
-     <CrmButton variant="dangerGhost" size="icon"><Trash2 className="size-5" /></CrmButton>
+     <Button variant="ghost" color="danger"><Trash2 className="size-4 mr-2" />Удалить</Button>
+     <Button variant="ghost" color="danger" size="icon"><Trash2 className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton color="danger" isLoading loadingText="Удаление...">Удалить</CrmButton>
+     <Button color="danger" isLoading loadingText="Удаление...">Удалить</Button>
     </div>
    </div>
   </ComponentShowcase>

@@ -53,7 +53,13 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
 
   return (
     <>
-      <Button type="button" onClick={handleOpen} className={cn("h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5", className )}>
+      <Button 
+        onClick={handleOpen} 
+        className={cn(
+          "size-11 sm:h-11 sm:w-auto px-0 sm:px-6 rounded-xl gap-2", 
+          className 
+        )}
+      >
         <Plus className="w-5 h-5 text-white shrink-0" />
         <span className="hidden sm:inline">Новая характеристика</span>
       </Button>
@@ -118,37 +124,41 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
                   const isAlreadyExists = existingTypesInActiveCategory.includes(type.id);
 
                   return (
-                    <button
+                    <Button
                       key={type.id}
-                      type="button"
+                      variant="ghost"
+                      asChild
                       onClick={() => !isAlreadyExists && toggleDataType(type.id)}
-                      className={cn("flex flex-col items-center justify-center p-3 rounded-[var(--radius-inner)] border-2 transition-all gap-2 relative group-btn",
+                      className={cn(
+                        "flex flex-col items-center justify-center p-3 h-auto rounded-[var(--radius-inner)] border-2 transition-all gap-2 relative ring-offset-0",
                         isSelected
-                          ? "bg-primary/5 border-primary text-primary shadow-sm"
+                          ? "bg-primary/5 border-primary text-primary hover:bg-primary/5"
                           : isAlreadyExists
-                            ? "bg-emerald-50/30 border-emerald-200 text-emerald-600/80 shadow-none cursor-not-allowed opacity-70"
+                            ? "bg-emerald-50/30 border-emerald-200 text-emerald-600/80 cursor-not-allowed opacity-70 hover:bg-emerald-50/30"
                             : "bg-slate-50 border-transparent text-slate-400 hover:bg-slate-100/80 hover:border-slate-200"
                       )}
                     >
-                      <div className="relative">
-                        <Icon className={cn("w-5 h-5", isSelected ? "text-primary" : isAlreadyExists ? "text-emerald-500/70" : "text-slate-400" )} />
+                      <div>
+                        <div className="relative">
+                          <Icon className={cn("w-5 h-5", isSelected ? "text-primary" : isAlreadyExists ? "text-emerald-500/70" : "text-slate-400" )} />
+                          {isAlreadyExists && (
+                            <div className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-emerald-400 flex items-center justify-center border-2 border-white shadow-sm">
+                              <Plus className="w-2 h-2 text-white rotate-45" />
+                            </div>
+                          )}
+                        </div>
+                        <span className={cn("text-xs font-bold text-center leading-none",
+                          isAlreadyExists ? "text-emerald-600/80" : ""
+                        )}>
+                          {type.title}
+                        </span>
                         {isAlreadyExists && (
-                          <div className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-emerald-400 flex items-center justify-center border-2 border-white shadow-sm">
-                            <Plus className="w-2 h-2 text-white rotate-45" />
+                          <div className="absolute inset-0 bg-white/20 rounded-[var(--radius-inner)] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="text-xs font-black text-emerald-600 bg-white px-1.5 py-0.5 rounded shadow-sm border border-emerald-100">Создано</span>
                           </div>
                         )}
                       </div>
-                      <span className={cn("text-xs font-bold text-center leading-none",
-                        isAlreadyExists ? "text-emerald-600/80" : ""
-                      )}>
-                        {type.title}
-                      </span>
-                      {isAlreadyExists && (
-                        <div className="absolute inset-0 bg-white/20 rounded-[var(--radius-inner)] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <span className="text-xs font-black text-emerald-600 bg-white px-1.5 py-0.5 rounded shadow-sm border border-emerald-100">Создано</span>
-                        </div>
-                      )}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
@@ -164,12 +174,21 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
           </div>
 
           <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-end lg:justify-between gap-3 shrink-0">
-            <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}
-              className="flex-1 lg:flex-none h-12 lg:px-8 text-slate-400 font-bold text-sm"
+            <Button 
+              variant="ghost" 
+              color="neutral"
+              onClick={() => setIsOpen(false)}
+              className="flex-1 lg:flex-none h-11 lg:px-8 font-bold text-sm rounded-xl"
             >
               Отмена
             </Button>
-            <SubmitButton isLoading={isLoading} disabled={isLoading} variant="action" className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none" text="Создать" loadingText="Создание..." />
+            <SubmitButton 
+              isLoading={isLoading} 
+              disabled={isLoading} 
+              className="h-11 flex-1 lg:flex-none lg:px-10 rounded-xl shadow-sm border-none font-bold text-sm" 
+              text="Создать" 
+              loadingText="Создание..." 
+            />
           </div>
         </form>
       </ResponsiveModal>

@@ -56,7 +56,7 @@ export function MoveInventoryDialog({
     <>
       {!externalIsOpen && (
         <Button type="button" onClick={() => setIsOpen(true)}
-          className={cn("h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
+          className={cn("size-11 sm:h-11 sm:w-auto px-0 sm:px-6 rounded-xl gap-2",
             className
           )}
         >
@@ -133,7 +133,7 @@ export function MoveInventoryDialog({
             <div className="space-y-1.5">
               <label className="text-sm font-bold text-slate-700 ml-1">Количество <span className="text-rose-500">*</span></label>
               <div className="relative group">
-                <Input type="number" name="quantity" placeholder="0" value={quantity} onChange={(e) => {
+                <input type="number" name="quantity" placeholder="0" value={quantity} onChange={(e) => {
                     setQuantity(e.target.value);
                     setFieldErrors(prev => ({ ...prev, quantity:"" }));
                   }}
@@ -143,12 +143,12 @@ export function MoveInventoryDialog({
                 />
                 <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   <Button variant="ghost" size="sm" type="button" onClick={() => setQuantity(prev => String(Number(prev || 0) + 1))}
-                    className="w-7 h-4 p-0 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30 active:scale-95 transition-all shadow-sm"
+                    className="w-7 h-4 p-0 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30"
                   >
                     <ChevronUp className="w-2.5 h-2.5 text-slate-400" />
                   </Button>
                   <Button variant="ghost" size="sm" type="button" onClick={() => setQuantity(prev => String(Math.max(0, Number(prev || 0) - 1)))}
-                    className="w-7 h-4 p-0 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30 active:scale-95 transition-all shadow-sm"
+                    className="w-7 h-4 p-0 flex items-center justify-center bg-white border border-slate-200 rounded-md hover:border-primary/30"
                   >
                     <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
                   </Button>
@@ -172,13 +172,13 @@ export function MoveInventoryDialog({
           </div>
 
           <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-            <Button variant="ghost" type="button" onClick={() => setIsOpen(false)}
+            <Button variant="ghost" color="neutral" type="button" onClick={() => setIsOpen(false)}
               disabled={isPending}
-              className="flex h-12 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
+              className="flex h-11 flex-1 lg:flex-none lg:px-8 text-sm rounded-xl font-bold"
             >
               Отмена
             </Button>
-            <SubmitButton isLoading={isPending} text="Переместить" loadingText="Обработка..." variant="action" className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none" />
+            <SubmitButton isLoading={isPending} text="Переместить" loadingText="Обработка..." color="dark" className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-xl text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-none border-none font-bold" />
           </div>
         </form>
       </ResponsiveModal >

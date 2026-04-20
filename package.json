@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
+    "dev:stable": "NODE_OPTIONS='--max-old-space-size=4096' next dev > /dev/null 2>&1",
     "dev:debug": "NODE_OPTIONS='--max-old-space-size=4096 --inspect' next dev",
     "dev:analyze": "ANALYZE=true next dev",
     "dev:ssh": "./scripts/dev.sh",

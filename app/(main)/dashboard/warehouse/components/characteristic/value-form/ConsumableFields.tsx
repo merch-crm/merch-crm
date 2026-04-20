@@ -1,9 +1,10 @@
 "use client";
-import React, { type Dispatch, type SetStateAction } from"react";
-import { Input } from"@/components/ui/input";
-import { cn } from"@/lib/utils";
-import { type ValueFormState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
-import { transliterateToSku } from"@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
+import { type SetStateAction, type Dispatch } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { type ValueFormState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import { transliterateToSku } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 
 interface ConsumableFieldsProps {
   valueForm: ValueFormState;
@@ -19,19 +20,20 @@ export function ConsumableFields({
       <div className="space-y-1.5">
         <label className="text-sm font-bold text-slate-700 block ml-1">Тип расходника</label>
         <div className="grid grid-cols-2 gap-2">
-          {["краска","клей","нитки","иголки","пленка","другое"].map(t => (
-            <button
+          {["краска", "клей", "нитки", "иголки", "пленка", "другое"].map(t => (
+            <Button
               key={t}
-              type="button"
+              variant={valueForm.consumableType === t ? "outline" : "outline"}
+              color={valueForm.consumableType === t ? "system" : "neutral"}
               onClick={() => {
                 setValueForm(prev => {
-                  const typeValue = t ==="другое" ? (prev.consumableCustomType ||"Свой тип") : t;
+                  const typeValue = t === "другое" ? (prev.consumableCustomType || "Свой тип") : t;
                   const newVal = prev.consumableValue;
                   const unit = prev.consumableUnit;
                   const extra = prev.consumableExtra;
 
-                  const namePart = `${typeValue}${newVal ? ` ${newVal}${unit}` :""}${extra ? ` (${extra})` :""}`;
-                  const codePart = `${transliterateToSku(typeValue).toUpperCase()}${newVal}${transliterateToSku(unit).toUpperCase()}${extra ? transliterateToSku(extra).substring(0, 3).toUpperCase() :""}`;
+                  const namePart = `${typeValue}${newVal ? ` ${newVal}${unit}` : ""}${extra ? ` (${extra})` : ""}`;
+                  const codePart = `${transliterateToSku(typeValue).toUpperCase()}${newVal}${transliterateToSku(unit).toUpperCase()}${extra ? transliterateToSku(extra).substring(0, 3).toUpperCase() : ""}`;
 
                   return {
                     ...prev,
@@ -41,14 +43,12 @@ export function ConsumableFields({
                   };
                 });
               }}
-              className={cn("h-10 px-3 rounded-xl border text-xs font-bold transition-all",
-                valueForm.consumableType === t
-                  ?"bg-primary/5 border-primary text-primary shadow-sm"
-                  :"bg-white border-slate-100 text-slate-500 hover:bg-slate-50"
+              className={cn("h-10 px-3 rounded-xl text-xs font-bold",
+                valueForm.consumableType === t && "bg-indigo-50/50"
               )}
             >
               {t.charAt(0).toUpperCase() + t.slice(1)}
-            </button>
+            </Button>
           ))}
         </div>
         {valueForm.consumableType ==="другое" && (

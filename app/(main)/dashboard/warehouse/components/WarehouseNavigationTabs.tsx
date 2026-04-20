@@ -24,7 +24,7 @@ interface WarehouseNavigationTabsProps {
 
 export function WarehouseNavigationTabs({ activeTab }: WarehouseNavigationTabsProps) {
   return (
-    <div className="crm-card flex w-full h-[52px] sm:h-[58px] items-center gap-1 sm:gap-2 !p-[4px] sm:!p-[6px] !rounded-[18px] sm:!rounded-[22px] !overflow-x-auto scrollbar-hide">
+    <div className="crm-card flex w-full h-[52px] sm:h-[58px] items-center gap-1 sm:gap-2 p-[4px] sm:p-[6px] rounded-2xl overflow-x-auto scrollbar-hide bg-white border border-slate-100 shadow-sm">
       {/* Mobile Navigation (Icons Only) */}
       <nav
         role="tablist"
@@ -35,11 +35,11 @@ export function WarehouseNavigationTabs({ activeTab }: WarehouseNavigationTabsPr
           const isActive = activeTab === tab.id;
           const Icon = tab.icon;
           return (
-            <Link key={tab.id} href={tab.href} role="tab" aria-selected={isActive} aria-label={tab.label} className={cn("flex-1 h-[44px] relative flex items-center justify-center !rounded-[14px] transition-all duration-300", isActive ? "text-white" : "text-slate-400 hover:text-slate-900 active:scale-90" )}>
+            <Link key={tab.id} href={tab.href} role="tab" aria-selected={isActive} aria-label={tab.label} className={cn("flex-1 h-[44px] relative flex items-center justify-center rounded-xl transition-all duration-300", isActive ? "text-white" : "text-slate-400 hover:text-slate-900 active:scale-90" )}>
               {isActive && (
                 <motion.div
                   layoutId="mobileActiveTab"
-                  className={cn("absolute inset-0 !rounded-[14px] z-0 shadow-md",
+                  className={cn("absolute inset-0 rounded-xl z-0 shadow-md",
                     tab.activeColor || "bg-slate-900 shadow-slate-900/10",
                     tab.shadowColor
                   )}
@@ -61,11 +61,11 @@ export function WarehouseNavigationTabs({ activeTab }: WarehouseNavigationTabsPr
         {WAREHOUSE_TABS.map((tab) => {
           const isActive = activeTab === tab.id;
           return (
-            <Link key={tab.id} href={tab.href} role="tab" aria-selected={isActive} className={cn("flex-auto h-full px-3 sm:px-4 shrink-0 text-[12px] sm:text-[14px] font-bold relative flex items-center justify-center gap-2 group transition-colors duration-200 !rounded-[16px]", isActive ? "text-white hover:text-white" : "text-slate-500 hover:text-slate-900" )}>
+            <Link key={tab.id} href={tab.href} role="tab" aria-selected={isActive} className={cn("flex-auto h-full px-3 sm:px-4 shrink-0 text-[12px] sm:text-[14px] font-bold relative flex items-center justify-center gap-2 group transition-colors duration-200 rounded-xl", isActive ? "text-white hover:text-white" : "text-slate-500 hover:text-slate-900" )}>
               {isActive && (
                 <motion.div
                   layoutId="activeWarehouseTab"
-                  className={cn("absolute inset-0 !rounded-[16px] z-0 shadow-lg",
+                  className={cn("absolute inset-0 rounded-xl z-0 shadow-lg",
                     tab.activeColor || "bg-slate-900 shadow-slate-900/10",
                     tab.shadowColor
                   )}

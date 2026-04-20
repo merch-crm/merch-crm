@@ -193,16 +193,17 @@ export function EditTypeDialog({
                     </div>
                   ))}
 
-                  <button
+                  <Button
                     type="button"
+                    variant="outline"
                     onClick={() => editingTypeLatest && openAddValue(editingTypeLatest.slug)}
-                    className={cn("h-full min-h-[52px] w-full bg-slate-50/50 hover:bg-slate-100/80 text-slate-600 text-[13px] font-bold border border-slate-200 border-dashed rounded-xl transition-all shadow-sm flex items-center justify-center",
+                    className={cn("h-[52px] w-full bg-slate-50/50 hover:bg-slate-100/80 text-slate-600 border-slate-200 border-dashed rounded-xl flex items-center justify-center",
                       editingTypeValues.length === 0 && "col-span-full"
                     )}
                   >
                     <Plus className="w-4 h-4 mr-2 text-slate-500" />
                     Добавить значение
-                  </button>
+                  </Button>
                 </div>
               </div>
 
@@ -218,7 +219,7 @@ export function EditTypeDialog({
           {editingTypeLatest && (
             <Button variant="ghost" onClick={() => setDeleteDialog((prev: DeleteDialogState) => ({ ...prev, type: editingTypeLatest }))}
               disabled={editingTypeLatest.isSystem && user?.roleSlug !== "admin"}
-              className="h-11 px-5 font-bold text-sm flex items-center gap-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-[var(--radius-inner)] transition-all disabled:opacity-30 disabled:grayscale shrink-0"
+              className="h-11 px-5 text-sm flex items-center gap-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl disabled:opacity-30 disabled:grayscale shrink-0"
             >
               <Trash2 className="w-4 h-4 shrink-0" />
               <span className="hidden sm:inline whitespace-nowrap">Удалить раздел</span>
@@ -230,12 +231,12 @@ export function EditTypeDialog({
                 setTypeForm((prev: TypeFormState) => ({ ...prev, editingType: null }));
                 setValueForm((prev: ValueFormState) => ({ ...prev, isOpen: false }));
               }}
-              className="hidden md:flex h-11 px-6 text-slate-400 hover:text-slate-600 font-bold text-sm hover:bg-slate-50"
+              className="hidden md:flex h-11 px-6 text-slate-400 hover:text-slate-600 text-sm hover:bg-slate-50 rounded-xl"
             >
               Закрыть
             </Button>
 
-            <Button onClick={handleTypeUpdate} disabled={typeForm.isLoading} color="dark" className="px-8 h-11 rounded-2xl text-sm font-bold flex items-center justify-center gap-2 shadow-sm">
+            <Button onClick={handleTypeUpdate} disabled={typeForm.isLoading} color="dark" className="px-8 h-11 rounded-xl text-sm flex items-center justify-center gap-2">
               {typeForm.isLoading ? (
                 <Loader2 className="w-3 h-3 animate-spin" />
               ) : null}

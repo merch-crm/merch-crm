@@ -37,7 +37,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
           {/* Header - Mobile & Desktop via tailwind */}
           <div className="flex items-center justify-between p-5 pb-2 shrink-0 border-b border-transparent">
             <div className="flex items-center gap-3.5 md:gap-3">
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-[var(--radius-inner)] bg-primary/10 flex items-center justify-center shadow-sm shrink-0">
+              <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-primary/10 flex items-center justify-center shadow-sm shrink-0">
                 <Building className="w-5 h-5 md:w-6 md:h-6 text-primary" />
               </div>
               <div>
@@ -78,7 +78,10 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
               <div className="col-span-2 space-y-3 pt-2 overflow-y-auto custom-scrollbar">
                 <LocationForm form={form} fieldErrors={fieldErrors} isSaving={ui.isSaving} users={users} location={location} setFormValue={setFormValue} clearFieldError={clearFieldError} handleAutoSave={handleAutoSave} />
                 <div className="pt-2">
-                  <Button type="button" variant="action" onClick={onClose} className="w-full h-11 rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-black/10 transition-all active:scale-[0.98]">
+                  <Button 
+                    onClick={onClose} 
+                    className="w-full h-11 rounded-xl font-bold"
+                  >
                     Сохранить
                   </Button>
                 </div>
@@ -113,10 +116,18 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
 
           {/* Mobile Dialog Actions footer sticky bottom */}
           <div className="md:hidden sticky bottom-0 z-20 p-5 pt-3 flex items-center gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100">
-            <Button variant="ghost" type="button" onClick={onClose} className="flex h-11 flex-1 text-slate-400 hover:text-slate-600 font-bold text-sm">
+            <Button 
+              variant="ghost" 
+              color="neutral"
+              onClick={onClose} 
+              className="flex-1 h-11 font-bold"
+            >
               Отмена
             </Button>
-            <Button color="dark" type="button" onClick={onClose} className="h-11 flex-1 rounded-[var(--radius-inner)] text-sm font-bold shadow-sm">
+            <Button 
+              onClick={onClose} 
+              className="flex-1 h-11 rounded-xl font-bold"
+            >
               Сохранить
             </Button>
           </div>

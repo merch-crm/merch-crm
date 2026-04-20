@@ -106,7 +106,7 @@ export function BarcodeScannerDialog({
             )}
           </div>
 
-          <Button onClick={handleClose} variant="ghost" className="w-full h-12 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all">
+          <Button onClick={handleClose} variant="ghost" className="w-full h-11 text-slate-400 hover:text-slate-900 hover:bg-slate-50 rounded-2xl font-bold text-sm transition-all focus-within:bg-slate-50">
             Завершить сканирование
           </Button>
         </div>

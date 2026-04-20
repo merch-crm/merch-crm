@@ -60,8 +60,10 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
           {trigger}
         </div>
       ) : (
-        <Button type="button" onClick={() => setIsOpen(true)}
-          className={cn("h-10 w-10 sm:h-11 sm:w-auto btn-dark rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-black/5 transition-all active:scale-95",
+        <Button 
+          onClick={() => setIsOpen(true)}
+          className={cn(
+            "h-11 sm:w-auto px-5 sm:px-8 rounded-xl gap-2.5",
             className
           )}
         >
@@ -79,7 +81,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
         <div className="flex flex-col h-full overflow-hidden">
           <div className="flex items-center justify-between p-6 pb-2 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-[var(--radius-inner)] bg-orange-100 flex items-center justify-center shrink-0 shadow-sm border border-orange-200/50">
+              <div className="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center shrink-0 shadow-sm border border-orange-200/50">
                 <MapPin className="w-6 h-6 text-orange-600" />
               </div>
               <div>
@@ -109,7 +111,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">
                   Название склада <span className="text-rose-500">*</span>
                 </label>
-                <Input name="name" placeholder="Центральный склад" disabled={isPending} className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm", fieldErrors.name ? "border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5" : "" )} onChange={() => clearFieldError("name")}
+                <Input name="name" placeholder="Центральный склад" disabled={isPending} className={cn("w-full h-11 px-4 rounded-xl border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm", fieldErrors.name ? "border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5" : "" )} onChange={() => clearFieldError("name")}
                   required
                 />
                 {fieldErrors.name && (
@@ -140,7 +142,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
               </label>
               <div className="relative group">
                 <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-primary transition-colors" />
-                <Input name="address" placeholder="Ул. Промышленная, д. 15..." disabled={isPending} className={cn("w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm", fieldErrors.address ? "border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5" : "" )} onChange={() => clearFieldError("address")}
+                <Input name="address" placeholder="Ул. Промышленная, д. 15..." disabled={isPending} className={cn("w-full h-11 pl-12 pr-4 rounded-xl border bg-slate-50 text-sm font-bold border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-sm", fieldErrors.address ? "border-rose-300 bg-rose-50 text-rose-900 focus:border-rose-500 focus:ring-rose-500/5" : "" )} onChange={() => clearFieldError("address")}
                   required
                 />
               </div>
@@ -169,13 +171,23 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
           </form>
 
           <div className="crm-dialog-footer">
-            <Button variant="ghost" type="button" onClick={() => setIsOpen(false)}
+            <Button 
+              variant="ghost" 
+              color="neutral"
+              onClick={() => setIsOpen(false)}
               disabled={isPending}
-              className="flex h-12 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-[var(--radius-inner)] items-center justify-center"
+              className="flex-1 lg:flex-none h-11 lg:px-8 rounded-xl"
             >
               Отмена
             </Button>
-            <SubmitButton form="add-location-form" isLoading={isPending} disabled={isPending} variant="action" className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm border-none" text="Сохранить" loadingText="Сохранение..." />
+            <SubmitButton 
+              form="add-location-form" 
+              isLoading={isPending} 
+              disabled={isPending} 
+              className="h-11 flex-1 lg:flex-none lg:px-10 rounded-xl" 
+              text="Сохранить" 
+              loadingText="Сохранение..." 
+            />
           </div>
         </div>
       </ResponsiveModal >

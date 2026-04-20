@@ -9,7 +9,6 @@ import { SuccessButtons } from "./_components/success-buttons";
 import { WarningButtons } from "./_components/warning-buttons";
 import { BrandButtons } from "./_components/brand-buttons";
 import { DropdownMenus } from "./_components/dropdown-menus";
-
 export default function ButtonsPage() {
  return (
   <CategoryPage 

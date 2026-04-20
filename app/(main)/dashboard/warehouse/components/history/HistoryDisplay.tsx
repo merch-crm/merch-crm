@@ -86,14 +86,21 @@ export function HistoryDisplay({
             const isSelected = selectedIds.includes(t.id);
 
             return (
-              <button
+              <div
                 key={t.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 className={cn(
-                  "flex items-center px-4 py-3 border-b border-slate-100 last:border-0 transition-all text-left w-full hover:bg-slate-50 cursor-pointer",
+                  "flex items-center px-4 py-3 border-b border-slate-100 last:border-0 transition-all text-left w-full hover:bg-slate-50 cursor-pointer outline-none",
                   isSelected ? "bg-primary/[0.02]" : "bg-white"
                 )}
                 onClick={() => handleSelectRow(t.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    handleSelectRow(t.id);
+                  }
+                }}
               >
                 <label className="w-[40px] flex items-center justify-center cursor-pointer" onClick={(e) => e.stopPropagation()}>
                   <Checkbox checked={isSelected} onCheckedChange={() => handleSelectRow(t.id)} />
@@ -141,22 +148,23 @@ export function HistoryDisplay({
                 </div>
                 <div className="flex-1 min-w-0 pr-4">
                   {t.item ? (
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 group/item hover:opacity-80 transition-all text-left"
+                    <Button
+                      variant="ghost"
+                      color="neutral"
+                      className="h-auto p-1.5 flex items-center gap-3 group/item hover:bg-primary/5 transition-all text-left rounded-xl"
                       onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/dashboard/warehouse/items/${t.item?.id}`);
                       }}
                     >
-                      <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:bg-primary/5 group-hover/item:text-primary transition-colors group-hover/item:border-primary/20">
+                      <div className="w-8 h-8 rounded-[10px] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 shrink-0 group-hover/item:text-primary transition-colors group-hover/item:border-primary/20 shadow-sm">
                         <Package className="w-4 h-4" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[13px] font-bold text-slate-900 truncate group-hover/item:text-primary transition-colors">{t.item.name}</div>
                         {t.item.sku && <div className="text-xs font-bold text-slate-400 mt-0.5 font-mono truncate">Арт.: {t.item.sku}</div>}
                       </div>
-                    </button>
+                    </Button>
                   ) : <div className="text-[13px] font-bold text-slate-900">Система</div>}
                 </div>
                 <div className="w-[160px]">
@@ -197,7 +205,7 @@ export function HistoryDisplay({
                     )}
                   </div>
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

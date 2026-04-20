@@ -54,10 +54,10 @@ const Checkbox = ({
                     }
                 }
             }}
-            className={cn("w-[16px] h-[16px] rounded-[4px] border-2 transition-all duration-200 flex items-center justify-center cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+            className={cn("w-[16px] h-[16px] rounded-[4px] border border-slate-300 transition-all duration-200 flex items-center justify-center cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2",
                 (isChecked || isIndeterminate)
                     ? "bg-primary border-primary text-white"
-                    : "bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+                    : "bg-white hover:border-slate-400 hover:bg-slate-50",
                 disabled && "opacity-50 cursor-not-allowed grayscale",
                 className
             )}

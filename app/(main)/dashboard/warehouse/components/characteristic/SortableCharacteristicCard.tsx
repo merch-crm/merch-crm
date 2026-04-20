@@ -2,6 +2,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   GripVertical, Settings,
   Tag, Hash, Shapes, Palette, Box, Layers, Maximize,
@@ -111,13 +112,14 @@ export function CharacteristicCardContent({
               <GripVertical className="w-4 h-4" />
             </div>
           )}
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={(e) => { e.stopPropagation(); openEditType(type); }}
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
+            className="w-9 h-9 rounded-xl text-slate-400 hover:text-slate-600 border-transparent hover:border-slate-200"
           >
             <Settings className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -125,11 +127,11 @@ export function CharacteristicCardContent({
       <div className="flex-1 flex flex-col pt-2">
         <div className="flex flex-wrap gap-2 content-stretch items-stretch flex-1">
           {typeAttributes.map((attr: Attribute) => (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               key={attr.id}
               onClick={(e) => { e.stopPropagation(); openEditValue(attr); }}
-              className={cn("relative group/val flex items-center gap-2.5 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-[14px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-md hover:border-slate-200 cursor-pointer overflow-hidden flex-1 min-w-[120px] h-auto min-h-[52px]",
+              className={cn("relative group/val flex items-center gap-2.5 px-3 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-semibold text-slate-700 transition-all hover:bg-white hover:shadow-sm hover:border-slate-200 overflow-hidden flex-1 min-w-[120px] h-auto min-h-[52px]",
                 attr.semanticColor && "pl-3"
               )}
             >
@@ -159,7 +161,7 @@ export function CharacteristicCardContent({
                   <span className="inline-block px-1.5 py-0.5 rounded-md bg-indigo-50 text-indigo-600 text-xs font-black border border-indigo-100/50 group-hover/val:bg-white transition-colors leading-none mt-0.5">oversize</span>
                 )}
               </div>
-            </button>
+            </Button>
           ))}
           {typeAttributes.length === 0 && (
             <div className="flex-1 flex items-center justify-center text-center bg-slate-50/50 rounded-[14px] border border-dashed border-slate-200 min-h-[80px]">

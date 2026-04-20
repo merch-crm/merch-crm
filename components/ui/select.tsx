@@ -147,7 +147,7 @@ function Select({
                         aria-haspopup="listbox"
                         aria-expanded={open}
                         className={cn(
-                            "w-full px-4 h-[60px] rounded-2xl text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/20 group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center border",
+                            "w-full px-4 h-[60px] rounded-2xl text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 focus:border-transparent group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center border",
                             // Unified Variants
                             variant === "solid" && [
                                 color === "primary" && "bg-primary text-white border-primary hover:bg-primary/90",
@@ -376,7 +376,7 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-[60px] w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-2 text-base font-bold text-slate-900 ring-offset-background placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex h-[60px] w-full items-center justify-between rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-2 text-base font-bold text-slate-900 ring-offset-background placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
       className
     )}
     {...props}

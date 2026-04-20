@@ -142,18 +142,17 @@ export function AttributeCustomModal({
                       { id: "CM", title: "см" },
                       { id: "M", title: "м" }
                     ].map(item => (
-                      <button
+                      <Button
                         key={item.id}
-                        type="button"
+                        variant="outline"
+                        color={customForm.u === item.id ? "system" : "neutral"}
                         onClick={() => setCustomForm(prev => ({ ...prev, u: item.id as "MM" | "CM" | "M" }))}
-                        className={cn("h-9 rounded-lg border-2 font-bold text-xs transition-all",
-                          customForm.u === item.id
-                            ? "bg-primary/5 border-primary text-primary"
-                            : "bg-white border-slate-100 text-slate-400"
+                        className={cn("h-9 rounded-lg border-2 font-bold text-xs shadow-sm",
+                          customForm.u === item.id && "bg-indigo-50/50"
                         )}
                       >
                         {item.title}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>

@@ -1,8 +1,9 @@
 "use client";
 import React, { type Dispatch, type SetStateAction } from"react";
-import { Plus, Trash2 } from"lucide-react";
-import { Select, type SelectOption } from"@/components/ui/select";
-import { type ValueFormState } from"@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
+import { Plus, Trash2 } from "lucide-react";
+import { Select, type SelectOption } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { type ValueFormState } from "@/app/(main)/dashboard/warehouse/hooks/use-warehouse-characteristic";
 
 const UNIT_OPTIONS: SelectOption[] = [
   { id:"%", title:"%" },
@@ -63,32 +64,34 @@ export function CompositionEditor({
               />
             </div>
             {valueForm.compositionItems.length > 1 && (
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                color="danger"
+                size="icon"
                 onClick={() => setValueForm(prev => ({
                   ...prev,
                   compositionItems: prev.compositionItems.filter((_, i) => i !== idx)
                 }))}
-                className="w-9 h-9 shrink-0 flex items-center justify-center rounded-xl text-slate-300 hover:text-rose-500 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all"
+                className="w-9 h-9 shrink-0 rounded-xl"
               >
                 <Trash2 className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             )}
           </div>
         ))}
       </div>
 
-      <button
-        type="button"
+      <Button
+        variant="outline"
         onClick={() => setValueForm(prev => ({
           ...prev,
-          compositionItems: [...prev.compositionItems, { name:"", value:"", unit:"%" }]
+          compositionItems: [...prev.compositionItems, { name: "", value: "", unit: "%" }]
         }))}
-        className="w-full h-10 flex items-center justify-center gap-2 rounded-xl border border-dashed border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 text-xs font-bold transition-all"
+        className="w-full h-10 border-dashed border-slate-200 text-slate-400 hover:text-primary hover:border-primary/30 hover:bg-primary/5 text-xs font-bold"
       >
-        <Plus className="w-3.5 h-3.5" />
+        <Plus className="w-3.5 h-3.5 mr-2" />
         Добавить компонент
-      </button>
+      </Button>
     </div>
   );
 }

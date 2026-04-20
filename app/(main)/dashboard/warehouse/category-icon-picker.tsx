@@ -3,6 +3,7 @@
 import React, { useState, createElement } from "react";
 import { Search, ChevronDown, Package } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ICON_GROUPS, getDynamicGradient, ALL_ICONS_MAP } from "./category-utils";
 
@@ -46,9 +47,10 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
       modal={true}
     >
       <PopoverTrigger asChild>
-        <button
+        <Button
           type="button"
-          className={cn("w-full h-full min-h-[94px] rounded-[20px] border-2 border-dashed border-slate-200 hover:border-primary/40 bg-white hover:bg-primary/[0.02] transition-all duration-200 flex items-center justify-center group outline-none gap-3 px-5",
+          variant="ghost"
+          className={cn("w-full h-full min-h-[94px] rounded-[20px] border-2 border-dashed border-slate-200 hover:border-primary/40 bg-white hover:bg-primary/[0.02] flex items-center justify-center group outline-none gap-3 px-5",
             isOpen && "border-primary/30",
             className
           )}
@@ -65,7 +67,7 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
             <span className="text-xs font-medium text-slate-500 line-clamp-1">Нажмите, чтобы изменить</span>
           </div>
           <ChevronDown className={cn("w-4 h-4 text-slate-300 shrink-0 transition-transform duration-200", isOpen && "rotate-180" )} />
-        </button>
+        </Button>
       </PopoverTrigger>
 
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] flex flex-col p-0 overflow-hidden rounded-[32px] border border-slate-200/80 shadow-crm-xl bg-white" align="start" side="bottom" sideOffset={8} avoidCollisions={false}>
@@ -87,18 +89,19 @@ export function CategoryIconPicker({ value, onChange, color, className }: Catego
         {!isSearching && (
           <div className="px-3 pb-2 flex flex-wrap gap-1.5 shrink-0">
             {ICON_GROUPS.map((g) => (
-              <button
+              <Button
                 key={g.name}
                 type="button"
+                variant="ghost"
                 onClick={() => setTab(g.name)}
-                className={cn("shrink-0 h-6 px-2.5 rounded-full text-xs font-bold transition-all whitespace-nowrap",
+                className={cn("shrink-0 h-6 px-2.5 rounded-full text-xs font-bold whitespace-nowrap",
                   tab === g.name
-                    ? "bg-slate-900 text-white"
+                    ? "bg-slate-900 text-white hover:bg-slate-800 hover:text-white"
                     : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
                 )}
               >
                 {GROUP_SHORT[g.name] ?? g.name}
-              </button>
+              </Button>
             ))}
           </div>
         )}
@@ -150,13 +153,14 @@ function IconCell({
   onSelect: (name: string) => void;
 }) {
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
       onClick={() => onSelect(icon.name)}
       title={icon.label}
-      className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-[18px] transition-all duration-150 group/c",
+      className={cn("flex flex-col items-center justify-center gap-1.5 p-2 rounded-[18px] group/c h-auto",
         isSelected
-          ? cn("text-white shadow-sm")
+          ? cn("text-white shadow-sm hover:text-white")
           : "text-slate-500 hover:bg-slate-50 hover:text-slate-800 active:scale-95 border border-transparent hover:border-slate-100"
       )}
       style={isSelected ? getDynamicGradient(color) : {}}
@@ -171,6 +175,6 @@ function IconCell({
       )}>
         {icon.label}
       </span>
-    </button>
+    </Button>
   );
 }

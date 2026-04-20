@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ArrowLeft, ArrowRight, Download } from "lucide-react";
-import { CrmButton } from "@/components/ui/crm-button";
+import { Button } from "@/components/ui/button";
 import { ComponentShowcase } from "@/components/ui-kit";
 
 export function NeutralButtons() {
@@ -14,19 +14,19 @@ export function NeutralButtons() {
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="neutral"><ArrowLeft className="size-4 mr-2" />Назад</CrmButton>
-     <CrmButton variant="neutral">Далее<ArrowRight className="size-4 ml-2" /></CrmButton>
-     <CrmButton variant="neutral" size="icon"><ArrowLeft className="size-5" /></CrmButton>
+     <Button color="neutral"><ArrowLeft className="size-4 mr-2" />Назад</Button>
+     <Button color="neutral">Далее<ArrowRight className="size-4 ml-2" /></Button>
+     <Button color="neutral" size="icon"><ArrowLeft className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="neutralOutline"><ArrowLeft className="size-4 mr-2" />Назад</CrmButton>
-     <CrmButton variant="neutralOutline">Далее<ArrowRight className="size-4 ml-2" /></CrmButton>
-     <CrmButton variant="neutralOutline" size="icon"><ArrowRight className="size-5" /></CrmButton>
+     <Button variant="outline" color="neutral"><ArrowLeft className="size-4 mr-2" />Назад</Button>
+     <Button variant="outline" color="neutral">Далее<ArrowRight className="size-4 ml-2" /></Button>
+     <Button variant="outline" color="neutral" size="icon"><ArrowRight className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="neutralGhost"><ArrowLeft className="size-4 mr-2" />Назад</CrmButton>
-     <CrmButton variant="neutralGhost">Далее<ArrowRight className="size-4 ml-2" /></CrmButton>
-     <CrmButton variant="neutralGhost" size="icon"><Download className="size-5" /></CrmButton>
+     <Button variant="ghost" color="neutral"><ArrowLeft className="size-4 mr-2" />Назад</Button>
+     <Button variant="ghost" color="neutral">Далее<ArrowRight className="size-4 ml-2" /></Button>
+     <Button variant="ghost" color="neutral" size="icon"><Download className="size-5" /></Button>
     </div>
    </div>
   </ComponentShowcase>

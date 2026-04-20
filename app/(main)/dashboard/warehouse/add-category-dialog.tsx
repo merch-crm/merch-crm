@@ -60,7 +60,7 @@ function ValidatedInput({ label, error, className, ...props }: ValidatedInputPro
   return (
     <>
       <label className="text-sm font-bold text-slate-700 block ml-1">{label}</label>
-      <Input className={cn("h-12 rounded-[var(--radius-inner)] font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm", error ?"border-rose-300 bg-rose-50 text-rose-900" :"border-slate-200 bg-slate-50", className )} {...props} />
+      <Input className={cn("h-10 rounded-lg font-bold text-slate-900 placeholder:text-slate-300 text-sm shadow-sm", error ?"border-rose-300 bg-rose-50 text-rose-900" :"border-slate-200 bg-slate-50", className )} {...props} />
       {error && <p className="text-xs font-bold text-rose-500 ml-1">{error}</p>}
     </>
   );
@@ -132,7 +132,8 @@ export function AddCategoryDialog({
 
   return (
     <>
-      <Button type="button" onClick={() => {
+      <Button 
+        onClick={() => {
           setFormState(prev => ({
             ...prev,
             name:"",
@@ -142,12 +143,13 @@ export function AddCategoryDialog({
           setUiState({ error: null, fieldErrors: {} });
           setIsOpen(true);
         }}
-        className={cn("h-10 w-10 sm:h-11 sm:w-auto rounded-full sm:rounded-2xl p-0 sm:px-6 gap-2 font-bold inline-flex items-center justify-center border-none shadow-lg shadow-primary/20 transition-all active:scale-95",
+        className={cn(
+          "h-11 sm:w-auto px-5 sm:px-8 rounded-xl gap-2.5",
           className
         )}
       >
-        <FolderPlus className="w-5 h-5 text-white shrink-0" />
-        <span className="hidden sm:inline whitespace-nowrap">{buttonText}</span>
+        <Plus className="size-4.5 stroke-[2.5]" />
+        <span className="font-bold tracking-tight">{buttonText}</span>
       </Button>
 
       <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)}
@@ -213,7 +215,7 @@ export function AddCategoryDialog({
               <textarea
                 name="description"
                 placeholder="Опциональное описание назначения этой категории..."
-                className="crm-dialog-textarea"
+                className="crm-dialog-textarea rounded-lg"
               />
             </div>
 
@@ -226,7 +228,7 @@ export function AddCategoryDialog({
 
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-slate-700 block ml-1">Цвет</label>
-                <div className="p-3 sm:p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
+                <div className="p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
                   <ColorPickerSwatchesGroup 
                     value={formState.color} 
                     onChange={(color) => setFormState(prev => ({ ...prev, color }))} 
@@ -239,11 +241,11 @@ export function AddCategoryDialog({
             <div className="grid grid-cols-2 gap-3">
               <SwitchRow title={"Добавлять в\u00A0артикул"} description="" checked={formState.showInSku} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
                 color="success"
-                className="p-3 bg-slate-50"
+                className="p-3 bg-slate-50 rounded-2xl"
               />
               <SwitchRow title={"Добавлять в\u00A0название"} description="" checked={formState.showInName} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
                 color="success"
-                className="p-3 bg-slate-50"
+                className="p-3 bg-slate-50 rounded-2xl"
               />
             </div>
 
@@ -256,13 +258,21 @@ export function AddCategoryDialog({
             )}
           </div>
 
-          <div className="crm-dialog-footer">
-            <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}
-              className="flex h-12 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm"
+          <div className="flex items-center justify-end gap-3 p-6 pt-2">
+            <Button
+              type="button"
+              variant="ghost"
+              color="neutral"
+              onClick={() => setIsOpen(false)}
+              className="h-11 px-6 rounded-xl font-bold"
             >
               Отмена
             </Button>
-            <SubmitButton text="Сохранить" loadingText="Выполняется..." variant="action" className="h-12 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm disabled:opacity-50" />
+            <SubmitButton
+              text="Создать категорию"
+              loadingText="Выполняется..."
+              className="h-11 px-8 rounded-xl font-bold"
+            />
           </div>
         </form>
       </ResponsiveModal >

@@ -64,7 +64,7 @@ export function HistoryToolbar({
               setSearchQuery("");
               setCurrentPage(1);
             }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600 transition-colors"
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300 hover:text-slate-600"
           >
             <X className="w-4 h-4" />
           </Button>

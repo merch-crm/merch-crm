@@ -8,7 +8,6 @@ import { StorageLocation } from "./storage-locations-tab";
 import { StorageLocationSelect } from "@/components/ui/storage-location-select";
 import { ResponsiveModal } from "@/components/ui/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { CrmButton } from "@/components/ui/crm-button";
 import type { Session } from "@/lib/session";
 import { useAdjustStock } from "./hooks/use-adjust-stock";
 
@@ -226,7 +225,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                 </label>
                 <div className="bg-slate-50 border border-slate-200 rounded-[var(--radius-inner)] flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
                   <Button type="button" variant="ghost" size="icon" onClick={() => setAmount(prev => Math.max(0, prev - 1))}
-                    className="w-14 h-full rounded-[var(--radius-inner)] flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all"
+                    className="w-14 h-full rounded-[var(--radius-inner)] text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm"
                   >
                     <Minus className="w-5 h-5 stroke-[3]" />
                   </Button>
@@ -251,7 +250,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                   </div>
 
                   <Button type="button" variant="ghost" size="icon" onClick={() => setAmount(prev => prev + 1)}
-                    className="w-14 h-full rounded-[var(--radius-inner)] flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all"
+                    className="w-14 h-full rounded-[var(--radius-inner)] text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm"
                   >
                     <Plus className="w-5 h-5 stroke-[3]" />
                   </Button>
@@ -315,10 +314,10 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
         </form>
 
         <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-          <CrmButton type="button" variant="neutralGhost" onClick={onClose} className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 font-bold text-sm">
+          <Button type="button" color="neutral" variant="ghost" onClick={onClose} className="h-11 flex-1 lg:flex-none lg:px-8 font-bold text-sm rounded-xl">
             Отмена
-          </CrmButton>
-          <SubmitButton form="adjust-stock-form" isLoading={isSubmitting} text="Сохранить" loadingText="Сохранение..." variant="action" disabled={isSubmitting || amount <= 0 || !reason.trim()} className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-full font-bold text-sm shadow-sm transition-all disabled:opacity-50 flex items-center justify-center gap-3 border-none" />
+          </Button>
+          <SubmitButton form="adjust-stock-form" isLoading={isSubmitting} text="Сохранить" loadingText="Сохранение..." color="dark" disabled={isSubmitting || amount <= 0 || !reason.trim()} className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-xl font-bold text-sm shadow-sm transition-all border-none" />
         </div>
       </div>
     </ResponsiveModal>

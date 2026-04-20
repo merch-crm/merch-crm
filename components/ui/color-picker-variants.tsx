@@ -174,13 +174,24 @@ function compactReducer(state: CompactState, action: CompactAction): CompactStat
   }
 }
 
-export function ColorPickerCompact() {
+export interface ColorPickerCompactProps {
+  value?: string;
+  onChange?: (color: string) => void;
+}
+
+export function ColorPickerCompact({ value, onChange }: ColorPickerCompactProps) {
   const [state, dispatch] = useReducer(compactReducer, {
     isOpen: false,
-    hexColor: "",
+    hexColor: value || "",
     isMounted: false,
   });
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (value !== undefined) {
+      dispatch({ type: 'SET_COLOR', color: value });
+    }
+  }, [value]);
 
   useEffect(() => {
     dispatch({ type: 'MOUNT' });

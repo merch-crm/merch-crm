@@ -95,15 +95,18 @@ export function CharacteristicCard({
           <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
             {typeAttributes.length} шт
           </span>
-          <button type="button"
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
             onClick={(e) => {
               e.stopPropagation();
               openEditType(type);
             }}
-            className="w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-200"
+            className="w-9 h-9 rounded-xl text-slate-400 hover:text-slate-600 border border-transparent hover:border-slate-200"
           >
             <Settings className="w-4 h-4" />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -112,13 +115,15 @@ export function CharacteristicCard({
           typeAttributes.length > 0 ? "flex-1" : "flex-1"
         )}>
           {typeAttributes.map((attr: Attribute) => (
-            <button type="button"
+            <Button
               key={attr.id}
+              variant="outline"
               onClick={(e) => {
                 e.stopPropagation();
                 openEditValue(attr);
               }}
-              className={cn("relative group/val flex items-center gap-2.5 px-4 py-3 bg-slate-50 border border-slate-100 rounded-[14px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-md hover:border-slate-200 cursor-pointer overflow-hidden flex-1 min-w-[140px] min-h-[52px]",
+              className={cn(
+                "relative group/val flex items-center justify-start gap-2.5 px-4 py-3 bg-slate-50 border-slate-100 rounded-[14px] text-sm font-semibold text-slate-700 transition-all active:scale-[0.98] hover:bg-white hover:shadow-md hover:border-slate-200 h-auto min-w-[140px] min-h-[52px] flex-1",
                 attr.semanticColor && "pl-3"
               )}
             >
@@ -147,7 +152,7 @@ export function CharacteristicCard({
                   </span>
                 )}
               </div>
-            </button>
+            </Button>
           ))}
 
           {typeAttributes.length === 0 && (
