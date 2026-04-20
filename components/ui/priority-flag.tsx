@@ -23,6 +23,7 @@ const priorityFlagVariants = cva(
 export interface PriorityFlagProps
   extends Omit<React.HTMLAttributes<HTMLDivElement>, "color">,
     VariantProps<typeof priorityFlagVariants> {
+    VariantProps<typeof priorityFlagVariants> {
   icon?: React.ReactNode;
 }
 
