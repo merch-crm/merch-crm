@@ -82,16 +82,17 @@ export function PrintSelectionStep({
             {prints.map((print) => {
               const isSelected = selectedPrintIds.includes(print.id);
               return (
-                <button
+                <Button
+                  variant="ghost"
                   key={print.id}
-                  type="button"
                   onClick={() => togglePrint(print.id)}
                   className={cn(
-                    "group relative aspect-square rounded-2xl border-2 transition-all cursor-pointer overflow-hidden w-full",
+                    "group relative aspect-square p-0 rounded-2xl border-2 transition-all cursor-pointer overflow-hidden w-full h-auto",
                     isSelected
-                      ? "border-primary bg-primary/5 ring-4 ring-primary/10"
+                      ? "border-primary bg-primary/5 ring-4 ring-primary/10 hover:border-primary hover:bg-primary/5"
                       : "border-slate-100 hover:border-slate-300"
                   )}
+                  aria-label={`Выбрать принт ${print.name}`}
                 >
                   {/* Preview */}
                   {print.preview ? (
@@ -121,7 +122,7 @@ export function PrintSelectionStep({
                   )}>
                     <Check className="w-3.5 h-3.5" strokeWidth={3} />
                   </div>
-                </button>
+                </Button>
               );
             })}
           </div>

@@ -4,7 +4,6 @@ import { z } from "zod";
 
 import fs from "fs";
 import path from "path";
-import sharp from "sharp";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { inventoryCategories } from "@/lib/schema/warehouse/categories";
@@ -205,6 +204,7 @@ export async function saveFile(file: File | null, directoryPath: string): Promis
 
   if (file.type.startsWith("image/") && buffer.length > COMPRESSION_THRESHOLD && file.type !== "image/svg+xml") {
     try {
+      const sharp = (await import("sharp")).default;
       buffer = await sharp(buffer)
         .rotate()
         .resize(1920, 1920, {

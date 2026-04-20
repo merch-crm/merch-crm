@@ -5,6 +5,7 @@ import { LayoutGrid } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getCategoryIcon, getCategoryCardStyles, getHexColor } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { pluralize } from "@/lib/pluralize";
+import { Button } from "@/components/ui/button";
 import { Category } from "@/app/(main)/dashboard/warehouse/types";
 
 interface CategorySelectorProps {
@@ -190,10 +191,17 @@ export function CategorySelector({
           if (variant === "compact") {
             // Desktop: horizontal scroll with compact SQUARE tiles
             return (
-              <button
-                type="button"
+              <Button
+                variant="ghost"
                 key={category.id}
                 data-category-id={category.id}
+                className={cn("group flex flex-col items-center justify-center gap-2 border transition-all text-center duration-200 outline-none cursor-pointer overflow-hidden relative shadow-none",
+                  "xl:h-auto xl:w-[90px] xl:shrink-0 xl:aspect-square xl:snap-start xl:p-2", // Desktop: fixed square
+                  "h-full p-2 sm:p-3", "rounded-[16px] sm:rounded-[18px]", // Mobile: fills grid cell
+                  isSelected
+                    ? "border-slate-900 bg-slate-50 hover:bg-slate-50 hover:border-slate-900"
+                    : "border-slate-200 bg-white hover:border-slate-300 hover:bg-white"
+                )}
                 onClick={(e) => {
                   if (hasDragged.current) {
                     e.preventDefault();
@@ -202,13 +210,6 @@ export function CategorySelector({
                   }
                   onSelect(category);
                 }}
-                className={cn("group flex flex-col items-center justify-center gap-2 border transition-all text-center duration-200 outline-none cursor-pointer overflow-hidden relative",
-                  "xl:h-auto xl:w-[90px] xl:shrink-0 xl:aspect-square xl:snap-start xl:p-2", // Desktop: fixed square
-                  "h-full p-2 sm:p-3", "rounded-[16px] sm:rounded-[18px]", // Mobile: fills grid cell
-                  isSelected
-                    ? "border-slate-900 bg-slate-50 shadow-md"
-                    : "border-slate-200 bg-white hover:border-slate-300 shadow-sm"
-                )}
               >
                 <div
                   className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300"
@@ -224,7 +225,7 @@ export function CategorySelector({
                 <h3 className="text-xs font-bold text-slate-900 leading-tight text-center w-full break-words">
                   {category.name}
                 </h3>
-              </button>
+              </Button>
             );
           }
 
@@ -237,10 +238,18 @@ export function CategorySelector({
             : (mobileRows >= 3 ? "w-4 h-4 sm:w-7 sm:h-7 xl:w-6 xl:h-6" : "w-5 h-5 sm:w-8 sm:h-8 xl:w-6 xl:h-6");
 
           return (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               key={category.id}
               data-category-id={category.id}
+              className={cn("group flex flex-col items-center justify-center gap-1 transition-all text-center h-full duration-200 outline-none cursor-pointer overflow-hidden border relative shadow-none",
+                "xl:snap-start xl:shrink-0 xl:w-[calc(25%-12px)] xl:min-w-[190px] xl:max-w-[240px]", // Desktop snap
+                // Padding & radius
+                isCompact ? "p-1.5 sm:p-3 rounded-[18px] sm:rounded-[24px]" : "p-2 sm:p-6 rounded-[24px]",
+                isSelected
+                  ? "border-slate-900 bg-slate-50 ring-4 ring-slate-900/5 hover:bg-slate-50 hover:border-slate-900"
+                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-white shadow-sm hover:shadow-md"
+              )}
               onClick={(e) => {
                 if (hasDragged.current) {
                   e.preventDefault();
@@ -249,14 +258,6 @@ export function CategorySelector({
                 }
                 onSelect(category);
               }}
-              className={cn("group flex flex-col items-center justify-center gap-1 transition-all text-center h-full duration-200 outline-none cursor-pointer overflow-hidden border relative",
-                "xl:snap-start xl:shrink-0 xl:w-[calc(25%-12px)] xl:min-w-[190px] xl:max-w-[240px]", // Desktop snap
-                // Padding & radius
-                isCompact ? "p-1.5 sm:p-3 rounded-[18px] sm:rounded-[24px]" : "p-2 sm:p-6 rounded-[24px]",
-                isSelected
-                  ? "border-slate-900 bg-slate-50 shadow-md ring-4 ring-slate-900/5"
-                  : "border-slate-200 bg-white hover:border-slate-300 shadow-sm hover:shadow-md"
-              )}
             >
               {/* Icon circle */}
               <div className={cn("relative rounded-full flex items-center justify-center shrink-0 mb-0.5 sm:mb-1", iconSize)}>
@@ -320,7 +321,7 @@ export function CategorySelector({
                   </div>
                 </div>
               </div>
-            </button>
+            </Button>
           );
         })}
         {/* Right edge spacer to prevent clipping */}

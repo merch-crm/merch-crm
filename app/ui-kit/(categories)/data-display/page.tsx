@@ -224,7 +224,7 @@ function AdvancedTableDemo() {
     id: 'actions',
     cell: () => (
      <div className='flex justify-end'>
-       <Button variant='ghost' size='xs' className="rounded-full hover:bg-white shadow-sm ring-1 ring-black/[0.03]">
+       <Button variant='ghost' size='sm' className="rounded-full hover:bg-white shadow-sm ring-1 ring-black/[0.03]">
         <MoreVertical className="w-4 h-4 text-slate-400" />
        </Button>
      </div>

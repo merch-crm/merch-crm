@@ -172,20 +172,21 @@ export const ItemMediaSection = React.memo(({
         <div className="flex items-center gap-3 shrink-0">
           {totalPages > 1 && (
             <div className="flex items-center gap-1.5 bg-slate-50 p-1 rounded-2xl">
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => goToPage(safePage - 1, "left")}
                 disabled={safePage === 0 || isAnimating}
-                aria-label="Предыдущая страница"
                 className={cn(
-                  "w-8 h-8 rounded-xl flex items-center justify-center transition-all",
+                  "w-8 h-8 rounded-xl flex items-center justify-center transition-all bg-transparent border-none shadow-none",
                   safePage === 0
-                    ? "text-slate-300 cursor-not-allowed opacity-50"
-                    : "text-slate-700 hover:bg-white hover:text-slate-900 hover:shadow-sm active:scale-95"
+                    ? "text-slate-300 cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-300"
+                    : "text-slate-700 hover:bg-white hover:text-slate-900 hover:shadow-sm"
                 )}
+                aria-label="Предыдущая страница"
               >
                 <ChevronLeft className="w-4 h-4" />
-              </button>
+              </Button>
 
               <div className="flex items-center justify-center min-w-[3rem] select-none">
                 <span className="text-xs font-black text-slate-700 tabular-nums">
@@ -193,43 +194,51 @@ export const ItemMediaSection = React.memo(({
                 </span>
               </div>
 
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => goToPage(safePage + 1, "right")}
                 disabled={safePage >= totalPages - 1 || isAnimating}
-                aria-label="Следующая страница"
                 className={cn(
-                  "w-8 h-8 rounded-xl flex items-center justify-center transition-all",
+                  "w-8 h-8 rounded-xl flex items-center justify-center transition-all bg-transparent border-none shadow-none",
                   safePage >= totalPages - 1
-                    ? "text-slate-300 cursor-not-allowed opacity-50"
-                    : "text-slate-700 hover:bg-white hover:text-slate-900 hover:shadow-sm active:scale-95"
+                    ? "text-slate-300 cursor-not-allowed opacity-50 hover:bg-transparent hover:text-slate-300"
+                    : "text-slate-700 hover:bg-white hover:text-slate-900 hover:shadow-sm"
                 )}
+                aria-label="Следующая страница"
               >
                 <ChevronRight className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           )}
 
           {isEditing && allImages.some(i => !i.src) && (
-            <label className="cursor-pointer text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1.5 px-2 py-1">
-              <input
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    const firstEmptyIdx = allImages.findIndex(img => !img.src);
-                    if (firstEmptyIdx !== -1) {
-                      const img = allImages[firstEmptyIdx];
-                      onImageChange(file, img.type, img.index);
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              className="text-sm font-bold text-blue-500 hover:text-blue-600 hover:bg-blue-50/50 transition-colors flex items-center gap-1.5 px-2 py-1 h-auto border-none shadow-none"
+            >
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const firstEmptyIdx = allImages.findIndex(img => !img.src);
+                      if (firstEmptyIdx !== -1) {
+                        const img = allImages[firstEmptyIdx];
+                        onImageChange(file, img.type, img.index);
+                      }
                     }
-                  }
-                }}
-              />
-              <ImagePlus className="w-4 h-4" aria-label="Add image" />
-              <span className="hidden sm:inline">Добавить</span>
-            </label>
+                  }}
+                />
+                <ImagePlus className="w-4 h-4" aria-label="Add image" />
+                <span className="hidden sm:inline">Добавить</span>
+              </label>
+            </Button>
           )}
         </div>
       </div>

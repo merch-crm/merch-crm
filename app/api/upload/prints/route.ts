@@ -4,7 +4,6 @@ import { existsSync } from "fs";
 import path from "path";
 import { getSession } from "@/lib/session";
 import { generateId } from "@/lib/utils";
-import sharp from "sharp";
 
 // Максимальный размер файла (500 МБ)
 const MAX_SIZE = 500 * 1024 * 1024;
@@ -135,6 +134,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<UploadRes
 
       if (isPreview) {
         try {
+          const sharp = (await import("sharp")).default;
           const metadata = await sharp(buffer).metadata();
           width = metadata.width || null;
           height = metadata.height || null;

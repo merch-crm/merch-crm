@@ -1,4 +1,4 @@
-import * as fabric from "fabric";
+import type * as fabric from "fabric";
 import { BaseManager } from "./BaseManager";
 import { AddObjectCommand, RemoveObjectCommand } from "../../commands";
 import { DEFAULT_TEXT_STYLES } from "../../constants";
@@ -59,7 +59,7 @@ export class ObjectManager extends BaseManager {
         }
 
         try {
-            const img = await fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
+            const img = await this.fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
             if (!this.editor.canvas) {
                 throw new Error("Canvas not initialized");
             }
@@ -114,7 +114,7 @@ export class ObjectManager extends BaseManager {
 
         const styles = { ...DEFAULT_TEXT_STYLES, ...options };
 
-        const textbox = new fabric.Textbox(text, {
+        const textbox = new this.fabric.Textbox(text, {
             left: 100,
             top: 100,
             width: 200,

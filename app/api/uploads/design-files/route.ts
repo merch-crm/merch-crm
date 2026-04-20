@@ -4,7 +4,6 @@ import { existsSync } from "fs";
 import path from "path";
 import { getSession } from "@/lib/session";
 import { generateId } from "@/lib/utils";
-import sharp from "sharp";
 
 const UPLOADS_PATH = process.env.UPLOADS_PATH || "./uploads";
 
@@ -61,6 +60,7 @@ export async function POST(request: NextRequest) {
     let thumbnailPath: string | null = null;
     if (file.type.startsWith("image/")) {
       try {
+        const sharp = (await import("sharp")).default;
         const thumbnailFilename = `${fileId}_thumb${ext}`;
         const thumbnailFullPath = path.join(savePath, thumbnailFilename);
 

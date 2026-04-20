@@ -229,13 +229,14 @@ export const ItemGeneralInfo = React.memo(({
                   )}
                 </div>
                 {isEditing && onRemoveAttribute && (
-                  <button
-                    type="button"
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => onRemoveAttribute(param.slug)}
-                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-100 rounded-md text-slate-400 hover:text-red-500 transition-all"
+                    className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-100 rounded-md text-slate-400 hover:text-red-500 transition-all w-6 h-6 border-none shadow-none"
                   >
                     <X className="w-3 h-3" />
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>

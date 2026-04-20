@@ -5,6 +5,7 @@ import { Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemHistoryTransaction } from "@/app/(main)/dashboard/warehouse/types";
 import { ItemHistorySection } from "./ItemHistorySection";
+import { Button } from "@/components/ui/button";
 
 interface ItemHistoryWrapperProps {
   history: ItemHistoryTransaction[];
@@ -23,14 +24,15 @@ export function ItemHistoryWrapper({
     )}>
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-[17px] font-black text-slate-900">История операций</h3>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onExport}
-          type="button"
-          className="text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors flex items-center gap-1.5"
+          className="text-sm font-bold text-blue-500 hover:text-blue-600 hover:bg-blue-50/50 transition-colors flex items-center gap-1.5 h-auto p-0 border-none shadow-none"
         >
           <Printer className="w-3.5 h-3.5" />
           Скачать
-        </button>
+        </Button>
       </div>
       <ItemHistorySection history={history} />
     </div>

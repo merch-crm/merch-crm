@@ -227,9 +227,9 @@ export function HistoryDisplay({
                     aria-label="Выбрать строку"
                   />
                 </div>
-                <button
-                  type="button"
-                  className="flex-1 p-3 flex items-center gap-3 text-left hover:bg-slate-50 transition-colors focus-visible:bg-slate-50 outline-none"
+                <Button
+                  variant="ghost"
+                  className="flex-1 h-auto p-3 flex items-center gap-3 text-left hover:bg-slate-50 transition-colors focus-visible:bg-slate-50 outline-none border-none bg-transparent shadow-none"
                   onClick={() => setExpandedId(isExpanded ? null : t.id)}
                   aria-expanded={isExpanded}
                   aria-label={isExpanded ? "Свернуть детали" : "Развернуть детали"}
@@ -283,8 +283,8 @@ export function HistoryDisplay({
                   ) : (
                     <div className="text-slate-400 text-sm font-bold shrink-0 w-8 text-center">–</div>
                   )}
-                </button>
-              </div>
+                </Button>
+            </div>
 
               <AnimatePresence>
                 {isExpanded && (

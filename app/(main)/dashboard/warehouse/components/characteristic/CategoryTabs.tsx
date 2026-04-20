@@ -59,11 +59,11 @@ export function CategoryTabs({
       <div className={cn("w-full",
         showDropdownOnTablet ?"lg:hidden" :"sm:hidden"
       )}>
-        <Select options={options} value={activeCategoryId} onChange={handleCategoryChange} variant="solid" color="primary" compact center className="w-full" triggerClassName="crm-card rounded-2xl !bg-white border-slate-100 shadow-sm !h-12" />
+        <Select options={options} value={activeCategoryId} onChange={handleCategoryChange} variant="solid" color="primary" compact center className="w-full" triggerClassName="crm-card !rounded-[18px] !bg-white border-slate-100 shadow-sm !h-12" />
       </div>
 
       {/* Desktop Navigation (Horizontal Tabs) */}
-      <div className={cn("crm-card w-full overflow-x-auto h-[58px] items-center gap-2 p-[6px] rounded-2xl scrollbar-hide bg-white border border-slate-100 shadow-sm",
+      <div className={cn("crm-card w-full overflow-x-auto h-[58px] items-center gap-2 !p-[6px] !rounded-[22px] scrollbar-hide bg-white border border-slate-100 shadow-sm",
         showDropdownOnTablet ?"hidden lg:flex" :"hidden sm:flex"
       )}>
         {rootCategories.map((cat) => {
@@ -75,14 +75,14 @@ export function CategoryTabs({
               <button type="button"
                 onClick={() => handleCategoryChange(cat.id)}
                 title={cat.name}
-                className={cn("relative w-full h-full shrink-0 px-4 rounded-xl text-sm font-bold group whitespace-nowrap flex items-center justify-center gap-2 transition-colors duration-200",
+                className={cn("relative w-full h-full shrink-0 px-4 !rounded-[16px] text-sm font-bold group whitespace-nowrap flex items-center justify-center gap-2 transition-colors duration-200",
                   isActive ?"text-white hover:text-white" :"text-slate-500 hover:text-slate-900"
                 )}
               >
                 {isActive && (
                   <motion.div
                     layoutId="activeCategoryTab"
-                    className="absolute inset-0 bg-slate-900 rounded-xl shadow-lg shadow-slate-900/10 z-0"
+                    className="absolute inset-0 bg-slate-900 !rounded-[16px] shadow-lg shadow-slate-900/10 z-0"
                     transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                   />
                 )}
@@ -109,14 +109,14 @@ export function CategoryTabs({
             <button type="button"
               onClick={() => handleCategoryChange("uncategorized")}
               title="Без категории"
-              className={cn("relative w-full h-full shrink-0 px-4 rounded-xl text-sm font-bold group whitespace-nowrap flex items-center justify-center transition-colors duration-200",
+              className={cn("relative w-full h-full shrink-0 px-4 !rounded-[16px] text-sm font-bold group whitespace-nowrap flex items-center justify-center transition-colors duration-200",
                 activeCategoryId ==="uncategorized" ?"text-white hover:text-white" :"text-slate-500 hover:text-slate-900"
               )}
             >
               {activeCategoryId ==="uncategorized" && (
                 <motion.div
                   layoutId="activeCategoryTab"
-                  className="absolute inset-0 bg-slate-900 rounded-xl shadow-lg shadow-slate-900/10"
+                  className="absolute inset-0 bg-slate-900 !rounded-[16px] shadow-lg shadow-slate-900/10"
                   transition={{ type:"spring", bounce: 0, duration: 0.4 }}
                 />
               )}

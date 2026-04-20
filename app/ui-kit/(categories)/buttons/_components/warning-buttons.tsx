@@ -11,6 +11,7 @@ export function WarningButtons() {
    title="05. Предупреждение / Amber" 
    source="custom" 
    desc="Действия, требующие внимания, или промежуточные статусы. Используется теплый оттенок Amber."
+   code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">

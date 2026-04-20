@@ -11,6 +11,7 @@ export function BrandButtons() {
    title="06. Бренд / Indigo" 
    source="custom" 
    desc="Брендированные элементы интерфейса, связанные с категориями и фирменным стилем."
+   code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">

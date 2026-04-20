@@ -10,6 +10,7 @@ import { useState } from "react";
 import { cn, formatPlural } from "@/lib/utils";
 import { StepFooter } from "./step-footer";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -228,14 +229,16 @@ export function LineSummaryStep({
 
           {/* Список позиций — аккордеон через нативный HTML */}
           <div className="rounded-xl border border-slate-200 overflow-hidden">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              className="w-full h-auto flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors font-bold text-base text-slate-900 border-none shadow-none rounded-none"
               onClick={() => setShowPositions(!showPositions)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors font-bold text-base text-slate-900"
+              aria-expanded={showPositions}
+              aria-label={showPositions ? "Скрыть список позиций" : "Показать список позиций"}
             >
               <span>Список позиций ({positions.length})</span>
               <ChevronDown className={cn( "w-5 h-5 text-slate-500 transition-transform", showPositions && "rotate-180" )} />
-            </button>
+            </Button>
             {showPositions && (
               <table className="crm-table w-full text-left">
                 <thead>

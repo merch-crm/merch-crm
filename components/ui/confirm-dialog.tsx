@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from"@/components/ui/button";
-import { Trash2, HelpCircle } from"lucide-react";
-import { cn } from"@/lib/utils";
-import { motion } from"framer-motion";
-import { ResponsiveModal } from"@/components/ui/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { Trash2, HelpCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { ResponsiveModal } from "@/components/ui/responsive-modal";
 
 interface ConfirmDialogProps {
     isOpen: boolean;
@@ -26,14 +26,14 @@ export function ConfirmDialog({
     onConfirm,
     title,
     description,
-    confirmText ="Подтвердить",
-    cancelText ="Отмена",
+    confirmText = "Подтвердить",
+    cancelText = "Отмена",
     variant = "neutral",
     isLoading = false,
     isConfirmDisabled = false,
     children
 }: ConfirmDialogProps) {
-    const isDestructive = variant ==="destructive";
+    const isDestructive = variant === "destructive";
 
     return (
         <ResponsiveModal isOpen={isOpen} onClose={onClose} title={title} showVisualTitle={false}>
@@ -46,7 +46,7 @@ export function ConfirmDialog({
                             scale: 1,
                             rotate: 0,
                             opacity: 1,
-                            transition: { type:"spring", stiffness: 300, damping: 20 }
+                            transition: { type: "spring", stiffness: 300, damping: 20 }
                         }}
                         className="relative mb-6"
                     >
@@ -59,15 +59,15 @@ export function ConfirmDialog({
                             transition={{
                                 duration: 3,
                                 repeat: Infinity,
-                                ease:"easeInOut"
+                                ease: "easeInOut"
                             }}
                             className={cn("absolute inset-0 rounded-[28px] blur-xl",
-                                isDestructive ?"bg-[#ff463c]" :"bg-indigo-500"
+                                isDestructive ? "bg-[#ff463c]" : "bg-indigo-500"
                             )}
                         />
 
                         <div className={cn("w-16 h-16 rounded-3xl flex items-center justify-center relative z-10 shadow-sm transition-colors text-slate-900 border",
-                            isDestructive ?"bg-rose-50 text-[#ff463c] border-rose-100" :"bg-indigo-50 text-indigo-600 border-indigo-100"
+                            isDestructive ? "bg-rose-50 text-[#ff463c] border-rose-100" : "bg-indigo-50 text-indigo-600 border-indigo-100"
                         )}>
                             {isDestructive ? <Trash2 className="w-8 h-8" /> : <HelpCircle className="w-8 h-8" />}
                         </div>
@@ -79,7 +79,7 @@ export function ConfirmDialog({
                     </h3>
 
                     <p className={cn("mt-2 md:mt-3 text-[13px] font-bold leading-relaxed px-6",
-                        isDestructive ?"text-rose-400" :"text-slate-500"
+                        isDestructive ? "text-rose-400" : "text-slate-500"
                     )}>
                         {description}
                     </p>
@@ -93,7 +93,7 @@ export function ConfirmDialog({
 
                 {/* Footer Actions */}
                 <div className={cn("p-6 md:p-6 pt-2 flex gap-3 shrink-0",
-                    isDestructive ?"flex-col md:flex-row items-center" :"flex-row"
+                    isDestructive ? "flex-col md:flex-row items-center" : "flex-row"
                 )}>
                     <Button 
                         variant="ghost" 
@@ -102,15 +102,15 @@ export function ConfirmDialog({
                         disabled={isLoading} 
                         className={cn("h-11 rounded-[var(--radius-inner)] text-sm w-full", 
                             isDestructive 
-                                ?"text-slate-400 hover:text-slate-600 border-none hover:bg-transparent md:flex-1 md:order-1 md:border md:border-slate-200 md:hover:bg-slate-50 md:text-slate-400" 
-                                :"flex-1 text-slate-400 hover:text-slate-900 border border-slate-200" 
+                                ? "text-slate-400 hover:text-slate-600 border-none hover:bg-transparent md:flex-1 md:order-1 md:border md:border-slate-200 md:hover:bg-slate-50 md:text-slate-400" 
+                                : "flex-1 text-slate-400 hover:text-slate-900 border border-slate-200" 
                         )}
                     >
                         {cancelText}
                     </Button>
                     <Button 
                         variant="solid" 
-                        color={isDestructive ?"danger" :"primary"} 
+                        color={isDestructive ? "danger" : "dark"} 
                         type="button" 
                         onClick={onConfirm} 
                         isLoading={isLoading}
@@ -118,8 +118,8 @@ export function ConfirmDialog({
                         disabled={isConfirmDisabled} 
                         className={cn("h-11 rounded-[var(--radius-inner)] text-sm text-white border-none w-full", 
                             isDestructive 
-                                ?"md:flex-[1.5] order-first md:order-2" 
-                                :"flex-[1.5]"
+                                ? "md:flex-[1.5] order-first md:order-2" 
+                                : "flex-[1.5]"
                         )}
                     >
                         {confirmText}

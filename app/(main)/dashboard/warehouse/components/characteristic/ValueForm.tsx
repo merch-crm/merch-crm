@@ -1,6 +1,6 @@
 "use client";
 import React, { type Dispatch, type SetStateAction } from "react";
-import { Trash2, Loader2, AlertCircle, Check, X, Pencil } from "lucide-react";
+import { Trash2, AlertCircle, Check, X, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ColorPickerSquare } from "@/components/ui/color-picker-variants";
@@ -73,7 +73,7 @@ export function ValueForm({
 
   const placeholders = getPlaceholders();
 
-  const isSaveDisabled = showCompositionEditor
+  const _isSaveDisabled = showCompositionEditor
     ? valueForm.isSaving
     : (valueForm.isSaving || !valueForm.name.trim() || !valueForm.code.trim());
 

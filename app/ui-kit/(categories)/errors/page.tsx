@@ -8,6 +8,7 @@ import { AlertTriangle, RefreshCw,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BentoNewsletterSubscribe } from '@/components/library/custom/components/forms/bento-newsletter-subscribe';
+import { Button } from "@/components/ui/button";
 
 // Утилита для фона, чтобы белые модалки контрастировали
 const BgSolid = ({ children }: { children: React.ReactNode }) => (
@@ -109,14 +110,15 @@ export default function ErrorsPage() {
         <h3 className="text-zinc-900 font-bold text-2xl mb-2 relative z-10">Ошибка #502</h3>
         <p className="text-zinc-500 text-[15px] leading-tight relative z-10 font-medium px-4 mb-4">Обнаружена неполадка в работе модуля обмена данными. Рекомендуется повторить попытку или обратиться в поддержку.</p>
         
-        <button 
-         type="button"
+        <Button 
+         variant="ghost"
+         size="sm"
          onClick={() => setShowLog0(!showLog0)}
-         className="text-zinc-400 hover:text-zinc-900 text-[13px] font-bold transition-all flex items-center gap-1.5 mb-2 relative z-10"
+         className="text-zinc-400 hover:text-zinc-900 text-[13px] font-bold transition-all flex items-center gap-1.5 mb-2 relative z-10 hover:bg-transparent"
         >
          {showLog0 ? 'Скрыть подробности' : 'Подробнее'}
          <ChevronDown className={`size-4 transition-transform duration-300 ${showLog0 ? 'rotate-180' : ''}`} />
-        </button>
+        </Button>
 
         <AnimatePresence>
          {showLog0 && (
@@ -140,8 +142,8 @@ export default function ErrorsPage() {
         </AnimatePresence>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button type="button" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border border-slate-100/50">Назад</button>
-        <button type="button" className="flex-1 py-4 bg-[#EF4444] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors">Повторить</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border border-slate-100/50">Назад</Button>
+        <Button className="flex-1 py-4 bg-[#EF4444] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="danger">Повторить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -196,11 +198,11 @@ export default function ErrorsPage() {
         <p className="text-stone-500 text-[15px] leading-tight relative z-10 font-medium">Интернет-соединение отсутствует. Данные будут сохранены локально и синхронизированы при восстановлении связи.</p>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button type="button" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Работать оффлайн</button>
-        <button type="button" className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-colors flex items-center justify-center gap-2">
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Работать оффлайн</Button>
+        <Button className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-colors flex items-center justify-center gap-2 border-none">
          <RefreshCw className="size-4 animate-spin" />
          Повторить
-        </button>
+        </Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -227,8 +229,8 @@ export default function ErrorsPage() {
         <p className="text-zinc-500 text-[14px] leading-tight relative z-10 font-medium px-4">Запрашиваемый ресурс был удален, перемещен или никогда не существовал.</p>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button type="button" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border border-slate-100/50">Назад</button>
-        <button type="button" className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-all font-bold">На главную</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border border-slate-100/50">Назад</Button>
+        <Button className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-all font-bold border-none">На главную</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -265,19 +267,20 @@ export default function ErrorsPage() {
          <label className="text-[11px] font-bold text-slate-400 block text-left mb-1.5 pl-1">Введите пароль пользователя</label>
          <div className="relative">
           <input type={showPass02 ? "text" : "password"} placeholder="••••••••" className="w-full bg-white [&:-webkit-autofill]:shadow-[0_0_0_1000px_white_inset] [&:-webkit-autofill]:[-webkit-text-fill-color:inherit] [transition:background-color_9999999s_ease-in-out_0s] border border-slate-200/60 rounded-[18px] px-5 py-4 pr-12 text-[15px] text-zinc-900 placeholder:text-zinc-300 outline-none focus:border-zinc-900 transition-all font-bold shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]" />
-          <button 
-          type="button"
-          onClick={() => setShowPass02(!showPass02)}
-          className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-zinc-600 transition-colors"
+          <Button 
+           variant="ghost"
+           size="icon"
+           onClick={() => setShowPass02(!showPass02)}
+           className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-zinc-600 transition-colors h-8 w-8 rounded-full hover:bg-slate-100/50"
           >
            {showPass02 ? <EyeOff className="size-4" strokeWidth={2.5} /> : <Eye className="size-4" strokeWidth={2.5} />}
-          </button>
+          </Button>
          </div>
         </div>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Отмена</button>
-        <button type="button" className="flex-1 py-4 bg-[#F04438] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors opacity-50 cursor-not-allowed">Удалить навсегда</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Отмена</Button>
+        <Button disabled className="flex-1 py-4 bg-[#F04438] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="danger">Удалить навсегда</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -297,8 +300,8 @@ export default function ErrorsPage() {
         <p className="text-zinc-500 text-[15px] leading-tight relative z-10 font-medium">Это действие необратимо. Элемент будет исключен из базы данных без возможности восстановления.</p>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Отмена</button>
-        <button type="button" className="flex-1 py-4 bg-red-500 text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors">Удалить</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Отмена</Button>
+        <Button className="flex-1 py-4 bg-red-500 text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="danger">Удалить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -345,15 +348,15 @@ export default function ErrorsPage() {
          ))}
         </div>
 
-        <button type="button" className="text-[14px] text-zinc-400 font-bold hover:text-zinc-900 transition-all relative z-10">
+        <Button variant="ghost" className="text-[14px] text-zinc-400 font-bold hover:text-zinc-900 transition-all relative z-10 hover:bg-transparent">
          Запросить новый код
-        </button>
+        </Button>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Отмена</button>
-        <button type="button" className={`flex-1 py-4 rounded-[24px] font-bold text-[15px] shadow-sm transition-all ${pin.every(d => d !== '') ? "bg-primary-base text-white hover:bg-primary-dark" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Отмена</Button>
+        <Button disabled={!pin.every(d => d !== '')} className={`flex-1 py-4 rounded-[24px] font-bold text-[15px] shadow-sm transition-all border-none ${pin.every(d => d !== '') ? "bg-primary-base text-white hover:bg-primary-dark" : "bg-slate-100 text-slate-400 cursor-not-allowed"}`}>
          Подтвердить
-        </button>
+        </Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -373,19 +376,20 @@ export default function ErrorsPage() {
          <label className="text-[11px] font-bold text-slate-400 block text-left mb-1.5 pl-1">Введите пароль пользователя</label>
          <div className="relative">
           <input type={showPass06 ? "text" : "password"} placeholder="••••••••" className="w-full bg-white [&:-webkit-autofill]:shadow-[0_0_0_1000px_white_inset] [&:-webkit-autofill]:[-webkit-text-fill-color:inherit] [transition:background-color_9999999s_ease-in-out_0s] border border-slate-200/60 rounded-[18px] px-5 py-4 pr-12 text-[15px] text-zinc-900 placeholder:text-zinc-300 outline-none focus:border-zinc-900 transition-all font-bold shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]" />
-          <button 
-          type="button"
-          onClick={() => setShowPass06(!showPass06)}
-          className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-zinc-600 transition-colors"
+          <Button 
+           variant="ghost"
+           size="icon"
+           onClick={() => setShowPass06(!showPass06)}
+           className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-zinc-600 transition-colors h-8 w-8 rounded-full hover:bg-slate-100/50"
           >
            {showPass06 ? <EyeOff className="size-4" strokeWidth={2.5} /> : <Eye className="size-4" strokeWidth={2.5} />}
-          </button>
+          </Button>
          </div>
         </div>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">На главную</button>
-        <button className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-all">Войти снова</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">На главную</Button>
+        <Button className="flex-1 py-4 bg-primary-base text-white font-bold rounded-[24px] hover:bg-primary-dark text-[15px] shadow-sm transition-all border-none">Войти снова</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -406,8 +410,8 @@ export default function ErrorsPage() {
         <p className="text-slate-500 text-[15px] leading-tight relative z-10 font-medium">MerchCRM хочет отправлять вам push-уведомления о новых заказах, статусах доставки и важных событиях.</p>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Не сейчас</button>
-        <button className="flex-1 py-4 bg-blue-600 text-white font-bold rounded-[24px] hover:bg-blue-700 text-[15px] shadow-sm transition-colors">Разрешить</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Не сейчас</Button>
+        <Button className="flex-1 py-4 bg-blue-600 text-white font-bold rounded-[24px] hover:bg-blue-700 text-[15px] shadow-sm transition-colors border-none">Разрешить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -483,8 +487,8 @@ export default function ErrorsPage() {
         </div>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Напомнить</button>
-        <button className="flex-1 py-4 bg-emerald-600 text-white font-bold rounded-[24px] hover:bg-emerald-700 text-[15px] shadow-sm transition-colors">Установить</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Напомнить</Button>
+        <Button className="flex-1 py-4 bg-emerald-600 text-white font-bold rounded-[24px] hover:bg-emerald-700 text-[15px] shadow-sm transition-colors border-none" color="success">Установить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -513,7 +517,7 @@ export default function ErrorsPage() {
          <p className="text-zinc-500 text-[14px] leading-tight font-medium">Мы также улучшили производительность при работе с большими наборами данных и добавили поддержку новых форматов экспорта.</p>
         </div>
 
-        <button className="w-full py-4 rounded-[20px] bg-primary-base text-white text-[15px] font-bold shadow-md hover:bg-primary-dark transition-all">Принять условия</button>
+         <Button className="w-full py-4 rounded-[20px] bg-primary-base text-white text-[15px] font-bold shadow-md hover:bg-primary-dark transition-all border-none">Принять условия</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -538,8 +542,8 @@ export default function ErrorsPage() {
         <p className="text-slate-500 text-[15px] leading-tight relative z-10 font-medium">Срок действия вашей лицензии заканчивается через 3 дня. Продлите подписку, чтобы сохранить доступ к системе.</p>
        </div>
        <div className="flex gap-2 relative z-10">
-        <button className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900">Позже</button>
-        <button className="flex-1 py-4 bg-amber-500 text-white font-bold rounded-[24px] hover:bg-amber-600 text-[15px] shadow-sm transition-colors">Продлить</button>
+        <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Позже</Button>
+        <Button className="flex-1 py-4 bg-amber-500 text-white font-bold rounded-[24px] hover:bg-amber-600 text-[15px] shadow-sm transition-colors border-none">Продлить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -567,9 +571,9 @@ export default function ErrorsPage() {
          <h4 className="text-[13px] font-bold text-slate-900">Потеря соединения</h4>
          <p className="text-[12px] text-slate-500 font-medium mt-0.5">Связь с базой данных разорвана.</p>
        </div>
-       <button className="p-2 hover:bg-slate-100 rounded-full transition-colors mr-1 shrink-0">
-         <X className="size-4 text-slate-400" strokeWidth={2.5}/>
-       </button>
+        <Button variant="ghost" size="icon" className="p-2 hover:bg-slate-100 rounded-full transition-colors mr-1 shrink-0 h-8 w-8">
+          <X className="size-4 text-slate-400" strokeWidth={2.5}/>
+        </Button>
       </motion.div>
     </BgSolid>
    </ComponentShowcase>
@@ -601,9 +605,9 @@ export default function ErrorsPage() {
        </div>
 
        {/* Mini Button */}
-       <button className="mt-8 px-6 w-full h-12 bg-white border-2 border-slate-100 text-slate-500 rounded-[20px] font-bold text-[14px] hover:bg-slate-50 hover:border-slate-200 transition-all hover:text-slate-900 active:scale-[0.98]">
-        Приостановить
-       </button>
+        <Button variant="outline" className="mt-8 px-6 w-full h-12 bg-white border-2 border-slate-100 text-slate-500 rounded-[20px] font-bold text-[14px] hover:bg-slate-50 hover:border-slate-200 transition-all hover:text-slate-900 active:scale-[0.98]">
+         Приостановить
+        </Button>
       </div>
      </motion.div>
     </BgSolid>

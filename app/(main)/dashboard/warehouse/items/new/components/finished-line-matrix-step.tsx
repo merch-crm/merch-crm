@@ -190,20 +190,21 @@ export function FinishedLineMatrixStep({
                 {availableColors.map((color) => {
                   const isSelected = selection.colors.includes(color);
                   return (
-                    <button
+                    <Button
                       key={color}
-                      type="button"
-                      className={cn(
-                        "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors text-left w-full",
-                        isSelected
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-muted-foreground/50"
-                      )}
+                      variant="ghost"
                       onClick={() => toggleColor(color)}
+                      className={cn(
+                        "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors text-left w-full h-auto",
+                        isSelected
+                          ? "border-primary bg-primary/5 hover:bg-primary/10"
+                          : "border-border hover:border-muted-foreground/50 hover:bg-slate-50"
+                      )}
+                      aria-label={`Выбрать цвет ${color}`}
                     >
                       <Checkbox checked={isSelected} />
-                      <span className="font-medium">{color}</span>
-                    </button>
+                      <span className="font-medium text-foreground">{color}</span>
+                    </Button>
                   );
                 })}
               </div>
@@ -240,20 +241,21 @@ export function FinishedLineMatrixStep({
                 {availableSizes.map((size) => {
                   const isSelected = selection.sizes.includes(size);
                   return (
-                    <button
+                    <Button
                       key={size}
-                      type="button"
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors",
-                        isSelected
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-muted-foreground/50"
-                      )}
+                      variant="ghost"
                       onClick={() => toggleSize(size)}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2 rounded-lg border cursor-pointer transition-colors h-auto",
+                        isSelected
+                          ? "border-primary bg-primary/5 hover:bg-primary/10"
+                          : "border-border hover:border-muted-foreground/50 hover:bg-slate-50"
+                      )}
+                      aria-label={`Выбрать размер ${size}`}
                     >
                       <Checkbox checked={isSelected} />
-                      <span className="font-medium">{size}</span>
-                    </button>
+                      <span className="font-medium text-foreground">{size}</span>
+                    </Button>
                   );
                 })}
               </div>

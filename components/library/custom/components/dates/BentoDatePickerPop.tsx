@@ -74,7 +74,7 @@ export function BentoDatePickerPop() {
                 >
                    Сегодня
                 </Button>
-                <Button type="button" variant="solid" color="primary" size="sm" className="rounded-xl font-black text-[11px] uppercase tracking-tighter" // audit-ok: hydration (inside event handler) onClick={() => setSelected(addDays(new Date(), 7))}
+                <Button type="button" variant="solid" color="system" size="sm" className="rounded-xl font-black text-[11px] uppercase tracking-tighter" // audit-ok: hydration (inside event handler) onClick={() => setSelected(addDays(new Date(), 7))}
                 >
                    Через неделю
                 </Button>

@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Settings, Tag, Hash, Shapes, Ruler, Palette, Box, Layers, Maximize, Globe, Weight, Droplets, Package, LucideIcon, Component, Waves, Wrench } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { type InventoryAttribute as Attribute, AttributeType, AttributeMeta } from "../../types";
 import { sortAttributeValues, getColorHex } from "@/app/(main)/dashboard/warehouse/utils/characteristic-helpers";
 

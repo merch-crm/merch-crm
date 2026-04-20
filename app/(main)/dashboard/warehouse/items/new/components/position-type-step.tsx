@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Package, Tag, Box } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { StepFooter } from "./step-footer";
+import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { RadioGroup } from "@/components/ui/radio-group";
 import { getLinesByCategory } from "@/app/(main)/dashboard/warehouse/lines/actions";
@@ -178,20 +179,21 @@ export function PositionTypeStep({
               const colors = COLOR_MAP[option.color] || COLOR_MAP.slate;
 
               return (
-                <button
+                <Button
                   key={option.id}
-                  type="button"
-                  onClick={() => {
-                    onCreationTypeChange(option.id);
-                    setValidationError("");
-                  }}
+                  variant="ghost"
                   className={cn(
-                    "relative flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-200",
+                    "relative flex flex-col items-center p-6 rounded-2xl border-2 transition-all duration-200 h-auto",
                     "hover:shadow-md hover:scale-[1.02] active:scale-[0.98]",
                     isSelected
                       ? `${colors.border} ${colors.bg} shadow-md`
                       : "border-slate-200 bg-white hover:border-slate-300"
                   )}
+                  onClick={() => {
+                    onCreationTypeChange(option.id);
+                    setValidationError("");
+                  }}
+                  aria-label={`Выбрать ${option.title}`}
                 >
                   <div
                     className={cn(
@@ -229,7 +231,7 @@ export function PositionTypeStep({
                       </svg>
                     </div>
                   )}
-                </button>
+                </Button>
               );
             })}
           </div>

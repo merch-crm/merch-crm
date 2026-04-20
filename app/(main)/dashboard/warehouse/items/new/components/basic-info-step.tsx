@@ -8,6 +8,7 @@ import { Category, InventoryAttribute, AttributeType, ItemFormData } from "@/app
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 
+import { Button } from "@/components/ui/button";
 import { useBasicInfoLogic } from "./basic-info/hooks/useBasicInfoLogic";
 import { LivePreviewCard } from "./live-preview-card";
 
@@ -151,10 +152,12 @@ export function BasicInfoStep({
                           </p>
                         </div>
 
-                        <Link href="/dashboard/warehouse/characteristics" className="relative flex items-center gap-2 px-6 h-12 bg-white border border-slate-200 rounded-2xl text-slate-900 font-bold text-sm shadow-sm hover:border-slate-400 hover:bg-slate-50 transition-all active:scale-95">
-                          <Settings2 className="w-4 h-4" />
-                          Настроить характеристики
-                        </Link>
+                        <Button asChild variant="ghost" className="relative flex items-center gap-2 px-6 h-12 bg-white border border-slate-200 rounded-2xl text-slate-900 font-bold text-sm shadow-sm hover:border-slate-400 hover:bg-slate-50 transition-all active:scale-95">
+                          <Link href="/dashboard/warehouse/characteristics">
+                            <Settings2 className="w-4 h-4" />
+                            Настроить характеристики
+                          </Link>
+                        </Button>
                       </div>
                     </div>
                   )

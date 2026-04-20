@@ -8,7 +8,6 @@ import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { ActionResult, BrandingSettings, ok, okVoid, ERRORS } from "@/lib/types";
 import { saveLocalFile } from "@/lib/local-storage";
-import sharp from "sharp";
 import { serializeIconGroups, ICON_GROUPS, SerializedIconGroup } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { BrandingSettingsSchema, IconGroupsSchema } from "../validation";
 
@@ -128,6 +127,8 @@ export async function uploadBrandingFile(formData: FormData): Promise<ActionResu
     const buffer = Buffer.from(await file.arrayBuffer());
     let processedBuffer: Buffer;
     let fileName: string;
+
+    const sharp = (await import("sharp")).default;
 
     if (type === "logo") {
       processedBuffer = await sharp(buffer).resize({ width: 500, withoutEnlargement: true }).webp({ quality: 80 }).toBuffer();

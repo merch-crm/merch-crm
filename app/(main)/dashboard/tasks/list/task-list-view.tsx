@@ -363,7 +363,7 @@ export function TaskListView({
         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
          const pageNumber = i + 1;
          return (
-          <Button key={pageNumber} color={currentPage === pageNumber ? "primary" : "neutral"} size="sm" onClick={() => setCurrentPage(pageNumber)}
+          <Button key={pageNumber} color={currentPage === pageNumber ? "system" : "neutral"} size="sm" onClick={() => setCurrentPage(pageNumber)}
            className={cn("h-8 w-8 p-0 rounded-lg text-xs", currentPage === pageNumber && "bg-primary/10 text-primary hover:bg-primary/20")}
           >
            {pageNumber}

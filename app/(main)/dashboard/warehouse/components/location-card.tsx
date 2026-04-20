@@ -3,6 +3,7 @@
 import { memo, useRef, useEffect } from "react";
 import { MapPin, User, Trash2, Pencil, Lock, GripVertical, Star, Warehouse, Printer, Briefcase } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { StorageLocation, StorageLocationItem } from "../storage.types";
@@ -172,19 +173,27 @@ export const LocationCardContent = memo(({
 
           {!isOverlay && (
             <div className="flex gap-1.5 sm:gap-2 shrink-0 z-30 ml-auto">
-              <button type="button"
+              <Button
+                type="button"
+                variant="ghost"
+                color="neutral"
+                size="icon"
                 onClick={(e) => { e.stopPropagation(); onEdit?.(e); }}
-                className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-slate-50 text-slate-400 hover:bg-primary/5 hover:text-primary transition-all border border-slate-200"
+                className="size-8 sm:size-10 rounded-xl"
               >
-                <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              </button>
+                <Pencil className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-400" />
+              </Button>
               {!loc.isSystem && (
-                <button type="button"
+                <Button
+                  type="button"
+                  variant="ghost"
+                  color="danger"
+                  size="icon"
                   onClick={(e) => { e.stopPropagation(); onDeleteClick?.(e); }}
-                  className="p-1.5 sm:p-2.5 rounded-[var(--radius-inner)] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all border border-rose-100"
+                  className="size-8 sm:size-10 rounded-xl"
                 >
                   <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
+                </Button>
               )}
             </div>
           )}

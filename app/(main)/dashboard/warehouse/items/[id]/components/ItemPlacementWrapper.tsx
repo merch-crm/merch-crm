@@ -4,6 +4,7 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import { StorageLocation, ItemStock, InventoryItem } from "@/app/(main)/dashboard/warehouse/types";
 import { ItemWarehouseBreakdown } from "./ItemWarehouseBreakdown";
+import { Button } from "@/components/ui/button";
 import { Printer, Download, Archive, Package, Boxes, SlidersHorizontal } from "lucide-react";
 import { useItemDetail } from "../context/ItemDetailContext";
 import { Input } from "@/components/ui/input";
@@ -71,38 +72,41 @@ export function ItemPlacementWrapper({
     <div className={cn("flex flex-col gap-3", className)}>
       {/* ACTION BUTTONS (Variant 2) */}
       <div className="grid grid-cols-3 gap-2 lg:gap-3">
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={() => setDialogs(prev => ({ ...prev, label: true }))}
-          className="flex flex-col items-center justify-center gap-2.5 p-4 rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-violet-50/50 hover:border-violet-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
+          className="flex flex-col items-center justify-center gap-2.5 p-4 h-auto rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-violet-50/50 hover:border-violet-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
+          aria-label="Печать QR"
         >
           <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-violet-600 transition-all duration-300 group-hover:scale-110">
             <Printer className="w-5 h-5" strokeWidth={2} />
           </div>
           <span className="text-[12px] sm:text-[13px] font-bold text-slate-600 group-hover:text-violet-700">Печать QR</span>
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={handleDownload}
-          className="flex flex-col items-center justify-center gap-2.5 p-4 rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 hover:border-emerald-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
+          className="flex flex-col items-center justify-center gap-2.5 p-4 h-auto rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-emerald-50/50 hover:border-emerald-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
+          aria-label="Скачать"
         >
           <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-emerald-600 transition-all duration-300 group-hover:scale-110">
             <Download className="w-5 h-5" strokeWidth={2} />
           </div>
           <span className="text-[12px] sm:text-[13px] font-bold text-slate-600 group-hover:text-emerald-700">Скачать</span>
-        </button>
+        </Button>
 
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={handleDelete}
-          className="flex flex-col items-center justify-center gap-2.5 p-4 rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-rose-50/50 hover:border-rose-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
+          className="flex flex-col items-center justify-center gap-2.5 p-4 h-auto rounded-[24px] bg-slate-50 border border-slate-100 hover:bg-rose-50/50 hover:border-rose-100 hover:shadow-sm transition-all duration-300 group cursor-pointer outline-none"
+          aria-label="Архив"
         >
           <div className="w-12 h-12 rounded-full bg-white shadow-sm flex items-center justify-center text-slate-400 group-hover:text-rose-600 transition-all duration-300 group-hover:scale-110">
             <Archive className="w-5 h-5" strokeWidth={2} />
           </div>
           <span className="text-[12px] sm:text-[13px] font-bold text-slate-600 group-hover:text-rose-700">Архив</span>
-        </button>
+        </Button>
       </div>
 
       {/* CARD 1: TOTAL STOCK */}
@@ -203,16 +207,16 @@ export function ItemPlacementWrapper({
       </div>
 
       {/* ADJUSTMENT ACTION */}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
         aria-label="Корректировка остатка"
         onClick={() => setAdjustType("set")}
         className={cn(
-          "group relative flex flex-col items-start justify-between p-5",
+          "group relative flex flex-col items-start justify-between p-5 h-auto",
           "bg-gradient-to-br from-violet-500 via-violet-600 to-violet-800",
           "rounded-[var(--radius-outer)] xl:rounded-[32px]",
           "shadow-[0_8px_20px_-6px_rgba(139,92,246,0.4)] hover:shadow-[0_16px_30px_-8px_rgba(139,92,246,0.6)]",
-          "transition-all duration-500 ease-out active:scale-[0.96] active:translate-y-0",
+          "transition-all duration-500 ease-out active:scale-100",
           "overflow-hidden border-none text-white cursor-pointer w-full",
           "aspect-square xl:aspect-[3.2/1] xl:col-span-4"
         )}
@@ -238,7 +242,7 @@ export function ItemPlacementWrapper({
             Настроить наличие
           </span>
         </div>
-      </button>
+      </Button>
 
       {/* CARD 2: BREAKDOWN */}
       <div className="crm-card bg-white">

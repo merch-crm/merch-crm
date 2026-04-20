@@ -27,7 +27,7 @@ export function TypeTabs({ types, activeSlug, totalOrdersCount = 0 }: TypeTabsPr
         <ScrollArea className="flex-1">
           <div className="flex items-center gap-1">
             {/* All Orders Tab */}
-            <Button color={isAllActive ? "primary" : "neutral"} size="sm" className={cn( "rounded-lg gap-2 shrink-0 h-9", isAllActive && "bg-primary/10 text-primary hover:bg-primary/20" )} onClick={() => router.push("/dashboard/production")}
+            <Button color={isAllActive ? "system" : "neutral"} size="sm" className={cn( "rounded-lg gap-2 shrink-0 h-9", isAllActive && "bg-primary/10 text-primary hover:bg-primary/20" )} onClick={() => router.push("/dashboard/production")}
             >
               <LayoutGrid className="h-4 w-4" />
               Все
@@ -45,7 +45,7 @@ export function TypeTabs({ types, activeSlug, totalOrdersCount = 0 }: TypeTabsPr
             {types.map((type) => {
               const isActive = activeSlug === type.slug;
               return (
-                <Button key={type.id} color={isActive ? "primary" : "neutral"} size="sm" className={cn( "rounded-lg gap-2 shrink-0 h-9", isActive && "bg-primary/10 text-primary hover:bg-primary/20" )} onClick={() => router.push(`/dashboard/production/${type.slug}`)}
+                <Button key={type.id} color={isActive ? "system" : "neutral"} size="sm" className={cn( "rounded-lg gap-2 shrink-0 h-9", isActive && "bg-primary/10 text-primary hover:bg-primary/20" )} onClick={() => router.push(`/dashboard/production/${type.slug}`)}
                 >
                   <div
                     className="w-2.5 h-2.5 rounded-full"

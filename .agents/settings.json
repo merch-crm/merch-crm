@@ -5,7 +5,7 @@
     "hooks": [
      {
       "type": "command",
-      "command": "node .agent/hooks/gsd-check-update.js"
+      "command": "node .agents/hooks/gsd-check-update.js"
      }
     ]
    }
@@ -16,7 +16,7 @@
     "hooks": [
      {
       "type": "command",
-      "command": "node .agent/hooks/gsd-context-monitor.js",
+      "command": "node .agents/hooks/gsd-context-monitor.js",
       "timeout": 10
      }
     ]
@@ -28,7 +28,7 @@
     "hooks": [
      {
       "type": "command",
-      "command": "node .agent/hooks/gsd-prompt-guard.js",
+      "command": "node .agents/hooks/gsd-prompt-guard.js",
       "timeout": 5
      }
     ]

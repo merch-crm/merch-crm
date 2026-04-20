@@ -11,6 +11,7 @@ export function NeutralButtons() {
    title="03. Нейтральный / Glass" 
    source="custom" 
    desc="Второстепенные действия, навигация и системные кнопки. Используется эффект матового стекла."
+   code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">
