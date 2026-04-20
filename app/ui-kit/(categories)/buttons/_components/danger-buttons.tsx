@@ -11,6 +11,7 @@ export function DangerButtons() {
    title="02. Опасность / Rose" 
    source="custom" 
    desc="Кнопки для удаления контента или необратимых действий. Используется красный акцент."
+   code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">

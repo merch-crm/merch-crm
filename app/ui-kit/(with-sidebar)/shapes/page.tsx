@@ -165,7 +165,7 @@ export default function ShapesPage() {
  <Button variant="outline" color="neutral" className="rounded-full shadow-none border-slate-300 text-xs">
  Фильтр: Активные
  </Button>
- <Button variant="solid" color="primary" className="rounded-full size-10 p-0 flex items-center justify-center text-lg">
+ <Button variant="solid" color="system" className="rounded-full size-10 p-0 flex items-center justify-center text-lg">
  +
  </Button>
  </div>

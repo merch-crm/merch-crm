@@ -69,7 +69,7 @@ export function MobileEditSheet({
             <Button onClick={onCancelName} variant="ghost" className="h-11 w-full sm:flex-1 rounded-[var(--radius-inner)] text-slate-500 font-bold hover:bg-slate-50 text-sm gap-2">
               Отмена
             </Button>
-            <Button onClick={onSaveName} variant="solid" color="primary" className="h-11 w-full sm:flex-1 rounded-[var(--radius-inner)] text-sm font-bold gap-2 shadow-sm active:scale-95">
+            <Button onClick={onSaveName} variant="solid" color="system" className="h-11 w-full sm:flex-1 rounded-[var(--radius-inner)] text-sm font-bold gap-2 shadow-sm active:scale-95">
               <CheckCircle2 className="w-5 h-5" strokeWidth={3} />
               Сохранить
             </Button>

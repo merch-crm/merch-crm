@@ -8,6 +8,7 @@ import { Sparkles, RotateCcw, Info, Package, FileText, LayoutPanelTop } from "lu
 import { useLineName } from "../hooks/use-line-name";
 import { StepFooter } from "./step-footer";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { AttributeSelector } from "@/app/(main)/dashboard/warehouse/attribute-selector";
 import { ItemFormData } from "@/app/(main)/dashboard/warehouse/types";
 
@@ -253,14 +254,15 @@ export function LineCharacteristicsStep({
                       Своё название <span className="opacity-60">(необязательно)</span>
                     </Label>
                     {isCustom && (
-                      <button
-                        type="button"
-                        onClick={resetToGenerated}
-                        className="flex items-center gap-2 text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors"
-                      >
-                        <RotateCcw className="w-3 h-3" />
-                        Сбросить
-                      </button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetToGenerated}
+                      className="h-auto p-0 hover:bg-transparent flex items-center gap-2 text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors border-none shadow-none"
+                    >
+                      <RotateCcw className="w-3 h-3" />
+                      Сбросить
+                    </Button>
                     )}
                   </div>
                   <Input id="line-name" value={isCustom ? displayName : ""} onChange={(e) => setCustomName(e.target.value)}

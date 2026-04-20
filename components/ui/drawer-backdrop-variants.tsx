@@ -124,7 +124,7 @@ export function DrawerBackdropVariants() {
           </div>
 
           <div className="pt-4 flex gap-3">
-             <Button color="primary" variant="solid" className="flex-1 h-14 rounded-element font-black shadow-xl shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700">
+             <Button color="system" variant="solid" className="flex-1 h-14 rounded-element font-black shadow-xl shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700">
                 Proceed Securely
              </Button>
           </div>

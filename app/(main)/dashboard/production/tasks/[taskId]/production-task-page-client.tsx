@@ -268,7 +268,7 @@ export function ProductionTaskPageClient({
                   {[25, 50, 75, 100].map((p) => {
                     const currentP = Math.round(((task.completedQuantity || 0) / task.quantity) * 100);
                     return (
-                      <Button key={p} size="sm" variant={currentP >= p ? "solid" : "outline"} color="primary"
+                      <Button key={p} size="sm" variant={currentP >= p ? "solid" : "outline"} color="system"
                         onClick={() => handleProgressChange(p)}
                         disabled={isUpdating}
                       >

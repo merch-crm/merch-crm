@@ -9,6 +9,7 @@ import { SuccessButtons } from "./_components/success-buttons";
 import { WarningButtons } from "./_components/warning-buttons";
 import { BrandButtons } from "./_components/brand-buttons";
 import { DropdownMenus } from "./_components/dropdown-menus";
+import { NavTabsShowcase } from "./_components/nav-tabs-showcase";
 export default function ButtonsPage() {
  return (
   <CategoryPage 
@@ -17,6 +18,7 @@ export default function ButtonsPage() {
   >
    <div className="flex flex-col gap-3">
     <ActionButtons />
+    <NavTabsShowcase />
     <DropdownMenus />
     <DangerButtons />
     <NeutralButtons />

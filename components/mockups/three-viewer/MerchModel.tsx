@@ -97,17 +97,34 @@ export function MerchModel({
     // Применение цвета и материалов
     useEffect(() => {
         if (!scene) return;
+        
+        const materialsToDispose: THREE.Material[] = [];
+        
         scene.traverse((child: THREE.Object3D) => {
             if ((child as THREE.Mesh).isMesh) {
                 const mesh = child as THREE.Mesh;
                 if (mesh.material) {
-                    mesh.material = (mesh.material as THREE.Material).clone();
-                    (mesh.material as THREE.MeshStandardMaterial).color.set(color);
-                    (mesh.material as THREE.MeshStandardMaterial).roughness = 0.7;
-                    (mesh.material as THREE.MeshStandardMaterial).metalness = 0.2;
+                    // Dispose of the previous material before assigning a new clone
+                    const oldMaterial = mesh.material;
+                    materialsToDispose.push(oldMaterial as THREE.Material);
+                    
+                    const newMaterial = (oldMaterial as THREE.Material).clone();
+                    (newMaterial as THREE.MeshStandardMaterial).color.set(color);
+                    (newMaterial as THREE.MeshStandardMaterial).roughness = 0.7;
+                    (newMaterial as THREE.MeshStandardMaterial).metalness = 0.2;
+                    mesh.material = newMaterial;
                 }
             }
         });
+
+        return () => {
+            // Cleanup: Dispose of the cloned materials when effect re-runs or component unmounts
+            materialsToDispose.forEach(material => {
+                if (material && typeof material.dispose === 'function') {
+                    material.dispose();
+                }
+            });
+        };
     }, [scene, color]);
 
     return (

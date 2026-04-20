@@ -163,7 +163,7 @@ export function LabelPrinterSettings({
               >
                 <AlignCenter className="w-4 h-4" />
               </Button>
-              <Button type="button" onClick={() => setConfig(prev => ({ ...prev, alignment: 'right' }))}
+              <Button type="button" onClick={() => setConfig(prev => ({ ...prev, alignment: 'right' as const }))}
                 variant="ghost"
                 aria-label="Выравнивание по правому краю"
                 className={cn("flex-1 px-2 flex items-center justify-center rounded-full transition-all h-9",

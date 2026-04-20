@@ -5,6 +5,7 @@ import { GripVertical, Pencil, ChevronRight } from "lucide-react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { Category } from "@/app/(main)/dashboard/warehouse/types";
 import { getCategoryIcon, getHexColor } from "@/app/(main)/dashboard/warehouse/category-utils";
 import { pluralize } from "@/lib/pluralize";
@@ -231,16 +232,17 @@ export const CategoryCardContent = React.memo(({
           </div>
         )}
         {!isOrphaned && (
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            className="w-8 h-8 p-0 min-w-0 rounded-full text-slate-300 hover:text-slate-900 border-none bg-transparent shadow-none transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
             onClick={(e) => {
               e.stopPropagation();
               onEdit?.();
             }}
-            className="w-8 h-8 rounded-full text-slate-300 hover:text-slate-900 flex items-center justify-center transition-all opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+            aria-label="Редактировать категорию"
           >
             <Pencil className="w-4 h-4" />
-          </button>
+          </Button>
         )}
       </div>
 

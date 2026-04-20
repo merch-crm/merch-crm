@@ -1,5 +1,3 @@
-import { jsPDF } from "jspdf";
-import autoTable from "jspdf-autotable";
 import { registerCyrillicFont } from "./pdf-fonts";
 import {
   renderHeader,
@@ -41,6 +39,9 @@ export async function generateCalculationPdf(opts: {
     companyName,
     options,
   } = opts;
+
+  const { jsPDF } = await import("jspdf");
+  const autoTable = (await import("jspdf-autotable")).default;
 
   const doc = new jsPDF({
     orientation: "portrait",

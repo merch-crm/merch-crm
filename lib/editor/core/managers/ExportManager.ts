@@ -1,4 +1,4 @@
-import * as fabric from "fabric";
+import type * as fabric from "fabric";
 import { BaseManager } from "./BaseManager";
 import { LIMITS } from "../../constants";
 import type {
@@ -133,7 +133,7 @@ export class ExportManager extends BaseManager {
         const padding = 20;
 
         if (config.type === "text" || config.type === "both") {
-            const text = new fabric.FabricText(config.text || "© Merch CRM", {
+            const text = new this.fabric.FabricText(config.text || "© Merch CRM", {
                 fontSize: 16,
                 fill: "#000000",
                 opacity: config.opacity,
@@ -152,7 +152,7 @@ export class ExportManager extends BaseManager {
         if (config.type === "image" || config.type === "both") {
             if (config.imagePath) {
                 try {
-                    const img = await fabric.FabricImage.fromURL(config.imagePath!, { crossOrigin: "anonymous" });
+                    const img = await this.fabric.FabricImage.fromURL(config.imagePath!, { crossOrigin: "anonymous" });
                     
                     const maxSize = Math.min(this.editor._config.width, this.editor._config.height) * 0.15;
                     const scale = maxSize / Math.max(img.width!, img.height!);

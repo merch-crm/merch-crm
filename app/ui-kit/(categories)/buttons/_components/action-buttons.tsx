@@ -11,7 +11,7 @@ export function ActionButtons() {
    title="01. Действие / Midnight" 
    source="custom" 
    desc="Основные действия CRM. Используется для создания, сохранения и других ключевых операций."
-   importPath='import { Button } from "@/components/ui/button";'
+   code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">

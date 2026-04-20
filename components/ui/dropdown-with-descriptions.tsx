@@ -42,7 +42,7 @@ export function DropdownWithDescriptions() {
             label="Delete file" 
             description="Move to trash" 
             shortcut="⌘⇧D" 
-            color="danger"
+            variant="danger"
           />
         </DropdownMenuContent>
       </DropdownMenu>

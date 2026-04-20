@@ -94,7 +94,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
      
      <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar no-scrollbar scrollbar-hide">
       {categories.map(cat => (
-       <Button key={cat.id} color={activeCategory === cat.id ? 'primary' : 'neutral'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
+       <Button key={cat.id} color={activeCategory === cat.id ? 'system' : 'neutral'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
         className={cn(
          "rounded-full px-4 h-9 font-bold text-xs transition-all whitespace-nowrap",
          activeCategory === cat.id ? "bg-slate-900 text-white shadow-md" : "border-slate-200 text-slate-500 hover:bg-slate-100"
@@ -129,7 +129,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
         <div className="flex-1 min-w-0">
          <p className="font-bold text-slate-900 truncate group-hover:text-pink-700 transition-colors">{garment.name}</p>
          <div className="flex items-center gap-2 mt-1">
-          <Badge color="primary" variant="outline" className="text-xs font-bold border-slate-200 text-slate-400">
+          <Badge color="neutral" variant="outline" className="text-xs font-bold border-slate-200 text-slate-400">
            до {garment.maxColors} цветов
           </Badge>
          </div>
@@ -145,7 +145,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
      {filteredGarments.length === 0 && (
       <div className="col-span-full py-12 text-center">
        <p className="text-slate-400 font-medium">Ничего не найдено по вашему запросу</p>
-       <Button variant="link" color="primary" onClick={() => { setSearchQuery(''); setActiveCategory('all'); }} className="text-pink-600 font-bold">
+       <Button variant="link" color="system" onClick={() => { setSearchQuery(''); setActiveCategory('all'); }} className="text-pink-600 font-bold">
         Сбросить фильтры
        </Button>
       </div>

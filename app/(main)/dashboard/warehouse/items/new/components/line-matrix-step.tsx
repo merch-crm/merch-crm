@@ -11,6 +11,7 @@ import type {
   AttributeType,
   InventoryAttribute,
 } from "@/app/(main)/dashboard/warehouse/types";
+import { Button } from "@/components/ui/button";
 import { CombinationCounter } from "./line-matrix/combination-counter";
 import { MatrixPreviewTable } from "./line-matrix/matrix-preview-table";
 import { DesignSelection } from "./line-matrix/design-selection";
@@ -151,13 +152,13 @@ export function LineMatrixStep({
                       {selected.length} / {values.length}
                     </Badge>
                   </h4>
-                  <button
-                    type="button"
+                  <Button
+                    variant="ghost"
                     onClick={() => handleSelectAll(attr.slug, selected.length !== values.length)}
-                    className="text-xs text-blue-600 hover:underline"
+                    className="h-auto p-0 text-xs text-blue-600 hover:text-blue-700 hover:bg-transparent border-none shadow-none font-bold"
                   >
                     {selected.length === values.length ? "Снять все" : "Выбрать все"}
-                  </button>
+                  </Button>
                 </div>
 
                 {/* Кружки с цветом — для атрибутов у которых есть hex */}
@@ -167,11 +168,15 @@ export function LineMatrixStep({
                       const isSelected = selected.includes(value.code);
                       return (
                         <Tooltip key={value.code} content={value.name}>
-                          <button
-                            type="button"
+                          <Button
+                            variant="ghost"
                             onClick={() => handleValueToggle(attr.slug, value.code, !isSelected)}
-                            className={cn("w-10 h-10 rounded-xl border-2 transition-all", isSelected ? "border-blue-500 ring-2 ring-blue-200 scale-110" : "border-slate-200 hover:border-slate-300")}
+                            className={cn(
+                              "w-10 h-10 p-0 min-w-0 rounded-xl border-2 shadow-none transition-all",
+                              isSelected ? "border-blue-500 ring-2 ring-blue-200 scale-110 hover:border-blue-500" : "border-slate-200 hover:border-slate-300"
+                            )}
                             style={{ backgroundColor: value.color }}
+                            aria-label={`Выбрать цвет ${value.name}`}
                           />
                         </Tooltip>
                       );

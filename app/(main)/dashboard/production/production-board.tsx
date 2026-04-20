@@ -172,7 +172,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                       {/* Actions */}
                       <div className="flex gap-2 pt-4 border-t border-slate-100">
                         {currentStatus === 'pending' && (
-                          <Button variant="solid" color="primary" onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
+                          <Button variant="solid" color="system" onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'in_progress'); }}
                             disabled={loading === item.id}
                             className="flex-1 h-12 bg-primary text-white rounded-2xl text-xs font-bold hover:bg-primary/90 active:scale-95 transition-all shadow-lg shadow-primary/20 border-0"
                           >
@@ -180,7 +180,7 @@ export function ProductionBoard({ items }: ProductionBoardProps) {
                           </Button>
                         )}
                         {currentStatus === 'in_progress' && (
-                          <Button variant="solid" color="primary" onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
+                          <Button variant="solid" color="system" onClick={(e: React.MouseEvent) => { e.stopPropagation(); handleStageUpdate(item.id, stage.id, 'done'); }}
                             disabled={loading === item.id}
                             className="flex-1 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl text-xs font-bold active:scale-95 transition-all shadow-lg shadow-emerald-500/20 border-0"
                           >

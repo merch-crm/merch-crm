@@ -6,7 +6,6 @@ import { mkdir } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import sharp from 'sharp';
 import { CalculatorType } from '@/lib/types/calculators';
 import { getFileExtension } from '@/lib/utils/file-validation';
 
@@ -45,6 +44,7 @@ export async function createThumbnail(
   thumbnailPath: string
 ): Promise<boolean> {
   try {
+    const sharp = (await import("sharp")).default;
     await sharp(sourcePath)
       .resize(300, 300, { fit: 'inside', withoutEnlargement: true })
       .webp({ quality: 80 })
@@ -63,6 +63,7 @@ export async function getImageDimensions(
   filePath: string
 ): Promise<{ width: number; height: number } | null> {
   try {
+    const sharp = (await import("sharp")).default;
     const metadata = await sharp(filePath).metadata();
     if (metadata.width && metadata.height) {
       return { width: metadata.width, height: metadata.height };

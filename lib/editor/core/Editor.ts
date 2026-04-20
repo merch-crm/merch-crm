@@ -1,5 +1,6 @@
-import * as fabric from "fabric";
-import type { FabricObject, Canvas } from "../types";
+import type * as fabric from "fabric";
+import { loadFabric } from "./FabricLoader";
+import type { Canvas } from "../types";
 import { EventEmitter } from "./EventEmitter";
 import { HistoryManager } from "./History";
 import { ObjectManager } from "./managers/ObjectManager";
@@ -26,8 +27,9 @@ export class Editor extends EventEmitter implements IEditor {
     public canvas: Canvas | null = null;
     public _config: EditorConfig;
     public history: HistoryManager;
+    public fabric: typeof import("fabric") | null = null;
     public objects: Map<string, LayerItem> = new Map();
-    public watermarkObject: FabricObject | null = null;
+    public watermarkObject: fabric.FabricObject | null = null;
     public _zoom: number = 1;
     private _isReady: boolean = false;
     public idCounter: number = 0;
@@ -51,9 +53,13 @@ export class Editor extends EventEmitter implements IEditor {
     }
 
     // ============ ИНИЦИАЛИЗАЦИЯ ============
+    
+    async initialize(canvasElement: HTMLCanvasElement): Promise<void> {
+        // Загружаем библиотеку лениво
+        const fabricLib = await loadFabric();
+        this.fabric = fabricLib;
 
-    initialize(canvasElement: HTMLCanvasElement): void {
-        this.canvas = new fabric.Canvas(canvasElement, {
+        this.canvas = new fabricLib.Canvas(canvasElement, {
             width: this._config.width,
             height: this._config.height,
             backgroundColor: this._config.backgroundColor,
@@ -70,8 +76,10 @@ export class Editor extends EventEmitter implements IEditor {
 
     private applySelectionStyle(): void {
         const style = this._config.selectionStyle;
+        const fabricLib = this.fabric;
+        if (!fabricLib) return;
 
-        fabric.Object.prototype.set({
+        fabricLib.Object.prototype.set({
             transparentCorners: style.transparentCorners,
             cornerColor: style.cornerColor,
             cornerStrokeColor: style.cornerStrokeColor,
@@ -84,7 +92,7 @@ export class Editor extends EventEmitter implements IEditor {
     }
 
     private attachCanvasEvents(): void {
-        if (!this.canvas) return;
+        if (!this.canvas || !this.fabric) return;
 
         this.canvas.on("selection:created", (e) => {
             this.emit("selection:changed", {
@@ -106,11 +114,11 @@ export class Editor extends EventEmitter implements IEditor {
 
         this.canvas.on("object:modified", (e) => {
             this.objectManager.updateLayerZIndexes();
-            this.emit("object:modified", { object: e.target as FabricObject });
+            this.emit("object:modified", { object: e.target as fabric.FabricObject });
         });
 
         this.canvas.on("object:moving", (e) => {
-            this.emit("object:moving", { object: e.target as FabricObject });
+            this.emit("object:moving", { object: e.target as fabric.FabricObject });
         });
     }
 
@@ -149,9 +157,9 @@ export class Editor extends EventEmitter implements IEditor {
     // ============ ФОН ============
 
     async setBackgroundImage(url: string): Promise<void> {
-        if (!this.canvas) throw new Error("Canvas not initialized");
+        if (!this.canvas || !this.fabric) throw new Error("Canvas not initialized");
 
-        const img = await fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
+        const img = await this.fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
         const scale = Math.max(
             this._config.width / img.width!,
             this._config.height / img.height!

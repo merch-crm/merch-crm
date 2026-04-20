@@ -3,7 +3,7 @@
 import { ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+
 import { AddCategoryDialog } from "@/app/(main)/dashboard/warehouse/add-category-dialog";
 
 interface CategoryHeaderProps {

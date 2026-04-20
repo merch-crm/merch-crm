@@ -19,7 +19,6 @@ import { z } from "zod";
 import { writeFile, unlink, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
-import sharp from "sharp";
 
 const UploadFileSchema = z.object({
   versionId: z.string().min(1, "ID версии обязателен"),
@@ -59,6 +58,7 @@ async function getImageDimensions(
   }
 
   try {
+    const sharp = (await import("sharp")).default;
     const metadata = await sharp(filePath).metadata();
     if (metadata.width && metadata.height) {
       return { width: metadata.width, height: metadata.height };

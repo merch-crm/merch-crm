@@ -130,7 +130,7 @@ export function FinishedLineSelectStep({
                 <p className="text-sm text-muted-foreground">
                   Нет доступных коллекций принтов
                 </p>
-                <Button color="primary" variant="link" className="mt-2" onClick={() => window.open("/dashboard/design/prints", "_blank")}
+                <Button color="system" variant="link" className="mt-2" onClick={() => window.open("/dashboard/design/prints", "_blank")}
                 >
                   Создать коллекцию
                 </Button>
@@ -142,16 +142,17 @@ export function FinishedLineSelectStep({
             ) : (
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
                 {filteredCollections.map((collection) => (
-                  <button
+                  <Button
                     key={collection.id}
-                    type="button"
+                    variant="ghost"
+                    onClick={() => onCollectionChange(collection.id)}
                     className={cn(
-                      "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors w-full text-left",
+                      "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors w-full text-left h-auto",
                       selectedCollectionId === collection.id
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-muted-foreground/50"
                     )}
-                    onClick={() => onCollectionChange(collection.id)}
+                    aria-label={`Выбрать коллекцию ${collection.name}`}
                   >
                     {/* Обложка */}
                     <div className="w-12 h-12 rounded-md bg-muted flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -164,7 +165,7 @@ export function FinishedLineSelectStep({
 
                     {/* Информация */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{collection.name}</p>
+                      <p className="font-medium truncate text-foreground">{collection.name}</p>
                       <p className="text-xs text-muted-foreground">
                         {collection.designsCount} принтов
                       </p>
@@ -173,7 +174,7 @@ export function FinishedLineSelectStep({
                     {/* Индикатор выбора */}
                     <div
                       className={cn(
-                        "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                        "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
                         selectedCollectionId === collection.id
                           ? "border-primary"
                           : "border-muted-foreground/30"
@@ -183,7 +184,7 @@ export function FinishedLineSelectStep({
                         <div className="w-2.5 h-2.5 rounded-full bg-primary" />
                       )}
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -216,22 +217,23 @@ export function FinishedLineSelectStep({
             ) : (
               <div className="space-y-2 max-h-[350px] overflow-y-auto pr-2">
                 {baseLines.map((line) => (
-                  <button
+                  <Button
                     key={line.id}
-                    type="button"
+                    variant="ghost"
+                    onClick={() => onBaseLineChange(line.id)}
                     className={cn(
-                      "p-4 rounded-lg border cursor-pointer transition-colors w-full text-left",
+                      "p-4 rounded-lg border cursor-pointer transition-colors w-full text-left h-auto block hover:bg-slate-50",
                       selectedBaseLineId === line.id
                         ? "border-primary bg-primary/5"
                         : "border-border hover:border-muted-foreground/50"
                     )}
-                    onClick={() => onBaseLineChange(line.id)}
+                    aria-label={`Выбрать базовую линейку ${line.name}`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <p className="font-medium">{line.name}</p>
+                      <p className="font-medium text-foreground">{line.name}</p>
                       <div
                         className={cn(
-                          "w-5 h-5 rounded-full border-2 flex items-center justify-center",
+                          "w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0",
                           selectedBaseLineId === line.id
                             ? "border-primary"
                             : "border-muted-foreground/30"
@@ -275,7 +277,7 @@ export function FinishedLineSelectStep({
                         ))}
                       </div>
                     </div>
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}

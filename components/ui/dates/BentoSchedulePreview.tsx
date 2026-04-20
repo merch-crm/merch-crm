@@ -87,7 +87,7 @@ export function BentoSchedulePreview() {
          ))}
       </div>
 
-      <Button variant="solid" color="primary" size="lg" className="w-full mt-6">
+      <Button variant="solid" color="system" size="lg" className="w-full mt-6">
          <Typo>Добавить событие</Typo>
       </Button>
     </div>

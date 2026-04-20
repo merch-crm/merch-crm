@@ -169,7 +169,7 @@ export function EditorProvider({
     });
 
     // Инициализируем
-    editor.initialize(canvasEl);
+    editor.initialize(canvasEl).catch(console.error);
 
     // Загружаем фоновое изображение если есть
     if (backgroundImage) {

@@ -179,7 +179,7 @@ export interface ColorPickerCompactProps {
   onChange?: (color: string) => void;
 }
 
-export function ColorPickerCompact({ value, onChange }: ColorPickerCompactProps) {
+export function ColorPickerCompact({ value, onChange: _onChange }: ColorPickerCompactProps) {
   const [state, dispatch] = useReducer(compactReducer, {
     isOpen: false,
     hexColor: value || "",

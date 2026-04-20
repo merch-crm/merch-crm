@@ -15,7 +15,7 @@ export interface PrinterConfig {
   paperSize: PaperSize;
   customWidth: number;
   customHeight: number;
-  alignment: 'center' | 'left';
+  alignment: 'center' | 'left' | 'right';
   layoutStyle: LayoutStyle;
   isLandscape: boolean;
   quantity: number;

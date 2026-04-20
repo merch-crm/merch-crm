@@ -1,6 +1,5 @@
-import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, ListObjectsV2Output, DeleteObjectCommand, CopyObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand, ListObjectsV2Command, type ListObjectsV2Output, DeleteObjectCommand, CopyObjectCommand, DeleteObjectsCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import sharp from "sharp";
 import { Readable } from "stream";
 
 const endpoint = process.env.S3_ENDPOINT || process.env.REG_STORAGE_ENDPOINT || "https://s3.regru.cloud";
@@ -37,6 +36,7 @@ export async function uploadFile(
     // Image compression logic
     if (options.compress && contentType?.startsWith("image/") && !contentType.includes("svg") && !contentType.includes("gif") && (body instanceof Buffer || body instanceof Uint8Array)) {
         try {
+            const sharp = (await import("sharp")).default;
             const image = sharp(body as Buffer);
 
             finalBody = await image

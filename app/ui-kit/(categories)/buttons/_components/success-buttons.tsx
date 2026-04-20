@@ -11,6 +11,7 @@ export function SuccessButtons() {
    title="04. Успех / Emerald" 
    source="custom" 
    desc="Позитивные действия и успешное завершение процессов. Используется зеленый цвет Emerald."
+   code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">

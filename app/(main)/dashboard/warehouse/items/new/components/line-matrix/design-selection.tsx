@@ -2,6 +2,7 @@
 
 import { Palette } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface DesignSelectionProps {
@@ -32,7 +33,9 @@ export function DesignSelection({
           <Palette className="w-5 h-5 text-green-600" />
           Макеты дизайнов
         </h4>
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           type="button"
           onClick={() =>
             onDesignsChange(
@@ -41,12 +44,12 @@ export function DesignSelection({
                 : availableDesigns.map((d) => d.id)
             )
           }
-          className="text-xs text-green-600 hover:underline"
+          className="h-auto p-0 text-xs text-green-600 hover:text-green-700 hover:bg-transparent font-bold"
         >
           {selectedDesigns.length === availableDesigns.length
             ? "Снять все"
             : "Выбрать все"}
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

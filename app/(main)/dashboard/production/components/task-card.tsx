@@ -178,7 +178,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
             <div className="flex items-center gap-1">
               {/* Quick status change */}
               {task.status === "pending" && (
-                <Button size="sm" variant="solid" color="primary" onClick={() => handleStatusChange("in_progress")}
+                <Button size="sm" variant="solid" color="system" onClick={() => handleStatusChange("in_progress")}
                   disabled={isUpdating}
                 >
                   <Play className="mr-1 h-3 w-3" />
@@ -193,7 +193,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
                   >
                     <Pause className="h-3 w-3" />
                   </Button>
-                  <Button size="sm" variant="solid" color="primary" className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange("completed")}
+                  <Button size="sm" variant="solid" color="system" className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange("completed")}
                     disabled={isUpdating}
                   >
                     <CheckCircle2 className="mr-1 h-3 w-3" />
@@ -203,7 +203,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
               )}
 
               {task.status === "paused" && (
-                <Button size="sm" variant="solid" color="primary" onClick={() => handleStatusChange("in_progress")}
+                <Button size="sm" variant="solid" color="system" onClick={() => handleStatusChange("in_progress")}
                   disabled={isUpdating}
                 >
                   <Play className="mr-1 h-3 w-3" />

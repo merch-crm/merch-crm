@@ -116,19 +116,19 @@ export function StockStep({
                     <Label className="text-sm font-black text-slate-700">Начальный остаток</Label>
                     <div className="flex items-center gap-1 bg-slate-100/50 p-0.5 rounded-lg border border-slate-200/50">
                       {["шт.", "см", "м", "гр", "кг", "мл", "л"].map((u) => (
-                        <button
+                        <Button
                           key={u}
-                          type="button"
+                          variant="ghost"
                           onClick={() => updateFormData({ unit: u })}
                           className={cn(
-                            "px-2 py-0.5 rounded-md text-xs font-black transition-all",
+                            "px-2 py-0.5 h-6 rounded-md text-xs font-black transition-all border-none shadow-none",
                             formData.unit === u
-                              ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200"
-                              : "text-slate-400 hover:text-slate-600"
+                              ? "bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200 hover:bg-white hover:text-indigo-600"
+                              : "text-slate-400 hover:text-slate-600 hover:bg-slate-200/50"
                           )}
                         >
                           {u.toLowerCase()}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -267,14 +267,14 @@ export function StockStep({
                   }[(loc.type as 'warehouse' | 'production' | 'office') || 'office'];
 
                   return (
-                    <button
+                    <Button
                       key={loc.id}
-                      type="button"
+                      variant="ghost"
                       onClick={() => updateFormData({ storageLocationId: loc.id })}
                       className={cn(
-                        "p-4 rounded-2xl text-left border transition-all duration-200 flex flex-col gap-2.5 group relative h-auto",
+                        "p-4 rounded-2xl text-left border transition-all duration-200 flex flex-col gap-2.5 h-auto w-full group relative",
                         styles,
-                        isSelected && "shadow-sm ring-1 ring-slate-200/50"
+                        isSelected && "shadow-sm ring-1 ring-slate-200/50 border-transparent hover:border-transparent"
                       )}
                     >
                       <div className="flex items-center justify-between w-full">
@@ -290,22 +290,23 @@ export function StockStep({
                           </div>
                         )}
                       </div>
-                      <div className="truncate">
+                      <div className="truncate text-left w-full">
                         <div className="font-bold text-sm text-slate-900 truncate">{loc.name}</div>
                         <div className="text-xs font-bold text-slate-400 mt-0.5">
                           {loc.type === "warehouse" ? "склад" : loc.type === "production" ? "производство" : "офис"}
                         </div>
                       </div>
-                    </button>
+                    </Button>
                   );
                 })}
-                <AddStorageLocationDialog users={users} trigger={ <button type="button" className="p-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/30 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 flex flex-col items-center justify-center gap-2 h-auto group cursor-pointer aspect-square sm:aspect-auto sm:h-[114px]">
-                      <div className="w-10 h-10 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center shrink-0 group-hover:border-primary/50 group-hover:bg-white transition-all">
-                        <Plus className="w-5 h-5" />
-                      </div>
-                      <div className="font-black text-xs">Добавить</div>
-                    </button>
-                  }
+                <AddStorageLocationDialog users={users} trigger={
+                  <Button variant="ghost" className="p-4 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/30 text-slate-400 hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-all duration-200 flex flex-col items-center justify-center gap-2 h-auto group cursor-pointer aspect-square sm:aspect-auto sm:h-[114px] shadow-none">
+                    <div className="w-10 h-10 rounded-full border-2 border-dashed border-slate-200 flex items-center justify-center shrink-0 group-hover:border-primary/50 group-hover:bg-white transition-all">
+                      <Plus className="w-5 h-5" />
+                    </div>
+                    <div className="font-black text-xs">Добавить</div>
+                  </Button>
+                }
                 />
               </div>
             )}

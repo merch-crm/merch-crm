@@ -1,4 +1,4 @@
-import * as fabric from "fabric";
+import type * as fabric from "fabric";
 import { BaseManager } from "./BaseManager";
 import type {
     TextStyles,
@@ -101,25 +101,26 @@ export class StyleManager extends BaseManager {
     }
 
     public createFabricFilter(filter: FilterValue): fabric.filters.BaseFilter<string, Record<string, unknown>> | null {
+        const fabricLib = this.fabric;
         switch (filter.type) {
             case "brightness":
-                return new fabric.filters.Brightness({ brightness: filter.value });
+                return new fabricLib.filters.Brightness({ brightness: filter.value });
             case "contrast":
-                return new fabric.filters.Contrast({ contrast: filter.value });
+                return new fabricLib.filters.Contrast({ contrast: filter.value });
             case "saturation":
-                return new fabric.filters.Saturation({ saturation: filter.value });
+                return new fabricLib.filters.Saturation({ saturation: filter.value });
             case "blur":
-                return new fabric.filters.Blur({ blur: filter.value });
+                return new fabricLib.filters.Blur({ blur: filter.value });
             case "grayscale":
-                return filter.value ? new fabric.filters.Grayscale() : null;
+                return filter.value ? new fabricLib.filters.Grayscale() : null;
             case "sepia":
-                return filter.value ? new fabric.filters.Sepia() : null;
+                return filter.value ? new fabricLib.filters.Sepia() : null;
             case "invert":
-                return filter.value ? new fabric.filters.Invert() : null;
+                return filter.value ? new fabricLib.filters.Invert() : null;
             case "noise":
-                return new fabric.filters.Noise({ noise: filter.value });
+                return new fabricLib.filters.Noise({ noise: filter.value });
             case "pixelate":
-                return new fabric.filters.Pixelate({ blocksize: filter.value });
+                return new fabricLib.filters.Pixelate({ blocksize: filter.value });
             default:
                 return null;
         }

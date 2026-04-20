@@ -1,4 +1,4 @@
-import * as fabric from "fabric";
+import type * as fabric from "fabric";
 
 export type Canvas = fabric.Canvas;
 export type FabricObject = fabric.Object;
