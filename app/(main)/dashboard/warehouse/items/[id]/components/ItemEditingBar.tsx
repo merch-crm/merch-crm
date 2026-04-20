@@ -52,7 +52,7 @@ export const ItemEditingBar = React.memo(({
         animate={{ opacity: 1, y: 0, x:"-50%", scale: 1 }}
         exit={{ opacity: 0, y: 100, x:"-50%", scale: 0.9 }}
         transition={{ type:"spring", damping: 25, stiffness: 200, mass: 0.8 }}
-        className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-card p-2.5 px-4 md:px-8 gap-3 md:gap-3 rounded-3xl md:rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-border w-[calc(100%-2rem)] md:w-auto overflow-hidden"
+        className="fixed bottom-6 md:bottom-10 left-1/2 z-[110] flex items-center bg-card p-2.5 px-4 md:px-8 gap-3 md:gap-3 rounded-2xl md:rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-border w-[calc(100%-2rem)] md:w-auto overflow-hidden"
         data-dialog-open="true"
       >
         {/* Left Side: Info */}
@@ -81,13 +81,24 @@ export const ItemEditingBar = React.memo(({
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex items-center gap-3 md:gap-3 shrink-0"
+          className="flex items-center gap-2 md:gap-3 shrink-0"
         >
-          <Button variant="ghost" onClick={onCancel} className="h-10 md:h-12 px-5 md:px-8 rounded-2xl md:rounded-full font-bold text-[13px] md:text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-all active:scale-95 border-none">
+          <Button 
+            variant="ghost" 
+            color="neutral"
+            onClick={onCancel} 
+            className="h-10 md:h-12 px-5 md:px-8 font-bold text-[13px] md:text-sm active:scale-95 border-none rounded-xl md:rounded-2xl"
+          >
             Отмена
           </Button>
 
-          <Button variant="solid" color="primary" disabled={isSaving} onClick={onSave} className="h-10 md:h-12 px-6 md:px-10 rounded-2xl md:rounded-full font-bold text-[13px] md:text-sm bg-primary text-white shadow-[0_10px_20px_rgba(var(--primary-rgb),0.2)] hover:shadow-[0_15px_25px_rgba(var(--primary-rgb),0.3)] hover:scale-[1.02] active:scale-95 transition-all border-none">
+          <Button 
+            variant="solid" 
+            color="dark" 
+            disabled={isSaving} 
+            onClick={onSave} 
+            className="h-10 md:h-12 px-6 md:px-10 font-bold text-[13px] md:text-sm active:scale-95 transition-all border-none rounded-xl md:rounded-2xl shadow-xl shadow-black/10"
+          >
             <div className="flex items-center gap-2">
               {isSaving ? (
                 <>
@@ -102,7 +113,17 @@ export const ItemEditingBar = React.memo(({
               )}
             </div>
           </Button>
-          <Button variant="solid" color="neutral" size="icon" onClick={onDelete} disabled={isSaving} aria-label="Архивировать товар" className="w-10 h-10 md:w-11 md:h-11 rounded-3xl md:rounded-full bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-amber-500 hover:text-white transition-all active:scale-95 border border-border hover:border-amber-500 group/archive" title="Архивировать">
+
+          <Button 
+            variant="solid" 
+            color="danger" 
+            size="icon" 
+            onClick={onDelete} 
+            disabled={isSaving} 
+            aria-label="Архивировать товар" 
+            className="w-10 h-10 md:w-11 md:h-11 flex items-center justify-center active:scale-95 transition-all border-none rounded-xl md:rounded-2xl group/archive" 
+            title="Архивировать"
+          >
             <Archive className="w-4 h-4 md:w-5 md:h-5 transition-transform group-hover/archive:scale-110" />
           </Button>
         </motion.div>

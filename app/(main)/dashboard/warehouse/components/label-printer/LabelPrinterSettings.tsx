@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { AlignLeft, AlignCenter, RotateCw } from "lucide-react";
+import { AlignLeft, AlignCenter, AlignRight, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +39,7 @@ export function LabelPrinterSettings({
             {['58x40', '58x60', '75x120', 'a4', 'custom'].map((size) => (
               <Button key={size} type="button" onClick={() => setConfig(prev => ({ ...prev, paperSize: size as PaperSize }))}
                 variant="ghost"
-                className={cn("w-full h-11 rounded-[var(--radius-inner)] text-xs font-bold border-2 transition-all duration-200 flex items-center justify-center leading-none",
+                className={cn("w-full h-11 rounded-full text-xs font-bold border-2 transition-all duration-200 flex items-center justify-center leading-none",
                   config.paperSize === size
                     ? "bg-slate-900 text-white border-slate-900 shadow-md hover:bg-slate-800 hover:text-white"
                     : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
@@ -54,13 +54,13 @@ export function LabelPrinterSettings({
             <div className="grid grid-cols-2 gap-2 animate-in slide-in-from-top-2 fade-in duration-300">
               <div className="relative">
                 <Input type="number" value={config.customWidth} onChange={(e) => setConfig(prev => ({ ...prev, customWidth: Number(e.target.value) }))}
-                  className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold transition-all shadow-none"
+                  className="w-full pl-3 pr-8 h-11 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold transition-all shadow-none"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">MM</span>
               </div>
               <div className="relative">
                 <Input type="number" value={config.customHeight} onChange={(e) => setConfig(prev => ({ ...prev, customHeight: Number(e.target.value) }))}
-                  className="w-full pl-3 pr-8 h-[42px] bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
+                  className="w-full pl-3 pr-8 h-11 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold focus-visible:outline-none focus-visible:border-primary/20 focus-visible:bg-white transition-all shadow-none"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">MM</span>
               </div>
@@ -80,7 +80,7 @@ export function LabelPrinterSettings({
             ].map((style) => (
               <Button key={style.id} type="button" onClick={() => setConfig(prev => ({ ...prev, layoutStyle: style.id as LayoutStyle }))}
                 variant="ghost"
-                className={cn("w-full h-11 rounded-[var(--radius-inner)] border-2 font-bold text-xs transition-all flex items-center justify-center",
+                className={cn("w-full h-11 rounded-full border-2 font-bold text-xs transition-all flex items-center justify-center",
                   config.layoutStyle === style.id ? "bg-slate-900 border-slate-900 text-white shadow-md ring-2 ring-slate-900/10 hover:bg-slate-800 hover:text-white" : "bg-white border-slate-200 text-slate-400 hover:border-slate-300 hover:bg-slate-50"
                 )}
               >
@@ -129,7 +129,7 @@ export function LabelPrinterSettings({
           <Input type="text" value={config.customText} onChange={(e) => setConfig(prev => ({ ...prev, customText: e.target.value }))}
             placeholder="Например: Сделано в России"
             disabled={config.layoutStyle === 'minimal'}
-            className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-[var(--radius-inner)] text-sm font-bold transition-all shadow-none"
+            className="w-full px-4 h-11 bg-slate-50 border-2 border-transparent rounded-2xl text-sm font-bold transition-all shadow-none"
           />
         </div>
 
@@ -139,16 +139,16 @@ export function LabelPrinterSettings({
           <div className="grid grid-cols-2 gap-2">
             <Button type="button" onClick={() => setConfig(prev => ({ ...prev, isLandscape: !prev.isLandscape }))}
               variant="ghost"
-              className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-[var(--radius-inner)] border-2 border-slate-900 bg-slate-900 text-white font-bold text-xs transition-all active:scale-[0.98] hover:bg-slate-800 hover:text-white w-full h-auto"
+              className="flex items-center justify-center gap-2.5 py-2.5 px-3 rounded-2xl border-2 border-slate-900 bg-slate-900 text-white font-bold text-xs transition-all active:scale-[0.98] hover:bg-slate-800 hover:text-white w-full h-11"
             >
               <RotateCw className={cn("w-3.5 h-3.5 transition-transform duration-500", config.isLandscape && "rotate-90")} />
               Горизонтальный
             </Button>
-            <div className="flex bg-slate-50 p-1 rounded-[var(--radius-inner)] border-2 border-transparent">
+            <div className="flex bg-slate-50 p-1 rounded-2xl border-2 border-transparent">
               <Button type="button" onClick={() => setConfig(prev => ({ ...prev, alignment: 'left' }))}
                 variant="ghost"
                 aria-label="Выравнивание по левому краю"
-                className={cn("flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all h-auto",
+                className={cn("flex-1 px-2 flex items-center justify-center rounded-full transition-all h-9",
                   config.alignment === 'left' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
                 )}
               >
@@ -157,11 +157,20 @@ export function LabelPrinterSettings({
               <Button type="button" onClick={() => setConfig(prev => ({ ...prev, alignment: 'center' }))}
                 variant="ghost"
                 aria-label="Выравнивание по центру"
-                className={cn("flex-1 py-1.5 flex items-center justify-center rounded-[var(--radius-inner)] transition-all h-auto",
+                className={cn("flex-1 px-2 flex items-center justify-center rounded-full transition-all h-9",
                   config.alignment === 'center' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
                 )}
               >
                 <AlignCenter className="w-4 h-4" />
+              </Button>
+              <Button type="button" onClick={() => setConfig(prev => ({ ...prev, alignment: 'right' }))}
+                variant="ghost"
+                aria-label="Выравнивание по правому краю"
+                className={cn("flex-1 px-2 flex items-center justify-center rounded-full transition-all h-9",
+                  config.alignment === 'right' ? "bg-white shadow-sm text-slate-900 hover:bg-white" : "text-slate-400 hover:text-slate-600 hover:bg-transparent"
+                )}
+              >
+                <AlignRight className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -174,7 +183,7 @@ export function LabelPrinterSettings({
 function ToggleItem({ label, checked, onChange, compact }: { label: string; checked: boolean; onChange: (v: boolean) => void; compact?: boolean }) {
   return (
     <label className={cn("flex items-center justify-between transition-colors cursor-pointer group",
-      compact ? "p-2 rounded-[var(--radius-inner)] hover:bg-slate-50/80" : "p-3 rounded-[var(--radius-inner)] hover:bg-slate-50"
+      compact ? "p-2 rounded-xl hover:bg-slate-50/80" : "p-3 rounded-2xl hover:bg-slate-50 shadow-sm border border-slate-100/50"
     )}>
       <span className={cn("font-bold text-slate-900 transition-colors",
         compact ? "text-[12px]" : "text-sm"

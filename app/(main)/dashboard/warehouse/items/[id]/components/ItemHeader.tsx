@@ -59,7 +59,8 @@ export const ItemHeader = React.memo(({
               <p className="text-xs font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
             </div>
           </div>
-          <Button size="sm" onClick={onUnarchive} className="h-11 px-8 rounded-2xl bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold shadow-lg shadow-destructive/10 transition-all active:scale-95">
+          <Button size="md" onClick={onUnarchive} className="h-11 px-8 rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold shadow-lg shadow-destructive/10 transition-all active:scale-95 gap-2">
+            <RefreshCcw className="w-4 h-4" />
             Восстановить
           </Button>
         </div>
@@ -83,10 +84,14 @@ export const ItemHeader = React.memo(({
             ) : (
               <div className="flex flex-col gap-1.5 w-full">
                 <div className="flex items-center gap-3">
-                  <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard/warehouse')}
-                    className="w-10 h-10 sm:w-11 sm:h-11 rounded-element text-muted-foreground hover:text-foreground hover:bg-transparent flex items-center justify-center shrink-0"
+                  <Button 
+                    variant="outline" 
+                    color="neutral" 
+                    size="icon" 
+                    onClick={() => router.push('/dashboard/warehouse')}
+                    className="size-11 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0 group"
                   >
-                    <ArrowLeft className="w-5 h-5" />
+                    <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                   </Button>
                   <h1
                     className="text-2xl md:text-4xl font-black text-slate-900 leading-tight md:whitespace-normal md:overflow-visible pr-2 cursor-pointer outline-none focus-visible:text-primary min-w-0"
@@ -189,26 +194,26 @@ export const ItemHeader = React.memo(({
         <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-0">
           {isEditing ? (
             <>
-              <Button variant="ghost" onClick={onCancel} aria-label="Отменить изменения" className="h-10 px-4 sm:h-11 md:px-8 rounded-element font-bold text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all border border-transparent hover:border-border flex items-center justify-center gap-2">
+              <Button variant="ghost" onClick={onCancel} aria-label="Отменить изменения" className="h-11 px-6 sm:px-8 rounded-xl font-bold text-xs sm:text-sm text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
                 <X className="w-4 h-4" />
                 <span className="hidden md:inline">Отмена</span>
               </Button>
-              <Button onClick={onSave} type="button" disabled={isSaving || isAnyUploading} aria-label="Сохранить изменения" className="h-10 px-5 sm:h-11 md:px-10 rounded-element bg-primary text-white font-bold text-xs border-none shadow-xl shadow-primary/20 hover:shadow-primary/30 flex items-center justify-center transition-all active:scale-95">
+              <Button onClick={onSave} type="button" disabled={isSaving || isAnyUploading} aria-label="Сохранить изменения" className="h-11 px-6 sm:px-10 rounded-xl bg-slate-900 text-white font-bold text-xs sm:text-sm border-none shadow-xl shadow-black/10 hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 gap-2">
                 {isSaving ? (
                   <RefreshCcw className="w-4 h-4 animate-spin" />
                 ) : (
-                  <div className="flex items-center justify-center gap-2">
+                  <>
                     <Save className="w-4 h-4" />
                     <span className="hidden sm:inline">{isAnyUploading ? "Загрузка…" : "Сохранить"}</span>
-                  </div>
+                  </>
                 )}
               </Button>
             </>
           ) : (
             <>
               {!item.isArchived && (
-                <Button onClick={onEdit} aria-label="Редактировать товар" className="h-10 w-10 sm:h-11 sm:w-auto sm:px-8 rounded-full sm:rounded-2xl bg-primary text-white font-bold text-sm group border-none shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all active:scale-95 flex items-center justify-center p-0 sm:py-0 sm:px-8">
-                  <Edit3 className="w-4 h-4 sm:w-4.5 sm:h-4.5 transition-transform sm:mr-2.5" />
+                <Button onClick={onEdit} aria-label="Редактировать товар" className="h-11 px-6 sm:px-8 rounded-xl bg-slate-900 text-white font-bold text-xs sm:text-sm shadow-xl shadow-black/10 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-2">
+                  <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Редактировать</span>
                 </Button>
               )}

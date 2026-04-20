@@ -161,7 +161,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
           {/* Left column: form */}
           <form id="edit-category-form" onSubmit={handleSubmit} className="flex-1 px-6 py-4 flex flex-col gap-3 overflow-y-auto custom-scrollbar border-r border-slate-100">
             {uiState.error && (
-              <div className="p-3 rounded-[var(--radius-inner)] bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+              <div className="p-3 rounded-lg bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
                 <AlertCircle className="w-4 h-4" />
                 {uiState.error}
               </div>
@@ -178,12 +178,12 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                       prefix: prev.prefixManuallyEdited ? prev.prefix : generateCategoryPrefix(name)
                     }));
                   }}
-                  className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm"
+                  className="w-full h-10 px-4 rounded-lg border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm"
                 />
               </div>
               <div className="space-y-2 w-28">
                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Артикул</label>
-                <Input name="prefix" value={formState.prefix} placeholder="TS" className="w-full h-11 px-4 rounded-[var(--radius-inner)] border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm tabular-nums" onChange={(e) => {
+                <Input name="prefix" value={formState.prefix} placeholder="TS" className="w-full h-10 px-4 rounded-lg border border-slate-200 focus:border-primary focus:ring-4 focus:ring-primary/5 bg-slate-50 transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm outline-none shadow-sm tabular-nums" onChange={(e) => {
                     const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
                     setFormState(prev => ({ ...prev, prefix: val, prefixManuallyEdited: true }));
                   }}
@@ -197,7 +197,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                 name="description"
                 defaultValue={category.description ||""}
                 placeholder="Опциональное описание назначения этой категории..."
-                className="crm-dialog-textarea"
+                className="crm-dialog-textarea rounded-lg"
               />
             </div>
 
@@ -210,7 +210,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
               <div className="space-y-1.5">
                 <label className="text-sm font-bold text-slate-700 block ml-1">Цвет</label>
-                <div className="p-3 sm:p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
+                <div className="p-3 sm:p-4 bg-slate-50 rounded-lg border border-slate-200 shadow-sm overflow-x-auto custom-scrollbar">
                   <ColorPickerSwatchesGroup 
                     value={formState.color} 
                     onChange={(color) => setFormState(prev => ({ ...prev, color }))} 
@@ -223,11 +223,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             <div className="grid grid-cols-2 gap-3">
               <SwitchRow title="Добавлять в артикул" description="" checked={formState.showInSku} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
                 color="success"
-                className="p-3 bg-slate-50"
+                className="p-3 bg-slate-50 rounded-2xl"
               />
               <SwitchRow title="Добавлять в название" description="" checked={formState.showInName} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
                 color="success"
-                className="p-3 bg-slate-50"
+                className="p-3 bg-slate-50 rounded-2xl"
               />
             </div>
           </form>
@@ -242,7 +242,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
               <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                 {subCategories.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-3 border border-slate-100">
+                    <div className="w-12 h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-3 border border-slate-100">
                       <span className="text-xl">📂</span>
                     </div>
                     <p className="text-xs font-bold text-slate-300">Нет подкатегорий</p>
@@ -252,9 +252,14 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     {subCategories.map(sub => {
                       const IconComponent = getCategoryIcon(sub);
                       return (
-                        <div key={sub.id} className="group relative flex flex-col items-center justify-center p-2 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 hover:border-primary/20 hover:shadow-md transition-all cursor-default shadow-sm overflow-visible min-h-[80px]">
-                          <Button type="button" variant="solid" color="danger" size="icon" disabled={uiState.subPending} onClick={() => handleDeleteSubcategory(sub.id)}
-                            className="absolute -top-2 -right-2 w-6 h-6 bg-rose-500 hover:bg-rose-600 text-white shadow-lg rounded-full flex items-center justify-center transition-all z-10 border border-white active:scale-95 opacity-0 group-hover:opacity-100"
+                        <div key={sub.id} className="group relative flex flex-col items-center justify-center p-2 bg-slate-50 rounded-xl border border-slate-200 hover:border-primary/20 hover:shadow-md transition-all cursor-default shadow-sm overflow-visible min-h-[80px]">
+                          <Button 
+                            variant="solid" 
+                            color="danger" 
+                            size="icon" 
+                            disabled={uiState.subPending} 
+                            onClick={() => handleDeleteSubcategory(sub.id)}
+                            className="absolute -top-2 -right-2 w-6 h-6 rounded-full border border-white opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <Trash2 className="w-3 h-3" />
                           </Button>
@@ -276,17 +281,31 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         </div>
 
         <div className="sticky bottom-0 z-10 p-4 sm:p-6 sm:pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 grid grid-cols-2 lg:flex items-center lg:justify-between gap-3 shrink-0">
-          <Button type="button" variant="solid" color="danger" onClick={() => setUiState(prev => ({ ...prev, showDeleteModal: true }))}
-            className="lg:flex-none lg:px-6 h-11 rounded-[var(--radius-inner)] flex items-center justify-center gap-2 font-bold text-sm w-full lg:w-auto"
+          <Button 
+            variant="solid" 
+            color="danger" 
+            onClick={() => setUiState(prev => ({ ...prev, showDeleteModal: true }))}
+            className="lg:flex-none lg:px-6 h-11 rounded-xl flex items-center justify-center gap-2.5 w-full lg:w-auto font-bold"
           >
             <Trash2 className="w-4 h-4" />
             Удалить
           </Button>
-          <Button type="button" variant="ghost" onClick={onClose} className="hidden lg:flex lg:ml-auto h-11 lg:px-8 text-slate-400 font-bold text-sm">
+          <Button 
+            variant="ghost" 
+            color="neutral"
+            onClick={onClose} 
+            className="hidden lg:flex lg:ml-auto h-11 lg:px-8 rounded-xl font-bold"
+          >
             Отмена
           </Button>
 
-          <SubmitButton form="edit-category-form" isLoading={uiState.isPending} text="Сохранить" loadingText="Сохранение..." variant="action" className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 rounded-[var(--radius-inner)] font-bold text-sm transition-all" />
+          <SubmitButton 
+            form="edit-category-form" 
+            isLoading={uiState.isPending} 
+            text="Сохранить" 
+            loadingText="Сохранение..." 
+            className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 rounded-xl font-bold" 
+          />
         </div>
 
         {/* Subcategory Deletion Confirmation */}
@@ -295,7 +314,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
           description="Подтверждение удаления подкатегории из системы"
         >
           <div className="p-6 text-center flex flex-col items-center">
-            <div className="w-14 h-14 bg-rose-50 rounded-2xl flex items-center justify-center mb-5 text-rose-500 shadow-sm border border-rose-100">
+            <div className="w-14 h-14 bg-rose-50 rounded-xl flex items-center justify-center mb-5 text-rose-500 shadow-sm border border-rose-100">
               <Trash2 className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2 leading-tight px-4">
@@ -304,11 +323,18 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             <p className="text-[12px] font-medium text-slate-400 mb-8 leading-relaxed max-w-[240px]">Это действие нельзя отменить. Подкатегория будет полностью удалена.</p>
 
             <div className="flex flex-col gap-2 w-full max-w-[280px]">
-              <Button type="button" variant="solid" color="danger" onClick={confirmDeleteSub} className="h-12 w-full rounded-[var(--radius-inner)] text-white font-bold text-sm shadow-lg shadow-rose-500/20">
+              <Button 
+                color="danger" 
+                onClick={confirmDeleteSub} 
+                className="h-12 w-full rounded-xl font-bold"
+              >
                 Удалить
               </Button>
-              <Button type="button" variant="ghost" onClick={() => setUiState(prev => ({ ...prev, subToDelete: null }))}
-                className="hidden lg:flex h-11 w-full rounded-[var(--radius-inner)] text-slate-400 font-bold text-sm"
+              <Button 
+                variant="ghost" 
+                color="neutral"
+                onClick={() => setUiState(prev => ({ ...prev, subToDelete: null }))}
+                className="hidden lg:flex h-11 w-full rounded-xl font-bold"
               >
                 Отмена
               </Button>
@@ -323,7 +349,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
           showVisualTitle={false}
         >
           <div className="p-6 text-center flex flex-col items-center">
-            <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mb-6 text-rose-500 shadow-sm border border-rose-100">
+            <div className="w-16 h-16 bg-rose-50 rounded-xl flex items-center justify-center mb-6 text-rose-500 shadow-sm border border-rose-100">
               <Trash2 className="w-8 h-8" />
             </div>
             <h3 className="text-2xl font-black text-slate-900 mb-2 leading-tight px-4">
@@ -332,7 +358,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             <p className="text-[13px] font-bold text-rose-400 mb-8 leading-relaxed px-2">Все товары станут «Без категории»</p>
 
             {category.isSystem && (
-              <div className="mb-8 w-full p-5 bg-rose-50/50 rounded-2xl border border-rose-100 text-left shadow-inner">
+              <div className="mb-8 w-full p-5 bg-rose-50/50 rounded-xl border border-rose-100 text-left shadow-inner">
                 <label className="text-sm font-bold text-rose-600 mb-3 block">Системная защита</label>
                 <input
                   type="password"
@@ -342,18 +368,26 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                     setUiState(prev => ({ ...prev, deletePassword: val }));
                   }}
                   placeholder="Пароль от аккаунта"
-                  className="w-full h-12 px-4 rounded-[var(--radius-inner)] border border-rose-200 bg-white focus:ring-4 focus:ring-rose-500/10 focus:border-rose-400 outline-none text-sm font-bold shadow-sm"
+                  className="w-full h-11 px-4 rounded-xl border border-rose-200 bg-white focus:ring-4 focus:ring-rose-500/10 focus:border-rose-400 outline-none text-sm font-bold shadow-sm"
                   autoFocus
                 />
               </div>
             )}
 
             <div className="flex flex-col gap-3 w-full items-center">
-              <Button type="button" variant="solid" color="danger" onClick={handleDeleteCategory} disabled={uiState.isPending || (category.isSystem && !uiState.deletePassword.trim())} className="h-12 w-full max-w-[320px] bg-[#ff463c] hover:bg-[#ff463c]/90 text-white rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-rose-500/20 border-none">
+              <Button 
+                color="danger" 
+                onClick={handleDeleteCategory} 
+                disabled={uiState.isPending || (category.isSystem && !uiState.deletePassword.trim())} 
+                className="h-12 w-full max-w-[320px] rounded-xl font-bold"
+              >
                 {uiState.isPending ?"Удаление..." :"Удалить категорию"}
               </Button>
-              <Button type="button" variant="ghost" onClick={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword:"" })); }}
-                className="h-11 w-full text-slate-400 font-bold text-sm"
+              <Button 
+                variant="ghost" 
+                color="neutral"
+                onClick={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword:"" })); }}
+                className="h-11 w-full font-bold"
               >
                 Отмена
               </Button>

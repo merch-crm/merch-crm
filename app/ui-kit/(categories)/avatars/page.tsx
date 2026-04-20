@@ -2,7 +2,7 @@
 import React from 'react';
 import { CategoryPage, ComponentShowcase } from "@/components/ui-kit";
 import { User, Users, ChevronRight } from 'lucide-react';
-import { CrmButton } from "@/components/ui/crm-button";
+import { Button } from "@/components/ui/button";
 
 // New Bento Imports
 import { BentoCollaboratorGrid } from "@/components/library/custom/components/avatars/bento-collaborator-grid";
@@ -105,9 +105,9 @@ export default function AvatarsPage() {
          <h4 className="text-base font-black text-slate-900">Леонид Молчанов</h4>
          <p className="text-xs text-slate-500 font-medium">VIP Клиент • MerchPro</p>
        </div>
-       <CrmButton variant="neutralGhost" size="icon" className="group-hover:translate-x-1 transition-transform">
+       <Button color="neutral" variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
          <ChevronRight className="size-5" />
-       </CrmButton>
+       </Button>
       </div>
     </ComponentShowcase>
 

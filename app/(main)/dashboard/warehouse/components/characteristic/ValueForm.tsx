@@ -90,27 +90,35 @@ export function ValueForm({
                 {valueForm.editingAttribute ? "Редактирование значения" : "Новое значение"}
               </h3>
             </div>
-            <div className="flex items-center gap-1.5 shrink-0 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+            <div className="flex items-center gap-1.5 shrink-0 bg-slate-50 p-1.5 rounded-2xl border border-slate-100 font-bold">
               {valueForm.editingAttribute && (
-                <Button variant="ghost" onClick={() => setDeleteDialog(prev => ({ ...prev, attribute: valueForm.editingAttribute }))}
-                  className="w-9 h-9 p-0 text-slate-400 hover:text-rose-600 hover:bg-white hover:shadow-sm rounded-xl transition-all"
+                <Button 
+                  variant="ghost" 
+                  color="danger"
+                  onClick={() => setDeleteDialog(prev => ({ ...prev, attribute: valueForm.editingAttribute }))}
+                  className="w-9 h-9 p-0 rounded-xl transition-all"
                   title="Удалить"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
               )}
-              <Button variant="ghost" onClick={() => setValueForm(prev => ({ ...prev, isOpen: false }))}
-                className="w-9 h-9 p-0 text-slate-400 hover:text-slate-700 hover:bg-white hover:shadow-sm rounded-xl transition-all"
+              <Button 
+                variant="ghost" 
+                color="neutral"
+                onClick={() => setValueForm(prev => ({ ...prev, isOpen: false }))}
+                className="w-9 h-9 p-0 rounded-xl transition-all"
                 title="Отменить"
               >
                 <X className="w-4 h-4" />
               </Button>
-              <Button onClick={handleValueSave} disabled={isSaveDisabled} color="dark" className="w-9 h-9 p-0 rounded-xl shadow-sm transition-all" title="Сохранить">
-                {valueForm.isSaving ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Check className="w-4 h-4" />
-                )}
+              <Button 
+                onClick={handleValueSave} 
+                className="w-9 h-9 p-0 rounded-xl shadow-sm transition-all" 
+                title="Сохранить"
+                isLoading={valueForm.isSaving}
+                loadingText=""
+              >
+                <Check className="w-4 h-4" />
               </Button>
             </div>
           </div>

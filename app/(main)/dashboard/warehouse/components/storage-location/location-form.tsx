@@ -39,7 +39,7 @@ export function LocationForm({
       <div className="space-y-3">
         <div className="space-y-2">
           <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Название склада <span className="text-rose-500">*</span></label>
-          <Input name="name" value={form.name} placeholder="Напр. Склад А" className={cn("w-full h-12 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm", fieldErrors.name ? "border-rose-200 bg-rose-50/50 text-rose-900" : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5" )} onChange={(e) => {
+          <Input name="name" value={form.name} placeholder="Напр. Склад А" className={cn("w-full h-10 px-4 rounded-lg border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm", fieldErrors.name ? "border-rose-200 bg-rose-50/50 text-rose-900" : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5" )} onChange={(e) => {
               setFormValue("name", e.target.value);
               clearFieldError("name");
             }}
@@ -71,7 +71,7 @@ export function LocationForm({
           <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Адрес объекта <span className="text-rose-500">*</span></label>
           <div className="relative group">
             <Building className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors z-10" />
-            <Input name="address" value={form.address} placeholder="Ул. Примерная, 10" className={cn("w-full h-12 pl-12 pr-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm", fieldErrors.address ? "border-rose-200 bg-rose-50/50 text-rose-900" : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5" )} onChange={(e) => {
+            <Input name="address" value={form.address} placeholder="Ул. Примерная, 10" className={cn("w-full h-10 pl-12 pr-4 rounded-lg border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm", fieldErrors.address ? "border-rose-200 bg-rose-50/50 text-rose-900" : "border-slate-200 focus:bg-slate-50 focus:border-primary focus:ring-4 focus:ring-primary/5" )} onChange={(e) => {
                 setFormValue("address", e.target.value);
                 clearFieldError("address");
               }}
@@ -109,6 +109,7 @@ export function LocationForm({
               handleAutoSave({ isDefault: isNewValue });
             }}
             color="primary"
+            className="rounded-lg"
             iconClassName={cn("transition-all",
               form.isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400"
             )}
@@ -124,6 +125,7 @@ export function LocationForm({
               handleAutoSave({ isActive: isNewValue });
             }}
             color="success"
+            className="rounded-lg"
             iconClassName={cn("transition-all",
               form.isActive ? "bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20" : "bg-white text-slate-400"
             )}

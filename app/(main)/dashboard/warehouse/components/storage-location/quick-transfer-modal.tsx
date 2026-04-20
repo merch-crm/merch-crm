@@ -71,11 +71,11 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
           </div>
         </div>
 
-        <div className="p-4 bg-slate-50 rounded-[var(--radius-inner)] border border-slate-200 shadow-inner group overflow-hidden relative">
+        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 shadow-inner group overflow-hidden relative">
           <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           <div className="text-xs font-bold text-slate-400 mb-1 group-hover:text-primary transition-colors">Объект перемещения</div>
           <div className="text-sm font-bold text-slate-900 truncate">{item.name}</div>
-          <div className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 bg-white rounded-[var(--radius-inner)] border border-slate-200 text-xs font-bold text-primary shadow-sm tabular-nums">
+          <div className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-0.5 bg-white rounded-xl border border-slate-200 text-xs font-bold text-primary shadow-sm tabular-nums">
             Доступно: {item.quantity} {formatUnit(item.unit)}
           </div>
         </div>
@@ -98,7 +98,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Количество <span className="text-rose-500">*</span></label>
-              <Input type="number" name="quantity" min="1" max={item.quantity} placeholder="0" className={cn("w-full h-11 px-4 rounded-[var(--radius-inner)] border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm tabular-nums", state.errors.quantity ?"border-rose-200 bg-rose-50/50" :"border-slate-200 bg-slate-50 focus:border-primary" )} />
+              <Input type="number" name="quantity" min="1" max={item.quantity} placeholder="0" className={cn("w-full h-11 px-4 rounded-xl border bg-slate-50 text-sm font-bold outline-none transition-all shadow-sm tabular-nums", state.errors.quantity ?"border-rose-200 bg-rose-50/50" :"border-slate-200 bg-slate-50 focus:border-primary" )} />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Причина <span className="text-rose-500">*</span></label>
@@ -123,7 +123,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
 function TransferSubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button variant="action" type="submit" disabled={pending} className="w-full h-11 rounded-[var(--radius-inner)] font-bold text-sm active:scale-95 flex items-center justify-center gap-2">
+    <Button color="dark" type="submit" disabled={pending} className="w-full h-11 rounded-xl font-bold text-sm active:scale-95 flex items-center justify-center gap-2">
       {pending ? (
         <div className="flex items-center gap-2">
           <RefreshCw className="w-4 h-4 animate-spin" />

@@ -30,12 +30,12 @@ export function ItemActionButtons({
 
   return (
     <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 md:mt-0 xl:mt-0">
-      <button
+      <Button
         type="button"
         aria-label="Корректировка остатка"
         onClick={() => setAdjustType("set")}
         className={cn(
-          "group relative flex flex-col items-start justify-between p-5",
+          "group relative flex flex-col items-start justify-between p-5 h-auto",
           "bg-gradient-to-br from-violet-500 via-violet-600 to-violet-800",
           "rounded-[var(--radius-outer)] xl:rounded-[32px]",
           "shadow-[0_8px_20px_-6px_rgba(139,92,246,0.4)] hover:shadow-[0_16px_30px_-8px_rgba(139,92,246,0.6)]",
@@ -65,7 +65,7 @@ export function ItemActionButtons({
             Настроить наличие
           </span>
         </div>
-      </button>
+      </Button>
 
       {/* Additional Actions — hidden on md+ (desktop has them in header) */}
       <Button type="button" variant="outline" size="icon" onClick={() => setShowLabelDialog(true)}

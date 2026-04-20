@@ -2,7 +2,7 @@
 
 import React from "react";
 import { AlertTriangle, AlertCircle, Info } from "lucide-react";
-import { CrmButton } from "@/components/ui/crm-button";
+import { Button } from "@/components/ui/button";
 import { ComponentShowcase } from "@/components/ui-kit";
 
 export function WarningButtons() {
@@ -14,18 +14,18 @@ export function WarningButtons() {
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton color="warning"><AlertTriangle className="size-4 mr-2" />Внимание</CrmButton>
-     <CrmButton color="warning"><Info className="size-4 mr-2" />Детали</CrmButton>
-     <CrmButton color="warning" size="icon"><AlertCircle className="size-5" /></CrmButton>
+     <Button color="warning"><AlertTriangle className="size-4 mr-2" />Внимание</Button>
+     <Button color="warning"><Info className="size-4 mr-2" />Детали</Button>
+     <Button color="warning" size="icon"><AlertCircle className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="warningOutline"><AlertTriangle className="size-4 mr-2" />Внимание</CrmButton>
-     <CrmButton variant="warningOutline"><AlertCircle className="size-4 mr-2" />Инфо</CrmButton>
-     <CrmButton variant="warningOutline" size="icon"><Info className="size-5" /></CrmButton>
+     <Button variant="outline" color="warning"><AlertTriangle className="size-4 mr-2" />Внимание</Button>
+     <Button variant="outline" color="warning"><AlertCircle className="size-4 mr-2" />Инфо</Button>
+     <Button variant="outline" color="warning" size="icon"><Info className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <CrmButton variant="warningGhost"><AlertTriangle className="size-4 mr-2" />Сигнал</CrmButton>
-     <CrmButton variant="warningGhost" size="icon"><AlertTriangle className="size-5" /></CrmButton>
+     <Button variant="ghost" color="warning"><AlertTriangle className="size-4 mr-2" />Сигнал</Button>
+     <Button variant="ghost" color="warning" size="icon"><AlertTriangle className="size-5" /></Button>
     </div>
    </div>
   </ComponentShowcase>

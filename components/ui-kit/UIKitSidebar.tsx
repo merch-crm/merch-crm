@@ -31,6 +31,7 @@ import {
   QrCode,
   UserCircle,
   UploadCloud,
+  Check,
   type LucideIcon,
 } from "lucide-react";
 
@@ -39,6 +40,7 @@ interface Category {
   href: string;
   icon: LucideIcon;
   count: number | null;
+  isCompleted?: boolean;
 }
 
 interface SidebarSection {
@@ -51,7 +53,7 @@ const sidebarSections: SidebarSection[] = [
     title: "Основы",
     items: [
       { name: "Обзор", href: "/ui-kit", icon: Home, count: null },
-      { name: "Выбор цвета", href: "/ui-kit/colors", icon: Palette, count: 5 },
+      { name: "Выбор цвета", href: "/ui-kit/colors", icon: Palette, count: 5, isCompleted: true },
       { name: "Типографика", href: "/ui-kit/typography", icon: Type, count: 17 },
       { name: "Кнопки", href: "/ui-kit/buttons", icon: RectangleHorizontal, count: 7 },
       { name: "Статусы и Бейджи", href: "/ui-kit/statuses", icon: Activity, count: 6 },
@@ -198,16 +200,26 @@ export function UIKitSidebar() {
                         >
                           <Icon className={cn( "h-4 w-4 shrink-0 transition-transform duration-500", isActive ? "scale-110" : "group-hover:scale-110" )} />
                           <span className="truncate">{item.name}</span>
-                          {item.count !== null && (
-                            <span
-                              className={cn(
-                                 "ml-auto text-[11px] font-black tabular-nums",
-                                 isActive ? "opacity-60" : "text-slate-300"
-                              )}
-                            >
-                              {item.count}
-                            </span>
-                          )}
+                          <div className="ml-auto flex items-center gap-2">
+                            {item.isCompleted && (
+                              <div className={cn(
+                                "flex size-4 items-center justify-center rounded-full",
+                                isActive ? "bg-white text-[#5d00ff]" : "bg-emerald-500 text-white"
+                              )}>
+                                <Check size={10} strokeWidth={4} />
+                              </div>
+                            )}
+                            {item.count !== null && (
+                              <span
+                                className={cn(
+                                   "text-[11px] font-black tabular-nums",
+                                   isActive ? "opacity-60" : "text-slate-300"
+                                )}
+                              >
+                                {item.count}
+                              </span>
+                            )}
+                          </div>
                            {isActive && (
                              <div className="absolute right-0 top-0 w-1 h-full bg-white/20" />
                            )}

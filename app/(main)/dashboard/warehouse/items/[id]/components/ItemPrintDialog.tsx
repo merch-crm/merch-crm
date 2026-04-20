@@ -25,7 +25,7 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
           <Button type="button" variant="ghost" onClick={onClose} className="hidden md:flex h-11 px-8 rounded-2xl text-muted-foreground hover:text-foreground font-bold text-sm">
             Закрыть
           </Button>
-          <Button type="button" onClick={handlePrint} className="h-11 w-full md:w-auto md:px-10 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3">
+          <Button type="button" onClick={handlePrint} className="h-11 w-full md:w-auto md:px-10 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2.5">
             <Printer className="w-4 h-4 stroke-[3]" />
             Печать ({copies})
           </Button>
@@ -60,15 +60,15 @@ export function ItemPrintDialog({ item, isOpen, onClose }: ItemPrintDialogProps)
               <label className="text-sm font-bold text-foreground ml-1">Копии</label>
               <div className="flex items-center gap-2">
                 <Button type="button" variant="outline" size="icon" onClick={() => setCopies(Math.max(1, copies - 1))}
-                  className="w-10 h-10 rounded-2xl border-border hover:bg-muted transition-all active:scale-90 shadow-sm"
+                  className="w-10 h-10 rounded-xl border-border hover:bg-muted transition-all active:scale-90 shadow-sm"
                 >
                   <ChevronLeft className="w-4 h-4 text-muted-foreground" />
                 </Button>
-                <div className="flex-1 h-10 bg-muted rounded-2xl flex items-center justify-center font-bold text-sm text-foreground border border-border tabular-nums min-w-[60px]">
+                <div className="flex-1 h-10 bg-muted rounded-xl flex items-center justify-center font-bold text-sm text-foreground border border-border tabular-nums min-w-[60px]">
                   {copies}
                 </div>
                 <Button type="button" variant="outline" size="icon" onClick={() => setCopies(copies + 1)}
-                  className="w-10 h-10 rounded-2xl border-border hover:bg-muted transition-all active:scale-90 shadow-sm"
+                  className="w-10 h-10 rounded-xl border-border hover:bg-muted transition-all active:scale-90 shadow-sm"
                 >
                   <ChevronRight className="w-4 h-4 text-muted-foreground" />
                 </Button>
