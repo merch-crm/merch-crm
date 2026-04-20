@@ -8,28 +8,28 @@ import { ComponentShowcase } from "@/components/ui-kit";
 export function ActionButtons() {
  return (
   <ComponentShowcase 
-   title="01. Действие / Midnight" 
+   title="01. Действие / Black" 
    source="custom" 
-   desc="Основные действия CRM. Используется для создания, сохранения и других ключевых операций."
+   desc="Основные действия CRM. Используется для создания, сохранения и других ключевых операций. Цвет: slate-950."
    code='import { Button } from "@/components/ui/button";'
   >
    <div className="flex flex-col gap-3">
     <div className="flex flex-wrap gap-3 items-center">
-     <Button color="dark"><Plus className="size-4 mr-2" />Создать</Button>
-     <Button color="dark"><Save className="size-4 mr-2" />Сохранить</Button>
-     <Button color="dark" size="icon"><Plus className="size-5" /></Button>
+     <Button color="black"><Plus className="size-4 mr-2" />Создать</Button>
+     <Button color="black"><Save className="size-4 mr-2" />Сохранить</Button>
+     <Button color="black" size="icon"><Plus className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <Button variant="outline" color="dark"><Plus className="size-4 mr-2" />Создать</Button>
-     <Button variant="outline" color="dark"><Save className="size-4 mr-2" />Сохранить</Button>
-     <Button variant="outline" color="dark" size="icon"><Plus className="size-5" /></Button>
+     <Button variant="outline" color="black"><Plus className="size-4 mr-2" />Создать</Button>
+     <Button variant="outline" color="black"><Save className="size-4 mr-2" />Сохранить</Button>
+     <Button variant="outline" color="black" size="icon"><Plus className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <Button variant="ghost" color="dark"><Plus className="size-4 mr-2" />Создать</Button>
-     <Button variant="ghost" color="dark" size="icon"><Plus className="size-5" /></Button>
+     <Button variant="ghost" color="black"><Plus className="size-4 mr-2" />Создать</Button>
+     <Button variant="ghost" color="black" size="icon"><Plus className="size-5" /></Button>
     </div>
     <div className="flex flex-wrap gap-3 items-center">
-     <Button color="dark" isLoading loadingText="Обработка...">Создать</Button>
+     <Button color="black" isLoading loadingText="Обработка...">Создать</Button>
     </div>
    </div>
   </ComponentShowcase>

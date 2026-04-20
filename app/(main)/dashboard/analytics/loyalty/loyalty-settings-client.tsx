@@ -150,12 +150,12 @@ export function LoyaltySettingsClient({ initialLevels, initialStats }: LoyaltySe
             resetForm();
             setUi(prev => ({ ...prev, isCreateOpen: true }));
           }}
-          className="h-11 px-6 rounded-xl text-sm font-bold"
+          className="px-6 font-bold"
         >
           <Plus className="w-4 h-4 mr-2" />
           Добавить уровень
         </Button>
-        <Button type="button" variant="outline" onClick={handleRecalculate} disabled={ui.recalculating} className="h-11 px-6 rounded-xl text-sm font-bold">
+        <Button type="button" variant="outline" onClick={handleRecalculate} disabled={ui.recalculating} className="px-6 font-bold">
           {ui.recalculating ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
           ) : (

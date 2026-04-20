@@ -162,10 +162,10 @@ export function LoyaltyLevelModal({
 
         {/* Actions */}
         <div className="flex gap-3 pt-4 border-t border-slate-100">
-          <Button type="button" variant="ghost" onClick={onClose} className="flex-1 h-11 rounded-xl text-sm font-bold">
+          <Button type="button" variant="ghost" onClick={onClose} className="flex-1 font-bold">
             Отмена
           </Button>
-          <Button type="button" onClick={onSave} className="flex-1 h-11 rounded-xl text-sm font-bold">
+          <Button type="button" onClick={onSave} className="flex-1 font-bold">
             {editingLevel ? "Сохранить" : "Создать"}
           </Button>
         </div>

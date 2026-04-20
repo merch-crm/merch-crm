@@ -56,7 +56,7 @@ export function MoveInventoryDialog({
     <>
       {!externalIsOpen && (
         <Button type="button" onClick={() => setIsOpen(true)}
-          className={cn("size-11 sm:h-11 sm:w-auto px-0 sm:px-6 rounded-xl gap-2",
+          className={cn("sm:w-auto px-0 sm:px-6 gap-2",
             className
           )}
         >
@@ -172,13 +172,13 @@ export function MoveInventoryDialog({
           </div>
 
           <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-            <Button variant="ghost" color="neutral" type="button" onClick={() => setIsOpen(false)}
+            <Button variant="ghost" color="gray" type="button" onClick={() => setIsOpen(false)}
               disabled={isPending}
-              className="flex h-11 flex-1 lg:flex-none lg:px-8 text-sm rounded-xl font-bold"
+              className="flex flex-1 lg:flex-none lg:px-8 text-sm font-bold"
             >
               Отмена
             </Button>
-            <SubmitButton isLoading={isPending} text="Переместить" loadingText="Обработка..." color="dark" className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-xl text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-none border-none font-bold" />
+            <SubmitButton isLoading={isPending} text="Переместить" loadingText="Обработка..." color="black" className="flex-1 lg:flex-none lg:w-auto lg:px-10 text-sm disabled:opacity-50 flex items-center justify-center gap-3 shadow-none border-none font-bold" />
           </div>
         </form>
       </ResponsiveModal >

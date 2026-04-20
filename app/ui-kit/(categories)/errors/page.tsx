@@ -143,7 +143,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border border-slate-100/50">Назад</Button>
-        <Button className="flex-1 py-4 bg-[#EF4444] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="danger">Повторить</Button>
+        <Button className="flex-1 py-4 bg-[#EF4444] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="red">Повторить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -280,7 +280,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Отмена</Button>
-        <Button disabled className="flex-1 py-4 bg-[#F04438] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="danger">Удалить навсегда</Button>
+        <Button disabled className="flex-1 py-4 bg-[#F04438] text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="red">Удалить навсегда</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -301,7 +301,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Отмена</Button>
-        <Button className="flex-1 py-4 bg-red-500 text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="danger">Удалить</Button>
+        <Button className="flex-1 py-4 bg-red-500 text-white font-bold rounded-[24px] hover:bg-red-600 text-[15px] shadow-sm transition-colors border-none" color="red">Удалить</Button>
        </div>
       </motion.div>
     </BgSolid>
@@ -488,7 +488,7 @@ export default function ErrorsPage() {
        </div>
        <div className="flex gap-2 relative z-10">
         <Button variant="ghost" className="flex-1 py-4 bg-slate-50 rounded-[24px] text-zinc-600 font-bold hover:bg-slate-100 text-[15px] transition-all hover:text-zinc-900 border-none">Напомнить</Button>
-        <Button className="flex-1 py-4 bg-emerald-600 text-white font-bold rounded-[24px] hover:bg-emerald-700 text-[15px] shadow-sm transition-colors border-none" color="success">Установить</Button>
+        <Button className="flex-1 py-4 bg-emerald-600 text-white font-bold rounded-[24px] hover:bg-emerald-700 text-[15px] shadow-sm transition-colors border-none" color="green">Установить</Button>
        </div>
       </motion.div>
     </BgSolid>

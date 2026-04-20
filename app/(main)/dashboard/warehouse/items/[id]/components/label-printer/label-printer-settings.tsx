@@ -235,7 +235,7 @@ function ToggleItem({ label, checked, onChange, compact }: { label: string; chec
       <span className={cn("font-bold text-slate-900 transition-colors",
         compact ? "text-[12px]" : "text-sm"
       )}>{label}</span>
-      <Switch checked={checked} onCheckedChange={onChange} color="success" className={compact ? "scale-75 origin-right" : ""} />
+      <Switch checked={checked} onCheckedChange={onChange} color="green" className={compact ? "scale-75 origin-right" : ""} />
     </label>
   );
 }

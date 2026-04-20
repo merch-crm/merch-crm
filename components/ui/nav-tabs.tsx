@@ -29,6 +29,12 @@ export function NavTabs({
   className,
   containerClassName
 }: NavTabsProps) {
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div 
       className={cn(
@@ -42,7 +48,7 @@ export function NavTabs({
 
         const content = (
           <>
-            {isActive && (
+            {mounted && isActive && (
               <motion.div
                 layoutId="activeTabIndicator"
                 className={cn(
@@ -75,25 +81,36 @@ export function NavTabs({
           </>
         );
 
-        const commonProps = {
-          className: cn(
-            "relative flex flex-1 min-w-[44px] sm:min-w-fit items-center justify-center px-2 sm:px-6 py-2.5 sm:py-3.5 rounded-[14px] sm:rounded-[18px] transition-all duration-300 outline-none group whitespace-nowrap",
-            isActive ? "text-white" : "text-slate-500",
-            className
-          ),
-          onClick: () => onChange?.(tab.id)
+        const tabClassName = cn(
+          "relative flex flex-1 min-w-[44px] sm:min-w-fit items-center justify-center px-2 sm:px-6 py-2.5 sm:py-3.5 rounded-[14px] sm:rounded-[18px] transition-all duration-300 outline-none group whitespace-nowrap",
+          isActive ? "text-white" : "text-slate-500",
+          className
+        );
+
+        const handleTabClick = () => {
+          if (onChange) onChange(tab.id);
         };
 
         if (tab.href) {
           return (
-            <Link key={tab.id} {...commonProps} href={tab.href}>
+            <Link 
+              key={tab.id} 
+              href={tab.href}
+              className={tabClassName}
+              onClick={handleTabClick}
+            >
               {content}
             </Link>
           );
         }
 
         return (
-          <button key={tab.id} type="button" {...commonProps}>
+          <button 
+            key={tab.id} 
+            type="button" 
+            className={tabClassName}
+            onClick={handleTabClick}
+          >
             {content}
           </button>
         );

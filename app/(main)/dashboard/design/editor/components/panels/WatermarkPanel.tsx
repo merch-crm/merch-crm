@@ -145,7 +145,7 @@ export function WatermarkPanel() {
                   {config.imagePath ? (
                     <div className="relative w-full h-32 bg-muted rounded-lg overflow-hidden">
                       <Image src={config.imagePath} alt="Watermark" fill className="object-contain" unoptimized />
-                      <Button variant="solid" color="danger" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={() => updateConfig({ imagePath: undefined })}
+                      <Button variant="solid" color="red" size="icon" className="absolute top-2 right-2 h-6 w-6" onClick={() => updateConfig({ imagePath: undefined })}
                       >
                         <X className="h-3 w-3" />
                       </Button>

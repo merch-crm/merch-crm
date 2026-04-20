@@ -109,10 +109,10 @@ export function EditClientDialog({ client, isOpen, onClose }: EditClientDialogPr
         </div>
 
         <div className="p-6 md:p-6 pt-3 flex items-center justify-end gap-3 bg-white border-t border-slate-200 mt-auto flex-shrink-0">
-          <Button type="button" variant="ghost" onClick={onClose} className="hidden md:flex h-11 px-8 border border-slate-200 text-slate-600 font-bold rounded-2xl bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center">
+          <Button type="button" variant="ghost" onClick={onClose} className="hidden md:flex px-8 border border-slate-200 text-slate-600 font-bold bg-slate-50 hover:bg-white transition-all active:scale-[0.98] shadow-sm items-center justify-center">
             Отмена
           </Button>
-          <Button type="submit" disabled={loading} className="h-11 w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] border border-transparent btn-dark text-sm font-bold text-white shadow-xl transition-all active:scale-[0.98]">
+          <Button type="submit" disabled={loading} color="black" className="w-full md:w-auto md:px-10 inline-flex items-center justify-center gap-2 border border-transparent text-sm font-bold shadow-xl transition-all active:scale-[0.98]">
             {loading && <Loader2 className="w-5 h-5 animate-spin" />}
             {loading ? "Сохранение..." : "Сохранить изменения"}
           </Button>

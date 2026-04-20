@@ -54,7 +54,7 @@ export function OrdersToolbar() {
           />
           {searchQuery && (
             <Button type="button" variant="ghost" size="icon" onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 w-8 h-8 rounded-full transition-all"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-all"
               aria-label="Очистить поиск"
             >
               <X className="w-4 h-4" />
@@ -95,7 +95,7 @@ export function OrdersToolbar() {
 
         {/* Create Order - Desktop ONLY */}
         <div className="hidden md:flex items-center">
-          <Button asChild className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 !rounded-[10px] h-auto">
+          <Button asChild className="crm-filter-tray-tab !bg-primary text-white gap-2 !px-6 h-auto">
             <Link href="/dashboard/orders/new">
               <Plus className="w-4 h-4" />
               Создать заказ
@@ -126,7 +126,7 @@ export function OrdersToolbar() {
           ))}
         </div>
 
-        <Button asChild color="dark" className="w-11 h-11 flex items-center justify-center rounded-full sm:rounded-2xl shadow-lg shadow-primary/20 shrink-0 p-0" aria-label="Создать новый заказ">
+        <Button asChild color="black" className="w-[46px] h-[46px] flex items-center justify-center shadow-lg shadow-primary/20 shrink-0 p-0" aria-label="Создать новый заказ">
           <Link href="/dashboard/orders/new" title="Создать заказ">
             <Plus className="w-5 h-5" />
           </Link>

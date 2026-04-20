@@ -36,7 +36,7 @@ interface SelectAppearance {
     className?: string;
     compact?: boolean;
     variant?: "solid" | "outline" | "ghost" | "minimal" | "default";
-    color?: "primary" | "neutral" | "success" | "warning" | "danger";
+    color?: "purple" | "gray" | "green" | "yellow" | "red";
     center?: boolean;
     triggerClassName?: string;
     align?: "start" | "center" | "end";
@@ -74,7 +74,7 @@ function Select({
     searchPlaceholder = "Поиск...",
     compact = false,
     variant = "solid",
-    color = "neutral",
+    color = "gray",
     gridColumns,
     autoLayout = true,
     center = false,
@@ -150,21 +150,21 @@ function Select({
                             "w-full px-4 h-[60px] rounded-2xl text-left transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-950 focus:ring-offset-2 focus:border-transparent group/btn disabled:opacity-50 disabled:cursor-not-allowed flex items-center border",
                             // Unified Variants
                             variant === "solid" && [
-                                color === "primary" && "bg-primary text-white border-primary hover:bg-primary/90",
-                                color === "neutral" && "bg-slate-50 text-slate-900 border-slate-200 hover:bg-slate-100 hover:border-slate-300",
-                                color === "success" && "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700",
-                                color === "danger" && "bg-rose-600 text-white border-rose-600 hover:bg-rose-700",
-                                color === "warning" && "bg-amber-500 text-white border-amber-500 hover:bg-amber-600",
+                                color === "purple" && "bg-primary text-white border-primary hover:bg-primary/90",
+                                color === "gray" && "bg-slate-50 text-slate-900 border-slate-200 hover:bg-slate-100 hover:border-slate-300",
+                                color === "green" && "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700",
+                                color === "red" && "bg-rose-600 text-white border-rose-600 hover:bg-rose-700",
+                                color === "yellow" && "bg-amber-500 text-white border-amber-500 hover:bg-amber-600",
                             ],
                             (variant === "outline" || variant === "default") && [
                                 "bg-white text-slate-900 border-slate-200 hover:border-slate-300 hover:bg-slate-50",
-                                color === "primary" && "text-primary border-primary/20 hover:bg-primary/[0.02] hover:border-primary/30",
-                                color === "success" && "text-emerald-700 border-emerald-200 hover:bg-emerald-50",
-                                color === "danger" && "text-rose-700 border-rose-200 hover:bg-rose-50",
+                                color === "purple" && "text-primary border-primary/20 hover:bg-primary/[0.02] hover:border-primary/30",
+                                color === "green" && "text-emerald-700 border-emerald-200 hover:bg-emerald-50",
+                                color === "red" && "text-rose-700 border-rose-200 hover:bg-rose-50",
                             ],
                             (variant === "ghost" || variant === "minimal") && [
                                 "bg-transparent border-transparent hover:bg-slate-100 text-slate-600",
-                                color === "primary" && "text-primary hover:bg-primary/5",
+                                color === "purple" && "text-primary hover:bg-primary/5",
                             ],
                             center ? "justify-center" : "justify-between",
                             error && "border-rose-500 bg-rose-50/30 ring-rose-500/10",

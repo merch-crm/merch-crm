@@ -150,7 +150,7 @@ export function HistoryDisplay({
                   {t.item ? (
                     <Button
                       variant="ghost"
-                      color="neutral"
+                      color="gray"
                       className="h-auto p-1.5 flex items-center gap-3 group/item hover:bg-primary/5 transition-all text-left rounded-xl"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -302,7 +302,7 @@ export function HistoryDisplay({
                         {t.reason && <div className="border-t pt-2 mt-2 text-slate-500">«{t.reason}»</div>}
                       </div>
                       {t.item && (
-                        <Button variant="outline" color="neutral" size="sm" className="w-full text-xs font-bold h-9" onClick={() => router.push(`/dashboard/warehouse/items/${t.item?.id}`)}>
+                        <Button variant="outline" color="gray" size="sm" className="w-full text-xs font-bold h-9" onClick={() => router.push(`/dashboard/warehouse/items/${t.item?.id}`)}>
                           К товару
                         </Button>
                       )}

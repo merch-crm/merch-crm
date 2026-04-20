@@ -10,13 +10,13 @@ const switchVariants = cva("peer inline-flex h-[24px] w-[44px] shrink-0 cursor-p
     {
         variants: {
             color: {
-                primary: "data-[state=checked]:bg-primary data-[state=checked]:shadow-[0_4px_12px_rgba(79,70,229,0.3)] data-[state=unchecked]:bg-slate-200",
-                success: "data-[state=checked]:bg-emerald-500 data-[state=checked]:shadow-[0_4px_12px_rgba(16,185,129,0.3)] data-[state=unchecked]:bg-slate-200",
-                dark: "data-[state=checked]:bg-zinc-900 data-[state=checked]:shadow-[0_4px_12px_rgba(0,0,0,0.2)] data-[state=unchecked]:bg-slate-200",
+                purple: "data-[state=checked]:bg-primary data-[state=checked]:shadow-[0_4px_12px_rgba(79,70,229,0.3)] data-[state=unchecked]:bg-slate-200",
+                green: "data-[state=checked]:bg-emerald-500 data-[state=checked]:shadow-[0_4px_12px_rgba(16,185,129,0.3)] data-[state=unchecked]:bg-slate-200",
+                black: "data-[state=checked]:bg-zinc-900 data-[state=checked]:shadow-[0_4px_12px_rgba(0,0,0,0.2)] data-[state=unchecked]:bg-slate-200",
             },
         },
         defaultVariants: {
-            color: "primary",
+            color: "purple",
         },
     }
 )

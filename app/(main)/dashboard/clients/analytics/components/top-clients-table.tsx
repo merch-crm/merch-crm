@@ -60,7 +60,7 @@ export function TopClientsTable({
             {/* Badges */}
             <div className="flex items-center gap-2 flex-shrink-0">
               {client.loyaltyLevelName && (
-                <Badge color="primary" variant="outline" className="text-xs" style={{ borderColor: client.loyaltyLevelColor || undefined, color: client.loyaltyLevelColor || undefined }}>
+                <Badge color="purple" variant="outline" className="text-xs" style={{ borderColor: client.loyaltyLevelColor || undefined, color: client.loyaltyLevelColor || undefined }}>
                   {client.loyaltyLevelName}
                 </Badge>
               )}

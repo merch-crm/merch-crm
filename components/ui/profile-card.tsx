@@ -46,7 +46,7 @@ const ProfileCard = React.forwardRef<HTMLDivElement, ProfileCardProps>(
           <h4 className="text-base font-black text-slate-900 truncate">{name}</h4>
           <p className="text-xs text-slate-500 font-medium truncate">{subtitle}</p>
         </div>
-        <Button color="neutral" variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform shrink-0">
+        <Button color="gray" variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform shrink-0">
           <ChevronRight className="size-5" />
         </Button>
       </BentoCard>

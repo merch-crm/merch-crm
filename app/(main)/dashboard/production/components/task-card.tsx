@@ -84,12 +84,12 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
           {/* Left side */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <Badge color="primary" variant="outline" className="font-mono text-xs">
+              <Badge color="purple" variant="outline" className="font-mono text-xs">
                 {task.number}
               </Badge>
 
               {task.applicationType && (
-                <Badge style={{ backgroundColor: task.applicationType.color ? `${task.applicationType.color}20` : undefined, color: task.applicationType.color || undefined, }} color="neutral">
+                <Badge style={{ backgroundColor: task.applicationType.color ? `${task.applicationType.color}20` : undefined, color: task.applicationType.color || undefined, }} color="gray">
                   {task.applicationType.name}
                 </Badge>
               )}
@@ -100,7 +100,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
               />
 
               {isOverdue && (
-                <Badge className="flex items-center gap-1" color="danger">
+                <Badge className="flex items-center gap-1" color="red">
                   <AlertTriangle className="h-3 w-3" />
                   Просрочено
                 </Badge>
@@ -168,7 +168,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
                 </Avatar>
               </div>
             ) : (
-              <Badge color="primary" variant="outline" className="text-muted-foreground">
+              <Badge color="purple" variant="outline" className="text-muted-foreground">
                 <User className="mr-1 h-3 w-3" />
                 Не назначен
               </Badge>
@@ -178,7 +178,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
             <div className="flex items-center gap-1">
               {/* Quick status change */}
               {task.status === "pending" && (
-                <Button size="sm" variant="solid" color="system" onClick={() => handleStatusChange("in_progress")}
+                <Button size="sm" variant="solid" color="purple" onClick={() => handleStatusChange("in_progress")}
                   disabled={isUpdating}
                 >
                   <Play className="mr-1 h-3 w-3" />
@@ -188,12 +188,12 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
 
               {task.status === "in_progress" && (
                 <>
-                  <Button size="sm" variant="outline" color="neutral" onClick={() => handleStatusChange("paused")}
+                  <Button size="sm" variant="outline" color="gray" onClick={() => handleStatusChange("paused")}
                     disabled={isUpdating}
                   >
                     <Pause className="h-3 w-3" />
                   </Button>
-                  <Button size="sm" variant="solid" color="system" className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange("completed")}
+                  <Button size="sm" variant="solid" color="purple" className="bg-green-600 hover:bg-green-700" onClick={() => handleStatusChange("completed")}
                     disabled={isUpdating}
                   >
                     <CheckCircle2 className="mr-1 h-3 w-3" />
@@ -203,7 +203,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
               )}
 
               {task.status === "paused" && (
-                <Button size="sm" variant="solid" color="system" onClick={() => handleStatusChange("in_progress")}
+                <Button size="sm" variant="solid" color="purple" onClick={() => handleStatusChange("in_progress")}
                   disabled={isUpdating}
                 >
                   <Play className="mr-1 h-3 w-3" />
@@ -213,7 +213,7 @@ export function TaskCard({ task, onUpdate }: TaskCardProps) {
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="sm" variant="ghost" color="neutral">
+                  <Button size="sm" variant="ghost" color="gray">
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>

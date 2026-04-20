@@ -158,7 +158,7 @@ export function ProductionTaskPageClient({
       {/* Header */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" color="neutral" size="icon" onClick={() => router.back()}>
+          <Button variant="ghost" color="gray" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
@@ -166,7 +166,7 @@ export function ProductionTaskPageClient({
               <h1 className="text-2xl font-bold">{task.title}</h1>
               <Badge className={priority.color}>{priority.label}</Badge>
               {isOverdue && (
-                <Badge color="danger">Просрочено</Badge>
+                <Badge color="red">Просрочено</Badge>
               )}
             </div>
             <p className="text-muted-foreground">#{task.number}</p>
@@ -175,7 +175,7 @@ export function ProductionTaskPageClient({
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" color="neutral" size="icon">
+              <Button variant="outline" color="gray" size="icon">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -230,7 +230,7 @@ export function ProductionTaskPageClient({
                 )}
                 {task.status === "in_progress" && (
                   <>
-                    <Button size="sm" variant="outline" color="neutral" onClick={() => handleStatusChange("paused")}
+                    <Button size="sm" variant="outline" color="gray" onClick={() => handleStatusChange("paused")}
                       disabled={isUpdating}
                     >
                       <Pause className="h-4 w-4 mr-2" />
@@ -253,7 +253,7 @@ export function ProductionTaskPageClient({
                   </Button>
                 )}
                 {(task.status === "completed" || task.status === "cancelled") && (
-                  <Button size="sm" variant="outline" color="neutral" onClick={() => handleStatusChange("pending")}
+                  <Button size="sm" variant="outline" color="gray" onClick={() => handleStatusChange("pending")}
                     disabled={isUpdating}
                   >
                     <RotateCcw className="h-4 w-4 mr-2" />
@@ -268,7 +268,7 @@ export function ProductionTaskPageClient({
                   {[25, 50, 75, 100].map((p) => {
                     const currentP = Math.round(((task.completedQuantity || 0) / task.quantity) * 100);
                     return (
-                      <Button key={p} size="sm" variant={currentP >= p ? "solid" : "outline"} color="system"
+                      <Button key={p} size="sm" variant={currentP >= p ? "solid" : "outline"} color="purple"
                         onClick={() => handleProgressChange(p)}
                         disabled={isUpdating}
                       >

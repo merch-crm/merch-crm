@@ -41,7 +41,7 @@ export function CrossLinkCard({
                                     {title}
                                 </h4>
                                 {badge && (
-                                    <Badge className="text-xs" color="neutral">
+                                    <Badge className="text-xs" color="gray">
                                         {badge}
                                     </Badge>
                                 )}

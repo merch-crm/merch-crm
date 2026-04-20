@@ -17,7 +17,7 @@ export function DropdownWithDescriptions() {
     <div className="flex justify-center p-8">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="solid" color="neutral" className="rounded-2xl px-6 h-12 text-sm font-black bg-slate-100 hover:bg-slate-200 text-slate-900 border-none shadow-sm transition-all active:scale-95">
+          <Button variant="solid" color="gray" className="rounded-2xl px-6 h-12 text-sm font-black bg-slate-100 hover:bg-slate-200 text-slate-900 border-none shadow-sm transition-all active:scale-95">
             Actions
           </Button>
         </DropdownMenuTrigger>
@@ -42,7 +42,7 @@ export function DropdownWithDescriptions() {
             label="Delete file" 
             description="Move to trash" 
             shortcut="⌘⇧D" 
-            color="danger"
+            color="red"
           />
         </DropdownMenuContent>
       </DropdownMenu>

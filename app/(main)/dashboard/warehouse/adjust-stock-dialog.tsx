@@ -267,7 +267,7 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
                     <div className="col-span-2 bg-slate-100/50 border border-dashed border-slate-200 rounded-[var(--radius-inner)] px-3 flex flex-col items-center justify-center">
                       <span className="text-xs font-black text-slate-400 mb-0.5">Предыдущая</span>
                       <div className="flex items-baseline gap-0.5">
-                        <span className="text-lg font-black text-slate-500 tabular-nums">
+                        <span className="text-lg font-black text-slate-500 tabular-nums" suppressHydrationWarning>
                           {item.costPrice ? Math.round(Number(item.costPrice)).toLocaleString('ru-RU') : "0"}
                         </span>
                         <span className="text-xs font-bold text-slate-400">₽</span>
@@ -314,10 +314,10 @@ export function AdjustStockDialog({ item, locations, itemStocks, isOpen, onClose
         </form>
 
         <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-          <Button type="button" color="neutral" variant="ghost" onClick={onClose} className="h-11 flex-1 lg:flex-none lg:px-8 font-bold text-sm rounded-xl">
+          <Button type="button" color="gray" variant="ghost" onClick={onClose} className="flex-1 lg:flex-none lg:px-8 font-bold text-sm">
             Отмена
           </Button>
-          <SubmitButton form="adjust-stock-form" isLoading={isSubmitting} text="Сохранить" loadingText="Сохранение..." color="dark" disabled={isSubmitting || amount <= 0 || !reason.trim()} className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-xl font-bold text-sm shadow-sm transition-all border-none" />
+          <SubmitButton form="adjust-stock-form" isLoading={isSubmitting} text="Сохранить" loadingText="Сохранение..." color="black" disabled={isSubmitting || amount <= 0 || !reason.trim()} className="flex-1 lg:flex-none lg:w-auto lg:px-10 font-bold text-sm shadow-sm transition-all border-none" />
         </div>
       </div>
     </ResponsiveModal>

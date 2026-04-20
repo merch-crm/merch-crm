@@ -94,7 +94,7 @@ export function ActiveSessions() {
                     </div>
                   </div>
                 </div>
-                <Button variant="solid" color="danger" size="sm" onClick={() => handleRevoke(session.id)}>
+                <Button variant="solid" color="red" size="sm" onClick={() => handleRevoke(session.id)}>
                   Завершить
                 </Button>
               </div>

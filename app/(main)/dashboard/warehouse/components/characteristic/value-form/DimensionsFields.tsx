@@ -64,7 +64,7 @@ export function DimensionsFields({
             <Button
               key={u}
               variant="outline"
-              color={valueForm.dimensionUnit === u ? "system" : "neutral"}
+              color={valueForm.dimensionUnit === u ? "purple" : "gray"}
               onClick={() => updateDimensionStrings(valueForm.length, valueForm.width, valueForm.height, u)}
               className={cn("h-10 rounded-xl border-2 font-bold text-xs shadow-sm",
                 valueForm.dimensionUnit === u && "bg-indigo-50/50"

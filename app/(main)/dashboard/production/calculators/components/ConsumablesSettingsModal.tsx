@@ -205,7 +205,7 @@ export function ConsumablesSettingsModal({
  return (
   <>
   <ResponsiveModal isOpen={isOpen} onClose={onClose} title={`Настройки расходников — ${config.label}`} description="Настройте стоимость и расход материалов для расчёта себестоимости" footer={ <div className="flex flex-col sm:flex-row gap-3 w-full">
-     <Button variant="outline" color="neutral" onClick={() => setShowResetConfirm(true)}
+     <Button variant="outline" color="gray" onClick={() => setShowResetConfirm(true)}
       disabled={!hasChanges && modifiedCount === 0}
       className="rounded-md"
      >
@@ -213,7 +213,7 @@ export function ConsumablesSettingsModal({
       Сбросить все
      </Button>
      <div className="flex gap-3 sm:ml-auto">
-      <Button variant="ghost" color="neutral" onClick={onClose} className="rounded-md">
+      <Button variant="ghost" color="gray" onClick={onClose} className="rounded-md">
        Отмена
       </Button>
       <SubmitButton onClick={handleSave} isLoading={isSaving} disabled={!hasChanges} loadingText="Сохранение..." className="rounded-md">
@@ -231,7 +231,7 @@ export function ConsumablesSettingsModal({
        <Package className="h-4 w-4" />
        Расходники
        {modifiedCount > 0 && (
-        <Badge className="ml-1" color="neutral">
+        <Badge className="ml-1" color="gray">
          {modifiedCount}
         </Badge>
        )}
@@ -334,7 +334,7 @@ export function ConsumablesSettingsModal({
          <span>Материалы можно добавить на складе</span>
         </div>
         <Link href="/dashboard/warehouse">
-         <Button variant="ghost" color="neutral" size="sm" className="text-blue-700">
+         <Button variant="ghost" color="gray" size="sm" className="text-blue-700">
           <ExternalLink className="h-4 w-4 mr-1" />
           Перейти
          </Button>

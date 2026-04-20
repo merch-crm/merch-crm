@@ -58,7 +58,7 @@ export function SilkscreenSummary({ result }: SilkscreenSummaryProps) {
             <div className="flex justify-between text-sm text-green-600">
               <span className="flex items-center gap-1">
                 Скидка за тираж
-                <Badge color="primary" variant="outline" className="text-green-600 border-green-200 bg-green-50 text-xs h-4">
+                <Badge color="purple" variant="outline" className="text-green-600 border-green-200 bg-green-50 text-xs h-4">
                   -{result.discountPercent}%
                 </Badge>
               </span>

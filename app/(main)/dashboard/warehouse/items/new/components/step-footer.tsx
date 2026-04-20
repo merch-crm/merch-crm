@@ -37,7 +37,7 @@ export function StepFooter({
         <Button
           type="button"
           variant="ghost"
-          color="neutral"
+          color="gray"
           onClick={onBack}
           disabled={isSubmitting}
           className="h-10 sm:h-11 px-3 sm:px-7 rounded-2xl w-auto"
@@ -66,7 +66,7 @@ export function StepFooter({
             <Button
               type="button"
               variant="solid"
-              color="dark"
+              color="black"
               onClick={onNext}
               disabled={isNextDisabled || isSubmitting}
               className="h-10 sm:h-11 pl-4 pr-3 sm:pl-8 sm:pr-6 rounded-2xl w-auto"

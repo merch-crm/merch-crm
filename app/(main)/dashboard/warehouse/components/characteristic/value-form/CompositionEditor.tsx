@@ -66,7 +66,7 @@ export function CompositionEditor({
             {valueForm.compositionItems.length > 1 && (
               <Button
                 variant="ghost"
-                color="danger"
+                color="red"
                 size="icon"
                 onClick={() => setValueForm(prev => ({
                   ...prev,

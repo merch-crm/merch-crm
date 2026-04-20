@@ -44,23 +44,23 @@ export function DesignHeader({
             <span>•</span>
             <span>{filesCount} файлов</span>
             {design.isActive ? (
-              <Badge color="success" className="ml-2">Активен</Badge>
+              <Badge color="green" className="ml-2">Активен</Badge>
             ) : (
-              <Badge className="ml-2" color="neutral">Неактивен</Badge>
+              <Badge className="ml-2" color="gray">Неактивен</Badge>
             )}
           </div>
         </div>
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="outline" color="neutral" size="sm" onClick={onEdit}>
+        <Button variant="outline" color="gray" size="sm" onClick={onEdit}>
           <Edit className="h-4 w-4 mr-2" />
           Редактировать
         </Button>
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" color="neutral" size="icon">
+            <Button variant="ghost" color="gray" size="icon">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

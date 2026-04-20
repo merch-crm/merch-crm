@@ -29,6 +29,7 @@ const routeLabels: Record<string, string> = {
     branding: "Брендинг",
     calendar: "Календарь",
     categories: "Категории",
+    characteristics: "Характеристики",
     characteristic: "Характеристики",
     departments: "Отделы",
     defects: "Брак",
@@ -68,7 +69,7 @@ const routeLabels: Record<string, string> = {
     "s3-manager": "S3 Хранилище",
     staff: "Персонал",
     stock: "Остатки",
-    storage: "Хранилище",
+    storage: "Хранение",
     "storage-preview": "Просмотр склада",
     transactions: "Операции",
     users: "Пользователи",
@@ -121,7 +122,7 @@ export function Breadcrumbs() {
             if (isUuid(item.path) && item.label === item.path) return false;
             return true;
         })
-        .map(({ href, label, isLast }) => ({ href, label, isLast }));
+        .map(({ href, label, isLast }) => ({ href, label, isLast, className: isLast ? "text-primary" : "" }));
 
     return <BreadcrumbsUI items={breadcrumbItems} />;
 }

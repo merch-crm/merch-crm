@@ -15,7 +15,8 @@ tags: [ui, компонент, дизайн]
 ```typescript
 interface <% tp.file.title %>Props {
   label: string;
-  variant: 'primary' | 'secondary';
+  color: 'purple' | 'gray' | 'red' | 'green' | 'yellow' | 'black';
+  variant: 'solid' | 'outline' | 'ghost';
   onClick: () => void;
   isLoading?: boolean;
 }

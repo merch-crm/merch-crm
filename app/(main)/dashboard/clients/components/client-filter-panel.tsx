@@ -131,7 +131,7 @@ export const ClientFilterPanel = memo(function ClientFilterPanel({
         </div>
 
         <div className="flex gap-2">
-          <Button type="button" variant="solid" color="neutral" onClick={() => setUiState(prev => ({ ...prev, showFilters: !prev.showFilters }))}
+          <Button type="button" variant="solid" color="gray" onClick={() => setUiState(prev => ({ ...prev, showFilters: !prev.showFilters }))}
             className={cn("h-12 px-6 rounded-2xl gap-2 font-bold transition-all active:scale-95",
               uiState.showFilters ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-white text-slate-600 hover:bg-slate-50 border-2 border-slate-100"
             )}

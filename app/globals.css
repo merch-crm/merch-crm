@@ -1,4 +1,4 @@
-/* v1.0.1 */
+/* v1.0.2 - reset build state */
 @utility wrap-break-word {
  word-wrap: break-word;
 }
@@ -6,9 +6,6 @@
 @source "../app";
 @source "../components";
 @source "../styles";
-@import "tw-animate-css";
-
-
 @import "../styles/variables.css";
 @import "../styles/base.css";
 @import "../styles/cards.css";

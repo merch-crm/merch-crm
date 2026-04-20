@@ -71,14 +71,14 @@ export function UserMultiSelect({
  return (
   <Popover open={open} onOpenChange={setOpen}>
    <PopoverTrigger asChild>
-    <Button variant="outline" color="neutral" role="combobox" aria-expanded={open} disabled={disabled} className={cn( "w-full justify-between min-h-12 h-auto py-2.5 px-4 rounded-xl border-slate-200 bg-slate-50/50 hover:bg-white transition-colors", selectedIds.length === 0 && "text-slate-500" )}>
+    <Button variant="outline" color="gray" role="combobox" aria-expanded={open} disabled={disabled} className={cn( "w-full justify-between min-h-12 h-auto py-2.5 px-4 rounded-xl border-slate-200 bg-slate-50/50 hover:bg-white transition-colors", selectedIds.length === 0 && "text-slate-500" )}>
      <div className="flex flex-wrap gap-1.5 flex-1">
       {selectedIds.length === 0 ? (
        <span>{placeholder}</span>
       ) : (
         <>
         {selectedUsers.slice(0, maxDisplay).map((user) => (
-         <Badge key={user.id} className="flex items-center gap-1.5 pr-1 bg-violet-100 text-violet-700 hover:bg-violet-200 rounded-lg" color="neutral">
+         <Badge key={user.id} className="flex items-center gap-1.5 pr-1 bg-violet-100 text-violet-700 hover:bg-violet-200 rounded-lg" color="gray">
           <span className="max-w-[100px] truncate text-xs font-medium">
            {user.name.split(" ")[0]} {user.name.split(" ")[1]?.[0] ? user.name.split(" ")[1][0] + "." : ""}
           </span>
@@ -98,7 +98,7 @@ export function UserMultiSelect({
          </Badge>
         ))}
         {selectedIds.length > maxDisplay && (
-         <Badge className="bg-slate-100 text-slate-600 rounded-lg" color="neutral">
+         <Badge className="bg-slate-100 text-slate-600 rounded-lg" color="gray">
           +{selectedIds.length - maxDisplay}
          </Badge>
         )}
@@ -161,7 +161,7 @@ export function UserMultiSelect({
     </div>
     {selectedIds.length > 0 && (
      <div className="p-2 border-t border-slate-100 bg-slate-50/50">
-      <Button variant="ghost" color="neutral" size="sm" onClick={() => onSelectionChange([])}
+      <Button variant="ghost" color="gray" size="sm" onClick={() => onSelectionChange([])}
        className="w-full text-slate-500 hover:text-slate-700 rounded-xl"
       >
        Очистить выбор ({selectedIds.length})

@@ -7,7 +7,7 @@ import { ComponentShowcase, BgSolid } from "@/components/ui-kit";
 import { Typo } from "@/components/ui/typo";
 
 interface ButtonVariantConfig {
- color: "system" | "success" | "warning" | "danger" | "neutral" | "dark";
+ color: "purple" | "green" | "yellow" | "red" | "gray" | "black";
  title: string;
  desc: string;
  primaryIcon: LucideIcon;

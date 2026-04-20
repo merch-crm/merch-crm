@@ -162,11 +162,11 @@ export function ExportDialog({
             Выбрано полей: <span className="text-slate-900">{selectedColumns.length}</span>
           </div>
           <div className="flex gap-2">
-            <Button type="button" variant="outline" color="neutral" onClick={onClose} disabled={isExporting} className="h-10 rounded-xl font-bold">
+            <Button type="button" variant="outline" color="gray" onClick={onClose} disabled={isExporting} className="font-bold">
               <X className="w-4 h-4 mr-2" />
               Отмена
             </Button>
-            <Button type="submit" onClick={handleExport} disabled={isExporting || selectedColumns.length === 0} className="h-10 rounded-xl font-bold">
+            <Button type="submit" onClick={handleExport} disabled={isExporting || selectedColumns.length === 0} className="font-bold">
               {isExporting ? (
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : (
@@ -250,7 +250,7 @@ export function ExportDialog({
                       <span className="font-bold text-slate-900 text-[14px]">
                         {categoryLabels[category]}
                       </span>
-                      <Badge className="text-xs font-bold h-5 px-1.5 bg-slate-100 text-slate-500 border-none" color="neutral">
+                      <Badge className="text-xs font-bold h-5 px-1.5 bg-slate-100 text-slate-500 border-none" color="gray">
                         {selectedInCategory}/{columns.length}
                       </Badge>
                     </div>

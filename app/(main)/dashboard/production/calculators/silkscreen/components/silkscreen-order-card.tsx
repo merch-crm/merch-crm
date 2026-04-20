@@ -58,7 +58,7 @@ export function SilkscreenOrderCard({
               <Label htmlFor={`dark-${order.id}`}>Темное изделие</Label>
             </div>
           </div>
-          <Button variant="ghost" color="neutral" size="icon" onClick={onRemove} className="text-muted-foreground hover:text-destructive">
+          <Button variant="ghost" color="gray" size="icon" onClick={onRemove} className="text-muted-foreground hover:text-destructive">
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
@@ -66,7 +66,7 @@ export function SilkscreenOrderCard({
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-semibold text-muted-foreground tracking-normal">Принты / Позиции</h4>
-            <Button variant="outline" color="neutral" size="sm" onClick={onAddPosition} className="h-7 text-xs">
+            <Button variant="outline" color="gray" size="sm" onClick={onAddPosition} className="h-7 text-xs">
               <Plus className="w-3 h-3 mr-1" /> Добавить позицию
             </Button>
           </div>
@@ -91,13 +91,13 @@ export function SilkscreenOrderCard({
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs">Цвета (сетки)</Label>
-                  <Button variant="ghost" color="neutral" size="sm" onClick={() => onAddColor(pIndex)} className="h-6 text-xs px-2">
+                  <Button variant="ghost" color="gray" size="sm" onClick={() => onAddColor(pIndex)} className="h-6 text-xs px-2">
                     + цвет
                   </Button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {pos.colors.map((color, cIndex) => (
-                    <Badge key={cIndex} className="pr-1 gap-2 bg-background border flex items-center" color="neutral">
+                    <Badge key={cIndex} className="pr-1 gap-2 bg-background border flex items-center" color="gray">
                       <div className="w-28 pl-1">
                         <Select value={color.inkType} onChange={(val) => onUpdateColor(pIndex, cIndex, { inkType: val })}
                           options={SILKSCREEN_INK_TYPES.map((ink) => ({ id: ink.id, title: ink.name }))}

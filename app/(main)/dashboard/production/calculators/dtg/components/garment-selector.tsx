@@ -50,20 +50,20 @@ const GarmentCard = memo(function GarmentCard({
    <Card className="p-4 ring-2 ring-primary bg-primary/5">
     <p className="text-sm font-medium text-slate-700 mb-3">{garment.name}</p>
     <div className="grid grid-cols-2 gap-2">
-     <Button variant="outline" color="neutral" size="sm" onClick={() => handleColorSelect('light')}
+     <Button variant="outline" color="gray" size="sm" onClick={() => handleColorSelect('light')}
       className="flex items-center gap-2"
      >
       <Sun className="w-4 h-4 text-amber-500" />
       Светлый
      </Button>
-     <Button variant="outline" color="neutral" size="sm" onClick={() => handleColorSelect('dark')}
+     <Button variant="outline" color="gray" size="sm" onClick={() => handleColorSelect('dark')}
       className="flex items-center gap-2 bg-slate-800 text-white hover:bg-slate-700"
      >
       <Moon className="w-4 h-4" />
       Тёмный
      </Button>
     </div>
-    <Button variant="ghost" color="neutral" size="sm" onClick={() => setShowColorChoice(false)}
+    <Button variant="ghost" color="gray" size="sm" onClick={() => setShowColorChoice(false)}
      className="w-full mt-2 text-slate-500"
     >
      Отмена
@@ -85,13 +85,13 @@ const GarmentCard = memo(function GarmentCard({
       до {garment.maxPrintWidth}×{garment.maxPrintHeight} мм
      </p>
      <div className="mt-1">
-      <Badge className="text-xs" color="neutral">
+      <Badge className="text-xs" color="gray">
         {formatCurrency(garment.basePrice)}
       </Badge>
      </div>
     </div>
 
-    <Button variant="ghost" color="neutral" size="sm" className="shrink-0">
+    <Button variant="ghost" color="gray" size="sm" className="shrink-0">
      <Plus className="w-4 h-4" />
     </Button>
    </div>
@@ -131,7 +131,7 @@ export const GarmentSelector = memo(function GarmentSelector({
 
  if (!isExpanded) {
   return (
-   <Button variant="outline" color="neutral" onClick={() => setIsExpanded(true)}
+   <Button variant="outline" color="gray" onClick={() => setIsExpanded(true)}
     className="w-full rounded-[24px] py-8 border-2 border-dashed border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 transition-all"
    >
     <Plus className="w-6 h-6 mr-2" />
@@ -145,7 +145,7 @@ export const GarmentSelector = memo(function GarmentSelector({
    <div className="p-6 space-y-3">
     <div className="flex items-center justify-between">
      <h3 className="text-lg font-black text-slate-900">Выберите изделие</h3>
-     <Button variant="ghost" color="neutral" size="sm" onClick={() => setIsExpanded(false)}
+     <Button variant="ghost" color="gray" size="sm" onClick={() => setIsExpanded(false)}
       className="rounded-xl font-bold"
      >
       Отмена

@@ -110,7 +110,7 @@ export function DefectDialog({ isOpen, onOpenChange, task }: DefectDialogProps) 
      >
       Отмена
      </Button>
-     <Button form="defect-form" type="submit" variant="solid" color="danger" disabled={isSubmitting} className="gap-2">
+     <Button form="defect-form" type="submit" variant="solid" color="red" disabled={isSubmitting} className="gap-2">
       {isSubmitting ? (
        <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       ) : (

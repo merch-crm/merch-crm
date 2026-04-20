@@ -81,7 +81,7 @@ export function AtRiskBanner({
             <div className="flex flex-wrap gap-3">
               {atRiskCount > 0 && (
                 <Link href="/dashboard/clients?activityStatus=at_risk">
-                  <Button variant="solid" color="neutral" className="bg-orange-100/50 hover:bg-orange-100 border border-orange-200 text-orange-700 h-10 px-5 rounded-xl font-bold transition-all hover:translate-x-1">
+                  <Button variant="solid" color="gray" className="bg-orange-100/50 hover:bg-orange-100 border border-orange-200 text-orange-700 h-10 px-5 rounded-xl font-bold transition-all hover:translate-x-1">
                     <Phone className="w-4 h-4 mr-2" />
                     Зона риска ({atRiskCount})
                     <ChevronRight className="w-4 h-4 ml-1 opacity-50 transition-opacity group-hover:opacity-100" />
@@ -90,7 +90,7 @@ export function AtRiskBanner({
               )}
               {attentionCount > 0 && (
                 <Link href="/dashboard/clients?activityStatus=attention">
-                  <Button variant="solid" color="neutral" className="bg-amber-100/50 hover:bg-amber-100 border border-amber-200 text-amber-700 h-10 px-5 rounded-xl font-bold transition-all hover:translate-x-1">
+                  <Button variant="solid" color="gray" className="bg-amber-100/50 hover:bg-amber-100 border border-amber-200 text-amber-700 h-10 px-5 rounded-xl font-bold transition-all hover:translate-x-1">
                     <Phone className="w-4 h-4 mr-2" />
                     Требуют внимания ({attentionCount})
                     <ChevronRight className="w-4 h-4 ml-1 opacity-50 transition-opacity group-hover:opacity-100" />

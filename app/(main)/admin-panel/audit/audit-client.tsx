@@ -186,7 +186,7 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
         </div>
 
         <div className="lg:col-span-1 crm-card p-4 flex gap-2">
-          <Button onClick={exportToCsv} variant="outline" color="neutral" className="h-11 w-full rounded-2xl border-slate-200 hover:bg-slate-50 font-bold transition-all group">
+          <Button onClick={exportToCsv} variant="outline" color="gray" className="w-full border-slate-200 hover:bg-slate-50 font-bold transition-all group">
             <Download className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
             SVG/Excel
           </Button>
@@ -264,16 +264,16 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
                     </div>
                   </td>
                   <td className="crm-td">
-                    <Badge color="primary" variant="outline" className="bg-slate-50 text-slate-500 font-bold border-none capitalize">
+                    <Badge color="purple" variant="outline" className="bg-slate-50 text-slate-500 font-bold border-none capitalize">
                       {log.entityType}
                     </Badge>
                   </td>
                   <td className="crm-td text-right">
-                    <Button variant="ghost" color="neutral" size="icon" onClick={() => {
+                    <Button variant="ghost" color="gray" size="icon" onClick={() => {
                         setSelectedLog(log);
                         setIsDetailsOpen(true);
                       }}
-                      className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 hover:text-primary hover:bg-primary/5 transition-all opacity-0 group-hover:opacity-100"
+                      className="bg-slate-50 text-slate-400 hover:text-primary hover:bg-primary/5 transition-all opacity-0 group-hover:opacity-100"
                     >
                       <MoreHorizontal className="w-5 h-5" />
                     </Button>
@@ -290,17 +290,17 @@ export function AuditClient({ initialLogs, pagination, users }: AuditClientProps
             Всего записей: <span className="text-slate-900 font-bold">{pagination.total}</span>
           </p>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" color="neutral" size="icon" disabled={pagination.page <= 1 || isPending} onClick={() => handlePageChange(pagination.page - 1)}
-              className="w-9 h-9 rounded-xl border border-slate-200 bg-white"
+            <Button variant="ghost" color="gray" size="sm" disabled={pagination.page <= 1 || isPending} onClick={() => handlePageChange(pagination.page - 1)}
+              className="w-9 h-9 border border-slate-200 bg-white"
             >
               <ChevronLeft className="w-5 h-5" />
             </Button>
             <span className="text-xs font-bold px-3">
               {pagination.page} / {pagination.totalPages}
             </span>
-            <Button variant="ghost" color="neutral" size="icon" disabled={pagination.page>= pagination.totalPages || isPending}
+            <Button variant="ghost" color="gray" size="sm" disabled={pagination.page >= pagination.totalPages || isPending}
               onClick={() => handlePageChange(pagination.page + 1)}
-              className="w-9 h-9 rounded-xl border border-slate-200 bg-white"
+              className="w-9 h-9 border border-slate-200 bg-white"
             >
               <ChevronRight className="w-5 h-5" />
             </Button>

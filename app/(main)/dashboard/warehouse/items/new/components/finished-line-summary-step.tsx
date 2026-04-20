@@ -143,12 +143,12 @@ export function FinishedLineSummaryStep({
               <p className="text-xs text-muted-foreground mb-1">Принты ({printNames.length}):</p>
               <div className="flex flex-wrap gap-1">
                 {printNames.slice(0, 5).map((name) => (
-                  <Badge key={name} color="neutral">
+                  <Badge key={name} color="gray">
                     {name}
                   </Badge>
                 ))}
                 {printNames.length > 5 && (
-                  <Badge color="primary" variant="outline">+{printNames.length - 5}</Badge>
+                  <Badge color="purple" variant="outline">+{printNames.length - 5}</Badge>
                 )}
               </div>
             </div>
@@ -156,7 +156,7 @@ export function FinishedLineSummaryStep({
               <p className="text-xs text-muted-foreground mb-1">Цвета ({uniqueColors.length}):</p>
               <div className="flex flex-wrap gap-1">
                 {uniqueColors.map((color) => (
-                  <Badge key={color} color="primary" variant="outline">
+                  <Badge key={color} color="purple" variant="outline">
                     {color}
                   </Badge>
                 ))}
@@ -166,7 +166,7 @@ export function FinishedLineSummaryStep({
               <p className="text-xs text-muted-foreground mb-1">Размеры ({uniqueSizes.length}):</p>
               <div className="flex flex-wrap gap-1">
                 {uniqueSizes.map((size) => (
-                  <Badge key={size} color="primary" variant="outline">
+                  <Badge key={size} color="purple" variant="outline">
                     {size}
                   </Badge>
                 ))}
@@ -190,7 +190,7 @@ export function FinishedLineSummaryStep({
                 <AccordionTrigger className="hover:no-underline">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{printName}</span>
-                    <Badge className="ml-2" color="neutral">
+                    <Badge className="ml-2" color="gray">
                       {positionsByPrint[printName].length} позиций
                     </Badge>
                   </div>
@@ -252,7 +252,7 @@ export function FinishedLineSummaryStep({
 
       {/* Навигация */}
       <div className="flex justify-between pt-4 border-t">
-        <Button variant="outline" color="neutral" onClick={onBack} disabled={isSaving}>
+        <Button variant="outline" color="gray" onClick={onBack} disabled={isSaving}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Назад
         </Button>

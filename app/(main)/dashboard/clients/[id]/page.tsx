@@ -45,21 +45,21 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link href="/dashboard/clients">
-            <Button variant="outline" color="neutral" size="icon" className="group rounded-2xl border-slate-200">
+            <Button variant="outline" color="gray" size="icon" className="group rounded-2xl border-slate-200">
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </Button>
           </Link>
           <div>
             <h1 className="text-2xl font-black text-slate-900 leading-none">Карточка клиента</h1>
             <div className="text-slate-400 text-xs font-bold mt-2 flex items-center gap-2">
-              ID: {client.id.slice(0, 8)} • <Badge className="text-xs font-bold" color="neutral">{client.clientType === 'b2b' ? 'B2B' : 'B2C'}</Badge>
+              ID: {client.id.slice(0, 8)} • <Badge className="text-xs font-bold" color="gray">{client.clientType === 'b2b' ? 'B2B' : 'B2C'}</Badge>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/orders/new?clientId=${client.id}`}>
-            <Button color="dark" className="rounded-2xl gap-2 shadow-lg shadow-slate-900/10 active:scale-95 transition-all">
+            <Button color="black" className="rounded-2xl gap-2 shadow-lg shadow-slate-900/10 active:scale-95 transition-all">
               <Plus className="w-4 h-4" />
               Оформить заказ
             </Button>
@@ -128,7 +128,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
                     <Instagram className="w-5 h-5" />
                   </a>
                 )}
-                <Button variant="outline" color="neutral" size="icon" className="w-10 h-10 rounded-full text-green-600 bg-green-50 border-none hover:bg-green-500 hover:text-white">
+                <Button variant="outline" color="gray" size="icon" className="w-10 h-10 rounded-full text-green-600 bg-green-50 border-none hover:bg-green-500 hover:text-white">
                   <MessageCircle className="w-5 h-5" />
                 </Button>
               </div>
@@ -160,7 +160,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
 
             <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400">Источник</span>
-              <Badge color="primary" variant="outline" className="bg-slate-50 border-slate-200 text-slate-500 font-black">{client.acquisitionSource ||"—"}</Badge>
+              <Badge color="purple" variant="outline" className="bg-slate-50 border-slate-200 text-slate-500 font-black">{client.acquisitionSource ||"—"}</Badge>
             </div>
           </div>
         </aside>
@@ -222,7 +222,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
                 <Wallet className="w-12 h-12 mx-auto mb-4 text-slate-200" />
                 <h3 className="text-lg font-black text-slate-900">Финансовый профиль</h3>
                 <p className="text-sm text-slate-400 mt-2 max-w-sm mx-auto">Детальная история платежей и расчетов будет доступна в следующем обновлении CRM.</p>
-                <Button variant="outline" color="neutral" className="mt-6 rounded-2xl border-slate-200">Перейти в раздел Финансы</Button>
+                <Button variant="outline" color="gray" className="mt-6 rounded-2xl border-slate-200">Перейти в раздел Финансы</Button>
               </div>
             </TabsContent>
           </Tabs>

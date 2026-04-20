@@ -136,10 +136,10 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                     </div>
                   )}
                   <div className="flex items-center gap-2 px-1">
-                    <Badge color="primary" variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
+                    <Badge color="purple" variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
                       Создан {formatDate(client.createdAt,"dd.MM.yyyy")}
                     </Badge>
-                    <Badge color="primary" variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
+                    <Badge color="purple" variant="outline" className="rounded-full border-slate-200 bg-slate-50 text-slate-600 font-bold px-3 py-1">
                       Источник: {client.acquisitionSource ||"---"}
                     </Badge>
                   </div>
@@ -152,7 +152,7 @@ export function ClientDetailPopup({ clientId, isOpen, onClose, onEdit, showFinan
                   <PlusIcon className="w-4 h-4 mr-2" /> Сделать заказ
                 </Button>
                 {onEdit && (
-                  <Button variant="outline" color="neutral" className="rounded-2xl h-12 border-slate-200 text-slate-600 font-bold hover:bg-slate-50" onClick={onEdit}>
+                  <Button variant="outline" color="gray" className="rounded-2xl h-12 border-slate-200 text-slate-600 font-bold hover:bg-slate-50" onClick={onEdit}>
                     <Edit2 className="w-4 h-4" />
                   </Button>
                 )}

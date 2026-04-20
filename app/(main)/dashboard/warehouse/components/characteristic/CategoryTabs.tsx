@@ -59,7 +59,7 @@ export function CategoryTabs({
       <div className={cn("w-full",
         showDropdownOnTablet ?"lg:hidden" :"sm:hidden"
       )}>
-        <Select options={options} value={activeCategoryId} onChange={handleCategoryChange} variant="solid" color="primary" compact center className="w-full" triggerClassName="crm-card !rounded-[18px] !bg-white border-slate-100 shadow-sm !h-12" />
+        <Select options={options} value={activeCategoryId} onChange={handleCategoryChange} variant="solid" color="purple" compact center className="w-full" triggerClassName="crm-card !rounded-[18px] !bg-white border-slate-100 shadow-sm !h-12" />
       </div>
 
       {/* Desktop Navigation (Horizontal Tabs) */}

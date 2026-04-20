@@ -77,7 +77,7 @@ export function DeleteRoleDialog({ role, isOpen, onClose, onConfirm }: DeleteRol
           >
             Отмена
           </Button>
-          <Button type="button" variant="solid" color="danger" onClick={handleConfirm} disabled={loading || (role.isSystem && !password.trim())} className="flex-[1.2] rounded-[18px] h-12 font-bold shadow-lg shadow-red-500/10">
+          <Button type="button" variant="solid" color="red" onClick={handleConfirm} disabled={loading || (role.isSystem && !password.trim())} className="flex-[1.2] rounded-[18px] h-12 font-bold shadow-lg shadow-red-500/10">
             {loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
             {loading ?"Удаление..." :"Удалить роль"}
           </Button>

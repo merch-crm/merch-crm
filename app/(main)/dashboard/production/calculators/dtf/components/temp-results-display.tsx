@@ -28,13 +28,13 @@ export const TempResultsDisplay = memo(function TempResultsDisplay({
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
-              <Badge className="px-3 py-1.5" color="neutral">
+              <Badge className="px-3 py-1.5" color="gray">
                 {result.totalLengthM.toFixed(2)} м
               </Badge>
-              <Badge className="px-3 py-1.5" color="neutral">
+              <Badge className="px-3 py-1.5" color="gray">
                 КПД {result.efficiencyPercent.toFixed(1)}%
               </Badge>
-              <Badge className="px-3 py-1.5" color="neutral">
+              <Badge className="px-3 py-1.5" color="gray">
                 {result.totalPrints} принтов
               </Badge>
             </div>

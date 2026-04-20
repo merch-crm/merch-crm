@@ -23,7 +23,7 @@ export function PromocodesHeader({ searchQuery, setSearchQuery, onOpenBulk, onOp
         <Layers className="w-5 h-5 opacity-60" />
         <span className="hidden sm:inline">Массовая генерация</span>
       </Button>
-      <Button onClick={onOpenCreate} variant="solid" color="system" className="h-12 w-12 sm:w-auto sm:px-8 rounded-full sm:rounded-2xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all flex items-center justify-center sm:gap-2 active:scale-[0.98]" title="Создать">
+      <Button onClick={onOpenCreate} variant="solid" color="purple" className="h-12 w-12 sm:w-auto sm:px-8 rounded-full sm:rounded-2xl font-bold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all flex items-center justify-center sm:gap-2 active:scale-[0.98]" title="Создать">
         <Plus className="w-5 h-5 pointer-events-none" />
         <span className="hidden sm:inline">Создать</span>
       </Button>

@@ -82,10 +82,10 @@ export function EditUserDialog({ user, isOpen, onClose, onSuccess }: EditUserDia
           </div>
 
           <div className="mt-6 flex gap-3 sticky bottom-0 bg-white pt-2 border-t border-slate-100">
-            <Button type="button" variant="ghost" onClick={onClose} className="flex-1 px-4 h-11 text-sm font-bold text-slate-700 bg-slate-100 rounded-[18px] hover:bg-slate-200 transition-all active:scale-[0.98]">
+            <Button type="button" variant="ghost" onClick={onClose} className="flex-1 px-4 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-all active:scale-[0.98]">
               Отмена
             </Button>
-            <Button type="submit" disabled={state.loading} className="flex-[2] inline-flex items-center justify-center gap-2 rounded-[var(--radius-inner)] h-11 px-4 font-bold text-white shadow-lg transition-all active:scale-[0.98]">
+            <Button type="submit" disabled={state.loading} className="flex-[2] inline-flex items-center justify-center gap-2 px-4 font-bold text-white shadow-lg transition-all active:scale-[0.98]">
               {state.loading ? (
                 <Loader2 className="w-5 h-5 animate-spin mr-1" />
               ) : (

@@ -170,42 +170,42 @@ export function ProfileForm({ user }: { user: UserProfile }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3 gap-y-3">
         <div className="space-y-2 group/input">
           <Label className="text-xs font-black text-slate-400 ml-1 group-hover/input:text-primary transition-colors">ФИО</Label>
-          <Input name="name" defaultValue={user.name} className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="Введите ФИО" />
+          <Input name="name" defaultValue={user.name} className="px-6 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="Введите ФИО" />
         </div>
 
         <div className="space-y-2 group/input">
           <Label className="text-xs font-black text-slate-400 ml-1">Дата рождения</Label>
-          <Input name="birthday" type="date" defaultValue={user.birthday?.split("T")[0]} className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold text-slate-900 transition-all duration-300" />
+          <Input name="birthday" type="date" defaultValue={user.birthday?.split("T")[0]} className="px-6 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-bold text-slate-900 transition-all duration-300" />
         </div>
 
         <div className="space-y-2 group/input">
           <Label className="text-xs font-black text-slate-400 ml-1">Телефон</Label>
-          <Input name="phone" defaultValue={user.phone || ""} className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="+7 (___) ___-__-__" />
+          <Input name="phone" defaultValue={user.phone || ""} className="px-6 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="+7 (___) ___-__-__" />
         </div>
 
         <div className="space-y-2 group/input">
           <Label className="text-xs font-black text-slate-400 ml-1">Telegram</Label>
-          <Input name="telegram" defaultValue={user.telegram || ""} className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="@username" />
+          <Input name="telegram" defaultValue={user.telegram || ""} className="px-6 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="@username" />
         </div>
 
         <div className="space-y-2 group/input">
           <Label className="text-xs font-black text-slate-400 ml-1">Instagram</Label>
-          <Input name="instagram" defaultValue={user.instagram || ""} className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="username" />
+          <Input name="instagram" defaultValue={user.instagram || ""} className="px-6 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="username" />
         </div>
 
         <div className="space-y-2 group/input">
           <Label className="text-xs font-black text-slate-400 ml-1">Social Max</Label>
-          <Input name="socialMax" defaultValue={user.socialMax || ""} className="h-12 px-6 rounded-2xl bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="ID" />
+          <Input name="socialMax" defaultValue={user.socialMax || ""} className="px-6 bg-slate-50/50 border-slate-200 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 font-black text-slate-900 transition-all duration-300" placeholder="ID" />
         </div>
 
         <div className="space-y-2 opacity-60">
           <Label className="text-xs font-black text-slate-400 ml-1">Email</Label>
-          <Input value={user.email} readOnly className="h-12 px-6 rounded-2xl bg-slate-100 border-slate-200 cursor-not-allowed font-black text-slate-500" />
+          <Input value={user.email} readOnly className="px-6 bg-slate-100 border-slate-200 cursor-not-allowed font-black text-slate-500" />
         </div>
 
         <div className="space-y-2 opacity-60">
           <Label className="text-xs font-black text-slate-400 ml-1">Отдел</Label>
-          <Input value={deptName} readOnly className="h-12 px-6 rounded-2xl bg-slate-100 border-slate-200 cursor-not-allowed font-black text-slate-500" />
+          <Input value={deptName} readOnly className="px-6 bg-slate-100 border-slate-200 cursor-not-allowed font-black text-slate-500" />
         </div>
       </div>
 
@@ -219,7 +219,7 @@ export function ProfileForm({ user }: { user: UserProfile }) {
       )}
 
       <div className="pt-6 flex justify-end">
-        <SubmitButton isLoading={loading} className="h-11 px-12 rounded-[var(--radius-inner)] btn-dark text-white font-bold text-base shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 flex items-center gap-3 border-none" text="Сохранить изменения" loadingText="Сохранение..." />
+        <SubmitButton isLoading={loading} color="black" className="px-12 font-bold text-base shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] border-none" text="Сохранить изменения" loadingText="Сохранение..." />
       </div>
     </form>
   );

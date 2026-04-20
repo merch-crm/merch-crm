@@ -41,7 +41,7 @@ export function CompactDropzone({ label, preview, onChange, onRemove, uploading,
                 <input type="file" accept="image/*" className="hidden" onChange={onChange} />
               </label>
               <Button onClick={(e) => { e.preventDefault(); onRemove(); }}
-                variant="solid" color="danger"
+                variant="solid" color="red"
                 className="flex items-center gap-2 px-6 py-6 rounded-full shadow-xl active:scale-95 h-auto"
               >
                 <Trash2 className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" />

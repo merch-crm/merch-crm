@@ -118,7 +118,7 @@ export default function ApiKeysPage() {
       <CardHeader className="border-b border-slate-100">
        <CardTitle className="flex items-center justify-between">
         <span className="font-black text-lg ">Активные ключи</span>
-        <Badge className="rounded-lg h-6 font-bold" color="neutral">{keys.length}</Badge>
+        <Badge className="rounded-lg h-6 font-bold" color="gray">{keys.length}</Badge>
        </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -128,7 +128,7 @@ export default function ApiKeysPage() {
           <div className="space-y-1.5 flex-1 pr-8">
            <div className="flex items-center gap-3">
             <h3 className="font-black text-slate-800 ">{key.name}</h3>
-            <Badge color="success" className="h-5 text-xs px-1.5 rounded-md font-black">Active</Badge>
+            <Badge color="green" className="h-5 text-xs px-1.5 rounded-md font-black">Active</Badge>
            </div>
            <code className="text-xs text-slate-400 font-mono bg-slate-100/50 px-2.5 py-1 rounded-lg border border-slate-100 inline-block">
             {key.key.substring(0, 10)}**************************
@@ -143,11 +143,11 @@ export default function ApiKeysPage() {
            </div>
           </div>
           <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-           <Button variant="outline" color="neutral" size="icon" className="rounded-xl border-2 hover:bg-white hover:text-primary transition-all shadow-sm" onClick={() => copyToClipboard(key.key, key.id)}
+           <Button variant="outline" color="gray" size="icon" className="rounded-xl border-2 hover:bg-white hover:text-primary transition-all shadow-sm" onClick={() => copyToClipboard(key.key, key.id)}
            >
             {copiedId === key.id ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
            </Button>
-           <Button variant="outline" color="neutral" size="icon" className="rounded-xl border-2 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all shadow-sm" onClick={() => handleRevoke(key.id)}
+           <Button variant="outline" color="gray" size="icon" className="rounded-xl border-2 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-all shadow-sm" onClick={() => handleRevoke(key.id)}
            >
             <Trash2 className="w-4 h-4" />
            </Button>

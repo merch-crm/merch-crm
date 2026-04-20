@@ -132,11 +132,11 @@ export function VersionCard({
                 </button>
               </CollapsibleTrigger>
               <div className="flex items-center gap-3 mt-1 ml-6">
-                <Badge className="text-xs" color="neutral">
+                <Badge className="text-xs" color="gray">
                   <ImageIcon className="h-3 w-3 mr-1" />
                   {previewFiles.length} превью
                 </Badge>
-                <Badge color="primary" variant="outline" className="text-xs">
+                <Badge color="purple" variant="outline" className="text-xs">
                   <FileStack className="h-3 w-3 mr-1" />
                   {sourceFiles.length} исходников
                 </Badge>
@@ -146,7 +146,7 @@ export function VersionCard({
             {/* Delete button */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" color="neutral" size="icon" className={cn( "h-8 w-8", canDelete ? "text-muted-foreground hover:text-destructive" : "text-muted-foreground/50 cursor-not-allowed" )} disabled={!canDelete}>
+                <Button variant="ghost" color="gray" size="icon" className={cn( "h-8 w-8", canDelete ? "text-muted-foreground hover:text-destructive" : "text-muted-foreground/50 cursor-not-allowed" )} disabled={!canDelete}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>

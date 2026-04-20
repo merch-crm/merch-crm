@@ -153,27 +153,27 @@ export function BulkActionsPanel({ selectedIds, onClear, isAdmin, onExport }: Bu
               {/* Quick Tools */}
               <div className="h-6 sm:h-8 w-px bg-slate-200 mx-1 sm:mx-2" />
 
-              <Button variant="ghost" size="icon" title="Печать бланков" className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-primary transition-all hidden xs:flex" onClick={() => toast("Печать бланков для" + selectedIds.length +"" + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов') +"...","info")}
+              <Button variant="ghost" size="icon" title="Печать бланков" className="flex items-center justify-center text-slate-400 hover:text-primary transition-all hidden xs:flex" onClick={() => toast("Печать бланков для" + selectedIds.length +"" + pluralize(selectedIds.length, 'заказа', 'заказов', 'заказов') +"...","info")}
               >
-                <Printer className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <Printer className="w-4 h-4" />
               </Button>
 
-              <Button variant="ghost" size="icon" title="Экспорт в Excel" className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-400 hover:text-emerald-600 transition-all" onClick={onExport}>
-                <FileDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Button variant="ghost" size="icon" title="Экспорт в Excel" onClick={onExport}>
+                <FileDown className="w-4 h-4" />
               </Button>
 
               {isAdmin && (
-                <Button variant="ghost" size="icon" title="Удалить выбранные" className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full text-slate-400 btn-destructive-ghost" onClick={() => setShowDeleteConfirm(true)}
+                <Button variant="ghost" size="icon" title="Удалить выбранные" onClick={() => setShowDeleteConfirm(true)}
                   disabled={isProcessing}
                 >
-                  <Trash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <Trash2 className="w-4 h-4" />
                 </Button>
               )}
 
               <div className="h-6 sm:h-8 w-px bg-slate-200 mx-1 sm:mx-2" />
 
-              <Button variant="ghost" size="icon" onClick={onClear} className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-900 transition-all" disabled={isProcessing}>
-                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <Button variant="ghost" size="icon" onClick={onClear} disabled={isProcessing}>
+                <X className="w-4 h-4" />
               </Button>
             </div>
 

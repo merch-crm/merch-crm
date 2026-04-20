@@ -24,7 +24,7 @@ export function ConsumableFields({
             <Button
               key={t}
               variant={valueForm.consumableType === t ? "outline" : "outline"}
-              color={valueForm.consumableType === t ? "system" : "neutral"}
+              color={valueForm.consumableType === t ? "purple" : "gray"}
               onClick={() => {
                 setValueForm(prev => {
                   const typeValue = t === "другое" ? (prev.consumableCustomType || "Свой тип") : t;

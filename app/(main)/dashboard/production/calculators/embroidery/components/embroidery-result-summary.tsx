@@ -122,7 +122,7 @@ export const EmbroideryResultSummary = memo(function EmbroideryResultSummary({
          <span className="text-lg font-black text-slate-900 ">
           {formatCurrency(order.totalCost)}
          </span>
-         <Badge color="primary" variant="outline" className="text-xs font-black bg-pink-50 text-pink-600 border-pink-100">
+         <Badge color="purple" variant="outline" className="text-xs font-black bg-pink-50 text-pink-600 border-pink-100">
           {formatCurrency(order.costPerItem)} / шт
          </Badge>
         </div>

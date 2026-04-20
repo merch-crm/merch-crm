@@ -130,7 +130,7 @@ export function FinishedLineSelectStep({
                 <p className="text-sm text-muted-foreground">
                   Нет доступных коллекций принтов
                 </p>
-                <Button color="system" variant="link" className="mt-2" onClick={() => window.open("/dashboard/design/prints", "_blank")}
+                <Button color="purple" variant="link" className="mt-2" onClick={() => window.open("/dashboard/design/prints", "_blank")}
                 >
                   Создать коллекцию
                 </Button>
@@ -254,12 +254,12 @@ export function FinishedLineSelectStep({
                       <p className="text-xs text-muted-foreground mb-1">Цвета:</p>
                       <div className="flex flex-wrap gap-1">
                         {line.colors.slice(0, 6).map((color) => (
-                          <Badge key={color} className="text-xs" color="neutral">
+                          <Badge key={color} className="text-xs" color="gray">
                             {color}
                           </Badge>
                         ))}
                         {line.colors.length > 6 && (
-                          <Badge color="primary" variant="outline" className="text-xs">
+                          <Badge color="purple" variant="outline" className="text-xs">
                             +{line.colors.length - 6}
                           </Badge>
                         )}
@@ -271,7 +271,7 @@ export function FinishedLineSelectStep({
                       <p className="text-xs text-muted-foreground mb-1">Размеры:</p>
                       <div className="flex flex-wrap gap-1">
                         {line.sizes.map((size) => (
-                          <Badge key={size} color="primary" variant="outline" className="text-xs">
+                          <Badge key={size} color="purple" variant="outline" className="text-xs">
                             {size}
                           </Badge>
                         ))}
@@ -316,7 +316,7 @@ export function FinishedLineSelectStep({
 
       {/* Навигация */}
       <div className="flex justify-between pt-4 border-t">
-        <Button variant="outline" color="neutral" onClick={onBack}>
+        <Button variant="outline" color="gray" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Назад
         </Button>

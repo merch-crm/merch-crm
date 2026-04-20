@@ -62,7 +62,7 @@ export function LocationForm({
               setFormValue("type", typeVal);
               handleAutoSave({ type: typeVal });
             }}
-            variant="solid" color="primary"
+            variant="solid" color="purple"
             triggerClassName="bg-slate-50 focus:bg-slate-50"
           />
         </div>
@@ -108,7 +108,7 @@ export function LocationForm({
               setFormValue("isDefault", isNewValue);
               handleAutoSave({ isDefault: isNewValue });
             }}
-            color="primary"
+            color="purple"
             className="rounded-lg"
             iconClassName={cn("transition-all",
               form.isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400"
@@ -124,7 +124,7 @@ export function LocationForm({
               setFormValue("isActive", isNewValue);
               handleAutoSave({ isActive: isNewValue });
             }}
-            color="success"
+            color="green"
             className="rounded-lg"
             iconClassName={cn("transition-all",
               form.isActive ? "bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/20" : "bg-white text-slate-400"

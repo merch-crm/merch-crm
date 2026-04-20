@@ -176,7 +176,7 @@ export const LocationCardContent = memo(({
               <Button
                 type="button"
                 variant="ghost"
-                color="neutral"
+                color="gray"
                 size="icon"
                 onClick={(e) => { e.stopPropagation(); onEdit?.(e); }}
                 className="size-8 sm:size-10 rounded-xl"
@@ -187,7 +187,7 @@ export const LocationCardContent = memo(({
                 <Button
                   type="button"
                   variant="ghost"
-                  color="danger"
+                  color="red"
                   size="icon"
                   onClick={(e) => { e.stopPropagation(); onDeleteClick?.(e); }}
                   className="size-8 sm:size-10 rounded-xl"

@@ -37,7 +37,7 @@ export const EmbroideryQuantityDiscountInfo = memo(function EmbroideryQuantityDi
        Активна скидка: {currentDiscount.discount}%
      </Badge>
     ) : (
-     <Badge color="primary" variant="outline" className="text-slate-400 font-bold text-xs">Скидка не применяется</Badge>
+     <Badge color="purple" variant="outline" className="text-slate-400 font-bold text-xs">Скидка не применяется</Badge>
     )}
    </div>
 

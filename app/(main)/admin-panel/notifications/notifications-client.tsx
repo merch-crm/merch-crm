@@ -132,7 +132,7 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
 
   return (
     <div className="space-y-3 pb-20">
-      <AdminPageHeader title="Уведомления" subtitle="Управление каналами связи и триггерами системы" icon={Bell} actions={ <Button type="button" onClick={handleSave} disabled={loading} size="lg" className="btn-dark rounded-[var(--radius-inner)] font-bold shadow-xl shadow-slate-900/10 border-none">
+      <AdminPageHeader title="Уведомления" subtitle="Управление каналами связи и триггерами системы" icon={Bell} actions={ <Button type="button" onClick={handleSave} disabled={loading} color="black" className="font-bold shadow-xl shadow-slate-900/10 border-none">
             {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
             Сохранить изменения
           </Button>
@@ -181,14 +181,14 @@ export function NotificationsClient({ initialSettings }: NotificationsClientProp
               <label className="text-sm font-bold text-slate-400 ml-1">Токен бота (API Token)</label>
               <Input type="password" value={settings.telegram.botToken} onChange={(e) => updateValue("telegram","botToken", e.target.value)}
                 placeholder="123456789:ABCDEF..."
-                className="w-full bg-slate-800 border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
+                className="w-full bg-slate-800 border-slate-700 px-5 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
               />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-bold text-slate-400 ml-1">ID Группы или Чат-ID</label>
               <Input type="text" value={settings.telegram.chatId} onChange={(e) => updateValue("telegram","chatId", e.target.value)}
                 placeholder="-100123456789"
-                className="w-full bg-slate-800 border-slate-700 rounded-2xl px-5 py-4 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
+                className="w-full bg-slate-800 border-slate-700 px-5 text-sm font-medium !text-white focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 placeholder:text-slate-600"
               />
             </div>
             <div className="flex items-center gap-3 p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20 text-blue-300 text-xs font-bold">

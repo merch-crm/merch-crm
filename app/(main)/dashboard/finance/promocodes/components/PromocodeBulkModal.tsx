@@ -45,7 +45,7 @@ export function PromocodeBulkModal({
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 flex items-center justify-center transition-all active:scale-95 p-0">
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-slate-50 text-slate-400 hover:text-slate-900 transition-all active:scale-95">
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -54,17 +54,17 @@ export function PromocodeBulkModal({
           <form id="bulk-promocode-form" onSubmit={onSubmit} className="space-y-3">
             <div className="space-y-2">
               <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Название группы</label>
-              <Input name="name" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12" placeholder="Напр. Акция для блогеров" />
+              <Input name="name" required className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300" placeholder="Напр. Акция для блогеров" />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Префикс (напр. SALE-)</label>
-                <Input name="prefix" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12" placeholder="SALE-" />
+                <Input name="prefix" required className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300" placeholder="SALE-" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Количество кодов</label>
-                <Input name="count" type="number" required min="1" max="100" defaultValue="10" className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12" />
+                <Input name="count" type="number" required min="1" max="100" defaultValue="10" className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all" />
               </div>
             </div>
 
@@ -78,14 +78,14 @@ export function PromocodeBulkModal({
               </div>
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Значение</label>
-                <Input name="value" type="number" required className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12" placeholder="10" />
+                <Input name="value" type="number" required className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300" placeholder="10" />
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Дата истечения</label>
               <div className="relative">
-                <input name="expiresAt" type="date" className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none h-12" />
+                <input name="expiresAt" type="date" className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none" />
                 <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none" />
               </div>
             </div>
@@ -93,7 +93,7 @@ export function PromocodeBulkModal({
         </div>
 
         <div className="p-6 sm:p-6 bg-white/80 backdrop-blur-md border-t border-slate-50 sticky bottom-0 z-20">
-          <SubmitButton form="bulk-promocode-form" isLoading={isLoading} disabled={isLoading} className="w-full btn-dark text-white py-8 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none h-16">
+          <SubmitButton form="bulk-promocode-form" isLoading={isLoading} disabled={isLoading} color="black" className="w-full font-bold shadow-lg shadow-slate-900/10 transition-all active:scale-[0.98]">
             Сгенерировать коды
           </SubmitButton>
         </div>

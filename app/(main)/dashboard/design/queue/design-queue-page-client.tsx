@@ -151,7 +151,7 @@ export function DesignQueuePageClient({ initialTasks, stats }: DesignQueuePageCl
               <div className="flex items-center gap-2">
                 <div className={`w-3 h-3 rounded-full ${statusConfig[status]?.color}`} />
                 <h3 className="font-medium">{statusConfig[status]?.label}</h3>
-                <Badge color="neutral">{statusTasks.length}</Badge>
+                <Badge color="gray">{statusTasks.length}</Badge>
               </div>
             </div>
 

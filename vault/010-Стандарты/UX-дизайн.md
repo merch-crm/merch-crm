@@ -19,7 +19,7 @@ MerchCRM Unified v3.0 базируется на эстетике **Lumin-Apple**
 	- **Outer (Карточки/Контейнеры)**: 24px (`rounded-3xl`). Это создает «мягкий» и современный вид.
 	- **Inner (Кнопки/Инпуты)**: 14px (`rounded-xl`). Гармонично вписываются во внешние блоки.
 - **Цвета**:
-	- **Primary**: `#5d00ff` — насыщенный фиолетовый. Энергия и фокус.
+	- **Purple (Brand/Accent)**: `#5d00ff` — насыщенный фиолетовый. Энергия и фокус.
 	- **Background**: `#f8f9fa` (Light) / `#0a0a0a` (Dark).
 	- **Surface**: Белый с легкой прозрачностью (85%+) и размытием.
 
@@ -32,10 +32,20 @@ MerchCRM Unified v3.0 базируется на эстетике **Lumin-Apple**
 ## 3. Интерактивность
 - **Spring-анимации**: Все модальные окна и переходы должны использовать физические пружинные анимации (без резких рывков).
 - **Микро-взаимодействия**: Ховеры (Hover states) всегда должны менять масштаб (`scale-105`) или прозрачность, давая мгновенный отклик.
-- **Индикация состояний**: 
-	- Успех: `#10b981` (Emerald).
-	- Ошибка: `#ef4444` (Rose).
-	- Предупреждение: `#f59e0b` (Amber).
+- **Индикация состояний (Semantic Colors)**:
+	- Успех / В наличии: `green` (`#10b981`).
+	- Предупреждение / Заканчивается: `yellow` (`#f59e0b`).
+	- Ошибка / Нет в наличии: `red` (`#f43f5e`).
+	- Акцентный / Бренд: `purple` (`#5d00ff`).
+	- Тёмный / Midnight: `black` (`#020617`).
+	- Серый / Нейтральный: `gray` (`#64748b`).
+- **Soft-варианты (фоны для PriorityFlag/QuantityBadge)**:
+	- Успех: `bg-emerald-50 text-emerald-700 border-emerald-200`.
+	- Предупреждение: `bg-amber-50 text-amber-700 border-amber-200`.
+	- Ошибка: `bg-rose-50 text-rose-700 border-rose-200`.
+	- Нейтральный (Gray): `bg-slate-100 text-slate-700 border-slate-200`.
+
+> [!important] Все компоненты статусов (PillBadge, PriorityFlag, StatusChip, QuantityBadge, QuantityIconBadge, SplitBadge) **обязаны** использовать эти токены. Кастомные hex-значения запрещены.
 
 ## 4. Конструкция компонентов
 - **Header**: Всегда плавающий (sticky) с эффектом размытия заднего плана.
@@ -45,9 +55,18 @@ MerchCRM Unified v3.0 базируется на эстетике **Lumin-Apple**
 ## 5. Строгие ограничения (Анти-паттерны)
 В связи с частыми ошибками при кодогенерации, агенты обязаны жестко соблюдать следующие запреты:
 - **Унифицированный API UI Kit (v4.0)**:
-	- **Button/Badge**: Использовать `color` для семантики (`primary`, `success`, `danger` и т.д.) и `variant` для стиля (`solid`, `outline`, `ghost`, `action`).
-	- **Запрещенные пропсы**: Запрещено передавать `color="ghost"` или `color="outline"`. Вместо этого используй `variant="ghost" color="neutral"`.
-	- **Legacy Colors**: Запрещено использовать `destructive` (замени на `danger`) и `secondary` (замени на `outline` или `neutral`).
+	- **Button & Badge**: Использует единый набор цветов для семантики:
+		- `black` (Тёмный/Midnight)
+		- `gray` (Нейтральный/Slate)
+		- `green` (Успех/Emerald)
+		- `yellow` (Предупреждение/Amber)
+		- `red` (Ошибка/Rose)
+		- `purple` (Бренд/Primary)
+	- **Button**: `variant` (`solid`, `outline`, `ghost`, `link`). По умолчанию: `color="black" variant="solid"`.
+	- **Badge**: `variant` (`solid`, `outline`, `ghost`). По умолчанию: `color="purple" variant="solid"`.
+
+	- **Запрещённые пропсы**: Запрещено передавать `color="ghost"` или `color="outline"`. Вместо этого используй `variant="ghost" color="gray"`.
+	- **Legacy Colors**: Запрещено использовать `primary`, `destructive`, `danger`, `success`, `warning`, `neutral`, `secondary`. Замени их на соответствующие цветовые имена (`purple`, `red`, `green`, `yellow`, `gray`).
 - **Слишком большие отступы**: Запрещено использовать `gap` и `space` больше `3` (`gap-4`, `space-y-5` и т.д. запрещены). Все отступы должны быть компактными (максимум `12px` / `gap-3`).
 - **Слишком мелкий текст**: Минимально допустимый размер текста — `text-xs`. Запрещены классы вроде `text-[10px]` или `text-[9px]`.
 - **Запрещенная типографика**: 

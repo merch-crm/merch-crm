@@ -136,7 +136,7 @@ export const AntigravityLocationCard = memo(({
               </Button>
               <Button
                 variant="ghost"
-                color="danger"
+                color="red"
                 size="icon"
                 onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
                 className="h-10 w-10 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 ring-1 ring-rose-500/20"

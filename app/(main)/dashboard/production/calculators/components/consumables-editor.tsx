@@ -106,7 +106,7 @@ const PercentSlider = memo(function PercentSlider({
   <div className="space-y-3 p-4 bg-slate-50 rounded-xl">
    <div className="flex items-center justify-between">
     <span className="text-sm font-medium text-slate-700">{label}</span>
-    <Badge className={cn( "font-mono", color === 'green' && "bg-green-100 text-green-700", color === 'amber' && "bg-amber-100 text-amber-700", color === 'red' && "bg-red-100 text-red-700" )} color="neutral">
+    <Badge className={cn( "font-mono", color === 'green' && "bg-green-100 text-green-700", color === 'amber' && "bg-amber-100 text-amber-700", color === 'red' && "bg-red-100 text-red-700" )} color="gray">
      {value}%
     </Badge>
    </div>

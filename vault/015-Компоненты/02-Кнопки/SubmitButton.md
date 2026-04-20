@@ -39,7 +39,7 @@ export function ProfileForm() {
     <form action={updateProfile}>
       <input name="name" />
       <SubmitButton 
-        color="dark" 
+        color="black" 
         text="Сохранить профиль" 
       />
     </form>

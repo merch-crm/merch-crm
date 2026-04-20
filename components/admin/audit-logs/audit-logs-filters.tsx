@@ -81,12 +81,12 @@ export function AuditLogsFilters({
 
                 <div className="flex gap-2 shrink-0">
                     {hasFilters && (
-                        <Button variant="solid" color="neutral" onClick={onReset} className="h-10 px-4 text-xs">
+                        <Button variant="solid" color="gray" onClick={onReset} className="h-10 px-4 text-xs">
                             Сбросить
                         </Button>
                     )}
                     {isAdmin && (
-                        <Button variant="solid" color="danger" size="icon" onClick={onClearLogs} disabled={isClearing} className="h-10 w-10 bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-100" aria-label="Очистить логи аудита">
+                        <Button variant="solid" color="red" size="icon" onClick={onClearLogs} disabled={isClearing} className="h-10 w-10 bg-rose-50 text-rose-600 hover:bg-rose-100 border-rose-100" aria-label="Очистить логи аудита">
                             <Trash2 size={16} />
                         </Button>
                     )}

@@ -94,7 +94,7 @@ export function ValueForm({
               {valueForm.editingAttribute && (
                 <Button 
                   variant="ghost" 
-                  color="danger"
+                  color="red"
                   onClick={() => setDeleteDialog(prev => ({ ...prev, attribute: valueForm.editingAttribute }))}
                   className="w-9 h-9 p-0 rounded-xl transition-all"
                   title="Удалить"
@@ -104,7 +104,7 @@ export function ValueForm({
               )}
               <Button 
                 variant="ghost" 
-                color="neutral"
+                color="gray"
                 onClick={() => setValueForm(prev => ({ ...prev, isOpen: false }))}
                 className="w-9 h-9 p-0 rounded-xl transition-all"
                 title="Отменить"

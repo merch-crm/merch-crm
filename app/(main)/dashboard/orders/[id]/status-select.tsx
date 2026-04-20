@@ -168,7 +168,7 @@ export default function StatusSelect({ orderId, currentStatus }: { orderId: stri
             >
               Назад
             </Button>
-            <Button variant="solid" color="danger" disabled={!cancelReason.trim() || loading} onClick={() => handleStatusChange("cancelled", cancelReason)}
+            <Button variant="solid" color="red" disabled={!cancelReason.trim() || loading} onClick={() => handleStatusChange("cancelled", cancelReason)}
               className="h-11 w-full md:w-auto md:px-8 text-white rounded-2xl text-xs font-bold shadow-lg shadow-rose-500/20 transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none p-0"
             >
               {loading ?"Отмена..." :"Отменить заказ"}

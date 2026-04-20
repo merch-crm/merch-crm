@@ -106,3 +106,12 @@
 @utility animate-aurora {
   animation: aurora 60s linear infinite;
 }
+
+@keyframes stripe-flow {
+  0% { background-position: 0 0; }
+  100% { background-position: 32px 0; }
+}
+
+@utility animate-stripe-flow {
+  animation: stripe-flow 1.5s linear infinite;
+}

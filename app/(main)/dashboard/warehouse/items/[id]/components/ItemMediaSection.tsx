@@ -312,7 +312,7 @@ export const ItemMediaSection = React.memo(({
                       </div>
                       {isEditing && (
                         <div className="absolute top-3 right-3 flex flex-col gap-2 opacity-0 group-hover/item:opacity-100 transition-all translate-x-2 group-hover/item:translate-x-0">
-                          <Button variant="solid" color="danger" size="icon" type="button" className="w-9 h-9 rounded-xl p-0 shadow-lg border-none" onClick={(e) => {
+                          <Button variant="solid" color="red" size="icon" type="button" className="w-9 h-9 rounded-xl p-0 shadow-lg border-none" onClick={(e) => {
                               e.stopPropagation();
                               onImageRemove(img.type, img.index);
                               playSound("client_deleted");
@@ -320,7 +320,7 @@ export const ItemMediaSection = React.memo(({
                           >
                             <Trash2 className="w-4 h-4 text-white" />
                           </Button>
-                          <Button variant="solid" color="neutral" size="icon" type="button" className="w-9 h-9 rounded-xl p-0 shadow-lg bg-white hover:bg-slate-50 text-slate-900 border-none" onClick={(e) => e.stopPropagation()}
+                          <Button variant="solid" color="gray" size="icon" type="button" className="w-9 h-9 rounded-xl p-0 shadow-lg bg-white hover:bg-slate-50 text-slate-900 border-none" onClick={(e) => e.stopPropagation()}
                           >
                             <label className="cursor-pointer w-full h-full flex items-center justify-center">
                               <input

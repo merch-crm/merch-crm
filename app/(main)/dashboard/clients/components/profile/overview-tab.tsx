@@ -108,7 +108,7 @@ export function OverviewTab({
           </div>
           <div className="flex flex-wrap gap-2">
             {client.telegram && (
-              <Badge color="primary" variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100 transition-all" onClick={() => {
+              <Badge color="purple" variant="outline" className="h-8 pl-1 pr-3 rounded-full border-blue-100 bg-blue-50 text-blue-600 gap-2 font-semibold cursor-pointer hover:bg-blue-100 transition-all" onClick={() => {
                 safeExternalOpen(`https://t.me/${client.telegram?.replace('@', '')}`, "Telegram", toast);
               }}>
                 <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center text-white"><MessageCircle className="w-3 h-3" /></div>
@@ -116,7 +116,7 @@ export function OverviewTab({
               </Badge>
             )}
             {client.instagram && (
-              <Badge color="primary" variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100 transition-all" onClick={() => {
+              <Badge color="purple" variant="outline" className="h-8 pl-1 pr-3 rounded-full border-pink-100 bg-pink-50 text-pink-600 gap-2 font-semibold cursor-pointer hover:bg-pink-100 transition-all" onClick={() => {
                 safeExternalOpen(`https://instagram.com/${client.instagram?.replace('@', '')}`, "Instagram", toast);
               }}>
                 <div className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-white"><ExternalLink className="w-3 h-3" /></div>
@@ -203,7 +203,7 @@ export function OverviewTab({
       )}
 
       <div className="pt-3">
-        <Button type="button" variant="ghost" color="neutral" size="sm" className="w-full h-10 border-2 border-dashed border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-primary/5 rounded-2xl text-xs font-bold gap-2" onClick={onRecalculate}>
+        <Button type="button" variant="ghost" color="gray" size="sm" className="w-full h-10 border-2 border-dashed border-slate-100 text-slate-400 hover:text-primary hover:border-primary/20 hover:bg-primary/5 rounded-2xl text-xs font-bold gap-2" onClick={onRecalculate}>
           <RotateCcw className="w-3.5 h-3.5" />
           Пересчитать статистику и RFM
         </Button>

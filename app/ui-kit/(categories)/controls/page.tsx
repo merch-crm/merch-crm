@@ -17,9 +17,9 @@ export default function ControlsPage() {
    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 pb-32">
     <ComponentShowcase title="Стандартные Переключатели" source="custom" className="col-span-1 md:col-span-2 lg:col-span-2">
      <div className="flex items-center gap-4 p-8 h-full justify-center">
-      <Switch color="success" defaultChecked />
-      <Switch color="dark" defaultChecked />
-      <Switch color="primary" defaultChecked />
+      <Switch color="green" defaultChecked />
+      <Switch color="black" defaultChecked />
+      <Switch color="purple" defaultChecked />
      </div>
     </ComponentShowcase>
 

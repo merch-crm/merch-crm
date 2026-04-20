@@ -118,16 +118,16 @@ export function LostReasonModal({ open, onClose, onConfirm }: LostReasonModalPro
           <Textarea value={comment} onChange={(e) => setComment(e.target.value)}
             placeholder="Опишите ситуацию подробнее..."
             rows={3}
-            className="rounded-2xl border-slate-200 focus:border-red-200 focus:ring-red-100/50 resize-none transition-all placeholder:text-slate-300"
+            className="rounded-[var(--radius-inner)] border-slate-200 focus:border-red-200 focus:ring-red-100/50 resize-none transition-all placeholder:text-slate-300"
           />
         </div>
 
         {/* Действия */}
         <div className="flex gap-3 pt-2">
-          <Button variant="outline" onClick={handleClose} disabled={isSubmitting} className="flex-1 h-12 rounded-2xl border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
+          <Button variant="outline" onClick={handleClose} disabled={isSubmitting} className="flex-1 font-bold hover:bg-slate-50">
             Отмена
           </Button>
-          <Button onClick={handleConfirm} disabled={!selectedReason || isSubmitting} className="flex-1 h-12 rounded-2xl bg-red-600 hover:bg-red-700 font-bold shadow-lg shadow-red-200 transition-all active:scale-[0.98]">
+          <Button onClick={handleConfirm} disabled={!selectedReason || isSubmitting} className="flex-1 bg-red-600 hover:bg-red-700 font-bold shadow-lg shadow-red-200 transition-all active:scale-[0.98]">
             {isSubmitting ? (
               <Clock className="w-4 h-4 animate-spin" />
             ) : (

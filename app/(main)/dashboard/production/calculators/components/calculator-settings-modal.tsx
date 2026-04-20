@@ -236,7 +236,7 @@ export const CalculatorSettingsModal = memo(function CalculatorSettingsModal({
   <div className="flex items-center justify-between w-full">
    <div className="flex items-center gap-2">
     {hasChanges && (
-     <Badge className="bg-amber-100 text-amber-700" color="neutral">
+     <Badge className="bg-amber-100 text-amber-700" color="gray">
       <AlertCircle className="w-3 h-3 mr-1" />
       Есть несохранённые изменения
      </Badge>
@@ -244,7 +244,7 @@ export const CalculatorSettingsModal = memo(function CalculatorSettingsModal({
    </div>
    
    <div className="flex gap-2">
-    <Button variant="outline" color="neutral" onClick={handleReset} disabled={!hasChanges || isSaving}>
+    <Button variant="outline" color="gray" onClick={handleReset} disabled={!hasChanges || isSaving}>
      <RotateCcw className="w-4 h-4 mr-2" />
      <span className="hidden sm:inline">Сбросить</span>
     </Button>
@@ -272,7 +272,7 @@ export const CalculatorSettingsModal = memo(function CalculatorSettingsModal({
          <tab.icon className="w-4 h-4 mr-2" />
          <span className="hidden sm:inline">{tab.label}</span>
          {tab.count !== null && (
-          <Badge className="ml-2 text-xs" color="neutral">
+          <Badge className="ml-2 text-xs" color="gray">
            {tab.count}
           </Badge>
          )}

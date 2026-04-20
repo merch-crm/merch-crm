@@ -60,7 +60,7 @@ export function PlacementProductCard({
  const ActionsMenu = () => (
   <DropdownMenu>
    <DropdownMenuTrigger asChild>
-    <Button variant="ghost" color="neutral" size="icon" className="rounded-[10px] h-9 w-9 bg-white border border-slate-200 shadow-sm hover:border-slate-300 transition-all">
+    <Button variant="ghost" color="gray" size="icon" className="rounded-[10px] h-9 w-9 bg-white border border-slate-200 shadow-sm hover:border-slate-300 transition-all">
      <MoreHorizontal className="h-4 w-4 text-slate-600" />
     </Button>
    </DropdownMenuTrigger>
@@ -97,7 +97,7 @@ export function PlacementProductCard({
        <div className="flex items-center gap-2 mb-1">
         <h3 className="font-bold text-slate-900 truncate">{product.name}</h3>
         {!product.isActive && (
-         <Badge className="text-xs h-5 bg-slate-200 text-slate-600 border-none font-black" color="neutral">
+         <Badge className="text-xs h-5 bg-slate-200 text-slate-600 border-none font-black" color="gray">
           Скрыт
          </Badge>
         )}
@@ -150,7 +150,7 @@ export function PlacementProductCard({
    <CardContent className="p-6 space-y-3">
     {/* Статус */}
     {!product.isActive && (
-     <Badge className="w-full justify-center text-xs h-7 bg-slate-100 text-slate-500 border-none font-bold" color="neutral">
+     <Badge className="w-full justify-center text-xs h-7 bg-slate-100 text-slate-500 border-none font-bold" color="gray">
       <EyeOff className="h-3.5 w-3.5 mr-2" />
       Скрыт в калькуляторах
      </Badge>
@@ -164,12 +164,12 @@ export function PlacementProductCard({
      </div>
      <div className="flex flex-wrap gap-1.5">
       {activeAreas.slice(0, 4).map((area) => (
-       <Badge key={area.id} color="primary" variant="outline" className="text-xs font-bold py-0.5 px-2 bg-slate-50/50 border-slate-200 text-slate-600 rounded-lg">
+       <Badge key={area.id} color="purple" variant="outline" className="text-xs font-bold py-0.5 px-2 bg-slate-50/50 border-slate-200 text-slate-600 rounded-lg">
         {area.name}
        </Badge>
       ))}
       {activeAreas.length > 4 && (
-       <Badge color="primary" variant="outline" className="text-xs font-black py-0.5 px-2 bg-indigo-50 border-indigo-100 text-indigo-600 rounded-lg">
+       <Badge color="purple" variant="outline" className="text-xs font-black py-0.5 px-2 bg-indigo-50 border-indigo-100 text-indigo-600 rounded-lg">
         +{activeAreas.length - 4}
        </Badge>
       )}

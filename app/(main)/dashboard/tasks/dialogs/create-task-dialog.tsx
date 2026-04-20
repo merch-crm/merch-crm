@@ -285,14 +285,14 @@ export function CreateTaskDialog({
 
      <div className="flex items-center gap-3">
       {activeStep < 3 ? (
-       <Button color="dark" onClick={() => setActiveStep(activeStep + 1)}
+       <Button color="black" onClick={() => setActiveStep(activeStep + 1)}
         disabled={!canProceed()}
         className="bg-slate-900 border-none hover:bg-slate-800 text-white rounded-[18px] px-10 h-12 shadow-lg shadow-black/10 transition-all font-bold active:scale-95 disabled:opacity-50"
        >
         Далее
        </Button>
       ) : (
-       <Button color="dark" onClick={handleSubmit} disabled={isSubmitting || !canProceed()} className="bg-indigo-600 border-none hover:bg-indigo-700 text-white rounded-[18px] px-10 h-12 min-w-[200px] shadow-lg shadow-indigo-500/20 transition-all font-black text-xs active:scale-95 disabled:opacity-50">
+       <Button color="black" onClick={handleSubmit} disabled={isSubmitting || !canProceed()} className="bg-indigo-600 border-none hover:bg-indigo-700 text-white rounded-[18px] px-10 h-12 min-w-[200px] shadow-lg shadow-indigo-500/20 transition-all font-black text-xs active:scale-95 disabled:opacity-50">
         {isSubmitting ? (
          <>
           <Loader2 className="h-4 w-4 mr-2 animate-spin" />

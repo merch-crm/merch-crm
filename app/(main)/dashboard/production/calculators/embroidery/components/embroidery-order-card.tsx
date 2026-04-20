@@ -153,7 +153,7 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
      <div className="min-w-0">
       <div className="flex items-center gap-2 mb-0.5">
        <h4 className="font-bold text-slate-900 truncate ">{garment.name}</h4>
-       <Badge className="bg-slate-100 text-slate-600 text-xs font-bold " color="neutral">
+       <Badge className="bg-slate-100 text-slate-600 text-xs font-bold " color="gray">
         {order.positions.length} поз.
        </Badge>
       </div>
@@ -172,7 +172,7 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
     <div role="button" tabIndex={0} className="flex items-center gap-3" onClick={e => e.stopPropagation()}>
      {/* Управление количеством */}
      <div className="flex items-center gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
-      <Button variant="ghost" color="neutral" size="icon" onClick={() => handleQuantityChange(order.quantity - 1)}
+      <Button variant="ghost" color="gray" size="icon" onClick={() => handleQuantityChange(order.quantity - 1)}
        disabled={order.quantity <= 1}
        className="w-8 h-8 rounded-lg hover:bg-white hover:text-pink-600"
       >
@@ -185,7 +185,7 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
         min={1}
        />
       </div>
-      <Button variant="ghost" color="neutral" size="icon" onClick={() => handleQuantityChange(order.quantity + 1)}
+      <Button variant="ghost" color="gray" size="icon" onClick={() => handleQuantityChange(order.quantity + 1)}
        className="w-8 h-8 rounded-lg hover:bg-white hover:text-pink-600"
       >
        <Plus className="w-3.5 h-3.5" />
@@ -194,10 +194,10 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
 
      {/* Действия */}
      <div className="flex items-center gap-1">
-      <Button variant="ghost" color="neutral" size="icon" onClick={onDuplicate} className="h-8 w-8 text-slate-400 hover:text-blue-600">
+      <Button variant="ghost" color="gray" size="icon" onClick={onDuplicate} className="h-8 w-8 text-slate-400 hover:text-blue-600">
        <Copy className="w-4 h-4" />
       </Button>
-      <Button variant="ghost" color="neutral" size="icon" onClick={onDelete} className="h-8 w-8 text-slate-400 hover:text-red-600">
+      <Button variant="ghost" color="gray" size="icon" onClick={onDelete} className="h-8 w-8 text-slate-400 hover:text-red-600">
        <Trash2 className="w-4 h-4" />
       </Button>
       <div className="w-px h-6 bg-slate-200 mx-1" />
@@ -240,7 +240,7 @@ export const EmbroideryOrderCard = memo(function EmbroideryOrderCard({
      <div className="space-y-3">
       <div className="flex items-center justify-between">
        <h5 className="text-xs font-black text-slate-400">Места нанесения вышивки</h5>
-       <Badge color="primary" variant="outline" className="text-xs font-bold">{order.positions.length} активных</Badge>
+       <Badge color="purple" variant="outline" className="text-xs font-bold">{order.positions.length} активных</Badge>
       </div>
 
       {order.positions.length > 0 ? (

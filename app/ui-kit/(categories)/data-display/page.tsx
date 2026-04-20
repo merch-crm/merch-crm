@@ -55,7 +55,7 @@ const data: Data[] = [
   member: {
    name: 'Дмитрий Соколов',
    email: 'dmitry@merchcrm.com',
-   image: '/images/avatar/illustration/james.png',
+   image: '',
   },
   title: {
    name: 'Маркетинг-менеджер',
@@ -72,7 +72,7 @@ const data: Data[] = [
   member: {
    name: 'Алексей Иванов',
    email: 'alexey@merchcrm.com',
-   image: '/images/avatar/illustration/liam.png',
+   image: '',
   },
   title: {
    name: 'Продукт-дизайнер',
@@ -89,7 +89,7 @@ const data: Data[] = [
   member: {
    name: 'Елена Кузнецова',
    email: 'elena@merchcrm.com',
-   image: '/images/avatar/illustration/sarah.png',
+   image: '',
   },
   title: {
    name: 'DevOps-инженер',

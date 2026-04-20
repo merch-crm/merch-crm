@@ -43,14 +43,14 @@ export function DesignDetailHeader({
   return (
     <div className="flex items-start justify-between">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" color="neutral" size="icon" onClick={() => router.back()}>
+        <Button variant="ghost" color="gray" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h1 className="text-2xl font-bold">{design.name}</h1>
             {!design.isActive && (
-              <Badge color="neutral">Неактивен</Badge>
+              <Badge color="gray">Неактивен</Badge>
             )}
           </div>
           <p className="text-muted-foreground">
@@ -59,7 +59,7 @@ export function DesignDetailHeader({
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" color="neutral" asChild>
+        <Button variant="outline" color="gray" asChild>
           <Link href={`/dashboard/design/editor/new?designId=${design.id}`}>
             <PenTool className="h-4 w-4 mr-2" />
             Открыть в редакторе
@@ -67,7 +67,7 @@ export function DesignDetailHeader({
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" color="neutral" size="icon">
+            <Button variant="outline" color="gray" size="icon">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>

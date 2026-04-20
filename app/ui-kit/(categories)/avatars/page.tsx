@@ -105,7 +105,7 @@ export default function AvatarsPage() {
          <h4 className="text-base font-black text-slate-900">Леонид Молчанов</h4>
          <p className="text-xs text-slate-500 font-medium">VIP Клиент • MerchPro</p>
        </div>
-       <Button color="neutral" variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
+       <Button color="gray" variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
          <ChevronRight className="size-5" />
        </Button>
       </div>

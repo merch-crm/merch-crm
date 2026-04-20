@@ -20,36 +20,36 @@ lsof -ti:3000 | xargs kill -9 2>/dev/null || true
 2. Установка SSH-туннелей (DB + Redis) через адаптивный скрипт.
 > **Важно:** Скрипт автоматически определяет IP Docker-контейнеров (`merch-crm-db` → DB IP, `merch-crm-redis` → Redis IP) и настраивает туннели напрямую к ним через autossh. Не использовать ручной autossh — Postgres в Docker **не публикует порт на хост сервера**.
 ```bash
-node scripts/setup-ssh-tunnel.mjs
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin && node scripts/setup-ssh-tunnel.mjs
 ```
 
 3. **Синхронизация пароля:** Принудительно устанавливаем пароль из `.env.local` в Docker-контейнере.
 ```bash
-DB_PASSWORD=$(grep "^DATABASE_URL" .env.local | sed -E 's/.*postgres:([^@]*)@.*/\1/') && ssh -i ~/.ssh/antigravity_key -o StrictHostKeyChecking=no root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD '$DB_PASSWORD';\"" && echo "✅ Пароль синхронизирован"
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin && DB_PASSWORD=$(grep "^DATABASE_URL" .env.local | sed -E 's/.*postgres:([^@]*)@.*/\1/') && ssh -i ~/.ssh/antigravity_key -o StrictHostKeyChecking=no root@89.104.69.25 "docker exec merch-crm-db psql -U postgres -c \"ALTER USER postgres WITH PASSWORD '$DB_PASSWORD';\"" && echo "✅ Пароль синхронизирован"
 ```
 
 4. **Синхронизация файлов с продакшна** (изображения SKU, аватары, логотип брендинга).
 > Папка `local-storage/` в `.gitignore`, файлы хранятся только на продакшн-сервере. Без этого шага все изображения будут 404.
 ```bash
-mkdir -p local-storage && rsync -az -e "ssh -i ~/.ssh/antigravity_key -o StrictHostKeyChecking=no" root@89.104.69.25:/root/merch-crm/local-storage/ ./local-storage/ && echo "✅ local-storage синхронизирован"
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin && mkdir -p local-storage && rsync -az -e "ssh -i ~/.ssh/antigravity_key -o StrictHostKeyChecking=no" root@89.104.69.25:/root/merch-crm/local-storage/ ./local-storage/ && echo "✅ local-storage синхронизирован"
 ```
 
 5. Проверка подключения к базе данных.
 ```bash
-node scripts/check-connection.js
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin && node scripts/check-connection.js
 ```
 
 6. Запуск сервера разработки.
-> **ВАЖНО ДЛЯ АГЕНТА:** Команда `npm run dev` запускает процесс сервера, который НИКОГДА не завершается. Ты **НЕ ДОЛЖЕН** ждать завершения этой команды. Выполни её асинхронно в фоне (WaitMsBeforeAsync=500) и **сразу переходи к Шагу 7**. Не зависай в ожидании статуса "done"!
+> **ВАЖНО ДЛЯ АГЕНТА:** Команда `npm run dev:quiet` запускает процесс сервера, который НИКОГДА не завершается. Ты **НЕ ДОЛЖЕН** ждать завершения этой команды. Выполни её асинхронно в фоне (WaitMsBeforeAsync=500) и **сразу переходи к Шагу 7**. Не зависай в ожидании статуса "done"!
 ```bash
-npm run dev
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin && npm run dev:quiet
 ```
 
 7. Анализ контекста и документации (Код + Obsidian).
 > **КРИТИЧЕСКИ ВАЖНО:** Этот шаг обязателен для выполнения сразу после запуска сервера. Агент **ДОЛЖЕН** изучить структуру `.agents/`, прочитать стандарты и просканировать `vault/`, чтобы понимать текущие архитектурные решения, правила UI и роли других агентов.
 1. Изучите структуру папки агента, стандарты и GEMINI.md:
 ```bash
-ls -F .agents/ && cat /Users/leonidmolchanov/.gemini/GEMINI.md .agents/UX_STANDARDS.md .agents/development_standards.md
+export PATH=$PATH:/usr/local/bin:/opt/homebrew/bin && ls -F .agents/ && cat /Users/leonidmolchanov/.gemini/GEMINI.md .agents/UX_STANDARDS.md .agents/development_standards.md
 ```
 2. Изучите структуру Obsidian Vault (база знаний о процессах и агентах):
 ```bash

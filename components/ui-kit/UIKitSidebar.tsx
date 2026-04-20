@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/components/library/custom/utils/cn";
@@ -55,8 +55,8 @@ const sidebarSections: SidebarSection[] = [
       { name: "Обзор", href: "/ui-kit", icon: Home, count: null },
       { name: "Выбор цвета", href: "/ui-kit/colors", icon: Palette, count: 5, isCompleted: true },
       { name: "Типографика", href: "/ui-kit/typography", icon: Type, count: 17 },
-      { name: "Кнопки", href: "/ui-kit/buttons", icon: RectangleHorizontal, count: 7 },
-      { name: "Статусы и Бейджи", href: "/ui-kit/statuses", icon: Activity, count: 6 },
+      { name: "Кнопки", href: "/ui-kit/buttons", icon: RectangleHorizontal, count: 7, isCompleted: true },
+      { name: "Статус", href: "/ui-kit/statuses", icon: Activity, count: 6 },
     ]
   },
   {
@@ -104,9 +104,32 @@ const sidebarSections: SidebarSection[] = [
 ];
 
 export function UIKitSidebar() {
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+  // Prevention of hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+       <aside className="sticky top-0 h-screen w-72 shrink-0 border-r border-slate-100 bg-[#f8f9fa]/80 backdrop-blur-2xl transition-all duration-500 z-50">
+          <div className="px-6 py-8">
+             <div className="flex items-center gap-3">
+                <div className="size-10 rounded-2xl bg-[#5d00ff] text-white flex items-center justify-center shadow-lg shadow-[#5d00ff]/20">
+                   <Box size={24} fill="currentColor" className="opacity-80" />
+                </div>
+                <div>
+                   <h1 className="text-xl font-black leading-none text-slate-900">UI Kit</h1>
+                </div>
+             </div>
+          </div>
+       </aside>
+    );
+  }
 
   // Filter sections and items based on search
   const filteredSections = sidebarSections.map(section => ({

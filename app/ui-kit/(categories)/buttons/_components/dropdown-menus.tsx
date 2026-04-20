@@ -18,13 +18,14 @@ export function DropdownMenus() {
   <ComponentShowcase 
    title="Контекстное меню" 
    source="custom" 
-   desc="Выпадающее меню для дополнительных действий и опций." 
+   code='import { ActionMenu } from "@/components/ui/action-menu";'
+   description="Выпадающее меню для дополнительных действий и опций." 
   >
    <div className="flex items-center justify-center py-10 w-full">
     <DropdownMenu>
      <DropdownMenuTrigger asChild>
-      <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all active:scale-95 shadow-sm">
-       <MoreHorizontal className="size-4 text-slate-600" />
+      <Button variant="solid" color="black" size="icon" className="rounded-2xl shadow-sm active:scale-95 transition-all">
+       <MoreHorizontal className="size-5 text-white" />
       </Button>
      </DropdownMenuTrigger>
      <DropdownMenuContent align="end" className="w-56 p-2 rounded-3xl border-slate-100 shadow-2xl bg-white/80 backdrop-blur-xl">

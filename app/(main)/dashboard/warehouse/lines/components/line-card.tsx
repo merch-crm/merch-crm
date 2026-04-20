@@ -52,7 +52,7 @@ export function LineCard({ line, category }: LineCardProps) {
               </CardDescription>
             )}
           </div>
-          <Badge color="primary" variant="outline" className={config.color}>
+          <Badge color="purple" variant="outline" className={config.color}>
             <TypeIcon className="h-3 w-3 mr-1" />
             {config.label}
           </Badge>

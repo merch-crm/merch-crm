@@ -36,7 +36,7 @@ export function LabelPrinterActions({
         <Button type="button" variant="outline" className="flex-1 h-11 rounded-xl bg-white border-2 border-slate-200 text-slate-900 flex items-center justify-center hover:bg-slate-50 hover:border-slate-300 group px-0 font-bold" aria-label="Скачать">
           <Download className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
         </Button>
-        <Button type="button" onClick={handlePrint} color="dark" className="flex-1 h-11 rounded-xl text-sm flex items-center justify-center gap-2.5 group border-none font-bold">
+        <Button type="button" onClick={handlePrint} color="black" className="flex-1 h-11 rounded-xl text-sm flex items-center justify-center gap-2.5 group border-none font-bold">
           <Printer className="w-4 h-4" />
           Печать
         </Button>

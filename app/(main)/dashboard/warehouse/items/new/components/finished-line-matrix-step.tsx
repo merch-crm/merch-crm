@@ -170,7 +170,7 @@ export function FinishedLineMatrixStep({
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Выберите цвета</CardTitle>
-                <Button variant="outline" color="neutral" size="sm" onClick={toggleAllColors}>
+                <Button variant="outline" color="gray" size="sm" onClick={toggleAllColors}>
                   {selection.colors.length === availableColors.length ? (
                     <>
                       <Square className="h-4 w-4 mr-2" />
@@ -221,7 +221,7 @@ export function FinishedLineMatrixStep({
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base">Выберите размеры</CardTitle>
-                <Button variant="outline" color="neutral" size="sm" onClick={toggleAllSizes}>
+                <Button variant="outline" color="gray" size="sm" onClick={toggleAllSizes}>
                   {selection.sizes.length === availableSizes.length ? (
                     <>
                       <Square className="h-4 w-4 mr-2" />
@@ -330,7 +330,7 @@ export function FinishedLineMatrixStep({
                   <p className="text-sm text-muted-foreground mb-2">Выбранные цвета:</p>
                   <div className="flex flex-wrap gap-1">
                     {selection.colors.map((color) => (
-                      <Badge key={color} color="neutral">
+                      <Badge key={color} color="gray">
                         {color}
                       </Badge>
                     ))}
@@ -343,7 +343,7 @@ export function FinishedLineMatrixStep({
                   <p className="text-sm text-muted-foreground mb-2">Выбранные размеры:</p>
                   <div className="flex flex-wrap gap-1">
                     {selection.sizes.map((size) => (
-                      <Badge key={size} color="primary" variant="outline">
+                      <Badge key={size} color="purple" variant="outline">
                         {size}
                       </Badge>
                     ))}
@@ -357,7 +357,7 @@ export function FinishedLineMatrixStep({
 
       {/* Навигация */}
       <div className="flex justify-between pt-4 border-t">
-        <Button variant="outline" color="neutral" onClick={onBack}>
+        <Button variant="outline" color="gray" onClick={onBack}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Назад
         </Button>

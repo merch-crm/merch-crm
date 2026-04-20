@@ -46,7 +46,7 @@ export function ArchiveReasonDialog({
       <Button 
         type="button" 
         variant="ghost" 
-        color="neutral"
+        color="gray"
         onClick={onClose} 
         className="flex h-11 px-6 rounded-xl font-bold"
       >
@@ -58,7 +58,7 @@ export function ArchiveReasonDialog({
         disabled={isLoading || !reason.trim()}
         isLoading={isLoading}
         loadingText="Обработка..."
-        color="warning"
+        color="yellow"
         className="h-11 flex-1 sm:flex-none sm:px-10 rounded-xl font-bold"
       >
         Архивировать

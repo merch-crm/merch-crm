@@ -172,15 +172,15 @@ export function NewClientPageClient({ managers }: NewClientPageClientProps) {
               )}
             </div>
             <div className="flex gap-3">
-              <Button type="button" variant="outline" onClick={handleBack} className="px-6 py-3 h-auto rounded-[var(--radius-inner)] border-slate-200 text-sm font-bold text-slate-400 hover:text-slate-900 bg-white transition-all">
+              <Button type="button" variant="outline" onClick={handleBack} className="px-6 font-bold text-slate-400 hover:text-slate-900 bg-white transition-all">
                 Назад
               </Button>
               {logicState.step < 2 ? (
-                <Button type="button" onClick={handleNext} className="px-8 py-3 h-auto btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none">
+                <Button type="button" onClick={handleNext} color="black" className="px-8 font-bold disabled:opacity-50 transition-all">
                   Далее
                 </Button>
               ) : (
-                <Button type="submit" disabled={logicState.loading} className="px-8 py-3 h-auto btn-dark rounded-[var(--radius-inner)] text-sm font-bold disabled:opacity-50 transition-all border-none">
+                <Button type="submit" color="black" disabled={logicState.loading} className="px-8 font-bold disabled:opacity-50 transition-all">
                   {logicState.loading ? "Создание..." : "Создать клиента"}
                 </Button>
               )}

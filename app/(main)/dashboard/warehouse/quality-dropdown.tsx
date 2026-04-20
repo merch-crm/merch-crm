@@ -36,7 +36,7 @@ export function QualityDropdown({ value, onChange, options: externalOptions, cla
 
   return (
     <div className={className}>
-      <Select options={selectOptions} value={value} onChange={handleChange} placeholder="Выберите качество..." compact={compact} variant="solid" color="primary" autoLayout />
+      <Select options={selectOptions} value={value} onChange={handleChange} placeholder="Выберите качество..." compact={compact} variant="solid" color="purple" autoLayout />
     </div>
   );
 }

@@ -68,7 +68,7 @@ export function UrgencySettingsModal({
 
  return (
   <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Настройки срочности" description="Укажите наценку за срочное выполнение заказа" footer={ <div className="flex justify-end gap-3 w-full">
-     <Button variant="ghost" color="neutral" onClick={onClose} className="rounded-md">
+     <Button variant="ghost" color="gray" onClick={onClose} className="rounded-md">
       Отмена
      </Button>
      <Button onClick={handleSave} disabled={!hasChanges} className="rounded-md">
@@ -94,7 +94,7 @@ export function UrgencySettingsModal({
          </p>
         </div>
        </div>
-       <Badge color="neutral">+{formatCurrency(0)}</Badge>
+       <Badge color="gray">+{formatCurrency(0)}</Badge>
       </div>
      </CardContent>
     </Card>

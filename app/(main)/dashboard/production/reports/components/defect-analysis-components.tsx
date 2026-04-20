@@ -79,7 +79,7 @@ export function DefectsTable({ data = [] }: { data: DefectByType[] }) {
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-slate-500">{item.count} шт</span>
-            <Badge color="neutral">{item.percentage.toFixed(1)}%</Badge>
+            <Badge color="gray">{item.percentage.toFixed(1)}%</Badge>
           </div>
         </div>
       ))}

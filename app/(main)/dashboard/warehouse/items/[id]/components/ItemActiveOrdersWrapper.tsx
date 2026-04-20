@@ -25,7 +25,7 @@ export function ItemActiveOrdersWrapper({
     )}>
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-[17px] font-black text-slate-900">Активные заказы ({activeOrders.length})</h3>
-        <Button variant="link" color="neutral" className="h-auto p-0 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
+        <Button variant="link" color="gray" className="h-auto p-0 text-sm font-bold text-blue-500 hover:text-blue-600 transition-colors">
           Смотреть все
         </Button>
       </div>

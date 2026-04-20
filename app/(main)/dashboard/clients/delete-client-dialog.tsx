@@ -74,7 +74,7 @@ export function DeleteClientDialog({ client, isOpen, onClose }: DeleteClientDial
           <Button variant="outline" onClick={onClose} disabled={isLoading} className="flex-1 md:flex-none border-slate-200">
             Отмена
           </Button>
-          <Button variant="solid" color="danger" onClick={handleDelete} disabled={isLoading} className="flex-1 md:flex-none">
+          <Button variant="solid" color="red" onClick={handleDelete} disabled={isLoading} className="flex-1 md:flex-none">
             {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {isLoading ?"Удаление..." :"Удалить"}
           </Button>

@@ -56,11 +56,11 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
       <Button 
         onClick={handleOpen} 
         className={cn(
-          "size-11 sm:h-11 sm:w-auto px-0 sm:px-6 rounded-xl gap-2", 
+          "sm:w-auto px-0 sm:px-6 gap-2 text-sm font-bold", 
           className 
         )}
       >
-        <Plus className="w-5 h-5 text-white shrink-0" />
+        <Plus className="size-4 text-white shrink-0" />
         <span className="hidden sm:inline">Новая характеристика</span>
       </Button>
 
@@ -176,7 +176,7 @@ export function AddAttributeTypeDialog({ categories, attributeTypes = [], classN
           <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-end lg:justify-between gap-3 shrink-0">
             <Button 
               variant="ghost" 
-              color="neutral"
+              color="gray"
               onClick={() => setIsOpen(false)}
               className="flex-1 lg:flex-none h-11 lg:px-8 font-bold text-sm rounded-xl"
             >

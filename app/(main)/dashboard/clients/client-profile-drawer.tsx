@@ -122,7 +122,7 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
           {!loading && client && client.id && (
             <div className="flex flex-wrap gap-2 mb-6 mt-2">
               {!["Печатник", "Дизайнер"].includes(userRoleName || "") && (
-                <Button className="h-9 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs" onClick={() => {
+                <Button size="sm" className="px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs" onClick={() => {
                     safeExternalOpen(`tel:${client.phone}`, "Телефон", toast, true);
                   }}
                 >
@@ -130,20 +130,20 @@ export function ClientProfileDrawer({ clientId, isOpen, onClose, onEdit, showFin
                 </Button>
               )}
               {client.telegram && (
-                <Button className="h-9 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-xl font-bold text-xs" onClick={() => {
+                <Button size="sm" className="px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs" onClick={() => {
                     safeExternalOpen(`https://t.me/${client.telegram?.replace('@', '')}`, "Telegram", toast);
                   }}
                 >
                   <MessageCircle className="w-3.5 h-3.5 mr-2" /> Telegram
                 </Button>
               )}
-              <Button variant="outline" className="h-9 px-4 border-slate-200 text-slate-600 rounded-xl font-bold text-xs hover:bg-slate-50" onClick={() => router.push(`/dashboard/orders?clientId=${client.id}`)}
+              <Button size="sm" variant="outline" onClick={() => router.push(`/dashboard/orders?clientId=${client.id}`)}
               >
-                <Plus className="w-3.5 h-3.5 mr-2" /> Создать заказ
+                <Plus className="w-4 h-4 mr-2" /> Создать заказ
               </Button>
               {onEdit && (
-                <Button onClick={onEdit} variant="outline" className="h-9 px-4 border-primary/20 text-primary rounded-xl font-bold text-xs hover:bg-primary/5">
-                  <Edit2 className="w-3.5 h-3.5 mr-2" /> Редактировать
+                <Button size="sm" variant="outline" onClick={onEdit}>
+                  <Edit2 className="w-4 h-4 mr-2" /> Редактировать
                 </Button>
               )}
             </div>

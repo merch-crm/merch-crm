@@ -145,7 +145,7 @@ export function AttributeCustomModal({
                       <Button
                         key={item.id}
                         variant="outline"
-                        color={customForm.u === item.id ? "system" : "neutral"}
+                        color={customForm.u === item.id ? "purple" : "gray"}
                         onClick={() => setCustomForm(prev => ({ ...prev, u: item.id as "MM" | "CM" | "M" }))}
                         className={cn("h-9 rounded-lg border-2 font-bold text-xs shadow-sm",
                           customForm.u === item.id && "bg-indigo-50/50"
@@ -341,7 +341,7 @@ export function AttributeCustomModal({
         </div>
 
         <div className="p-6 pt-0 bg-white shrink-0 mt-auto">
-          <Button color="dark" className="w-full h-12 rounded-[var(--radius-inner)] font-bold text-base disabled:opacity-50" onClick={onSave} disabled={ isDimensions ? (!customForm.l || !customForm.w || !customForm.h) : currentAttributeType?.dataType === "composition" ? (customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0) !== 100) :
+          <Button color="black" className="w-full h-12 rounded-[var(--radius-inner)] font-bold text-base disabled:opacity-50" onClick={onSave} disabled={ isDimensions ? (!customForm.l || !customForm.w || !customForm.h) : currentAttributeType?.dataType === "composition" ? (customForm.composition.reduce((acc, curr) => acc + (parseInt(curr.percent) || 0), 0) !== 100) :
                   !customForm.name.trim() || isSaving
             }
           >

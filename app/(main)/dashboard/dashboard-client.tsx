@@ -94,7 +94,7 @@ export function DashboardClient({ initialStats, period, userName, branding: init
                 </span>
                 {`, которые ожидают внимания.`}
               </p>
-              <Link href="/dashboard/orders" className="group/btn btn-dark px-6 py-3 rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-slate-900/10 transition-all flex items-center gap-2 border-none">
+              <Link href="/dashboard/orders" className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-slate-900/10 transition-all border-none">
                 Посмотреть заказы
                 <ArrowUpRight className="w-4 h-4 text-white/70" />
               </Link>

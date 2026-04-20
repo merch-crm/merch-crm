@@ -8,7 +8,6 @@ import {
     Palette,
     Settings,
     CheckSquare,
-    BookOpen,
     Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -56,7 +55,6 @@ const navigation = [
             { name: "Характеристики", href: "/dashboard/warehouse/characteristics" },
         ],
     },
-    { name: "База знаний", href: "/dashboard/knowledge-base", icon: BookOpen },
 ];
 
 export function Navbar({
@@ -89,7 +87,7 @@ export function Navbar({
             className="hidden md:block sticky top-0 z-50 bg-white border-b border-slate-200 h-16 shadow-sm"
         >
             <div className="px-4 h-full flex items-center justify-between max-w-[1480px] mx-auto w-full">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center">
                     {/* Logo */}
                     <Link href="/dashboard" className="flex items-center gap-2 group shrink-0">
                         {branding.logoUrl ? (
@@ -103,36 +101,36 @@ export function Navbar({
                                     : "M."}
                             </div>
                         )}
-                        <span className="font-bold text-lg text-slate-800  hidden lg:block ml-1">
+                        <span className="font-bold text-lg text-slate-800 hidden lg:block ml-1">
                             {branding.companyName || "MerchCRM"}
                         </span>
                     </Link>
-
-                    {/* Nav Links */}
-                    <nav className="flex items-center gap-3 text-[14px] font-semibold">
-                        {filteredNavigation.map((item) => {
-                            const isActive =
-                                item.href === "/dashboard"
-                                    ? pathname === "/dashboard"
-                                    : pathname.startsWith(item.href);
-
-                            // Если есть подменю
-                            if (item.children && item.children.length > 0) {
-                                return (
-                                    <NavDropdown key={item.name} name={item.name} href={item.href} isActive={isActive}>
-                                        {item.children}
-                                    </NavDropdown>
-                                );
-                            }
-
-                            return (
-                                <Link key={item.name} href={item.href} className={cn( "transition-colors whitespace-nowrap", isActive ? "text-primary cursor-default" : "text-slate-400 hover:text-slate-900 cursor-pointer" )}>
-                                    {item.name}
-                                </Link>
-                            );
-                        })}
-                    </nav>
                 </div>
+
+                {/* Nav Links - Distributed Area */}
+                <nav className="flex-1 flex items-center justify-center gap-10 text-[14px] font-semibold px-12">
+                    {filteredNavigation.map((item) => {
+                        const isActive =
+                            item.href === "/dashboard"
+                                ? pathname === "/dashboard"
+                                : pathname.startsWith(item.href);
+
+                        // Если есть подменю
+                        if (item.children && item.children.length > 0) {
+                            return (
+                                <NavDropdown key={item.name} name={item.name} href={item.href} isActive={isActive}>
+                                    {item.children}
+                                </NavDropdown>
+                            );
+                        }
+
+                        return (
+                            <Link key={item.name} href={item.href} className={cn( "transition-colors whitespace-nowrap", isActive ? "text-primary cursor-default" : "text-slate-400 hover:text-slate-900 cursor-pointer" )}>
+                                {item.name}
+                            </Link>
+                        );
+                    })}
+                </nav>
 
                 <div className="flex items-center gap-3 ml-auto">
                     {/* Search */}

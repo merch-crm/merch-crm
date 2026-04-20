@@ -85,12 +85,12 @@ export function PrintManager({ prints, onPrintsChange }: PrintManagerProps) {
       <Package className="h-4 w-4" />
       Принты для нанесения
       {prints.length > 0 && (
-       <Badge color="neutral">{prints.length}</Badge>
+       <Badge color="gray">{prints.length}</Badge>
       )}
      </CardTitle>
      
      {!isAdding && (
-      <Button variant="outline" color="neutral" size="sm" onClick={() => setIsAdding(true)}
+      <Button variant="outline" color="gray" size="sm" onClick={() => setIsAdding(true)}
       >
        <Plus className="h-4 w-4 mr-1" />
        Добавить
@@ -135,7 +135,7 @@ export function PrintManager({ prints, onPrintsChange }: PrintManagerProps) {
       </div>
       
       <div className="flex justify-end gap-2">
-       <Button variant="ghost" color="neutral" size="sm" onClick={() => setIsAdding(false)}
+       <Button variant="ghost" color="gray" size="sm" onClick={() => setIsAdding(false)}
        >
         <X className="h-4 w-4 mr-1" />
         Отмена
@@ -159,7 +159,7 @@ export function PrintManager({ prints, onPrintsChange }: PrintManagerProps) {
         <div className="flex-1 min-w-0">
          <div className="flex items-center gap-2">
           <span className="font-medium truncate">{print.name}</span>
-          <Badge color="primary" variant="outline" className="shrink-0">
+          <Badge color="purple" variant="outline" className="shrink-0">
            {getPrintTypeName(print.type)}
           </Badge>
          </div>
@@ -169,7 +169,7 @@ export function PrintManager({ prints, onPrintsChange }: PrintManagerProps) {
         </div>
         
         <div className="flex items-center gap-1 ml-4">
-         <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleRemove(print.id)}
+         <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => handleRemove(print.id)}
          >
           <Trash2 className="h-4 w-4" />
          </Button>

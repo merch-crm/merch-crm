@@ -75,7 +75,7 @@ export function GarmentSelector({ onSelect }: GarmentSelectorProps) {
          </div>
         </div>
         
-        <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onSelect(garment.id, garment.name, garment.basePrice)}
+        <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => onSelect(garment.id, garment.name, garment.basePrice)}
         >
          <Plus className="h-4 w-4" />
         </Button>

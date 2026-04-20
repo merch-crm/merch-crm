@@ -109,7 +109,7 @@ export function BentoCountdown({ deadline: propDeadline }: { deadline?: Date }) 
          <TimeUnit value={timeLeft.seconds} label="Сек" />
       </div>
 
-      <Button variant="solid" color="system" size="lg" className="w-full mt-8 flex justify-between">
+      <Button variant="solid" color="purple" size="lg" className="w-full mt-8 flex justify-between">
          <Typo as="span">Открыть детали проекта</Typo>
          <ChevronRight className="size-4 text-white/50" />
       </Button>
