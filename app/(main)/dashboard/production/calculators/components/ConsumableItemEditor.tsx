@@ -185,7 +185,7 @@ export function ConsumableItemEditor({
      <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
        <CollapsibleTrigger asChild>
-        <Button variant="ghost" color="neutral" size="icon" className="h-10 w-10 rounded-xl hover:bg-slate-50 transition-colors">
+        <Button variant="ghost" color="gray" size="icon" className="h-10 w-10 rounded-xl hover:bg-slate-50 transition-colors">
          {isExpanded ? (
           <ChevronUp className="h-5 w-5 text-slate-400" />
          ) : (
@@ -197,14 +197,14 @@ export function ConsumableItemEditor({
         <div className="flex items-center gap-3">
          <span className="font-black text-lg text-slate-900 ">{item.name}</span>
          {isModified && (
-          <Badge color="primary" variant="outline" className="text-xs font-black px-2 py-0.5 rounded-full text-indigo-600 bg-indigo-50 border-indigo-200">
+          <Badge color="purple" variant="outline" className="text-xs font-black px-2 py-0.5 rounded-full text-indigo-600 bg-indigo-50 border-indigo-200">
            изменено
           </Badge>
          )}
         </div>
         <div className="flex items-center gap-2">
           {item.source === 'warehouse' && selectedWarehouseItem && (
-            <Badge className="text-xs font-black px-1.5 py-0 rounded-lg bg-teal-50 text-teal-700 border-teal-100 border" color="neutral">
+            <Badge className="text-xs font-black px-1.5 py-0 rounded-lg bg-teal-50 text-teal-700 border-teal-100 border" color="gray">
             Склад: {selectedWarehouseItem.name}
             </Badge>
           )}
@@ -228,7 +228,7 @@ export function ConsumableItemEditor({
 
        {/* Кнопка сброса */}
        <Tooltip content="Сбросить к заводским">
-        <Button variant="ghost" color="neutral" size="icon" onClick={onReset} disabled={!isModified || disabled} className="h-10 w-10 rounded-xl hover:bg-slate-50 transition-colors text-slate-200 hover:text-indigo-600">
+        <Button variant="ghost" color="gray" size="icon" onClick={onReset} disabled={!isModified || disabled} className="h-10 w-10 rounded-xl hover:bg-slate-50 transition-colors text-slate-200 hover:text-indigo-600">
          <RotateCcw className="h-4 w-4" />
         </Button>
        </Tooltip>
@@ -309,7 +309,7 @@ export function ConsumableItemEditor({
            Пусто на складе
           </span>
           {onCreateWarehouseItem && (
-           <Button variant="outline" color="neutral" size="sm" onClick={() =>
+           <Button variant="outline" color="gray" size="sm" onClick={() =>
              onCreateWarehouseItem(item.category as ConsumableCategory)
             }
             className="rounded-xl font-black bg-white text-xs px-4"

@@ -148,7 +148,7 @@ export function LineMatrixStep({
                   <h4 className="font-bold text-slate-900 flex items-center gap-2">
                     <Icon className="w-5 h-5 text-slate-600" />
                     {attr.name}
-                    <Badge className="ml-2" color="neutral">
+                    <Badge className="ml-2" color="gray">
                       {selected.length} / {values.length}
                     </Badge>
                   </h4>

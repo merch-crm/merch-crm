@@ -58,7 +58,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
 
  if (!isExpanded) {
   return (
-   <Button variant="outline" color="neutral" onClick={() => setIsExpanded(true)}
+   <Button variant="outline" color="gray" onClick={() => setIsExpanded(true)}
     disabled={disabled}
     className="w-full h-16 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 transition-all font-bold text-lg group"
    >
@@ -78,7 +78,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
        </div>
        <h3 className="text-xl font-black text-slate-800 ">Выберите изделие</h3>
      </div>
-     <Button variant="ghost" color="neutral" size="icon" onClick={() => setIsExpanded(false)} className="rounded-full h-10 w-10">
+     <Button variant="ghost" color="gray" size="icon" onClick={() => setIsExpanded(false)} className="rounded-full h-10 w-10">
       <X className="w-6 h-6 text-slate-400" />
      </Button>
     </div>
@@ -94,7 +94,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
      
      <div className="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 hide-scrollbar no-scrollbar scrollbar-hide">
       {categories.map(cat => (
-       <Button key={cat.id} color={activeCategory === cat.id ? 'system' : 'neutral'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
+       <Button key={cat.id} color={activeCategory === cat.id ? 'purple' : 'gray'} variant={activeCategory === cat.id ? 'solid' : 'outline'} size="sm" onClick={() => setActiveCategory(cat.id)}
         className={cn(
          "rounded-full px-4 h-9 font-bold text-xs transition-all whitespace-nowrap",
          activeCategory === cat.id ? "bg-slate-900 text-white shadow-md" : "border-slate-200 text-slate-500 hover:bg-slate-100"
@@ -129,7 +129,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
         <div className="flex-1 min-w-0">
          <p className="font-bold text-slate-900 truncate group-hover:text-pink-700 transition-colors">{garment.name}</p>
          <div className="flex items-center gap-2 mt-1">
-          <Badge color="neutral" variant="outline" className="text-xs font-bold border-slate-200 text-slate-400">
+          <Badge color="gray" variant="outline" className="text-xs font-bold border-slate-200 text-slate-400">
            до {garment.maxColors} цветов
           </Badge>
          </div>
@@ -145,7 +145,7 @@ export const EmbroideryGarmentSelector = memo(function EmbroideryGarmentSelector
      {filteredGarments.length === 0 && (
       <div className="col-span-full py-12 text-center">
        <p className="text-slate-400 font-medium">Ничего не найдено по вашему запросу</p>
-       <Button variant="link" color="system" onClick={() => { setSearchQuery(''); setActiveCategory('all'); }} className="text-pink-600 font-bold">
+       <Button variant="link" color="purple" onClick={() => { setSearchQuery(''); setActiveCategory('all'); }} className="text-pink-600 font-bold">
         Сбросить фильтры
        </Button>
       </div>

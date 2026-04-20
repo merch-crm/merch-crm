@@ -133,11 +133,11 @@ export function FilePreviewCard({
        </h4>
        <div className="flex items-center gap-2 mt-1">
         {isManual ? (
-         <Badge color="primary" variant="outline" className="text-xs h-4 font-semibold text-indigo-600 border-indigo-200 bg-indigo-50">
+         <Badge color="purple" variant="outline" className="text-xs h-4 font-semibold text-indigo-600 border-indigo-200 bg-indigo-50">
           Вручную
          </Badge>
         ) : (
-         <Badge color="primary" variant="outline" className="text-xs h-4 font-normal">
+         <Badge color="purple" variant="outline" className="text-xs h-4 font-normal">
           {formatFileSize(file.sizeBytes)}
          </Badge>
         )}
@@ -149,7 +149,7 @@ export function FilePreviewCard({
          
          {dpi && file.calculatorType !== 'embroidery' && (
           <Tooltip content={ isLowDpi ? `Низкое разрешение для печати. Рекомендуется минимум 300 DPI для качественного результата.` : `Хорошее разрешение для печати.` }>
-           <Badge color={isLowDpi ? "danger" : "neutral"} className={cn( "text-xs h-4 font-bold px-1.5 gap-1 cursor-default", !isLowDpi && "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" )}>
+           <Badge color={isLowDpi ? "red" : "gray"} className={cn( "text-xs h-4 font-bold px-1.5 gap-1 cursor-default", !isLowDpi && "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" )}>
             {isLowDpi && <AlertTriangle className="h-2.5 w-2.5" />}
             {dpi} DPI
            </Badge>
@@ -159,7 +159,7 @@ export function FilePreviewCard({
       </div>
       
       <div className="flex items-center gap-2">
-       <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors z-50" onClick={(e) => {
+       <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors z-50" onClick={(e) => {
          e.preventDefault();
          e.stopPropagation();
          onRemove(file.id);

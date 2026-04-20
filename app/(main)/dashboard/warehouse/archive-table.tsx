@@ -75,7 +75,7 @@ export function ArchiveTable({ items = [], total }: ArchiveTableProps) {
               <RotateCcw className="w-4 h-4" />
               Восстановить ({selectedIds.length})
             </Button>
-            <Button type="button" variant="solid" color="danger" onClick={() => setIdsToDelete(selectedIds)}
+            <Button type="button" variant="solid" color="red" onClick={() => setIdsToDelete(selectedIds)}
               className="h-11 px-4 rounded-[var(--radius-inner)] text-xs font-bold flex items-center gap-2"
             >
               <Trash2 className="w-4 h-4" />

@@ -130,7 +130,7 @@ export const ActivityStatusTabs = memo(function ActivityStatusTabs({
                 <span className="hidden sm:inline">{tab.label}</span>
                 <span className="sm:hidden">{tab.shortLabel}</span>
                 {count !== undefined && count > 0 && (
-                  <Badge className={cn( "text-xs font-medium border-none transition-colors", isActive && tab.value !== "all" ? `${tab.bgColor} ${tab.color}` : "bg-slate-100 text-slate-500" )} color="neutral">
+                  <Badge className={cn( "text-xs font-medium border-none transition-colors", isActive && tab.value !== "all" ? `${tab.bgColor} ${tab.color}` : "bg-slate-100 text-slate-500" )} color="gray">
                     {count}
                   </Badge>
                 )}

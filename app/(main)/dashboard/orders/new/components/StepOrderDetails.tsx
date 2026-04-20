@@ -69,7 +69,7 @@ export function StepOrderDetails({
         <div className="space-y-2">
           <label className="text-xs font-bold text-muted-foreground ml-1">Срочный заказ</label>
           <SwitchRow icon={AlertCircle} title="Срочный заказ" description="" checked={details.isUrgent} onCheckedChange={(val) => onUpdateDetails({ isUrgent: val })}
-            color="success"
+            color="green"
             className={cn("h-12 px-4 transition-all duration-300",
               details.isUrgent ?"bg-rose-50/50 border-rose-200" :"bg-slate-50 border-slate-200"
             )}
@@ -111,7 +111,7 @@ export function StepOrderDetails({
               className="pl-12"
             />
           </div>
-          <Button type="button" onClick={onApplyPromo} disabled={isApplyingPromo || !promoInput} variant="solid" color="neutral" className="h-12 px-6">
+          <Button type="button" onClick={onApplyPromo} disabled={isApplyingPromo || !promoInput} variant="solid" color="gray" className="h-12 px-6">
             {isApplyingPromo ?"..." :"Применить"}
           </Button>
         </div>

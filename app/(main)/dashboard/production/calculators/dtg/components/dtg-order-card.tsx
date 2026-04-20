@@ -162,7 +162,7 @@ export const DtgOrderCard = memo(function DtgOrderCard({
 
     {/* Количество */}
     <div role="button" tabIndex={0} className="flex items-center gap-3 bg-slate-100/50 p-1.5 rounded-2xl" onClick={e => e.stopPropagation()}>
-     <Button variant="ghost" color="neutral" size="sm" onClick={() => handleQuantityChange(-1)}
+     <Button variant="ghost" color="gray" size="sm" onClick={() => handleQuantityChange(-1)}
       disabled={order.quantity <= 1}
       className="w-8 h-8 p-0 rounded-xl hover:bg-white"
      >
@@ -174,7 +174,7 @@ export const DtgOrderCard = memo(function DtgOrderCard({
      )}>
       {order.quantity}
      </span>
-     <Button variant="ghost" color="neutral" size="sm" onClick={() => handleQuantityChange(1)}
+     <Button variant="ghost" color="gray" size="sm" onClick={() => handleQuantityChange(1)}
       className="w-8 h-8 p-0 rounded-xl hover:bg-white"
      >
       <Plus className="w-4 h-4" />
@@ -183,10 +183,10 @@ export const DtgOrderCard = memo(function DtgOrderCard({
 
     {/* Действия */}
     <div role="button" tabIndex={0} className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
-     <Button variant="ghost" color="neutral" size="sm" onClick={onDuplicate} className="rounded-xl">
+     <Button variant="ghost" color="gray" size="sm" onClick={onDuplicate} className="rounded-xl">
       <Copy className="w-4 h-4" />
      </Button>
-     <Button variant="ghost" color="neutral" size="sm" onClick={onDelete} className="rounded-xl text-rose-500 hover:text-rose-600 hover:bg-rose-50">
+     <Button variant="ghost" color="gray" size="sm" onClick={onDelete} className="rounded-xl text-rose-500 hover:text-rose-600 hover:bg-rose-50">
       <Trash2 className="w-4 h-4" />
      </Button>
      <div className="ml-2">
@@ -218,7 +218,7 @@ export const DtgOrderCard = memo(function DtgOrderCard({
           <p className="text-xs text-slate-500">Влияет на расход белого и праймера</p>
         </div>
       </div>
-      <Button variant="outline" color="neutral" size="sm" onClick={handleColorToggle} className={cn( "rounded-xl font-bold h-10 px-4 transition-all shadow-sm", order.garmentColor === 'dark' ? "bg-slate-800 border-slate-700 text-white hover:bg-slate-700" : "bg-white border-slate-200 text-slate-700" )}>
+      <Button variant="outline" color="gray" size="sm" onClick={handleColorToggle} className={cn( "rounded-xl font-bold h-10 px-4 transition-all shadow-sm", order.garmentColor === 'dark' ? "bg-slate-800 border-slate-700 text-white hover:bg-slate-700" : "bg-white border-slate-200 text-slate-700" )}>
        {order.garmentColor === 'dark' ? 'Сменить на светлое' : 'Сменить на тёмное'}
       </Button>
      </div>
@@ -249,10 +249,10 @@ export const DtgOrderCard = memo(function DtgOrderCard({
           <div className="flex items-center justify-between mb-4">
             <span className="font-black text-base">{position.name}</span>
             <div className="flex items-center gap-3">
-            <Badge className="rounded-lg font-bold bg-white/10 text-xs" color="neutral">
+            <Badge className="rounded-lg font-bold bg-white/10 text-xs" color="gray">
               {areaCm2.toFixed(0)} см²
             </Badge>
-            <Button variant="ghost" color="neutral" size="sm" onClick={() => handleRemovePosition(pos.positionId)}
+            <Button variant="ghost" color="gray" size="sm" onClick={() => handleRemovePosition(pos.positionId)}
               className="w-8 h-8 p-0 rounded-xl text-rose-500 hover:bg-rose-50/10"
             >
               <X className="w-4 h-4" />

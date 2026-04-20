@@ -123,7 +123,7 @@ export function QuickTransferModal({ item, currentLocationId, locations, onClose
 function TransferSubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button color="dark" type="submit" disabled={pending} className="w-full h-11 rounded-xl font-bold text-sm active:scale-95 flex items-center justify-center gap-2">
+    <Button color="black" type="submit" disabled={pending} className="w-full h-11 rounded-xl font-bold text-sm active:scale-95 flex items-center justify-center gap-2">
       {pending ? (
         <div className="flex items-center gap-2">
           <RefreshCw className="w-4 h-4 animate-spin" />

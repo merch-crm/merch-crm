@@ -85,7 +85,7 @@ export const ItemEditingBar = React.memo(({
         >
           <Button 
             variant="ghost" 
-            color="neutral"
+            color="gray"
             onClick={onCancel} 
             className="h-10 md:h-12 px-5 md:px-8 font-bold text-[13px] md:text-sm active:scale-95 border-none rounded-xl md:rounded-2xl"
           >
@@ -94,7 +94,7 @@ export const ItemEditingBar = React.memo(({
 
           <Button 
             variant="solid" 
-            color="dark" 
+            color="black" 
             disabled={isSaving} 
             onClick={onSave} 
             className="h-10 md:h-12 px-6 md:px-10 font-bold text-[13px] md:text-sm active:scale-95 transition-all border-none rounded-xl md:rounded-2xl shadow-xl shadow-black/10"
@@ -116,7 +116,7 @@ export const ItemEditingBar = React.memo(({
 
           <Button 
             variant="solid" 
-            color="danger" 
+            color="red" 
             size="icon" 
             onClick={onDelete} 
             disabled={isSaving} 

@@ -36,7 +36,7 @@ export const CostSummary = memo(function CostSummary({
                 {formatCurrency(result.totalCost)}
               </span>
               {onCopy && (
-                <Button variant="ghost" color="neutral" size="sm" onClick={onCopy} className="text-muted-foreground hover:text-primary">
+                <Button variant="ghost" color="gray" size="sm" onClick={onCopy} className="text-muted-foreground hover:text-primary">
                   <Copy className="h-4 w-4" />
                 </Button>
               )}
@@ -45,15 +45,15 @@ export const CostSummary = memo(function CostSummary({
 
           {/* Badges */}
           <div className="flex flex-wrap gap-2">
-            <Badge className="px-3 py-1.5 text-sm" color="neutral">
+            <Badge className="px-3 py-1.5 text-sm" color="gray">
               {result.totalLengthM.toFixed(2)} м
             </Badge>
-            <Badge variant={result.efficiencyPercent >= 75 ? "solid" : "outline"} color={result.efficiencyPercent >= 75 ? "success" : "warning"}
+            <Badge variant={result.efficiencyPercent >= 75 ? "solid" : "outline"} color={result.efficiencyPercent >= 75 ? "green" : "yellow"}
               className="px-3 py-1.5 text-sm"
             >
               КПД {result.efficiencyPercent.toFixed(1)}%
             </Badge>
-            <Badge variant="solid" color="primary" className="rounded-xl px-4 py-2 text-sm font-bold shadow-sm shadow-blue-100/50">
+            <Badge variant="solid" color="purple" className="rounded-xl px-4 py-2 text-sm font-bold shadow-sm shadow-blue-100/50">
               {result.totalPrints} принтов
             </Badge>
           </div>

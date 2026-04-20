@@ -112,12 +112,12 @@ export function LineDetailClient({ line, items }: LineDetailClientProps) {
           </div>
           <h1 className="text-2xl font-bold">{line.name}</h1>
           <div className="flex items-center gap-2">
-            <Badge color="primary" variant="outline" className={`bg-${config.color}-500/10 text-${config.color}-600`}>
+            <Badge color="purple" variant="outline" className={`bg-${config.color}-500/10 text-${config.color}-600`}>
               <TypeIcon className="h-3 w-3 mr-1" />
               {config.label}
             </Badge>
             {line.printCollection && (
-              <Badge color="neutral">
+              <Badge color="gray">
                 Коллекция: {line.printCollection.name}
               </Badge>
             )}
@@ -126,7 +126,7 @@ export function LineDetailClient({ line, items }: LineDetailClientProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" color="neutral" size="icon">
+            <Button variant="outline" color="gray" size="icon">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -200,7 +200,7 @@ export function LineDetailClient({ line, items }: LineDetailClientProps) {
               {Object.entries(
                 line.commonAttributes as Record<string, string>
               ).map(([key, value]) => (
-                <Badge key={key} color="neutral">
+                <Badge key={key} color="gray">
                   {key}: {value}
                 </Badge>
               ))}
@@ -218,7 +218,7 @@ export function LineDetailClient({ line, items }: LineDetailClientProps) {
               {items?.length || 0} из {items?.length || 0} позиций
             </CardDescription>
           </div>
-          <Button variant="outline" color="neutral" size="sm" onClick={() =>
+          <Button variant="outline" color="gray" size="sm" onClick={() =>
               router.push(
                 `/dashboard/warehouse/items/new?lineId=${line.id}&lineType=${line.type}`
               )

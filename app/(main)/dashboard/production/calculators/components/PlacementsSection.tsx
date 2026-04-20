@@ -82,7 +82,7 @@ export function PlacementsSection({
       </div>
      </div>
      {selectedPlacements.length > 0 && (
-      <Button variant="ghost" color="neutral" size="sm" className="h-9 px-3 text-red-500 hover:text-red-600 hover:bg-red-50 font-bold rounded-xl" onClick={onClear}>
+      <Button variant="ghost" color="gray" size="sm" className="h-9 px-3 text-red-500 hover:text-red-600 hover:bg-red-50 font-bold rounded-xl" onClick={onClear}>
        <Trash2 className="h-4 w-4 mr-2" />
        Очистить все
       </Button>
@@ -219,7 +219,7 @@ export function PlacementsSection({
     <div className="card-breakout bg-slate-50 border-t p-4 -mb-[var(--current-padding)] mt-4">
      <div className="flex flex-wrap gap-1.5">
       {selectedPlacements.map((p) => (
-       <Badge key={p.areaId} color="primary" variant="outline" className="bg-white border-blue-100 text-blue-700 text-xs py-0 px-2 h-6 font-medium pr-1">
+       <Badge key={p.areaId} color="purple" variant="outline" className="bg-white border-blue-100 text-blue-700 text-xs py-0 px-2 h-6 font-medium pr-1">
         {p.count}× {String(p.areaName)} ({String(p.productName)})
         <button 
          type="button"

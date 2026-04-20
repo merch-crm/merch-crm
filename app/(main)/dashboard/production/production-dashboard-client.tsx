@@ -177,7 +177,7 @@ export function ProductionDashboardClient({
                       <Progress value={line.tasksCount> 0 ? (line.inProgress / line.tasksCount) * 100 : 0}
                         className="flex-1 h-2"
                       />
-                      <Badge className="bg-white shadow-sm border-slate-100 text-slate-600 px-2.5" color="neutral">
+                      <Badge className="bg-white shadow-sm border-slate-100 text-slate-600 px-2.5" color="gray">
                         {line.inProgress} в работе
                       </Badge>
                     </div>

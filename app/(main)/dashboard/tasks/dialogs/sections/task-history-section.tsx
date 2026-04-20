@@ -156,7 +156,7 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
    const config = TASK_STATUS_CONFIG[value as keyof typeof TASK_STATUS_CONFIG];
    if (config) {
     return (
-     <Badge color="primary" variant="outline" className="h-5 px-1.5 text-xs " style={{ borderColor: config.color, color: config.color, backgroundColor: `${config.color}10`, }}>
+     <Badge color="purple" variant="outline" className="h-5 px-1.5 text-xs " style={{ borderColor: config.color, color: config.color, backgroundColor: `${config.color}10`, }}>
       {config.label}
      </Badge>
     );
@@ -167,7 +167,7 @@ export function TaskHistorySection({ task }: TaskHistorySectionProps) {
    const config = TASK_PRIORITY_CONFIG[value as keyof typeof TASK_PRIORITY_CONFIG];
    if (config) {
     return (
-     <Badge color="primary" variant="outline" className="h-5 px-1.5 text-xs " style={{ borderColor: config.color, color: config.color, backgroundColor: `${config.color}10`, }}>
+     <Badge color="purple" variant="outline" className="h-5 px-1.5 text-xs " style={{ borderColor: config.color, color: config.color, backgroundColor: `${config.color}10`, }}>
       {config.label}
      </Badge>
     );

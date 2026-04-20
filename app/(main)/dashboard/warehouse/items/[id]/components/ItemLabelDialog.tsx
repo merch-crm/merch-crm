@@ -37,11 +37,12 @@ export function ItemLabelDialog({ item, isOpen, onClose }: ItemLabelDialogProps)
 
 
   return (
-    <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Печать этикетки" description="Подготовка SKU-маркировки для принтера" footer={ <div className="flex items-center justify-end gap-3 w-full">
-          <Button variant="ghost" onClick={onClose} className="hidden md:flex h-11 px-8 rounded-2xl text-muted-foreground hover:text-foreground font-bold text-sm">
+    <ResponsiveModal isOpen={isOpen} onClose={onClose} title="Печать этикетки" description="Подготовка SKU-маркировки для принтера" footer={
+        <div className="flex items-center justify-end gap-3 w-full">
+          <Button variant="ghost" onClick={onClose} className="hidden md:flex px-8 text-muted-foreground hover:text-foreground font-bold text-sm">
             Закрыть
           </Button>
-          <Button onClick={handlePrint} className="h-11 w-full md:w-auto md:px-10 bg-primary text-primary-foreground rounded-2xl font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3">
+          <Button onClick={handlePrint} className="w-full md:w-auto md:px-10 bg-primary text-primary-foreground font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center justify-center gap-3">
             <Printer className="w-4 h-4 stroke-[3]" />
             Печать этикетки
           </Button>

@@ -152,19 +152,19 @@ export function HistoryPageClient({
 
      <Select value={`${initialFilters.sortBy}-${initialFilters.sortOrder}`} onChange={handleSortChange} options={[ { id: 'createdAt-desc', title: 'Новые сначала' }, { id: 'createdAt-asc', title: 'Старые сначала' }, { id: 'sellingPrice-desc', title: 'Дорогие сначала' }, { id: 'sellingPrice-asc', title: 'Дешевые сначала' }, { id: 'totalCost-desc', title: 'По себестоимости ↓' }, { id: 'name-asc', title: 'По названию (А-Я)' }, ]} className="w-[200px]" triggerClassName="h-11 border-2 rounded-xl bg-background font-semibold" />
 
-     <Button variant="outline" color="neutral" size="icon" className="h-11 w-11 border-2 rounded-xl bg-background" onClick={() => router.refresh()}
+     <Button variant="outline" color="gray" size="icon" className="h-11 w-11 border-2 rounded-xl bg-background" onClick={() => router.refresh()}
      >
       <RefreshCw className={cn("w-4 h-4", isPending && "animate-spin")} />
      </Button>
 
      {selectedIds.length > 0 ? (
-      <Button variant="solid" color="danger" className="h-11 px-4 rounded-xl font-bold animate-in fade-in slide-in-from-right-2" onClick={() => setIsDeleteDialogOpen(true)}
+      <Button variant="solid" color="red" className="h-11 px-4 rounded-xl font-bold animate-in fade-in slide-in-from-right-2" onClick={() => setIsDeleteDialogOpen(true)}
       >
        <Trash2 className="w-4 h-4 mr-2" />
        Удалить ({selectedIds.length})
       </Button>
      ) : (
-       <Button variant="outline" color="neutral" className="h-11 px-4 rounded-xl text-muted-foreground hover:text-destructive hover:border-destructive border-2" onClick={() => setIsClearAllDialogOpen(true)}
+       <Button variant="outline" color="gray" className="h-11 px-4 rounded-xl text-muted-foreground hover:text-destructive hover:border-destructive border-2" onClick={() => setIsClearAllDialogOpen(true)}
       >
        <Eraser className="w-4 h-4 mr-2" />
        Очистить историю
@@ -175,7 +175,7 @@ export function HistoryPageClient({
 
    {/* Массовый выбор */}
    <div className="flex items-center gap-2 px-2">
-    <Button variant="ghost" color="neutral" size="sm" className="h-8 text-xs text-muted-foreground" onClick={selectAll}>
+    <Button variant="ghost" color="gray" size="sm" className="h-8 text-xs text-muted-foreground" onClick={selectAll}>
      <span suppressHydrationWarning>{selectedIds.length === (initialData?.items?.length ?? 0) ? 'Снять выделение' : 'Выбрать все на странице'}</span>
     </Button>
     <span className="text-xs text-muted-foreground">|</span>
@@ -194,7 +194,7 @@ export function HistoryPageClient({
    {/* Пагинация */}
    {(initialData?.pagination?.totalPages ?? 0) > 1 && (
     <div className="flex items-center justify-center gap-3 py-8">
-      <Button variant="outline" color="neutral" className="rounded-xl border-2" disabled={!initialData?.pagination?.hasPrevPage || isPending} onClick={() => handlePageChange((initialData?.pagination?.page ?? 1) - 1)}
+      <Button variant="outline" color="gray" className="rounded-xl border-2" disabled={!initialData?.pagination?.hasPrevPage || isPending} onClick={() => handlePageChange((initialData?.pagination?.page ?? 1) - 1)}
      >
       <ChevronLeft className="w-4 h-4 mr-2" />
       Назад
@@ -202,12 +202,12 @@ export function HistoryPageClient({
      
      <div className="flex items-center gap-2">
        <span className="text-sm font-medium">Страница</span>
-       <Badge className="px-3 h-8 text-sm rounded-lg border-2" color="neutral">
+       <Badge className="px-3 h-8 text-sm rounded-lg border-2" color="gray">
         {initialData?.pagination?.page ?? 1} / {initialData?.pagination?.totalPages ?? 1}
        </Badge>
      </div>
 
-     <Button variant="outline" color="neutral" className="rounded-xl border-2" disabled={!initialData?.pagination?.hasNextPage || isPending} onClick={() => handlePageChange((initialData?.pagination?.page ?? 1) + 1)}
+     <Button variant="outline" color="gray" className="rounded-xl border-2" disabled={!initialData?.pagination?.hasNextPage || isPending} onClick={() => handlePageChange((initialData?.pagination?.page ?? 1) + 1)}
      >
       Вперед
       <ChevronRight className="w-4 h-4 ml-2" />

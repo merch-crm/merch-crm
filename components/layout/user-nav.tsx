@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { User, LogOut, ChevronDown, Shield, Package, BarChart3, Globe, MessageCircle, Send } from "lucide-react";
+import { User, LogOut, ChevronDown, Shield, Package, BarChart3, Globe, MessageCircle, Send, BookOpen } from "lucide-react";
 import { logout } from "@/app/(main)/dashboard/profile/actions";
 
 import { useRouter } from "next/navigation";
@@ -140,6 +140,13 @@ export function UserNav({ user, branding }: {
                                     >
                                         <User className="h-5 w-5 opacity-60 group-hover:opacity-100" />
                                         <span className="text-base md:text-sm font-bold md:font-medium">Профиль</span>
+                                    </Link>
+
+                                    <Link href="/dashboard/knowledge-base" onClick={() => setIsOpen(false)}
+                                        className="dropdown-item py-3 md:py-2"
+                                    >
+                                        <BookOpen className="h-5 w-5 opacity-60 group-hover:opacity-100" />
+                                        <span className="text-base md:text-sm font-bold md:font-medium">База знаний</span>
                                     </Link>
 
                                     {(["Руководство", "Отдел продаж"].includes(user.departmentName) || user.roleSlug === "admin" || user.roleName === "Администратор") && (

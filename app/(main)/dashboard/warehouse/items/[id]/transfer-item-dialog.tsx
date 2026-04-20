@@ -220,7 +220,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
               <div className="flex-1 space-y-2">
                 <label className="text-sm font-bold text-slate-700 block mb-2 ml-1">Количество</label>
                 <div className="bg-slate-50 border border-slate-200 rounded-xl flex items-stretch p-1.5 h-[72px] shadow-inner transition-all group focus-within:ring-4 focus-within:ring-primary/5 focus-within:border-primary/20">
-                  <Button type="button" variant="ghost" size="icon" onClick={handleDecrement} className="w-14 h-auto rounded-xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all active:scale-90">
+                  <Button type="button" variant="ghost" size="icon" onClick={handleDecrement} className="w-14 h-auto rounded-2xl flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-white hover:shadow-sm transition-all active:scale-90">
                     <Minus className="w-5 h-5 stroke-[3]" />
                   </Button>
 
@@ -242,7 +242,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                     </span>
                   </div>
 
-                  <Button type="button" variant="ghost" size="icon" onClick={handleIncrement} className="w-14 h-auto rounded-xl flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all active:scale-90">
+                  <Button type="button" variant="ghost" size="icon" onClick={handleIncrement} className="w-14 h-auto rounded-2xl flex items-center justify-center text-slate-400 hover:text-emerald-500 hover:bg-white hover:shadow-sm transition-all active:scale-90">
                     <Plus className="w-5 h-5 stroke-[3]" />
                   </Button>
                 </div>
@@ -254,7 +254,7 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
                       setAmount(fromStock);
                       toast(`Максимальное кол-во: ${fromStock} ${formatUnit(item.unit)}`, "info");
                     }}
-                    className="h-[72px] w-full rounded-xl bg-primary/5 border border-primary/20 text-primary text-sm font-black hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
+                    className="h-[72px] w-full rounded-2xl bg-primary/5 border border-primary/20 text-primary text-sm font-black hover:bg-primary hover:text-white transition-all active:scale-95 shadow-sm flex items-center justify-center text-center px-4 whitespace-normal"
                   >
                     Переместить всё ({fromStock})
                   </Button>
@@ -288,10 +288,10 @@ export function TransferItemDialog({ item, locations, itemStocks, isOpen, onClos
         </form>
 
         <div className="sticky bottom-0 z-10 p-5 sm:p-6 pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 mt-auto flex items-center justify-end lg:justify-between gap-3 shrink-0">
-          <Button type="button" variant="ghost" onClick={onClose} className="flex h-11 flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center rounded-xl items-center justify-center">
+          <Button type="button" variant="ghost" onClick={onClose} className="flex flex-1 lg:flex-none lg:px-8 text-slate-400 hover:text-slate-600 font-bold text-sm active:scale-95 transition-all text-center items-center justify-center">
             Отмена
           </Button>
-          <SubmitButton form="transfer-item-form" isLoading={isSubmitting} text="Переместить" loadingText="Перемещение..." color="dark" disabled={isSubmitting || !fromLocationId || !toLocationId || !reason.trim() || amount <= 0} className="h-11 flex-1 lg:flex-none lg:w-auto lg:px-10 rounded-xl font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none" />
+          <SubmitButton form="transfer-item-form" isLoading={isSubmitting} text="Переместить" loadingText="Перемещение..." color="black" disabled={isSubmitting || !fromLocationId || !toLocationId || !reason.trim() || amount <= 0} className="flex-1 lg:flex-none lg:w-auto lg:px-10 font-bold text-sm shadow-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3 border-none" />
         </div>
       </div>
     </ResponsiveModal>

@@ -342,7 +342,7 @@ export default function MockupsPage() {
                 <Image src={modelConfig.logo} alt="Принт" width={240} height={120} className="relative z-10 max-w-full max-h-[120px] object-contain drop-shadow-md transition-transform group-hover:scale-105" unoptimized onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/logo.png"; }} />
                 
                 <div className="absolute right-2 top-2 z-20 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                  <Button type="button" size="icon" variant="solid" color="danger" className="h-7 w-7 rounded-lg shadow-md" onClick={(e) => { e.stopPropagation(); updateLogoUrl(null as unknown as string); }}>
+                  <Button type="button" size="icon" variant="solid" color="red" className="h-7 w-7 rounded-lg shadow-md" onClick={(e) => { e.stopPropagation(); updateLogoUrl(null as unknown as string); }}>
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>
                   <Button type="button" size="icon" className="h-7 w-7 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 rounded-lg shadow-md" onClick={(e) => { e.stopPropagation(); logoInputRef.current?.click(); }}>

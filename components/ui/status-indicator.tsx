@@ -21,13 +21,13 @@ export function StatusIndicator({
   className
 }: StatusIndicatorProps) {
   const colors = {
-    primary: "bg-primary-base",
-    success: "bg-emerald-500",
-    warning: "bg-amber-500",
-    error: "bg-rose-500",
-    neutral: "bg-slate-400",
-    info: "bg-blue-500",
-  };
+  primary: "bg-primary",
+  success: "bg-emerald-500",
+  warning: "bg-amber-500",
+  error: "bg-rose-500",
+  neutral: "bg-slate-500",
+  info: "bg-sky-500",
+};
 
   return (
     <div className={cn("flex items-center gap-2.5", className)}>

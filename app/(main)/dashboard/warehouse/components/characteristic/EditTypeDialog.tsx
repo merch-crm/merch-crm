@@ -131,11 +131,11 @@ export function EditTypeDialog({
                 <label className="text-sm font-bold text-slate-700 block ml-1">Настройки</label>
                 <div className="grid grid-cols-1 xl:grid-cols-2 gap-2">
                   <SwitchRow icon={Hash} title="Добавлять в артикул" description="" checked={typeForm.showInSku} onCheckedChange={(val: boolean) => setTypeForm((prev: TypeFormState) => ({ ...prev, showInSku: val }))}
-                    color="success"
+                    color="green"
                     className="p-3 bg-white border border-slate-100 shadow-sm rounded-2xl"
                   />
                   <SwitchRow icon={Tag} title="Добавлять в название" description="" checked={typeForm.showInName} onCheckedChange={(val: boolean) => setTypeForm((prev: TypeFormState) => ({ ...prev, showInName: val }))}
-                    color="success"
+                    color="green"
                     className="p-3 bg-white border border-slate-100 shadow-sm rounded-2xl"
                   />
                 </div>
@@ -236,7 +236,7 @@ export function EditTypeDialog({
               Закрыть
             </Button>
 
-            <Button onClick={handleTypeUpdate} disabled={typeForm.isLoading} color="dark" className="px-8 h-11 rounded-xl text-sm flex items-center justify-center gap-2">
+            <Button onClick={handleTypeUpdate} disabled={typeForm.isLoading} color="black" className="px-8 h-11 rounded-xl text-sm flex items-center justify-center gap-2">
               {typeForm.isLoading ? (
                 <Loader2 className="w-3 h-3 animate-spin" />
               ) : null}

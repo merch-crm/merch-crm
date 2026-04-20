@@ -22,7 +22,7 @@ interface DrawerBackdropProps {
 export function DrawerBackdrop({ variant, isOpen, onClose, children }: DrawerBackdropProps) {
   const backdropVariants = {
     blur: "backdrop-blur-xl bg-white/20 dark:bg-black/20",
-    gradient: "bg-linear-to-tr from-indigo-500/80 via-purple-500/80 to-pink-500/80",
+    gradient: "bg-linear-to-tr from-primary/80 via-purple-500/80 to-pink-500/80",
     pattern: "bg-slate-900/90 [background-image:radial-gradient(circle_at_2px_2px,rgba(255,255,255,0.05)_1px,transparent_0)] [background-size:24px_24px]",
     dark: "bg-black/60",
   };
@@ -65,7 +65,7 @@ export function DrawerBackdropVariants() {
   const [activeVariant, setActiveVariant] = useState<BackdropVariant | null>(null);
 
   const variantsColors: Record<BackdropVariant, string> = {
-    blur: "bg-indigo-500",
+    blur: "bg-primary",
     gradient: "bg-gradient-to-r from-pink-500 to-purple-500",
     pattern: "bg-slate-800",
     dark: "bg-black",
@@ -96,7 +96,7 @@ export function DrawerBackdropVariants() {
         <div className="p-8 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="size-12 rounded-element bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-inner">
+              <div className="size-12 rounded-element bg-primary/10 flex items-center justify-center text-primary shadow-inner">
                 <Sparkles className="size-6" />
               </div>
               <div className="text-left">
@@ -124,7 +124,7 @@ export function DrawerBackdropVariants() {
           </div>
 
           <div className="pt-4 flex gap-3">
-             <Button color="system" variant="solid" className="flex-1 h-14 rounded-element font-black shadow-xl shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700">
+             <Button color="purple" variant="solid" className="flex-1 h-14 rounded-element font-black shadow-xl shadow-primary/20">
                 Proceed Securely
              </Button>
           </div>

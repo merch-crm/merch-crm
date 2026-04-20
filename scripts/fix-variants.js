@@ -27,26 +27,26 @@ for (const file of allFiles) {
     // We look for Button instances and transform variant="..." props
     // We'll replace it simply if it matches standard patterns.
     
-    // variant="solid" color="primary" -> color="primary" variant="solid"
-    content = content.replace(/<Button([^>]*)variant=(["'])default\2/g, '<Button$1color="primary" variant="solid"');
+    // variant="solid" color="purple" -> color="purple" variant="solid"
+    content = content.replace(/<Button([^>]*)variant=(["'])default\2/g, '<Button$1color="purple" variant="solid"');
     
-    // variant="solid" color="neutral" -> color="neutral" variant="outline"
-    content = content.replace(/<Button([^>]*)variant=(["'])secondary\2/g, '<Button$1color="neutral" variant="outline"');
+    // variant="solid" color="gray" -> color="gray" variant="outline"
+    content = content.replace(/<Button([^>]*)variant=(["'])secondary\2/g, '<Button$1color="gray" variant="outline"');
 
-    // variant="solid" color="danger" -> color="danger" variant="solid"
-    content = content.replace(/<Button([^>]*)variant=(["'])destructive\2/g, '<Button$1color="danger" variant="solid"');
+    // variant="solid" color="red" -> color="red" variant="solid"
+    content = content.replace(/<Button([^>]*)variant=(["'])destructive\2/g, '<Button$1color="red" variant="solid"');
 
-    // variant="outline" -> color="neutral" variant="outline"
-    content = content.replace(/<Button([^>]*)variant=(["'])outline\2/g, '<Button$1color="neutral" variant="outline"');
+    // variant="outline" -> color="gray" variant="outline"
+    content = content.replace(/<Button([^>]*)variant=(["'])outline\2/g, '<Button$1color="gray" variant="outline"');
 
-    // variant="ghost" -> color="neutral" variant="ghost"
-    content = content.replace(/<Button([^>]*)variant=(["'])ghost\2/g, '<Button$1color="neutral" variant="ghost"');
+    // variant="ghost" -> color="gray" variant="ghost"
+    content = content.replace(/<Button([^>]*)variant=(["'])ghost\2/g, '<Button$1color="gray" variant="ghost"');
 
-    // variant="link" -> color="primary" variant="link"
-    content = content.replace(/<Button([^>]*)variant=(["'])link\2/g, '<Button$1color="primary" variant="link"');
+    // variant="link" -> color="purple" variant="link"
+    content = content.replace(/<Button([^>]*)variant=(["'])link\2/g, '<Button$1color="purple" variant="link"');
 
-    // Remove duplicates like color="primary" variant="solid" color="primary" variant="solid" if they happen
-    content = content.replace(/color="primary" variant="solid" color="primary" variant="solid"/g, 'color="primary" variant="solid"');
+    // Remove duplicates like color="purple" variant="solid" color="purple" variant="solid" if they happen
+    content = content.replace(/color="purple" variant="solid" color="purple" variant="solid"/g, 'color="purple" variant="solid"');
     
     // Some places had variant={...} logic, but we only have a few left to fix manually if we do basic strings.
     if (content !== original) {

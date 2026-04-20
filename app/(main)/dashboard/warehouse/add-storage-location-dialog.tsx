@@ -63,11 +63,11 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
         <Button 
           onClick={() => setIsOpen(true)}
           className={cn(
-            "h-11 sm:w-auto px-5 sm:px-8 rounded-xl gap-2.5",
+            "sm:w-auto px-5 sm:px-8 gap-2.5 text-sm font-bold",
             className
           )}
         >
-          <Plus className="w-5 h-5 text-white shrink-0" />
+          <Plus className="size-4 text-white shrink-0" />
           <span className="hidden sm:inline whitespace-nowrap">Добавить склад</span>
         </Button>
       )}
@@ -129,7 +129,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
                   value={type}
                   disabled={isPending}
                   onChange={(val) => setType(val as "warehouse" | "production" | "office")}
-                  variant="solid" color="primary"
+                  variant="solid" color="purple"
                   align="end"
                   triggerClassName="bg-slate-50"
                 />
@@ -158,7 +158,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
               <Select options={userOptions} value={responsibleUserId} disabled={isPending} onChange={setResponsibleUserId} placeholder="Кто будет отвечать за склад?" showSearch triggerClassName="bg-slate-50" />
             </div>
 
-            <SwitchRow icon={Plus} title="Основной склад" description="" checked={isDefault} onCheckedChange={setIsDefault} disabled={isPending} color="primary" iconClassName={cn("transition-all", isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400" )} onClick={() => !isPending && setIsDefault(!isDefault)}
+            <SwitchRow icon={Plus} title="Основной склад" description="" checked={isDefault} onCheckedChange={setIsDefault} disabled={isPending} color="purple" iconClassName={cn("transition-all", isDefault ? "bg-primary text-white border-primary shadow-primary/20" : "bg-white text-slate-400" )} onClick={() => !isPending && setIsDefault(!isDefault)}
             />
 
             {error && (
@@ -173,10 +173,10 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
           <div className="crm-dialog-footer">
             <Button 
               variant="ghost" 
-              color="neutral"
+              color="gray"
               onClick={() => setIsOpen(false)}
               disabled={isPending}
-              className="flex-1 lg:flex-none h-11 lg:px-8 rounded-xl"
+              className="flex-1 lg:flex-none lg:px-8"
             >
               Отмена
             </Button>
@@ -184,7 +184,7 @@ export function AddStorageLocationDialog({ users, trigger, className, isOpen: co
               form="add-location-form" 
               isLoading={isPending} 
               disabled={isPending} 
-              className="h-11 flex-1 lg:flex-none lg:px-10 rounded-xl" 
+              className="flex-1 lg:flex-none lg:px-10" 
               text="Сохранить" 
               loadingText="Сохранение..." 
             />

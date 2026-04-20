@@ -268,7 +268,7 @@ export const CategoryCardContent = React.memo(({
               {category.name}
             </h3>
             <p className="text-xs font-semibold text-slate-400 text-center">
-              {category.itemCount || 0} {pluralize(category.itemCount || 0, "активный SKU", "активных SKU", "активных SKU")} на складе
+              {`${category.itemCount || 0} ${pluralize(category.itemCount || 0, "активный SKU", "активных SKU", "активных SKU")} на складе`}
             </p>
           </div>
 
@@ -346,12 +346,12 @@ export const CategoryCardContent = React.memo(({
                   {(category.totalQuantity || 0).toLocaleString()}
                 </span>
                 <span className="text-[12px] font-bold" style={{ color: hexColor }}>
-                  {pluralize(category.totalQuantity || 0, "единица", "единицы", "единиц")} в наличии
+                  {`${pluralize(category.totalQuantity || 0, "единица", "единицы", "единиц")} в наличии`}
                 </span>
               </div>
               <div className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-100 w-max mb-4">
                 <span className="text-xs font-bold text-slate-400 ">На сумму:</span>
-                <span className="text-slate-800 font-extrabold tabular-nums text-[12px]">
+                <span className="text-slate-800 font-extrabold tabular-nums text-[12px]" suppressHydrationWarning>
                   {new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 }).format(Number(category.totalCost || 0))}
                 </span>
               </div>

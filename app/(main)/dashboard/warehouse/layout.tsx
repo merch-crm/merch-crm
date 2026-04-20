@@ -49,13 +49,15 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
   }, [pathname, currentInfo]);
 
   const renderActions = () => {
+    const actionButtonClass = "sm:w-auto p-0 sm:px-6 shadow-lg shadow-black/10 transition-all active:scale-95 gap-2 text-xs sm:text-sm border-none font-bold";
+
     switch (activeTab) {
       case "categories":
         return (
           <>
-            <AddCategoryDialog className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl shadow-lg shadow-primary/20 text-xs sm:text-sm" buttonText="Категория" />
-            <Link href="/dashboard/warehouse/items/new" className={cn( buttonVariants({ variant: "solid" }), "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl border-none shadow-lg shadow-primary/20 transition-all active:scale-95 gap-2 text-xs sm:text-sm" )}>
-              <Plus className="w-4 h-4 text-white" />
+            <AddCategoryDialog className={actionButtonClass} buttonText="Категория" />
+            <Link href="/dashboard/warehouse/items/new" className={cn( buttonVariants({ variant: "solid", size: "md" }), actionButtonClass )}>
+              <Plus className="size-4 text-white" />
               <span className="hidden sm:inline">Создать позицию</span>
             </Link>
           </>
@@ -68,7 +70,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             onTouchStart={() => loadDialogData('storage')}
             onClick={() => loadDialogData('storage')}
           >
-            <AddStorageLocationDialog users={users} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/30 border-none text-xs sm:text-sm" />
+            <AddStorageLocationDialog users={users} className={actionButtonClass} />
           </div>
         );
       case "characteristics":
@@ -79,7 +81,7 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             onTouchStart={() => loadDialogData('characteristics')}
             onClick={() => loadDialogData('characteristics')}
           >
-            <AddAttributeTypeDialog categories={categories} attributeTypes={state.attributeTypes} className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 text-xs sm:text-sm" />
+            <AddAttributeTypeDialog categories={categories} attributeTypes={state.attributeTypes} className={actionButtonClass} />
           </div>
         );
       case "history":
@@ -91,9 +93,9 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
             onClick={() => loadDialogData('history')}
           >
             {session?.roleSlug === "admin" && (
-              <Button data-testid="clear-history-btn" variant="solid" color="danger" onClick={() => setIsClearHistoryOpen(true)}
+              <Button data-testid="clear-history-btn" variant="solid" color="red" size="md" onClick={() => setIsClearHistoryOpen(true)}
                 disabled={history.length === 0}
-                className="h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl gap-2 font-bold flex items-center justify-center shadow-lg shadow-rose-500/20 transition-all active:scale-95 text-xs sm:text-sm"
+                className="sm:w-auto p-0 sm:px-6 gap-2 font-bold flex items-center justify-center shadow-lg shadow-rose-500/20 transition-all active:scale-95 text-xs sm:text-sm"
               >
                 <Eraser className="w-5 h-5 shrink-0 text-white" />
                 <span className="hidden sm:inline">Очистить</span>
@@ -103,8 +105,8 @@ export default function WarehouseLayout({ children }: { children: ReactNode }) {
         );
       case "overview":
         return (
-          <Link href="/dashboard/warehouse/items/new" className={cn( buttonVariants({ variant: "solid" }), "h-10 w-10 sm:h-11 sm:w-auto p-0 sm:px-6 rounded-full sm:rounded-2xl border-none shadow-lg shadow-primary/20 transition-all active:scale-95 gap-2 text-xs sm:text-sm" )}>
-            <Plus className="w-4 h-4 text-white" />
+          <Link href="/dashboard/warehouse/items/new" className={cn( buttonVariants({ variant: "solid", size: "md" }), actionButtonClass )}>
+            <Plus className="size-4 text-white" />
             <span className="hidden sm:inline">Создать позицию</span>
           </Link>
         );

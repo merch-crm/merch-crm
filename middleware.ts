@@ -20,10 +20,14 @@ export function middleware(request: NextRequest) {
   ? `'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval' 'wasm-unsafe-eval'`
   : `'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`;
 
+  const styleSrc = isDev 
+   ? `'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com`
+   : `'self' 'unsafe-inline' 'nonce-${nonce}' https://fonts.googleapis.com`;
+
  const cspHeader = `
   default-src 'self';
   script-src ${scriptSrc};
-  style-src 'self' 'unsafe-inline' 'nonce-${nonce}' https://fonts.googleapis.com;
+  style-src ${styleSrc};
   img-src 'self' data: blob: s3.regru.cloud *.s3.regru.cloud images.unsplash.com i.pravatar.cc api.dicebear.com api.qrserver.com randomuser.me www.transparenttextures.com;
   font-src 'self' https://fonts.gstatic.com;
   object-src 'none';

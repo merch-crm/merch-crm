@@ -228,7 +228,7 @@ export function EditorToolbar() {
         {/* Экспорт */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="solid" color="system" size="sm" disabled={!isReady}>
+            <Button variant="solid" color="purple" size="sm" disabled={!isReady}>
               <Download className="h-4 w-4 mr-2" />
               Экспорт
             </Button>

@@ -74,7 +74,7 @@ export default function OrderActions({ orderId, isArchived, canDelete, canArchiv
       )}
 
       {canDelete && (
-        <Button variant="solid" color="danger" onClick={() => setShowDeleteDialog(true)}
+        <Button variant="solid" color="red" onClick={() => setShowDeleteDialog(true)}
           disabled={loading}
           className="h-10 w-10 sm:h-11 sm:w-auto flex items-center justify-center gap-2 sm:px-8 rounded-full sm:rounded-2xl group active:scale-95 transition-all p-0 sm:p-auto"
           title="Удалить"

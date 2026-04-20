@@ -73,7 +73,7 @@ export function DesignInfoCard({ design }: DesignInfoCardProps) {
             </div>
 
             <div className="pt-2">
-              <Badge color={design.isActive ? "neutral" : "primary"} className="rounded-md">
+              <Badge color={design.isActive ? "gray" : "purple"} className="rounded-md">
                 {design.isActive ? "Активный дизайн" : "Дизайн в архиве"}
               </Badge>
             </div>

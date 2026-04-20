@@ -17,7 +17,7 @@ export function DropdownWithDescriptions() {
     <div className="flex justify-center p-8">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button color="neutral" variant="solid" className="rounded-element px-6 h-12 text-sm font-black bg-slate-100 hover:bg-slate-200 text-slate-900 border-none shadow-sm transition-all active:scale-95">
+          <Button color="gray" variant="solid" className="rounded-element px-6 h-12 text-sm font-black bg-slate-100 hover:bg-slate-200 text-slate-900 border-none shadow-sm transition-all active:scale-95">
             Actions
           </Button>
         </DropdownMenuTrigger>
@@ -42,7 +42,7 @@ export function DropdownWithDescriptions() {
             label="Delete file" 
             description="Move to trash" 
             shortcut="⌘⇧D" 
-            variant="danger"
+            color="red"
           />
         </DropdownMenuContent>
       </DropdownMenu>
@@ -55,26 +55,26 @@ function DropdownItem({
   label, 
   description, 
   shortcut, 
-  variant = "neutral" 
+  color = "gray" 
 }: { 
   icon: React.ReactNode, 
   label: string, 
   description: string, 
   shortcut: string,
-  variant?: "neutral" | "danger"
+  color?: "gray" | "red"
 }) {
   return (
-    <DropdownMenuItem className={cn( "flex items-start gap-3 p-3 rounded-element cursor-pointer transition-colors focus:bg-slate-50 outline-none", variant === "danger" ? "hover:bg-rose-50" : "" )}>
+    <DropdownMenuItem className={cn( "flex items-start gap-3 p-3 rounded-element cursor-pointer transition-colors focus:bg-slate-50 outline-none", color === "red" ? "hover:bg-rose-50" : "" )}>
       <div className={cn(
         "flex h-8 items-start justify-center pt-1 shrink-0",
-        variant === "danger" ? "text-rose-500" : "text-slate-400"
+        color === "red" ? "text-rose-500" : "text-slate-400"
       )}>
         {icon}
       </div>
       <div className="flex flex-col flex-1 min-w-0">
         <span className={cn(
           "text-sm font-bold",
-          variant === "danger" ? "text-rose-600" : "text-slate-900"
+          color === "red" ? "text-rose-600" : "text-slate-900"
         )}>{label}</span>
         <span className="text-xs font-medium text-slate-400 truncate">{description}</span>
       </div>

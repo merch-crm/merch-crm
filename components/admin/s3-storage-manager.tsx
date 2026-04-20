@@ -107,7 +107,7 @@ export function S3StorageManager() {
                                             <CheckSquare size={18} />
                                             <span className="text-xs font-bold">Выбор</span>
                                         </Button>
-                                        <Button variant="solid" color="neutral" size="sm" onClick={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: true } }))}
+                                        <Button variant="solid" color="gray" size="sm" onClick={() => setModals(prev => ({ ...prev, create: { ...prev.create, open: true } }))}
                                             className="gap-2 bg-indigo-50 text-primary hover:bg-indigo-100 border-none"
                                         >
                                             <FolderPlus size={18} />
@@ -126,15 +126,15 @@ export function S3StorageManager() {
                                             <span className="text-sm font-bold text-slate-700">выбрано</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <Button variant="solid" color="neutral" size="sm" onClick={() => selectAll(filteredFolders, filteredFiles)}
+                                            <Button variant="solid" color="gray" size="sm" onClick={() => selectAll(filteredFolders, filteredFiles)}
                                                 className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8"
                                             >
                                                 Выбрать все
                                             </Button>
-                                            <Button variant="solid" color="neutral" size="sm" onClick={deselectAll} className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8">
+                                            <Button variant="solid" color="gray" size="sm" onClick={deselectAll} className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8">
                                                 Снять выбор
                                             </Button>
-                                            <Button variant="solid" color="danger" size="sm" onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
+                                            <Button variant="solid" color="red" size="sm" onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
                                                 className="gap-2 text-xs h-8"
                                             >
                                                 <Trash2 size={14} />
@@ -249,7 +249,7 @@ export function S3StorageManager() {
                                 </div>
                             )}
                             <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <Button variant="solid" color="neutral" size="icon" onClick={() => openInNewTab(preview.file!.url)}
+                                <Button variant="solid" color="gray" size="icon" onClick={() => openInNewTab(preview.file!.url)}
                                     className="bg-white/10 backdrop-blur-md hover:bg-white/20 text-white rounded-xl border-none h-10 w-10"
                                     aria-label="Открыть в новой вкладке"
                                 >

@@ -12,8 +12,8 @@ interface SwitchRowProps {
     className?: string;
     /** Colour token applied to the icon wrapper, e.g. "text-blue-600 bg-white" */
     iconClassName?: string;
-    /** Switch color: "primary" | "success" | "dark" */
-    color?: "primary" | "success" | "dark";
+    /** Switch color: "purple" | "green" | "black" */
+    color?: "purple" | "green" | "black";
     /** Optional click handler for the whole row */
     onClick?: () => void;
     /** Disable state */
@@ -31,7 +31,7 @@ export function SwitchRow({
     onCheckedChange,
     className,
     iconClassName = "bg-white text-slate-400",
-    color = "primary",
+    color = "purple",
     onClick,
     disabled
 }: SwitchRowProps) {

@@ -99,7 +99,7 @@ export function RefundDialog({ orderId, maxAmount }: RefundDialogProps) {
             >
               Отмена
             </Button>
-            <Button variant="solid" color="danger" onClick={handleRefund} disabled={isPending} className="h-11 w-full md:w-auto md:px-10 rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-rose-500/20 transition-all active:scale-95">
+            <Button variant="solid" color="red" onClick={handleRefund} disabled={isPending} className="h-11 w-full md:w-auto md:px-10 rounded-[var(--radius-inner)] font-bold text-sm shadow-lg shadow-rose-500/20 transition-all active:scale-95">
               {isPending ?"Обработка..." :"Подтвердить возврат"}
             </Button>
           </div>

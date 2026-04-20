@@ -97,7 +97,7 @@ export function StorageLocationsTab({ locations, users }: StorageLocationsTabPro
             </div>
             <Input type="password" value={uiState.deletePassword} onChange={(e) => setUiState(prev => ({ ...prev, deletePassword: e.target.value }))}
               placeholder="Пароль администратора"
-              className="h-11 rounded-[var(--radius-inner)] border-2 border-rose-100 focus:border-rose-300 font-medium text-slate-900 placeholder:text-rose-200 text-sm"
+              className="border-2 border-rose-100 focus:border-rose-300 font-medium text-slate-900 placeholder:text-rose-200 text-sm"
               autoFocus
             />
           </div>

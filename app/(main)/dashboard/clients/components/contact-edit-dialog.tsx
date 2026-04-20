@@ -127,7 +127,6 @@ export const ContactEditDialog = memo(function ContactEditDialog({
           </label>
           <Input type="text" value={formData.name} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
             placeholder="Иванов Иван Иванович"
-            className="h-12 rounded-xl"
             required
           />
         </div>
@@ -140,7 +139,6 @@ export const ContactEditDialog = memo(function ContactEditDialog({
             </label>
             <Select value={formData.role} onChange={(val) => setFormData(prev => ({ ...prev, role: val as typeof formData.role }))}
               options={ROLE_OPTIONS}
-              triggerClassName="h-12"
             />
           </div>
           <div className="space-y-2">
@@ -150,7 +148,6 @@ export const ContactEditDialog = memo(function ContactEditDialog({
             </label>
             <Input type="text" value={formData.position} onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
               placeholder="Генеральный директор"
-              className="h-12 rounded-xl"
             />
           </div>
         </div>
@@ -164,7 +161,6 @@ export const ContactEditDialog = memo(function ContactEditDialog({
             </label>
             <Input type="tel" value={formData.phone} onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
               placeholder="+7 (999) 123-45-67"
-              className="h-12 rounded-xl"
             />
           </div>
           <div className="space-y-2">
@@ -174,7 +170,6 @@ export const ContactEditDialog = memo(function ContactEditDialog({
             </label>
             <Input type="email" value={formData.email} onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               placeholder="contact@company.ru"
-              className="h-12 rounded-xl"
             />
           </div>
         </div>
@@ -187,7 +182,6 @@ export const ContactEditDialog = memo(function ContactEditDialog({
           </label>
           <Input type="text" value={formData.telegram} onChange={(e) => setFormData(prev => ({ ...prev, telegram: e.target.value }))}
             placeholder="@username"
-            className="h-12 rounded-xl"
           />
         </div>
 
@@ -202,12 +196,12 @@ export const ContactEditDialog = memo(function ContactEditDialog({
             onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
             placeholder="Дополнительная информация о контакте..."
             rows={3}
-            className="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-medium text-sm focus:border-primary focus:bg-white transition-all outline-none resize-none"
+            className="w-full p-4 rounded-[var(--radius-inner)] border border-slate-200 bg-slate-50 text-slate-900 font-medium text-sm focus:border-primary focus:bg-white transition-all outline-none resize-none"
           />
         </div>
 
         {/* Is Primary */}
-        <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+        <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-[var(--radius-inner)] cursor-pointer hover:bg-slate-100 transition-colors">
           <input
             type="checkbox"
             checked={formData.isPrimary}
@@ -222,10 +216,10 @@ export const ContactEditDialog = memo(function ContactEditDialog({
 
         {/* Actions */}
         <div className="flex gap-3 pt-4 border-t border-slate-100">
-          <Button type="button" variant="ghost" onClick={onClose} className="flex-1 h-11 rounded-xl text-sm font-bold">
+          <Button type="button" variant="ghost" onClick={onClose} className="flex-1 font-bold">
             Отмена
           </Button>
-          <Button type="submit" disabled={loading} className="flex-1 h-11 rounded-xl text-sm font-bold">
+          <Button type="submit" disabled={loading} className="flex-1 font-bold">
             {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {isEditing ? "Сохранить" : "Добавить"}
           </Button>

@@ -63,7 +63,7 @@ export function HistoryDetailModal({
    <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0 gap-0 overflow-hidden rounded-xl border-2">
     <DialogHeader className="p-6 pb-4 border-b bg-muted/10">
      <div className="flex items-center justify-between gap-3 mb-2">
-      <Badge color="primary" variant="outline" className={cn(`bg-${config.color}-50 text-${config.color}-700 border-${config.color}-200`)}>
+      <Badge color="purple" variant="outline" className={cn(`bg-${config.color}-50 text-${config.color}-700 border-${config.color}-200`)}>
        {config.label}
       </Badge>
       <span className="text-xs text-muted-foreground font-mono flex items-center gap-1">
@@ -187,7 +187,7 @@ export function HistoryDetailModal({
 
     <DialogFooter className="p-4 border-t bg-muted/5 gap-2 flex-col sm:flex-row">
      <div className="flex-1 flex gap-2">
-      <Button variant="outline" color="neutral" onClick={() => item && generateAndDownload(mapHistoryToPDFData(item))}
+      <Button variant="outline" color="gray" onClick={() => item && generateAndDownload(mapHistoryToPDFData(item))}
        disabled={isGenerating}
        className="rounded-lg"
       >
@@ -200,7 +200,7 @@ export function HistoryDetailModal({
       </Button>
      </div>
      <div className="flex gap-2">
-      <Button variant="outline" color="neutral" onClick={onClose} className="rounded-lg">
+      <Button variant="outline" color="gray" onClick={onClose} className="rounded-lg">
        Закрыть
       </Button>
       <Button onClick={() => onDuplicate(item.id)} className="rounded-lg bg-primary hover:bg-primary/90">

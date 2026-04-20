@@ -90,7 +90,7 @@ export function DesignDashboardClient({
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" color="neutral" className="rounded-xl h-10 px-5 border-gray-200 hover:bg-gray-50 font-medium text-gray-700 transition-colors" asChild>
+          <Button variant="outline" color="gray" className="rounded-xl h-10 px-5 border-gray-200 hover:bg-gray-50 font-medium text-gray-700 transition-colors" asChild>
             <Link href="/dashboard/design/editor">
               <PenTool className="h-4 w-4 mr-2" />
               Редактор
@@ -149,11 +149,11 @@ export function DesignDashboardClient({
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        <Badge className={priority.color} color="neutral">
+                        <Badge className={priority.color} color="gray">
                           {priority.label}
                         </Badge>
                         {task.dueDate && isOverdue(task.dueDate) && (
-                          <Badge color="danger">Просрочено</Badge>
+                          <Badge color="red">Просрочено</Badge>
                         )}
                       </div>
                     </Link>

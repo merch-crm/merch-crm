@@ -19,7 +19,7 @@ export function OversizeToggle({
     <div className="pt-2">
       <Button
         variant="outline"
-        color={valueForm.isOversize ? "system" : "neutral"}
+        color={valueForm.isOversize ? "purple" : "gray"}
         onClick={() => {
           setValueForm(prev => {
             const isOversizeChecked = !prev.isOversize;

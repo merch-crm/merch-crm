@@ -140,7 +140,7 @@ export function AddCategoryDialog({
   return (
     <>
       <Button 
-        color="dark"
+        color="black"
         onClick={() => {
           setFormState(prev => ({
             ...prev,
@@ -152,14 +152,12 @@ export function AddCategoryDialog({
           setIsOpen(true);
         }}
         className={cn(
-          "h-12 sm:w-auto px-6 sm:px-10 rounded-2xl gap-3 shadow-xl shadow-black/5 hover:shadow-black/10 active:scale-95 transition-all",
+          "sm:w-auto px-6 sm:px-10 gap-2.5 shadow-xl shadow-black/5 hover:shadow-black/10 active:scale-95 transition-all text-sm font-bold",
           className
         )}
       >
-        <div className="flex items-center justify-center size-6 bg-white/20 rounded-lg">
-          <Plus className="size-4 stroke-[3]" />
-        </div>
-        <span className="font-extrabold tracking-tight text-base">{buttonText}</span>
+        <Plus className="size-4 shrink-0" />
+        <span className="hidden sm:inline whitespace-nowrap">{buttonText}</span>
       </Button>
 
       <ResponsiveModal isOpen={isOpen} onClose={() => setIsOpen(false)}
@@ -250,11 +248,11 @@ export function AddCategoryDialog({
 
             <div className="grid grid-cols-2 gap-4">
               <SwitchRow title={"В артикул"} description="" checked={formState.showInSku} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
-                color="success"
+                color="green"
                 className="p-4 bg-slate-50/50 border border-slate-200/50 rounded-2xl"
               />
               <SwitchRow title={"В название"} description="" checked={formState.showInName} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
-                color="success"
+                color="green"
                 className="p-4 bg-slate-50/50 border border-slate-200/50 rounded-2xl"
               />
             </div>
@@ -272,7 +270,7 @@ export function AddCategoryDialog({
             <Button
               type="button"
               variant="ghost"
-              color="neutral"
+              color="gray"
               onClick={() => setIsOpen(false)}
               className="h-12 px-8 rounded-xl font-bold hover:bg-slate-100"
             >
@@ -282,7 +280,7 @@ export function AddCategoryDialog({
               text="Создать"
               loadingText="Создание..."
               className="h-12 px-10 rounded-xl font-black uppercase tracking-tight shadow-lg shadow-black/10"
-              color="dark"
+              color="black"
             />
           </div>
         </form>

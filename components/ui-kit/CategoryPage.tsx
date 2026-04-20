@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useState, useCallback, useMemo } from "react";
+import React, { createContext, useState, useCallback, useMemo, useEffect } from "react";
 import { pluralize } from "@/lib/pluralize";
 
 export const CategoryContext = createContext<{
@@ -12,6 +12,11 @@ export function CategoryPage({ title, description, children }: {
   title: string; description: React.ReactNode; children: React.ReactNode;
 }) {
   const [registeredComponents, setRegisteredComponents] = useState<Set<string>>(new Set());
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const registerComponent = useCallback((id: string) => {
     setRegisteredComponents(prev => {
@@ -39,7 +44,16 @@ export function CategoryPage({ title, description, children }: {
       <div className="mx-auto max-w-6xl px-6 py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="mb-8">
           <h1 className="text-2xl font-bold font-heading text-gray-950 ">{title}</h1>
-          <p className="mt-1 text-sm text-gray-500 font-medium">{description} · {count} {noun}</p>
+          <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+            <p className="text-sm text-gray-500 font-medium whitespace-normal">
+              {description}
+            </p>
+            {mounted && (
+              <span className="text-xs opacity-40 font-bold text-gray-500 shrink-0" aria-hidden="true">
+                · {count} {noun}
+              </span>
+            )}
+          </div>
         </div>
         <div className="flex flex-col gap-3">{children}</div>
       </div>

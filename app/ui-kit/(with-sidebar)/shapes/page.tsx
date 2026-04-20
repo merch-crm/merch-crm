@@ -160,12 +160,12 @@ export default function ShapesPage() {
  <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-element border border-slate-100">
  <code className="text-[10px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 shrink-0">rounded-full</code>
  <div className="flex gap-3 flex-wrap">
- <Badge color="success" icon={CheckCircle}>Готово</Badge>
- <Badge color="info" icon={Sparkles}>Новое</Badge>
- <Button variant="outline" color="neutral" className="rounded-full shadow-none border-slate-300 text-xs">
+ <Badge color="green" icon={CheckCircle}>Готово</Badge>
+ <Badge color="purple" icon={Sparkles}>Новое</Badge>
+ <Button variant="outline" color="gray" className="rounded-full shadow-none border-slate-300 text-xs">
  Фильтр: Активные
  </Button>
- <Button variant="solid" color="system" className="rounded-full size-10 p-0 flex items-center justify-center text-lg">
+ <Button variant="solid" color="purple" className="rounded-full size-10 p-0 flex items-center justify-center text-lg">
  +
  </Button>
  </div>

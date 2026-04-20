@@ -22,8 +22,8 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
     <>
       <Button onClick={() => updateState({ isOpen: true })}
         size={isMobile ? "sm" : "lg"}
-        className={cn("rounded-full sm:rounded-[18px] shadow-xl shadow-primary/20 font-bold justify-center",
-          isMobile ?"w-11 h-11 p-0" :""
+        className={cn("shadow-xl shadow-primary/20 font-bold justify-center",
+          isMobile ?"w-11 h-11 p-0 rounded-full" :"rounded-2xl"
         )}
         title="Пригласить сотрудника"
       >
@@ -81,7 +81,7 @@ export function AddUserDialog({ onSuccess }: { onSuccess?: () => void }) {
             </div>
 
             <div className="mt-6 pt-2 sticky bottom-0 bg-white border-t border-slate-100">
-              <Button type="submit" disabled={state.loading} className="w-full justify-center rounded-[var(--radius-inner)] h-11 font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-2">
+              <Button type="submit" disabled={state.loading} className="w-full justify-center font-bold text-white shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center gap-2">
                 {state.loading && <Loader2 className="w-4 h-4 animate-spin mr-2" />}
                 {state.loading ?"Создание..." :"Создать сотрудника"}
               </Button>

@@ -244,7 +244,7 @@ export function TaskListView({
                {task.title}
               </p>
               {task.isAutoCreated && (
-               <Badge className="h-5 px-1 bg-violet-500/10 text-violet-600 border-none" color="neutral">
+               <Badge className="h-5 px-1 bg-violet-500/10 text-violet-600 border-none" color="gray">
                 <Zap className="h-3 w-3" />
                </Badge>
               )}
@@ -258,7 +258,7 @@ export function TaskListView({
            </div>
           </TableCell>
           <TableCell>
-           <Badge color="primary" variant="outline" className="h-6 px-2 text-xs font-bold" style={{ borderColor: `${statusConfig.color}40`, color: statusConfig.color, backgroundColor: `${statusConfig.color}10`, }}>
+           <Badge color="purple" variant="outline" className="h-6 px-2 text-xs font-bold" style={{ borderColor: `${statusConfig.color}40`, color: statusConfig.color, backgroundColor: `${statusConfig.color}10`, }}>
             {statusConfig.label}
            </Badge>
           </TableCell>
@@ -318,7 +318,7 @@ export function TaskListView({
           <TableCell onClick={(e) => e.stopPropagation()} className="pr-4">
            <DropdownMenu>
             <DropdownMenuTrigger asChild>
-             <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all rounded-lg">
+             <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-all rounded-lg">
               <MoreHorizontal className="h-4 w-4" />
              </Button>
             </DropdownMenuTrigger>
@@ -353,7 +353,7 @@ export function TaskListView({
       Стр. <span className="text-foreground">{currentPage}</span> из {totalPages}
      </p>
      <div className="flex items-center gap-2">
-       <Button variant="ghost" color="neutral" size="sm" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+       <Button variant="ghost" color="gray" size="sm" onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
         disabled={currentPage === 1}
         className="h-8 w-8 p-0 rounded-lg"
        >
@@ -363,7 +363,7 @@ export function TaskListView({
         {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
          const pageNumber = i + 1;
          return (
-          <Button key={pageNumber} color={currentPage === pageNumber ? "system" : "neutral"} size="sm" onClick={() => setCurrentPage(pageNumber)}
+          <Button key={pageNumber} color={currentPage === pageNumber ? "purple" : "gray"} size="sm" onClick={() => setCurrentPage(pageNumber)}
            className={cn("h-8 w-8 p-0 rounded-lg text-xs", currentPage === pageNumber && "bg-primary/10 text-primary hover:bg-primary/20")}
           >
            {pageNumber}
@@ -371,7 +371,7 @@ export function TaskListView({
          );
         })}
        </div>
-       <Button variant="ghost" color="neutral" size="sm" onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+       <Button variant="ghost" color="gray" size="sm" onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
         disabled={currentPage === totalPages}
         className="h-8 w-8 p-0 rounded-lg"
        >

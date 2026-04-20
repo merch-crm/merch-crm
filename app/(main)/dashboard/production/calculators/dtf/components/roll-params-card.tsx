@@ -30,7 +30,7 @@ export function RollParamsCard({ params, onChange }: RollParamsCardProps) {
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <h2 className="font-bold">Параметры печати</h2>
-          <Badge color="neutral">
+          <Badge color="gray">
             Рулон {params.rollWidthMm} мм
           </Badge>
         </div>

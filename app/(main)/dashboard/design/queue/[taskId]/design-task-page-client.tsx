@@ -111,25 +111,25 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
     <div className="p-4 space-y-3">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" color="neutral" size="icon" onClick={() => router.back()}>
+          <Button variant="ghost" color="gray" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
 
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Badge color="primary" variant="outline" className="font-mono text-xs">
+              <Badge color="purple" variant="outline" className="font-mono text-xs">
                 {task.number}
               </Badge>
               <Badge className={`text-xs ${statusConfig[task.status]?.bgColor} ${statusConfig[task.status]?.color}`}>
                 {statusConfig[task.status]?.label}
               </Badge>
               {(task.priority ?? 0) > 0 && (
-                <Badge color={task.priority === 2 ? "danger" : "neutral"} className="text-xs">
+                <Badge color={task.priority === 2 ? "red" : "gray"} className="text-xs">
                   {priorityConfig[task.priority ?? 0]?.label}
                 </Badge>
               )}
               {isOverdue && (
-                <Badge className="text-xs" color="danger">
+                <Badge className="text-xs" color="red">
                   <AlertTriangle className="mr-1 h-3 w-3" />
                   Просрочено
                 </Badge>
@@ -149,7 +149,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" color="neutral" size="icon" disabled={isUpdating}>
+              <Button variant="outline" color="gray" size="icon" disabled={isUpdating}>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -298,7 +298,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
               {task.applicationType && (
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Тип нанесения</p>
-                  <Badge color="primary" variant="outline" className="text-xs py-0 px-2 font-normal" style={{ backgroundColor: task.applicationType.color ? `${task.applicationType.color}15` : undefined, color: task.applicationType.color || undefined, borderColor: task.applicationType.color || undefined, }}>
+                  <Badge color="purple" variant="outline" className="text-xs py-0 px-2 font-normal" style={{ backgroundColor: task.applicationType.color ? `${task.applicationType.color}15` : undefined, color: task.applicationType.color || undefined, borderColor: task.applicationType.color || undefined, }}>
                     {task.applicationType.name}
                   </Badge>
                 </div>
@@ -333,7 +333,7 @@ export function DesignTaskPageClient({ task: initialTask }: DesignTaskPageClient
                     <span className="font-medium text-sm">{task.assignee.name}</span>
                   </div>
                 ) : (
-                  <Button variant="outline" color="neutral" size="sm" onClick={handleTake} disabled={isUpdating} className="h-8 text-xs">
+                  <Button variant="outline" color="gray" size="sm" onClick={handleTake} disabled={isUpdating} className="h-8 text-xs">
                     <User className="mr-2 h-4 w-4" />
                     Взять задачу
                   </Button>

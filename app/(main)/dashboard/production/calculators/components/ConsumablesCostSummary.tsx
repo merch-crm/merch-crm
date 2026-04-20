@@ -101,11 +101,11 @@ export function ConsumablesCostSummary({
        <h3 className="text-lg font-bold text-slate-900 ">Расходники</h3>
       </div>
       <div className="flex items-center gap-2">
-       <Badge className="bg-white border-slate-200 text-slate-900 font-bold px-3 py-1 text-sm shadow-sm" color="neutral">
+       <Badge className="bg-white border-slate-200 text-slate-900 font-bold px-3 py-1 text-sm shadow-sm" color="gray">
         {String(formatCurrency(totalCost))}
        </Badge>
        <CollapsibleTrigger asChild>
-        <Button variant="ghost" color="neutral" size="icon" className="h-9 w-9 rounded-xl hover:bg-white hover:shadow-sm">
+        <Button variant="ghost" color="gray" size="icon" className="h-9 w-9 rounded-xl hover:bg-white hover:shadow-sm">
          <ChevronDown className="h-4 w-4" />
         </Button>
        </CollapsibleTrigger>

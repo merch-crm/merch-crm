@@ -167,7 +167,7 @@ export function OrdersDashboardClient({
                         {formatCurrency(order.totalAmount)}
                       </TableCell>
                       <TableCell>
-                        <Badge className={`${statusConfig[order.status]?.color || "bg-gray-500"} text-white`} color="neutral">
+                        <Badge className={`${statusConfig[order.status]?.color || "bg-gray-500"} text-white`} color="gray">
                           {statusConfig[order.status]?.label || order.status}
                         </Badge>
                       </TableCell>

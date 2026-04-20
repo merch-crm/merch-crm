@@ -78,17 +78,17 @@ export function LocalStorageManager() {
                                     <span className="text-sm font-bold text-slate-700">выбрано</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Button variant="solid" color="neutral" size="sm" onClick={() => selectAll(filteredFolders, filteredFiles)}
+                                    <Button variant="solid" color="gray" size="sm" onClick={() => selectAll(filteredFolders, filteredFiles)}
                                         className="bg-white text-emerald-600 hover:bg-emerald-50 text-xs h-8"
                                     >
                                         Выбрать все
                                     </Button>
-                                    <Button variant="solid" color="neutral" size="sm" onClick={() => setSelection(prev => ({ ...prev, paths: new Set() }))}
+                                    <Button variant="solid" color="gray" size="sm" onClick={() => setSelection(prev => ({ ...prev, paths: new Set() }))}
                                         className="bg-white text-slate-600 hover:bg-slate-50 text-xs h-8"
                                     >
                                         Снять выбор
                                     </Button>
-                                    <Button variant="solid" color="danger" size="sm" onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
+                                    <Button variant="solid" color="red" size="sm" onClick={() => setModals(prev => ({ ...prev, multiDelete: { ...prev.multiDelete, open: true } }))}
                                         className="gap-2 text-xs h-8"
                                     >
                                         <Trash2 size={14} />

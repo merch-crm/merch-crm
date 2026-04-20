@@ -108,7 +108,7 @@ export function ItemInventorySection({
           </div>
 
           <div className="relative mt-8">
-            <Button variant="outline" color="neutral" type="button" className="w-full h-11 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-xs" onClick={() => onUpdateField("lowStockThreshold", 10)} // Example, usually triggers editing
+            <Button variant="outline" color="gray" type="button" className="w-full h-11 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-bold text-xs" onClick={() => onUpdateField("lowStockThreshold", 10)} // Example, usually triggers editing
             >
               Настроить пороги
             </Button>
@@ -196,12 +196,12 @@ export function ItemInventorySection({
                   </div>
 
                   <div className="flex gap-2">
-                    <Button variant="ghost" color="neutral" size="icon" type="button" onClick={() => onAdjustStock(stock.storageLocationId)}
+                    <Button variant="ghost" color="gray" size="icon" type="button" onClick={() => onAdjustStock(stock.storageLocationId)}
                       className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground w-10 h-10 min-w-0"
                     >
                       <PlusCircle className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" color="neutral" size="icon" type="button" onClick={() => onTransferStock(stock.storageLocationId)}
+                    <Button variant="ghost" color="gray" size="icon" type="button" onClick={() => onTransferStock(stock.storageLocationId)}
                       className="p-3 bg-muted rounded-2xl hover:bg-primary hover:text-white transition-all text-muted-foreground w-10 h-10 min-w-0"
                     >
                       <ArrowRightLeft className="w-4 h-4" />

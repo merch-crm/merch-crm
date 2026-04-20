@@ -20,7 +20,7 @@ export function CategoryHeader({ category, mounted }: CategoryHeaderProps) {
         <Button 
           type="button" 
           variant="outline" 
-          color="neutral" 
+          color="gray" 
           size="icon" 
           onClick={() => router.back()}
           className="size-11 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0 group"

@@ -56,7 +56,7 @@ export function PromocodeFormModal({
               </p>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={onClose} className="w-10 h-10 rounded-full bg-slate-50 text-slate-400 hover:text-slate-900 flex items-center justify-center transition-all active:scale-95 p-0">
+          <Button variant="ghost" size="icon" onClick={onClose} className="bg-slate-50 text-slate-400 hover:text-slate-900 transition-all active:scale-95">
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -67,14 +67,14 @@ export function PromocodeFormModal({
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Название</label>
                 <Input name="name" required value={form.name} onChange={(e) => handleNameChange(e.target.value)}
-                  className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12"
+                  className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300"
                   placeholder="Напр. Летняя распродажа"
                 />
               </div>
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Код</label>
                 <Input name="code" required value={form.code} onChange={(e) => handleCodeChange(e.target.value)}
-                  className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 text-center h-12"
+                  className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 text-center"
                   placeholder="SALE26"
                 />
               </div>
@@ -90,14 +90,14 @@ export function PromocodeFormModal({
               </div>
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Значение / ID Подарка</label>
-                <Input name="value" type="number" required defaultValue={editingPromo?.value} className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12" placeholder="10" />
+                <Input name="value" type="number" required defaultValue={editingPromo?.value} className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all" placeholder="10" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Мин. сумма заказа</label>
-                <Input name="minOrderAmount" type="number" defaultValue={editingPromo?.minOrderAmount ||"0"} className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all h-12" placeholder="0" />
+                <Input name="minOrderAmount" type="number" defaultValue={editingPromo?.minOrderAmount ||"0"} className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all" placeholder="0" />
               </div>
             </div>
 
@@ -107,7 +107,7 @@ export function PromocodeFormModal({
                 name="adminComment"
                 defaultValue={editingPromo?.adminComment ||""}
                 rows={2}
-                className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300"
+                className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all resize-none placeholder:text-slate-300"
                 placeholder="Например: Выдан блогеру @ivanov за рекламу"
               />
             </div>
@@ -115,12 +115,12 @@ export function PromocodeFormModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Лимит использований</label>
-                <Input name="usageLimit" type="number" defaultValue={editingPromo?.usageLimit ||""} className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300 h-12" placeholder="Безлимитно" />
+                <Input name="usageLimit" type="number" defaultValue={editingPromo?.usageLimit ||""} className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all placeholder:text-slate-300" placeholder="Безлимитно" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs sm:text-sm font-bold text-slate-700 ml-1">Дата истечения</label>
                 <div className="relative">
-                  <Input name="expiresAt" type="date" defaultValue={editingPromo?.expiresAt ? formatDate(editingPromo.expiresAt,"yyyy-MM-dd") :""} className="w-full px-5 py-3.5 bg-slate-50 border-none rounded-[var(--radius-inner)] text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none h-12" />
+                  <Input name="expiresAt" type="date" defaultValue={editingPromo?.expiresAt ? formatDate(editingPromo.expiresAt,"yyyy-MM-dd") :""} className="w-full px-5 py-3.5 bg-slate-50 border-none text-sm font-bold focus:ring-4 focus:ring-primary/5 transition-all appearance-none" />
                   <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 pointer-events-none" />
                 </div>
               </div>
@@ -129,7 +129,7 @@ export function PromocodeFormModal({
         </div>
 
         <div className="p-6 sm:p-6 bg-white/80 backdrop-blur-md border-t border-slate-50 sticky bottom-0 z-20">
-          <SubmitButton form="promocode-form" isLoading={isLoading} disabled={isLoading} className="w-full btn-dark text-white py-8 rounded-[var(--radius-inner)] text-sm font-bold transition-all active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 border-none h-16">
+          <SubmitButton form="promocode-form" isLoading={isLoading} disabled={isLoading} color="black" className="w-full font-bold shadow-lg shadow-slate-900/10 transition-all active:scale-[0.98]">
             {editingPromo ?"Сохранить изменения" :"Создать промокод"}
           </SubmitButton>
         </div>

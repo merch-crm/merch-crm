@@ -63,7 +63,7 @@ function LoadingOverlay({ text ="Загрузка...", blur = true }: LoadingOve
                 blur &&"backdrop-blur-sm"
             )}
         >
-            <Spinner size="lg" color="primary" />
+            <Spinner size="lg" variant="primary" />
             <span className="text-sm font-medium text-slate-600">{text}</span>
         </div>
     );
@@ -73,7 +73,7 @@ function LoadingOverlay({ text ="Загрузка...", blur = true }: LoadingOve
 function LoadingBlock({ text, className }: { text?: string; className?: string }) {
     return (
         <div className={cn("flex flex-col items-center justify-center py-12 gap-3", className)}>
-            <Spinner size="md" color="primary" />
+            <Spinner size="md" variant="primary" />
             {text && <span className="text-sm text-slate-500">{text}</span>}
         </div>
     );

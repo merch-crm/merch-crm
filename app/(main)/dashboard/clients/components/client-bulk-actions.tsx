@@ -102,14 +102,14 @@ export function ClientBulkActions({
 
             <div className="flex items-center gap-1">
               {["Администратор", "Управляющий", "Отдел продаж"].includes(userRoleName || "") && (
-                <Button type="button" variant="ghost" onClick={handleExportClick} className="h-9 px-4 rounded-full text-xs font-bold">
+                <Button type="button" variant="ghost" onClick={handleExportClick} className="px-4 font-bold">
                   <Download className="w-3.5 h-3.5 mr-2" /> Экспорт
                 </Button>
               )}
 
               <div className="relative">
                 <Button type="button" onClick={() => setShowManagerSelect(!showManagerSelect)}
-                  className={cn("h-9 px-4 rounded-full text-xs font-bold", showManagerSelect ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-600")}
+                  className={cn("px-4 font-bold", showManagerSelect ? "bg-slate-900 text-white" : "bg-slate-50 text-slate-600")}
                 >
                   <UsersIcon className="w-3.5 h-3.5 mr-2" /> Менеджер
                 </Button>
@@ -157,20 +157,20 @@ export function ClientBulkActions({
               </div>
 
               {["Администратор", "Управляющий"].includes(userRoleName || "") && (
-                <Button type="button" variant="ghost" onClick={handleBulkArchive} className="h-9 px-4 rounded-full text-xs font-bold hover:bg-amber-50 text-amber-600">
+                <Button type="button" variant="ghost" onClick={handleBulkArchive} className="px-4 font-bold hover:bg-amber-50 text-amber-600">
                   <Archive className="w-3.5 h-3.5 mr-2" /> В архив
                 </Button>
               )}
 
               {userRoleName === "Администратор" && (
-                <Button type="button" variant="ghost" onClick={() => setShowDeleteConfirm(true)} className="h-9 px-4 rounded-full text-xs font-bold text-rose-500 hover:bg-rose-50">
+                <Button type="button" variant="ghost" onClick={() => setShowDeleteConfirm(true)} className="px-4 font-bold text-rose-500 hover:bg-rose-50">
                   <Trash2 className="w-3.5 h-3.5 mr-2" /> Удалить
                 </Button>
               )}
 
               <div className="w-px h-6 bg-slate-200 mx-1" />
 
-              <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedIds([])} className="w-9 h-9 rounded-full bg-slate-100">
+              <Button type="button" variant="ghost" size="icon" onClick={() => setSelectedIds([])} className="bg-slate-100">
                 <X className="w-4 h-4" />
               </Button>
             </div>

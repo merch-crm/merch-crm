@@ -64,7 +64,7 @@ export function BrandingForm({ initialSettings, initialIconGroups }: BrandingFor
               <p className="text-slate-500 text-xs font-medium mt-0.5">Настройка логотипа, цветов, звуков и интерфейса CRM</p>
             </div>
           </div>
-          <Button type="submit" disabled={ui.isLoading} color="dark" className="h-12 rounded-xl px-8 gap-2 font-bold shadow-lg shadow-black/10 hover:shadow-black/20 transition-all active:scale-[0.98]">
+          <Button type="submit" disabled={ui.isLoading} color="black" className="h-12 rounded-xl px-8 gap-2 font-bold shadow-lg shadow-black/10 hover:shadow-black/20 transition-all active:scale-[0.98]">
             {ui.isLoading ? <Database className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
             {ui.isLoading ? "Сохранение..." : "Сохранить изменения"}
           </Button>

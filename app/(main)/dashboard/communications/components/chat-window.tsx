@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send,
-  Paperclip,
   MoreVertical,
   User,
   Building2,
@@ -14,6 +13,7 @@ import {
   ChevronDown,
   Sparkles,
   ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -55,6 +55,7 @@ export function ChatWindow({
 }: ChatWindowProps) {
   const [inputValue, setInputValue] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
+  const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -146,7 +147,7 @@ export function ChatWindow({
               <span className="font-semibold text-slate-900">
                 {conversation.clientName}
               </span>
-              <Badge color="primary" variant="outline" className="text-xs" style={{ borderColor: conversation.channelColor, color: conversation.channelColor }}>
+              <Badge color="purple" variant="outline" className="text-xs" style={{ borderColor: conversation.channelColor, color: conversation.channelColor }}>
                 {conversation.channelName}
               </Badge>
             </div>
@@ -157,13 +158,13 @@ export function ChatWindow({
         </div>
 
         <div className="flex items-center gap-2">
-          <Link href={`/dashboard/clients?client=${conversation.clientId}`} className="h-9 px-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+          <Link href={`/dashboard/clients?client=${conversation.clientId}`} className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 px-3 py-1.5 rounded-lg transition-colors">
             <ExternalLink className="w-4 h-4" />
             <span className="hidden sm:inline">Карточка</span>
           </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" color="neutral" size="icon">
+              <Button variant="ghost" color="gray" size="icon">
                 <MoreVertical className="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -179,7 +180,7 @@ export function ChatWindow({
       <div className="flex-1 overflow-y-auto p-4">
         {hasMore && (
           <div className="text-center mb-4">
-            <Button variant="ghost" color="neutral" size="sm" onClick={onLoadMore} disabled={isLoading}>
+            <Button variant="ghost" color="gray" size="sm" onClick={onLoadMore} disabled={isLoading}>
               <ChevronDown className="w-4 h-4 mr-2" />
               Загрузить ранние сообщения
             </Button>
@@ -277,7 +278,7 @@ export function ChatWindow({
                   <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
                   Быстрые ответы
                 </span>
-                <Button variant="ghost" color="neutral" size="icon" className="h-6 w-6" onClick={() => setShowTemplates(false)}
+                <Button variant="ghost" color="gray" size="icon" className="h-6 w-6" onClick={() => setShowTemplates(false)}
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -305,12 +306,23 @@ export function ChatWindow({
 
         <div className="flex items-end gap-2">
           <div className="flex gap-1">
-            <Button variant="ghost" color="neutral" size="icon" className={cn( "h-10 w-10 rounded-xl transition-all", showTemplates ? "bg-amber-50 text-amber-600" : "text-slate-400 hover:text-slate-600" )} onClick={() => setShowTemplates(!showTemplates)}
+            <Button variant="ghost" color="gray" size="icon" className={cn( "transition-all", showTemplates ? "bg-amber-50 text-amber-600" : "text-slate-400 hover:text-slate-600" )} onClick={() => setShowTemplates(!showTemplates)}
             >
               <Sparkles className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" color="neutral" size="icon" className="h-10 w-10 rounded-xl text-slate-400 hover:text-slate-600" disabled>
-              <Paperclip className="w-5 h-5" />
+            <Button 
+              type="button" 
+              onClick={() => {
+                setIsAnalysisOpen(true);
+                setTimeout(() => setIsAnalysisOpen(false), 2000);
+              }} 
+              disabled={isAnalysisOpen}
+              color="black" 
+              size="md" 
+              className="gap-2 font-bold"
+            >
+              <RefreshCw className={cn("w-4 h-4", isAnalysisOpen && "animate-spin")} />
+              {isAnalysisOpen ? "Анализирую..." : "Запустить анализ"}
             </Button>
           </div>
 
@@ -328,7 +340,7 @@ export function ChatWindow({
             )}
           </div>
 
-          <Button onClick={handleSend} disabled={!inputValue.trim() || isSending} className="h-11 w-11 rounded-2xl shadow-md transition-all active:scale-95">
+          <Button onClick={handleSend} disabled={!inputValue.trim() || isSending} size="icon" className="w-[44px] h-[44px] rounded-2xl shadow-md transition-all active:scale-95">
             <Send className="w-5 h-5" />
           </Button>
         </div>

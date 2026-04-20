@@ -51,7 +51,7 @@ export function StorageBrowserHeader({
                     <CheckSquare size={18} />
                     <span className="text-xs font-bold">Выбор</span>
                 </button>
-                <Button variant="solid" color="neutral" size="sm" onClick={onCreateFolder} className="gap-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-none">
+                <Button variant="solid" color="gray" size="sm" onClick={onCreateFolder} className="gap-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border-none">
                     <FolderPlus size={18} />
                     <span className="text-xs font-bold">Папка</span>
                 </Button>

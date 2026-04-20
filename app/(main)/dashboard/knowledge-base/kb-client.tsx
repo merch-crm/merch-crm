@@ -269,7 +269,7 @@ export function KBClient({ initialFolders = [], initialPages = [], userRole }: K
                     >
                       <X className="w-4 h-4 text-slate-400" />
                     </Button>
-                    <Button color="dark" size="sm" type="button" onClick={handleSave} disabled={pageState.isLoading} className="text-white gap-2 font-bold px-3 md:px-5 h-9 rounded-[var(--radius-inner)] border-none" aria-label="Сохранить изменения">
+                    <Button color="black" size="sm" type="button" onClick={handleSave} disabled={pageState.isLoading} className="text-white gap-2 font-bold px-3 md:px-5 h-9 rounded-[var(--radius-inner)] border-none" aria-label="Сохранить изменения">
                       <Check className="w-4 h-4" />
                       <span className="hidden sm:inline">Сохранить</span>
                     </Button>

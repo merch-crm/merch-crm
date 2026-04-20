@@ -51,7 +51,7 @@ export function DeleteConfirmation({
             </div>
 
             <div className="flex flex-col gap-3">
-              <Button type="button" variant="solid" color="danger" className="w-full rounded-xl font-bold h-12 shadow-lg shadow-red-500/20 border-none text-white" onClick={onConfirm} disabled={isDeleting}>
+              <Button type="button" variant="solid" color="red" className="w-full rounded-xl font-bold h-12 shadow-lg shadow-red-500/20 border-none text-white" onClick={onConfirm} disabled={isDeleting}>
                 {isDeleting ?"Удаление..." :"Удалить"}
               </Button>
               <Button type="button" variant="outline" className="w-full rounded-xl font-bold h-12 text-slate-500 border-slate-200" onClick={onClose}>

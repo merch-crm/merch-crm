@@ -75,12 +75,12 @@ export const BulkMoveDialog = React.memo(({
               id="bulk-move-comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full h-24 p-4 rounded-[var(--radius)] border border-slate-200 bg-slate-50 text-sm font-medium outline-none focus:bg-white focus:border-primary transition-all resize-none"
+              className="w-full h-24 p-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-medium outline-none focus:bg-white focus:border-primary transition-all resize-none"
               placeholder="Причина перемещения…"
             />
           </div>
 
-          <Button type="button" onClick={handleMove} disabled={!targetLocationId || isLoading} className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all">
+          <Button type="button" onClick={handleMove} disabled={!targetLocationId || isLoading} className="w-full font-bold transition-all">
             {isLoading ?"Перемещение…" :"Подтвердить перемещение"}
           </Button>
         </div>
@@ -136,7 +136,7 @@ export const BulkCategoryDialog = React.memo(({
           <CategorySelect id="bulk-category-target" categories={categories} value={targetCategoryId} onChange={setTargetCategoryId} placeholder="Выберите новую категорию..." />
         </div>
 
-        <Button type="button" onClick={handleUpdate} disabled={!targetCategoryId || isLoading} className="w-full h-11 btn-dark rounded-[var(--radius)] font-bold transition-all">
+        <Button type="button" onClick={handleUpdate} disabled={!targetCategoryId || isLoading} className="w-full font-bold transition-all">
           {isLoading ?"Обновление..." :"Сменить категорию"}
         </Button>
       </div>

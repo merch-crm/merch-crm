@@ -80,7 +80,7 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
                 <div className="pt-2">
                   <Button 
                     onClick={onClose} 
-                    className="w-full h-11 rounded-xl font-bold"
+                    className="w-full font-bold"
                   >
                     Сохранить
                   </Button>
@@ -118,15 +118,15 @@ function EditStorageLocationInner({ users, locations, location, isOpen, onClose 
           <div className="md:hidden sticky bottom-0 z-20 p-5 pt-3 flex items-center gap-3 shrink-0 bg-white/95 backdrop-blur-md border-t border-slate-100">
             <Button 
               variant="ghost" 
-              color="neutral"
+              color="gray"
               onClick={onClose} 
-              className="flex-1 h-11 font-bold"
+              className="flex-1 font-bold"
             >
               Отмена
             </Button>
             <Button 
               onClick={onClose} 
-              className="flex-1 h-11 rounded-xl font-bold"
+              className="flex-1 font-bold"
             >
               Сохранить
             </Button>

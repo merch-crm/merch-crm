@@ -181,7 +181,7 @@ export function CalculatorResultBlock({
     <div className="space-y-3">
      <div className="flex items-center justify-between">
       <Label className="font-bold text-slate-700">Маржа</Label>
-      <Badge className="bg-indigo-50 text-indigo-700 font-bold border-indigo-100" color="neutral">{String(marginPercent)}%</Badge>
+      <Badge className="bg-indigo-50 text-indigo-700 font-bold border-indigo-100" color="gray">{String(marginPercent)}%</Badge>
      </div>
      <Slider value={[marginPercent]} onValueChange={(values) => onMarginChange(values[0])}
       min={0}

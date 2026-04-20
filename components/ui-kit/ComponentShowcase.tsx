@@ -51,10 +51,14 @@ export function ComponentShowcase({
           {finalDescription && (
             <p className="text-sm text-muted-foreground">{finalDescription}</p>
           )}
-          {finalCode && (
-            <code className="text-[11px] bg-slate-100/80 text-slate-600 px-2 py-1 rounded-md font-mono border border-slate-200/60 mt-1 inline-block">
-              {finalCode}
-            </code>
+          {(finalCode || importPath) && (
+            <div className="flex flex-col gap-1 mt-2">
+              {(finalCode || importPath) && (
+                <code className="text-[10px] bg-slate-100/80 text-slate-600 px-2.5 py-1.5 rounded-lg font-mono border border-slate-200/60 inline-flex items-center w-fit">
+                  {code || `import { ${importPath} } from "@/components/ui/${importPath?.toLowerCase()}";`}
+                </code>
+              )}
+            </div>
           )}
         </div>
       </div>

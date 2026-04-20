@@ -526,7 +526,7 @@ Before creating a component, ask:
 - **Button/Badge**: Use `variant` for visual style (`solid`, `outline`, `ghost`, `action`, `link`).
 - **Standard Sizes**: Use `xs`, `sm`, `md`, `lg`, `xl` or `icon`. Never use `default`.
 - **Legacy Purge**: Never use `secondary` (use `outline` or `neutral`) or `destructive` (use `danger`).
-- **Ghost/Outline**: To create a ghost button, use `variant="ghost" color="neutral"` (or specific color). `color="ghost"` is FORBIDDEN.
+- **Ghost/Outline**: To create a ghost button, use `variant="ghost" color="gray"` (or specific color). `color="ghost"` is FORBIDDEN.
 
 ### Component Development
 

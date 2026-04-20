@@ -104,7 +104,7 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
       {isClient ? format(currentMonth, "LLLL yyyy", { locale: ru }) : "..."}
      </h2>
      <div className="flex items-center gap-2">
-      <Button variant="outline" color="neutral" size="sm" onClick={() => {
+      <Button variant="outline" color="gray" size="sm" onClick={() => {
         setCurrentMonth(new Date()); // suppressHydrationWarning
         setSelectedDate(new Date()); // suppressHydrationWarning
        }}
@@ -112,12 +112,12 @@ export function CalendarView({ tasks, onTaskClick }: CalendarViewProps) {
       >
        Сегодня
       </Button>
-      <Button variant="ghost" color="neutral" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
+      <Button variant="ghost" color="gray" size="icon" onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
        className="rounded-xl"
       >
        <ChevronLeft className="h-4 w-4" />
       </Button>
-      <Button variant="ghost" color="neutral" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
+      <Button variant="ghost" color="gray" size="icon" onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
        className="rounded-xl"
       >
        <ChevronRight className="h-4 w-4" />

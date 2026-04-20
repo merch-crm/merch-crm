@@ -60,11 +60,11 @@ export function CollectionHeader({
 
               {/* Actions */}
               <div className="flex items-center gap-2">
-                <Button variant="outline" color="neutral" size="sm" onClick={onEdit}>
+                <Button variant="outline" color="gray" size="sm" onClick={onEdit}>
                   <Edit className="h-4 w-4 mr-2" />
                   Редактировать
                 </Button>
-                <Button variant="outline" color="neutral" size="sm" onClick={onDelete} className={canDelete ? "text-destructive hover:text-destructive" : ""} disabled={!canDelete}>
+                <Button variant="outline" color="gray" size="sm" onClick={onDelete} className={canDelete ? "text-destructive hover:text-destructive" : ""} disabled={!canDelete}>
                   <Trash2 className="h-4 w-4 mr-2" />
                   Удалить
                 </Button>
@@ -120,7 +120,7 @@ export function CollectionHeader({
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {collection.linkedLines.map((line) => (
-                    <Badge key={line.id} color="neutral">
+                    <Badge key={line.id} color="gray">
                       {line.name} ({line.categoryName})
                     </Badge>
                   ))}

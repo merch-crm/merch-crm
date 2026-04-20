@@ -104,7 +104,7 @@ export function ImageUploader({
                     >
                         <Image src={img.preview} alt={`Upload ${idx}`} fill className="object-cover transition-transform duration-500 group-hover:scale-110" unoptimized />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                            <Button type="button" variant="solid" color="danger" size="icon" className="w-9 h-9 rounded-full scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg" onClick={(e) => {
+                            <Button type="button" variant="solid" color="red" size="icon" className="w-9 h-9 rounded-full scale-75 group-hover:scale-100 transition-transform duration-300 shadow-lg" onClick={(e) => {
                                     e.preventDefault();
                                     handleRemove(idx);
                                 }}

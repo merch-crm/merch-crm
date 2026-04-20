@@ -157,7 +157,7 @@ export function NotificationCenter({ notifications, unreadCount: manualUnreadCou
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {unreadCount > 0 && (
-                                        <Button variant="solid" color="neutral" size="sm" onClick={handleMarkAllAsRead} disabled={loading === "all"} className="h-9 px-4 text-xs font-bold">
+                                        <Button variant="solid" color="gray" size="sm" onClick={handleMarkAllAsRead} disabled={loading === "all"} className="h-9 px-4 text-xs font-bold">
                                             {loading === "all" ? <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" /> : "Прочитать все"}
                                         </Button>
                                     )}

@@ -133,7 +133,7 @@ export function LineSummaryStep({
                   <CardTitle>{lineName}</CardTitle>
                   <CardDescription>{category.name}</CardDescription>
                 </div>
-                <Badge color="primary" variant="outline" className={ isFinished ? "bg-green-50 text-green-700 border-green-200" : "bg-blue-50 text-blue-700 border-blue-200" }>
+                <Badge color="purple" variant="outline" className={ isFinished ? "bg-green-50 text-green-700 border-green-200" : "bg-blue-50 text-blue-700 border-blue-200" }>
                   {isFinished ? "Готовая линейка" : "Базовая линейка"}
                 </Badge>
               </div>
@@ -160,7 +160,7 @@ export function LineSummaryStep({
                     .map(([slug, config]) => {
                       const attr = attributeTypes.find((a) => a.slug === slug);
                       return (
-                        <Badge key={slug} className="text-sm" color="neutral">
+                        <Badge key={slug} className="text-sm" color="gray">
                           {attr?.name}: {getAttributeValueName(slug, config.value)}
                         </Badge>
                       );

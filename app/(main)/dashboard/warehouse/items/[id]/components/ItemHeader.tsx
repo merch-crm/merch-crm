@@ -59,7 +59,7 @@ export const ItemHeader = React.memo(({
               <p className="text-xs font-medium text-destructive/80 leading-none">Этот товар не отображается в общем каталоге и заказах.</p>
             </div>
           </div>
-          <Button size="md" onClick={onUnarchive} className="h-11 px-8 rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold shadow-lg shadow-destructive/10 transition-all active:scale-95 gap-2">
+          <Button size="md" onClick={onUnarchive} className="px-8 bg-destructive hover:bg-destructive/90 text-destructive-foreground text-sm font-bold shadow-lg shadow-destructive/10 transition-all active:scale-95 gap-2">
             <RefreshCcw className="w-4 h-4" />
             Восстановить
           </Button>
@@ -86,10 +86,10 @@ export const ItemHeader = React.memo(({
                 <div className="flex items-center gap-3">
                   <Button 
                     variant="outline" 
-                    color="neutral" 
+                    color="gray" 
                     size="icon" 
                     onClick={() => router.push('/dashboard/warehouse')}
-                    className="size-11 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0 group"
+                    className="text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0 group"
                   >
                     <ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-0.5" />
                   </Button>
@@ -194,11 +194,11 @@ export const ItemHeader = React.memo(({
         <div className="flex items-center gap-2 sm:gap-3 ml-auto lg:ml-0">
           {isEditing ? (
             <>
-              <Button variant="ghost" onClick={onCancel} aria-label="Отменить изменения" className="h-11 px-6 sm:px-8 rounded-xl font-bold text-xs sm:text-sm text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
+              <Button variant="ghost" onClick={onCancel} aria-label="Отменить изменения" className="px-6 sm:px-8 font-bold text-xs sm:text-sm text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-all flex items-center justify-center gap-2">
                 <X className="w-4 h-4" />
                 <span className="hidden md:inline">Отмена</span>
               </Button>
-              <Button onClick={onSave} type="button" disabled={isSaving || isAnyUploading} aria-label="Сохранить изменения" className="h-11 px-6 sm:px-10 rounded-xl bg-slate-900 text-white font-bold text-xs sm:text-sm border-none shadow-xl shadow-black/10 hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 gap-2">
+              <Button onClick={onSave} type="button" disabled={isSaving || isAnyUploading} aria-label="Сохранить изменения" className="px-6 sm:px-10 bg-slate-900 text-white font-bold text-xs sm:text-sm border-none shadow-xl shadow-black/10 hover:bg-slate-800 flex items-center justify-center transition-all active:scale-95 gap-2">
                 {isSaving ? (
                   <RefreshCcw className="w-4 h-4 animate-spin" />
                 ) : (
@@ -212,7 +212,7 @@ export const ItemHeader = React.memo(({
           ) : (
             <>
               {!item.isArchived && (
-                <Button onClick={onEdit} aria-label="Редактировать товар" className="h-11 px-6 sm:px-8 rounded-xl bg-slate-900 text-white font-bold text-xs sm:text-sm shadow-xl shadow-black/10 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-2">
+                <Button onClick={onEdit} aria-label="Редактировать товар" className="px-6 sm:px-8 bg-slate-900 text-white font-bold text-xs sm:text-sm shadow-xl shadow-black/10 hover:bg-slate-800 transition-all active:scale-95 flex items-center justify-center gap-2">
                   <Edit3 className="w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">Редактировать</span>
                 </Button>

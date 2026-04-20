@@ -222,11 +222,11 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
             <div className="grid grid-cols-2 gap-3">
               <SwitchRow title="Добавлять в артикул" description="" checked={formState.showInSku} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInSku: val }))}
-                color="success"
+                color="green"
                 className="p-3 bg-slate-50 rounded-2xl"
               />
               <SwitchRow title="Добавлять в название" description="" checked={formState.showInName} onCheckedChange={(val) => setFormState(prev => ({ ...prev, showInName: val }))}
-                color="success"
+                color="green"
                 className="p-3 bg-slate-50 rounded-2xl"
               />
             </div>
@@ -255,7 +255,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
                         <div key={sub.id} className="group relative flex flex-col items-center justify-center p-2 bg-slate-50 rounded-xl border border-slate-200 hover:border-primary/20 hover:shadow-md transition-all cursor-default shadow-sm overflow-visible min-h-[80px]">
                           <Button 
                             variant="solid" 
-                            color="danger" 
+                            color="red" 
                             size="icon" 
                             disabled={uiState.subPending} 
                             onClick={() => handleDeleteSubcategory(sub.id)}
@@ -283,18 +283,18 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
         <div className="sticky bottom-0 z-10 p-4 sm:p-6 sm:pt-3 bg-white/95 backdrop-blur-md border-t border-slate-100 grid grid-cols-2 lg:flex items-center lg:justify-between gap-3 shrink-0">
           <Button 
             variant="solid" 
-            color="danger" 
+            color="red" 
             onClick={() => setUiState(prev => ({ ...prev, showDeleteModal: true }))}
-            className="lg:flex-none lg:px-6 h-11 rounded-xl flex items-center justify-center gap-2.5 w-full lg:w-auto font-bold"
+            className="lg:flex-none lg:px-6 flex items-center justify-center gap-2.5 w-full lg:w-auto font-bold"
           >
             <Trash2 className="w-4 h-4" />
             Удалить
           </Button>
           <Button 
             variant="ghost" 
-            color="neutral"
+            color="gray"
             onClick={onClose} 
-            className="hidden lg:flex lg:ml-auto h-11 lg:px-8 rounded-xl font-bold"
+            className="hidden lg:flex lg:ml-auto lg:px-8 font-bold"
           >
             Отмена
           </Button>
@@ -304,7 +304,7 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
             isLoading={uiState.isPending} 
             text="Сохранить" 
             loadingText="Сохранение..." 
-            className="h-11 w-full lg:w-auto lg:min-w-[140px] lg:px-10 rounded-xl font-bold" 
+            className="w-full lg:w-auto lg:min-w-[140px] lg:px-10 font-bold" 
           />
         </div>
 
@@ -324,17 +324,17 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
             <div className="flex flex-col gap-2 w-full max-w-[280px]">
               <Button 
-                color="danger" 
+                color="red" 
                 onClick={confirmDeleteSub} 
-                className="h-12 w-full rounded-xl font-bold"
+                className="w-full font-bold"
               >
                 Удалить
               </Button>
               <Button 
                 variant="ghost" 
-                color="neutral"
+                color="gray"
                 onClick={() => setUiState(prev => ({ ...prev, subToDelete: null }))}
-                className="hidden lg:flex h-11 w-full rounded-xl font-bold"
+                className="hidden lg:flex w-full font-bold"
               >
                 Отмена
               </Button>
@@ -376,18 +376,18 @@ export function EditCategoryDialog({ category, categories, isOpen, onClose }: Ed
 
             <div className="flex flex-col gap-3 w-full items-center">
               <Button 
-                color="danger" 
+                color="red" 
                 onClick={handleDeleteCategory} 
                 disabled={uiState.isPending || (category.isSystem && !uiState.deletePassword.trim())} 
-                className="h-12 w-full max-w-[320px] rounded-xl font-bold"
+                className="w-full max-w-[320px] font-bold"
               >
                 {uiState.isPending ?"Удаление..." :"Удалить категорию"}
               </Button>
               <Button 
                 variant="ghost" 
-                color="neutral"
+                color="gray"
                 onClick={() => { setUiState(prev => ({ ...prev, showDeleteModal: false, deletePassword:"" })); }}
-                className="h-11 w-full font-bold"
+                className="w-full font-bold"
               >
                 Отмена
               </Button>

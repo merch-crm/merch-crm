@@ -347,11 +347,11 @@ export function CreateOrderPageClient({ initialInventory, userRoleSlug }: Create
               <div className="flex gap-3">
                 <Button type="button" variant="outline" onClick={handleBack} className="bg-background">Назад</Button>
                 {uiState.step < 3 ? (
-                  <Button type="button" onClick={handleNext} color="dark" className="px-8 shadow-lg gap-2">
+                  <Button type="button" onClick={handleNext} color="black" className="px-8 shadow-lg gap-2">
                     Далее <ChevronRight className="w-4 h-4" />
                   </Button>
                 ) : (
-                  <Button type="button" onClick={handleSubmit} disabled={uiState.loading} color="dark" className="px-12 shadow-lg">
+                  <Button type="button" onClick={handleSubmit} disabled={uiState.loading} color="black" className="px-12 shadow-lg">
                     {uiState.loading ? "Создание..." : "Подтвердить и создать"}
                   </Button>
                 )}

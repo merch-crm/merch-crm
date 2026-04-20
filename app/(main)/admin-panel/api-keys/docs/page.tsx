@@ -46,7 +46,7 @@ export default function ApiDocsPage() {
   return (
     <div className="space-y-3 pb-20">
       <div className="flex items-center gap-3 mb-4">
-        <Button variant="ghost" color="neutral" size="icon" asChild className="rounded-2xl bg-white border border-slate-100 shadow-sm">
+        <Button variant="ghost" color="gray" size="icon" asChild className="rounded-2xl bg-white border border-slate-100 shadow-sm">
           <Link href="/admin-panel/api-keys">
             <ChevronLeft className="w-5 h-5" />
           </Link>
@@ -127,13 +127,13 @@ export default function ApiDocsPage() {
                 <div key={idx} className="p-8 hover:bg-slate-50/50 transition-all group">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <Badge color="primary" variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200 font-black h-8 px-3 text-xs">
+                      <Badge color="purple" variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200 font-black h-8 px-3 text-xs">
                         {endpoint.method}
                       </Badge>
                       <code className="text-base font-black text-slate-900">{endpoint.path}</code>
                     </div>
                     {endpoint.auth && (
-                      <Badge color="primary" variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-2 py-0.5 rounded-lg">
+                      <Badge color="purple" variant="outline" className="bg-primary/5 text-primary border-primary/20 font-bold px-2 py-0.5 rounded-lg">
                         Auth Required
                       </Badge>
                     )}

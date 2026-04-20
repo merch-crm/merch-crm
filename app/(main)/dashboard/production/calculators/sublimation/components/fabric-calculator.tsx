@@ -89,7 +89,7 @@ export const FabricCalculator = memo(function FabricCalculator({
         <Scissors className="w-4 h-4 text-violet-500" />
         Параметры ткани
       </h3>
-      <Badge className="bg-violet-50 text-violet-700 border-none" color="neutral">
+      <Badge className="bg-violet-50 text-violet-700 border-none" color="gray">
         {calculations.totalAreaM2.toFixed(2)} м² итого
       </Badge>
      </div>

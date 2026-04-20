@@ -185,7 +185,7 @@ export function TaskCommentsSection({
           </span>
           {comment.updatedAt &&
            comment.updatedAt !== comment.createdAt && (
-            <Badge color="primary" variant="outline" className="text-xs h-4">
+            <Badge color="purple" variant="outline" className="text-xs h-4">
              изменено
             </Badge>
            )}
@@ -199,7 +199,7 @@ export function TaskCommentsSection({
             className="resize-none"
            />
            <div className="flex items-center gap-2 justify-end">
-            <Button variant="ghost" color="neutral" size="sm" onClick={() => setEditingCommentId(null)}
+            <Button variant="ghost" color="gray" size="sm" onClick={() => setEditingCommentId(null)}
             >
              Отмена
             </Button>
@@ -229,7 +229,7 @@ export function TaskCommentsSection({
            {isOwn && (
             <DropdownMenu>
              <DropdownMenuTrigger asChild>
-              <Button variant="ghost" color="neutral" size="icon" className={`absolute -left-10 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ${ isOwn ? "text-foreground" : "" }`}>
+              <Button variant="ghost" color="gray" size="icon" className={`absolute -left-10 top-1/2 -translate-y-1/2 h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity ${ isOwn ? "text-foreground" : "" }`}>
                <MoreHorizontal className="h-4 w-4" />
               </Button>
              </DropdownMenuTrigger>

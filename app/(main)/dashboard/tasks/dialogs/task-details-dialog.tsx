@@ -207,13 +207,13 @@ export function TaskDetailsDialog({
          </div>
 
          {/* Priority badge */}
-         <Badge color="primary" variant="outline" className="gap-1.5" style={{ borderColor: priorityConfig?.color, color: priorityConfig?.color, }}>
+         <Badge color="purple" variant="outline" className="gap-1.5" style={{ borderColor: priorityConfig?.color, color: priorityConfig?.color, }}>
           <Flag className="h-3 w-3" />
           {priorityConfig?.label}
          </Badge>
 
          {/* Type badge */}
-         <Badge className="gap-1.5" color="neutral">
+         <Badge className="gap-1.5" color="gray">
           {typeConfig?.label}
           {typeConfig?.icon && (
            <span className="ml-1">{typeConfig.icon}</span>
@@ -222,19 +222,19 @@ export function TaskDetailsDialog({
 
          {/* Indicators */}
          {isOverdue && (
-          <Badge className="gap-1" color="danger">
+          <Badge className="gap-1" color="red">
            <AlertTriangle className="h-3 w-3" />
            Просрочено
           </Badge>
          )}
          {isBlocked && (
-          <Badge color="primary" variant="outline" className="gap-1 border-orange-500 text-orange-500">
+          <Badge color="purple" variant="outline" className="gap-1 border-orange-500 text-orange-500">
            <Ban className="h-3 w-3" />
            Заблокировано
           </Badge>
          )}
          {task.isAutoCreated && (
-          <Badge color="primary" variant="outline" className="gap-1 border-violet-500 text-violet-500">
+          <Badge color="purple" variant="outline" className="gap-1 border-violet-500 text-violet-500">
            <Zap className="h-3 w-3" />
            Авто
           </Badge>
@@ -270,7 +270,7 @@ export function TaskDetailsDialog({
        {/* Actions */}
        <div className="flex items-center gap-2">
         {canEdit && (
-         <Button variant="outline" color="neutral" size="sm" onClick={() => setShowDelegateDialog(true)}
+         <Button variant="outline" color="gray" size="sm" onClick={() => setShowDelegateDialog(true)}
           className="gap-1.5"
          >
           <Share2 className="h-4 w-4" />
@@ -280,7 +280,7 @@ export function TaskDetailsDialog({
 
         <DropdownMenu>
          <DropdownMenuTrigger asChild>
-          <Button variant="ghost" color="neutral" size="icon">
+          <Button variant="ghost" color="gray" size="icon">
            <MoreHorizontal className="h-5 w-5" />
           </Button>
          </DropdownMenuTrigger>
@@ -304,7 +304,7 @@ export function TaskDetailsDialog({
          </DropdownMenuContent>
         </DropdownMenu>
 
-        <Button variant="ghost" color="neutral" size="icon" onClick={() => onOpenChange(false)}
+        <Button variant="ghost" color="gray" size="icon" onClick={() => onOpenChange(false)}
         >
          <X className="h-5 w-5" />
         </Button>
@@ -321,7 +321,7 @@ export function TaskDetailsDialog({
           <tab.icon className="h-4 w-4 mr-2" />
           {tab.label}
           {tab.count !== undefined && tab.count > 0 && (
-           <Badge className="ml-2 h-5 min-w-[20px] px-1.5" color="neutral">
+           <Badge className="ml-2 h-5 min-w-[20px] px-1.5" color="gray">
             {tab.count}
            </Badge>
           )}

@@ -25,25 +25,25 @@ for (const file of allFiles) {
     let original = content;
 
     // We catch `variant='default'`, `variant={'default'}`, `variant={"default"}`
-    content = content.replace(/variant=\{?['"]default['"]\}?/g, 'color="primary" variant="solid"');
-    content = content.replace(/variant=\{?['"]secondary['"]\}?/g, 'color="neutral" variant="outline"');
-    content = content.replace(/variant=\{?['"]destructive['"]\}?/g, 'color="danger" variant="solid"');
-    content = content.replace(/variant=\{?['"]outline['"]\}?/g, 'color="neutral" variant="outline"');
-    content = content.replace(/variant=\{?['"]ghost['"]\}?/g, 'color="neutral" variant="ghost"');
-    content = content.replace(/variant=\{?['"]link['"]\}?/g, 'color="primary" variant="link"');
+    content = content.replace(/variant=\{?['"]default['"]\}?/g, 'color="purple" variant="solid"');
+    content = content.replace(/variant=\{?['"]secondary['"]\}?/g, 'color="gray" variant="outline"');
+    content = content.replace(/variant=\{?['"]destructive['"]\}?/g, 'color="red" variant="solid"');
+    content = content.replace(/variant=\{?['"]outline['"]\}?/g, 'color="gray" variant="outline"');
+    content = content.replace(/variant=\{?['"]ghost['"]\}?/g, 'color="gray" variant="ghost"');
+    content = content.replace(/variant=\{?['"]link['"]\}?/g, 'color="purple" variant="link"');
     
     // Some unique ones seen in logs
-    content = content.replace(/variant=\{?['"]action['"]\}?/g, 'color="primary" variant="solid"');
-    content = content.replace(/variant=\{?['"]btn-dark['"]\}?/g, 'color="primary" variant="solid"');
-    content = content.replace(/variant=\{?['"]flat['"]\}?/g, 'color="neutral" variant="ghost"');
+    content = content.replace(/variant=\{?['"]action['"]\}?/g, 'color="purple" variant="solid"');
+    content = content.replace(/variant=\{?['"]btn-dark['"]\}?/g, 'color="purple" variant="solid"');
+    content = content.replace(/variant=\{?['"]flat['"]\}?/g, 'color="gray" variant="ghost"');
 
     // Make sure we didn't accidentally do color="..." variant="..." color="..." variant="..."
     for (let i = 0; i < 5; i++) {
-        content = content.replace(/color="primary" variant="solid" color="primary" variant="solid"/g, 'color="primary" variant="solid"');
-        content = content.replace(/color="neutral" variant="outline" color="neutral" variant="outline"/g, 'color="neutral" variant="outline"');
-        content = content.replace(/color="danger" variant="solid" color="danger" variant="solid"/g, 'color="danger" variant="solid"');
-        content = content.replace(/color="neutral" variant="ghost" color="neutral" variant="ghost"/g, 'color="neutral" variant="ghost"');
-        content = content.replace(/color="primary" variant="link" color="primary" variant="link"/g, 'color="primary" variant="link"');
+        content = content.replace(/color="purple" variant="solid" color="purple" variant="solid"/g, 'color="purple" variant="solid"');
+        content = content.replace(/color="gray" variant="outline" color="gray" variant="outline"/g, 'color="gray" variant="outline"');
+        content = content.replace(/color="red" variant="solid" color="red" variant="solid"/g, 'color="red" variant="solid"');
+        content = content.replace(/color="gray" variant="ghost" color="gray" variant="ghost"/g, 'color="gray" variant="ghost"');
+        content = content.replace(/color="purple" variant="link" color="purple" variant="link"/g, 'color="purple" variant="link"');
     }
     
     if (content !== original) {

@@ -94,11 +94,11 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <Badge color="primary" variant="outline" className="font-mono text-xs shrink-0">
+              <Badge color="purple" variant="outline" className="font-mono text-xs shrink-0">
                 {task.number}
               </Badge>
               {(task.priority ?? 0) > 0 && (
-                <Badge color={(task.priority ?? 0) === 2 ? "danger" : "neutral"} className="text-xs py-0 px-1">
+                <Badge color={(task.priority ?? 0) === 2 ? "red" : "gray"} className="text-xs py-0 px-1">
                   {priorityConfig[task.priority ?? 0]?.label}
                 </Badge>
               )}
@@ -111,7 +111,7 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 shrink-0">
+              <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 shrink-0">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -175,7 +175,7 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
         )}
 
         {task.applicationType && (
-          <Badge className="text-xs py-0 px-1 font-normal" style={{ backgroundColor: task.applicationType.color ? `${task.applicationType.color}15` : undefined, color: task.applicationType.color || undefined, borderColor: task.applicationType.color || undefined, }} color="neutral">
+          <Badge className="text-xs py-0 px-1 font-normal" style={{ backgroundColor: task.applicationType.color ? `${task.applicationType.color}15` : undefined, color: task.applicationType.color || undefined, borderColor: task.applicationType.color || undefined, }} color="gray">
             {task.applicationType.name}
           </Badge>
         )}
@@ -197,7 +197,7 @@ export function DesignTaskCard({ task, onUpdate }: DesignTaskCardProps) {
               </Avatar>
             </Tooltip>
           ) : (
-            <Button variant="ghost" color="neutral" size="sm" className="h-6 text-xs px-2" onClick={handleTake} disabled={isUpdating}>
+            <Button variant="ghost" color="gray" size="sm" className="h-6 text-xs px-2" onClick={handleTake} disabled={isUpdating}>
               <UserPlus className="mr-1 h-3 w-3" />
               Взять
             </Button>

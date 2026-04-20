@@ -21,7 +21,7 @@ export function ResultSummary({ result, isRush }: ResultSummaryProps) {
      <Calculator className="h-4 w-4" />
      Итого
      {isRush && (
-      <Badge className="ml-auto" color="danger">
+      <Badge className="ml-auto" color="red">
        <Zap className="h-3 w-3 mr-1" />
        Срочно
       </Badge>

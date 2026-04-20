@@ -163,7 +163,7 @@ export function FileUploadZone({ taskId, type, files, onUpdate }: FileUploadZone
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-sm truncate">{file.originalName}</p>
-                    <Badge className="text-xs py-0 h-4" color="neutral">v{file.version}</Badge>
+                    <Badge className="text-xs py-0 h-4" color="gray">v{file.version}</Badge>
                   </div>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                     <span>{formatFileSize(file.size || 0)}</span>
@@ -181,17 +181,17 @@ export function FileUploadZone({ taskId, type, files, onUpdate }: FileUploadZone
 
                 <div className="flex items-center gap-1">
                   {(file.thumbnailPath || file.mimeType?.startsWith("image/")) && (
-                    <Button variant="ghost" color="neutral" size="icon" className="h-9 w-9" onClick={() => { if (file.path) setPreviewFile(file); }}
+                    <Button variant="ghost" color="gray" size="icon" className="h-9 w-9" onClick={() => { if (file.path) setPreviewFile(file); }}
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
                   )}
-                  <Button variant="ghost" color="neutral" size="icon" className="h-9 w-9" asChild>
+                  <Button variant="ghost" color="gray" size="icon" className="h-9 w-9" asChild>
                     <a href={file.path} download={file.originalName}>
                       <Download className="h-4 w-4" />
                     </a>
                   </Button>
-                  <Button variant="ghost" color="neutral" size="icon" className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(file.id)}
+                  <Button variant="ghost" color="gray" size="icon" className="h-9 w-9 text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleDelete(file.id)}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -214,7 +214,7 @@ export function FileUploadZone({ taskId, type, files, onUpdate }: FileUploadZone
                 <span className="truncate">
                   v{file.version} — {file.originalName} — {file.createdAt ? format(new Date(file.createdAt), "d MMM", { locale: ru }) : "—"}
                 </span>
-                <Button variant="ghost" color="neutral" size="icon" className="h-7 w-7" asChild>
+                <Button variant="ghost" color="gray" size="icon" className="h-7 w-7" asChild>
                   <a href={file.path} download={file.originalName}>
                     <Download className="h-3 w-3" />
                   </a>
@@ -241,7 +241,7 @@ export function FileUploadZone({ taskId, type, files, onUpdate }: FileUploadZone
             )}
           </div>
           <div className="p-4 flex justify-end">
-            <Button variant="outline" color="neutral" className="border-white/10 text-white hover:bg-white/5" asChild>
+            <Button variant="outline" color="gray" className="border-white/10 text-white hover:bg-white/5" asChild>
               <a href={previewFile?.path || "#"} download={previewFile?.originalName || "file"}>
                 <Download className="mr-2 h-4 w-4" />
                 Скачать оригинал

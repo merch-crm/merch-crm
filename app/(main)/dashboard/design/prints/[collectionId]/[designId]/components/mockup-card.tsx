@@ -105,7 +105,7 @@ export function MockupCard({
 
             {/* Status Badge */}
             {!mockup.isActive && (
-              <Badge className="absolute top-2 right-2" color="neutral">
+              <Badge className="absolute top-2 right-2" color="gray">
                 Скрыт
               </Badge>
             )}
@@ -131,7 +131,7 @@ export function MockupCard({
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8" disabled={isSorting}>
+                  <Button variant="ghost" color="gray" size="icon" className="h-8 w-8" disabled={isSorting}>
                     <MoreVertical className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>

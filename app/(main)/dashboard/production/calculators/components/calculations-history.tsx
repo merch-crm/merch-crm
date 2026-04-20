@@ -183,12 +183,12 @@ export const CalculationsHistory = memo(function CalculationsHistory({
      <History className="w-5 h-5 text-slate-500" />
      <h3 className="text-lg font-bold text-slate-900">История расчётов</h3>
      {total > 0 && (
-      <Badge color="neutral">{total}</Badge>
+      <Badge color="gray">{total}</Badge>
      )}
     </div>
     
     {isModal && onClose && (
-     <Button variant="ghost" color="neutral" size="sm" onClick={onClose}>
+     <Button variant="ghost" color="gray" size="sm" onClick={onClose}>
       <X className="w-5 h-5" />
      </Button>
     )}
@@ -249,7 +249,7 @@ export const CalculationsHistory = memo(function CalculationsHistory({
           <span className="font-mono font-medium text-slate-900">
            {item.calculationNumber}
           </span>
-          <Button variant="ghost" color="neutral" size="sm" onClick={(e) => {
+          <Button variant="ghost" color="gray" size="sm" onClick={(e) => {
             e.stopPropagation()
             handleCopyNumber(item.calculationNumber)
            }}
@@ -279,14 +279,14 @@ export const CalculationsHistory = memo(function CalculationsHistory({
          <p className="text-lg font-bold text-slate-900">
           {formatCurrency(item.totalCost)}
          </p>
-         <Badge className={cn("text-xs", typeColors[item.applicationType])} color="neutral">
+         <Badge className={cn("text-xs", typeColors[item.applicationType])} color="gray">
           {APPLICATION_TYPE_LABELS[item.applicationType]}
          </Badge>
         </div>
 
         {/* Действия */}
         <div role="button" tabIndex={0} className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
-         <Button variant="ghost" color="neutral" size="sm" onClick={() => setDeleteId(item.id)}
+         <Button variant="ghost" color="gray" size="sm" onClick={() => setDeleteId(item.id)}
          >
           <Trash2 className="w-4 h-4 text-red-500" />
          </Button>
@@ -300,7 +300,7 @@ export const CalculationsHistory = memo(function CalculationsHistory({
    {/* Пагинация */}
    {totalPages > 1 && (
     <div className="flex items-center justify-center gap-2">
-     <Button variant="outline" color="neutral" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))}
+     <Button variant="outline" color="gray" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))}
       disabled={page === 1 || isLoading}
      >
       <ChevronLeft className="w-4 h-4" />
@@ -310,7 +310,7 @@ export const CalculationsHistory = memo(function CalculationsHistory({
       {page} из {totalPages}
      </span>
      
-     <Button variant="outline" color="neutral" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+     <Button variant="outline" color="gray" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))}
       disabled={page === totalPages || isLoading}
      >
       <ChevronRight className="w-4 h-4" />

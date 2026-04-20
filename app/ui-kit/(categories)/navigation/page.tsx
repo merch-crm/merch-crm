@@ -10,6 +10,8 @@ import { cn } from '@/components/library/custom/utils/cn';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { SegmentedControl } from '@/components/ui/segmented-control';
+import { ActionMenu } from '@/components/ui/action-menu';
+import { Pencil, Trash2, Share2, Eye } from 'lucide-react';
 
 
 
@@ -28,6 +30,7 @@ export default function NavigationPage() {
     <ComponentShowcase 
      title="Вкладки (Shadcn Custom)" 
      source="custom"
+     code='import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";'
      description="Табы на базе Radix UI для переключения между разделами."
      className="col-span-1 md:col-span-1 lg:col-span-2"
     >
@@ -47,6 +50,7 @@ export default function NavigationPage() {
     <ComponentShowcase 
      title="Хлебные крошки (Breadcrumbs)" 
      source="custom" 
+     code='import { Breadcrumbs } from "@/components/ui/breadcrumbs";'
      description="Путь пользователя с поддержкой вложенности и иконок." 
      className="col-span-1 md:col-span-1 lg:col-span-2"
     >
@@ -98,6 +102,7 @@ export default function NavigationPage() {
     <ComponentShowcase 
      title="Переключатель (Segmented)" 
      source="custom" 
+     code='import { SegmentedControl } from "@/components/ui/segmented-control";'
      description="Компактный переключатель для выбора одного значения из списка." 
      className="col-span-1 md:col-span-1 lg:col-span-2"
     >
@@ -138,6 +143,33 @@ export default function NavigationPage() {
           <Bell className="size-6 text-slate-600" />
         </div>
        </div>
+     </div>
+    </ComponentShowcase>
+
+    {/* 14. Action Menu (Context Menu) */}
+    <ComponentShowcase 
+     title="Контекстное меню" 
+     source="custom" 
+     code='import { ActionMenu } from "@/components/ui/action-menu";'
+     description="Выпадающее меню для дополнительных действий и опций." 
+     className="col-span-1 md:col-span-1 lg:col-span-1"
+    >
+     <div className="flex justify-center items-center gap-3 py-8">
+       <ActionMenu 
+         items={[
+           [
+             { label: "Просмотр", icon: Eye, onClick: () => {} },
+             { label: "Редактировать", icon: Pencil, onClick: () => {}, shortcut: "⌘E" },
+           ],
+           [
+             { label: "Поделиться", icon: Share2, onClick: () => {} },
+           ],
+           [
+             { label: "Удалить", icon: Trash2, onClick: () => {}, variant: "danger", shortcut: "⌘⌫" },
+           ]
+         ]}
+         align="center"
+       />
      </div>
     </ComponentShowcase>
 

@@ -274,16 +274,16 @@ export function PlacementProductModal({
          <h3 className="text-sm font-black text-slate-400">
           Зоны нанесения
          </h3>
-         <Badge className="rounded-full px-2.5 py-0.5 bg-slate-100 text-slate-600 font-bold" color="neutral">
+         <Badge className="rounded-full px-2.5 py-0.5 bg-slate-100 text-slate-600 font-bold" color="gray">
           {formData.areas.length}
          </Badge>
         </div>
         <div className="flex gap-2">
-         <Button type="button" variant="outline" color="neutral" size="sm" className="h-9 px-4 rounded-xl text-xs font-bold gap-2 border-amber-200 text-amber-700 hover:bg-amber-50 shadow-sm" onClick={generateDefaultAreas}>
+         <Button type="button" variant="outline" color="gray" size="sm" className="h-9 px-4 rounded-xl text-xs font-bold gap-2 border-amber-200 text-amber-700 hover:bg-amber-50 shadow-sm" onClick={generateDefaultAreas}>
           <Sparkles className="h-3.5 w-3.5" />
           Из пресета
          </Button>
-         <Button type="button" variant="outline" color="neutral" size="sm" className="h-9 px-4 rounded-xl text-xs font-bold gap-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 shadow-sm" onClick={addArea}>
+         <Button type="button" variant="outline" color="gray" size="sm" className="h-9 px-4 rounded-xl text-xs font-bold gap-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 shadow-sm" onClick={addArea}>
           <Plus className="h-3.5 w-3.5" />
           Добавить зону
          </Button>
@@ -318,7 +318,7 @@ export function PlacementProductModal({
     </ScrollArea>
 
     <DialogFooter className="p-8 border-t bg-slate-50/50 gap-3">
-     <Button variant="ghost" color="neutral" onClick={onClose} disabled={loading} className="h-12 px-8 rounded-2xl font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all">
+     <Button variant="ghost" color="gray" onClick={onClose} disabled={loading} className="h-12 px-8 rounded-2xl font-bold text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-all">
       Отмена
      </Button>
      <Button onClick={handleSubmit} disabled={loading} className="h-12 px-10 rounded-2xl font-black bg-indigo-500 text-white shadow-xl shadow-indigo-200 hover:bg-indigo-600 hover:shadow-indigo-300 transition-all min-w-[200px]">

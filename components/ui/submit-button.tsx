@@ -13,7 +13,7 @@ export function SubmitButton({
     className,
     disabled,
     text,
-    color = "dark",
+    color = "black",
     isLoading,
     ...props
 }: SubmitButtonProps) {

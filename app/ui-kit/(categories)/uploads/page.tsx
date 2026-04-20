@@ -18,7 +18,9 @@ import {
  Plus,
  Star,
  Command,
- Filter
+ Filter,
+ RefreshCw,
+ ShieldCheck
 } from 'lucide-react';
 import { FolderAnimation } from '@/components/library/custom';
 
@@ -274,8 +276,23 @@ export default function UploadsPage() {
       </div>
     </ComponentShowcase>
 
+    {/* 12. Data Freshness/Cloud Sync (Moved from Statuses) */}
+    <ComponentShowcase title="Синхронизация данных" source="custom" className="col-span-1 md:col-span-1 lg:col-span-2">
+      <div className="flex items-center gap-3 justify-center bg-white p-4 rounded-2xl border border-gray-100 shadow-sm h-full max-h-[72px]">
+       <div className="flex items-center gap-2 text-primary-base">
+         <RefreshCw size={14} className="animate-spin" />
+         <span className="text-[11px] font-bold">Синхронизация...</span>
+       </div>
+       <div className="w-[1px] h-4 bg-slate-100" />
+       <div className="flex items-center gap-2 text-emerald-500">
+         <ShieldCheck size={14} />
+         <span className="text-[11px] font-bold">Обновлено</span>
+       </div>
+      </div>
+    </ComponentShowcase>
 
-    {/* 12. Animated Folders & Archives */}
+
+    {/* 13. Animated Folders & Archives */}
     <div className="col-span-1 md:col-span-2 lg:col-span-4 space-y-3 mt-12">
      <div className="flex items-center gap-3">
        <div className="size-10 rounded-xl bg-primary-base/10 text-primary-base flex items-center justify-center">

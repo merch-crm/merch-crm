@@ -157,7 +157,7 @@ export function TaskAssigneesSection({
       </p>
      </div>
      {task.creatorId === currentUserId && (
-      <Badge className="shrink-0" color="neutral">
+      <Badge className="shrink-0" color="gray">
        Вы
       </Badge>
      )}
@@ -170,12 +170,12 @@ export function TaskAssigneesSection({
      <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
       <Users className="h-4 w-4 text-primary" />
       Исполнители
-      <Badge className="ml-1" color="neutral">
+      <Badge className="ml-1" color="gray">
        {assigneeIds.length}
       </Badge>
      </h4>
      {canEdit && !isAddingAssignee && (
-      <Button variant="ghost" color="neutral" size="sm" onClick={() => setIsAddingAssignee(true)}
+      <Button variant="ghost" color="gray" size="sm" onClick={() => setIsAddingAssignee(true)}
        className="h-8 gap-1.5"
       >
        <UserPlus className="h-4 w-4" />
@@ -188,7 +188,7 @@ export function TaskAssigneesSection({
      <div className="p-4 rounded-xl bg-muted/50 space-y-3 animate-in fade-in slide-in-from-top-2">
       <UserMultiSelect users={availableForAssignee} selectedIds={selectedAssigneeIds} onSelectionChange={setSelectedAssigneeIds} placeholder="Выберите исполнителей..." />
       <div className="flex items-center justify-end gap-2">
-       <Button variant="ghost" color="neutral" size="sm" onClick={() => {
+       <Button variant="ghost" color="gray" size="sm" onClick={() => {
          setIsAddingAssignee(false);
          setSelectedAssigneeIds([]);
         }}
@@ -228,12 +228,12 @@ export function TaskAssigneesSection({
          </p>
         </div>
         {assignee.userId === currentUserId && (
-         <Badge className="shrink-0" color="neutral">
+         <Badge className="shrink-0" color="gray">
           Вы
          </Badge>
         )}
         {canEdit && assigneeIds.length > 1 && (
-         <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleRemoveAssignee(assignee.userId)}
+         <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleRemoveAssignee(assignee.userId)}
           disabled={loadingUserId === assignee.userId}
          >
           {loadingUserId === assignee.userId ? (
@@ -255,12 +255,12 @@ export function TaskAssigneesSection({
      <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
       <Eye className="h-4 w-4 text-violet-500" />
       Наблюдатели
-      <Badge className="ml-1" color="neutral">
+      <Badge className="ml-1" color="gray">
        {watcherIds.length}
       </Badge>
      </h4>
      {canEdit && !isAddingWatcher && (
-      <Button variant="ghost" color="neutral" size="sm" onClick={() => setIsAddingWatcher(true)}
+      <Button variant="ghost" color="gray" size="sm" onClick={() => setIsAddingWatcher(true)}
        className="h-8 gap-1.5"
       >
        <Plus className="h-4 w-4" />
@@ -273,7 +273,7 @@ export function TaskAssigneesSection({
      <div className="p-4 rounded-xl bg-muted/50 space-y-3 animate-in fade-in slide-in-from-top-2">
       <UserMultiSelect users={availableForWatcher} selectedIds={selectedWatcherIds} onSelectionChange={setSelectedWatcherIds} placeholder="Выберите наблюдателей..." />
       <div className="flex items-center justify-end gap-2">
-       <Button variant="ghost" color="neutral" size="sm" onClick={() => {
+       <Button variant="ghost" color="gray" size="sm" onClick={() => {
          setIsAddingWatcher(false);
          setSelectedWatcherIds([]);
         }}
@@ -318,12 +318,12 @@ export function TaskAssigneesSection({
           </p>
          </div>
          {watcher.userId === currentUserId && (
-          <Badge className="shrink-0" color="neutral">
+          <Badge className="shrink-0" color="gray">
            Вы
           </Badge>
          )}
          {canEdit && (
-          <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleRemoveWatcher(watcher.userId)}
+          <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleRemoveWatcher(watcher.userId)}
            disabled={loadingUserId === watcher.userId}
           >
            {loadingUserId === watcher.userId ? (

@@ -53,7 +53,7 @@ export function StorageLocationSelect({ value, onChange, options, stocks, classN
     return (
         <div className={cn("w-full", className)}>
             {name && <input type="hidden" name={name} value={value} />}
-            <Select options={safeOptions} value={value} onChange={onChange} placeholder={placeholder || "Выберите склад..."} variant="solid" color="primary" gridColumns={undefined} autoLayout={false} />
+            <Select options={safeOptions} value={value} onChange={onChange} placeholder={placeholder || "Выберите склад..."} variant="solid" color="purple" gridColumns={undefined} autoLayout={false} />
         </div>
     );
 }

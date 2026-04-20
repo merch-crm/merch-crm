@@ -68,7 +68,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
 
   return (
     <div role="button" tabIndex={0} className="relative inline-block" ref={containerRef} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.currentTarget.click(); } }} onClick={(e) => e.stopPropagation()}>
-      <Badge color="primary" variant="outline" onClick={() => !loading && setIsOpen(!isOpen)}
+      <Badge color="purple" variant="outline" onClick={() => !loading && setIsOpen(!isOpen)}
         className={`
           rounded-md font-bold text-xs gap-1.5 px-2 py-0.5 cursor-pointer
           transition-all hover:shadow-sm active:scale-95 select-none
@@ -88,7 +88,7 @@ export default function PriorityBadgeInteractive({ orderId, priority }: { orderI
       {isOpen && (
         <div className="absolute top-[calc(100%+4px)] left-0 min-w-[120px] bg-white border border-slate-200 rounded-2xl shadow-xl z-[70] py-1 animate-in fade-in slide-in-from-top-1 duration-200 overflow-hidden">
           {priorities.map((p) => (
-            <Button key={p.id} variant="ghost" color="neutral" onClick={() => handleChange(p.id)}
+            <Button key={p.id} variant="ghost" color="gray" onClick={() => handleChange(p.id)}
               className={`
                 w-full flex items-center gap-2 px-3 py-2 h-auto
                 hover:bg-slate-50 transition-all text-left justify-start rounded-xl

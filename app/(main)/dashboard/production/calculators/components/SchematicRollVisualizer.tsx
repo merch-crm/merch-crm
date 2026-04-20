@@ -311,7 +311,7 @@ export function SchematicRollVisualizer({
    <div className="space-y-3 pt-4">
    {/* Skipped Designs Warning */}
    {layoutResult.skippedDesigns && layoutResult.skippedDesigns.length > 0 && (
-    <Alert variant="solid" color="danger" className="rounded-2xl border-destructive/20 bg-destructive/5 backdrop-blur-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
+    <Alert variant="solid" color="red" className="rounded-2xl border-destructive/20 bg-destructive/5 backdrop-blur-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
      <AlertCircle className="h-4 w-4" />
      <AlertTitle className="font-bold text-xs">Ширина макета превышает размер полотна</AlertTitle>
      <AlertDescription className="font-medium">

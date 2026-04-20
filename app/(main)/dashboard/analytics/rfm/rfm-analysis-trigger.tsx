@@ -25,8 +25,8 @@ export function RFMAnalysisTrigger({ onAnalyze }: RFMAnalysisTriggerProps) {
 
   return (
     <>
-      <Button type="button" onClick={() => setIsOpen(true)}
-        className="bg-slate-900 hover:bg-slate-800 text-white rounded-2xl px-6 h-12 gap-2 font-bold shadow-xl shadow-slate-200 min-w-[180px]"
+      <Button type="button" onClick={() => setIsOpen(true)} color="black"
+        className="px-6 gap-2 font-bold shadow-xl shadow-slate-200 min-w-[180px]"
       >
         <RefreshCw className="w-4 h-4" />
         Запустить анализ

@@ -102,7 +102,7 @@ const PlacementRow = memo(function PlacementRow({
     </div>
 
     <div className="flex justify-end gap-2">
-     <Button variant="ghost" color="neutral" size="sm" onClick={handleCancel}>
+     <Button variant="ghost" color="gray" size="sm" onClick={handleCancel}>
       <X className="w-4 h-4 mr-1" />
       <span className="hidden sm:inline">Отмена</span>
      </Button>
@@ -132,15 +132,15 @@ const PlacementRow = memo(function PlacementRow({
     </p>
    </div>
 
-   <Badge className="font-mono" color="neutral">
+   <Badge className="font-mono" color="gray">
     {formatCurrency(placement.workPrice)}
    </Badge>
 
    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-    <Button variant="ghost" color="neutral" size="sm" onClick={onStartEdit}>
+    <Button variant="ghost" color="gray" size="sm" onClick={onStartEdit}>
      <Pencil className="w-4 h-4" />
     </Button>
-    <Button variant="ghost" color="neutral" size="sm" onClick={onDelete} disabled={!canDelete} className={cn(!canDelete && "invisible")}>
+    <Button variant="ghost" color="gray" size="sm" onClick={onDelete} disabled={!canDelete} className={cn(!canDelete && "invisible")}>
      <Trash2 className="w-4 h-4 text-red-500" />
     </Button>
    </div>
@@ -248,7 +248,7 @@ export const PlacementsEditor = memo(function PlacementsEditor({
    </div>
 
    {/* Кнопка добавления */}
-   <Button variant="outline" color="neutral" size="sm" onClick={handleAddNew} disabled={isLoading || editingId !== null} className="w-full rounded-xl">
+   <Button variant="outline" color="gray" size="sm" onClick={handleAddNew} disabled={isLoading || editingId !== null} className="w-full rounded-xl">
     <Plus className="w-4 h-4 mr-2" />
     Добавить нанесение
    </Button>

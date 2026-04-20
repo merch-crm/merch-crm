@@ -105,7 +105,7 @@ const TierRow = memo(function TierRow({
     </div>
    </div>
 
-   <Button variant="ghost" color="neutral" size="sm" onClick={handleDelete} disabled={!canDelete} className={cn( "opacity-0 group-hover:opacity-100 transition-opacity", !canDelete && "invisible" )}>
+   <Button variant="ghost" color="gray" size="sm" onClick={handleDelete} disabled={!canDelete} className={cn( "opacity-0 group-hover:opacity-100 transition-opacity", !canDelete && "invisible" )}>
     <Trash2 className="w-4 h-4 text-red-500" />
    </Button>
   </div>
@@ -262,7 +262,7 @@ export const MeterPricingEditor = memo(function MeterPricingEditor({
     {existingWidths.length > 1 && (
      <div className="flex gap-1.5 ml-auto">
       {existingWidths.map(width => (
-       <Badge key={width} color={width === selectedRollWidth ? 'primary' : 'neutral'} className="cursor-pointer" onClick={() => setSelectedRollWidth(width)}
+       <Badge key={width} color={width === selectedRollWidth ? 'purple' : 'gray'} className="cursor-pointer" onClick={() => setSelectedRollWidth(width)}
        >
         {width} мм
        </Badge>
@@ -303,7 +303,7 @@ export const MeterPricingEditor = memo(function MeterPricingEditor({
    )}
 
    {/* Кнопка добавления */}
-   <Button variant="outline" color="neutral" size="sm" onClick={handleAddTier} disabled={isLoading} className="w-full rounded-xl">
+   <Button variant="outline" color="gray" size="sm" onClick={handleAddTier} disabled={isLoading} className="w-full rounded-xl">
     <Plus className="w-4 h-4 mr-2" />
     Добавить уровень цены
    </Button>

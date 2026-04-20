@@ -73,7 +73,7 @@ export function AdminLayoutClient({
       <header className="md:hidden h-16 bg-[#0F172A] text-white px-4 flex items-center justify-between shrink-0 z-30 shadow-lg">
         <div className="flex items-center gap-3">
           <Button type="button" variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 text-white active:scale-95 transition-all hover:bg-white/20 border-none"
+            className="bg-white/10 text-white active:scale-95 transition-all hover:bg-white/20 border-none shrink-0"
           >
             <Menu className="w-5 h-5" />
           </Button>
@@ -83,7 +83,7 @@ export function AdminLayoutClient({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button type="button" variant="ghost" size="icon" className="rounded-xl hover:bg-slate-100 h-10 w-10 shrink-0" onClick={() => window.dispatchEvent(new CustomEvent("open-command-menu"))}
+          <Button type="button" variant="ghost" size="icon" className="hover:bg-slate-100 shrink-0" onClick={() => window.dispatchEvent(new CustomEvent("open-command-menu"))}
           >
             <Search className="w-5 h-5 text-slate-600" />
           </Button>

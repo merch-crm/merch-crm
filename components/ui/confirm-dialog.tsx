@@ -62,12 +62,12 @@ export function ConfirmDialog({
                                 ease: "easeInOut"
                             }}
                             className={cn("absolute inset-0 rounded-[28px] blur-xl",
-                                isDestructive ? "bg-[#ff463c]" : "bg-indigo-500"
+                                isDestructive ? "bg-[#ff463c]" : "bg-primary"
                             )}
                         />
 
                         <div className={cn("w-16 h-16 rounded-3xl flex items-center justify-center relative z-10 shadow-sm transition-colors text-slate-900 border",
-                            isDestructive ? "bg-rose-50 text-[#ff463c] border-rose-100" : "bg-indigo-50 text-indigo-600 border-indigo-100"
+                            isDestructive ? "bg-rose-50 text-[#ff463c] border-rose-100" : "bg-primary/10 text-primary border-primary/20"
                         )}>
                             {isDestructive ? <Trash2 className="w-8 h-8" /> : <HelpCircle className="w-8 h-8" />}
                         </div>
@@ -110,7 +110,7 @@ export function ConfirmDialog({
                     </Button>
                     <Button 
                         variant="solid" 
-                        color={isDestructive ? "danger" : "dark"} 
+                        color={isDestructive ? "red" : "black"} 
                         type="button" 
                         onClick={onConfirm} 
                         isLoading={isLoading}

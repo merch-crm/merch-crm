@@ -83,7 +83,7 @@ export function EmbroiderySchematicVisualizer({
            {data.format.toUpperCase()}
           </p>
          </div>
-         <Badge className="px-1.5 py-0 h-5 shrink-0" color="neutral">
+         <Badge className="px-1.5 py-0 h-5 shrink-0" color="gray">
           ×{file.quantity}
          </Badge>
         </div>
@@ -189,7 +189,7 @@ export function EmbroiderySchematicVisualizer({
       <div className="flex flex-col">
        <p className="text-xs text-muted-foreground mb-1">Кол-во программ</p>
        <div className="flex items-center gap-2">
-        <Badge color="primary" variant="outline" className="font-mono">{embroideryFiles.length}</Badge>
+        <Badge color="purple" variant="outline" className="font-mono">{embroideryFiles.length}</Badge>
         <span className="text-xs text-muted-foreground">дизайнов</span>
        </div>
       </div>

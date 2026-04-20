@@ -80,7 +80,7 @@ export function HistoryCard({
 
    <CardHeader className="p-4 pb-2 space-y-2">
     <div className="flex items-start justify-between">
-     <Badge color="primary" variant="outline" className={cn("capitalize", `bg-${config.color}-50 text-${config.color}-700 border-${config.color}-200`)}>
+     <Badge color="purple" variant="outline" className={cn("capitalize", `bg-${config.color}-50 text-${config.color}-700 border-${config.color}-200`)}>
       {config.label}
      </Badge>
      <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
@@ -132,13 +132,13 @@ export function HistoryCard({
     </div>
 
     <div className="flex items-center gap-1">
-     <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => onView(item)}>
+     <Button variant="ghost" color="gray" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary" onClick={() => onView(item)}>
       <Eye className="h-4 w-4" />
      </Button>
 
      <DropdownMenu>
       <DropdownMenuTrigger asChild>
-       <Button variant="ghost" color="neutral" size="icon" className="h-8 w-8">
+       <Button variant="ghost" color="gray" size="icon" className="h-8 w-8">
         <MoreVertical className="h-4 w-4" />
        </Button>
       </DropdownMenuTrigger>

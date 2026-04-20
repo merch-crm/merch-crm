@@ -44,7 +44,7 @@ export const SublimationParamsCard = memo(function SublimationParamsCard({
       <Ruler className="w-4 h-4 text-primary" />
       Параметры бумаги
      </h3>
-     <Badge className="bg-slate-100 text-slate-600 border-none" color="neutral">
+     <Badge className="bg-slate-100 text-slate-600 border-none" color="gray">
       Рабочая ширина: {workingWidth} мм
      </Badge>
     </div>

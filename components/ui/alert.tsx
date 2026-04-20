@@ -13,23 +13,25 @@ const alertVariants = cva(
         ghost: "border-transparent bg-transparent",
       },
       color: {
-        primary: "bg-blue-50 text-blue-700 border-blue-200 [&>svg]:text-blue-600",
-        success: "bg-emerald-50 text-emerald-700 border-emerald-200 [&>svg]:text-emerald-600",
-        warning: "bg-amber-50 text-amber-700 border-amber-200 [&>svg]:text-amber-600",
-        danger: "bg-red-50 text-red-700 border-red-200 [&>svg]:text-red-600",
-        neutral: "bg-slate-50 text-slate-700 border-slate-200 [&>svg]:text-slate-600",
+        blue: "bg-blue-50 text-blue-700 border-blue-200 [&>svg]:text-blue-600",
+        green: "bg-emerald-50 text-emerald-700 border-emerald-200 [&>svg]:text-emerald-600",
+        yellow: "bg-amber-50 text-amber-700 border-amber-200 [&>svg]:text-amber-600",
+        red: "bg-red-50 text-red-700 border-red-200 [&>svg]:text-red-600",
+        gray: "bg-slate-50 text-slate-700 border-slate-200 [&>svg]:text-slate-600",
+        purple: "bg-purple-50 text-purple-700 border-purple-200 [&>svg]:text-purple-600",
       }
     },
     compoundVariants: [
-      { variant: "solid", color: "primary", className: "bg-blue-600 text-white border-blue-600 [&>svg]:text-white" },
-      { variant: "solid", color: "success", className: "bg-emerald-600 text-white border-emerald-600 [&>svg]:text-white" },
-      { variant: "solid", color: "warning", className: "bg-amber-500 text-white border-amber-500 [&>svg]:text-white" },
-      { variant: "solid", color: "danger", className: "bg-red-600 text-white border-red-600 [&>svg]:text-white" },
-      { variant: "solid", color: "neutral", className: "bg-slate-700 text-white border-slate-700 [&>svg]:text-white" },
+      { variant: "solid", color: "blue", className: "bg-blue-600 text-white border-blue-600 [&>svg]:text-white" },
+      { variant: "solid", color: "green", className: "bg-emerald-600 text-white border-emerald-600 [&>svg]:text-white" },
+      { variant: "solid", color: "yellow", className: "bg-amber-500 text-white border-amber-500 [&>svg]:text-white" },
+      { variant: "solid", color: "red", className: "bg-red-600 text-white border-red-600 [&>svg]:text-white" },
+      { variant: "solid", color: "gray", className: "bg-slate-700 text-white border-slate-700 [&>svg]:text-white" },
+      { variant: "solid", color: "purple", className: "bg-primary text-white border-primary [&>svg]:text-white" },
     ],
     defaultVariants: {
       variant: "outline",
-      color: "neutral",
+      color: "gray",
     },
   }
 )

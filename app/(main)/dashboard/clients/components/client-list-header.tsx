@@ -65,7 +65,7 @@ export function ClientListHeader({
         <div className="flex-1">
           <ClientFilterPanel filters={filters} setFilters={setFilters} uiState={uiState} setUiState={setUiState} regions={referenceData.regions} managers={referenceData.managers} sources={referenceData.sources} onAddToHistory={handlers.addToHistory} activityCounts={activityCounts || undefined} />
         </div>
-        <Button variant="outline" onClick={handlers.onExportClick} className="h-12 px-6 rounded-2xl bg-white border-2 border-slate-100 text-slate-600 hover:bg-slate-50 font-bold hidden sm:flex items-center gap-2">
+        <Button variant="outline" onClick={handlers.onExportClick} className="px-6 bg-white border-2 border-slate-100 text-slate-600 hover:bg-slate-50 font-bold hidden sm:flex items-center gap-2">
           <Download className="w-4 h-4 text-blue-500" />
           Экспорт
         </Button>

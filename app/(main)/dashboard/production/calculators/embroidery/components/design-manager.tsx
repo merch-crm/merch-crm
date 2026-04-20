@@ -167,7 +167,7 @@ const DesignCard = memo(function DesignCard({
      </div>
 
      <div className="flex justify-end gap-2 pt-2">
-      <Button variant="ghost" color="neutral" size="sm" onClick={handleCancel} className="h-9 px-4">
+      <Button variant="ghost" color="gray" size="sm" onClick={handleCancel} className="h-9 px-4">
        <X className="w-4 h-4 mr-2" />
        Отмена
       </Button>
@@ -192,7 +192,7 @@ const DesignCard = memo(function DesignCard({
      <div className="flex items-center gap-3 mb-1.5">
       <h4 className="font-bold text-slate-900 truncate text-lg ">{design.name}</h4>
       {design.hasDigitizing && (
-       <Badge className="bg-pink-100 text-pink-700 border-pink-200 text-xs py-0 font-bold" color="neutral">
+       <Badge className="bg-pink-100 text-pink-700 border-pink-200 text-xs py-0 font-bold" color="gray">
         + Дигитайзинг
        </Badge>
       )}
@@ -211,10 +211,10 @@ const DesignCard = memo(function DesignCard({
      </div>
 
      <div className="flex flex-wrap gap-2 mt-3">
-      <Badge color="primary" variant="outline" className="text-xs font-bold text-slate-400 bg-slate-50 border-slate-200">
+      <Badge color="purple" variant="outline" className="text-xs font-bold text-slate-400 bg-slate-50 border-slate-200">
        {densityInfo?.name} плотность
       </Badge>
-      <Badge color="primary" variant="outline" className="text-xs font-bold text-slate-400 bg-slate-50 border-slate-200">
+      <Badge color="purple" variant="outline" className="text-xs font-bold text-slate-400 bg-slate-50 border-slate-200">
        нить: {threadInfo?.name}
       </Badge>
       {design.hasDigitizing && (
@@ -226,11 +226,11 @@ const DesignCard = memo(function DesignCard({
     </div>
 
     <div className="flex items-center gap-1 shrink-0 bg-slate-50 rounded-xl p-1 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
-     <Button variant="ghost" color="neutral" size="icon" onClick={() => setIsEditing(true)} className="h-9 w-9 text-slate-400 hover:text-blue-600">
+     <Button variant="ghost" color="gray" size="icon" onClick={() => setIsEditing(true)} className="h-9 w-9 text-slate-400 hover:text-blue-600">
       <Pencil className="w-4 h-4" />
      </Button>
      <div className="w-px h-5 bg-slate-200 mx-0.5" />
-     <Button variant="ghost" color="neutral" size="icon" onClick={onDelete} className="h-9 w-9 text-slate-400 hover:text-red-500">
+     <Button variant="ghost" color="gray" size="icon" onClick={onDelete} className="h-9 w-9 text-slate-400 hover:text-red-500">
       <Trash2 className="w-4 h-4" />
      </Button>
     </div>
@@ -293,7 +293,7 @@ export const DesignManager = memo(function DesignManager({
      </div>
     )}
 
-    <Button variant="outline" color="neutral" onClick={handleAddDesign} className="w-full h-14 border-2 border-slate-200 rounded-2xl text-slate-600 hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 transition-all font-bold text-base shadow-sm group">
+    <Button variant="outline" color="gray" onClick={handleAddDesign} className="w-full h-14 border-2 border-slate-200 rounded-2xl text-slate-600 hover:text-pink-600 hover:border-pink-200 hover:bg-pink-50 transition-all font-bold text-base shadow-sm group">
      <div className="flex items-center justify-center gap-2 group-active:scale-95 transition-transform">
       <Plus className="w-5 h-5 transition-transform group-hover:rotate-90" />
       Добавить новый дизайн для вышивки

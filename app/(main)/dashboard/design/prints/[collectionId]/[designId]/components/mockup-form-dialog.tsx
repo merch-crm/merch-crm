@@ -180,7 +180,7 @@ export function MockupFormDialog({
                 {imagePreview ? (
                   <div className="relative w-full aspect-square bg-muted rounded-lg overflow-hidden">
                     <Image src={imagePreview} alt="Preview" fill className="object-cover" unoptimized />
-                    <Button type="button" variant="solid" color="danger" size="icon" className="absolute top-2 right-2" onClick={handleRemoveImage}>
+                    <Button type="button" variant="solid" color="red" size="icon" className="absolute top-2 right-2" onClick={handleRemoveImage}>
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
